@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.3.0: Game-Like Playable Screen
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | First screen reads as a game operation screen, not a generic dashboard | **Passed** |
+| 2 | Office/lab playfield is visible with staff, server, and release board motifs | **Passed** |
+| 3 | Product launch creates a review score and grade | **Passed** |
+| 4 | Month advancement creates revenue, users, data, cost, and compute pressure | **Passed** |
+| 5 | Eligible monthly event appears and choices apply effects | **Passed** |
+| 6 | Upgrades and automation purchases enforce costs/requirements | **Passed** |
+| 7 | Save/load serializes and hydrates runtime state | **Passed** |
+| 8 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+| 9 | Browser alpha loop has no console errors | **Passed** |
+
+---
+
 ## Milestone 0: Harness Setup
 
 | # | Criterion | Status |

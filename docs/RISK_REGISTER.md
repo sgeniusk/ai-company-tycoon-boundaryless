@@ -33,6 +33,7 @@ This document tracks identified risks to the project, their severity, likelihood
 | R004 | Event system may feel random rather than strategic | P2 | Medium | Use condition-based events; ensure player can prepare | Open |
 | R005 | Compute pressure curve may be too punishing early | P2 | Low | Tune users_per_compute_cost_unit in balance.json | Open |
 | R006 | Save/Load may corrupt state if systems change between milestones | P2 | Low | Version save files; validate on load | Open |
+| R007 | Alpha screen can still feel too panel-heavy compared with Kairosoft-style playfulness | P2 | Medium | Add release animations, product review ceremony, and collapsible panels in the next polish pass | Open |
 
 ---
 
@@ -40,7 +41,7 @@ This document tracks identified risks to the project, their severity, likelihood
 
 | ID | Risk | Resolution | Date |
 |---|---|---|---|
-| (none yet) | | | |
+| R003 | UI may become too crowded with all panels | Alpha introduced a game-like office screen and stronger grouping; still monitor as features grow | 2026-05-15 |
 
 ---
 

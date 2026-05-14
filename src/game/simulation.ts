@@ -1,5 +1,17 @@
-import { balance, capabilities, companyStages, domains, products, resources, startingState } from "./data";
-import type { ActionCheck, CapabilityDefinition, CompanyStageDefinition, GameState, ProductDefinition, ResourceMap } from "./types";
+import { automationUpgrades, balance, capabilities, companyStages, domains, events, products, resources, startingState, upgrades } from "./data";
+import type {
+  ActionCheck,
+  AutomationUpgradeDefinition,
+  CapabilityDefinition,
+  CompanyStageDefinition,
+  EventChoiceDefinition,
+  EventDefinition,
+  GameState,
+  ProductDefinition,
+  ReleaseReview,
+  ResourceMap,
+  UpgradeDefinition,
+} from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
@@ -21,6 +33,10 @@ export function createInitialState(): GameState {
     capabilities: { ...startingState.capabilities },
     activeProducts: [...startingState.active_products],
     unlockedDomains: [...new Set([...domains.filter((domain) => domain.unlocked_by_default).map((domain) => domain.id), ...startingState.unlocked_domains])],
+    purchasedUpgrades: [...startingState.purchased_upgrades],
+    purchasedAutomationUpgrades: [...startingState.purchased_automation_upgrades],
+    productReviews: {},
+    eventHistory: [],
     timeline: ["회사는 작은 AI 생산성 도구 팀으로 시작했습니다."],
     status: "playing",
   };
@@ -70,12 +86,18 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
 
   const nextResources = applyResourceDelta(state.resources, negateCosts(product.launch_cost));
   nextResources.hype = clamp((nextResources.hype ?? 0) + product.hype_on_launch, 0, 100);
+  const releaseReview = createReleaseReview(product, state);
 
   return {
     ...state,
     resources: nextResources,
     activeProducts: [...state.activeProducts, product.id],
-    timeline: [`${product.name} 출시: 하이프 +${product.hype_on_launch}`, ...state.timeline].slice(0, 8),
+    productReviews: { ...state.productReviews, [product.id]: releaseReview },
+    timeline: [
+      `${product.name} 출시: 시장 반응 ${releaseReview.grade} (${releaseReview.score}점)`,
+      `${product.name} 출시: 화제성 +${product.hype_on_launch}`,
+      ...state.timeline,
+    ].slice(0, 8),
   };
 }
 
@@ -162,11 +184,7 @@ export function advanceMonth(state: GameState): GameState {
 
   const nextMonth = state.month + 1;
   const nextStatus = getNextStatus(nextResources, state.activeProducts.length);
-  const summary = active.length
-    ? `${nextMonth}개월차: 매출 ${formatMoney(revenue)}, 비용 ${formatMoney(totalCost)}, 이용자 +${newUsers.toLocaleString("ko-KR")}, 데이터 +${generatedData}`
-    : `${nextMonth}개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.`;
-
-  return {
+  const nextStateWithoutEvent: GameState = {
     ...state,
     month: nextMonth,
     resources: nextResources,
@@ -178,13 +196,110 @@ export function advanceMonth(state: GameState): GameState {
       computePressure,
     },
     status: nextStatus,
-    timeline: [summary, ...state.timeline].slice(0, 8),
+    timeline: [],
+  };
+  const nextEvent = state.currentEvent ? state.currentEvent : findNextEligibleEvent(nextStateWithoutEvent);
+  const summary = active.length
+    ? `${nextMonth}개월차: 매출 ${formatMoney(revenue)}, 비용 ${formatMoney(totalCost)}, 이용자 +${newUsers.toLocaleString("ko-KR")}, 데이터 +${generatedData}`
+    : `${nextMonth}개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.`;
+
+  return {
+    ...nextStateWithoutEvent,
+    currentEvent: nextEvent,
+    status: nextStatus,
+    timeline: [nextEvent ? `이슈 발생: ${nextEvent.name}` : "", summary, ...state.timeline].filter(Boolean).slice(0, 8),
+  };
+}
+
+export function getUpgradeCheck(upgrade: UpgradeDefinition, state: GameState): ActionCheck {
+  const reasons = getRequirementReasons(upgrade.requirements, state);
+  if (upgrade.one_time && state.purchasedUpgrades.includes(upgrade.id)) {
+    reasons.push("이미 도입했습니다.");
+  }
+  appendCostReasons(reasons, upgrade.cost, state);
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function buyUpgrade(upgrade: UpgradeDefinition, state: GameState): GameState {
+  const check = getUpgradeCheck(upgrade, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const nextResources = applyResourceDelta(applyResourceDelta(state.resources, negateCosts(upgrade.cost)), upgrade.effects);
+
+  return {
+    ...state,
+    resources: nextResources,
+    purchasedUpgrades: upgrade.one_time ? [...state.purchasedUpgrades, upgrade.id] : state.purchasedUpgrades,
+    timeline: [`투자 완료: ${upgrade.name}`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getAutomationUpgradeCheck(upgrade: AutomationUpgradeDefinition, state: GameState): ActionCheck {
+  const reasons = getRequirementReasons(upgrade.requirements, state);
+  if (state.purchasedAutomationUpgrades.includes(upgrade.id)) {
+    reasons.push("이미 자동화했습니다.");
+  }
+  appendCostReasons(reasons, upgrade.cost, state);
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function buyAutomationUpgrade(upgrade: AutomationUpgradeDefinition, state: GameState): GameState {
+  const check = getAutomationUpgradeCheck(upgrade, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const nextResources = applyResourceDelta(applyResourceDelta(state.resources, negateCosts(upgrade.cost)), {
+    ...upgrade.effects,
+    automation: upgrade.automation_gain + (upgrade.effects.automation ?? 0),
+  });
+
+  return {
+    ...state,
+    resources: nextResources,
+    purchasedAutomationUpgrades: [...state.purchasedAutomationUpgrades, upgrade.id],
+    timeline: [`자동화 도입: ${upgrade.name} (${upgrade.monthly_benefit})`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function resolveEventChoice(choice: EventChoiceDefinition, state: GameState): GameState {
+  if (!state.currentEvent || state.status !== "playing") return state;
+
+  const nextResources = applyResourceDelta(state.resources, choice.effects);
+
+  return {
+    ...state,
+    resources: nextResources,
+    currentEvent: undefined,
+    eventHistory: [...state.eventHistory, state.currentEvent.id],
+    timeline: [`결정: ${choice.text}`, ...state.timeline].slice(0, 8),
   };
 }
 
 export function getCompanyStage(state: GameState): CompanyStageDefinition {
   const orderedStages = [...companyStages].sort((a, b) => b.order - a.order);
   return orderedStages.find((stage) => stageRequirementsMet(stage, state)) ?? orderedStages[orderedStages.length - 1];
+}
+
+export function serializeGameState(state: GameState): string {
+  return JSON.stringify({ version: 1, state });
+}
+
+export function hydrateGameState(serialized: string): GameState {
+  const parsed = JSON.parse(serialized) as { version?: number; state?: GameState };
+  if (!parsed.state) return createInitialState();
+
+  return {
+    ...createInitialState(),
+    ...parsed.state,
+    resources: { ...createInitialState().resources, ...parsed.state.resources },
+    capabilities: { ...createInitialState().capabilities, ...parsed.state.capabilities },
+    activeProducts: parsed.state.activeProducts ?? [],
+    unlockedDomains: parsed.state.unlockedDomains ?? createInitialState().unlockedDomains,
+    purchasedUpgrades: parsed.state.purchasedUpgrades ?? [],
+    purchasedAutomationUpgrades: parsed.state.purchasedAutomationUpgrades ?? [],
+    productReviews: parsed.state.productReviews ?? {},
+    eventHistory: parsed.state.eventHistory ?? [],
+    timeline: parsed.state.timeline ?? [],
+  };
 }
 
 function getNextStatus(nextResources: ResourceMap, activeProductCount: number): GameState["status"] {
@@ -234,4 +349,60 @@ function stageRequirementsMet(stage: CompanyStageDefinition, state: GameState): 
     if (requirement === "min_automation") return (state.resources.automation ?? 0) >= needed;
     return false;
   });
+}
+
+function createReleaseReview(product: ProductDefinition, state: GameState): ReleaseReview {
+  const score = Math.round(
+    clamp(55 + product.hype_on_launch * 1.8 + (state.resources.trust ?? 0) * 0.18 + Object.keys(product.required_capabilities).length * 4, 45, 99),
+  );
+  const grade = score >= 90 ? "S" : score >= 80 ? "A" : score >= 70 ? "B" : score >= 60 ? "C" : "D";
+  const quote =
+    score >= 80
+      ? "출시 첫날부터 커뮤니티가 술렁입니다."
+      : score >= 70
+        ? "쓸모는 확실하지만 다음 업데이트가 중요합니다."
+        : "아이디어는 좋지만 완성도가 더 필요합니다.";
+  return { score, grade, quote };
+}
+
+function findNextEligibleEvent(state: GameState): EventDefinition | undefined {
+  return events.find((event) => !state.eventHistory.includes(event.id) && eventRequirementsMet(event, state));
+}
+
+function eventRequirementsMet(event: EventDefinition, state: GameState): boolean {
+  return Object.entries(event.conditions).every(([condition, needed]) => {
+    if (condition === "min_month") return state.month >= needed;
+    if (condition === "min_products") return state.activeProducts.length >= needed;
+    if (condition === "min_hype") return (state.resources.hype ?? 0) >= needed;
+    if (condition === "min_trust") return (state.resources.trust ?? 0) >= needed;
+    if (condition === "min_data") return (state.resources.data ?? 0) >= needed;
+    if (condition === "min_users") return (state.resources.users ?? 0) >= needed;
+    if (condition === "min_talent") return (state.resources.talent ?? 0) >= needed;
+    if (condition === "min_capabilities") return Object.values(state.capabilities).filter((level) => level > 0).length >= needed;
+    return false;
+  });
+}
+
+function getRequirementReasons(requirements: Record<string, number>, state: GameState): string[] {
+  const reasons: string[] = [];
+
+  for (const [requirement, needed] of Object.entries(requirements ?? {})) {
+    if (requirement === "min_month" && state.month < needed) reasons.push(`${needed}개월차 필요`);
+    if (requirement === "min_products" && state.activeProducts.length < needed) reasons.push(`활성 제품 ${needed}개 필요`);
+    if (requirement === "min_users" && (state.resources.users ?? 0) < needed) reasons.push(`이용자 ${needed.toLocaleString("ko-KR")}명 필요`);
+    if (requirement === "min_trust" && (state.resources.trust ?? 0) < needed) reasons.push(`신뢰 ${needed} 필요`);
+    if (requirement === "min_talent" && (state.resources.talent ?? 0) < needed) reasons.push(`인재 ${needed}명 필요`);
+    if (requirement === "min_automation" && (state.resources.automation ?? 0) < needed) reasons.push(`자동화 ${needed} 필요`);
+  }
+
+  return reasons;
+}
+
+function appendCostReasons(reasons: string[], cost: ResourceMap, state: GameState): void {
+  for (const [resourceId, amount] of Object.entries(cost)) {
+    if ((state.resources[resourceId] ?? 0) < amount) {
+      const resourceName = resources[resourceId]?.name ?? resourceId;
+      reasons.push(`${resourceName} 부족`);
+    }
+  }
 }

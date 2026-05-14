@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.3.0-alpha] — 2026-05-15
+
+### Alpha: Game-Like Playable Screen
+
+**Added:**
+- Game-like office/lab screen with staff sprites, server rack, launch board, and compact tycoon UI frame
+- Product release review score, grade, and quote
+- Monthly event surfacing and event choice resolution
+- Upgrade purchase flow with requirement and cost checks
+- Automation purchase flow with compounding automation gains
+- Save/load through serialized runtime state and local storage buttons
+- Alpha simulation tests for release reviews, events, upgrades, automation, and save/load
+- Alpha production, QA, and synthetic playtest reports
+
+**Updated:**
+- First event and visible upgrade/automation labels are Korean-first
+- Simulation state now tracks product reviews, current events, event history, purchased upgrades, and purchased automations
+- Data validator already covers product/event/upgrade references and remains part of the gate
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+- Browser flow verified: launch product, advance month, view event, resolve event, save run
+
+---
+
 ## [0.2.0] — 2026-05-14
 
 ### Web Restart Milestone 1: Playable Dashboard Shell

@@ -2,33 +2,33 @@
   "automation_upgrades": [
     {
       "id": "auto_customer_support",
-      "name": "Auto Customer Support",
-      "description": "AI handles routine customer inquiries automatically.",
+      "name": "자동 고객지원",
+      "description": "AI가 반복적인 고객 문의를 자동 처리합니다.",
       "cost": {"cash": 3000, "compute": 15, "data": 10},
       "automation_gain": 10,
       "effects": {"trust": 2},
       "requirements": {"min_automation": 0, "min_month": 3},
-      "monthly_benefit": "Reduces base monthly cost by 5%"
+      "monthly_benefit": "기본 월 비용 5% 감소"
     },
     {
       "id": "ai_bug_fixing",
-      "name": "AI Bug Fixing Agent",
-      "description": "AI automatically detects and fixes simple bugs.",
+      "name": "AI 버그 수정 에이전트",
+      "description": "AI가 단순 버그를 찾아 자동으로 수정합니다.",
       "cost": {"cash": 4000, "compute": 20, "data": 15},
       "automation_gain": 12,
       "effects": {"trust": 3},
       "requirements": {"min_automation": 10, "min_talent": 3},
-      "monthly_benefit": "Reduces compute costs by 10%"
+      "monthly_benefit": "연산 비용 10% 감소"
     },
     {
       "id": "automated_marketing",
-      "name": "Automated Marketing Copy",
-      "description": "AI generates and optimizes marketing content.",
+      "name": "자동 마케팅 카피",
+      "description": "AI가 마케팅 문구를 만들고 최적화합니다.",
       "cost": {"cash": 2500, "compute": 10, "data": 5},
       "automation_gain": 8,
       "effects": {"hype": 5},
       "requirements": {"min_automation": 5, "min_month": 4},
-      "monthly_benefit": "+2 Hype per month"
+      "monthly_benefit": "매월 화제성 +2"
     },
     {
       "id": "product_analytics_agent",

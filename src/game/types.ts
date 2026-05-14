@@ -59,6 +59,50 @@ export interface CompanyStageDefinition {
   order: number;
 }
 
+export interface EventChoiceDefinition {
+  id: string;
+  text: string;
+  effects: ResourceMap;
+  description: string;
+}
+
+export interface EventDefinition {
+  id: string;
+  name: string;
+  description: string;
+  conditions: Record<string, number>;
+  weight: number;
+  choices: EventChoiceDefinition[];
+}
+
+export interface UpgradeDefinition {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  cost: ResourceMap;
+  effects: ResourceMap;
+  requirements: Record<string, number>;
+  one_time: boolean;
+}
+
+export interface AutomationUpgradeDefinition {
+  id: string;
+  name: string;
+  description: string;
+  cost: ResourceMap;
+  automation_gain: number;
+  effects: ResourceMap;
+  requirements: Record<string, number>;
+  monthly_benefit: string;
+}
+
+export interface ReleaseReview {
+  score: number;
+  grade: string;
+  quote: string;
+}
+
 export interface BalanceDefinition {
   base_monthly_cash_cost: number;
   salary_per_talent: number;
@@ -104,8 +148,13 @@ export interface GameState {
   capabilities: CapabilityMap;
   activeProducts: string[];
   unlockedDomains: string[];
+  purchasedUpgrades: string[];
+  purchasedAutomationUpgrades: string[];
+  productReviews: Record<string, ReleaseReview>;
+  eventHistory: string[];
   timeline: string[];
   lastMonthReport?: MonthlyReport;
+  currentEvent?: EventDefinition;
   status: "playing" | "success" | "failure";
 }
 
