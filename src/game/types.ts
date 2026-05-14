@@ -75,6 +75,55 @@ export interface EventDefinition {
   choices: EventChoiceDefinition[];
 }
 
+export interface CompetitorDefinition {
+  id: string;
+  name_key: string;
+  tagline_key: string;
+  archetype_key: string;
+  focus_domains: string[];
+  color: string;
+  starting_score: number;
+  starting_market_share: number;
+  monthly_growth: number;
+  aggression: number;
+  weakness_key: string;
+}
+
+export interface CompetitorState {
+  id: string;
+  score: number;
+  marketShare: number;
+  momentum: number;
+  claimedProducts: string[];
+  researchLevel: number;
+  lastMove: string;
+}
+
+export interface RivalEventChoiceDefinition {
+  id: string;
+  text_key: string;
+  description_key: string;
+  effects: ResourceMap;
+  competitor_effects: Record<string, number>;
+}
+
+export interface RivalEventDefinition {
+  id: string;
+  name_key: string;
+  description_key: string;
+  conditions: Record<string, number>;
+  competitor_id: string;
+  choices: RivalEventChoiceDefinition[];
+}
+
+export interface MarketRanking {
+  id: string;
+  score: number;
+  marketShare: number;
+  isPlayer: boolean;
+  lastMove: string;
+}
+
 export interface UpgradeDefinition {
   id: string;
   name: string;
@@ -219,11 +268,14 @@ export interface GameState {
   hiredAgents: HiredAgent[];
   ownedItems: string[];
   productProjects: ProductProject[];
+  competitorStates: CompetitorState[];
   productReviews: Record<string, ReleaseReview>;
   eventHistory: string[];
+  rivalEventHistory: string[];
   timeline: string[];
   lastMonthReport?: MonthlyReport;
   currentEvent?: EventDefinition;
+  currentRivalEvent?: RivalEventDefinition;
   status: "playing" | "success" | "failure";
 }
 

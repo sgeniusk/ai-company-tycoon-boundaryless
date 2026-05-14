@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.8.0-alpha] — 2026-05-15
+
+### Competition And I18n Foundation
+
+**Added:**
+- 5 fictional AI competitors: 챗지오디, 클로이, 제미있니, 노바런, 오토마루
+- Competition menu with market ranking, rival profiles, market share, research level, and claimed product spaces
+- Monthly rival growth and deterministic product-space claiming
+- Rival events with player choices and competitor score/momentum effects
+- Save/load support for competitor state and rival event history
+- Korean/English locale dictionaries and `t()` translation helper for new competitor/event content
+- Data validation for competitors, rival events, and locale keys
+
+**Updated:**
+- Top status now shows player market share
+- Product cards show when competitors have claimed the same product space
+- Product review scoring now takes competitor product claims into account
+- Menu structure now includes 경쟁
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.4.0-alpha] — 2026-05-15
 
 ### Prototype Systems Before Graphics Assets

@@ -6,6 +6,23 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.8.0: Competition And I18n Foundation
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | At least 5 fictional AI competitors are defined in JSON | **Passed** |
+| 2 | Competitors have localizable name/tagline/archetype/weakness keys | **Passed** |
+| 3 | Initial game state includes competitor runtime state | **Passed** |
+| 4 | Month advancement grows rivals and recalculates market share | **Passed** |
+| 5 | Rivals can claim product spaces over time | **Passed** |
+| 6 | Rival events appear and choices affect resources and rival momentum | **Passed** |
+| 7 | Save/load preserves competitor state and rival event state | **Passed** |
+| 8 | Competition menu shows ranking, profiles, market share, and claimed products | **Passed** |
+| 9 | Korean and English locale dictionaries include competitor and rival event keys | **Passed** |
+| 10 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.4.0: Prototype Systems Before Graphics Assets
 
 | # | Criterion | Status |

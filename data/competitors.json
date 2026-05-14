@@ -1,0 +1,69 @@
+{
+  "competitors": [
+    {
+      "id": "competitor_chatgody",
+      "name_key": "competitors.chatgody.name",
+      "tagline_key": "competitors.chatgody.tagline",
+      "archetype_key": "competitors.chatgody.archetype",
+      "focus_domains": ["personal_productivity", "customer_support", "education"],
+      "color": "#3f7f52",
+      "starting_score": 72,
+      "starting_market_share": 24,
+      "monthly_growth": 5,
+      "aggression": 4,
+      "weakness_key": "competitors.chatgody.weakness"
+    },
+    {
+      "id": "competitor_cloyi",
+      "name_key": "competitors.cloyi.name",
+      "tagline_key": "competitors.cloyi.tagline",
+      "archetype_key": "competitors.cloyi.archetype",
+      "focus_domains": ["creator_tools", "education", "personal_productivity"],
+      "color": "#d87aa3",
+      "starting_score": 60,
+      "starting_market_share": 17,
+      "monthly_growth": 4,
+      "aggression": 2,
+      "weakness_key": "competitors.cloyi.weakness"
+    },
+    {
+      "id": "competitor_jemiinni",
+      "name_key": "competitors.jemiinni.name",
+      "tagline_key": "competitors.jemiinni.tagline",
+      "archetype_key": "competitors.jemiinni.archetype",
+      "focus_domains": ["personal_productivity", "developer_tools", "creator_tools"],
+      "color": "#547ad8",
+      "starting_score": 68,
+      "starting_market_share": 21,
+      "monthly_growth": 5,
+      "aggression": 3,
+      "weakness_key": "competitors.jemiinni.weakness"
+    },
+    {
+      "id": "competitor_novarun",
+      "name_key": "competitors.novarun.name",
+      "tagline_key": "competitors.novarun.tagline",
+      "archetype_key": "competitors.novarun.archetype",
+      "focus_domains": ["developer_tools", "customer_support"],
+      "color": "#f09a38",
+      "starting_score": 52,
+      "starting_market_share": 12,
+      "monthly_growth": 6,
+      "aggression": 5,
+      "weakness_key": "competitors.novarun.weakness"
+    },
+    {
+      "id": "competitor_automaru",
+      "name_key": "competitors.automaru.name",
+      "tagline_key": "competitors.automaru.tagline",
+      "archetype_key": "competitors.automaru.archetype",
+      "focus_domains": ["enterprise_automation", "customer_support", "developer_tools"],
+      "color": "#68717d",
+      "starting_score": 58,
+      "starting_market_share": 14,
+      "monthly_growth": 4,
+      "aggression": 4,
+      "weakness_key": "competitors.automaru.weakness"
+    }
+  ]
+}

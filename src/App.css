@@ -371,6 +371,10 @@ p {
   padding: 12px;
 }
 
+.rival-event-panel {
+  background: #e8efff;
+}
+
 .event-panel h2 {
   color: var(--red);
   font-size: 1.15rem;
@@ -418,6 +422,13 @@ p {
   background: #f2cf7f;
   color: #26342d;
   font-weight: 900;
+}
+
+.locale-toggle {
+  background: #fffaf0;
+  color: var(--green-dark);
+  font-weight: 900;
+  min-width: 52px;
 }
 
 .menu-layout {
@@ -642,7 +653,8 @@ p {
 }
 
 .agent-grid,
-.item-grid {
+.item-grid,
+.competitor-grid {
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -650,13 +662,88 @@ p {
 
 .agent-card,
 .item-shop-card,
-.hired-card {
+.hired-card,
+.competitor-card,
+.ranking-card {
   background: #fffdf7;
   border: 2px solid #d8c49b;
   border-radius: 8px;
   display: grid;
   gap: 10px;
   padding: 12px;
+}
+
+.ranking-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ranking-card {
+  align-items: center;
+  grid-template-columns: 38px minmax(0, 1fr) 58px;
+}
+
+.ranking-card.player-rank {
+  background: #edf8eb;
+  border-color: #86b482;
+}
+
+.ranking-card h3,
+.ranking-card p {
+  margin-bottom: 0;
+}
+
+.ranking-card strong {
+  color: var(--green-dark);
+  font-size: 1.1rem;
+  text-align: right;
+}
+
+.ranking-card > span {
+  color: #6c6253;
+  font-size: 0.76rem;
+  grid-column: 2 / -1;
+}
+
+.rank-badge {
+  background: #f2cf7f;
+  border: 2px solid var(--line);
+  color: #2e2415;
+  font-weight: 900;
+  padding: 6px 0;
+  text-align: center;
+}
+
+.competitor-card {
+  border-width: 3px;
+}
+
+.market-meter {
+  background: #f4ead0;
+  border: 2px solid var(--line);
+  height: 18px;
+  padding: 2px;
+}
+
+.market-meter i {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+}
+
+.claim-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.claim-list span {
+  background: #edf4ff;
+  border: 1px solid #9cb8d6;
+  color: #334b5e;
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 6px 7px;
 }
 
 .hired-list {
@@ -939,6 +1026,7 @@ p {
   .products-list,
   .agent-grid,
   .item-grid,
+  .competitor-grid,
   .company-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -957,6 +1045,7 @@ p {
   .products-list,
   .agent-grid,
   .item-grid,
+  .competitor-grid,
   .monthly-report dl,
   .company-summary {
     grid-template-columns: 1fr;

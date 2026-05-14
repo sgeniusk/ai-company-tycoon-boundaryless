@@ -1,5 +1,5 @@
 import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
-import { agentTypes, automationUpgrades, capabilities, domains, items, products, resources, upgrades } from "./game/data";
+import { agentTypes, automationUpgrades, capabilities, competitors, domains, items, products, resources, upgrades } from "./game/data";
 import {
   advanceMonth,
   buyAutomationUpgrade,
@@ -15,18 +15,22 @@ import {
   getCompanyStage,
   getEquipItemCheck,
   getItemCheck,
+  getMarketRankings,
+  getPlayerMarketShare,
   getProductProjectCheck,
   getUpgradeCheck,
   hydrateGameState,
   hireAgent,
+  resolveRivalEventChoice,
   resolveEventChoice,
   serializeGameState,
   startProductProject,
   upgradeCapability,
 } from "./game/simulation";
+import { t, type LocaleCode } from "./i18n";
 import type { AgentTypeDefinition, GameState, HiredAgent, ItemDefinition, ResourceMap } from "./game/types";
 
-type MenuId = "company" | "products" | "agents" | "research" | "shop" | "log";
+type MenuId = "company" | "products" | "agents" | "research" | "shop" | "competition" | "log";
 
 const orderedResourceIds = ["cash", "users", "compute", "data", "talent", "trust", "hype", "automation"];
 const saveKey = "ai-company-tycoon-alpha-save";
@@ -36,15 +40,18 @@ const menus: Array<{ id: MenuId; label: string; hint: string }> = [
   { id: "agents", label: "에이전트", hint: "능력치" },
   { id: "research", label: "연구", hint: "AI 능력" },
   { id: "shop", label: "상점", hint: "아이템" },
+  { id: "competition", label: "경쟁", hint: "시장" },
   { id: "log", label: "기록", hint: "히스토리" },
 ];
 
 function App() {
   const [gameState, setGameState] = useState<GameState>(() => createInitialState());
   const [activeMenu, setActiveMenu] = useState<MenuId>("company");
+  const [locale, setLocale] = useState<LocaleCode>("ko");
 
   const companyStage = getCompanyStage(gameState);
   const activeProducts = products.filter((product) => gameState.activeProducts.includes(product.id));
+  const playerMarketShare = getPlayerMarketShare(gameState);
   const launchableCount = useMemo(
     () => products.filter((product) => getProductProjectCheck(product, gameState).ok).length,
     [gameState],
@@ -85,6 +92,10 @@ function App() {
           <span className={`status-pill ${gameState.status}`}>{statusLabel(gameState.status)}</span>
           <span className="status-pill">출시 가능 {launchableCount}</span>
           <span className="status-pill">개발 중 {gameState.productProjects.length}</span>
+          <span className="status-pill">점유 {playerMarketShare}%</span>
+          <button className="locale-toggle" onClick={() => setLocale((current) => (current === "ko" ? "en" : "ko"))}>
+            {locale.toUpperCase()}
+          </button>
         </div>
       </section>
 
@@ -173,6 +184,24 @@ function App() {
         </section>
       )}
 
+      {gameState.currentRivalEvent && (
+        <section className="event-panel rival-event-panel" aria-label="경쟁사 이벤트">
+          <div>
+            <p className="eyebrow">경쟁사 이슈</p>
+            <h2>{t(gameState.currentRivalEvent.name_key, locale)}</h2>
+            <p>{t(gameState.currentRivalEvent.description_key, locale)}</p>
+          </div>
+          <div className="event-choices">
+            {gameState.currentRivalEvent.choices.map((choice) => (
+              <button key={choice.id} onClick={() => setGameState((current) => resolveRivalEventChoice(choice, current))}>
+                <strong>{t(choice.text_key, locale)}</strong>
+                <span>{t(choice.description_key, locale)}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="command-row" aria-label="주요 명령">
         <button className="primary-action" onClick={() => setGameState((current) => advanceMonth(current))}>
           다음 달
@@ -198,7 +227,7 @@ function App() {
             </button>
           ))}
         </nav>
-        <div className="menu-panel">{renderMenuContent(activeMenu, gameState, setGameState)}</div>
+        <div className="menu-panel">{renderMenuContent(activeMenu, gameState, setGameState, locale)}</div>
       </section>
     </main>
   );
@@ -208,6 +237,7 @@ function renderMenuContent(
   activeMenu: MenuId,
   gameState: GameState,
   setGameState: Dispatch<SetStateAction<GameState>>,
+  locale: LocaleCode,
 ) {
   if (activeMenu === "company") {
     return (
@@ -233,7 +263,7 @@ function renderMenuContent(
   }
 
   if (activeMenu === "products") {
-    return <ProductsPanel gameState={gameState} setGameState={setGameState} />;
+    return <ProductsPanel gameState={gameState} setGameState={setGameState} locale={locale} />;
   }
 
   if (activeMenu === "agents") {
@@ -248,10 +278,22 @@ function renderMenuContent(
     return <ShopPanel gameState={gameState} setGameState={setGameState} />;
   }
 
+  if (activeMenu === "competition") {
+    return <CompetitionPanel gameState={gameState} locale={locale} />;
+  }
+
   return <TimelinePanel gameState={gameState} />;
 }
 
-function ProductsPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+function ProductsPanel({
+  gameState,
+  setGameState,
+  locale,
+}: {
+  gameState: GameState;
+  setGameState: Dispatch<SetStateAction<GameState>>;
+  locale: LocaleCode;
+}) {
   return (
     <section className="panel products-panel">
       <div className="panel-heading">
@@ -266,6 +308,7 @@ function ProductsPanel({ gameState, setGameState }: { gameState: GameState; setG
           const review = gameState.productReviews[product.id];
           const project = gameState.productProjects.find((entry) => entry.productId === product.id);
           const isActive = gameState.activeProducts.includes(product.id);
+          const claimers = gameState.competitorStates.filter((competitor) => competitor.claimedProducts.includes(product.id));
 
           return (
             <article className="item-card product-card" key={product.id}>
@@ -288,6 +331,14 @@ function ProductsPanel({ gameState, setGameState }: { gameState: GameState; setG
                     <span>완성도 {Math.round(project.quality)}</span>
                   </div>
                   <i style={{ width: `${project.progress}%` }} />
+                </div>
+              )}
+              {claimers.length > 0 && (
+                <div className="claim-list">
+                  {claimers.map((claimer) => {
+                    const competitor = competitors.find((entry) => entry.id === claimer.id);
+                    return <span key={claimer.id}>경쟁 선점: {competitor ? t(competitor.name_key, locale) : claimer.id}</span>;
+                  })}
                 </div>
               )}
               <div className="item-footer">
@@ -607,6 +658,71 @@ function ItemCard({
       {!check.ok && <p className="locked-reason">{check.reasons.join(" / ")}</p>}
       <small>{item.flavor}</small>
     </article>
+  );
+}
+
+function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale: LocaleCode }) {
+  const rankings = getMarketRankings(gameState);
+
+  return (
+    <div className="panel-grid two-col">
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>경쟁사 랭킹</h2>
+          <p>AI 시장 점유율과 경쟁사의 최근 움직임을 봅니다.</p>
+        </div>
+        <div className="ranking-list">
+          {rankings.map((ranking, index) => {
+            const competitor = competitors.find((entry) => entry.id === ranking.id);
+            const label = ranking.isPlayer ? t("ui.playerCompany", locale) : competitor ? t(competitor.name_key, locale) : ranking.id;
+
+            return (
+              <article className={`ranking-card ${ranking.isPlayer ? "player-rank" : ""}`} key={ranking.id}>
+                <div className="rank-badge">{index + 1}</div>
+                <div>
+                  <h3>{label}</h3>
+                  <p>{ranking.isPlayer ? "제품 출시와 신뢰를 바탕으로 시장을 넓히는 중" : competitor ? t(competitor.tagline_key, locale) : ranking.lastMove}</p>
+                </div>
+                <strong>{ranking.marketShare}%</strong>
+                <span>{ranking.lastMove}</span>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>경쟁사 프로필</h2>
+          <p>각 회사의 성향과 선점한 제품 공간입니다.</p>
+        </div>
+        <div className="competitor-grid">
+          {gameState.competitorStates.map((state) => {
+            const competitor = competitors.find((entry) => entry.id === state.id);
+            const claimedProducts = products.filter((product) => state.claimedProducts.includes(product.id));
+            if (!competitor) return null;
+
+            return (
+              <article className="competitor-card" style={{ borderColor: competitor.color }} key={state.id}>
+                <p className="item-meta">{t(competitor.archetype_key, locale)}</p>
+                <h3>{t(competitor.name_key, locale)}</h3>
+                <p>{t(competitor.weakness_key, locale)}</p>
+                <div className="market-meter">
+                  <i style={{ width: `${state.marketShare}%`, background: competitor.color }} />
+                </div>
+                <div className="mini-row">
+                  <span>점유 {state.marketShare}%</span>
+                  <span>위협 {Math.round(state.score)}</span>
+                  <span>연구 Lv.{state.researchLevel}</span>
+                </div>
+                <div className="claim-list">
+                  {claimedProducts.length ? claimedProducts.map((product) => <span key={product.id}>{product.name}</span>) : <span>선점 제품 없음</span>}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    </div>
   );
 }
 

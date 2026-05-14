@@ -1,0 +1,73 @@
+{
+  "rival_events": [
+    {
+      "id": "talent_poach",
+      "name_key": "rivalEvents.talentPoach.name",
+      "description_key": "rivalEvents.talentPoach.description",
+      "conditions": {"min_month": 4},
+      "competitor_id": "competitor_novarun",
+      "choices": [
+        {
+          "id": "counter_offer",
+          "text_key": "rivalEvents.talentPoach.counterOffer.text",
+          "description_key": "rivalEvents.talentPoach.counterOffer.description",
+          "effects": {"cash": -1200, "trust": 2},
+          "competitor_effects": {"score": -2, "momentum": -3}
+        },
+        {
+          "id": "let_go",
+          "text_key": "rivalEvents.talentPoach.letGo.text",
+          "description_key": "rivalEvents.talentPoach.letGo.description",
+          "effects": {"cash": 600, "talent": -1},
+          "competitor_effects": {"score": 3, "momentum": 2}
+        }
+      ]
+    },
+    {
+      "id": "model_race",
+      "name_key": "rivalEvents.modelRace.name",
+      "description_key": "rivalEvents.modelRace.description",
+      "conditions": {"min_month": 6, "min_products": 1},
+      "competitor_id": "competitor_jemiinni",
+      "choices": [
+        {
+          "id": "research_sprint",
+          "text_key": "rivalEvents.modelRace.researchSprint.text",
+          "description_key": "rivalEvents.modelRace.researchSprint.description",
+          "effects": {"cash": -1800, "data": -10, "hype": 5},
+          "competitor_effects": {"score": -3, "momentum": -2}
+        },
+        {
+          "id": "differentiate",
+          "text_key": "rivalEvents.modelRace.differentiate.text",
+          "description_key": "rivalEvents.modelRace.differentiate.description",
+          "effects": {"trust": 4, "hype": -2},
+          "competitor_effects": {"momentum": 1}
+        }
+      ]
+    },
+    {
+      "id": "enterprise_bid",
+      "name_key": "rivalEvents.enterpriseBid.name",
+      "description_key": "rivalEvents.enterpriseBid.description",
+      "conditions": {"min_month": 8, "min_trust": 45},
+      "competitor_id": "competitor_automaru",
+      "choices": [
+        {
+          "id": "premium_pilot",
+          "text_key": "rivalEvents.enterpriseBid.premiumPilot.text",
+          "description_key": "rivalEvents.enterpriseBid.premiumPilot.description",
+          "effects": {"cash": -2200, "trust": 6, "automation": 3},
+          "competitor_effects": {"score": -4, "momentum": -2}
+        },
+        {
+          "id": "ignore_bid",
+          "text_key": "rivalEvents.enterpriseBid.ignoreBid.text",
+          "description_key": "rivalEvents.enterpriseBid.ignoreBid.description",
+          "effects": {"cash": 800, "trust": -3},
+          "competitor_effects": {"score": 5, "momentum": 3}
+        }
+      ]
+    }
+  ]
+}

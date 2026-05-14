@@ -9,9 +9,12 @@ import {
   equipItem,
   getAgentHireCheck,
   getCompanyStage,
+  getMarketRankings,
+  getPlayerMarketShare,
   hydrateGameState,
   hireAgent,
   launchProduct,
+  resolveRivalEventChoice,
   resolveEventChoice,
   serializeGameState,
   startProductProject,
@@ -211,5 +214,65 @@ describe("alpha production systems", () => {
     expect(state.activeProducts).toContain("ai_writing_assistant");
     expect(Number.isFinite(state.resources.cash)).toBe(true);
     expect(state.status).not.toBe("failure");
+  });
+});
+
+describe("v0.5-v0.8 competitive market systems", () => {
+  it("starts with rival companies and a player market ranking", () => {
+    const state = createInitialState();
+    const rankings = getMarketRankings(state);
+
+    expect(state.competitorStates.length).toBeGreaterThanOrEqual(5);
+    expect(rankings[0].marketShare).toBeGreaterThan(0);
+    expect(rankings.some((ranking) => ranking.id === "player")).toBe(true);
+  });
+
+  it("advances rival scores and recalculates player market share each month", () => {
+    const initial = createInitialState();
+    const nextMonth = advanceMonth(initial);
+
+    expect(nextMonth.competitorStates[0].score).toBeGreaterThan(initial.competitorStates[0].score);
+    expect(getPlayerMarketShare(nextMonth)).toBeGreaterThanOrEqual(0);
+    expect(getPlayerMarketShare(nextMonth)).toBeLessThanOrEqual(100);
+  });
+
+  it("lets rivals claim product spaces and creates competitive pressure", () => {
+    let state = createInitialState();
+    for (let month = 0; month < 3; month += 1) {
+      state = advanceMonth(state);
+    }
+
+    expect(state.competitorStates.some((competitor) => competitor.claimedProducts.length > 0)).toBe(true);
+    expect(state.timeline.some((entry) => entry.includes("경쟁사"))).toBe(true);
+  });
+
+  it("surfaces and resolves rival events with competitor effects", () => {
+    let state = createInitialState();
+    for (let month = 0; month < 4; month += 1) {
+      state = advanceMonth(state);
+    }
+
+    expect(state.currentRivalEvent?.id).toBe("talent_poach");
+
+    const choice = state.currentRivalEvent?.choices.find((entry) => entry.id === "counter_offer");
+    if (!choice) throw new Error("Missing rival event choice");
+
+    const resolved = resolveRivalEventChoice(choice, state);
+
+    expect(resolved.currentRivalEvent).toBeUndefined();
+    expect(resolved.rivalEventHistory).toContain("talent_poach");
+    expect(resolved.competitorStates.some((competitor) => competitor.momentum < 0)).toBe(true);
+  });
+
+  it("saves and loads competitor state and rival event history", () => {
+    let state = createInitialState();
+    for (let month = 0; month < 4; month += 1) {
+      state = advanceMonth(state);
+    }
+
+    const hydrated = hydrateGameState(serializeGameState(state));
+
+    expect(hydrated.competitorStates).toEqual(state.competitorStates);
+    expect(hydrated.currentRivalEvent?.id).toBe(state.currentRivalEvent?.id);
   });
 });

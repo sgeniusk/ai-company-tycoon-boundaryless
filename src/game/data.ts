@@ -10,16 +10,20 @@ import upgradesJson from "../../data/upgrades.json";
 import automationUpgradesJson from "../../data/automation_upgrades.json";
 import agentTypesJson from "../../data/agent_types.json";
 import itemsJson from "../../data/items.json";
+import competitorsJson from "../../data/competitors.json";
+import rivalEventsJson from "../../data/rival_events.json";
 import type {
   AgentTypeDefinition,
   AutomationUpgradeDefinition,
   BalanceDefinition,
   CapabilityDefinition,
   CompanyStageDefinition,
+  CompetitorDefinition,
   DomainDefinition,
   EventDefinition,
   ProductDefinition,
   ResourceDefinition,
+  RivalEventDefinition,
   StartingStateDefinition,
   ItemDefinition,
   UpgradeDefinition,
@@ -37,3 +41,5 @@ export const upgrades = upgradesJson.upgrades as unknown as UpgradeDefinition[];
 export const automationUpgrades = automationUpgradesJson.automation_upgrades as unknown as AutomationUpgradeDefinition[];
 export const agentTypes = agentTypesJson.agent_types as unknown as AgentTypeDefinition[];
 export const items = itemsJson.items as unknown as ItemDefinition[];
+export const competitors = competitorsJson.competitors as unknown as CompetitorDefinition[];
+export const rivalEvents = rivalEventsJson.rival_events as unknown as RivalEventDefinition[];

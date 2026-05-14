@@ -49,6 +49,10 @@ const personasData = readJson("playtest_personas.json");
 const companyStagesData = readJson("company_stages.json");
 const agentTypesData = readJson("agent_types.json");
 const itemsData = readJson("items.json");
+const competitorsData = readJson("competitors.json");
+const rivalEventsData = readJson("rival_events.json");
+const koLocaleData = readJson("locales/ko.json");
+const enLocaleData = readJson("locales/en.json");
 
 const resources = resourcesData?.resources ?? {};
 const products = productsData?.products ?? [];
@@ -61,6 +65,9 @@ const personas = personasData?.personas ?? [];
 const companyStages = companyStagesData?.company_stages ?? [];
 const agentTypes = agentTypesData?.agent_types ?? [];
 const items = itemsData?.items ?? [];
+const competitors = competitorsData?.competitors ?? [];
+const rivalEvents = rivalEventsData?.rival_events ?? [];
+const localeKeys = new Set([...Object.keys(koLocaleData ?? {}), ...Object.keys(enLocaleData ?? {})]);
 
 const resourceIds = new Set(Object.keys(resources));
 const capabilityIds = idsAreUnique("capabilities", capabilities);
@@ -73,6 +80,8 @@ idsAreUnique("playtest_personas", personas);
 idsAreUnique("company_stages", companyStages);
 const agentTypeIds = idsAreUnique("agent_types", agentTypes);
 const itemIds = idsAreUnique("items", items);
+const competitorIds = idsAreUnique("competitors", competitors);
+idsAreUnique("rival_events", rivalEvents);
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);
@@ -145,6 +154,33 @@ for (const item of items) {
   for (const [effectKey, value] of Object.entries(item.effects ?? {})) {
     if (!allowedItemEffects.has(effectKey)) errors.push(`item "${item.id}": unknown effect "${effectKey}"`);
     if (typeof value !== "number") errors.push(`item "${item.id}": effect "${effectKey}" must be numeric`);
+  }
+}
+
+for (const competitor of competitors) {
+  for (const keyField of ["name_key", "tagline_key", "archetype_key", "weakness_key"]) {
+    if (!localeKeys.has(competitor[keyField])) errors.push(`competitor "${competitor.id}": locale key missing for ${keyField}`);
+  }
+  for (const domainId of competitor.focus_domains ?? []) {
+    if (!domainIds.has(domainId)) errors.push(`competitor "${competitor.id}": unknown focus domain "${domainId}"`);
+  }
+  for (const numericField of ["starting_score", "starting_market_share", "monthly_growth", "aggression"]) {
+    if (typeof competitor[numericField] !== "number") errors.push(`competitor "${competitor.id}": ${numericField} must be numeric`);
+  }
+}
+
+for (const event of rivalEvents) {
+  if (!localeKeys.has(event.name_key)) errors.push(`rival_event "${event.id}": missing name locale`);
+  if (!localeKeys.has(event.description_key)) errors.push(`rival_event "${event.id}": missing description locale`);
+  if (!competitorIds.has(event.competitor_id)) errors.push(`rival_event "${event.id}": unknown competitor "${event.competitor_id}"`);
+  for (const choice of event.choices ?? []) {
+    if (!localeKeys.has(choice.text_key)) errors.push(`rival_event "${event.id}" choice "${choice.id}": missing text locale`);
+    if (!localeKeys.has(choice.description_key)) errors.push(`rival_event "${event.id}" choice "${choice.id}": missing description locale`);
+    validateResourceMap(`rival_event "${event.id}" choice "${choice.id}" effects`, choice.effects, resourceIds);
+    for (const [effectKey, value] of Object.entries(choice.competitor_effects ?? {})) {
+      if (!["score", "momentum"].includes(effectKey)) errors.push(`rival_event "${event.id}" choice "${choice.id}": unknown competitor effect "${effectKey}"`);
+      if (typeof value !== "number") errors.push(`rival_event "${event.id}" choice "${choice.id}": competitor effect "${effectKey}" must be numeric`);
+    }
   }
 }
 
