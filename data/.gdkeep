@@ -1,0 +1,12 @@
+# This directory will contain all JSON data files for the game.
+# Files to be created in Milestone 1:
+# - resources.json
+# - balance.json
+# - products.json
+# - capabilities.json
+# - domains.json
+# - events.json
+# - upgrades.json
+# - automation_upgrades.json
+# - company_stages.json
+# - ui_text.json

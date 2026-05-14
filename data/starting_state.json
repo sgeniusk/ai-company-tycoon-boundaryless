@@ -1,0 +1,18 @@
+{
+  "month": 1,
+  "capabilities": {
+    "language": 1,
+    "code": 0,
+    "vision": 0,
+    "audio": 0,
+    "video": 0,
+    "agent": 0,
+    "enterprise": 0,
+    "safety": 0,
+    "optimization": 0
+  },
+  "unlocked_domains": ["personal_productivity"],
+  "active_products": [],
+  "purchased_upgrades": [],
+  "purchased_automation_upgrades": []
+}

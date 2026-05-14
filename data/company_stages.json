@@ -1,0 +1,46 @@
+{
+  "company_stages": [
+    {
+      "id": "garage_prototype",
+      "name": "Garage Prototype",
+      "description": "A tiny team with a big idea.",
+      "requirements": {},
+      "order": 0
+    },
+    {
+      "id": "seed_startup",
+      "name": "Seed Startup",
+      "description": "First product launched, first users acquired.",
+      "requirements": {"min_products": 1, "min_users": 100},
+      "order": 1
+    },
+    {
+      "id": "viral_app_company",
+      "name": "Viral App Company",
+      "description": "Rapid growth, high hype, scaling challenges.",
+      "requirements": {"min_products": 2, "min_users": 5000, "min_hype": 20},
+      "order": 2
+    },
+    {
+      "id": "enterprise_ai_vendor",
+      "name": "Enterprise AI Vendor",
+      "description": "Trusted by businesses, stable revenue streams.",
+      "requirements": {"min_trust": 60, "min_cash": 30000, "min_products": 3},
+      "order": 3
+    },
+    {
+      "id": "ai_platform_giant",
+      "name": "AI Platform Giant",
+      "description": "Multiple domains, massive scale, industry leader.",
+      "requirements": {"min_users": 50000, "min_domains": 4, "min_products": 5},
+      "order": 4
+    },
+    {
+      "id": "boundaryless_intelligence",
+      "name": "Boundaryless Intelligence Company",
+      "description": "AI capabilities cross all boundaries. The company IS the platform.",
+      "requirements": {"min_users": 100000, "min_automation": 60, "min_domains": 5},
+      "order": 5
+    }
+  ]
+}

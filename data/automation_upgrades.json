@@ -1,0 +1,64 @@
+{
+  "automation_upgrades": [
+    {
+      "id": "auto_customer_support",
+      "name": "Auto Customer Support",
+      "description": "AI handles routine customer inquiries automatically.",
+      "cost": {"cash": 3000, "compute": 15, "data": 10},
+      "automation_gain": 10,
+      "effects": {"trust": 2},
+      "requirements": {"min_automation": 0, "min_month": 3},
+      "monthly_benefit": "Reduces base monthly cost by 5%"
+    },
+    {
+      "id": "ai_bug_fixing",
+      "name": "AI Bug Fixing Agent",
+      "description": "AI automatically detects and fixes simple bugs.",
+      "cost": {"cash": 4000, "compute": 20, "data": 15},
+      "automation_gain": 12,
+      "effects": {"trust": 3},
+      "requirements": {"min_automation": 10, "min_talent": 3},
+      "monthly_benefit": "Reduces compute costs by 10%"
+    },
+    {
+      "id": "automated_marketing",
+      "name": "Automated Marketing Copy",
+      "description": "AI generates and optimizes marketing content.",
+      "cost": {"cash": 2500, "compute": 10, "data": 5},
+      "automation_gain": 8,
+      "effects": {"hype": 5},
+      "requirements": {"min_automation": 5, "min_month": 4},
+      "monthly_benefit": "+2 Hype per month"
+    },
+    {
+      "id": "product_analytics_agent",
+      "name": "Product Analytics Agent",
+      "description": "AI analyzes product metrics and suggests improvements.",
+      "cost": {"cash": 3500, "compute": 15, "data": 20},
+      "automation_gain": 10,
+      "effects": {"data": 15},
+      "requirements": {"min_automation": 15, "min_products": 2},
+      "monthly_benefit": "+5 Data per month"
+    },
+    {
+      "id": "model_optimization_pipeline",
+      "name": "Model Optimization Pipeline",
+      "description": "Automated model training and optimization.",
+      "cost": {"cash": 5000, "compute": 25, "data": 25},
+      "automation_gain": 15,
+      "effects": {"compute": 20},
+      "requirements": {"min_automation": 25, "min_month": 5},
+      "monthly_benefit": "+10 Compute per month"
+    },
+    {
+      "id": "autonomous_sales_agent",
+      "name": "Autonomous Sales Agent",
+      "description": "AI handles sales outreach and qualification.",
+      "cost": {"cash": 6000, "compute": 20, "data": 15},
+      "automation_gain": 15,
+      "effects": {"trust": 3, "cash": 2000},
+      "requirements": {"min_automation": 35, "min_trust": 50, "min_month": 6},
+      "monthly_benefit": "+$1000 revenue per month"
+    }
+  ]
+}

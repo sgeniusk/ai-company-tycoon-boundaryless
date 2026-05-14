@@ -1,0 +1,355 @@
+{
+  "events": [
+    {
+      "id": "viral_demo",
+      "name": "Viral Demo",
+      "description": "One of your products goes viral on social media! Millions are watching.",
+      "conditions": {"min_products": 1, "min_month": 2},
+      "weight": 10,
+      "choices": [
+        {
+          "id": "ride_the_wave",
+          "text": "Ride the wave — maximize exposure",
+          "effects": {"hype": 15, "users": 2000, "compute": -20},
+          "description": "+15 Hype, +2000 Users, -20 Compute"
+        },
+        {
+          "id": "stay_cautious",
+          "text": "Stay cautious — manage expectations",
+          "effects": {"hype": 5, "users": 500, "trust": 5},
+          "description": "+5 Hype, +500 Users, +5 Trust"
+        }
+      ]
+    },
+    {
+      "id": "gpu_price_spike",
+      "name": "GPU Price Spike",
+      "description": "Global GPU shortage drives compute costs through the roof.",
+      "conditions": {"min_month": 3},
+      "weight": 8,
+      "choices": [
+        {
+          "id": "buy_now",
+          "text": "Stockpile GPUs now before prices rise further",
+          "effects": {"cash": -3000, "compute": 50},
+          "description": "-$3000, +50 Compute"
+        },
+        {
+          "id": "optimize",
+          "text": "Optimize existing models to use less compute",
+          "effects": {"cash": -1000, "data": 10},
+          "description": "-$1000, +10 Data (efficiency research)"
+        },
+        {
+          "id": "wait_it_out",
+          "text": "Wait it out and hope prices drop",
+          "effects": {"compute": -15},
+          "description": "-15 Compute (pressure increases)"
+        }
+      ]
+    },
+    {
+      "id": "hallucination_scandal",
+      "name": "Hallucination Scandal",
+      "description": "Your AI generated false information that went viral. Media is covering it.",
+      "conditions": {"min_products": 1, "min_hype": 15},
+      "weight": 8,
+      "choices": [
+        {
+          "id": "public_apology",
+          "text": "Issue public apology and invest in safety",
+          "effects": {"trust": -5, "cash": -1500, "hype": -5},
+          "description": "-5 Trust, -$1500, -5 Hype (but shows responsibility)"
+        },
+        {
+          "id": "downplay",
+          "text": "Downplay the issue — it's just AI being AI",
+          "effects": {"trust": -15, "hype": -3},
+          "description": "-15 Trust, -3 Hype (risky)"
+        },
+        {
+          "id": "transparency_report",
+          "text": "Release a transparency report with technical details",
+          "effects": {"trust": -3, "cash": -500, "data": 5},
+          "description": "-3 Trust, -$500, +5 Data (builds long-term credibility)"
+        }
+      ]
+    },
+    {
+      "id": "enterprise_contract",
+      "name": "Enterprise Contract Offer",
+      "description": "A Fortune 500 company wants to use your AI. They need reliability guarantees.",
+      "conditions": {"min_trust": 40, "min_month": 4},
+      "weight": 7,
+      "choices": [
+        {
+          "id": "accept_contract",
+          "text": "Accept the contract — deliver on their terms",
+          "effects": {"cash": 5000, "trust": 5, "talent": -1},
+          "description": "+$5000, +5 Trust, -1 Talent (dedicated to client)"
+        },
+        {
+          "id": "negotiate",
+          "text": "Negotiate for better terms and more time",
+          "effects": {"cash": 3000, "trust": 3},
+          "description": "+$3000, +3 Trust (less pressure)"
+        },
+        {
+          "id": "decline",
+          "text": "Decline — we're not ready for enterprise yet",
+          "effects": {"hype": -3},
+          "description": "-3 Hype (missed opportunity)"
+        }
+      ]
+    },
+    {
+      "id": "open_source_competitor",
+      "name": "Open Source Competitor",
+      "description": "A strong open-source model just dropped. It matches your capabilities for free.",
+      "conditions": {"min_month": 3},
+      "weight": 9,
+      "choices": [
+        {
+          "id": "differentiate",
+          "text": "Double down on proprietary features and UX",
+          "effects": {"cash": -2000, "hype": 5, "users": -200},
+          "description": "-$2000, +5 Hype, -200 Users (some churn)"
+        },
+        {
+          "id": "embrace_open",
+          "text": "Release your own open-source model to compete",
+          "effects": {"hype": 10, "trust": 5, "cash": -1000, "users": -500},
+          "description": "+10 Hype, +5 Trust, -$1000, -500 Users"
+        },
+        {
+          "id": "ignore",
+          "text": "Ignore it — focus on your roadmap",
+          "effects": {"users": -300, "hype": -5},
+          "description": "-300 Users, -5 Hype (market shift)"
+        }
+      ]
+    },
+    {
+      "id": "data_privacy_investigation",
+      "name": "Data Privacy Investigation",
+      "description": "Regulators are investigating how you collect and use training data.",
+      "conditions": {"min_data": 50, "min_month": 4},
+      "weight": 6,
+      "choices": [
+        {
+          "id": "full_compliance",
+          "text": "Full compliance — hire lawyers, audit everything",
+          "effects": {"cash": -3000, "trust": 8, "data": -10},
+          "description": "-$3000, +8 Trust, -10 Data (some data deleted)"
+        },
+        {
+          "id": "minimal_response",
+          "text": "Minimal response — provide required documents only",
+          "effects": {"cash": -500, "trust": -5},
+          "description": "-$500, -5 Trust (risky if they dig deeper)"
+        }
+      ]
+    },
+    {
+      "id": "influencer_review",
+      "name": "Influencer Review",
+      "description": "A major tech influencer wants to review your product live.",
+      "conditions": {"min_products": 1, "min_month": 2},
+      "weight": 10,
+      "choices": [
+        {
+          "id": "accept_review",
+          "text": "Accept — let them show everything",
+          "effects": {"hype": 12, "users": 1500},
+          "description": "+12 Hype, +1500 Users"
+        },
+        {
+          "id": "controlled_demo",
+          "text": "Offer a controlled demo instead",
+          "effects": {"hype": 6, "users": 500, "trust": 3},
+          "description": "+6 Hype, +500 Users, +3 Trust"
+        }
+      ]
+    },
+    {
+      "id": "server_outage",
+      "name": "Server Outage",
+      "description": "Your servers went down for 6 hours. Users are frustrated.",
+      "conditions": {"min_users": 500, "min_month": 3},
+      "weight": 7,
+      "choices": [
+        {
+          "id": "invest_infra",
+          "text": "Invest heavily in infrastructure redundancy",
+          "effects": {"cash": -2500, "compute": 30, "trust": -3},
+          "description": "-$2500, +30 Compute, -3 Trust"
+        },
+        {
+          "id": "apologize_credits",
+          "text": "Apologize and offer service credits",
+          "effects": {"cash": -1000, "trust": -5, "hype": -3},
+          "description": "-$1000, -5 Trust, -3 Hype"
+        }
+      ]
+    },
+    {
+      "id": "talent_poaching",
+      "name": "Talent Poaching",
+      "description": "A big tech company is trying to hire your best researchers.",
+      "conditions": {"min_talent": 3, "min_month": 3},
+      "weight": 7,
+      "choices": [
+        {
+          "id": "counter_offer",
+          "text": "Counter-offer with higher salary and equity",
+          "effects": {"cash": -2000},
+          "description": "-$2000 (retain talent)"
+        },
+        {
+          "id": "let_them_go",
+          "text": "Let them go — hire fresh talent later",
+          "effects": {"talent": -1, "cash": 0},
+          "description": "-1 Talent"
+        },
+        {
+          "id": "improve_culture",
+          "text": "Improve company culture and mission clarity",
+          "effects": {"cash": -800, "hype": 3},
+          "description": "-$800, +3 Hype (team morale boost)"
+        }
+      ]
+    },
+    {
+      "id": "breakthrough_research",
+      "name": "Breakthrough Research",
+      "description": "Your research team made an unexpected breakthrough in model efficiency!",
+      "conditions": {"min_talent": 3, "min_month": 4},
+      "weight": 5,
+      "choices": [
+        {
+          "id": "publish_paper",
+          "text": "Publish the research — gain reputation",
+          "effects": {"hype": 8, "trust": 5, "data": 15},
+          "description": "+8 Hype, +5 Trust, +15 Data"
+        },
+        {
+          "id": "keep_secret",
+          "text": "Keep it proprietary — competitive advantage",
+          "effects": {"compute": 25, "data": 20},
+          "description": "+25 Compute, +20 Data (internal use only)"
+        }
+      ]
+    },
+    {
+      "id": "investor_pressure",
+      "name": "Investor Pressure",
+      "description": "Investors are pushing for faster growth and higher revenue numbers.",
+      "conditions": {"min_month": 5},
+      "weight": 7,
+      "choices": [
+        {
+          "id": "aggressive_growth",
+          "text": "Promise aggressive growth — launch fast",
+          "effects": {"cash": 4000, "hype": 8, "trust": -5},
+          "description": "+$4000 funding, +8 Hype, -5 Trust (cutting corners)"
+        },
+        {
+          "id": "steady_path",
+          "text": "Defend your steady approach",
+          "effects": {"cash": 1500, "trust": 3},
+          "description": "+$1500 funding, +3 Trust (less pressure)"
+        }
+      ]
+    },
+    {
+      "id": "model_optimization",
+      "name": "Model Optimization Discovery",
+      "description": "An engineer found a way to reduce inference costs by 30%.",
+      "conditions": {"min_talent": 2, "min_month": 3},
+      "weight": 6,
+      "choices": [
+        {
+          "id": "implement_now",
+          "text": "Implement immediately across all products",
+          "effects": {"compute": 20, "cash": -500},
+          "description": "+20 Compute, -$500 (implementation cost)"
+        },
+        {
+          "id": "research_further",
+          "text": "Research further for even bigger gains",
+          "effects": {"data": 15, "compute": 5},
+          "description": "+15 Data, +5 Compute (delayed but bigger payoff)"
+        }
+      ]
+    },
+    {
+      "id": "customer_support_flood",
+      "name": "Customer Support Flood",
+      "description": "A product update caused a wave of support tickets. Users are confused.",
+      "conditions": {"min_users": 1000, "min_products": 2},
+      "weight": 6,
+      "choices": [
+        {
+          "id": "hire_support",
+          "text": "Hire temporary support staff",
+          "effects": {"cash": -1500, "trust": 3, "users": -100},
+          "description": "-$1500, +3 Trust, -100 Users (some churn)"
+        },
+        {
+          "id": "ai_support",
+          "text": "Deploy AI chatbot for support",
+          "effects": {"cash": -800, "compute": -10, "automation": 3},
+          "description": "-$800, -10 Compute, +3 Automation"
+        }
+      ]
+    },
+    {
+      "id": "new_domain_opportunity",
+      "name": "New Domain Opportunity",
+      "description": "A new market is emerging that perfectly fits your capabilities.",
+      "conditions": {"min_month": 5, "min_capabilities": 2},
+      "weight": 5,
+      "choices": [
+        {
+          "id": "invest_early",
+          "text": "Invest early to capture the market",
+          "effects": {"cash": -3000, "hype": 10, "data": 10},
+          "description": "-$3000, +10 Hype, +10 Data"
+        },
+        {
+          "id": "wait_and_see",
+          "text": "Wait and see if the market matures",
+          "effects": {"data": 5},
+          "description": "+5 Data (observation)"
+        }
+      ]
+    },
+    {
+      "id": "regulatory_warning",
+      "name": "Regulatory Warning",
+      "description": "Government regulators issued a warning about AI safety standards.",
+      "conditions": {"min_month": 6, "min_users": 2000},
+      "weight": 6,
+      "choices": [
+        {
+          "id": "exceed_standards",
+          "text": "Exceed all safety standards proactively",
+          "effects": {"cash": -2000, "trust": 10, "hype": -3},
+          "description": "-$2000, +10 Trust, -3 Hype"
+        },
+        {
+          "id": "meet_minimum",
+          "text": "Meet minimum requirements only",
+          "effects": {"cash": -500, "trust": -3},
+          "description": "-$500, -3 Trust"
+        },
+        {
+          "id": "lobby",
+          "text": "Lobby for industry-friendly regulations",
+          "effects": {"cash": -1500, "hype": 5, "trust": -5},
+          "description": "-$1500, +5 Hype, -5 Trust"
+        }
+      ]
+    }
+  ]
+}

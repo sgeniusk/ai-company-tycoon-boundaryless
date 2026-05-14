@@ -1,0 +1,214 @@
+{
+  "upgrades": [
+    {
+      "id": "model_distillation",
+      "name": "Model Distillation",
+      "category": "research",
+      "description": "Compress models for faster inference.",
+      "cost": {"cash": 2000, "data": 20},
+      "effects": {"compute": 15},
+      "requirements": {"min_month": 2},
+      "one_time": true
+    },
+    {
+      "id": "few_shot_learning",
+      "name": "Few-Shot Learning",
+      "category": "research",
+      "description": "Train models with less data.",
+      "cost": {"cash": 2500, "data": 15},
+      "effects": {"data": 20},
+      "requirements": {"min_month": 3},
+      "one_time": true
+    },
+    {
+      "id": "rlhf_pipeline",
+      "name": "RLHF Pipeline",
+      "category": "research",
+      "description": "Reinforcement learning from human feedback.",
+      "cost": {"cash": 3000, "data": 25, "talent": 1},
+      "effects": {"trust": 5, "data": 15},
+      "requirements": {"min_month": 4, "min_talent": 4},
+      "one_time": true
+    },
+    {
+      "id": "cloud_infrastructure",
+      "name": "Cloud Infrastructure",
+      "category": "infrastructure",
+      "description": "Scale compute capacity with cloud providers.",
+      "cost": {"cash": 3000},
+      "effects": {"compute": 40},
+      "requirements": {},
+      "one_time": true
+    },
+    {
+      "id": "edge_deployment",
+      "name": "Edge Deployment",
+      "category": "infrastructure",
+      "description": "Deploy models on edge devices for lower latency.",
+      "cost": {"cash": 4000, "data": 10},
+      "effects": {"compute": 25, "users": 500},
+      "requirements": {"min_month": 4},
+      "one_time": true
+    },
+    {
+      "id": "multi_region_servers",
+      "name": "Multi-Region Servers",
+      "category": "infrastructure",
+      "description": "Deploy servers globally for better uptime.",
+      "cost": {"cash": 5000},
+      "effects": {"compute": 30, "trust": 5},
+      "requirements": {"min_users": 2000},
+      "one_time": true
+    },
+    {
+      "id": "content_filter_v1",
+      "name": "Content Filter v1",
+      "category": "safety",
+      "description": "Basic content filtering to prevent harmful outputs.",
+      "cost": {"cash": 1000, "data": 5},
+      "effects": {"trust": 5},
+      "requirements": {},
+      "one_time": true
+    },
+    {
+      "id": "content_filter_v2",
+      "name": "Content Filter v2",
+      "category": "safety",
+      "description": "Advanced multi-layer content safety system.",
+      "cost": {"cash": 2500, "data": 15},
+      "effects": {"trust": 8},
+      "requirements": {"min_month": 4},
+      "one_time": true
+    },
+    {
+      "id": "red_team_program",
+      "name": "Red Team Program",
+      "category": "safety",
+      "description": "Hire security researchers to find vulnerabilities.",
+      "cost": {"cash": 3000, "talent": 1},
+      "effects": {"trust": 10},
+      "requirements": {"min_month": 5, "min_trust": 30},
+      "one_time": true
+    },
+    {
+      "id": "social_media_campaign",
+      "name": "Social Media Campaign",
+      "category": "marketing",
+      "description": "Launch a viral marketing campaign.",
+      "cost": {"cash": 1500},
+      "effects": {"hype": 10, "users": 800},
+      "requirements": {"min_products": 1},
+      "one_time": false
+    },
+    {
+      "id": "developer_conference",
+      "name": "Developer Conference",
+      "category": "marketing",
+      "description": "Present at a major tech conference.",
+      "cost": {"cash": 2500},
+      "effects": {"hype": 8, "trust": 3, "users": 400},
+      "requirements": {"min_month": 3},
+      "one_time": false
+    },
+    {
+      "id": "enterprise_sales_team",
+      "name": "Enterprise Sales Team",
+      "category": "enterprise_sales",
+      "description": "Build a dedicated enterprise sales team.",
+      "cost": {"cash": 4000, "talent": 1},
+      "effects": {"trust": 5, "cash": 2000},
+      "requirements": {"min_trust": 40, "min_month": 5},
+      "one_time": true
+    },
+    {
+      "id": "hire_researchers",
+      "name": "Hire AI Researchers",
+      "category": "hiring",
+      "description": "Recruit top AI researchers.",
+      "cost": {"cash": 3000},
+      "effects": {"talent": 2, "data": 10},
+      "requirements": {},
+      "one_time": false
+    },
+    {
+      "id": "hire_engineers",
+      "name": "Hire Engineers",
+      "category": "hiring",
+      "description": "Recruit software engineers for product development.",
+      "cost": {"cash": 2000},
+      "effects": {"talent": 1},
+      "requirements": {},
+      "one_time": false
+    },
+    {
+      "id": "data_partnership",
+      "name": "Data Partnership",
+      "category": "data_pipeline",
+      "description": "Partner with data providers for training data.",
+      "cost": {"cash": 2000},
+      "effects": {"data": 30},
+      "requirements": {"min_month": 2},
+      "one_time": true
+    },
+    {
+      "id": "synthetic_data_pipeline",
+      "name": "Synthetic Data Pipeline",
+      "category": "data_pipeline",
+      "description": "Generate synthetic training data automatically.",
+      "cost": {"cash": 3500, "compute": 15},
+      "effects": {"data": 25, "automation": 3},
+      "requirements": {"min_month": 4},
+      "one_time": true
+    },
+    {
+      "id": "user_feedback_loop",
+      "name": "User Feedback Loop",
+      "category": "data_pipeline",
+      "description": "Collect and process user feedback for model improvement.",
+      "cost": {"cash": 1500},
+      "effects": {"data": 15, "trust": 3},
+      "requirements": {"min_users": 500},
+      "one_time": true
+    },
+    {
+      "id": "ci_cd_pipeline",
+      "name": "CI/CD Pipeline",
+      "category": "automation",
+      "description": "Automated testing and deployment pipeline.",
+      "cost": {"cash": 2000},
+      "effects": {"automation": 5},
+      "requirements": {"min_talent": 3},
+      "one_time": true
+    },
+    {
+      "id": "monitoring_dashboard",
+      "name": "Monitoring Dashboard",
+      "category": "automation",
+      "description": "Real-time system monitoring and alerting.",
+      "cost": {"cash": 1500},
+      "effects": {"automation": 3, "trust": 2},
+      "requirements": {"min_month": 3},
+      "one_time": true
+    },
+    {
+      "id": "auto_scaling",
+      "name": "Auto-Scaling Infrastructure",
+      "category": "automation",
+      "description": "Automatically scale compute based on demand.",
+      "cost": {"cash": 3000, "compute": 10},
+      "effects": {"automation": 5, "compute": 20},
+      "requirements": {"min_month": 4, "min_users": 1000},
+      "one_time": true
+    },
+    {
+      "id": "brand_building",
+      "name": "Brand Building",
+      "category": "marketing",
+      "description": "Invest in long-term brand recognition.",
+      "cost": {"cash": 2000},
+      "effects": {"hype": 5, "trust": 3},
+      "requirements": {"min_month": 3},
+      "one_time": true
+    }
+  ]
+}

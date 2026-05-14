@@ -1,0 +1,76 @@
+{
+  "personas": [
+    {
+      "id": "male_web_novel_strategist",
+      "label": "Male web-novel strategist",
+      "lens": "Compulsion, cliffhangers, growth fantasy, unlock pacing",
+      "gender_mix_slot": "male"
+    },
+    {
+      "id": "female_web_novel_strategist",
+      "label": "Female web-novel strategist",
+      "lens": "Emotional reward, readable stakes, session curiosity",
+      "gender_mix_slot": "female"
+    },
+    {
+      "id": "male_literary_novelist_lens",
+      "label": "Male literary novelist lens",
+      "lens": "Theme, world coherence, meaning of AI expansion",
+      "gender_mix_slot": "male"
+    },
+    {
+      "id": "female_literary_novelist_lens",
+      "label": "Female literary novelist lens",
+      "lens": "Human cost, ethical tension, meaningful choice",
+      "gender_mix_slot": "female"
+    },
+    {
+      "id": "male_comics_creator_lens",
+      "label": "Male commercial comics creator lens",
+      "lens": "Visual readability, punchy beats, dashboard flow",
+      "gender_mix_slot": "male"
+    },
+    {
+      "id": "female_comics_creator_lens",
+      "label": "Female commercial comics creator lens",
+      "lens": "Company character, contrast, progression clarity",
+      "gender_mix_slot": "female"
+    },
+    {
+      "id": "male_childrens_author_lens",
+      "label": "Male children's author lens",
+      "lens": "Simplicity, onboarding, explanation without jargon",
+      "gender_mix_slot": "male"
+    },
+    {
+      "id": "female_childrens_author_lens",
+      "label": "Female children's author lens",
+      "lens": "Warmth, clarity, motivation, explainability",
+      "gender_mix_slot": "female"
+    },
+    {
+      "id": "tycoon_fan",
+      "label": "Tycoon fan",
+      "lens": "Optimization, progression, replayability",
+      "gender_mix_slot": "male"
+    },
+    {
+      "id": "min_max_player",
+      "label": "Min-max player",
+      "lens": "Dominant strategies, exploits, dead ends",
+      "gender_mix_slot": "female"
+    },
+    {
+      "id": "casual_steam_player",
+      "label": "Casual Steam player",
+      "lens": "First five minutes, wishlist appeal, friction",
+      "gender_mix_slot": "male"
+    },
+    {
+      "id": "accessibility_tester",
+      "label": "Accessibility tester",
+      "lens": "Readability, controls, contrast, cognitive load",
+      "gender_mix_slot": "female"
+    }
+  ]
+}

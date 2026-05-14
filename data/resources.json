@@ -1,0 +1,92 @@
+{
+  "resources": {
+    "cash": {
+      "id": "cash",
+      "name": "Cash",
+      "description": "Money used for salaries, launches, research, infrastructure, marketing.",
+      "initial_value": 10000,
+      "min_value": -999999,
+      "max_value": 999999999,
+      "icon": "💰",
+      "format": "${value}",
+      "category": "economy"
+    },
+    "users": {
+      "id": "users",
+      "name": "Users",
+      "description": "Total active users across all products.",
+      "initial_value": 0,
+      "min_value": 0,
+      "max_value": 999999999,
+      "icon": "👥",
+      "format": "{value}",
+      "category": "growth"
+    },
+    "compute": {
+      "id": "compute",
+      "name": "Compute",
+      "description": "Available GPU/server capacity or compute reserve.",
+      "initial_value": 100,
+      "min_value": 0,
+      "max_value": 999999,
+      "icon": "🖥️",
+      "format": "{value} units",
+      "category": "infrastructure"
+    },
+    "data": {
+      "id": "data",
+      "name": "Data",
+      "description": "Training, feedback, and usage data for capability upgrades.",
+      "initial_value": 50,
+      "min_value": 0,
+      "max_value": 999999,
+      "icon": "📊",
+      "format": "{value} sets",
+      "category": "research"
+    },
+    "talent": {
+      "id": "talent",
+      "name": "Talent",
+      "description": "Employees, researchers, engineers, operators.",
+      "initial_value": 3,
+      "min_value": 0,
+      "max_value": 999,
+      "icon": "🧑‍💻",
+      "format": "{value} people",
+      "category": "team"
+    },
+    "trust": {
+      "id": "trust",
+      "name": "Trust",
+      "description": "Public and enterprise trust level.",
+      "initial_value": 50,
+      "min_value": 0,
+      "max_value": 100,
+      "icon": "🛡️",
+      "format": "{value}/100",
+      "category": "reputation"
+    },
+    "hype": {
+      "id": "hype",
+      "name": "Hype",
+      "description": "Market excitement driving user growth and adoption.",
+      "initial_value": 10,
+      "min_value": 0,
+      "max_value": 100,
+      "icon": "🔥",
+      "format": "{value}/100",
+      "category": "reputation"
+    },
+    "automation": {
+      "id": "automation",
+      "name": "Automation",
+      "description": "Internal automation level reducing costs and enabling compounding.",
+      "initial_value": 0,
+      "min_value": 0,
+      "max_value": 100,
+      "icon": "⚙️",
+      "format": "{value}/100",
+      "category": "efficiency"
+    }
+  }
+}

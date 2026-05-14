@@ -1,0 +1,134 @@
+{
+  "capabilities": [
+    {
+      "id": "language",
+      "name": "Language",
+      "description": "Natural language understanding and generation.",
+      "max_level": 5,
+      "upgrade_costs": [
+        {"cash": 1500, "data": 15, "talent": 0},
+        {"cash": 3000, "data": 30, "talent": 1},
+        {"cash": 6000, "data": 60, "talent": 1},
+        {"cash": 12000, "data": 100, "talent": 2},
+        {"cash": 25000, "data": 200, "talent": 3}
+      ],
+      "unlocks_domains": {"2": "customer_support", "3": "education"},
+      "icon": "📝"
+    },
+    {
+      "id": "code",
+      "name": "Code",
+      "description": "Code generation, completion, and debugging.",
+      "max_level": 5,
+      "upgrade_costs": [
+        {"cash": 2000, "data": 20, "talent": 0},
+        {"cash": 4000, "data": 40, "talent": 1},
+        {"cash": 8000, "data": 80, "talent": 2},
+        {"cash": 16000, "data": 150, "talent": 2},
+        {"cash": 30000, "data": 250, "talent": 3}
+      ],
+      "unlocks_domains": {"1": "developer_tools"},
+      "icon": "💻"
+    },
+    {
+      "id": "vision",
+      "name": "Vision",
+      "description": "Image understanding, generation, and manipulation.",
+      "max_level": 5,
+      "upgrade_costs": [
+        {"cash": 2000, "data": 15, "talent": 0},
+        {"cash": 4000, "data": 35, "talent": 1},
+        {"cash": 8000, "data": 70, "talent": 1},
+        {"cash": 15000, "data": 120, "talent": 2},
+        {"cash": 28000, "data": 200, "talent": 3}
+      ],
+      "unlocks_domains": {"1": "creator_tools"},
+      "icon": "👁️"
+    },
+    {
+      "id": "audio",
+      "name": "Audio",
+      "description": "Speech recognition, synthesis, and audio processing.",
+      "max_level": 4,
+      "upgrade_costs": [
+        {"cash": 2500, "data": 20, "talent": 0},
+        {"cash": 5000, "data": 40, "talent": 1},
+        {"cash": 10000, "data": 80, "talent": 2},
+        {"cash": 20000, "data": 150, "talent": 2}
+      ],
+      "unlocks_domains": {},
+      "icon": "🎵"
+    },
+    {
+      "id": "video",
+      "name": "Video",
+      "description": "Video understanding, generation, and editing.",
+      "max_level": 4,
+      "upgrade_costs": [
+        {"cash": 3000, "data": 25, "talent": 0},
+        {"cash": 6000, "data": 50, "talent": 1},
+        {"cash": 12000, "data": 100, "talent": 2},
+        {"cash": 24000, "data": 180, "talent": 3}
+      ],
+      "unlocks_domains": {},
+      "icon": "🎬"
+    },
+    {
+      "id": "agent",
+      "name": "Agent",
+      "description": "Autonomous task planning and execution.",
+      "max_level": 4,
+      "upgrade_costs": [
+        {"cash": 3500, "data": 30, "talent": 1},
+        {"cash": 7000, "data": 60, "talent": 2},
+        {"cash": 14000, "data": 120, "talent": 3},
+        {"cash": 28000, "data": 200, "talent": 4}
+      ],
+      "unlocks_domains": {"2": "enterprise_automation"},
+      "icon": "🤖"
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "description": "Enterprise-grade reliability, compliance, and security.",
+      "max_level": 3,
+      "upgrade_costs": [
+        {"cash": 5000, "data": 20, "talent": 1},
+        {"cash": 10000, "data": 40, "talent": 2},
+        {"cash": 20000, "data": 80, "talent": 3}
+      ],
+      "unlocks_domains": {"1": "enterprise_automation"},
+      "icon": "🏢"
+    },
+    {
+      "id": "safety",
+      "name": "Safety",
+      "description": "AI safety, alignment, and content filtering.",
+      "max_level": 4,
+      "upgrade_costs": [
+        {"cash": 1500, "data": 10, "talent": 0},
+        {"cash": 3000, "data": 20, "talent": 1},
+        {"cash": 6000, "data": 40, "talent": 1},
+        {"cash": 12000, "data": 80, "talent": 2}
+      ],
+      "unlocks_domains": {},
+      "effects_per_level": {"trust": 3},
+      "icon": "🛡️"
+    },
+    {
+      "id": "optimization",
+      "name": "Optimization",
+      "description": "Model efficiency, inference speed, and cost reduction.",
+      "max_level": 4,
+      "upgrade_costs": [
+        {"cash": 2000, "data": 15, "talent": 0},
+        {"cash": 4000, "data": 30, "talent": 1},
+        {"cash": 8000, "data": 60, "talent": 1},
+        {"cash": 16000, "data": 100, "talent": 2}
+      ],
+      "unlocks_domains": {},
+      "effects_per_level": {"compute": 10},
+      "icon": "⚡"
+    }
+  ]
+}

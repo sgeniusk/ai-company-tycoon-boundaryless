@@ -1,0 +1,64 @@
+{
+  "domains": [
+    {
+      "id": "personal_productivity",
+      "name": "Personal Productivity",
+      "description": "Tools for individual productivity and daily tasks.",
+      "unlocked_by_default": true,
+      "unlock_requirements": {},
+      "market_size": "medium",
+      "risk_level": "low",
+      "icon": "📋"
+    },
+    {
+      "id": "creator_tools",
+      "name": "Creator Tools",
+      "description": "Creative tools for content creators and designers.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"vision": 1},
+      "market_size": "large",
+      "risk_level": "medium",
+      "icon": "🎨"
+    },
+    {
+      "id": "developer_tools",
+      "name": "Developer Tools",
+      "description": "Tools for software developers and engineers.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"code": 1},
+      "market_size": "large",
+      "risk_level": "low",
+      "icon": "🔧"
+    },
+    {
+      "id": "customer_support",
+      "name": "Customer Support",
+      "description": "AI-powered customer service and support solutions.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"language": 2},
+      "market_size": "large",
+      "risk_level": "medium",
+      "icon": "💬"
+    },
+    {
+      "id": "education",
+      "name": "Education",
+      "description": "Personalized learning and educational tools.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"language": 3},
+      "market_size": "medium",
+      "risk_level": "medium",
+      "icon": "📚"
+    },
+    {
+      "id": "enterprise_automation",
+      "name": "Enterprise Automation",
+      "description": "Large-scale business process automation.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"agent": 2, "enterprise": 1},
+      "market_size": "huge",
+      "risk_level": "high",
+      "icon": "🏭"
+    }
+  ]
+}

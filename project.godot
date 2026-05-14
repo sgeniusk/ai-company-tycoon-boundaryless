@@ -1,0 +1,44 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="AI Company Tycoon: Boundaryless"
+config/description="A 2D tycoon management simulation where you grow a tiny AI startup into a boundaryless AI company."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.2", "GL Compatibility")
+
+[autoload]
+
+EventBus="*res://scripts/core/EventBus.gd"
+DataLoader="*res://scripts/core/DataLoader.gd"
+GameState="*res://scripts/core/GameState.gd"
+ResourceSystem="*res://scripts/systems/ResourceSystem.gd"
+MonthSystem="*res://scripts/systems/MonthSystem.gd"
+ProductSystem="*res://scripts/systems/ProductSystem.gd"
+DomainSystem="*res://scripts/systems/DomainSystem.gd"
+CapabilitySystem="*res://scripts/systems/CapabilitySystem.gd"
+EventSystem="*res://scripts/systems/EventSystem.gd"
+UpgradeSystem="*res://scripts/systems/UpgradeSystem.gd"
+AutomationSystem="*res://scripts/systems/AutomationSystem.gd"
+CompanyStageSystem="*res://scripts/systems/CompanyStageSystem.gd"
+SaveManager="*res://scripts/core/SaveManager.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
