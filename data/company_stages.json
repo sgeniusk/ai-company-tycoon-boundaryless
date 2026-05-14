@@ -2,43 +2,43 @@
   "company_stages": [
     {
       "id": "garage_prototype",
-      "name": "Garage Prototype",
-      "description": "A tiny team with a big idea.",
+      "name": "차고 프로토타입",
+      "description": "큰 아이디어를 품은 작은 팀입니다.",
       "requirements": {},
       "order": 0
     },
     {
       "id": "seed_startup",
-      "name": "Seed Startup",
-      "description": "First product launched, first users acquired.",
+      "name": "시드 스타트업",
+      "description": "첫 제품을 출시하고 초기 이용자를 확보한 회사입니다.",
       "requirements": {"min_products": 1, "min_users": 100},
       "order": 1
     },
     {
       "id": "viral_app_company",
-      "name": "Viral App Company",
-      "description": "Rapid growth, high hype, scaling challenges.",
+      "name": "바이럴 앱 회사",
+      "description": "빠르게 성장하며 화제성과 확장 압박을 동시에 겪는 회사입니다.",
       "requirements": {"min_products": 2, "min_users": 5000, "min_hype": 20},
       "order": 2
     },
     {
       "id": "enterprise_ai_vendor",
-      "name": "Enterprise AI Vendor",
-      "description": "Trusted by businesses, stable revenue streams.",
+      "name": "기업 AI 벤더",
+      "description": "기업 고객에게 신뢰를 얻고 안정적인 매출을 만드는 회사입니다.",
       "requirements": {"min_trust": 60, "min_cash": 30000, "min_products": 3},
       "order": 3
     },
     {
       "id": "ai_platform_giant",
-      "name": "AI Platform Giant",
-      "description": "Multiple domains, massive scale, industry leader.",
+      "name": "AI 플랫폼 대기업",
+      "description": "여러 산업 분야에서 거대한 규모를 만든 선도 기업입니다.",
       "requirements": {"min_users": 50000, "min_domains": 4, "min_products": 5},
       "order": 4
     },
     {
       "id": "boundaryless_intelligence",
-      "name": "Boundaryless Intelligence Company",
-      "description": "AI capabilities cross all boundaries. The company IS the platform.",
+      "name": "경계 없는 지능 회사",
+      "description": "AI 능력이 모든 산업 경계를 넘고 회사 자체가 플랫폼이 된 상태입니다.",
       "requirements": {"min_users": 100000, "min_automation": 60, "min_domains": 5},
       "order": 5
     }

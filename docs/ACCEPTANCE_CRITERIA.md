@@ -25,6 +25,25 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ## Milestone 1: Empty Playable Shell
 
+Legacy Godot result retained for reference. The active web restart criteria are below.
+
+### Web Restart Milestone 1: Playable Dashboard Shell
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Web app launches at localhost without console errors | **Passed** |
+| 2 | Resource strip displays Korean resource names and values | **Passed** |
+| 3 | Product list renders launchable and locked products | **Passed** |
+| 4 | Locked products explain requirements in Korean | **Passed** |
+| 5 | At least one product can be launched from starting state | **Passed** |
+| 6 | Next Month advances the month counter | **Passed** |
+| 7 | Resource changes are visible after launching and advancing | **Passed** |
+| 8 | Company stage is visible and updates from game state | **Passed** |
+| 9 | Monthly report appears after month advancement | **Passed** |
+| 10 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+### Legacy Godot Milestone 1
+
 | # | Criterion | Status |
 |---|---|---|
 | 1 | Game launches in Godot without errors | **Passed** |

@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.2.0] — 2026-05-14
+
+### Web Restart Milestone 1: Playable Dashboard Shell
+
+**Added:**
+- Korean-first playable dashboard shell
+- Company stage display based on `data/company_stages.json`
+- Monthly report summary after advancing time
+- Vitest test harness for core simulation expectations
+- Web-specific production, QA, and synthetic playtest reports
+
+**Updated:**
+- Runtime direction is now Vite + React + TypeScript
+- UI text, resources, products, domains, capabilities, and company stages use Korean player-facing names
+- Agent review and acceptance criteria include Game Dev Story-style compact management loop checks
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+- Browser flow verified: launch AI 글쓰기 비서, advance to next month, monthly report appears
+
+---
+
 ## [0.1.0] — 2026-05-14
 
 ### Milestone 1: Empty Playable Shell

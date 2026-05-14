@@ -7,6 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc && vite build",
     "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
     "validate:data": "node scripts/harness/validate-data.mjs",
     "harness:gate": "npm run validate:data && npm run build"
   },
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3"
+    "@types/react-dom": "^19.2.3",
+    "vitest": "^4.1.6"
   }
 }

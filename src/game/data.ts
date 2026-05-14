@@ -4,9 +4,11 @@ import capabilitiesJson from "../../data/capabilities.json";
 import domainsJson from "../../data/domains.json";
 import balanceJson from "../../data/balance.json";
 import startingStateJson from "../../data/starting_state.json";
+import companyStagesJson from "../../data/company_stages.json";
 import type {
   BalanceDefinition,
   CapabilityDefinition,
+  CompanyStageDefinition,
   DomainDefinition,
   ProductDefinition,
   ResourceDefinition,
@@ -19,3 +21,4 @@ export const capabilities = capabilitiesJson.capabilities as unknown as Capabili
 export const domains = domainsJson.domains as unknown as DomainDefinition[];
 export const balance = balanceJson.balance as BalanceDefinition;
 export const startingState = startingStateJson as StartingStateDefinition;
+export const companyStages = companyStagesJson.company_stages as unknown as CompanyStageDefinition[];

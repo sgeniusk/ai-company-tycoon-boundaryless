@@ -5,6 +5,7 @@ import {
   createInitialState,
   formatResource,
   getCapabilityCheck,
+  getCompanyStage,
   getProductCheck,
   launchProduct,
   upgradeCapability,
@@ -24,6 +25,7 @@ function App() {
   const activeProductNames = products
     .filter((product) => gameState.activeProducts.includes(product.id))
     .map((product) => product.name);
+  const companyStage = getCompanyStage(gameState);
 
   return (
     <main className="app-shell">
@@ -57,6 +59,39 @@ function App() {
         <p>
           출시 가능 제품 {launchableCount}개. 활성 제품: {activeProductNames.length ? activeProductNames.join(", ") : "없음"}.
         </p>
+      </section>
+
+      <section className="company-board" aria-label="회사 현황">
+        <article className="company-stage">
+          <p className="eyebrow">회사 단계</p>
+          <h2>{companyStage.name}</h2>
+          <p>{companyStage.description}</p>
+        </article>
+        <article className="monthly-report">
+          <p className="eyebrow">월간 보고</p>
+          {gameState.lastMonthReport ? (
+            <dl>
+              <div>
+                <dt>매출</dt>
+                <dd>{formatResource("cash", gameState.lastMonthReport.revenue)}</dd>
+              </div>
+              <div>
+                <dt>비용</dt>
+                <dd>{formatResource("cash", gameState.lastMonthReport.totalCost)}</dd>
+              </div>
+              <div>
+                <dt>신규 이용자</dt>
+                <dd>{formatResource("users", gameState.lastMonthReport.newUsers)}</dd>
+              </div>
+              <div>
+                <dt>연산 압박</dt>
+                <dd>-{formatResource("compute", gameState.lastMonthReport.computePressure)}</dd>
+              </div>
+            </dl>
+          ) : (
+            <p>제품을 출시하고 다음 달로 넘기면 첫 성과 보고가 올라옵니다.</p>
+          )}
+        </article>
       </section>
 
       <section className="dashboard-grid">

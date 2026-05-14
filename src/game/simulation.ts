@@ -1,5 +1,5 @@
-import { balance, capabilities, domains, products, resources, startingState } from "./data";
-import type { ActionCheck, CapabilityDefinition, GameState, ProductDefinition, ResourceMap } from "./types";
+import { balance, capabilities, companyStages, domains, products, resources, startingState } from "./data";
+import type { ActionCheck, CapabilityDefinition, CompanyStageDefinition, GameState, ProductDefinition, ResourceMap } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
@@ -170,9 +170,21 @@ export function advanceMonth(state: GameState): GameState {
     ...state,
     month: nextMonth,
     resources: nextResources,
+    lastMonthReport: {
+      revenue,
+      totalCost,
+      newUsers,
+      generatedData,
+      computePressure,
+    },
     status: nextStatus,
     timeline: [summary, ...state.timeline].slice(0, 8),
   };
+}
+
+export function getCompanyStage(state: GameState): CompanyStageDefinition {
+  const orderedStages = [...companyStages].sort((a, b) => b.order - a.order);
+  return orderedStages.find((stage) => stageRequirementsMet(stage, state)) ?? orderedStages[orderedStages.length - 1];
 }
 
 function getNextStatus(nextResources: ResourceMap, activeProductCount: number): GameState["status"] {
@@ -209,4 +221,17 @@ function negateCosts(costs: ResourceMap): ResourceMap {
 
 function domainName(id: string): string {
   return domains.find((domain) => domain.id === id)?.name ?? id;
+}
+
+function stageRequirementsMet(stage: CompanyStageDefinition, state: GameState): boolean {
+  return Object.entries(stage.requirements).every(([requirement, needed]) => {
+    if (requirement === "min_products") return state.activeProducts.length >= needed;
+    if (requirement === "min_domains") return state.unlockedDomains.length >= needed;
+    if (requirement === "min_users") return (state.resources.users ?? 0) >= needed;
+    if (requirement === "min_hype") return (state.resources.hype ?? 0) >= needed;
+    if (requirement === "min_trust") return (state.resources.trust ?? 0) >= needed;
+    if (requirement === "min_cash") return (state.resources.cash ?? 0) >= needed;
+    if (requirement === "min_automation") return (state.resources.automation ?? 0) >= needed;
+    return false;
+  });
 }

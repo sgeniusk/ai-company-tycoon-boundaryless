@@ -51,6 +51,14 @@ export interface DomainDefinition {
   risk_level: string;
 }
 
+export interface CompanyStageDefinition {
+  id: string;
+  name: string;
+  description: string;
+  requirements: Record<string, number>;
+  order: number;
+}
+
 export interface BalanceDefinition {
   base_monthly_cash_cost: number;
   salary_per_talent: number;
@@ -82,6 +90,14 @@ export interface StartingStateDefinition {
   purchased_automation_upgrades: string[];
 }
 
+export interface MonthlyReport {
+  revenue: number;
+  totalCost: number;
+  newUsers: number;
+  generatedData: number;
+  computePressure: number;
+}
+
 export interface GameState {
   month: number;
   resources: ResourceMap;
@@ -89,6 +105,7 @@ export interface GameState {
   activeProducts: string[];
   unlockedDomains: string[];
   timeline: string[];
+  lastMonthReport?: MonthlyReport;
   status: "playing" | "success" | "failure";
 }
 

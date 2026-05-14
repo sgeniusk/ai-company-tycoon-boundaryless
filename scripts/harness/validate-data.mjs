@@ -46,6 +46,7 @@ const automationData = readJson("automation_upgrades.json");
 const balanceData = readJson("balance.json");
 const startingState = readJson("starting_state.json");
 const personasData = readJson("playtest_personas.json");
+const companyStagesData = readJson("company_stages.json");
 
 const resources = resourcesData?.resources ?? {};
 const products = productsData?.products ?? [];
@@ -55,6 +56,7 @@ const events = eventsData?.events ?? [];
 const upgrades = upgradesData?.upgrades ?? [];
 const automationUpgrades = automationData?.automation_upgrades ?? [];
 const personas = personasData?.personas ?? [];
+const companyStages = companyStagesData?.company_stages ?? [];
 
 const resourceIds = new Set(Object.keys(resources));
 const capabilityIds = idsAreUnique("capabilities", capabilities);
@@ -64,6 +66,7 @@ idsAreUnique("events", events);
 idsAreUnique("upgrades", upgrades);
 idsAreUnique("automation_upgrades", automationUpgrades);
 idsAreUnique("playtest_personas", personas);
+idsAreUnique("company_stages", companyStages);
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);
@@ -95,6 +98,23 @@ for (const capability of capabilities) {
 for (const domain of domains) {
   for (const capabilityId of Object.keys(domain.unlock_requirements ?? {})) {
     if (!capabilityIds.has(capabilityId)) errors.push(`domain "${domain.id}": unknown unlock capability "${capabilityId}"`);
+  }
+}
+
+for (const stage of companyStages) {
+  if (typeof stage.order !== "number") errors.push(`company_stage "${stage.id}": order must be numeric`);
+  for (const [requirement, value] of Object.entries(stage.requirements ?? {})) {
+    const allowed = new Set([
+      "min_products",
+      "min_domains",
+      "min_users",
+      "min_hype",
+      "min_trust",
+      "min_cash",
+      "min_automation",
+    ]);
+    if (!allowed.has(requirement)) errors.push(`company_stage "${stage.id}": unknown requirement "${requirement}"`);
+    if (typeof value !== "number") errors.push(`company_stage "${stage.id}": requirement "${requirement}" must be numeric`);
   }
 }
 
