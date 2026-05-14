@@ -593,6 +593,35 @@ p {
   line-height: 1.25;
 }
 
+.project-meter {
+  background: #f4ead0;
+  border: 2px solid var(--line);
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+}
+
+.project-meter div {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.project-meter strong,
+.project-meter span {
+  color: #4a3c28;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.project-meter i {
+  background: var(--green);
+  border: 2px solid var(--line);
+  display: block;
+  height: 12px;
+  max-width: 100%;
+}
+
 .locked-reason {
   background: #f7ead0;
   border-left: 4px solid var(--amber);
@@ -620,12 +649,26 @@ p {
 }
 
 .agent-card,
-.item-shop-card {
+.item-shop-card,
+.hired-card {
   background: #fffdf7;
   border: 2px solid #d8c49b;
   border-radius: 8px;
   display: grid;
   gap: 10px;
+  padding: 12px;
+}
+
+.hired-list {
+  display: grid;
+  gap: 10px;
+}
+
+.empty-note {
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  color: #5e513c;
+  margin: 0 0 10px;
   padding: 12px;
 }
 
@@ -653,6 +696,32 @@ p {
   height: 72px;
   position: relative;
   width: 72px;
+}
+
+.agent-portrait.compact {
+  height: 58px;
+  width: 58px;
+}
+
+.agent-portrait.compact .agent-head {
+  height: 21px;
+  left: 18px;
+  top: 7px;
+  width: 21px;
+}
+
+.agent-portrait.compact .agent-body {
+  height: 24px;
+  left: 15px;
+  top: 29px;
+  width: 27px;
+}
+
+.agent-portrait.compact .agent-prop {
+  height: 12px;
+  right: 5px;
+  top: 23px;
+  width: 15px;
 }
 
 .agent-head,
@@ -726,6 +795,31 @@ p {
 .agent-quirk {
   font-weight: 900;
   margin-bottom: 0;
+}
+
+.equip-row,
+.equip-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.equip-row span,
+.equip-actions small {
+  background: #edf4ff;
+  border: 1px solid #9cb8d6;
+  color: #334b5e;
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 6px 7px;
+}
+
+.equip-actions button,
+.item-shop-card button {
+  background: var(--green);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
 }
 
 .mini-row {

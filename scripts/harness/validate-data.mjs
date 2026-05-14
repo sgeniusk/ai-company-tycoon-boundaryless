@@ -135,6 +135,7 @@ for (const agent of agentTypes) {
   for (const itemId of agent.preferred_items ?? []) {
     if (!itemIds.has(itemId)) errors.push(`agent_type "${agent.id}": preferred unknown item "${itemId}"`);
   }
+  validateResourceMap(`agent_type "${agent.id}" hire_cost`, agent.hire_cost, resourceIds);
   validateResourceMap(`agent_type "${agent.id}" upkeep`, agent.upkeep, resourceIds);
 }
 

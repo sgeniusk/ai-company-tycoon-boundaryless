@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.4.0-alpha] — 2026-05-15
+
+### Prototype Systems Before Graphics Assets
+
+**Added:**
+- Agent hiring flow with data-driven hire costs, duplicate prevention, and talent growth
+- Owned item flow with shop purchases and agent equipment slots
+- Product development projects that assign available agents, advance monthly, generate quality, and release with review grades
+- Effective agent stats from base archetype plus equipped items
+- Save/load coverage for hired agents, owned items, and active development projects
+- 10-month prototype regression test
+
+**Updated:**
+- Product menu now starts development projects instead of instant-launching from the UI
+- Agent menu now includes hired team management, equipment display, and equip actions
+- Shop menu now has purchase buttons and locked/owned states for items
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+- Browser flow verified: hire agent, buy item, equip item, start product project, advance 2 months, release product, console errors 0
+
+---
+
 ## [0.3.1-alpha] — 2026-05-15
 
 ### Content And Menu Structure

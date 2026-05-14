@@ -1,5 +1,7 @@
-import { automationUpgrades, balance, capabilities, companyStages, domains, events, products, resources, startingState, upgrades } from "./data";
+import { agentTypes, automationUpgrades, balance, capabilities, companyStages, domains, events, items, products, resources, startingState, upgrades } from "./data";
 import type {
+  AgentStats,
+  AgentTypeDefinition,
   ActionCheck,
   AutomationUpgradeDefinition,
   CapabilityDefinition,
@@ -7,6 +9,9 @@ import type {
   EventChoiceDefinition,
   EventDefinition,
   GameState,
+  HiredAgent,
+  ItemDefinition,
+  ProductProject,
   ProductDefinition,
   ReleaseReview,
   ResourceMap,
@@ -14,6 +19,16 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+const statKeys: Array<keyof AgentStats> = [
+  "research",
+  "engineering",
+  "product",
+  "growth",
+  "safety",
+  "operations",
+  "creativity",
+  "autonomy",
+];
 
 const formatMoney = (value: number) =>
   new Intl.NumberFormat("ko-KR", {
@@ -35,6 +50,9 @@ export function createInitialState(): GameState {
     unlockedDomains: [...new Set([...domains.filter((domain) => domain.unlocked_by_default).map((domain) => domain.id), ...startingState.unlocked_domains])],
     purchasedUpgrades: [...startingState.purchased_upgrades],
     purchasedAutomationUpgrades: [...startingState.purchased_automation_upgrades],
+    hiredAgents: [],
+    ownedItems: [],
+    productProjects: [],
     productReviews: {},
     eventHistory: [],
     timeline: ["회사는 작은 AI 생산성 도구 팀으로 시작했습니다."],
@@ -52,6 +70,10 @@ export function getProductCheck(product: ProductDefinition, state: GameState): A
 
   if (state.activeProducts.includes(product.id)) {
     reasons.push("이미 출시한 제품입니다.");
+  }
+
+  if (state.productProjects.some((project) => project.productId === product.id)) {
+    reasons.push("이미 개발 중인 제품입니다.");
   }
 
   if (!state.unlockedDomains.includes(product.domain)) {
@@ -99,6 +121,143 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
       ...state.timeline,
     ].slice(0, 8),
   };
+}
+
+export function getAgentHireCheck(agent: AgentTypeDefinition, state: GameState): ActionCheck {
+  const reasons = getRequirementReasons(agent.unlock_requirements, state);
+
+  if (state.hiredAgents.some((hiredAgent) => hiredAgent.typeId === agent.id)) {
+    reasons.push("이미 고용한 에이전트입니다.");
+  }
+
+  appendCostReasons(reasons, agent.hire_cost, state);
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function hireAgent(agent: AgentTypeDefinition, state: GameState): GameState {
+  const check = getAgentHireCheck(agent, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const hiredAgent: HiredAgent = {
+    id: `agent_${state.hiredAgents.length + 1}_${agent.id}`,
+    typeId: agent.id,
+    name: agent.name,
+    level: 1,
+    energy: 100,
+    equippedItemIds: [],
+  };
+
+  return {
+    ...state,
+    resources: applyResourceDelta(applyResourceDelta(state.resources, negateCosts(agent.hire_cost)), { talent: 1 }),
+    hiredAgents: [...state.hiredAgents, hiredAgent],
+    timeline: [`고용 완료: ${agent.name} 합류`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getItemCheck(item: ItemDefinition, state: GameState): ActionCheck {
+  const reasons = getRequirementReasons(item.unlock_requirements, state);
+
+  if (state.ownedItems.includes(item.id)) {
+    reasons.push("이미 보유한 아이템입니다.");
+  }
+
+  appendCostReasons(reasons, item.cost, state);
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function buyItem(item: ItemDefinition, state: GameState): GameState {
+  const check = getItemCheck(item, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const immediateEffects = item.target === "agent" ? {} : pickResourceEffects(item.effects);
+
+  return {
+    ...state,
+    resources: applyResourceDelta(applyResourceDelta(state.resources, negateCosts(item.cost)), immediateEffects),
+    ownedItems: [...state.ownedItems, item.id],
+    timeline: [`아이템 구매: ${item.name}`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getEquipItemCheck(agentId: string, item: ItemDefinition, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+  const agent = state.hiredAgents.find((hiredAgent) => hiredAgent.id === agentId);
+
+  if (!agent) reasons.push("장착할 에이전트가 없습니다.");
+  if (item.target !== "agent") reasons.push("에이전트 장비가 아닙니다.");
+  if (!state.ownedItems.includes(item.id)) reasons.push("보유하지 않은 아이템입니다.");
+  if (state.hiredAgents.some((hiredAgent) => hiredAgent.equippedItemIds.includes(item.id))) {
+    reasons.push("이미 장착된 아이템입니다.");
+  }
+  if (agent && agent.equippedItemIds.length >= 2) {
+    reasons.push("장착 슬롯이 가득 찼습니다.");
+  }
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function equipItem(agentId: string, item: ItemDefinition, state: GameState): GameState {
+  const check = getEquipItemCheck(agentId, item, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const nextAgents = state.hiredAgents.map((agent) =>
+    agent.id === agentId ? { ...agent, equippedItemIds: [...agent.equippedItemIds, item.id] } : agent,
+  );
+
+  return {
+    ...state,
+    resources: applyResourceDelta(state.resources, pickResourceEffects(item.effects)),
+    hiredAgents: nextAgents,
+    timeline: [`장착 완료: ${item.name}`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getProductProjectCheck(product: ProductDefinition, state: GameState): ActionCheck {
+  const reasons = getProductCheck(product, state).reasons;
+  const availableAgents = getAvailableAgents(state);
+
+  if (availableAgents.length === 0) {
+    reasons.push("투입 가능한 에이전트가 필요합니다.");
+  }
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function startProductProject(product: ProductDefinition, state: GameState): GameState {
+  const check = getProductProjectCheck(product, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const assignedAgents = getAvailableAgents(state).slice(0, 3);
+  const projectId = `project_${state.productProjects.length + 1}_${product.id}`;
+  const project: ProductProject = {
+    id: projectId,
+    productId: product.id,
+    progress: 0,
+    quality: getStartingProjectQuality(assignedAgents, state),
+    assignedAgentIds: assignedAgents.map((agent) => agent.id),
+    startedMonth: state.month,
+  };
+
+  return {
+    ...state,
+    resources: applyResourceDelta(state.resources, negateCosts(product.launch_cost)),
+    hiredAgents: state.hiredAgents.map((agent) =>
+      project.assignedAgentIds.includes(agent.id) ? { ...agent, assignment: project.id } : agent,
+    ),
+    productProjects: [...state.productProjects, project],
+    timeline: [`개발 시작: ${product.name} (${assignedAgents.map((agent) => agent.name).join(", ")})`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getAgentEffectiveStats(agent: HiredAgent, state: GameState): AgentStats {
+  const type = agentTypes.find((agentType) => agentType.id === agent.typeId);
+  const baseStats = type?.stats ?? createEmptyStats();
+  const equippedItems = items.filter((item) => agent.equippedItemIds.includes(item.id));
+
+  return equippedItems.reduce((stats, item) => addStats(stats, item.effects), { ...baseStats });
 }
 
 export function getCapabilityCheck(capability: CapabilityDefinition, state: GameState): ActionCheck {
@@ -183,7 +342,6 @@ export function advanceMonth(state: GameState): GameState {
   });
 
   const nextMonth = state.month + 1;
-  const nextStatus = getNextStatus(nextResources, state.activeProducts.length);
   const nextStateWithoutEvent: GameState = {
     ...state,
     month: nextMonth,
@@ -195,19 +353,24 @@ export function advanceMonth(state: GameState): GameState {
       generatedData,
       computePressure,
     },
-    status: nextStatus,
+    status: getNextStatus(nextResources, state.activeProducts.length),
     timeline: [],
   };
-  const nextEvent = state.currentEvent ? state.currentEvent : findNextEligibleEvent(nextStateWithoutEvent);
+  const progressedState = advanceProductProjects(nextStateWithoutEvent);
+  const nextStatus = getNextStatus(progressedState.resources, progressedState.activeProducts.length);
+  const nextStateForEvent = { ...progressedState, status: nextStatus };
+  const nextEvent = state.currentEvent ? state.currentEvent : findNextEligibleEvent(nextStateForEvent);
   const summary = active.length
     ? `${nextMonth}개월차: 매출 ${formatMoney(revenue)}, 비용 ${formatMoney(totalCost)}, 이용자 +${newUsers.toLocaleString("ko-KR")}, 데이터 +${generatedData}`
     : `${nextMonth}개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.`;
 
   return {
-    ...nextStateWithoutEvent,
+    ...nextStateForEvent,
     currentEvent: nextEvent,
     status: nextStatus,
-    timeline: [nextEvent ? `이슈 발생: ${nextEvent.name}` : "", summary, ...state.timeline].filter(Boolean).slice(0, 8),
+    timeline: [nextEvent ? `이슈 발생: ${nextEvent.name}` : "", ...progressedState.timeline, summary, ...state.timeline]
+      .filter(Boolean)
+      .slice(0, 8),
   };
 }
 
@@ -296,10 +459,88 @@ export function hydrateGameState(serialized: string): GameState {
     unlockedDomains: parsed.state.unlockedDomains ?? createInitialState().unlockedDomains,
     purchasedUpgrades: parsed.state.purchasedUpgrades ?? [],
     purchasedAutomationUpgrades: parsed.state.purchasedAutomationUpgrades ?? [],
+    hiredAgents: parsed.state.hiredAgents ?? [],
+    ownedItems: parsed.state.ownedItems ?? [],
+    productProjects: parsed.state.productProjects ?? [],
     productReviews: parsed.state.productReviews ?? {},
     eventHistory: parsed.state.eventHistory ?? [],
     timeline: parsed.state.timeline ?? [],
   };
+}
+
+function advanceProductProjects(state: GameState): GameState {
+  if (state.productProjects.length === 0) return state;
+
+  let nextState = state;
+  const continuingProjects: ProductProject[] = [];
+  const releaseTimeline: string[] = [];
+
+  for (const project of state.productProjects) {
+    const product = products.find((entry) => entry.id === project.productId);
+    if (!product) continue;
+
+    const teamStats = getProjectTeamStats(project, state);
+    const progressGain = getProjectProgressGain(teamStats);
+    const qualityGain = getProjectQualityGain(teamStats);
+    const progressedProject: ProductProject = {
+      ...project,
+      progress: clamp(project.progress + progressGain, 0, 100),
+      quality: clamp(project.quality + qualityGain, 0, 100),
+    };
+
+    if (progressedProject.progress >= 100) {
+      const releaseReview = createReleaseReview(product, nextState, progressedProject.quality);
+      nextState = {
+        ...nextState,
+        resources: applyResourceDelta(nextState.resources, {
+          hype: product.hype_on_launch,
+          trust: progressedProject.quality >= 82 ? 2 : 0,
+        }),
+        activeProducts: [...nextState.activeProducts, product.id],
+        productReviews: { ...nextState.productReviews, [product.id]: releaseReview },
+        hiredAgents: nextState.hiredAgents.map((agent) =>
+          progressedProject.assignedAgentIds.includes(agent.id)
+            ? { ...agent, assignment: undefined, energy: clamp(agent.energy - 18, 0, 100) }
+            : agent,
+        ),
+      };
+      releaseTimeline.push(`${product.name} 완성: ${releaseReview.grade} (${releaseReview.score}점) 출시`);
+    } else {
+      continuingProjects.push(progressedProject);
+      releaseTimeline.push(`${product.name} 개발 ${Math.round(progressedProject.progress)}% / 완성도 ${Math.round(progressedProject.quality)}`);
+    }
+  }
+
+  return {
+    ...nextState,
+    productProjects: continuingProjects,
+    timeline: releaseTimeline,
+  };
+}
+
+function getProjectTeamStats(project: ProductProject, state: GameState): AgentStats {
+  const projectAgents = state.hiredAgents.filter((agent) => project.assignedAgentIds.includes(agent.id));
+  const agentStats = projectAgents.reduce((stats, agent) => addStats(stats, getAgentEffectiveStats(agent, state)), createEmptyStats());
+  return addStats(agentStats, getGlobalItemStats(state));
+}
+
+function getProjectProgressGain(stats: AgentStats): number {
+  return Math.round(
+    clamp(
+      40 + stats.engineering * 1.2 + stats.product * 0.9 + stats.research * 0.6 + stats.autonomy * 0.6 + stats.operations * 0.35,
+      34,
+      76,
+    ),
+  );
+}
+
+function getProjectQualityGain(stats: AgentStats): number {
+  return Math.round(clamp(5 + stats.product * 0.65 + stats.creativity * 0.55 + stats.safety * 0.35 + stats.research * 0.25, 7, 24));
+}
+
+function getStartingProjectQuality(assignedAgents: HiredAgent[], state: GameState): number {
+  const stats = assignedAgents.reduce((total, agent) => addStats(total, getAgentEffectiveStats(agent, state)), getGlobalItemStats(state));
+  return Math.round(clamp(35 + stats.product * 0.7 + stats.creativity * 0.5 + stats.safety * 0.25, 35, 72));
 }
 
 function getNextStatus(nextResources: ResourceMap, activeProductCount: number): GameState["status"] {
@@ -351,9 +592,55 @@ function stageRequirementsMet(stage: CompanyStageDefinition, state: GameState): 
   });
 }
 
-function createReleaseReview(product: ProductDefinition, state: GameState): ReleaseReview {
+function createEmptyStats(): AgentStats {
+  return {
+    research: 0,
+    engineering: 0,
+    product: 0,
+    growth: 0,
+    safety: 0,
+    operations: 0,
+    creativity: 0,
+    autonomy: 0,
+  };
+}
+
+function addStats(current: AgentStats, effects: Partial<AgentStats> | Record<string, number>): AgentStats {
+  const next = { ...current };
+  const effectMap = effects as Record<string, number | undefined>;
+
+  for (const stat of statKeys) {
+    next[stat] += effectMap[stat] ?? 0;
+  }
+
+  return next;
+}
+
+function getGlobalItemStats(state: GameState): AgentStats {
+  return items
+    .filter((item) => state.ownedItems.includes(item.id) && item.target !== "agent")
+    .reduce((stats, item) => addStats(stats, item.effects), createEmptyStats());
+}
+
+function pickResourceEffects(effects: Record<string, number>): ResourceMap {
+  return Object.fromEntries(Object.entries(effects).filter(([resourceId]) => Boolean(resources[resourceId])));
+}
+
+function getAvailableAgents(state: GameState): HiredAgent[] {
+  return state.hiredAgents.filter((agent) => !agent.assignment);
+}
+
+function createReleaseReview(product: ProductDefinition, state: GameState, projectQuality = 60): ReleaseReview {
   const score = Math.round(
-    clamp(55 + product.hype_on_launch * 1.8 + (state.resources.trust ?? 0) * 0.18 + Object.keys(product.required_capabilities).length * 4, 45, 99),
+    clamp(
+      55 +
+        product.hype_on_launch * 1.8 +
+        (state.resources.trust ?? 0) * 0.18 +
+        Object.keys(product.required_capabilities).length * 4 +
+        (projectQuality - 60) * 0.45,
+      45,
+      99,
+    ),
   );
   const grade = score >= 90 ? "S" : score >= 80 ? "A" : score >= 70 ? "B" : score >= 60 ? "C" : "D";
   const quote =
@@ -393,12 +680,22 @@ function getRequirementReasons(requirements: Record<string, number>, state: Game
     if (requirement === "min_trust" && (state.resources.trust ?? 0) < needed) reasons.push(`신뢰 ${needed} 필요`);
     if (requirement === "min_talent" && (state.resources.talent ?? 0) < needed) reasons.push(`인재 ${needed}명 필요`);
     if (requirement === "min_automation" && (state.resources.automation ?? 0) < needed) reasons.push(`자동화 ${needed} 필요`);
+    if (requirement === "min_cash" && (state.resources.cash ?? 0) < needed) reasons.push(`자금 ${formatMoney(needed)} 필요`);
+    if (requirement === "min_data" && (state.resources.data ?? 0) < needed) reasons.push(`데이터 ${needed} 필요`);
+    if (requirement.startsWith("min_capability_")) {
+      const capabilityId = requirement.replace("min_capability_", "");
+      const currentLevel = state.capabilities[capabilityId] ?? 0;
+      if (currentLevel < needed) {
+        const capabilityName = capabilities.find((capability) => capability.id === capabilityId)?.name ?? capabilityId;
+        reasons.push(`${capabilityName} Lv.${needed} 필요`);
+      }
+    }
   }
 
   return reasons;
 }
 
-function appendCostReasons(reasons: string[], cost: ResourceMap, state: GameState): void {
+function appendCostReasons(reasons: string[], cost: ResourceMap = {}, state: GameState): void {
   for (const [resourceId, amount] of Object.entries(cost)) {
     if ((state.resources[resourceId] ?? 0) < amount) {
       const resourceName = resources[resourceId]?.name ?? resourceId;

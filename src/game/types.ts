@@ -125,6 +125,7 @@ export interface AgentTypeDefinition {
   stats: AgentStats;
   appearance: AgentAppearance;
   unlock_requirements: Record<string, number>;
+  hire_cost: ResourceMap;
   upkeep: ResourceMap;
   preferred_items: string[];
   quirk: string;
@@ -147,6 +148,25 @@ export interface ReleaseReview {
   score: number;
   grade: string;
   quote: string;
+}
+
+export interface HiredAgent {
+  id: string;
+  typeId: string;
+  name: string;
+  level: number;
+  energy: number;
+  equippedItemIds: string[];
+  assignment?: string;
+}
+
+export interface ProductProject {
+  id: string;
+  productId: string;
+  progress: number;
+  quality: number;
+  assignedAgentIds: string[];
+  startedMonth: number;
 }
 
 export interface BalanceDefinition {
@@ -196,6 +216,9 @@ export interface GameState {
   unlockedDomains: string[];
   purchasedUpgrades: string[];
   purchasedAutomationUpgrades: string[];
+  hiredAgents: HiredAgent[];
+  ownedItems: string[];
+  productProjects: ProductProject[];
   productReviews: Record<string, ReleaseReview>;
   eventHistory: string[];
   timeline: string[];

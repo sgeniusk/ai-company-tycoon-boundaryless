@@ -3,21 +3,28 @@ import { agentTypes, automationUpgrades, capabilities, domains, items, products,
 import {
   advanceMonth,
   buyAutomationUpgrade,
+  buyItem,
   buyUpgrade,
   createInitialState,
+  equipItem,
   formatResource,
+  getAgentEffectiveStats,
+  getAgentHireCheck,
   getAutomationUpgradeCheck,
   getCapabilityCheck,
   getCompanyStage,
-  getProductCheck,
+  getEquipItemCheck,
+  getItemCheck,
+  getProductProjectCheck,
   getUpgradeCheck,
   hydrateGameState,
-  launchProduct,
+  hireAgent,
   resolveEventChoice,
   serializeGameState,
+  startProductProject,
   upgradeCapability,
 } from "./game/simulation";
-import type { AgentTypeDefinition, GameState, ItemDefinition, ResourceMap } from "./game/types";
+import type { AgentTypeDefinition, GameState, HiredAgent, ItemDefinition, ResourceMap } from "./game/types";
 
 type MenuId = "company" | "products" | "agents" | "research" | "shop" | "log";
 
@@ -39,7 +46,7 @@ function App() {
   const companyStage = getCompanyStage(gameState);
   const activeProducts = products.filter((product) => gameState.activeProducts.includes(product.id));
   const launchableCount = useMemo(
-    () => products.filter((product) => getProductCheck(product, gameState).ok).length,
+    () => products.filter((product) => getProductProjectCheck(product, gameState).ok).length,
     [gameState],
   );
   const unlockedDomainNames = domains
@@ -77,6 +84,7 @@ function App() {
           <span className="status-pill">{gameState.month}개월차</span>
           <span className={`status-pill ${gameState.status}`}>{statusLabel(gameState.status)}</span>
           <span className="status-pill">출시 가능 {launchableCount}</span>
+          <span className="status-pill">개발 중 {gameState.productProjects.length}</span>
         </div>
       </section>
 
@@ -97,7 +105,7 @@ function App() {
             <span>RELEASE BOARD</span>
           </div>
           <div className="office-floor">
-            {Array.from({ length: Math.min(8, Math.max(1, gameState.resources.talent ?? 1)) }).map((_, index) => (
+            {Array.from({ length: Math.min(8, Math.max(1, gameState.hiredAgents.length || gameState.resources.talent || 1)) }).map((_, index) => (
               <span className={`staff-sprite staff-${index % 4}`} key={index} />
             ))}
             <div className="server-rack">
@@ -107,7 +115,7 @@ function App() {
             </div>
             <div className="launch-screen">
               <strong>{activeProducts.length ? activeProducts[activeProducts.length - 1].name : "첫 제품 준비 중"}</strong>
-              <span>{gameState.currentEvent ? "이슈 대응 필요" : "운영 정상"}</span>
+              <span>{gameState.productProjects.length ? `${gameState.productProjects[0].progress}% 개발 중` : gameState.currentEvent ? "이슈 대응 필요" : "운영 정상"}</span>
             </div>
           </div>
         </div>
@@ -212,6 +220,9 @@ function renderMenuContent(
           <div className="company-summary">
             <strong>{getCompanyStage(gameState).name}</strong>
             <span>활성 제품 {gameState.activeProducts.length}개</span>
+            <span>개발 프로젝트 {gameState.productProjects.length}개</span>
+            <span>고용 에이전트 {gameState.hiredAgents.length}명</span>
+            <span>보유 아이템 {gameState.ownedItems.length}개</span>
             <span>해금 분야 {gameState.unlockedDomains.length}개</span>
             <span>자동화 {formatResource("automation", gameState.resources.automation ?? 0)}</span>
           </div>
@@ -226,7 +237,7 @@ function renderMenuContent(
   }
 
   if (activeMenu === "agents") {
-    return <AgentsPanel />;
+    return <AgentsPanel gameState={gameState} setGameState={setGameState} />;
   }
 
   if (activeMenu === "research") {
@@ -244,14 +255,17 @@ function ProductsPanel({ gameState, setGameState }: { gameState: GameState; setG
   return (
     <section className="panel products-panel">
       <div className="panel-heading">
-        <h2>제품 출시</h2>
-        <p>능력과 분야를 조합해 회사를 키울 제품을 냅니다.</p>
+        <h2>제품 개발</h2>
+        <p>에이전트를 투입해 제품을 만들고, 완성되면 시장에 출시합니다.</p>
       </div>
+      {!gameState.hiredAgents.length && <p className="empty-note">먼저 에이전트 메뉴에서 첫 에이전트를 고용하면 제품 개발을 시작할 수 있습니다.</p>}
       <div className="item-list products-list">
         {products.map((product) => {
-          const check = getProductCheck(product, gameState);
+          const check = getProductProjectCheck(product, gameState);
           const domain = domains.find((entry) => entry.id === product.domain);
           const review = gameState.productReviews[product.id];
+          const project = gameState.productProjects.find((entry) => entry.productId === product.id);
+          const isActive = gameState.activeProducts.includes(product.id);
 
           return (
             <article className="item-card product-card" key={product.id}>
@@ -267,13 +281,22 @@ function ProductsPanel({ gameState, setGameState }: { gameState: GameState; setG
                   <small>{review.quote}</small>
                 </div>
               )}
+              {project && (
+                <div className="project-meter">
+                  <div>
+                    <strong>개발 {Math.round(project.progress)}%</strong>
+                    <span>완성도 {Math.round(project.quality)}</span>
+                  </div>
+                  <i style={{ width: `${project.progress}%` }} />
+                </div>
+              )}
               <div className="item-footer">
                 <span>월 매출 {formatResource("cash", product.base_revenue)} / 이용자 +{product.base_users_per_month}</span>
                 <button
-                  disabled={!check.ok || gameState.status !== "playing"}
-                  onClick={() => setGameState((current) => launchProduct(product, current))}
+                  disabled={!check.ok || gameState.status !== "playing" || Boolean(project) || isActive}
+                  onClick={() => setGameState((current) => startProductProject(product, current))}
                 >
-                  출시
+                  {isActive ? "운영 중" : project ? "개발 중" : "개발 시작"}
                 </button>
               </div>
               {!check.ok && <p className="locked-reason">{check.reasons.join(" / ")}</p>}
@@ -285,23 +308,140 @@ function ProductsPanel({ gameState, setGameState }: { gameState: GameState; setG
   );
 }
 
-function AgentsPanel() {
+function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  const ownedAgentItems = items.filter(
+    (item) =>
+      item.target === "agent" &&
+      gameState.ownedItems.includes(item.id) &&
+      !gameState.hiredAgents.some((agent) => agent.equippedItemIds.includes(item.id)),
+  );
+
   return (
-    <section className="panel">
-      <div className="panel-heading">
-        <h2>에이전트 도감</h2>
-        <p>각 에이전트는 능력치, 역할, 픽셀아트 외형 키워드를 가집니다.</p>
-      </div>
-      <div className="agent-grid">
-        {agentTypes.map((agent) => (
-          <AgentCard agent={agent} key={agent.id} />
-        ))}
-      </div>
-    </section>
+    <div className="panel-grid two-col">
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>고용 에이전트</h2>
+          <p>현재 팀, 장착 아이템, 개발 배치를 관리합니다.</p>
+        </div>
+        {gameState.hiredAgents.length ? (
+          <div className="hired-list">
+            {gameState.hiredAgents.map((agent) => (
+              <HiredAgentCard agent={agent} gameState={gameState} ownedAgentItems={ownedAgentItems} setGameState={setGameState} key={agent.id} />
+            ))}
+          </div>
+        ) : (
+          <p className="empty-note">아직 고용한 에이전트가 없습니다. 오른쪽 도감에서 첫 에이전트를 영입하세요.</p>
+        )}
+      </section>
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>에이전트 도감</h2>
+          <p>능력치, 역할, 픽셀아트 외형 키워드를 기준으로 영입합니다.</p>
+        </div>
+        <div className="agent-grid">
+          {agentTypes.map((agent) => {
+            const check = getAgentHireCheck(agent, gameState);
+            const isHired = gameState.hiredAgents.some((hiredAgent) => hiredAgent.typeId === agent.id);
+
+            return (
+              <AgentCard
+                agent={agent}
+                check={check}
+                isHired={isHired}
+                key={agent.id}
+                onHire={() => setGameState((current) => hireAgent(agent, current))}
+              />
+            );
+          })}
+        </div>
+      </section>
+    </div>
   );
 }
 
-function AgentCard({ agent }: { agent: AgentTypeDefinition }) {
+function HiredAgentCard({
+  agent,
+  gameState,
+  ownedAgentItems,
+  setGameState,
+}: {
+  agent: HiredAgent;
+  gameState: GameState;
+  ownedAgentItems: ItemDefinition[];
+  setGameState: Dispatch<SetStateAction<GameState>>;
+}) {
+  const agentType = agentTypes.find((type) => type.id === agent.typeId);
+  const stats = getAgentEffectiveStats(agent, gameState);
+  const equippedItems = items.filter((item) => agent.equippedItemIds.includes(item.id));
+  const assignedProject = gameState.productProjects.find((project) => project.id === agent.assignment);
+  const assignedProduct = assignedProject ? products.find((product) => product.id === assignedProject.productId) : undefined;
+
+  return (
+    <article className="hired-card">
+      <div className="agent-top">
+        <div className="agent-portrait compact" aria-hidden="true">
+          <span className="agent-head" />
+          <span className="agent-body" />
+          <span className="agent-prop" />
+        </div>
+        <div>
+          <p className="item-meta">{agentType?.role ?? "에이전트"}</p>
+          <h3>{agent.name}</h3>
+          <p>{assignedProduct ? `${assignedProduct.name} 개발 중` : "대기 중"}</p>
+        </div>
+      </div>
+      <div className="stat-grid">
+        {Object.entries(stats).map(([stat, value]) => (
+          <span key={stat}>
+            {statLabel(stat)} <strong>{value}</strong>
+          </span>
+        ))}
+      </div>
+      <div className="mini-row">
+        <span>Lv.{agent.level}</span>
+        <span>체력 {agent.energy}</span>
+        <span>장착 {equippedItems.length}/2</span>
+      </div>
+      <div className="equip-row">
+        {equippedItems.length ? (
+          equippedItems.map((item) => <span key={item.id}>{item.name}</span>)
+        ) : (
+          <span>장착 아이템 없음</span>
+        )}
+      </div>
+      <div className="equip-actions">
+        {ownedAgentItems.length ? (
+          ownedAgentItems.slice(0, 3).map((item) => {
+            const check = getEquipItemCheck(agent.id, item, gameState);
+            return (
+              <button
+                disabled={!check.ok || gameState.status !== "playing"}
+                key={item.id}
+                onClick={() => setGameState((current) => equipItem(agent.id, item, current))}
+              >
+                {item.name} 장착
+              </button>
+            );
+          })
+        ) : (
+          <small>상점에서 장비를 구매하면 장착할 수 있습니다.</small>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function AgentCard({
+  agent,
+  check,
+  isHired,
+  onHire,
+}: {
+  agent: AgentTypeDefinition;
+  check: { ok: boolean; reasons: string[] };
+  isHired: boolean;
+  onHire: () => void;
+}) {
   return (
     <article className={`agent-card rarity-${agent.rarity}`}>
       <div className="agent-top">
@@ -331,6 +471,13 @@ function AgentCard({ agent }: { agent: AgentTypeDefinition }) {
         <span>소품: {agent.appearance.signatureProp}</span>
       </div>
       <p className="agent-quirk">{agent.quirk}</p>
+      <div className="item-footer">
+        <span>영입 비용 {formatCost(agent.hire_cost)} / 유지 {formatCost(agent.upkeep)}</span>
+        <button disabled={!check.ok || isHired} onClick={onHire}>
+          {isHired ? "고용됨" : "고용"}
+        </button>
+      </div>
+      {!check.ok && <p className="locked-reason">{check.reasons.join(" / ")}</p>}
     </article>
   );
 }
@@ -378,7 +525,7 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
         </div>
         <div className="item-grid">
           {items.map((item) => (
-            <ItemCard item={item} key={item.id} />
+            <ItemCard item={item} gameState={gameState} setGameState={setGameState} key={item.id} />
           ))}
         </div>
       </section>
@@ -432,7 +579,18 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   );
 }
 
-function ItemCard({ item }: { item: ItemDefinition }) {
+function ItemCard({
+  item,
+  gameState,
+  setGameState,
+}: {
+  item: ItemDefinition;
+  gameState: GameState;
+  setGameState: Dispatch<SetStateAction<GameState>>;
+}) {
+  const check = getItemCheck(item, gameState);
+  const isOwned = gameState.ownedItems.includes(item.id);
+
   return (
     <article className={`item-shop-card rarity-${item.rarity}`}>
       <p className="item-meta">{itemCategoryLabel(item.category)} / {item.rarity}</p>
@@ -440,8 +598,13 @@ function ItemCard({ item }: { item: ItemDefinition }) {
       <p>{item.description}</p>
       <div className="mini-row">
         <span>비용 {formatCost(item.cost)}</span>
+        <span>대상 {itemTargetLabel(item.target)}</span>
         <span>효과 {formatEffects(item.effects)}</span>
       </div>
+      <button disabled={!check.ok || isOwned || gameState.status !== "playing"} onClick={() => setGameState((current) => buyItem(item, current))}>
+        {isOwned ? "보유 중" : "구매"}
+      </button>
+      {!check.ok && <p className="locked-reason">{check.reasons.join(" / ")}</p>}
       <small>{item.flavor}</small>
     </article>
   );
@@ -492,6 +655,15 @@ function itemCategoryLabel(category: string): string {
     marketing: "마케팅",
   };
   return labels[category] ?? category;
+}
+
+function itemTargetLabel(target: string): string {
+  const labels: Record<string, string> = {
+    agent: "에이전트",
+    office: "사무실",
+    company: "회사",
+  };
+  return labels[target] ?? target;
 }
 
 function formatCost(cost: ResourceMap): string {

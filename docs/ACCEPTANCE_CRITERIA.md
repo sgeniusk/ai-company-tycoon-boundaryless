@@ -6,6 +6,24 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.4.0: Prototype Systems Before Graphics Assets
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Player can hire at least one AI agent from the Agent menu | **Passed** |
+| 2 | Agent hiring spends JSON-defined cost and increases team talent | **Passed** |
+| 3 | Player can buy shop items and see owned/locked states | **Passed** |
+| 4 | Player can equip an agent-targeted item to a hired agent | **Passed** |
+| 5 | Product menu starts a development project using available agents | **Passed** |
+| 6 | Month advancement progresses projects and releases completed products with reviews | **Passed** |
+| 7 | Save/load preserves hired agents, owned items, and development projects | **Passed** |
+| 8 | Starter product can release within 2 months with a suitable first agent | **Passed** |
+| 9 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+| 10 | Browser hire → buy → equip → develop → release loop has no console errors | **Passed** |
+| 11 | A 10-month prototype run completes without corrupting state | **Passed** |
+
+---
+
 ## Alpha v0.3.0: Game-Like Playable Screen
 
 | # | Criterion | Status |

@@ -13,6 +13,7 @@ describe("alpha content data", () => {
       expect(agent.appearance.palette.length).toBeGreaterThanOrEqual(3);
       expect(agent.appearance.silhouette).toBeTruthy();
       expect(agent.appearance.signatureProp).toBeTruthy();
+      expect(agent.hire_cost.cash).toBeGreaterThan(0);
     }
   });
 

@@ -15,6 +15,7 @@
         "signatureProp": "말풍선이 떠 있는 태블릿"
       },
       "unlock_requirements": {},
+      "hire_cost": {"cash": 1200},
       "upkeep": {"cash": 350, "compute": 2},
       "preferred_items": ["prompt_notebook", "ux_sticky_wall"],
       "quirk": "출시 전 설명 문구 품질을 올립니다."
@@ -34,6 +35,7 @@
         "signatureProp": "수식이 떠 있는 홀로그램 보드"
       },
       "unlock_requirements": {"min_month": 2},
+      "hire_cost": {"cash": 2200, "data": 5},
       "upkeep": {"cash": 600, "data": 2},
       "preferred_items": ["tensor_whiteboard", "model_zoo_shelf"],
       "quirk": "능력 연구 비용을 체감상 낮춰줍니다."
@@ -53,6 +55,7 @@
         "signatureProp": "빛나는 기계식 키보드"
       },
       "unlock_requirements": {"min_capability_code": 1},
+      "hire_cost": {"cash": 1500},
       "upkeep": {"cash": 500, "compute": 3},
       "preferred_items": ["mechanical_keyboard", "ci_badge"],
       "quirk": "개발자 도구 제품과 자동화 투자에 강합니다."
@@ -72,6 +75,7 @@
         "signatureProp": "색상별 데이터 카드 케이스"
       },
       "unlock_requirements": {},
+      "hire_cost": {"cash": 1300, "data": 3},
       "upkeep": {"cash": 420, "data": 1},
       "preferred_items": ["data_labeler_desk", "feedback_inbox"],
       "quirk": "월간 데이터 획득량을 안정화합니다."
@@ -91,6 +95,7 @@
         "signatureProp": "빨간 테스트 케이스 파일"
       },
       "unlock_requirements": {"min_trust": 40},
+      "hire_cost": {"cash": 2300, "data": 8},
       "upkeep": {"cash": 550, "data": 1},
       "preferred_items": ["redteam_toolkit", "policy_binder"],
       "quirk": "환각 사고 이벤트 피해를 줄이는 방향입니다."
@@ -110,6 +115,7 @@
         "signatureProp": "실시간 바이럴 그래프 폰"
       },
       "unlock_requirements": {"min_products": 1},
+      "hire_cost": {"cash": 1400},
       "upkeep": {"cash": 480, "hype": 1},
       "preferred_items": ["viral_camera", "launch_confetti"],
       "quirk": "출시 직후 이용자 증가에 강합니다."
@@ -129,6 +135,7 @@
         "signatureProp": "작은 GPU 카트"
       },
       "unlock_requirements": {},
+      "hire_cost": {"cash": 1500, "compute": 4},
       "upkeep": {"cash": 500, "compute": 1},
       "preferred_items": ["gpu_rack_mini", "cooling_fan_wall"],
       "quirk": "연산력 압박과 서버 장애 대응에 강합니다."
@@ -148,6 +155,7 @@
         "signatureProp": "빛나는 전자 계약서"
       },
       "unlock_requirements": {"min_trust": 50},
+      "hire_cost": {"cash": 2600},
       "upkeep": {"cash": 700},
       "preferred_items": ["enterprise_pitch_deck", "trust_trophy_case"],
       "quirk": "기업 자동화 분야와 신뢰 기반 이벤트에 강합니다."
@@ -167,6 +175,7 @@
         "signatureProp": "빛나는 스타일 팔레트"
       },
       "unlock_requirements": {"min_capability_vision": 1},
+      "hire_cost": {"cash": 2400, "data": 6},
       "upkeep": {"cash": 520, "data": 1},
       "preferred_items": ["style_palette", "render_corner"],
       "quirk": "크리에이터 도구 제품 반응을 올립니다."
@@ -186,6 +195,7 @@
         "signatureProp": "스스로 움직이는 할 일 보드"
       },
       "unlock_requirements": {"min_capability_agent": 1},
+      "hire_cost": {"cash": 4200, "compute": 12},
       "upkeep": {"cash": 850, "compute": 5},
       "preferred_items": ["autonomy_planner_board", "agent_orchestra_podium"],
       "quirk": "자동화 투자의 효과를 크게 만드는 후반 핵심입니다."
