@@ -2,8 +2,8 @@
   "domains": [
     {
       "id": "personal_productivity",
-      "name": "Personal Productivity",
-      "description": "Tools for individual productivity and daily tasks.",
+      "name": "개인 생산성",
+      "description": "개인의 업무와 일상 생산성을 높이는 도구 시장입니다.",
       "unlocked_by_default": true,
       "unlock_requirements": {},
       "market_size": "medium",
@@ -12,8 +12,8 @@
     },
     {
       "id": "creator_tools",
-      "name": "Creator Tools",
-      "description": "Creative tools for content creators and designers.",
+      "name": "크리에이터 도구",
+      "description": "콘텐츠 제작자와 디자이너를 위한 창작 도구 시장입니다.",
       "unlocked_by_default": false,
       "unlock_requirements": {"vision": 1},
       "market_size": "large",
@@ -22,8 +22,8 @@
     },
     {
       "id": "developer_tools",
-      "name": "Developer Tools",
-      "description": "Tools for software developers and engineers.",
+      "name": "개발자 도구",
+      "description": "소프트웨어 개발자와 엔지니어를 위한 도구 시장입니다.",
       "unlocked_by_default": false,
       "unlock_requirements": {"code": 1},
       "market_size": "large",
@@ -32,8 +32,8 @@
     },
     {
       "id": "customer_support",
-      "name": "Customer Support",
-      "description": "AI-powered customer service and support solutions.",
+      "name": "고객 지원",
+      "description": "고객 응대와 지원 업무를 자동화하는 시장입니다.",
       "unlocked_by_default": false,
       "unlock_requirements": {"language": 2},
       "market_size": "large",
@@ -42,8 +42,8 @@
     },
     {
       "id": "education",
-      "name": "Education",
-      "description": "Personalized learning and educational tools.",
+      "name": "교육",
+      "description": "개인화 학습과 교육 서비스를 제공하는 시장입니다.",
       "unlocked_by_default": false,
       "unlock_requirements": {"language": 3},
       "market_size": "medium",
@@ -52,8 +52,8 @@
     },
     {
       "id": "enterprise_automation",
-      "name": "Enterprise Automation",
-      "description": "Large-scale business process automation.",
+      "name": "기업 자동화",
+      "description": "대규모 업무 프로세스를 자동화하는 기업 시장입니다.",
       "unlocked_by_default": false,
       "unlock_requirements": {"agent": 2, "enterprise": 1},
       "market_size": "huge",

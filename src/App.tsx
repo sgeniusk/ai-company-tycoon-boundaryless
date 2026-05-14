@@ -27,18 +27,18 @@ function App() {
 
   return (
     <main className="app-shell">
-      <section className="top-bar" aria-label="Company status">
+      <section className="top-bar" aria-label="회사 상태">
         <div>
-          <p className="eyebrow">AI Company Tycoon</p>
-          <h1>Boundaryless Prototype</h1>
+          <p className="eyebrow">AI 컴퍼니 타이쿤</p>
+          <h1>경계 없는 회사</h1>
         </div>
         <div className="status-cluster">
-          <span className="status-pill">Month {gameState.month}</span>
+          <span className="status-pill">{gameState.month}개월차</span>
           <span className={`status-pill ${gameState.status}`}>{statusLabel(gameState.status)}</span>
         </div>
       </section>
 
-      <section className="resource-strip" aria-label="Resources">
+      <section className="resource-strip" aria-label="자원">
         {orderedResourceIds.map((resourceId) => (
           <article className="resource-tile" key={resourceId}>
             <span>{resources[resourceId].name}</span>
@@ -47,12 +47,12 @@ function App() {
         ))}
       </section>
 
-      <section className="command-row" aria-label="Primary commands">
+      <section className="command-row" aria-label="주요 명령">
         <button className="primary-action" onClick={() => setGameState((current) => advanceMonth(current))}>
-          Next Month
+          다음 달
         </button>
         <button className="secondary-action" onClick={() => setGameState(createInitialState())}>
-          Reset Run
+          새 게임
         </button>
         <p>
           출시 가능 제품 {launchableCount}개. 활성 제품: {activeProductNames.length ? activeProductNames.join(", ") : "없음"}.
@@ -62,7 +62,7 @@ function App() {
       <section className="dashboard-grid">
         <div className="panel products-panel">
           <div className="panel-heading">
-            <h2>Products</h2>
+            <h2>제품</h2>
             <p>능력과 도메인을 제품으로 전환합니다.</p>
           </div>
           <div className="item-list">
@@ -78,12 +78,12 @@ function App() {
                     <p>{product.description}</p>
                   </div>
                   <div className="item-footer">
-                    <span>Revenue {formatResource("cash", product.base_revenue)} / month</span>
+                    <span>월 매출 {formatResource("cash", product.base_revenue)}</span>
                     <button
                       disabled={!check.ok || gameState.status !== "playing"}
                       onClick={() => setGameState((current) => launchProduct(product, current))}
                     >
-                      Launch
+                      출시
                     </button>
                   </div>
                   {!check.ok && <p className="locked-reason">{check.reasons.join(" / ")}</p>}
@@ -95,7 +95,7 @@ function App() {
 
         <div className="panel capabilities-panel">
           <div className="panel-heading">
-            <h2>Capabilities</h2>
+            <h2>AI 능력</h2>
             <p>재사용 가능한 AI 능력이 새 시장을 엽니다.</p>
           </div>
           <div className="item-list compact">
@@ -113,7 +113,7 @@ function App() {
                     disabled={!check.ok || gameState.status !== "playing"}
                     onClick={() => setGameState((current) => upgradeCapability(capability, current))}
                   >
-                    Upgrade
+                    연구
                   </button>
                   {!check.ok && <span>{check.reasons[0]}</span>}
                 </article>
@@ -124,7 +124,7 @@ function App() {
 
         <div className="panel timeline-panel">
           <div className="panel-heading">
-            <h2>Timeline</h2>
+            <h2>회사 기록</h2>
             <p>결정의 결과가 즉시 기록됩니다.</p>
           </div>
           <ol className="timeline">
@@ -139,9 +139,9 @@ function App() {
 }
 
 function statusLabel(status: GameState["status"]): string {
-  if (status === "success") return "Success trajectory";
-  if (status === "failure") return "Critical failure";
-  return "Operating";
+  if (status === "success") return "성공 궤도";
+  if (status === "failure") return "위기";
+  return "운영 중";
 }
 
 export default App;

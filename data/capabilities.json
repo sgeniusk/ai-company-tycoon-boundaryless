@@ -2,8 +2,8 @@
   "capabilities": [
     {
       "id": "language",
-      "name": "Language",
-      "description": "Natural language understanding and generation.",
+      "name": "언어",
+      "description": "자연어 이해와 생성 능력입니다.",
       "max_level": 5,
       "upgrade_costs": [
         {"cash": 1500, "data": 15, "talent": 0},
@@ -17,8 +17,8 @@
     },
     {
       "id": "code",
-      "name": "Code",
-      "description": "Code generation, completion, and debugging.",
+      "name": "코드",
+      "description": "코드 생성, 자동완성, 디버깅 능력입니다.",
       "max_level": 5,
       "upgrade_costs": [
         {"cash": 2000, "data": 20, "talent": 0},
@@ -32,8 +32,8 @@
     },
     {
       "id": "vision",
-      "name": "Vision",
-      "description": "Image understanding, generation, and manipulation.",
+      "name": "비전",
+      "description": "이미지 이해, 생성, 편집 능력입니다.",
       "max_level": 5,
       "upgrade_costs": [
         {"cash": 2000, "data": 15, "talent": 0},
@@ -47,8 +47,8 @@
     },
     {
       "id": "audio",
-      "name": "Audio",
-      "description": "Speech recognition, synthesis, and audio processing.",
+      "name": "오디오",
+      "description": "음성 인식, 합성, 오디오 처리 능력입니다.",
       "max_level": 4,
       "upgrade_costs": [
         {"cash": 2500, "data": 20, "talent": 0},
@@ -61,8 +61,8 @@
     },
     {
       "id": "video",
-      "name": "Video",
-      "description": "Video understanding, generation, and editing.",
+      "name": "비디오",
+      "description": "영상 이해, 생성, 편집 능력입니다.",
       "max_level": 4,
       "upgrade_costs": [
         {"cash": 3000, "data": 25, "talent": 0},
@@ -75,8 +75,8 @@
     },
     {
       "id": "agent",
-      "name": "Agent",
-      "description": "Autonomous task planning and execution.",
+      "name": "에이전트",
+      "description": "자율적인 작업 계획과 실행 능력입니다.",
       "max_level": 4,
       "upgrade_costs": [
         {"cash": 3500, "data": 30, "talent": 1},
@@ -89,8 +89,8 @@
     },
     {
       "id": "enterprise",
-      "name": "Enterprise",
-      "description": "Enterprise-grade reliability, compliance, and security.",
+      "name": "엔터프라이즈",
+      "description": "기업 수준의 안정성, 보안, 컴플라이언스 능력입니다.",
       "max_level": 3,
       "upgrade_costs": [
         {"cash": 5000, "data": 20, "talent": 1},
@@ -102,8 +102,8 @@
     },
     {
       "id": "safety",
-      "name": "Safety",
-      "description": "AI safety, alignment, and content filtering.",
+      "name": "안전",
+      "description": "AI 안전성, 정렬, 콘텐츠 필터링 능력입니다.",
       "max_level": 4,
       "upgrade_costs": [
         {"cash": 1500, "data": 10, "talent": 0},
@@ -117,8 +117,8 @@
     },
     {
       "id": "optimization",
-      "name": "Optimization",
-      "description": "Model efficiency, inference speed, and cost reduction.",
+      "name": "최적화",
+      "description": "모델 효율, 추론 속도, 비용 절감 능력입니다.",
       "max_level": 4,
       "upgrade_costs": [
         {"cash": 2000, "data": 15, "talent": 0},

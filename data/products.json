@@ -2,8 +2,8 @@
   "products": [
     {
       "id": "ai_writing_assistant",
-      "name": "AI Writing Assistant",
-      "description": "AI-powered writing tool for content creation and editing.",
+      "name": "AI 글쓰기 비서",
+      "description": "콘텐츠 작성과 편집을 도와주는 AI 글쓰기 도구입니다.",
       "domain": "personal_productivity",
       "required_capabilities": {"language": 1},
       "launch_cost": {"cash": 2000, "compute": 20, "data": 10},
@@ -20,8 +20,8 @@
     },
     {
       "id": "meeting_summary_bot",
-      "name": "Meeting Summary Bot",
-      "description": "Automatically summarizes meetings and extracts action items.",
+      "name": "회의 요약 봇",
+      "description": "회의 내용을 요약하고 실행 과제를 뽑아주는 업무 도구입니다.",
       "domain": "personal_productivity",
       "required_capabilities": {"language": 1},
       "launch_cost": {"cash": 1500, "compute": 15, "data": 5},
@@ -38,8 +38,8 @@
     },
     {
       "id": "ai_coding_assistant",
-      "name": "AI Coding Assistant",
-      "description": "Code completion, generation, and debugging assistant for developers.",
+      "name": "AI 코딩 조수",
+      "description": "개발자를 위한 코드 생성, 자동완성, 디버깅 도구입니다.",
       "domain": "developer_tools",
       "required_capabilities": {"code": 1},
       "launch_cost": {"cash": 3000, "compute": 30, "data": 15},
@@ -56,8 +56,8 @@
     },
     {
       "id": "customer_support_chatbot",
-      "name": "Customer Support Chatbot",
-      "description": "AI chatbot handling customer inquiries and support tickets.",
+      "name": "고객지원 챗봇",
+      "description": "고객 문의와 지원 티켓을 처리하는 AI 챗봇입니다.",
       "domain": "customer_support",
       "required_capabilities": {"language": 2},
       "launch_cost": {"cash": 2500, "compute": 25, "data": 10},
@@ -74,8 +74,8 @@
     },
     {
       "id": "thumbnail_generator",
-      "name": "Thumbnail Generator",
-      "description": "AI image generation for thumbnails, banners, and social media.",
+      "name": "썸네일 생성기",
+      "description": "썸네일, 배너, 소셜 미디어 이미지를 만드는 AI 이미지 도구입니다.",
       "domain": "creator_tools",
       "required_capabilities": {"vision": 1},
       "launch_cost": {"cash": 2000, "compute": 25, "data": 10},
@@ -92,8 +92,8 @@
     },
     {
       "id": "short_video_editor",
-      "name": "Short-form Video Editor",
-      "description": "AI-powered video editing for short-form content creators.",
+      "name": "숏폼 영상 편집기",
+      "description": "숏폼 크리에이터를 위한 AI 영상 편집 도구입니다.",
       "domain": "creator_tools",
       "required_capabilities": {"vision": 1, "video": 1},
       "launch_cost": {"cash": 4000, "compute": 40, "data": 20},
@@ -110,8 +110,8 @@
     },
     {
       "id": "ai_tutor",
-      "name": "AI Tutor",
-      "description": "Personalized AI tutoring system for students of all levels.",
+      "name": "AI 튜터",
+      "description": "학습자 수준에 맞춰 설명하고 문제를 내주는 개인화 교육 서비스입니다.",
       "domain": "education",
       "required_capabilities": {"language": 2, "agent": 1},
       "launch_cost": {"cash": 3500, "compute": 30, "data": 20},
@@ -128,8 +128,8 @@
     },
     {
       "id": "enterprise_workflow_agent",
-      "name": "Enterprise Workflow Agent",
-      "description": "Autonomous agent automating enterprise business processes.",
+      "name": "기업 업무 에이전트",
+      "description": "기업의 반복 업무 프로세스를 자동으로 처리하는 자율 에이전트입니다.",
       "domain": "enterprise_automation",
       "required_capabilities": {"agent": 2, "enterprise": 1},
       "launch_cost": {"cash": 8000, "compute": 50, "data": 30},

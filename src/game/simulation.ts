@@ -4,9 +4,9 @@ import type { ActionCheck, CapabilityDefinition, GameState, ProductDefinition, R
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 const formatMoney = (value: number) =>
-  new Intl.NumberFormat("en-US", {
+  new Intl.NumberFormat("ko-KR", {
     style: "currency",
-    currency: "USD",
+    currency: "KRW",
     maximumFractionDigits: 0,
   }).format(value);
 
@@ -122,7 +122,7 @@ export function upgradeCapability(capability: CapabilityDefinition, state: GameS
     capabilities: { ...state.capabilities, [capability.id]: nextLevel },
     unlockedDomains: [...unlockedDomains],
     timeline: [
-      `${capability.name} Lv.${nextLevel} 업그레이드${unlockedDomainId ? `: 새 도메인 ${domainName(unlockedDomainId)} 해금` : ""}`,
+      `${capability.name} Lv.${nextLevel} 연구 완료${unlockedDomainId ? `: 새 분야 ${domainName(unlockedDomainId)} 해금` : ""}`,
       ...state.timeline,
     ].slice(0, 8),
   };
@@ -163,8 +163,8 @@ export function advanceMonth(state: GameState): GameState {
   const nextMonth = state.month + 1;
   const nextStatus = getNextStatus(nextResources, state.activeProducts.length);
   const summary = active.length
-    ? `월 ${nextMonth}: 매출 ${formatMoney(revenue)}, 비용 ${formatMoney(totalCost)}, 유저 +${newUsers.toLocaleString("en-US")}, 데이터 +${generatedData}`
-    : `월 ${nextMonth}: 아직 출시 제품이 없어 고정비만 발생했습니다.`;
+    ? `${nextMonth}개월차: 매출 ${formatMoney(revenue)}, 비용 ${formatMoney(totalCost)}, 이용자 +${newUsers.toLocaleString("ko-KR")}, 데이터 +${generatedData}`
+    : `${nextMonth}개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.`;
 
   return {
     ...state,

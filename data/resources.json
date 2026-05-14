@@ -2,8 +2,8 @@
   "resources": {
     "cash": {
       "id": "cash",
-      "name": "Cash",
-      "description": "Money used for salaries, launches, research, infrastructure, marketing.",
+      "name": "자금",
+      "description": "급여, 출시, 연구, 인프라, 마케팅에 쓰는 회사 자금입니다.",
       "initial_value": 10000,
       "min_value": -999999,
       "max_value": 999999999,
@@ -13,8 +13,8 @@
     },
     "users": {
       "id": "users",
-      "name": "Users",
-      "description": "Total active users across all products.",
+      "name": "이용자",
+      "description": "모든 제품의 활성 이용자 합계입니다.",
       "initial_value": 0,
       "min_value": 0,
       "max_value": 999999999,
@@ -24,8 +24,8 @@
     },
     "compute": {
       "id": "compute",
-      "name": "Compute",
-      "description": "Available GPU/server capacity or compute reserve.",
+      "name": "연산력",
+      "description": "GPU와 서버 용량을 포함한 AI 서비스 처리 능력입니다.",
       "initial_value": 100,
       "min_value": 0,
       "max_value": 999999,
@@ -35,8 +35,8 @@
     },
     "data": {
       "id": "data",
-      "name": "Data",
-      "description": "Training, feedback, and usage data for capability upgrades.",
+      "name": "데이터",
+      "description": "모델 개선과 능력 연구에 쓰는 학습, 피드백, 사용 데이터입니다.",
       "initial_value": 50,
       "min_value": 0,
       "max_value": 999999,
@@ -46,8 +46,8 @@
     },
     "talent": {
       "id": "talent",
-      "name": "Talent",
-      "description": "Employees, researchers, engineers, operators.",
+      "name": "인재",
+      "description": "연구원, 엔지니어, 운영 인력을 포함한 팀 규모입니다.",
       "initial_value": 3,
       "min_value": 0,
       "max_value": 999,
@@ -57,8 +57,8 @@
     },
     "trust": {
       "id": "trust",
-      "name": "Trust",
-      "description": "Public and enterprise trust level.",
+      "name": "신뢰",
+      "description": "대중과 기업 고객이 회사를 믿는 정도입니다.",
       "initial_value": 50,
       "min_value": 0,
       "max_value": 100,
@@ -68,8 +68,8 @@
     },
     "hype": {
       "id": "hype",
-      "name": "Hype",
-      "description": "Market excitement driving user growth and adoption.",
+      "name": "화제성",
+      "description": "이용자 증가와 도입 속도를 끌어올리는 시장의 관심입니다.",
       "initial_value": 10,
       "min_value": 0,
       "max_value": 100,
@@ -79,8 +79,8 @@
     },
     "automation": {
       "id": "automation",
-      "name": "Automation",
-      "description": "Internal automation level reducing costs and enabling compounding.",
+      "name": "자동화",
+      "description": "비용을 줄이고 회사 성장을 복리처럼 만드는 내부 자동화 수준입니다.",
       "initial_value": 0,
       "min_value": 0,
       "max_value": 100,

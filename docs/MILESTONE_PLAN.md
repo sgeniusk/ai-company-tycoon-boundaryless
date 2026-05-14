@@ -7,6 +7,7 @@ Goal: establish the web-native project foundation.
 Deliverables:
 
 - PRD.
+- Game Dev Story iOS benchmark.
 - Production prep harness.
 - Synthetic playtest harness.
 - Agent review protocol.

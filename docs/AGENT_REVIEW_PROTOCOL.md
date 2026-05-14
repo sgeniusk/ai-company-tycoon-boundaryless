@@ -26,6 +26,7 @@ Blocks on:
 Focus:
 
 - Does the feature express boundaryless AI expansion?
+- Does the feature preserve the compact Game Dev Story-style management loop?
 - Are there meaningful trade-offs?
 - Are numbers readable and satisfying?
 - Does the feature make the 10-minute loop more fun?
@@ -88,6 +89,7 @@ Blocks on:
 Focus:
 
 - Can a new player understand the first click in 30 seconds?
+- Does the screen feel like a compact Korean management sim rather than a generic SaaS dashboard?
 - Are resource changes visible immediately?
 - Are locked items explained?
 - Is the screen readable without scrolling?
@@ -141,4 +143,5 @@ A milestone may advance only when:
 - `npm run build` passes.
 - Synthetic playtest report exists.
 - Agent review report exists.
+- Game Dev Story benchmark deviations are either intentional or logged.
 - P0/P1 issues are fixed or explicitly waived by the human owner.

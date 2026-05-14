@@ -14,7 +14,7 @@ Use a web-native stack:
 
 ## Why This Stack
 
-The game is a dashboard-first tycoon simulation. The core work is state, data, UI clarity, validation, and fast iteration. A web-native stack makes it easier to:
+The game is a Korean-first, dashboard-oriented tycoon simulation benchmarked against the compact loop of Game Dev Story iOS. The core work is state, data, UI clarity, validation, and fast iteration. A web-native stack makes it easier to:
 
 - Deploy publicly on Vercel.
 - Run automated data/build checks.
@@ -70,13 +70,13 @@ No tunable balance number should be hidden in a component.
 
 ### UI Boundary
 
-The first screen is the playable dashboard:
+The first screen is the playable operation screen. It should feel closer to a compact mobile management sim than a SaaS analytics dashboard:
 
-- Resource strip.
-- Company status.
+- Korean resource strip.
+- Company status and month.
 - Product launch panel.
-- Capability panel.
-- Monthly timeline.
+- Capability research panel.
+- Monthly company record.
 - Event modal/panel.
 - Warning area.
 

@@ -1,10 +1,14 @@
-# Product Requirements Document
+# PRD - AI 컴퍼니 타이쿤: 바운더리리스
 
-## Product
+## 제품
 
 **AI Company Tycoon: Boundaryless**
 
-Browser-based management simulation where the player grows a small AI startup into a company that crosses industry boundaries by turning reusable AI capabilities into products, domains, infrastructure, and automated operations.
+작은 AI 스타트업을 시작해, 재사용 가능한 AI 능력을 제품, 산업 분야, 인프라, 자동화 운영으로 확장하며 경계 없는 회사로 키우는 브라우저 기반 경영 시뮬레이션입니다.
+
+## 언어 기준
+
+MVP의 기본 언어는 한국어입니다. 개발 문서 일부는 영문 용어를 병기할 수 있지만, 플레이어가 보는 UI, 제품명, 자원명, 상태 메시지는 한국어를 우선합니다.
 
 ## Product Thesis
 
@@ -32,16 +36,24 @@ The MVP should prove this fantasy in 10 minutes:
 
 Instead of buying more factories of the same kind, the player builds reusable AI primitives that unlock new product categories. Language can become a writing app, tutor, support agent, enterprise assistant, legal tool, or media engine. Code can become developer tools, internal automation, app generation, or autonomous software teams.
 
-## Comparable References
+## 벤치마크 기준
 
-- Game Dev Story: readable company growth fantasy and compact management loop.
+- Game Dev Story iOS: 작은 회사, 직원 운용, 제품 개발, 평가 점수, 판매량, 사무실 확장을 짧은 모바일 루프로 압축한 1차 벤치마크.
 - Startup Company: product/company scaling theme.
 - Universal Paperclips: compounding abstraction and existential scale.
 - Plague Inc.: simple global feedback loops that become strategic.
 - Reigns: event choices with visible consequences.
 - Mini Metro: clarity, pressure, and elegant escalation.
 
-The target is not to copy any one of these. The target is a readable, replayable company-growth loop with a uniquely AI-native expansion model.
+1차 감각 기준은 Game Dev Story입니다. 단, 복제 대상은 아트/IP가 아니라 다음 구조입니다.
+
+- 작은 조직이 점점 큰 회사가 되는 압축 성장감.
+- 직원/능력/제품/시장 조합을 통한 결과 예측.
+- 출시 후 리뷰, 판매, 순위, 수상 같은 즉각적 피드백.
+- 짧게 눌러도 다음 결과가 궁금한 "한 달만 더" 루프.
+- 메뉴는 단순하지만 숫자와 상태 변화는 풍부한 모바일 경영 시뮬레이션 감각.
+
+자세한 벤치마크는 `docs/BENCHMARK_GAME_DEV_STORY.md`를 따릅니다.
 
 ## Core Fantasy
 
@@ -151,19 +163,19 @@ The app may contain formulas, but content and balancing values should be data-dr
 
 ## User Experience
 
-The first screen is the game dashboard, not a marketing landing page.
+첫 화면은 랜딩 페이지가 아니라 바로 플레이 가능한 회사 운영 화면입니다.
 
-The dashboard should show:
+화면은 카이로소프트식 모바일 경영 게임처럼 작고 읽기 쉬운 정보 덩어리로 구성합니다. 첫 MVP 화면은 다음을 보여줘야 합니다.
 
-- Month and company stage.
-- Resource strip.
-- Main action area for products and capability upgrades.
-- Locked reasons in plain language.
-- Timeline of recent changes.
-- Clear "Next Month" button.
-- Warnings for low cash, low trust, and compute pressure.
+- 현재 개월차와 회사 단계.
+- 자금, 이용자, 연산력, 데이터, 인재, 신뢰, 화제성, 자동화.
+- 출시 가능한 제품과 잠긴 제품의 이유.
+- 연구 가능한 AI 능력.
+- 최근 회사 기록.
+- 명확한 "다음 달" 버튼.
+- 자금 부족, 신뢰 하락, 연산력 압박 경고.
 
-The UI should be dense but readable, like an operational company dashboard rather than a decorative landing page.
+UI는 장식적인 웹 대시보드가 아니라, iOS 경영 시뮬레이션처럼 작고 빠르게 읽히는 조작 화면이어야 합니다.
 
 ## Risks
 
