@@ -34,6 +34,7 @@ This document tracks identified risks to the project, their severity, likelihood
 | R005 | Compute pressure curve may be too punishing early | P2 | Low | Tune users_per_compute_cost_unit in balance.json | Open |
 | R006 | Save/Load may corrupt state if systems change between milestones | P2 | Low | Version save files; validate on load | Open |
 | R007 | Alpha screen can still feel too panel-heavy compared with Kairosoft-style playfulness | P2 | Medium | Add release animations, product review ceremony, and collapsible panels in the next polish pass | Open |
+| R008 | Pixel sprite generation may drift between frames or break the compact UI scale | P2 | Medium | Use one approved seed frame, full-strip generation, normalized anchors, preview sheets, and asset manifest validation before runtime import | Open |
 
 ---
 

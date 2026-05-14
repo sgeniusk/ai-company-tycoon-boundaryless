@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.0: Pixel Asset Manifest Scaffold
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `asset_manifest.json` defines fixed sprite grid sizes for tiles, character frames, portraits, icons, and competitor logos | **Passed** |
+| 2 | Priority agent sprite hooks cover 프롬프트 설계가, 코드 스미스, 데이터 큐레이터, 인프라 오퍼레이터, 그로스 해커 | **Passed** |
+| 3 | Agent sprite hooks include placeholder status, 3-frame idle/work animation metadata, portrait hints, prop hints, and hex palettes | **Passed** |
+| 4 | Every competitor has a logo identity hook and 32x32 logo size | **Passed** |
+| 5 | First item icon batch maps to existing shop item IDs | **Passed** |
+| 6 | Data validator rejects broken asset references and invalid palettes | **Passed** |
+| 7 | Agent, competitor, and item UI surfaces consume manifest hooks without replacing readable text | **Passed** |
+| 8 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.8.1: UI Structure Prep For Pixel Assets
 
 | # | Criterion | Status |

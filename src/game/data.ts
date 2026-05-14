@@ -12,8 +12,10 @@ import agentTypesJson from "../../data/agent_types.json";
 import itemsJson from "../../data/items.json";
 import competitorsJson from "../../data/competitors.json";
 import rivalEventsJson from "../../data/rival_events.json";
+import assetManifestJson from "../../data/asset_manifest.json";
 import type {
   AgentTypeDefinition,
+  AssetManifestDefinition,
   AutomationUpgradeDefinition,
   BalanceDefinition,
   CapabilityDefinition,
@@ -43,3 +45,4 @@ export const agentTypes = agentTypesJson.agent_types as unknown as AgentTypeDefi
 export const items = itemsJson.items as unknown as ItemDefinition[];
 export const competitors = competitorsJson.competitors as unknown as CompetitorDefinition[];
 export const rivalEvents = rivalEventsJson.rival_events as unknown as RivalEventDefinition[];
+export const assetManifest = assetManifestJson as unknown as AssetManifestDefinition;

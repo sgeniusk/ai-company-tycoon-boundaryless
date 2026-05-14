@@ -1,0 +1,225 @@
+{
+  "version": "0.9.0-alpha",
+  "sprite_grid": {
+    "tile_size": 16,
+    "character_frame_size": 32,
+    "portrait_size": 48,
+    "icon_size": 24,
+    "competitor_logo_size": 32
+  },
+  "agent_sprites": [
+    {
+      "agent_type_id": "prompt_architect",
+      "source_status": "placeholder",
+      "body_class": "sprite-agent-prompt",
+      "palette": ["#5fc6a6", "#fff1ba", "#26342d"],
+      "animations": {
+        "idle": {"frames": 3, "row": 0},
+        "work": {"frames": 3, "row": 1}
+      },
+      "portrait_hint": "둥근 안경, 민트 앞머리, 후드형 체크 조끼",
+      "prop_hint": "말풍선 태블릿"
+    },
+    {
+      "agent_type_id": "code_smith",
+      "source_status": "placeholder",
+      "body_class": "sprite-agent-code",
+      "palette": ["#314453", "#56d6e9", "#d8dde4"],
+      "animations": {
+        "idle": {"frames": 3, "row": 2},
+        "work": {"frames": 3, "row": 3}
+      },
+      "portrait_hint": "검은 단발, 각진 작업복, 작은 로봇팔",
+      "prop_hint": "빛나는 기계식 키보드"
+    },
+    {
+      "agent_type_id": "data_curator",
+      "source_status": "placeholder",
+      "body_class": "sprite-agent-data",
+      "palette": ["#7d60c7", "#fff0c8", "#d6a640"],
+      "animations": {
+        "idle": {"frames": 3, "row": 4},
+        "work": {"frames": 3, "row": 5}
+      },
+      "portrait_hint": "보라색 묶음 머리, 라벨 스티커 코트",
+      "prop_hint": "색상별 데이터 카드 케이스"
+    },
+    {
+      "agent_type_id": "infra_operator",
+      "source_status": "placeholder",
+      "body_class": "sprite-agent-infra",
+      "palette": ["#667580", "#a9e45c", "#20292d"],
+      "animations": {
+        "idle": {"frames": 3, "row": 6},
+        "work": {"frames": 3, "row": 7}
+      },
+      "portrait_hint": "짧은 회색 머리, 서버실 방열 조끼, 툴벨트",
+      "prop_hint": "작은 GPU 카트"
+    },
+    {
+      "agent_type_id": "growth_hacker",
+      "source_status": "placeholder",
+      "body_class": "sprite-agent-growth",
+      "palette": ["#f28a32", "#39a6a3", "#fff4dc"],
+      "animations": {
+        "idle": {"frames": 3, "row": 8},
+        "work": {"frames": 3, "row": 9}
+      },
+      "portrait_hint": "주황색 포니테일, 스티커 재킷, 스니커즈",
+      "prop_hint": "실시간 바이럴 그래프 폰"
+    }
+  ],
+  "competitor_identities": [
+    {
+      "competitor_id": "competitor_chatgody",
+      "source_status": "placeholder",
+      "logo_class": "logo-chatgody",
+      "logo_size": 32,
+      "palette": ["#3f7f52", "#dff1df", "#1d3326"],
+      "mascot_hint": "왕관이 달린 초록 말풍선 로고"
+    },
+    {
+      "competitor_id": "competitor_cloyi",
+      "source_status": "placeholder",
+      "logo_class": "logo-cloyi",
+      "logo_size": 32,
+      "palette": ["#d87aa3", "#ffe5f0", "#4b2536"],
+      "mascot_hint": "분홍 리본형 채팅 봇 얼굴"
+    },
+    {
+      "competitor_id": "competitor_jemiinni",
+      "source_status": "placeholder",
+      "logo_class": "logo-jemiin",
+      "logo_size": 32,
+      "palette": ["#547ad8", "#dce7ff", "#1d2f68"],
+      "mascot_hint": "쌍둥이 별이 겹친 파란 앱 아이콘"
+    },
+    {
+      "competitor_id": "competitor_novarun",
+      "source_status": "placeholder",
+      "logo_class": "logo-novarun",
+      "logo_size": 32,
+      "palette": ["#f09a38", "#fff0cb", "#6b3711"],
+      "mascot_hint": "질주선 꼬리가 붙은 주황 로켓 로고"
+    },
+    {
+      "competitor_id": "competitor_automaru",
+      "source_status": "placeholder",
+      "logo_class": "logo-automaru",
+      "logo_size": 32,
+      "palette": ["#68717d", "#e4e8ed", "#283039"],
+      "mascot_hint": "둥근 자동화 기어 얼굴"
+    }
+  ],
+  "office_objects": [
+    {
+      "object_id": "work_desk",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "모니터와 커피잔이 있는 낮은 책상",
+      "palette": ["#8b6540", "#f0d28b", "#26342d"]
+    },
+    {
+      "object_id": "gpu_rack",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [1, 2],
+      "readable_shape": "팬 3개가 보이는 세로 서버 랙",
+      "palette": ["#334b5e", "#7ed6f1", "#1d2a33"],
+      "linked_item_id": "gpu_rack_mini"
+    },
+    {
+      "object_id": "launch_board",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "출시 날짜와 상승 화살표가 있는 보드",
+      "palette": ["#fff3c7", "#d8922b", "#2d6b4f"]
+    },
+    {
+      "object_id": "research_whiteboard",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "텐서 노드와 수식이 그려진 화이트보드",
+      "palette": ["#fffaf0", "#547ad8", "#26342d"],
+      "linked_item_id": "tensor_whiteboard"
+    },
+    {
+      "object_id": "item_shelf",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [1, 1],
+      "readable_shape": "작은 장비 상자가 쌓인 선반",
+      "palette": ["#8b6540", "#d8c49b", "#b84c38"]
+    },
+    {
+      "object_id": "meeting_table",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 2],
+      "readable_shape": "의자가 둘러싼 둥근 회의 테이블",
+      "palette": ["#b7844d", "#fff0c8", "#3d3323"]
+    },
+    {
+      "object_id": "server_cooling_wall",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [3, 1],
+      "readable_shape": "팬과 냉각 파이프가 반복되는 벽면 장치",
+      "palette": ["#667580", "#d8dde4", "#56d6e9"],
+      "linked_item_id": "cooling_fan_wall"
+    }
+  ],
+  "item_icons": [
+    {
+      "item_id": "prompt_notebook",
+      "source_status": "placeholder",
+      "icon_class": "icon-prompt-notebook",
+      "icon_size": 24,
+      "palette": ["#5fc6a6", "#fff1ba", "#26342d"],
+      "readable_shape": "말풍선 스티커가 붙은 작은 노트"
+    },
+    {
+      "item_id": "mechanical_keyboard",
+      "source_status": "placeholder",
+      "icon_class": "icon-mechanical-keyboard",
+      "icon_size": 24,
+      "palette": ["#314453", "#56d6e9", "#d8dde4"],
+      "readable_shape": "세 칸 키캡이 강조된 키보드"
+    },
+    {
+      "item_id": "gpu_rack_mini",
+      "source_status": "placeholder",
+      "icon_class": "icon-gpu-rack-mini",
+      "icon_size": 24,
+      "palette": ["#334b5e", "#7ed6f1", "#1d2a33"],
+      "readable_shape": "팬 두 개가 있는 작은 랙"
+    },
+    {
+      "item_id": "tensor_whiteboard",
+      "source_status": "placeholder",
+      "icon_class": "icon-tensor-whiteboard",
+      "icon_size": 24,
+      "palette": ["#fffaf0", "#547ad8", "#26342d"],
+      "readable_shape": "노드 세 개가 연결된 보드"
+    },
+    {
+      "item_id": "redteam_toolkit",
+      "source_status": "placeholder",
+      "icon_class": "icon-redteam-toolkit",
+      "icon_size": 24,
+      "palette": ["#b84c38", "#fffaf0", "#20231f"],
+      "readable_shape": "경고 마크가 붙은 도구 가방"
+    },
+    {
+      "item_id": "viral_camera",
+      "source_status": "placeholder",
+      "icon_class": "icon-viral-camera",
+      "icon_size": 24,
+      "palette": ["#f28a32", "#39a6a3", "#fff4dc"],
+      "readable_shape": "재생 버튼 렌즈가 있는 카메라"
+    }
+  ]
+}

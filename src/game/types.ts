@@ -116,6 +116,69 @@ export interface RivalEventDefinition {
   choices: RivalEventChoiceDefinition[];
 }
 
+export interface SpriteGridDefinition {
+  tile_size: number;
+  character_frame_size: number;
+  portrait_size: number;
+  icon_size: number;
+  competitor_logo_size: number;
+}
+
+export interface SpriteAnimationDefinition {
+  frames: number;
+  row: number;
+}
+
+export interface AgentSpriteDefinition {
+  agent_type_id: string;
+  source_status: "placeholder" | "draft" | "final";
+  body_class: string;
+  palette: string[];
+  animations: {
+    idle: SpriteAnimationDefinition;
+    work: SpriteAnimationDefinition;
+  };
+  portrait_hint: string;
+  prop_hint: string;
+}
+
+export interface CompetitorIdentityDefinition {
+  competitor_id: string;
+  source_status: "placeholder" | "draft" | "final";
+  logo_class: string;
+  logo_size: number;
+  palette: string[];
+  mascot_hint: string;
+}
+
+export interface OfficeObjectAssetDefinition {
+  object_id: string;
+  source_status: "placeholder" | "draft" | "final";
+  tile_size: number;
+  footprint: [number, number];
+  readable_shape: string;
+  palette: string[];
+  linked_item_id?: string;
+}
+
+export interface ItemIconDefinition {
+  item_id: string;
+  source_status: "placeholder" | "draft" | "final";
+  icon_class: string;
+  icon_size: number;
+  palette: string[];
+  readable_shape: string;
+}
+
+export interface AssetManifestDefinition {
+  version: string;
+  sprite_grid: SpriteGridDefinition;
+  agent_sprites: AgentSpriteDefinition[];
+  competitor_identities: CompetitorIdentityDefinition[];
+  office_objects: OfficeObjectAssetDefinition[];
+  item_icons: ItemIconDefinition[];
+}
+
 export interface MarketRanking {
   id: string;
   score: number;

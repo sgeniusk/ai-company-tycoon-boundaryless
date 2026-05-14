@@ -76,6 +76,22 @@ Use 16x16 or 24x24 icons first:
 - Prefer one sprite sheet per category after the first batch stabilizes.
 - Preserve accessible text labels; images should enhance, not replace, readable UI.
 
+## v0.9 Scaffold Status
+
+Implemented:
+
+- `data/asset_manifest.json` defines the current 16px tile grid, 32px character frame grid, 48px portrait size, 24px item icon size, and 32px competitor logo size.
+- Priority agent placeholders now have palette, silhouette class, idle/work animation rows, portrait hints, and prop hints.
+- All five fictional competitors have logo identity hooks.
+- The first six shop items have icon hooks.
+- Office objects have tile footprints so the later office-layout pass can place real tiles without inventing new IDs.
+
+Still pending before final art generation:
+
+- Approve one seed frame per priority agent.
+- Choose whether the first batch is generated as mock sprite sheets or drawn manually after prompt drafts.
+- Add actual PNG paths only after preview sheets pass in-engine inspection.
+
 ## Next Gate
 
 Before generating assets:

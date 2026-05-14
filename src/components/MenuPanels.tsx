@@ -1,5 +1,5 @@
-import type { Dispatch, SetStateAction } from "react";
-import { agentTypes, automationUpgrades, capabilities, competitors, domains, items, products, upgrades } from "../game/data";
+import type { CSSProperties, Dispatch, SetStateAction } from "react";
+import { agentTypes, assetManifest, automationUpgrades, capabilities, competitors, domains, items, products, upgrades } from "../game/data";
 import {
   buyAutomationUpgrade,
   buyItem,
@@ -20,10 +20,33 @@ import {
   startProductProject,
   upgradeCapability,
 } from "../game/simulation";
-import type { AgentTypeDefinition, GameState, HiredAgent, ItemDefinition } from "../game/types";
+import type { AgentSpriteDefinition, CompetitorIdentityDefinition, GameState, HiredAgent, ItemDefinition, ItemIconDefinition, AgentTypeDefinition } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, itemCategoryLabel, itemTargetLabel, statLabel } from "../ui/formatters";
 import type { MenuId } from "../ui/menu";
+
+function assetPaletteVars(palette?: string[]): CSSProperties {
+  if (!palette?.length) return {};
+
+  return {
+    "--sprite-primary": palette[0],
+    "--sprite-secondary": palette[1] ?? palette[0],
+    "--sprite-accent": palette[2] ?? palette[0],
+  } as CSSProperties;
+}
+
+function getAgentSprite(agentTypeId?: string): AgentSpriteDefinition | undefined {
+  if (!agentTypeId) return undefined;
+  return assetManifest.agent_sprites.find((sprite) => sprite.agent_type_id === agentTypeId);
+}
+
+function getCompetitorIdentity(competitorId: string): CompetitorIdentityDefinition | undefined {
+  return assetManifest.competitor_identities.find((identity) => identity.competitor_id === competitorId);
+}
+
+function getItemIcon(itemId: string): ItemIconDefinition | undefined {
+  return assetManifest.item_icons.find((icon) => icon.item_id === itemId);
+}
 
 export function renderMenuContent(
   activeMenu: MenuId,
@@ -218,11 +241,16 @@ function HiredAgentCard({
   const equippedItems = items.filter((item) => agent.equippedItemIds.includes(item.id));
   const assignedProject = gameState.productProjects.find((project) => project.id === agent.assignment);
   const assignedProduct = assignedProject ? products.find((product) => product.id === assignedProject.productId) : undefined;
+  const agentSprite = getAgentSprite(agentType?.id);
 
   return (
     <article className="hired-card">
       <div className="agent-top">
-        <div className="agent-portrait compact" aria-hidden="true">
+        <div
+          className={`agent-portrait compact ${agentSprite?.body_class ?? ""}`}
+          style={assetPaletteVars(agentSprite?.palette)}
+          aria-hidden="true"
+        >
           <span className="agent-head" />
           <span className="agent-body" />
           <span className="agent-prop" />
@@ -285,10 +313,16 @@ function AgentCard({
   isHired: boolean;
   onHire: () => void;
 }) {
+  const agentSprite = getAgentSprite(agent.id);
+
   return (
     <article className={`agent-card rarity-${agent.rarity}`}>
       <div className="agent-top">
-        <div className="agent-portrait" aria-hidden="true">
+        <div
+          className={`agent-portrait ${agentSprite?.body_class ?? ""}`}
+          style={assetPaletteVars(agentSprite?.palette)}
+          aria-hidden="true"
+        >
           <span className="agent-head" />
           <span className="agent-body" />
           <span className="agent-prop" />
@@ -433,11 +467,21 @@ function ItemCard({
 }) {
   const check = getItemCheck(item, gameState);
   const isOwned = gameState.ownedItems.includes(item.id);
+  const itemIcon = getItemIcon(item.id);
 
   return (
     <article className={`item-shop-card rarity-${item.rarity}`}>
       <p className="item-meta">{itemCategoryLabel(item.category)} / {item.rarity}</p>
-      <h3>{item.name}</h3>
+      <div className="item-title-row">
+        {itemIcon && (
+          <span
+            className={`item-icon ${itemIcon.icon_class}`}
+            style={assetPaletteVars(itemIcon.palette)}
+            aria-hidden="true"
+          />
+        )}
+        <h3>{item.name}</h3>
+      </div>
       <p>{item.description}</p>
       <div className="mini-row">
         <span>비용 {formatCost(item.cost)}</span>
@@ -490,14 +534,26 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
         <div className="competitor-grid">
           {gameState.competitorStates.map((state) => {
             const competitor = competitors.find((entry) => entry.id === state.id);
+            const identity = getCompetitorIdentity(state.id);
             const claimedProducts = products.filter((product) => state.claimedProducts.includes(product.id));
             if (!competitor) return null;
 
             return (
               <article className="competitor-card" style={{ borderColor: competitor.color }} key={state.id}>
-                <p className="item-meta">{t(competitor.archetype_key, locale)}</p>
-                <h3>{t(competitor.name_key, locale)}</h3>
-                <p>{t(competitor.weakness_key, locale)}</p>
+                <div className="competitor-top">
+                  <div
+                    className={`competitor-logo ${identity?.logo_class ?? ""}`}
+                    style={assetPaletteVars(identity?.palette)}
+                    aria-hidden="true"
+                  >
+                    <span />
+                  </div>
+                  <div>
+                    <p className="item-meta">{t(competitor.archetype_key, locale)}</p>
+                    <h3>{t(competitor.name_key, locale)}</h3>
+                    <p>{t(competitor.weakness_key, locale)}</p>
+                  </div>
+                </div>
                 <div className="market-meter">
                   <i style={{ width: `${state.marketShare}%`, background: competitor.color }} />
                 </div>

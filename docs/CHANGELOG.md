@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.0-alpha] — 2026-05-15
+
+### Pixel Asset Manifest Scaffold
+
+**Added:**
+- `data/asset_manifest.json` for sprite grid, priority agent sprites, competitor logos, office objects, and first item icons
+- TypeScript asset manifest types and loader export
+- Vitest coverage for v0.9 pixel asset manifest requirements
+- Data validator checks for asset references, sprite grid sizes, placeholder status, animation rows, and hex palettes
+
+**Updated:**
+- Agent portraits now consume manifest palettes and body classes
+- Competitor profile cards now show placeholder logo identities
+- Shop item cards now show placeholder item icons for the first asset batch
+- Pixel asset plan now records the scaffolded manifest gate
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.8.1-alpha] — 2026-05-15
 
 ### UI Structure Prep For Pixel Assets
