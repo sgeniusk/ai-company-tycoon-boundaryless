@@ -47,6 +47,8 @@ const balanceData = readJson("balance.json");
 const startingState = readJson("starting_state.json");
 const personasData = readJson("playtest_personas.json");
 const companyStagesData = readJson("company_stages.json");
+const agentTypesData = readJson("agent_types.json");
+const itemsData = readJson("items.json");
 
 const resources = resourcesData?.resources ?? {};
 const products = productsData?.products ?? [];
@@ -57,6 +59,8 @@ const upgrades = upgradesData?.upgrades ?? [];
 const automationUpgrades = automationData?.automation_upgrades ?? [];
 const personas = personasData?.personas ?? [];
 const companyStages = companyStagesData?.company_stages ?? [];
+const agentTypes = agentTypesData?.agent_types ?? [];
+const items = itemsData?.items ?? [];
 
 const resourceIds = new Set(Object.keys(resources));
 const capabilityIds = idsAreUnique("capabilities", capabilities);
@@ -67,6 +71,8 @@ idsAreUnique("upgrades", upgrades);
 idsAreUnique("automation_upgrades", automationUpgrades);
 idsAreUnique("playtest_personas", personas);
 idsAreUnique("company_stages", companyStages);
+const agentTypeIds = idsAreUnique("agent_types", agentTypes);
+const itemIds = idsAreUnique("items", items);
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);
@@ -115,6 +121,29 @@ for (const stage of companyStages) {
     ]);
     if (!allowed.has(requirement)) errors.push(`company_stage "${stage.id}": unknown requirement "${requirement}"`);
     if (typeof value !== "number") errors.push(`company_stage "${stage.id}": requirement "${requirement}" must be numeric`);
+  }
+}
+
+const allowedAgentStats = new Set(["research", "engineering", "product", "growth", "safety", "operations", "creativity", "autonomy"]);
+for (const agent of agentTypes) {
+  for (const stat of allowedAgentStats) {
+    if (typeof agent.stats?.[stat] !== "number") errors.push(`agent_type "${agent.id}": missing numeric stat "${stat}"`);
+  }
+  if (!Array.isArray(agent.appearance?.palette) || agent.appearance.palette.length < 3) {
+    errors.push(`agent_type "${agent.id}": appearance palette needs at least 3 colors`);
+  }
+  for (const itemId of agent.preferred_items ?? []) {
+    if (!itemIds.has(itemId)) errors.push(`agent_type "${agent.id}": preferred unknown item "${itemId}"`);
+  }
+  validateResourceMap(`agent_type "${agent.id}" upkeep`, agent.upkeep, resourceIds);
+}
+
+const allowedItemEffects = new Set([...resourceIds, ...allowedAgentStats]);
+for (const item of items) {
+  validateResourceMap(`item "${item.id}" cost`, item.cost, resourceIds);
+  for (const [effectKey, value] of Object.entries(item.effects ?? {})) {
+    if (!allowedItemEffects.has(effectKey)) errors.push(`item "${item.id}": unknown effect "${effectKey}"`);
+    if (typeof value !== "number") errors.push(`item "${item.id}": effect "${effectKey}" must be numeric`);
   }
 }
 

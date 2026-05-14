@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.3.1-alpha] — 2026-05-15
+
+### Content And Menu Structure
+
+**Added:**
+- 10 AI agent archetypes with Korean names, roles, stats, upkeep, preferred items, quirks, and pixel-art appearance notes
+- 20 shop items across office, equipment, research, safety, and marketing categories
+- Menu structure: 회사, 제품, 에이전트, 연구, 상점, 기록
+- Agent compendium screen with stat grid and appearance hooks
+- Item shop screen with costs, effects, rarity, and flavor text
+- Content validation tests for agent and item data
+
+**Updated:**
+- Data validator now checks agent stats, appearance palettes, preferred item references, item costs, and item effect keys
+- The alpha UI now uses a menu panel instead of showing every system at once
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+- Browser checked: menu navigation, agent screen, shop screen, console errors 0
+
+---
+
 ## [0.3.0-alpha] — 2026-05-15
 
 ### Alpha: Game-Like Playable Screen

@@ -1,0 +1,194 @@
+{
+  "agent_types": [
+    {
+      "id": "prompt_architect",
+      "name": "프롬프트 설계가",
+      "role": "제품 기획형 에이전트",
+      "description": "사용자 요구를 구조화해 제품 기능과 대화 흐름으로 바꿉니다.",
+      "rarity": "common",
+      "stats": {"research": 2, "engineering": 2, "product": 6, "growth": 3, "safety": 2, "operations": 2, "creativity": 6, "autonomy": 4},
+      "appearance": {
+        "palette": ["mint", "cream", "ink"],
+        "silhouette": "둥근 안경과 작은 망토 같은 후드",
+        "hair": "짧은 민트색 앞머리",
+        "outfit": "체크무늬 연구 조끼",
+        "signatureProp": "말풍선이 떠 있는 태블릿"
+      },
+      "unlock_requirements": {},
+      "upkeep": {"cash": 350, "compute": 2},
+      "preferred_items": ["prompt_notebook", "ux_sticky_wall"],
+      "quirk": "출시 전 설명 문구 품질을 올립니다."
+    },
+    {
+      "id": "model_researcher",
+      "name": "모델 연구원",
+      "role": "연구형 에이전트",
+      "description": "새로운 AI 능력과 모델 효율을 연구합니다.",
+      "rarity": "rare",
+      "stats": {"research": 8, "engineering": 4, "product": 2, "growth": 1, "safety": 3, "operations": 2, "creativity": 5, "autonomy": 3},
+      "appearance": {
+        "palette": ["navy", "white", "neon-green"],
+        "silhouette": "큰 실험복과 각진 헤드셋",
+        "hair": "삐죽한 남색 머리",
+        "outfit": "긴 실험복과 GPU 배지",
+        "signatureProp": "수식이 떠 있는 홀로그램 보드"
+      },
+      "unlock_requirements": {"min_month": 2},
+      "upkeep": {"cash": 600, "data": 2},
+      "preferred_items": ["tensor_whiteboard", "model_zoo_shelf"],
+      "quirk": "능력 연구 비용을 체감상 낮춰줍니다."
+    },
+    {
+      "id": "code_smith",
+      "name": "코드 스미스",
+      "role": "개발형 에이전트",
+      "description": "제품 구현, 버그 수정, 내부 도구 제작에 특화되어 있습니다.",
+      "rarity": "common",
+      "stats": {"research": 3, "engineering": 8, "product": 4, "growth": 1, "safety": 2, "operations": 4, "creativity": 3, "autonomy": 5},
+      "appearance": {
+        "palette": ["charcoal", "cyan", "silver"],
+        "silhouette": "네모난 작업복과 작은 로봇팔",
+        "hair": "검은 단발",
+        "outfit": "케이블이 달린 후드 집업",
+        "signatureProp": "빛나는 기계식 키보드"
+      },
+      "unlock_requirements": {"min_capability_code": 1},
+      "upkeep": {"cash": 500, "compute": 3},
+      "preferred_items": ["mechanical_keyboard", "ci_badge"],
+      "quirk": "개발자 도구 제품과 자동화 투자에 강합니다."
+    },
+    {
+      "id": "data_curator",
+      "name": "데이터 큐레이터",
+      "role": "데이터형 에이전트",
+      "description": "학습 데이터 품질을 관리하고 피드백 루프를 정리합니다.",
+      "rarity": "common",
+      "stats": {"research": 5, "engineering": 3, "product": 3, "growth": 2, "safety": 5, "operations": 5, "creativity": 2, "autonomy": 4},
+      "appearance": {
+        "palette": ["violet", "cream", "gold"],
+        "silhouette": "긴 코트와 데이터 카드 묶음",
+        "hair": "보라색 묶음 머리",
+        "outfit": "라벨 스티커가 붙은 코트",
+        "signatureProp": "색상별 데이터 카드 케이스"
+      },
+      "unlock_requirements": {},
+      "upkeep": {"cash": 420, "data": 1},
+      "preferred_items": ["data_labeler_desk", "feedback_inbox"],
+      "quirk": "월간 데이터 획득량을 안정화합니다."
+    },
+    {
+      "id": "safety_redteamer",
+      "name": "세이프티 레드팀",
+      "role": "안전형 에이전트",
+      "description": "위험 출력, 환각, 악용 시나리오를 찾아 신뢰를 지킵니다.",
+      "rarity": "rare",
+      "stats": {"research": 4, "engineering": 4, "product": 2, "growth": 1, "safety": 9, "operations": 4, "creativity": 4, "autonomy": 3},
+      "appearance": {
+        "palette": ["red", "black", "white"],
+        "silhouette": "방패 모양 백팩과 경고등 고글",
+        "hair": "흰색 투블럭",
+        "outfit": "검은 점프슈트와 붉은 완장",
+        "signatureProp": "빨간 테스트 케이스 파일"
+      },
+      "unlock_requirements": {"min_trust": 40},
+      "upkeep": {"cash": 550, "data": 1},
+      "preferred_items": ["redteam_toolkit", "policy_binder"],
+      "quirk": "환각 사고 이벤트 피해를 줄이는 방향입니다."
+    },
+    {
+      "id": "growth_hacker",
+      "name": "그로스 해커",
+      "role": "성장형 에이전트",
+      "description": "제품을 빠르게 퍼뜨리고 화제성을 매출 기회로 바꿉니다.",
+      "rarity": "common",
+      "stats": {"research": 1, "engineering": 3, "product": 4, "growth": 9, "safety": 1, "operations": 3, "creativity": 7, "autonomy": 6},
+      "appearance": {
+        "palette": ["orange", "teal", "white"],
+        "silhouette": "스니커즈와 번쩍이는 확성기",
+        "hair": "주황색 포니테일",
+        "outfit": "스티커 가득한 스타트업 재킷",
+        "signatureProp": "실시간 바이럴 그래프 폰"
+      },
+      "unlock_requirements": {"min_products": 1},
+      "upkeep": {"cash": 480, "hype": 1},
+      "preferred_items": ["viral_camera", "launch_confetti"],
+      "quirk": "출시 직후 이용자 증가에 강합니다."
+    },
+    {
+      "id": "infra_operator",
+      "name": "인프라 오퍼레이터",
+      "role": "운영형 에이전트",
+      "description": "서버, GPU, 장애 대응, 비용 최적화를 담당합니다.",
+      "rarity": "common",
+      "stats": {"research": 2, "engineering": 6, "product": 1, "growth": 1, "safety": 3, "operations": 9, "creativity": 2, "autonomy": 5},
+      "appearance": {
+        "palette": ["steel", "lime", "black"],
+        "silhouette": "툴벨트와 네온 서버 랜턴",
+        "hair": "짧은 회색 머리",
+        "outfit": "서버실 방열 조끼",
+        "signatureProp": "작은 GPU 카트"
+      },
+      "unlock_requirements": {},
+      "upkeep": {"cash": 500, "compute": 1},
+      "preferred_items": ["gpu_rack_mini", "cooling_fan_wall"],
+      "quirk": "연산력 압박과 서버 장애 대응에 강합니다."
+    },
+    {
+      "id": "enterprise_closer",
+      "name": "엔터프라이즈 클로저",
+      "role": "영업형 에이전트",
+      "description": "대기업 계약과 신뢰 기반 매출을 만들어냅니다.",
+      "rarity": "rare",
+      "stats": {"research": 1, "engineering": 2, "product": 5, "growth": 6, "safety": 4, "operations": 5, "creativity": 3, "autonomy": 5},
+      "appearance": {
+        "palette": ["black", "gold", "blue"],
+        "silhouette": "각진 정장과 계약서 케이스",
+        "hair": "깔끔한 금발 올백",
+        "outfit": "금색 핀이 달린 정장",
+        "signatureProp": "빛나는 전자 계약서"
+      },
+      "unlock_requirements": {"min_trust": 50},
+      "upkeep": {"cash": 700},
+      "preferred_items": ["enterprise_pitch_deck", "trust_trophy_case"],
+      "quirk": "기업 자동화 분야와 신뢰 기반 이벤트에 강합니다."
+    },
+    {
+      "id": "vision_artist",
+      "name": "비전 아티스트",
+      "role": "창작형 에이전트",
+      "description": "이미지, 영상, 크리에이터 도구의 감각적 완성도를 끌어올립니다.",
+      "rarity": "rare",
+      "stats": {"research": 3, "engineering": 3, "product": 6, "growth": 4, "safety": 2, "operations": 2, "creativity": 9, "autonomy": 4},
+      "appearance": {
+        "palette": ["pink", "indigo", "cream"],
+        "silhouette": "큰 베레모와 픽셀 붓",
+        "hair": "분홍색 웨이브",
+        "outfit": "잉크 자국 있는 작업 앞치마",
+        "signatureProp": "빛나는 스타일 팔레트"
+      },
+      "unlock_requirements": {"min_capability_vision": 1},
+      "upkeep": {"cash": 520, "data": 1},
+      "preferred_items": ["style_palette", "render_corner"],
+      "quirk": "크리에이터 도구 제품 반응을 올립니다."
+    },
+    {
+      "id": "autonomy_planner",
+      "name": "자율기획 에이전트",
+      "role": "자동화형 에이전트",
+      "description": "복잡한 업무를 단계로 쪼개고 다른 에이전트를 조율합니다.",
+      "rarity": "epic",
+      "stats": {"research": 5, "engineering": 5, "product": 6, "growth": 3, "safety": 5, "operations": 7, "creativity": 5, "autonomy": 9},
+      "appearance": {
+        "palette": ["white", "purple", "electric-blue"],
+        "silhouette": "작은 왕관형 안테나와 긴 코어 망토",
+        "hair": "은색 단발",
+        "outfit": "회로 문양 로브",
+        "signatureProp": "스스로 움직이는 할 일 보드"
+      },
+      "unlock_requirements": {"min_capability_agent": 1},
+      "upkeep": {"cash": 850, "compute": 5},
+      "preferred_items": ["autonomy_planner_board", "agent_orchestra_podium"],
+      "quirk": "자동화 투자의 효과를 크게 만드는 후반 핵심입니다."
+    }
+  ]
+}

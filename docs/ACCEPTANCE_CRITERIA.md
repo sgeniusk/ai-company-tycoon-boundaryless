@@ -22,6 +22,19 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.3.1: Content And Menu Structure
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Menu is organized into Company, Products, Agents, Research, Shop, and Log | **Passed** |
+| 2 | Agent roster includes at least 10 distinct AI agent types | **Passed** |
+| 3 | Every agent has role, stats, upkeep, preferred items, and appearance traits | **Passed** |
+| 4 | Item data includes office, equipment, research, safety, and marketing categories | **Passed** |
+| 5 | Agent and item data are validated by automated tests and data validator | **Passed** |
+| 6 | Browser menu navigation shows Agents and Shop content without console errors | **Passed** |
+
+---
+
 ## Milestone 0: Harness Setup
 
 | # | Criterion | Status |

@@ -8,7 +8,10 @@ import companyStagesJson from "../../data/company_stages.json";
 import eventsJson from "../../data/events.json";
 import upgradesJson from "../../data/upgrades.json";
 import automationUpgradesJson from "../../data/automation_upgrades.json";
+import agentTypesJson from "../../data/agent_types.json";
+import itemsJson from "../../data/items.json";
 import type {
+  AgentTypeDefinition,
   AutomationUpgradeDefinition,
   BalanceDefinition,
   CapabilityDefinition,
@@ -18,6 +21,7 @@ import type {
   ProductDefinition,
   ResourceDefinition,
   StartingStateDefinition,
+  ItemDefinition,
   UpgradeDefinition,
 } from "./types";
 
@@ -31,3 +35,5 @@ export const companyStages = companyStagesJson.company_stages as unknown as Comp
 export const events = eventsJson.events as unknown as EventDefinition[];
 export const upgrades = upgradesJson.upgrades as unknown as UpgradeDefinition[];
 export const automationUpgrades = automationUpgradesJson.automation_upgrades as unknown as AutomationUpgradeDefinition[];
+export const agentTypes = agentTypesJson.agent_types as unknown as AgentTypeDefinition[];
+export const items = itemsJson.items as unknown as ItemDefinition[];

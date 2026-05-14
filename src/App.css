@@ -420,6 +420,54 @@ p {
   font-weight: 900;
 }
 
+.menu-layout {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 150px minmax(0, 1fr);
+}
+
+.main-menu {
+  background: #fffaf0;
+  border: 3px solid var(--line);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.main-menu button {
+  align-content: center;
+  background: #f2cf7f;
+  display: grid;
+  gap: 2px;
+  min-height: 58px;
+  text-align: left;
+}
+
+.main-menu button.active {
+  background: var(--green);
+  color: #fffdf5;
+}
+
+.main-menu button span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  opacity: 0.8;
+}
+
+.menu-panel {
+  min-width: 0;
+}
+
+.panel-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.panel-grid.two-col {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.78fr);
+}
+
 .dashboard-grid {
   display: grid;
   gap: 12px;
@@ -439,6 +487,26 @@ p {
   min-height: 260px;
 }
 
+.company-summary {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.company-summary strong,
+.company-summary span {
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  min-height: 54px;
+  padding: 10px;
+}
+
+.company-summary strong {
+  color: var(--green-dark);
+  grid-column: 1 / -1;
+  font-size: 1.15rem;
+}
+
 .panel-heading {
   border-bottom: 2px solid #dfcc9d;
   margin-bottom: 12px;
@@ -456,6 +524,10 @@ p {
 
 .item-list.compact {
   gap: 8px;
+}
+
+.products-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .item-card,
@@ -540,6 +612,136 @@ p {
   border-color: #99bf91;
 }
 
+.agent-grid,
+.item-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.agent-card,
+.item-shop-card {
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.agent-card.rarity-rare,
+.item-shop-card.rarity-rare {
+  border-color: #749ad8;
+  background: #f0f6ff;
+}
+
+.agent-card.rarity-epic,
+.item-shop-card.rarity-epic {
+  border-color: #a579d8;
+  background: #f8f0ff;
+}
+
+.agent-top {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 72px minmax(0, 1fr);
+}
+
+.agent-portrait {
+  background: #e6d09c;
+  border: 3px solid var(--line);
+  height: 72px;
+  position: relative;
+  width: 72px;
+}
+
+.agent-head,
+.agent-body,
+.agent-prop {
+  border: 2px solid var(--line);
+  display: block;
+  position: absolute;
+}
+
+.agent-head {
+  background: #f0c286;
+  height: 25px;
+  left: 23px;
+  top: 8px;
+  width: 25px;
+}
+
+.agent-body {
+  background: var(--blue);
+  height: 30px;
+  left: 19px;
+  top: 34px;
+  width: 32px;
+}
+
+.agent-prop {
+  background: #d8ff82;
+  height: 15px;
+  right: 6px;
+  top: 28px;
+  width: 18px;
+}
+
+.stat-grid {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.stat-grid span {
+  background: #f6efd9;
+  border: 1px solid #d8c49b;
+  color: #58462a;
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 5px;
+}
+
+.stat-grid strong {
+  color: var(--green-dark);
+  float: right;
+}
+
+.appearance-box {
+  background: #f7ead0;
+  border-left: 4px solid var(--amber);
+  display: grid;
+  gap: 3px;
+  padding: 8px;
+}
+
+.appearance-box span,
+.agent-quirk,
+.item-shop-card small {
+  color: #68583f;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.agent-quirk {
+  font-weight: 900;
+  margin-bottom: 0;
+}
+
+.mini-row {
+  display: grid;
+  gap: 5px;
+}
+
+.mini-row span {
+  background: #f6efd9;
+  border: 1px solid #d8c49b;
+  color: #58462a;
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 6px;
+}
+
 .capability-row p,
 .capability-row h3,
 .upgrade-row p,
@@ -577,8 +779,14 @@ p {
 
   .game-stage,
   .dashboard-grid,
-  .event-panel {
+  .event-panel,
+  .menu-layout,
+  .panel-grid.two-col {
     grid-template-columns: 1fr;
+  }
+
+  .main-menu {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .products-panel {
@@ -633,11 +841,30 @@ p {
   }
 
   .monthly-report dl,
-  .review-badge {
+  .review-badge,
+  .products-list,
+  .agent-grid,
+  .item-grid,
+  .company-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .review-badge small {
     grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .main-menu,
+  .products-list,
+  .agent-grid,
+  .item-grid,
+  .monthly-report dl,
+  .company-summary {
+    grid-template-columns: 1fr;
   }
 }

@@ -97,6 +97,52 @@ export interface AutomationUpgradeDefinition {
   monthly_benefit: string;
 }
 
+export interface AgentStats {
+  research: number;
+  engineering: number;
+  product: number;
+  growth: number;
+  safety: number;
+  operations: number;
+  creativity: number;
+  autonomy: number;
+}
+
+export interface AgentAppearance {
+  palette: string[];
+  silhouette: string;
+  hair: string;
+  outfit: string;
+  signatureProp: string;
+}
+
+export interface AgentTypeDefinition {
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  rarity: string;
+  stats: AgentStats;
+  appearance: AgentAppearance;
+  unlock_requirements: Record<string, number>;
+  upkeep: ResourceMap;
+  preferred_items: string[];
+  quirk: string;
+}
+
+export interface ItemDefinition {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  cost: ResourceMap;
+  effects: Record<string, number>;
+  target: string;
+  rarity: string;
+  unlock_requirements: Record<string, number>;
+  flavor: string;
+}
+
 export interface ReleaseReview {
   score: number;
   grade: string;

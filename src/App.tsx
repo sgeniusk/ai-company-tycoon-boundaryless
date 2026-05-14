@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { automationUpgrades, capabilities, domains, products, resources, upgrades } from "./game/data";
+import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import { agentTypes, automationUpgrades, capabilities, domains, items, products, resources, upgrades } from "./game/data";
 import {
   advanceMonth,
   buyAutomationUpgrade,
@@ -17,13 +17,24 @@ import {
   serializeGameState,
   upgradeCapability,
 } from "./game/simulation";
-import type { GameState } from "./game/types";
+import type { AgentTypeDefinition, GameState, ItemDefinition, ResourceMap } from "./game/types";
+
+type MenuId = "company" | "products" | "agents" | "research" | "shop" | "log";
 
 const orderedResourceIds = ["cash", "users", "compute", "data", "talent", "trust", "hype", "automation"];
 const saveKey = "ai-company-tycoon-alpha-save";
+const menus: Array<{ id: MenuId; label: string; hint: string }> = [
+  { id: "company", label: "회사", hint: "현황" },
+  { id: "products", label: "제품", hint: "출시" },
+  { id: "agents", label: "에이전트", hint: "능력치" },
+  { id: "research", label: "연구", hint: "AI 능력" },
+  { id: "shop", label: "상점", hint: "아이템" },
+  { id: "log", label: "기록", hint: "히스토리" },
+];
 
 function App() {
   const [gameState, setGameState] = useState<GameState>(() => createInitialState());
+  const [activeMenu, setActiveMenu] = useState<MenuId>("company");
 
   const companyStage = getCompanyStage(gameState);
   const activeProducts = products.filter((product) => gameState.activeProducts.includes(product.id));
@@ -170,137 +181,285 @@ function App() {
         <p>활성 제품: {activeProducts.length ? activeProducts.map((product) => product.name).join(", ") : "없음"}.</p>
       </section>
 
-      <section className="dashboard-grid alpha-grid">
-        <div className="panel products-panel">
-          <div className="panel-heading">
-            <h2>제품 출시</h2>
-            <p>능력과 분야를 조합해 회사를 키울 제품을 냅니다.</p>
-          </div>
-          <div className="item-list">
-            {products.map((product) => {
-              const check = getProductCheck(product, gameState);
-              const domain = domains.find((entry) => entry.id === product.domain);
-              const review = gameState.productReviews[product.id];
-
-              return (
-                <article className="item-card product-card" key={product.id}>
-                  <div>
-                    <p className="item-meta">{domain?.name ?? product.domain}</p>
-                    <h3>{product.name}</h3>
-                    <p>{product.description}</p>
-                  </div>
-                  {review && (
-                    <div className="review-badge">
-                      <strong>{review.grade}</strong>
-                      <span>{review.score}점</span>
-                      <small>{review.quote}</small>
-                    </div>
-                  )}
-                  <div className="item-footer">
-                    <span>월 매출 {formatResource("cash", product.base_revenue)} / 이용자 +{product.base_users_per_month}</span>
-                    <button
-                      disabled={!check.ok || gameState.status !== "playing"}
-                      onClick={() => setGameState((current) => launchProduct(product, current))}
-                    >
-                      출시
-                    </button>
-                  </div>
-                  {!check.ok && <p className="locked-reason">{check.reasons.join(" / ")}</p>}
-                </article>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="panel capabilities-panel">
-          <div className="panel-heading">
-            <h2>AI 연구</h2>
-            <p>재사용 가능한 능력이 새 시장을 엽니다.</p>
-          </div>
-          <div className="item-list compact">
-            {capabilities.slice(0, 6).map((capability) => {
-              const currentLevel = gameState.capabilities[capability.id] ?? 0;
-              const check = getCapabilityCheck(capability, gameState);
-
-              return (
-                <article className="capability-row" key={capability.id}>
-                  <div>
-                    <h3>{capability.name}</h3>
-                    <p>Lv.{currentLevel} / {capability.max_level}</p>
-                  </div>
-                  <button
-                    disabled={!check.ok || gameState.status !== "playing"}
-                    onClick={() => setGameState((current) => upgradeCapability(capability, current))}
-                  >
-                    연구
-                  </button>
-                  {!check.ok && <span>{check.reasons[0]}</span>}
-                </article>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="panel upgrades-panel">
-          <div className="panel-heading">
-            <h2>투자와 자동화</h2>
-            <p>비용 압박을 줄이고 성장 엔진을 만듭니다.</p>
-          </div>
-          <div className="item-list compact">
-            {upgrades.slice(0, 6).map((upgrade) => {
-              const check = getUpgradeCheck(upgrade, gameState);
-
-              return (
-                <article className="upgrade-row" key={upgrade.id}>
-                  <div>
-                    <h3>{upgrade.name}</h3>
-                    <p>{upgrade.description}</p>
-                  </div>
-                  <button
-                    disabled={!check.ok || gameState.status !== "playing"}
-                    onClick={() => setGameState((current) => buyUpgrade(upgrade, current))}
-                  >
-                    투자
-                  </button>
-                  {!check.ok && <span>{check.reasons[0]}</span>}
-                </article>
-              );
-            })}
-            {automationUpgrades.slice(0, 3).map((upgrade) => {
-              const check = getAutomationUpgradeCheck(upgrade, gameState);
-
-              return (
-                <article className="upgrade-row automation-row" key={upgrade.id}>
-                  <div>
-                    <h3>{upgrade.name}</h3>
-                    <p>{upgrade.monthly_benefit}</p>
-                  </div>
-                  <button
-                    disabled={!check.ok || gameState.status !== "playing"}
-                    onClick={() => setGameState((current) => buyAutomationUpgrade(upgrade, current))}
-                  >
-                    자동화
-                  </button>
-                  {!check.ok && <span>{check.reasons[0]}</span>}
-                </article>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="panel timeline-panel">
-          <div className="panel-heading">
-            <h2>회사 기록</h2>
-            <p>결정의 결과가 즉시 기록됩니다.</p>
-          </div>
-          <ol className="timeline">
-            {gameState.timeline.map((entry, index) => (
-              <li key={`${entry}-${index}`}>{entry}</li>
-            ))}
-          </ol>
-        </div>
+      <section className="menu-layout" aria-label="경영 메뉴">
+        <nav className="main-menu">
+          {menus.map((menu) => (
+            <button className={activeMenu === menu.id ? "active" : ""} key={menu.id} onClick={() => setActiveMenu(menu.id)}>
+              <strong>{menu.label}</strong>
+              <span>{menu.hint}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="menu-panel">{renderMenuContent(activeMenu, gameState, setGameState)}</div>
       </section>
     </main>
+  );
+}
+
+function renderMenuContent(
+  activeMenu: MenuId,
+  gameState: GameState,
+  setGameState: Dispatch<SetStateAction<GameState>>,
+) {
+  if (activeMenu === "company") {
+    return (
+      <div className="panel-grid two-col">
+        <section className="panel">
+          <div className="panel-heading">
+            <h2>회사 개요</h2>
+            <p>성장 단계, 해금 분야, 활성 제품을 한눈에 봅니다.</p>
+          </div>
+          <div className="company-summary">
+            <strong>{getCompanyStage(gameState).name}</strong>
+            <span>활성 제품 {gameState.activeProducts.length}개</span>
+            <span>해금 분야 {gameState.unlockedDomains.length}개</span>
+            <span>자동화 {formatResource("automation", gameState.resources.automation ?? 0)}</span>
+          </div>
+        </section>
+        <TimelinePanel gameState={gameState} />
+      </div>
+    );
+  }
+
+  if (activeMenu === "products") {
+    return <ProductsPanel gameState={gameState} setGameState={setGameState} />;
+  }
+
+  if (activeMenu === "agents") {
+    return <AgentsPanel />;
+  }
+
+  if (activeMenu === "research") {
+    return <ResearchPanel gameState={gameState} setGameState={setGameState} />;
+  }
+
+  if (activeMenu === "shop") {
+    return <ShopPanel gameState={gameState} setGameState={setGameState} />;
+  }
+
+  return <TimelinePanel gameState={gameState} />;
+}
+
+function ProductsPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  return (
+    <section className="panel products-panel">
+      <div className="panel-heading">
+        <h2>제품 출시</h2>
+        <p>능력과 분야를 조합해 회사를 키울 제품을 냅니다.</p>
+      </div>
+      <div className="item-list products-list">
+        {products.map((product) => {
+          const check = getProductCheck(product, gameState);
+          const domain = domains.find((entry) => entry.id === product.domain);
+          const review = gameState.productReviews[product.id];
+
+          return (
+            <article className="item-card product-card" key={product.id}>
+              <div>
+                <p className="item-meta">{domain?.name ?? product.domain}</p>
+                <h3>{product.name}</h3>
+                <p>{product.description}</p>
+              </div>
+              {review && (
+                <div className="review-badge">
+                  <strong>{review.grade}</strong>
+                  <span>{review.score}점</span>
+                  <small>{review.quote}</small>
+                </div>
+              )}
+              <div className="item-footer">
+                <span>월 매출 {formatResource("cash", product.base_revenue)} / 이용자 +{product.base_users_per_month}</span>
+                <button
+                  disabled={!check.ok || gameState.status !== "playing"}
+                  onClick={() => setGameState((current) => launchProduct(product, current))}
+                >
+                  출시
+                </button>
+              </div>
+              {!check.ok && <p className="locked-reason">{check.reasons.join(" / ")}</p>}
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function AgentsPanel() {
+  return (
+    <section className="panel">
+      <div className="panel-heading">
+        <h2>에이전트 도감</h2>
+        <p>각 에이전트는 능력치, 역할, 픽셀아트 외형 키워드를 가집니다.</p>
+      </div>
+      <div className="agent-grid">
+        {agentTypes.map((agent) => (
+          <AgentCard agent={agent} key={agent.id} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AgentCard({ agent }: { agent: AgentTypeDefinition }) {
+  return (
+    <article className={`agent-card rarity-${agent.rarity}`}>
+      <div className="agent-top">
+        <div className="agent-portrait" aria-hidden="true">
+          <span className="agent-head" />
+          <span className="agent-body" />
+          <span className="agent-prop" />
+        </div>
+        <div>
+          <p className="item-meta">{agent.role}</p>
+          <h3>{agent.name}</h3>
+          <p>{agent.description}</p>
+        </div>
+      </div>
+      <div className="stat-grid">
+        {Object.entries(agent.stats).map(([stat, value]) => (
+          <span key={stat}>
+            {statLabel(stat)} <strong>{value}</strong>
+          </span>
+        ))}
+      </div>
+      <div className="appearance-box">
+        <strong>외형</strong>
+        <span>{agent.appearance.silhouette}</span>
+        <span>{agent.appearance.hair}</span>
+        <span>{agent.appearance.outfit}</span>
+        <span>소품: {agent.appearance.signatureProp}</span>
+      </div>
+      <p className="agent-quirk">{agent.quirk}</p>
+    </article>
+  );
+}
+
+function ResearchPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  return (
+    <section className="panel">
+      <div className="panel-heading">
+        <h2>AI 연구</h2>
+        <p>재사용 가능한 능력이 새 시장을 엽니다.</p>
+      </div>
+      <div className="item-list compact">
+        {capabilities.map((capability) => {
+          const currentLevel = gameState.capabilities[capability.id] ?? 0;
+          const check = getCapabilityCheck(capability, gameState);
+
+          return (
+            <article className="capability-row" key={capability.id}>
+              <div>
+                <h3>{capability.name}</h3>
+                <p>Lv.{currentLevel} / {capability.max_level}</p>
+              </div>
+              <button
+                disabled={!check.ok || gameState.status !== "playing"}
+                onClick={() => setGameState((current) => upgradeCapability(capability, current))}
+              >
+                연구
+              </button>
+              {!check.ok && <span>{check.reasons[0]}</span>}
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  return (
+    <div className="panel-grid two-col">
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>아이템 상점</h2>
+          <p>장비와 사무실 물건은 에이전트 특색과 회사 분위기를 만듭니다.</p>
+        </div>
+        <div className="item-grid">
+          {items.map((item) => (
+            <ItemCard item={item} key={item.id} />
+          ))}
+        </div>
+      </section>
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>투자와 자동화</h2>
+          <p>비용 압박을 줄이고 성장 엔진을 만듭니다.</p>
+        </div>
+        <div className="item-list compact">
+          {upgrades.slice(0, 8).map((upgrade) => {
+            const check = getUpgradeCheck(upgrade, gameState);
+
+            return (
+              <article className="upgrade-row" key={upgrade.id}>
+                <div>
+                  <h3>{upgrade.name}</h3>
+                  <p>{upgrade.description}</p>
+                </div>
+                <button
+                  disabled={!check.ok || gameState.status !== "playing"}
+                  onClick={() => setGameState((current) => buyUpgrade(upgrade, current))}
+                >
+                  투자
+                </button>
+                {!check.ok && <span>{check.reasons[0]}</span>}
+              </article>
+            );
+          })}
+          {automationUpgrades.slice(0, 4).map((upgrade) => {
+            const check = getAutomationUpgradeCheck(upgrade, gameState);
+
+            return (
+              <article className="upgrade-row automation-row" key={upgrade.id}>
+                <div>
+                  <h3>{upgrade.name}</h3>
+                  <p>{upgrade.monthly_benefit}</p>
+                </div>
+                <button
+                  disabled={!check.ok || gameState.status !== "playing"}
+                  onClick={() => setGameState((current) => buyAutomationUpgrade(upgrade, current))}
+                >
+                  자동화
+                </button>
+                {!check.ok && <span>{check.reasons[0]}</span>}
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function ItemCard({ item }: { item: ItemDefinition }) {
+  return (
+    <article className={`item-shop-card rarity-${item.rarity}`}>
+      <p className="item-meta">{itemCategoryLabel(item.category)} / {item.rarity}</p>
+      <h3>{item.name}</h3>
+      <p>{item.description}</p>
+      <div className="mini-row">
+        <span>비용 {formatCost(item.cost)}</span>
+        <span>효과 {formatEffects(item.effects)}</span>
+      </div>
+      <small>{item.flavor}</small>
+    </article>
+  );
+}
+
+function TimelinePanel({ gameState }: { gameState: GameState }) {
+  return (
+    <section className="panel timeline-panel">
+      <div className="panel-heading">
+        <h2>회사 기록</h2>
+        <p>결정의 결과가 즉시 기록됩니다.</p>
+      </div>
+      <ol className="timeline">
+        {gameState.timeline.map((entry, index) => (
+          <li key={`${entry}-${index}`}>{entry}</li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
@@ -308,6 +467,43 @@ function statusLabel(status: GameState["status"]): string {
   if (status === "success") return "성공 궤도";
   if (status === "failure") return "위기";
   return "운영 중";
+}
+
+function statLabel(stat: string): string {
+  const labels: Record<string, string> = {
+    research: "연구",
+    engineering: "개발",
+    product: "제품",
+    growth: "성장",
+    safety: "안전",
+    operations: "운영",
+    creativity: "창의",
+    autonomy: "자율",
+  };
+  return labels[stat] ?? stat;
+}
+
+function itemCategoryLabel(category: string): string {
+  const labels: Record<string, string> = {
+    office: "사무실",
+    equipment: "장비",
+    research: "연구",
+    safety: "안전",
+    marketing: "마케팅",
+  };
+  return labels[category] ?? category;
+}
+
+function formatCost(cost: ResourceMap): string {
+  return Object.entries(cost)
+    .map(([resourceId, value]) => `${resources[resourceId]?.name ?? resourceId} ${formatResource(resourceId, value)}`)
+    .join(", ");
+}
+
+function formatEffects(effects: Record<string, number>): string {
+  return Object.entries(effects)
+    .map(([key, value]) => `${resources[key]?.name ?? statLabel(key)} +${value}`)
+    .join(", ");
 }
 
 export default App;
