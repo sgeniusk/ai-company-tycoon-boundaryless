@@ -6,6 +6,19 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.8.1: UI Structure Prep For Pixel Assets
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `App.tsx` is reduced to state orchestration and shell composition | **Passed** |
+| 2 | Game chrome UI is isolated from menu panel UI | **Passed** |
+| 3 | Menu panel rendering is isolated in a dedicated component module | **Passed** |
+| 4 | Shared formatters and menu definitions are extracted | **Passed** |
+| 5 | Existing gameplay tests still pass | **Passed** |
+| 6 | Production build still passes | **Passed** |
+
+---
+
 ## Alpha v0.8.0: Competition And I18n Foundation
 
 | # | Criterion | Status |

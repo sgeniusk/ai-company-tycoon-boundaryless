@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.8.1-alpha] — 2026-05-15
+
+### UI Structure Prep For Pixel Assets
+
+**Added:**
+- Dedicated `components/GameChrome.tsx` for top bar, resources, office scene, events, command row, and menu nav
+- Dedicated `components/MenuPanels.tsx` for company, product, agent, research, shop, competition, and log panels
+- Shared `ui/formatters.ts` and `ui/menu.ts`
+
+**Updated:**
+- Reduced `src/App.tsx` from a large all-in-one UI file to a compact state orchestration shell
+- Preserved existing gameplay behavior while making v0.9 pixel asset work safer
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.8.0-alpha] — 2026-05-15
 
 ### Competition And I18n Foundation
