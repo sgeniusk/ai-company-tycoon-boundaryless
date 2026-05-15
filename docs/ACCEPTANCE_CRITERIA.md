@@ -6,6 +6,19 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.8: Growth Path Follow-Up Objectives
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Each growth path defines exactly three follow-up objectives | **Passed** |
+| 2 | Follow-up objectives are validated against real product/capability/item/upgrade/resource IDs | **Passed** |
+| 3 | Objective completion is calculated from current game state | **Passed** |
+| 4 | Company panel shows the chosen strategy's follow-up checklist | **Passed** |
+| 5 | Completed objectives receive a distinct visual state | **Passed** |
+| 6 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.9.7: Competition Strategy Signals
 
 | # | Criterion | Status |

@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.8-alpha] — 2026-05-15
+
+### Growth Path Follow-Up Objectives
+
+**Added:**
+- Three follow-up objectives for each chosen growth path
+- `growth-objectives` module for evaluating objective completion from real game state
+- Company panel strategy objective checklist
+- Validation and tests for objective references and completion rules
+
+**Updated:**
+- Growth path data now includes `followup_objectives`
+- Data validator checks objective product, capability, item, upgrade, resource, and menu references
+
+**Verification:**
+- `npm test` passed, 50 tests
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.9.7-alpha] — 2026-05-15
 
 ### Competition Strategy Signals

@@ -279,6 +279,31 @@ export interface GrowthPathDefinition {
   recommended_capability_ids?: string[];
   recommended_upgrade_ids?: string[];
   recommended_item_ids?: string[];
+  followup_objectives?: GrowthPathObjectiveDefinition[];
+}
+
+export interface GrowthPathObjectiveDefinition {
+  id: string;
+  label: string;
+  description: string;
+  target_menu: GrowthPathMenuId;
+  completion: {
+    product_id?: string;
+    capability_id?: string;
+    capability_level?: number;
+    owned_item_id?: string;
+    purchased_upgrade_id?: string;
+    min_resource?: string;
+    min_value?: number;
+  };
+}
+
+export interface GrowthPathObjective {
+  id: string;
+  label: string;
+  description: string;
+  targetMenu: GrowthPathMenuId;
+  complete: boolean;
 }
 
 export interface ReleaseGrowthPath {

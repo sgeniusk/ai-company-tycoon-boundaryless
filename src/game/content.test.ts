@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agentTypes, capabilities, competitors, growthPaths, items, products, rivalEvents } from "./data";
+import { agentTypes, capabilities, competitors, growthPaths, items, products, rivalEvents, upgrades } from "./data";
 import { locales, t } from "../i18n";
 
 describe("alpha content data", () => {
@@ -89,6 +89,7 @@ describe("alpha content data", () => {
     const productIds = new Set(products.map((product) => product.id));
     const capabilityIds = new Set(capabilities.map((capability) => capability.id));
     const itemIds = new Set(items.map((item) => item.id));
+    const upgradeIds = new Set(upgrades.map((upgrade) => upgrade.id));
     const menuIds = new Set(["company", "products", "agents", "research", "shop", "competition", "log"]);
 
     expect(growthPaths.map((path) => path.id)).toEqual([
@@ -119,6 +120,16 @@ describe("alpha content data", () => {
       }
       for (const itemId of path.recommended_item_ids ?? []) {
         expect(itemIds.has(itemId)).toBe(true);
+      }
+      for (const upgradeId of path.recommended_upgrade_ids ?? []) {
+        expect(upgradeIds.has(upgradeId)).toBe(true);
+      }
+      expect(path.followup_objectives?.length).toBe(3);
+      for (const objective of path.followup_objectives ?? []) {
+        expect(objective.id).toBeTruthy();
+        expect(objective.label).toBeTruthy();
+        expect(menuIds.has(objective.target_menu)).toBe(true);
+        expect(Object.keys(objective.completion).length).toBeGreaterThan(0);
       }
     }
   });

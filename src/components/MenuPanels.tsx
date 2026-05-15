@@ -1,6 +1,7 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
 import { agentTypes, assetManifest, automationUpgrades, capabilities, competitors, domains, items, products, upgrades } from "../game/data";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
+import { getGrowthPathObjectives } from "../game/growth-objectives";
 import {
   buyAutomationUpgrade,
   buyItem,
@@ -56,6 +57,8 @@ export function renderMenuContent(
   locale: LocaleCode,
 ) {
   if (activeMenu === "company") {
+    const growthObjectives = getGrowthPathObjectives(gameState);
+
     return (
       <div className="panel-grid two-col">
         <section className="panel">
@@ -72,6 +75,17 @@ export function renderMenuContent(
             <span>해금 분야 {gameState.unlockedDomains.length}개</span>
             <span>자동화 {formatResource("automation", gameState.resources.automation ?? 0)}</span>
           </div>
+          {growthObjectives.length > 0 && (
+            <div className="strategy-objectives">
+              <h3>전략 후속 목표</h3>
+              {growthObjectives.map((objective) => (
+                <article className={objective.complete ? "complete" : ""} key={objective.id}>
+                  <strong>{objective.label}</strong>
+                  <span>{objective.description}</span>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
         <TimelinePanel gameState={gameState} />
       </div>

@@ -230,6 +230,37 @@ for (const path of growthPaths) {
   for (const itemId of path.recommended_item_ids ?? []) {
     if (!itemIds.has(itemId)) errors.push(`growth_path "${path.id}": unknown recommended item "${itemId}"`);
   }
+  for (const objective of path.followup_objectives ?? []) {
+    if (!objective.id) errors.push(`growth_path "${path.id}": objective missing id`);
+    for (const field of ["label", "description", "target_menu", "completion"]) {
+      if (!objective[field]) errors.push(`growth_path "${path.id}" objective "${objective.id}": missing ${field}`);
+    }
+    if (!menuIds.has(objective.target_menu)) {
+      errors.push(`growth_path "${path.id}" objective "${objective.id}": unknown target_menu "${objective.target_menu}"`);
+    }
+    const completion = objective.completion ?? {};
+    if (completion.product_id && !productIds.has(completion.product_id)) {
+      errors.push(`growth_path "${path.id}" objective "${objective.id}": unknown product "${completion.product_id}"`);
+    }
+    if (completion.capability_id && !capabilityIds.has(completion.capability_id)) {
+      errors.push(`growth_path "${path.id}" objective "${objective.id}": unknown capability "${completion.capability_id}"`);
+    }
+    if (completion.owned_item_id && !itemIds.has(completion.owned_item_id)) {
+      errors.push(`growth_path "${path.id}" objective "${objective.id}": unknown item "${completion.owned_item_id}"`);
+    }
+    if (completion.purchased_upgrade_id && !upgradeIds.has(completion.purchased_upgrade_id)) {
+      errors.push(`growth_path "${path.id}" objective "${objective.id}": unknown upgrade "${completion.purchased_upgrade_id}"`);
+    }
+    if (completion.min_resource && !resourceIds.has(completion.min_resource)) {
+      errors.push(`growth_path "${path.id}" objective "${objective.id}": unknown resource "${completion.min_resource}"`);
+    }
+    if ("capability_level" in completion && typeof completion.capability_level !== "number") {
+      errors.push(`growth_path "${path.id}" objective "${objective.id}": capability_level must be numeric`);
+    }
+    if ("min_value" in completion && typeof completion.min_value !== "number") {
+      errors.push(`growth_path "${path.id}" objective "${objective.id}": min_value must be numeric`);
+    }
+  }
 }
 
 if (!assetManifestData) {
