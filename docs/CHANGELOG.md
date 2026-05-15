@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.12.2-alpha] — 2026-05-15
+
+### 완성도 중심 출시와 직원 배치
+
+**추가:**
+- 제품 개발 시작 시 투입 에이전트를 플레이어가 직접 선택하는 UI.
+- 선택 팀 기준 예상 개발 개월, 예상 완성도, 예상 리뷰 등급/점수, 월 완성도 상승 표시.
+- 제품 프로젝트 예측 함수와 명시적 배치 검증.
+- `?scenario=staffing` 브라우저 QA 시나리오.
+- 상점 화면의 인벤토리 요약, 장착 대기 장비, 사무실 효과 목록.
+- 사무실 화면의 실제 고용 에이전트 스프라이트, 이름표, 프로젝트 보드.
+
+**변경:**
+- 프로젝트 월간 진행도는 팀 능력치에 크게 흔들리지 않도록 고정하고, 팀 조합은 완성도와 출시 리뷰에 더 크게 반영.
+- 출시 리뷰 산식에서 프로젝트 완성도 가중치를 강화.
+- 제품 메뉴 설명을 “개발 기간 차이”보다 “팀 조합, 카드, 퍼즐 선택이 완성도를 가른다”는 방향으로 변경.
+
+**검증:**
+- `npm run harness:gate` 통과, 84 tests
+- `npm test -- src/game/simulation.test.ts` 통과, 27 tests
+- `npm test -- src/game/qa-scenarios.test.ts` 통과, 10 tests
+- `npm test -- src/game/simulation.test.ts src/game/deckbuilding.test.ts` 통과, 34 tests
+- `npm run build` 통과
+- 브라우저 QA: `staffing`, `shop`, `deck`, `project` 시나리오 핵심 UI 확인
+
+---
+
 ## [0.12.1-alpha] — 2026-05-15
 
 ### 카드와 퍼즐의 직접 조작

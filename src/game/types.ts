@@ -461,6 +461,17 @@ export interface ProductProject {
   startedMonth: number;
 }
 
+export interface ProductProjectForecast {
+  assignedAgentIds: string[];
+  startingQuality: number;
+  monthlyProgressGain: number;
+  monthlyQualityGain: number;
+  estimatedMonths: number;
+  expectedQuality: number;
+  expectedReviewScore: number;
+  expectedReviewGrade: string;
+}
+
 export interface BalanceDefinition {
   base_monthly_cash_cost: number;
   salary_per_talent: number;

@@ -13,6 +13,7 @@ Use the local app URL and append one of these query strings:
 | Scenario | Query | Purpose |
 |---|---|---|
 | Fresh | `?scenario=fresh` | First screen, first objective, no hired agents |
+| Staffing | `?scenario=staffing` | Two hired agents, no active project, explicit product team assignment UI |
 | Project | `?scenario=project` | First product in development, progress UI, objective state |
 | Release | `?scenario=release` | Release spotlight, growth fork cards, boundaryless expansion hint, office scene |
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
@@ -24,6 +25,7 @@ Use the local app URL and append one of these query strings:
 Examples:
 
 - `http://localhost:5173/?scenario=fresh`
+- `http://localhost:5173/?scenario=staffing`
 - `http://localhost:5173/?scenario=project`
 - `http://localhost:5173/?scenario=release`
 - `http://localhost:5173/?scenario=shop`
@@ -88,6 +90,16 @@ Examples:
 - A modified tile shows the source card name under the tile.
 - The solve button is disabled when no tile is selected or too many tiles are selected.
 - Recent puzzle result shows the applied card modifier name.
+
+## v0.12.2 Visual QA Checklist
+
+- Staffing scenario opens on the `제품` menu with at least two hired agents.
+- Product cards show explicit agent selection buttons.
+- Selected team forecast shows estimated months, expected quality, review grade/score, and monthly quality gain.
+- Starting a project assigns only the selected agents.
+- Office scene shows hired agent sprites with name tags and a project board.
+- Shop scenario shows inventory counts for owned items, unequipped gear, and office effects.
+- Deck scenario still shows card hand, puzzle board, and selected puzzle solve button after the staffing UI changes.
 
 ## Note
 

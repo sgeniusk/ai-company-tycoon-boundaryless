@@ -13,6 +13,7 @@ import {
   getCompanyStage,
   getMarketRankings,
   getPlayerMarketShare,
+  getProductProjectCheck,
   hydrateGameState,
   hireAgent,
   launchProduct,
@@ -175,6 +176,72 @@ describe("alpha production systems", () => {
     expect(released.productProjects).toHaveLength(0);
     expect(released.activeProducts).toContain("ai_writing_assistant");
     expect(released.productReviews.ai_writing_assistant.grade).toEqual(expect.any(String));
+  });
+
+  it("starts product projects with the explicitly selected agents only", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const curator = agentTypes.find((agent) => agent.id === "data_curator");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !curator || !writingProduct) throw new Error("Missing assignment fixture");
+
+    const staffed = hireAgent(curator, hireAgent(architect, createInitialState()));
+    const selectedCuratorId = staffed.hiredAgents.find((agent) => agent.typeId === "data_curator")?.id;
+    if (!selectedCuratorId) throw new Error("Missing selected curator");
+
+    const emptyCheck = getProductProjectCheck(writingProduct, staffed, []);
+    const started = startProductProject(writingProduct, staffed, [selectedCuratorId]);
+
+    expect(emptyCheck.ok).toBe(false);
+    expect(emptyCheck.reasons).toContain("투입할 에이전트를 1명 이상 선택해야 합니다.");
+    expect(started.productProjects[0].assignedAgentIds).toEqual([selectedCuratorId]);
+    expect(started.hiredAgents.find((agent) => agent.typeId === "prompt_architect")?.assignment).toBeUndefined();
+    expect(started.hiredAgents.find((agent) => agent.typeId === "data_curator")?.assignment).toBe(started.productProjects[0].id);
+  });
+
+  it("keeps project duration stable while team composition changes launch quality", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const infra = agentTypes.find((agent) => agent.id === "infra_operator");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !infra || !writingProduct) throw new Error("Missing quality fixture");
+
+    const productLed = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const opsLed = startProductProject(writingProduct, hireAgent(infra, createInitialState()));
+    const productLedAfterMonth = advanceMonth(productLed);
+    const opsLedAfterMonth = advanceMonth(opsLed);
+
+    expect(productLedAfterMonth.productProjects[0].progress).toBe(opsLedAfterMonth.productProjects[0].progress);
+
+    const productLedRelease = advanceMonth(productLedAfterMonth);
+    const opsLedRelease = advanceMonth(opsLedAfterMonth);
+
+    expect(productLedRelease.activeProducts).toContain("ai_writing_assistant");
+    expect(opsLedRelease.activeProducts).toContain("ai_writing_assistant");
+    expect(productLedRelease.productReviews.ai_writing_assistant.score).toBeGreaterThan(
+      opsLedRelease.productReviews.ai_writing_assistant.score + 10,
+    );
+  });
+
+  it("weights final release review heavily toward project completeness", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing completeness fixture");
+
+    const baseProject = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const lowQuality = {
+      ...baseProject,
+      productProjects: baseProject.productProjects.map((project) => ({ ...project, progress: 99, quality: 35 })),
+    };
+    const highQuality = {
+      ...baseProject,
+      productProjects: baseProject.productProjects.map((project) => ({ ...project, progress: 99, quality: 95 })),
+    };
+
+    const lowRelease = advanceMonth(lowQuality);
+    const highRelease = advanceMonth(highQuality);
+
+    expect(highRelease.productReviews.ai_writing_assistant.score).toBeGreaterThan(
+      lowRelease.productReviews.ai_writing_assistant.score + 30,
+    );
   });
 
   it("stores the latest release moment for the reward spotlight", () => {

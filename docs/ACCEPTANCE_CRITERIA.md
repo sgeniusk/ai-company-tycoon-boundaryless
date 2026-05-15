@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.12.2: Quality-Centered Staffing And Inventory
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Product projects can be started with explicitly selected agent IDs | **Passed** |
+| 2 | Empty explicit assignment is rejected with a readable reason | **Passed** |
+| 3 | Team composition no longer creates large project-duration variance | **Passed** |
+| 4 | Team composition changes launch quality and review score materially | **Passed** |
+| 5 | Product cards show selected-team forecast before starting development | **Passed** |
+| 6 | Office scene shows hired agents and the active project board | **Passed** |
+| 7 | Shop menu includes inventory summary and owned-item list | **Passed** |
+| 8 | Browser QA supports `?scenario=staffing` | **Passed** |
+| 9 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.12.1: Direct Puzzle Selection And Card Synergy
 
 | # | Criterion | Status |

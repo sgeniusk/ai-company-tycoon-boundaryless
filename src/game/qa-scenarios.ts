@@ -4,7 +4,7 @@ import { advanceMonth, chooseGrowthPath, createInitialState, hireAgent, startPro
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
 
-export const qaScenarioIds = ["fresh", "project", "release", "shop", "deck", "strategy", "arc", "commercial"] as const;
+export const qaScenarioIds = ["fresh", "staffing", "project", "release", "shop", "deck", "strategy", "arc", "commercial"] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
 
@@ -26,6 +26,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   }
 
   const projectState = createStarterProjectState();
+
+  if (id === "staffing") {
+    return {
+      id,
+      label: "직원 배치 QA",
+      state: createStaffingState(),
+      activeMenu: "products",
+    };
+  }
 
   if (id === "project") {
     return {
@@ -106,6 +115,15 @@ export function createQaScenarioFromSearch(search: string): QaScenario | undefin
   const params = new URLSearchParams(search);
   const scenarioId = getQaScenarioId(params.get("scenario") ?? params.get("qa"));
   return scenarioId ? createQaScenario(scenarioId) : undefined;
+}
+
+function createStaffingState(): GameState {
+  const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+  const curator = agentTypes.find((agent) => agent.id === "data_curator");
+
+  if (!architect || !curator) return createInitialState();
+
+  return hireAgent(curator, hireAgent(architect, createInitialState()));
 }
 
 function createStarterProjectState(): GameState {

@@ -27,6 +27,7 @@ import {
   getItemCheck,
   getMarketRankings,
   getProductLevel,
+  getProductProjectForecast,
   getProductProjectCheck,
   getProductUpgradeCheck,
   getProductUpgradeCost,
@@ -358,20 +359,49 @@ function ProductsPanel({
   setGameState: Dispatch<SetStateAction<GameState>>;
   locale: LocaleCode;
 }) {
+  const [selectedAgentIdsByProduct, setSelectedAgentIdsByProduct] = useState<Record<string, string[]>>({});
+  const availableAgents = gameState.hiredAgents.filter((agent) => !agent.assignment);
+  const defaultSelectedAgentIds = availableAgents.slice(0, 3).map((agent) => agent.id);
+  const getSelectedAgentIds = (productId: string) => {
+    const availableAgentIds = new Set(availableAgents.map((agent) => agent.id));
+    const selectedIds = selectedAgentIdsByProduct[productId] ?? defaultSelectedAgentIds;
+    return selectedIds.filter((agentId) => availableAgentIds.has(agentId)).slice(0, 3);
+  };
+  const toggleSelectedAgent = (productId: string, agentId: string) => {
+    setSelectedAgentIdsByProduct((current) => {
+      const selectedIds = (current[productId] ?? defaultSelectedAgentIds).filter((id) =>
+        availableAgents.some((agent) => agent.id === id),
+      );
+      const nextSelectedIds = selectedIds.includes(agentId)
+        ? selectedIds.filter((id) => id !== agentId)
+        : selectedIds.length >= 3
+          ? selectedIds
+          : [...selectedIds, agentId];
+
+      return { ...current, [productId]: nextSelectedIds };
+    });
+  };
+
   return (
     <section className="panel products-panel">
       <div className="panel-heading">
         <h2>제품 개발</h2>
-        <p>에이전트를 투입해 제품을 만들고, 완성되면 시장에 출시합니다.</p>
+        <p>제품별 개발 기간보다 팀 조합, 카드, 퍼즐 선택이 완성도와 출시 평가를 가릅니다.</p>
       </div>
       {!gameState.hiredAgents.length && <p className="empty-note">먼저 에이전트 메뉴에서 첫 에이전트를 고용하면 제품 개발을 시작할 수 있습니다.</p>}
       <div className="item-list products-list">
         {products.map((product) => {
-          const check = getProductProjectCheck(product, gameState);
           const domain = domains.find((entry) => entry.id === product.domain);
           const review = gameState.productReviews[product.id];
           const project = gameState.productProjects.find((entry) => entry.productId === product.id);
           const isActive = gameState.activeProducts.includes(product.id);
+          const selectedAgentIds = getSelectedAgentIds(product.id);
+          const selectedAgents = gameState.hiredAgents.filter((agent) => selectedAgentIds.includes(agent.id));
+          const assignedAgents = project
+            ? gameState.hiredAgents.filter((agent) => project.assignedAgentIds.includes(agent.id))
+            : [];
+          const check = getProductProjectCheck(product, gameState, selectedAgentIds);
+          const forecast = getProductProjectForecast(product, gameState, selectedAgentIds);
           const productLevel = getProductLevel(product.id, gameState);
           const upgradeCheck = getProductUpgradeCheck(product, gameState);
           const claimers = gameState.competitorStates.filter((competitor) => competitor.claimedProducts.includes(product.id));
@@ -397,6 +427,48 @@ function ProductsPanel({
                     <span>완성도 {Math.round(project.quality)}</span>
                   </div>
                   <i style={{ width: `${project.progress}%` }} />
+                  <small>투입 팀: {assignedAgents.map((agent) => agent.name).join(", ")}</small>
+                </div>
+              )}
+              {!isActive && !project && gameState.hiredAgents.length > 0 && (
+                <div className="assignment-picker">
+                  <div className="assignment-forecast">
+                    <span>예상 {forecast.estimatedMonths}개월</span>
+                    <span>완성도 {forecast.expectedQuality}</span>
+                    <span>리뷰 {forecast.expectedReviewGrade} / {forecast.expectedReviewScore}점</span>
+                    <span>월 완성도 +{forecast.monthlyQualityGain}</span>
+                  </div>
+                  <div className="assignment-agent-grid" aria-label={`${product.name} 투입 에이전트 선택`}>
+                    {gameState.hiredAgents.map((agent) => {
+                      const agentType = agentTypes.find((type) => type.id === agent.typeId);
+                      const stats = getAgentEffectiveStats(agent, gameState);
+                      const selected = selectedAgentIds.includes(agent.id);
+                      const unavailable = Boolean(agent.assignment) && !selected;
+                      const statHighlights = Object.entries(stats)
+                        .sort(([, first], [, second]) => second - first)
+                        .slice(0, 2)
+                        .map(([stat, value]) => `${statLabel(stat)} ${value}`)
+                        .join(" · ");
+
+                      return (
+                        <button
+                          aria-pressed={selected}
+                          className={selected ? "selected" : ""}
+                          disabled={unavailable}
+                          key={agent.id}
+                          onClick={() => toggleSelectedAgent(product.id, agent.id)}
+                          type="button"
+                        >
+                          <strong>{agent.name}</strong>
+                          <span>{agentType?.role ?? "에이전트"}</span>
+                          <small>{unavailable ? "다른 프로젝트 투입 중" : statHighlights}</small>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <small className="team-hint">
+                    선택 팀: {selectedAgents.length ? selectedAgents.map((agent) => agent.name).join(", ") : "없음"}
+                  </small>
                 </div>
               )}
               {claimers.length > 0 && (
@@ -411,7 +483,7 @@ function ProductsPanel({
                 <span>Lv.{productLevel || 1} · 월 매출 {formatResource("cash", product.base_revenue)} / 이용자 +{product.base_users_per_month}</span>
                 <button
                   disabled={!check.ok || gameState.status !== "playing" || Boolean(project) || isActive}
-                  onClick={() => setGameState((current) => startProductProject(product, current))}
+                  onClick={() => setGameState((current) => startProductProject(product, current, selectedAgentIds))}
                 >
                   {isActive ? "운영 중" : project ? "개발 중" : "개발 시작"}
                 </button>
@@ -653,6 +725,11 @@ function ResearchPanel({ gameState, setGameState }: { gameState: GameState; setG
 }
 
 function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  const ownedItems = items.filter((item) => gameState.ownedItems.includes(item.id));
+  const equippedItemIds = new Set(gameState.hiredAgents.flatMap((agent) => agent.equippedItemIds));
+  const unequippedAgentItems = ownedItems.filter((item) => item.target === "agent" && !equippedItemIds.has(item.id));
+  const officeItems = ownedItems.filter((item) => item.target !== "agent");
+
   return (
     <div className="panel-grid two-col">
       <section className="panel">
@@ -668,8 +745,27 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
       </section>
       <section className="panel">
         <div className="panel-heading">
-          <h2>투자와 자동화</h2>
-          <p>비용 압박을 줄이고 성장 엔진을 만듭니다.</p>
+          <h2>인벤토리와 투자</h2>
+          <p>보유 아이템, 장착 대기 장비, 자동화 투자를 함께 봅니다.</p>
+        </div>
+        <div className="inventory-panel">
+          <div className="inventory-strip">
+            <span>보유 {ownedItems.length}</span>
+            <span>장착 대기 {unequippedAgentItems.length}</span>
+            <span>사무실 효과 {officeItems.length}</span>
+          </div>
+          <div className="inventory-list">
+            {ownedItems.length ? (
+              ownedItems.map((item) => (
+                <article key={item.id}>
+                  <strong>{item.name}</strong>
+                  <span>{itemTargetLabel(item.target)} · {formatEffects(item.effects)}</span>
+                </article>
+              ))
+            ) : (
+              <p>아직 보유한 아이템이 없습니다. 왼쪽 상점에서 구매하면 여기에 쌓입니다.</p>
+            )}
+          </div>
         </div>
         <div className="item-list compact">
           {upgrades.slice(0, 8).map((upgrade) => {

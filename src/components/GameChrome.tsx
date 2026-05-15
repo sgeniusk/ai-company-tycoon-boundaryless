@@ -1,5 +1,5 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
-import { assetManifest, domains, products, resources } from "../game/data";
+import { agentTypes, assetManifest, domains, products, resources } from "../game/data";
 import { getGuidanceStep, getOpeningObjectives, type GuidanceStep, type OpeningObjective } from "../game/guidance";
 import { getRunSummary } from "../game/run-summary";
 import {
@@ -25,6 +25,11 @@ function assetPaletteVars(palette?: string[]): CSSProperties {
     "--sprite-secondary": palette[1] ?? palette[0],
     "--sprite-accent": palette[2] ?? palette[0],
   } as CSSProperties;
+}
+
+function getAgentSprite(agentTypeId?: string) {
+  if (!agentTypeId) return undefined;
+  return assetManifest.agent_sprites.find((sprite) => sprite.agent_type_id === agentTypeId);
 }
 
 export function TopBar({
@@ -89,6 +94,8 @@ export function GameStage({
   const guidance = getGuidanceStep(gameState);
   const openingObjectives = getOpeningObjectives(gameState);
   const activeProducts = products.filter((product) => gameState.activeProducts.includes(product.id));
+  const activeProject = gameState.productProjects[0];
+  const activeProjectProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
   const unlockedDomainNames = domains
     .filter((domain) => gameState.unlockedDomains.includes(domain.id))
     .map((domain) => domain.name);
@@ -137,9 +144,27 @@ export function GameStage({
               />
             ))}
           </div>
-          {Array.from({ length: Math.min(8, Math.max(1, gameState.hiredAgents.length || gameState.resources.talent || 1)) }).map((_, index) => (
-            <span className={`staff-sprite staff-${index % 4}`} key={index} />
-          ))}
+          {gameState.hiredAgents.length
+            ? gameState.hiredAgents.slice(0, 8).map((agent, index) => {
+                const agentType = agentTypes.find((type) => type.id === agent.typeId);
+                const agentSprite = getAgentSprite(agent.typeId);
+
+                return (
+                  <span
+                    className={`staff-sprite staff-${index} ${agent.assignment ? "working" : "idle"} ${agentSprite?.body_class ?? ""}`}
+                    key={agent.id}
+                    style={assetPaletteVars(agentSprite?.palette)}
+                    title={`${agent.name} · ${agentType?.role ?? "에이전트"} · ${agent.assignment ? "제품 개발 중" : "대기 중"}`}
+                  >
+                    <b>{agent.name.slice(0, 3)}</b>
+                  </span>
+                );
+              })
+            : Array.from({ length: Math.min(3, Math.max(1, gameState.resources.talent || 1)) }).map((_, index) => (
+                <span className={`staff-sprite staff-${index} idle`} key={index}>
+                  <b>대기</b>
+                </span>
+              ))}
           <div className="server-rack">
             <i />
             <i />
@@ -147,8 +172,18 @@ export function GameStage({
           </div>
           <div className="launch-screen">
             <strong>{activeProducts.length ? activeProducts[activeProducts.length - 1].name : "첫 제품 준비 중"}</strong>
-            <span>{gameState.productProjects.length ? `${gameState.productProjects[0].progress}% 개발 중` : gameState.currentEvent ? "이슈 대응 필요" : "운영 정상"}</span>
+            <span>{activeProject ? `${Math.round(activeProject.progress)}% 개발 · 완성도 ${Math.round(activeProject.quality)}` : gameState.currentEvent ? "이슈 대응 필요" : "운영 정상"}</span>
           </div>
+          {activeProject && activeProjectProduct && (
+            <div className="project-stack">
+              <strong>{activeProjectProduct.name}</strong>
+              <span>개발 {Math.round(activeProject.progress)}%</span>
+              <span>완성도 {Math.round(activeProject.quality)}</span>
+              <small>
+                팀 {gameState.hiredAgents.filter((agent) => activeProject.assignedAgentIds.includes(agent.id)).map((agent) => agent.name).join(", ")}
+              </small>
+            </div>
+          )}
         </div>
       </div>
 

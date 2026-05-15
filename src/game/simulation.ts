@@ -43,6 +43,7 @@ import type {
   RivalEventChoiceDefinition,
   RogueliteState,
   ResourceMap,
+  ProductProjectForecast,
   StrategyDeckState,
   UpgradeDefinition,
 } from "./types";
@@ -297,22 +298,39 @@ export function equipItem(agentId: string, item: ItemDefinition, state: GameStat
   };
 }
 
-export function getProductProjectCheck(product: ProductDefinition, state: GameState): ActionCheck {
+export function getProductProjectCheck(product: ProductDefinition, state: GameState, assignedAgentIds?: string[]): ActionCheck {
   const reasons = getProductCheck(product, state).reasons;
   const availableAgents = getAvailableAgents(state);
 
-  if (availableAgents.length === 0) {
+  if (assignedAgentIds) {
+    const uniqueAssignedAgentIds = [...new Set(assignedAgentIds)];
+    if (uniqueAssignedAgentIds.length === 0) {
+      reasons.push("투입할 에이전트를 1명 이상 선택해야 합니다.");
+    }
+    if (uniqueAssignedAgentIds.length > 3) {
+      reasons.push("한 프로젝트에는 최대 3명까지 투입할 수 있습니다.");
+    }
+
+    for (const agentId of uniqueAssignedAgentIds) {
+      const agent = state.hiredAgents.find((hiredAgent) => hiredAgent.id === agentId);
+      if (!agent) {
+        reasons.push("알 수 없는 에이전트가 포함되어 있습니다.");
+      } else if (agent.assignment) {
+        reasons.push(`${agent.name}은 이미 다른 프로젝트에 투입되어 있습니다.`);
+      }
+    }
+  } else if (availableAgents.length === 0) {
     reasons.push("투입 가능한 에이전트가 필요합니다.");
   }
 
   return { ok: reasons.length === 0, reasons };
 }
 
-export function startProductProject(product: ProductDefinition, state: GameState): GameState {
-  const check = getProductProjectCheck(product, state);
+export function startProductProject(product: ProductDefinition, state: GameState, assignedAgentIds?: string[]): GameState {
+  const check = getProductProjectCheck(product, state, assignedAgentIds);
   if (!check.ok || state.status !== "playing") return state;
 
-  const assignedAgents = getAvailableAgents(state).slice(0, 3);
+  const assignedAgents = getSelectedProjectAgents(state, assignedAgentIds);
   const projectId = `project_${state.productProjects.length + 1}_${product.id}`;
   const project: ProductProject = {
     id: projectId,
@@ -331,6 +349,32 @@ export function startProductProject(product: ProductDefinition, state: GameState
     ),
     productProjects: [...state.productProjects, project],
     timeline: [`개발 시작: ${product.name} (${assignedAgents.map((agent) => agent.name).join(", ")})`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getProductProjectForecast(
+  product: ProductDefinition,
+  state: GameState,
+  assignedAgentIds?: string[],
+): ProductProjectForecast {
+  const selectedAgents = getSelectedProjectAgents(state, assignedAgentIds);
+  const stats = selectedAgents.reduce((total, agent) => addStats(total, getAgentEffectiveStats(agent, state)), getGlobalItemStats(state));
+  const startingQuality = getStartingProjectQuality(selectedAgents, state);
+  const monthlyProgressGain = getProjectProgressGain(stats);
+  const monthlyQualityGain = getProjectQualityGain(stats);
+  const estimatedMonths = Math.max(1, Math.ceil(100 / monthlyProgressGain));
+  const expectedQuality = Math.round(clamp(startingQuality + monthlyQualityGain * estimatedMonths, 0, 100));
+  const expectedReview = createReleaseReview(product, state, expectedQuality);
+
+  return {
+    assignedAgentIds: selectedAgents.map((agent) => agent.id),
+    startingQuality,
+    monthlyProgressGain,
+    monthlyQualityGain,
+    estimatedMonths,
+    expectedQuality,
+    expectedReviewScore: expectedReview.score,
+    expectedReviewGrade: expectedReview.grade,
   };
 }
 
@@ -938,14 +982,8 @@ function getProjectTeamStats(project: ProductProject, state: GameState): AgentSt
   return addStats(agentStats, getGlobalItemStats(state));
 }
 
-function getProjectProgressGain(stats: AgentStats): number {
-  return Math.round(
-    clamp(
-      40 + stats.engineering * 1.2 + stats.product * 0.9 + stats.research * 0.6 + stats.autonomy * 0.6 + stats.operations * 0.35,
-      34,
-      76,
-    ),
-  );
+function getProjectProgressGain(_stats: AgentStats): number {
+  return 50;
 }
 
 function getProjectQualityGain(stats: AgentStats): number {
@@ -1161,15 +1199,23 @@ function getAvailableAgents(state: GameState): HiredAgent[] {
   return state.hiredAgents.filter((agent) => !agent.assignment);
 }
 
+function getSelectedProjectAgents(state: GameState, assignedAgentIds?: string[]): HiredAgent[] {
+  const availableAgents = getAvailableAgents(state);
+  if (!assignedAgentIds) return availableAgents.slice(0, 3);
+
+  const selectedIds = new Set(assignedAgentIds);
+  return availableAgents.filter((agent) => selectedIds.has(agent.id)).slice(0, 3);
+}
+
 function createReleaseReview(product: ProductDefinition, state: GameState, projectQuality = 60): ReleaseReview {
   const claimPenalty = getProductClaimPenalty(product, state);
   const score = Math.round(
     clamp(
-      55 +
+      54 +
         product.hype_on_launch * 1.8 +
         (state.resources.trust ?? 0) * 0.18 +
         Object.keys(product.required_capabilities).length * 4 +
-        (projectQuality - 60) * 0.45 -
+        (projectQuality - 60) * 0.65 -
         claimPenalty,
       45,
       99,
