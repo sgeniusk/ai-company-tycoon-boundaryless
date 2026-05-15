@@ -21,11 +21,13 @@ export function TopBar({
   gameState,
   launchableCount,
   locale,
+  qaScenarioLabel,
   onToggleLocale,
 }: {
   gameState: GameState;
   launchableCount: number;
   locale: LocaleCode;
+  qaScenarioLabel?: string;
   onToggleLocale: () => void;
 }) {
   return (
@@ -40,6 +42,7 @@ export function TopBar({
         <span className="status-pill">출시 가능 {launchableCount}</span>
         <span className="status-pill">개발 중 {gameState.productProjects.length}</span>
         <span className="status-pill">점유 {getPlayerMarketShare(gameState)}%</span>
+        {qaScenarioLabel && <span className="status-pill qa-pill">{qaScenarioLabel}</span>}
         <button className="locale-toggle" onClick={onToggleLocale}>
           {locale.toUpperCase()}
         </button>

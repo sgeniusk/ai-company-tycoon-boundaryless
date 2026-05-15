@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { CommandRow, EventPanels, GameStage, MainMenu, ResourceStrip, TopBar } from "./components/GameChrome";
 import { renderMenuContent } from "./components/MenuPanels";
 import { products } from "./game/data";
+import { createQaScenarioFromSearch } from "./game/qa-scenarios";
 import { createInitialState, getProductProjectCheck, hydrateGameState, serializeGameState } from "./game/simulation";
 import type { GameState } from "./game/types";
 import type { LocaleCode } from "./i18n";
@@ -10,8 +11,10 @@ import type { MenuId } from "./ui/menu";
 const saveKey = "ai-company-tycoon-alpha-save";
 
 function App() {
-  const [gameState, setGameState] = useState<GameState>(() => createInitialState());
-  const [activeMenu, setActiveMenu] = useState<MenuId>("company");
+  const initialScenario = typeof window !== "undefined" ? createQaScenarioFromSearch(window.location.search) : undefined;
+  const [gameState, setGameState] = useState<GameState>(() => initialScenario?.state ?? createInitialState());
+  const [activeMenu, setActiveMenu] = useState<MenuId>(initialScenario?.activeMenu ?? "company");
+  const [qaScenarioLabel] = useState(initialScenario?.label);
   const [locale, setLocale] = useState<LocaleCode>("ko");
 
   const launchableCount = useMemo(
@@ -45,6 +48,7 @@ function App() {
         gameState={gameState}
         launchableCount={launchableCount}
         locale={locale}
+        qaScenarioLabel={qaScenarioLabel}
         onToggleLocale={() => setLocale((current) => (current === "ko" ? "en" : "ko"))}
       />
       <ResourceStrip gameState={gameState} />

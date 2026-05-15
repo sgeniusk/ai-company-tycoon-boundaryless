@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.3-alpha] — 2026-05-15
+
+### Browser QA Scenarios And Screen Polish
+
+**Added:**
+- `qa-scenarios` module for stable first-screen, project, release, and shop QA states
+- URL query scenario loading via `?scenario=fresh`, `?scenario=project`, `?scenario=release`, and `?scenario=shop`
+- QA scenario status pill in the top bar
+- `docs/QA_SCENARIOS.md` with scenario URLs and visual QA checklist
+- Tests for QA scenario generation and URL parsing
+
+**Updated:**
+- Top status pills now wrap to reduce overflow risk
+- Release spotlight has a small reduced-motion-safe emphasis animation
+- Office scene hides extra decorative objects on narrow screens
+- Mobile guidance card/objective strip layout is tighter
+
+**Verification:**
+- `npm test` passed, 41 tests
+- `npm run build` passed
+- Static server and Computer Use browser checks were attempted, but local browser access timed out or could not connect from the Codex environment; this is recorded in the QA report
+
+---
+
 ## [0.9.2-alpha] — 2026-05-15
 
 ### Game Dev Harness Skill Draft

@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.3: Browser QA Scenarios And Screen Polish
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | QA scenarios exist for fresh, project, release, and shop states | **Passed** |
+| 2 | URL query loading supports `?scenario=` and `?qa=` scenario IDs | **Passed** |
+| 3 | Scenario-loaded builds show a QA status pill in the top bar | **Passed** |
+| 4 | QA scenario documentation lists URLs and visual checklist | **Passed** |
+| 5 | Top status pills wrap instead of forcing horizontal overflow | **Passed** |
+| 6 | Release spotlight uses reduced-motion-safe visual emphasis | **Passed** |
+| 7 | Narrow layouts hide extra office objects to reduce overlap risk | **Passed** |
+| 8 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+| 9 | Browser QA attempt outcome is recorded in QA report | **Passed** |
+
+---
+
 ## Alpha v0.9.2: Game Dev Harness Skill Draft
 
 | # | Criterion | Status |
