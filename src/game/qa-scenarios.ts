@@ -1,10 +1,10 @@
-import { agentTypes, products } from "./data";
+import { agentTypes, items, officeExpansions, products } from "./data";
 import { runScriptedCommercialSimulation } from "./run-simulator";
-import { advanceMonth, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
+import { advanceMonth, buyItem, buyOfficeExpansion, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
 
-export const qaScenarioIds = ["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "counter", "rivals", "arc", "commercial", "result"] as const;
+export const qaScenarioIds = ["fresh", "staffing", "project", "release", "reward", "shop", "office", "deck", "strategy", "counter", "rivals", "arc", "commercial", "result"] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
 
@@ -61,6 +61,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "첫 출시 후 상점 QA",
       state: releaseState,
+      activeMenu: "shop",
+    };
+  }
+
+  if (id === "office") {
+    return {
+      id,
+      label: "사무실 확장 QA",
+      state: createOfficeScenarioState(releaseState),
       activeMenu: "shop",
     };
   }
@@ -177,6 +186,30 @@ function createStarterProjectState(): GameState {
   if (!architect || !writingProduct) return createInitialState();
 
   return startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+}
+
+function createOfficeScenarioState(releaseState: GameState): GameState {
+  const startupSuite = officeExpansions.find((expansion) => expansion.id === "startup_suite");
+  const decorIds = ["gpu_rack_mini", "ux_sticky_wall", "tensor_whiteboard"];
+  const decorItems = decorIds
+    .map((itemId) => items.find((item) => item.id === itemId))
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
+  const fundedState: GameState = {
+    ...releaseState,
+    resources: {
+      ...releaseState.resources,
+      cash: Math.max(releaseState.resources.cash ?? 0, 16000),
+      data: Math.max(releaseState.resources.data ?? 0, 60),
+      compute: Math.max(releaseState.resources.compute ?? 0, 120),
+    },
+  };
+  const expandedState = startupSuite ? buyOfficeExpansion(startupSuite, fundedState) : fundedState;
+  const decoratedState = decorItems.reduce((state, item) => buyItem(item, state), expandedState);
+
+  return {
+    ...decoratedState,
+    timeline: ["사무실 확장 QA: 스타트업 스위트와 핵심 장식을 배치", ...decoratedState.timeline].slice(0, 8),
+  };
 }
 
 function createCounterScenarioState(strategyState: GameState): GameState {

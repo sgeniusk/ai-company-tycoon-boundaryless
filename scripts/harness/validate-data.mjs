@@ -74,6 +74,7 @@ const growthPathsData = readJson("growth_paths.json");
 const achievementsData = readJson("achievements.json");
 const strategyCardsData = readJson("strategy_cards.json");
 const metaUnlocksData = readJson("meta_unlocks.json");
+const officeExpansionsData = readJson("office_expansions.json");
 const koLocaleData = readJson("locales/ko.json");
 const enLocaleData = readJson("locales/en.json");
 
@@ -95,6 +96,7 @@ const growthPaths = growthPathsData?.growth_paths ?? [];
 const achievements = achievementsData?.achievements ?? [];
 const strategyCards = strategyCardsData?.strategy_cards ?? [];
 const metaUnlocks = metaUnlocksData?.meta_unlocks ?? [];
+const officeExpansions = officeExpansionsData?.office_expansions ?? [];
 const localeKeys = new Set([...Object.keys(koLocaleData ?? {}), ...Object.keys(enLocaleData ?? {})]);
 
 const resourceIds = new Set(Object.keys(resources));
@@ -114,6 +116,7 @@ idsAreUnique("growth_paths", growthPaths);
 idsAreUnique("achievements", achievements);
 const strategyCardIds = idsAreUnique("strategy_cards", strategyCards);
 const metaUnlockIds = idsAreUnique("meta_unlocks", metaUnlocks);
+idsAreUnique("office_expansions", officeExpansions);
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);
@@ -186,6 +189,24 @@ for (const item of items) {
   for (const [effectKey, value] of Object.entries(item.effects ?? {})) {
     if (!allowedItemEffects.has(effectKey)) errors.push(`item "${item.id}": unknown effect "${effectKey}"`);
     if (typeof value !== "number") errors.push(`item "${item.id}": effect "${effectKey}" must be numeric`);
+  }
+}
+
+for (const expansion of officeExpansions) {
+  for (const field of ["name", "description", "level", "hire_capacity", "decoration_slots", "cost", "unlock_requirements"]) {
+    if (!(field in expansion)) errors.push(`office_expansion "${expansion.id}": missing ${field}`);
+  }
+  for (const numericField of ["level", "hire_capacity", "decoration_slots"]) {
+    if (typeof expansion[numericField] !== "number" || expansion[numericField] < 1) {
+      errors.push(`office_expansion "${expansion.id}": ${numericField} must be a positive number`);
+    }
+  }
+  validateResourceMap(`office_expansion "${expansion.id}" cost`, expansion.cost, resourceIds);
+  for (const [requirement, value] of Object.entries(expansion.unlock_requirements ?? {})) {
+    if (!["min_month", "min_products", "min_users", "min_trust", "min_cash", "min_data", "min_talent", "min_automation"].includes(requirement)) {
+      errors.push(`office_expansion "${expansion.id}": unknown unlock requirement "${requirement}"`);
+    }
+    if (typeof value !== "number") errors.push(`office_expansion "${expansion.id}": unlock requirement "${requirement}" must be numeric`);
   }
 }
 

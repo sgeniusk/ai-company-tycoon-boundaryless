@@ -8,6 +8,7 @@ import {
   domains,
   events,
   items,
+  officeExpansions,
   products,
   resources,
   rivalEvents,
@@ -37,6 +38,8 @@ import type {
   HiredAgent,
   ItemDefinition,
   MarketRanking,
+  OfficeExpansionDefinition,
+  OfficeState,
   CardRewardChoice,
   PendingCardReward,
   ProductProject,
@@ -53,7 +56,7 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-const SAVE_VERSION = 5;
+const SAVE_VERSION = 6;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -87,6 +90,7 @@ export function createInitialState(): GameState {
     purchasedAutomationUpgrades: [...startingState.purchased_automation_upgrades],
     hiredAgents: [],
     ownedItems: [],
+    office: createInitialOfficeState(),
     productProjects: [],
     productLevels: {},
     competitorStates: createInitialCompetitorStates(startingState.month),
@@ -205,14 +209,115 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
 
 export function getAgentHireCheck(agent: AgentTypeDefinition, state: GameState): ActionCheck {
   const reasons = getRequirementReasons(agent.unlock_requirements, state);
+  const hireCapacity = getOfficeHireCapacity(state);
 
   if (state.hiredAgents.some((hiredAgent) => hiredAgent.typeId === agent.id)) {
     reasons.push("이미 고용한 에이전트입니다.");
+  }
+  if (state.hiredAgents.length >= hireCapacity) {
+    reasons.push(`사무실 수용 인원 ${hireCapacity}명 한도입니다. 상점에서 사무실을 확장하세요.`);
   }
 
   appendCostReasons(reasons, agent.hire_cost, state);
 
   return { ok: reasons.length === 0, reasons };
+}
+
+export function getOfficeExpansion(state: GameState): OfficeExpansionDefinition {
+  return officeExpansions.find((expansion) => expansion.id === state.office?.expansionId) ?? officeExpansions[0];
+}
+
+export function getOfficeHireCapacity(state: GameState): number {
+  return getOfficeExpansion(state).hire_capacity;
+}
+
+export function getOfficeDecorationSlots(state: GameState): number {
+  return getOfficeExpansion(state).decoration_slots;
+}
+
+export function getNextOfficeExpansion(state: GameState): OfficeExpansionDefinition | undefined {
+  const currentLevel = getOfficeExpansion(state).level;
+  return [...officeExpansions].sort((a, b) => a.level - b.level).find((expansion) => expansion.level === currentLevel + 1);
+}
+
+export function getOfficeExpansionCheck(expansion: OfficeExpansionDefinition, state: GameState): ActionCheck {
+  const reasons = getRequirementReasons(expansion.unlock_requirements, state);
+  const currentExpansion = getOfficeExpansion(state);
+
+  if (expansion.level <= currentExpansion.level) {
+    reasons.push("이미 적용된 사무실 확장입니다.");
+  }
+  if (expansion.level > currentExpansion.level + 1) {
+    reasons.push("이전 단계 사무실 확장이 필요합니다.");
+  }
+  appendCostReasons(reasons, expansion.cost, state);
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function buyOfficeExpansion(expansion: OfficeExpansionDefinition, state: GameState): GameState {
+  const check = getOfficeExpansionCheck(expansion, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  return {
+    ...state,
+    resources: applyResourceDelta(state.resources, negateCosts(expansion.cost)),
+    office: {
+      ...state.office,
+      expansionId: expansion.id,
+      placedItemIds: state.office.placedItemIds.slice(0, expansion.decoration_slots),
+    },
+    timeline: [`사무실 확장: ${expansion.name}으로 이전`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getPlacedOfficeItems(state: GameState): ItemDefinition[] {
+  const ownedDecorIds = new Set(state.ownedItems.filter((itemId) => isOfficeDecorationItemId(itemId)));
+  return state.office.placedItemIds
+    .filter((itemId) => ownedDecorIds.has(itemId))
+    .map((itemId) => items.find((item) => item.id === itemId))
+    .filter((item): item is ItemDefinition => Boolean(item));
+}
+
+export function getPlaceOfficeItemCheck(item: ItemDefinition, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+
+  if (!isOfficeDecorationItem(item)) reasons.push("사무실에 배치할 수 있는 아이템이 아닙니다.");
+  if (!state.ownedItems.includes(item.id)) reasons.push("보유하지 않은 아이템입니다.");
+  if (state.office.placedItemIds.includes(item.id)) reasons.push("이미 배치된 아이템입니다.");
+  if (getPlacedOfficeItems(state).length >= getOfficeDecorationSlots(state)) {
+    reasons.push("사무실 장식 슬롯이 가득 찼습니다.");
+  }
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function placeOfficeItem(item: ItemDefinition, state: GameState): GameState {
+  const check = getPlaceOfficeItemCheck(item, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  return {
+    ...state,
+    office: {
+      ...state.office,
+      placedItemIds: [...state.office.placedItemIds, item.id],
+    },
+    timeline: [`사무실 배치: ${item.name}`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function unplaceOfficeItem(itemId: string, state: GameState): GameState {
+  const item = items.find((entry) => entry.id === itemId);
+  if (!item || !state.office.placedItemIds.includes(itemId)) return state;
+
+  return {
+    ...state,
+    office: {
+      ...state.office,
+      placedItemIds: state.office.placedItemIds.filter((placedItemId) => placedItemId !== itemId),
+    },
+    timeline: [`사무실 보관: ${item.name}`, ...state.timeline].slice(0, 8),
+  };
 }
 
 export function hireAgent(agent: AgentTypeDefinition, state: GameState): GameState {
@@ -253,12 +358,15 @@ export function buyItem(item: ItemDefinition, state: GameState): GameState {
   if (!check.ok || state.status !== "playing") return state;
 
   const immediateEffects = item.target === "agent" ? {} : pickResourceEffects(item.effects);
+  const ownedItems = [...state.ownedItems, item.id];
+  const office = maybeAutoPlaceOfficeItem(item, state.office, ownedItems);
 
   return {
     ...state,
     resources: applyResourceDelta(applyResourceDelta(state.resources, negateCosts(item.cost)), immediateEffects),
-    ownedItems: [...state.ownedItems, item.id],
-    timeline: [`아이템 구매: ${item.name}`, ...state.timeline].slice(0, 8),
+    ownedItems,
+    office,
+    timeline: [`아이템 구매: ${item.name}${office.placedItemIds.includes(item.id) ? " · 사무실 배치" : ""}`, ...state.timeline].slice(0, 8),
   };
 }
 
@@ -717,6 +825,7 @@ export function hydrateGameState(serialized: string): GameState {
 
   const initialState = createInitialState();
   const rawState = parsed.state;
+  const ownedItems = sanitizeStringArray(rawState.ownedItems);
   return {
     ...initialState,
     ...rawState,
@@ -728,7 +837,8 @@ export function hydrateGameState(serialized: string): GameState {
     purchasedUpgrades: sanitizeStringArray(rawState.purchasedUpgrades),
     purchasedAutomationUpgrades: sanitizeStringArray(rawState.purchasedAutomationUpgrades),
     hiredAgents: Array.isArray(rawState.hiredAgents) ? rawState.hiredAgents : [],
-    ownedItems: sanitizeStringArray(rawState.ownedItems),
+    ownedItems,
+    office: hydrateOfficeState(rawState.office, ownedItems),
     productProjects: Array.isArray(rawState.productProjects) ? rawState.productProjects : [],
     productLevels: sanitizeProductLevels(rawState.productLevels, rawState.activeProducts ?? []),
     competitorStates: Array.isArray(rawState.competitorStates) ? rawState.competitorStates : initialState.competitorStates,
@@ -751,6 +861,36 @@ function createRecoveryState(message: string): GameState {
   return {
     ...initialState,
     timeline: [message, ...initialState.timeline].slice(0, 8),
+  };
+}
+
+function hydrateOfficeState(value: unknown, ownedItems: string[]): OfficeState {
+  const initialOffice = createInitialOfficeState();
+  if (!isRecord(value)) {
+    return hydrateLegacyOfficeState(initialOffice, ownedItems);
+  }
+
+  const expansionId =
+    typeof value.expansionId === "string" && officeExpansions.some((expansion) => expansion.id === value.expansionId)
+      ? value.expansionId
+      : initialOffice.expansionId;
+  const expansion = officeExpansions.find((entry) => entry.id === expansionId) ?? officeExpansions[0];
+  const ownedDecorIds = new Set(ownedItems.filter((itemId) => isOfficeDecorationItemId(itemId)));
+  const placedItemIds = sanitizeStringArray(value.placedItemIds)
+    .filter((itemId) => ownedDecorIds.has(itemId))
+    .slice(0, expansion.decoration_slots);
+
+  return {
+    expansionId,
+    placedItemIds,
+  };
+}
+
+function hydrateLegacyOfficeState(office: OfficeState, ownedItems: string[]): OfficeState {
+  const expansion = officeExpansions.find((entry) => entry.id === office.expansionId) ?? officeExpansions[0];
+  return {
+    ...office,
+    placedItemIds: ownedItems.filter((itemId) => isOfficeDecorationItemId(itemId)).slice(0, expansion.decoration_slots),
   };
 }
 
@@ -1316,9 +1456,37 @@ function addStats(current: AgentStats, effects: Partial<AgentStats> | Record<str
 }
 
 function getGlobalItemStats(state: GameState): AgentStats {
-  return items
-    .filter((item) => state.ownedItems.includes(item.id) && item.target !== "agent")
-    .reduce((stats, item) => addStats(stats, item.effects), createEmptyStats());
+  return getPlacedOfficeItems(state).reduce((stats, item) => addStats(stats, item.effects), createEmptyStats());
+}
+
+function createInitialOfficeState(): OfficeState {
+  return {
+    expansionId: officeExpansions[0]?.id ?? "garage_lab",
+    placedItemIds: [],
+  };
+}
+
+function maybeAutoPlaceOfficeItem(item: ItemDefinition, office: OfficeState, ownedItems: string[]): OfficeState {
+  if (!isOfficeDecorationItem(item) || office.placedItemIds.includes(item.id)) return office;
+
+  const ownedDecorIds = new Set(ownedItems.filter((itemId) => isOfficeDecorationItemId(itemId)));
+  const placedItemIds = office.placedItemIds.filter((itemId) => ownedDecorIds.has(itemId));
+  const expansion = officeExpansions.find((entry) => entry.id === office.expansionId) ?? officeExpansions[0];
+  if (placedItemIds.length >= expansion.decoration_slots) return { ...office, placedItemIds };
+
+  return {
+    ...office,
+    placedItemIds: [...placedItemIds, item.id],
+  };
+}
+
+function isOfficeDecorationItem(item: ItemDefinition): boolean {
+  return item.target !== "agent";
+}
+
+function isOfficeDecorationItemId(itemId: string): boolean {
+  const item = items.find((entry) => entry.id === itemId);
+  return Boolean(item && isOfficeDecorationItem(item));
 }
 
 function pickResourceEffects(effects: Record<string, number>): ResourceMap {

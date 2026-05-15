@@ -9,6 +9,10 @@ import {
   createInitialState,
   formatResource,
   getCompanyStage,
+  getOfficeDecorationSlots,
+  getOfficeExpansion,
+  getOfficeHireCapacity,
+  getPlacedOfficeItems,
   getPlayerMarketShare,
   resolveEventChoice,
   resolveRivalEventChoice,
@@ -97,10 +101,17 @@ export function GameStage({
   const activeProducts = products.filter((product) => gameState.activeProducts.includes(product.id));
   const activeProject = gameState.productProjects[0];
   const activeProjectProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
+  const officeExpansion = getOfficeExpansion(gameState);
+  const placedOfficeItems = getPlacedOfficeItems(gameState);
+  const placedOfficeItemIds = new Set(placedOfficeItems.map((item) => item.id));
+  const officeHireCapacity = getOfficeHireCapacity(gameState);
+  const officeDecorationSlots = getOfficeDecorationSlots(gameState);
   const unlockedDomainNames = domains
     .filter((domain) => gameState.unlockedDomains.includes(domain.id))
     .map((domain) => domain.name);
-  const officeObjects = assetManifest.office_objects.slice(0, 7);
+  const officeObjects = assetManifest.office_objects
+    .filter((object) => !object.linked_item_id || placedOfficeItemIds.has(object.linked_item_id))
+    .slice(0, Math.min(7, officeDecorationSlots + 3));
   const chosenGrowthPathId = gameState.chosenGrowthPath?.id;
   const runSummary = getRunSummary(gameState);
   const growthPathCardClass = (pathId: string) =>
@@ -134,11 +145,11 @@ export function GameStage({
 
   return (
     <section className="game-stage" aria-label="AI 회사 사무실">
-      <div className="office-scene">
+      <div className={`office-scene office-level-${officeExpansion.level}`}>
         <div className="office-wall">
-          <span>BOUNDARYLESS LAB</span>
-          <span>GPU ROOM</span>
-          <span>RELEASE BOARD</span>
+          <span>{officeExpansion.name}</span>
+          <span>TEAM {gameState.hiredAgents.length}/{officeHireCapacity}</span>
+          <span>DECOR {placedOfficeItems.length}/{officeDecorationSlots}</span>
         </div>
         <div className="office-floor">
           <div className="office-object-layer" aria-hidden="true">
@@ -151,7 +162,7 @@ export function GameStage({
             ))}
           </div>
           {gameState.hiredAgents.length
-            ? gameState.hiredAgents.slice(0, 8).map((agent, index) => {
+            ? gameState.hiredAgents.slice(0, Math.min(12, officeHireCapacity)).map((agent, index) => {
                 const agentType = agentTypes.find((type) => type.id === agent.typeId);
                 const agentSprite = getAgentSprite(agent.typeId);
 
@@ -234,6 +245,9 @@ export function GameStage({
           {gameState.chosenGrowthPath && <span className="growth-identity">전략: {gameState.chosenGrowthPath.title}</span>}
           <span className="growth-identity">
             로그라이트 런 {gameState.roguelite.runNumber} · 손패 {gameState.roguelite.deck.hand.length} · 통찰 {gameState.roguelite.founderInsight}
+          </span>
+          <span className="growth-identity">
+            사무실 {officeExpansion.name} · 고용 {gameState.hiredAgents.length}/{officeHireCapacity} · 장식 {placedOfficeItems.length}/{officeDecorationSlots}
           </span>
           {gameState.lastDevelopmentPuzzle && (
             <span>최근 퍼즐: {gameState.lastDevelopmentPuzzle.verdict} {gameState.lastDevelopmentPuzzle.score}점</span>

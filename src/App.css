@@ -206,6 +206,15 @@ p {
   position: relative;
 }
 
+.office-scene.office-level-2 {
+  min-height: 282px;
+}
+
+.office-scene.office-level-3,
+.office-scene.office-level-4 {
+  min-height: 306px;
+}
+
 .office-wall {
   align-items: center;
   background:
@@ -240,6 +249,15 @@ p {
   background-size: 34px 34px;
   min-height: 190px;
   position: relative;
+}
+
+.office-level-2 .office-floor {
+  min-height: 212px;
+}
+
+.office-level-3 .office-floor,
+.office-level-4 .office-floor {
+  min-height: 236px;
 }
 
 .office-object-layer {
@@ -372,6 +390,10 @@ p {
 .staff-5 { left: 51%; bottom: 38px; }
 .staff-6 { left: 60%; bottom: 92px; }
 .staff-7 { left: 72%; bottom: 48px; }
+.staff-8 { left: 78%; bottom: 120px; }
+.staff-9 { left: 36%; bottom: 128px; }
+.staff-10 { left: 66%; bottom: 150px; }
+.staff-11 { left: 47%; bottom: 154px; }
 
 .server-rack {
   background: #28363a;
@@ -1936,6 +1958,83 @@ p {
   padding: 10px;
 }
 
+.office-upgrade-panel,
+.decor-management {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+
+.office-summary-card,
+.office-expansion-card,
+.decor-section {
+  background: #fff7df;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.office-summary-card {
+  grid-template-columns: minmax(0, 1fr) repeat(2, auto);
+}
+
+.office-summary-card strong,
+.office-summary-card span {
+  color: var(--green-dark);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.office-expansion-card {
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.office-expansion-card h3,
+.office-expansion-card p {
+  margin-bottom: 0;
+}
+
+.office-expansion-card span,
+.office-expansion-card small,
+.decor-section span,
+.decor-section small,
+.decor-section p {
+  color: #5f5546;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.office-expansion-card button,
+.decor-section button {
+  background: var(--blue);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.decor-section h3 {
+  color: var(--green-dark);
+  margin-bottom: 0;
+}
+
+.decor-section article {
+  align-items: center;
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 8px;
+}
+
+.decor-section strong {
+  color: #2e2415;
+  font-size: 0.8rem;
+}
+
 .inventory-strip {
   display: grid;
   gap: 6px;
@@ -2482,6 +2581,9 @@ p {
   .assignment-forecast,
   .assignment-agent-grid,
   .inventory-strip,
+  .office-summary-card,
+  .office-expansion-card,
+  .decor-section article,
   .expansion-map,
   .domain-filter,
   .run-spotlight-grid,

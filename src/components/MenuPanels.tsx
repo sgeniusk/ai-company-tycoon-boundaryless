@@ -39,6 +39,13 @@ import {
   getEquipItemCheck,
   getItemCheck,
   getMarketRankings,
+  getNextOfficeExpansion,
+  getOfficeDecorationSlots,
+  getOfficeExpansion,
+  getOfficeExpansionCheck,
+  getOfficeHireCapacity,
+  getPlacedOfficeItems,
+  getPlaceOfficeItemCheck,
   getProductLevel,
   getProductProjectForecast,
   getProductProjectCheck,
@@ -46,7 +53,10 @@ import {
   getProductUpgradeCost,
   getUpgradeCheck,
   hireAgent,
+  buyOfficeExpansion,
+  placeOfficeItem,
   startProductProject,
+  unplaceOfficeItem,
   upgradeCapability,
   upgradeProduct,
 } from "../game/simulation";
@@ -98,6 +108,8 @@ export function renderMenuContent(
     const tenMonthArc = getTenMonthArc(gameState);
     const achievementStatuses = getAchievementStatuses(gameState);
     const unlockedAchievementCount = achievementStatuses.filter((achievement) => achievement.unlocked).length;
+    const officeExpansion = getOfficeExpansion(gameState);
+    const placedOfficeItems = getPlacedOfficeItems(gameState);
 
     return (
       <div className="panel-grid two-col">
@@ -112,6 +124,9 @@ export function renderMenuContent(
             <span>개발 프로젝트 {gameState.productProjects.length}개</span>
             <span>고용 에이전트 {gameState.hiredAgents.length}명</span>
             <span>보유 아이템 {gameState.ownedItems.length}개</span>
+            <span>사무실 {officeExpansion.name}</span>
+            <span>고용 한도 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
+            <span>장식 효과 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
             <span>해금 분야 {gameState.unlockedDomains.length}개</span>
             <span>자동화 {formatResource("automation", gameState.resources.automation ?? 0)}</span>
             {gameState.chosenGrowthPath && (
@@ -896,7 +911,13 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const ownedItems = items.filter((item) => gameState.ownedItems.includes(item.id));
   const equippedItemIds = new Set(gameState.hiredAgents.flatMap((agent) => agent.equippedItemIds));
   const unequippedAgentItems = ownedItems.filter((item) => item.target === "agent" && !equippedItemIds.has(item.id));
+  const officeExpansion = getOfficeExpansion(gameState);
+  const nextOfficeExpansion = getNextOfficeExpansion(gameState);
+  const nextOfficeCheck = nextOfficeExpansion ? getOfficeExpansionCheck(nextOfficeExpansion, gameState) : undefined;
+  const placedOfficeItems = getPlacedOfficeItems(gameState);
+  const placedOfficeItemIds = new Set(placedOfficeItems.map((item) => item.id));
   const officeItems = ownedItems.filter((item) => item.target !== "agent");
+  const storedOfficeItems = officeItems.filter((item) => !placedOfficeItemIds.has(item.id));
 
   return (
     <div className="panel-grid two-col">
@@ -914,13 +935,88 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
       <section className="panel">
         <div className="panel-heading">
           <h2>인벤토리와 투자</h2>
-          <p>보유 아이템, 장착 대기 장비, 자동화 투자를 함께 봅니다.</p>
+          <p>보유 아이템, 사무실 확장, 장식 배치, 자동화 투자를 함께 봅니다.</p>
+        </div>
+        <div className="office-upgrade-panel">
+          <div className="office-summary-card">
+            <strong>{officeExpansion.name}</strong>
+            <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
+            <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
+          </div>
+          {nextOfficeExpansion ? (
+            <article className="office-expansion-card">
+              <div>
+                <p className="item-meta">다음 확장</p>
+                <h3>{nextOfficeExpansion.name}</h3>
+                <p>{nextOfficeExpansion.description}</p>
+                <span>
+                  고용 {nextOfficeExpansion.hire_capacity}명 · 장식 {nextOfficeExpansion.decoration_slots}칸 · 비용 {formatCost(nextOfficeExpansion.cost)}
+                </span>
+              </div>
+              <button
+                disabled={!nextOfficeCheck?.ok || gameState.status !== "playing"}
+                onClick={() => setGameState((current) => buyOfficeExpansion(nextOfficeExpansion, current))}
+                type="button"
+              >
+                확장
+              </button>
+              {nextOfficeCheck && !nextOfficeCheck.ok && <small>{nextOfficeCheck.reasons.join(" / ")}</small>}
+            </article>
+          ) : (
+            <p className="empty-note">현재 가능한 최대 사무실입니다. 이제 콘텐츠와 장식을 더 늘릴 차례입니다.</p>
+          )}
+        </div>
+        <div className="decor-management">
+          <div className="decor-section">
+            <h3>배치된 장식</h3>
+            {placedOfficeItems.length ? (
+              placedOfficeItems.map((item) => (
+                <article key={item.id}>
+                  <div>
+                    <strong>{item.name}</strong>
+                    <span>{formatEffects(item.effects)}</span>
+                  </div>
+                  <button onClick={() => setGameState((current) => unplaceOfficeItem(item.id, current))} type="button">
+                    보관
+                  </button>
+                </article>
+              ))
+            ) : (
+              <p>사무실 아이템을 구매하면 빈 슬롯에 자동 배치됩니다.</p>
+            )}
+          </div>
+          <div className="decor-section">
+            <h3>보관 중 장식</h3>
+            {storedOfficeItems.length ? (
+              storedOfficeItems.map((item) => {
+                const placeCheck = getPlaceOfficeItemCheck(item, gameState);
+                return (
+                  <article key={item.id}>
+                    <div>
+                      <strong>{item.name}</strong>
+                      <span>{formatEffects(item.effects)}</span>
+                      {!placeCheck.ok && <small>{placeCheck.reasons[0]}</small>}
+                    </div>
+                    <button
+                      disabled={!placeCheck.ok || gameState.status !== "playing"}
+                      onClick={() => setGameState((current) => placeOfficeItem(item, current))}
+                      type="button"
+                    >
+                      배치
+                    </button>
+                  </article>
+                );
+              })
+            ) : (
+              <p>보관 중인 사무실 장식이 없습니다.</p>
+            )}
+          </div>
         </div>
         <div className="inventory-panel">
           <div className="inventory-strip">
             <span>보유 {ownedItems.length}</span>
             <span>장착 대기 {unequippedAgentItems.length}</span>
-            <span>사무실 효과 {officeItems.length}</span>
+            <span>배치 장식 {placedOfficeItems.length}</span>
           </div>
           <div className="inventory-list">
             {ownedItems.length ? (

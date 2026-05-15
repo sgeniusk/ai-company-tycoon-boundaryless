@@ -397,6 +397,22 @@ export interface ItemDefinition {
   flavor: string;
 }
 
+export interface OfficeExpansionDefinition {
+  id: string;
+  level: number;
+  name: string;
+  description: string;
+  hire_capacity: number;
+  decoration_slots: number;
+  cost: ResourceMap;
+  unlock_requirements: Record<string, number>;
+}
+
+export interface OfficeState {
+  expansionId: string;
+  placedItemIds: string[];
+}
+
 export interface ReleaseReview {
   score: number;
   grade: string;
@@ -559,6 +575,7 @@ export interface GameState {
   purchasedAutomationUpgrades: string[];
   hiredAgents: HiredAgent[];
   ownedItems: string[];
+  office: OfficeState;
   productProjects: ProductProject[];
   productLevels: Record<string, number>;
   competitorStates: CompetitorState[];

@@ -17,6 +17,7 @@ import growthPathsJson from "../../data/growth_paths.json";
 import achievementsJson from "../../data/achievements.json";
 import strategyCardsJson from "../../data/strategy_cards.json";
 import metaUnlocksJson from "../../data/meta_unlocks.json";
+import officeExpansionsJson from "../../data/office_expansions.json";
 import type {
   AchievementDefinition,
   AgentTypeDefinition,
@@ -30,6 +31,7 @@ import type {
   EventDefinition,
   GrowthPathDefinition,
   MetaUnlockDefinition,
+  OfficeExpansionDefinition,
   ProductDefinition,
   ResourceDefinition,
   RivalEventDefinition,
@@ -58,3 +60,4 @@ export const growthPaths = growthPathsJson.growth_paths as unknown as GrowthPath
 export const achievements = achievementsJson.achievements as unknown as AchievementDefinition[];
 export const strategyCards = strategyCardsJson.strategy_cards as unknown as StrategyCardDefinition[];
 export const metaUnlocks = metaUnlocksJson.meta_unlocks as unknown as MetaUnlockDefinition[];
+export const officeExpansions = officeExpansionsJson.office_expansions as unknown as OfficeExpansionDefinition[];

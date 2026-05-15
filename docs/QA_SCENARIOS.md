@@ -18,6 +18,7 @@ Use the local app URL and append one of these query strings:
 | Release | `?scenario=release` | Release spotlight, growth fork cards, boundaryless expansion hint, office scene |
 | Reward | `?scenario=reward` | Post-release card reward, deck edit tokens, card remove/upgrade UI |
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
+| Office | `?scenario=office` | Expanded office, placed decorations, decoration management, next office upgrade |
 | Deck | `?scenario=deck` | Active project with strategy hand, development puzzle, and meta unlock panel |
 | Strategy | `?scenario=strategy` | Chosen growth path, competition signal badges, rival pressure |
 | Counter | `?scenario=counter` | Chosen growth path with a claimed rival product, counter cards, and recommendation UI |
@@ -34,6 +35,7 @@ Examples:
 - `http://localhost:5173/?scenario=release`
 - `http://localhost:5173/?scenario=reward`
 - `http://localhost:5173/?scenario=shop`
+- `http://localhost:5173/?scenario=office`
 - `http://localhost:5173/?scenario=deck`
 - `http://localhost:5173/?scenario=strategy`
 - `http://localhost:5173/?scenario=counter`
@@ -151,6 +153,17 @@ Examples:
 - Competitor cards show `추천 대응` with recommended cards, products, and research.
 - Deck menu shows the most urgent rival counter advice above the hand.
 - Playing `시장 리포지셔닝` lowers the top rival's pressure and records the rival name in the timeline.
+
+## v0.12.7 Visual QA Checklist
+
+- Office scenario opens on the `상점` menu.
+- QA pill shows `사무실 확장 QA`.
+- Office scene wall shows the current office name, team capacity, and decoration slots.
+- Inventory panel shows current office, next office expansion, hire capacity, and decoration capacity.
+- Placed decorations list shows active decoration effects and `보관` buttons.
+- Stored decorations list shows unplaced decor or an empty state.
+- Company summary shows office name, hire capacity, and active decoration count.
+- Narrow layout stacks office expansion and decoration rows without button/text overlap.
 
 ## Note
 

@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.12.7: Office Expansion And Decoration
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | New runs start in a small office with limited hire capacity | **Passed** |
+| 2 | Hiring is blocked when the office is full | **Passed** |
+| 3 | Buying the next office expansion increases hire capacity | **Passed** |
+| 4 | Buying the next office expansion increases decoration slots | **Passed** |
+| 5 | Office/company items can be placed into decoration slots | **Passed** |
+| 6 | Stored decoration items can be swapped into open slots | **Passed** |
+| 7 | Only placed decorations add global project stat bonuses | **Passed** |
+| 8 | Browser QA supports `?scenario=office` | **Passed** |
+| 9 | `npm run harness:gate` passes | **Passed** |
+
+---
+
 ## Alpha v0.12.6: Rival Counter Plans And Cards
 
 | # | Criterion | Status |

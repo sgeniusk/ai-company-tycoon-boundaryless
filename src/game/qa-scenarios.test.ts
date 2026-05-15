@@ -3,7 +3,7 @@ import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./q
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
-    expect(qaScenarioIds).toEqual(["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "counter", "rivals", "arc", "commercial", "result"]);
+    expect(qaScenarioIds).toEqual(["fresh", "staffing", "project", "release", "reward", "shop", "office", "deck", "strategy", "counter", "rivals", "arc", "commercial", "result"]);
   });
 
   it("creates a fresh first-screen scenario", () => {
@@ -49,6 +49,15 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.activeMenu).toBe("shop");
     expect(scenario.state.activeProducts).toContain("ai_writing_assistant");
     expect(scenario.state.ownedItems).toHaveLength(0);
+  });
+
+  it("creates an office expansion and decoration scenario", () => {
+    const scenario = createQaScenario("office");
+
+    expect(scenario.activeMenu).toBe("shop");
+    expect(scenario.state.office.expansionId).toBe("startup_suite");
+    expect(scenario.state.office.placedItemIds.length).toBeGreaterThanOrEqual(2);
+    expect(scenario.state.ownedItems).toEqual(expect.arrayContaining(["gpu_rack_mini", "ux_sticky_wall"]));
   });
 
   it("creates a card reward scenario after first release", () => {
@@ -110,6 +119,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=release")?.id).toBe("release");
     expect(createQaScenarioFromSearch("?scenario=staffing")?.id).toBe("staffing");
     expect(createQaScenarioFromSearch("?scenario=reward")?.id).toBe("reward");
+    expect(createQaScenarioFromSearch("?scenario=office")?.id).toBe("office");
     expect(createQaScenarioFromSearch("?scenario=strategy")?.id).toBe("strategy");
     expect(createQaScenarioFromSearch("?scenario=counter")?.id).toBe("counter");
     expect(createQaScenarioFromSearch("?scenario=rivals")?.id).toBe("rivals");
