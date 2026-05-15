@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.6: Commit To Growth Path
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Growth paths define data-driven commitment effects and bonus descriptions | **Passed** |
+| 2 | Player cannot choose a growth path before the first product release | **Passed** |
+| 3 | Player can choose exactly one growth path after release | **Passed** |
+| 4 | Choosing a growth path applies its immediate resource bonus | **Passed** |
+| 5 | Chosen growth path persists through save/load | **Passed** |
+| 6 | Duplicate or alternate path choices do not reapply bonuses | **Passed** |
+| 7 | The company stage card shows the chosen strategy | **Passed** |
+| 8 | The first-session objective for next growth completes after commitment | **Passed** |
+| 9 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.9.5: Post-Release Growth Forks
 
 | # | Criterion | Status |

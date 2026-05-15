@@ -16,6 +16,7 @@ export function createReleaseGrowthPaths(product: ProductDefinition): ReleaseGro
       targetMenu: path.target_menu,
       actionLabel: path.action_label,
       payoff: path.payoff,
+      bonusDescription: path.bonus_description,
       detail: createGrowthPathDetail(path),
     }));
 }

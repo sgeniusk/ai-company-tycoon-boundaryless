@@ -543,6 +543,20 @@ p {
   font-weight: 900;
 }
 
+.growth-path-card.selected {
+  background: #dff1df;
+  border-color: #8fc26b;
+}
+
+.growth-path-card.selected strong {
+  color: #184534;
+}
+
+.growth-path-card.locked {
+  filter: saturate(0.65);
+  opacity: 0.72;
+}
+
 .release-score {
   align-items: center;
   display: flex;
@@ -575,6 +589,14 @@ p {
   display: block;
   font-size: 0.78rem;
   font-weight: 900;
+}
+
+.company-stage .growth-identity {
+  background: #dff1df;
+  border: 2px solid var(--green);
+  color: var(--green-dark);
+  margin: 8px 0;
+  padding: 6px 8px;
 }
 
 .monthly-report dl {

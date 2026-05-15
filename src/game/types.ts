@@ -272,6 +272,8 @@ export interface GrowthPathDefinition {
   target_menu: GrowthPathMenuId;
   action_label: string;
   payoff: string;
+  bonus_description: string;
+  commitment_effects: ResourceMap;
   trigger_tags: string[];
   recommended_product_ids?: string[];
   recommended_capability_ids?: string[];
@@ -286,7 +288,16 @@ export interface ReleaseGrowthPath {
   targetMenu: GrowthPathMenuId;
   actionLabel: string;
   payoff: string;
+  bonusDescription: string;
   detail: string;
+}
+
+export interface ChosenGrowthPath {
+  id: string;
+  title: string;
+  month: number;
+  bonusDescription: string;
+  effects: ResourceMap;
 }
 
 export interface ReleaseMoment {
@@ -370,6 +381,7 @@ export interface GameState {
   competitorStates: CompetitorState[];
   productReviews: Record<string, ReleaseReview>;
   lastRelease?: ReleaseMoment;
+  chosenGrowthPath?: ChosenGrowthPath;
   eventHistory: string[];
   rivalEventHistory: string[];
   timeline: string[];

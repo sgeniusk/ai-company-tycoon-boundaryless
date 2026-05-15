@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { agentTypes, products } from "./data";
-import { createInitialState, hireAgent, startProductProject, advanceMonth } from "./simulation";
+import { createInitialState, hireAgent, startProductProject, advanceMonth, chooseGrowthPath } from "./simulation";
 import { getGuidanceStep, getOpeningObjectives } from "./guidance";
 
 describe("alpha v0.9.1 player guidance", () => {
@@ -77,5 +77,21 @@ describe("alpha v0.9.1 player guidance", () => {
       menu: "products",
       actionLabel: "성장 분기 보기",
     });
+  });
+
+  it("marks the next-growth objective complete after committing to a path", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const product = products.find((entry) => entry.id === "ai_writing_assistant");
+    if (!architect || !product) throw new Error("Missing starter fixtures");
+
+    const started = startProductProject(product, hireAgent(architect, createInitialState()));
+    const released = advanceMonth(advanceMonth(started));
+    const chosen = chooseGrowthPath("productivity_line", released);
+
+    expect(getOpeningObjectives(chosen)[3]).toMatchObject({
+      id: "choose_next_path",
+      complete: true,
+    });
+    expect(getGuidanceStep(chosen).id).not.toBe("choose_growth_path");
   });
 });

@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.6-alpha] — 2026-05-15
+
+### Commit To Growth Path
+
+**Added:**
+- One-time post-release growth path commitment action
+- `chosenGrowthPath` runtime/save state with path id, title, chosen month, bonus description, and applied effects
+- Data-driven `commitment_effects` and `bonus_description` for each growth path
+- Selected growth path display in the company stage card
+- Tests for selection gating, persistence, duplicate prevention, and guidance completion
+
+**Updated:**
+- Growth path cards now choose the path on first click, then route to their target menu
+- The opening objective `다음 성장 선택` now completes after committing to a growth path
+- Data validator now checks growth path commitment effects
+
+**Verification:**
+- `npm test` passed, 46 tests
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.9.5-alpha] — 2026-05-15
 
 ### Post-Release Growth Forks

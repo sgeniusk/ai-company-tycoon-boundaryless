@@ -13,6 +13,7 @@ import {
   rivalEvents,
   startingState,
   upgrades,
+  growthPaths,
 } from "./data";
 import { createReleaseGrowthPaths } from "./growth-paths";
 import type {
@@ -497,6 +498,47 @@ export function buyAutomationUpgrade(upgrade: AutomationUpgradeDefinition, state
   };
 }
 
+export function getGrowthPathChoiceCheck(pathId: string, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+
+  if (!growthPaths.some((path) => path.id === pathId)) {
+    reasons.push("알 수 없는 성장 경로입니다.");
+  }
+
+  if (!state.lastRelease || state.activeProducts.length === 0) {
+    reasons.push("첫 제품 출시 후 선택할 수 있습니다.");
+  }
+
+  if (state.chosenGrowthPath) {
+    reasons.push("이미 성장 경로를 선택했습니다.");
+  }
+
+  if (state.status !== "playing") {
+    reasons.push("운영 중일 때만 선택할 수 있습니다.");
+  }
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function chooseGrowthPath(pathId: string, state: GameState): GameState {
+  const check = getGrowthPathChoiceCheck(pathId, state);
+  const path = growthPaths.find((entry) => entry.id === pathId);
+  if (!check.ok || !path) return state;
+
+  return {
+    ...state,
+    resources: applyResourceDelta(state.resources, path.commitment_effects),
+    chosenGrowthPath: {
+      id: path.id,
+      title: path.title,
+      month: state.month,
+      bonusDescription: path.bonus_description,
+      effects: path.commitment_effects,
+    },
+    timeline: [`성장 경로 선택: ${path.title} - ${path.bonus_description}`, ...state.timeline].slice(0, 8),
+  };
+}
+
 export function resolveEventChoice(choice: EventChoiceDefinition, state: GameState): GameState {
   if (!state.currentEvent || state.status !== "playing") return state;
 
@@ -567,6 +609,7 @@ export function hydrateGameState(serialized: string): GameState {
     competitorStates: parsed.state.competitorStates ?? createInitialState().competitorStates,
     productReviews: parsed.state.productReviews ?? {},
     lastRelease: hydrateReleaseMoment(parsed.state.lastRelease),
+    chosenGrowthPath: parsed.state.chosenGrowthPath,
     eventHistory: parsed.state.eventHistory ?? [],
     rivalEventHistory: parsed.state.rivalEventHistory ?? [],
     timeline: parsed.state.timeline ?? [],

@@ -142,6 +142,7 @@ export function getGuidanceStep(state: GameState): GuidanceStep {
 
 function hasChosenNextGrowthPath(state: GameState): boolean {
   return (
+    Boolean(state.chosenGrowthPath) ||
     state.ownedItems.length > 0 ||
     state.activeProducts.length > 1 ||
     (state.activeProducts.length > 0 && state.productProjects.length > 0) ||

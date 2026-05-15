@@ -1,8 +1,17 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
 import { assetManifest, domains, products, resources } from "../game/data";
 import { getGuidanceStep, getOpeningObjectives, type GuidanceStep, type OpeningObjective } from "../game/guidance";
-import { advanceMonth, createInitialState, formatResource, getCompanyStage, getPlayerMarketShare, resolveEventChoice, resolveRivalEventChoice } from "../game/simulation";
-import type { GameState } from "../game/types";
+import {
+  advanceMonth,
+  chooseGrowthPath,
+  createInitialState,
+  formatResource,
+  getCompanyStage,
+  getPlayerMarketShare,
+  resolveEventChoice,
+  resolveRivalEventChoice,
+} from "../game/simulation";
+import type { GameState, ReleaseGrowthPath } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { statusLabel } from "../ui/formatters";
 import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
@@ -81,6 +90,11 @@ export function GameStage({
     .filter((domain) => gameState.unlockedDomains.includes(domain.id))
     .map((domain) => domain.name);
   const officeObjects = assetManifest.office_objects.slice(0, 7);
+  const chosenGrowthPathId = gameState.chosenGrowthPath?.id;
+  const growthPathCardClass = (pathId: string) =>
+    ["growth-path-card", chosenGrowthPathId === pathId ? "selected" : "", chosenGrowthPathId && chosenGrowthPathId !== pathId ? "locked" : ""]
+      .filter(Boolean)
+      .join(" ");
 
   const handleGuidanceAction = () => {
     if (guidance.id === "advance_project") {
@@ -92,6 +106,13 @@ export function GameStage({
       return;
     }
     if (guidance.menu) setActiveMenu(guidance.menu);
+  };
+
+  const handleGrowthPathClick = (path: ReleaseGrowthPath) => {
+    if (!chosenGrowthPathId) {
+      setGameState((current) => chooseGrowthPath(path.id, current));
+    }
+    setActiveMenu(path.targetMenu);
   };
 
   return (
@@ -143,10 +164,15 @@ export function GameStage({
               <div className="growth-fork-list">
                 <p className="eyebrow">다음 성장 분기</p>
                 {gameState.lastRelease.growthPaths.map((path) => (
-                  <button className="growth-path-card" key={path.id} onClick={() => setActiveMenu(path.targetMenu)}>
+                  <button
+                    aria-pressed={chosenGrowthPathId === path.id}
+                    className={growthPathCardClass(path.id)}
+                    key={path.id}
+                    onClick={() => handleGrowthPathClick(path)}
+                  >
                     <strong>{path.title}</strong>
                     <span>{path.description}</span>
-                    <small>{path.payoff}</small>
+                    <small>{chosenGrowthPathId === path.id ? `선택됨: ${path.bonusDescription}` : path.bonusDescription}</small>
                   </button>
                 ))}
               </div>
@@ -158,6 +184,7 @@ export function GameStage({
           <p className="eyebrow">회사 단계</p>
           <h2>{companyStage.name}</h2>
           <p>{companyStage.description}</p>
+          {gameState.chosenGrowthPath && <span className="growth-identity">전략: {gameState.chosenGrowthPath.title}</span>}
           <span>해금 분야: {unlockedDomainNames.join(", ")}</span>
         </article>
         <article className="monthly-report">

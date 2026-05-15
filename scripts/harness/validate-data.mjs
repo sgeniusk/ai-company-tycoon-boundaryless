@@ -209,10 +209,11 @@ for (const event of rivalEvents) {
 
 const menuIds = new Set(["company", "products", "agents", "research", "shop", "competition", "log"]);
 for (const path of growthPaths) {
-  for (const field of ["title", "description", "target_menu", "action_label", "payoff"]) {
+  for (const field of ["title", "description", "target_menu", "action_label", "payoff", "bonus_description"]) {
     if (!path[field]) errors.push(`growth_path "${path.id}": missing ${field}`);
   }
   if (typeof path.order !== "number") errors.push(`growth_path "${path.id}": order must be numeric`);
+  validateResourceMap(`growth_path "${path.id}" commitment_effects`, path.commitment_effects, resourceIds);
   if (!menuIds.has(path.target_menu)) errors.push(`growth_path "${path.id}": unknown target_menu "${path.target_menu}"`);
   if (!Array.isArray(path.trigger_tags) || path.trigger_tags.length === 0) {
     errors.push(`growth_path "${path.id}": trigger_tags must be a non-empty array`);

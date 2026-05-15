@@ -40,6 +40,13 @@ Examples:
 - Clicking each growth path card routes to its target menu.
 - The post-release guidance card says `다음 성장 분기 선택`.
 
+## v0.9.6 Visual QA Checklist
+
+- Clicking one growth path marks it as selected and does not apply alternate bonuses.
+- The company stage card shows `전략: ...` after choosing a path.
+- Non-selected growth path cards visibly read as lower priority after commitment.
+- The objective strip marks `다음 성장 선택` complete after commitment.
+
 ## Note
 
 If local browser automation cannot connect from the Codex environment, still run:

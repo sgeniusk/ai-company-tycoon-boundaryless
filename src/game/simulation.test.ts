@@ -5,9 +5,11 @@ import {
   buyAutomationUpgrade,
   buyItem,
   buyUpgrade,
+  chooseGrowthPath,
   createInitialState,
   equipItem,
   getAgentHireCheck,
+  getGrowthPathChoiceCheck,
   getCompanyStage,
   getMarketRankings,
   getPlayerMarketShare,
@@ -222,6 +224,41 @@ describe("alpha production systems", () => {
     );
 
     expect(legacyHydrated.lastRelease?.growthPaths).toHaveLength(3);
+  });
+
+  it("commits to one post-release growth path and persists the identity", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing growth path fixture");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const released = advanceMonth(advanceMonth(started));
+
+    expect(getGrowthPathChoiceCheck("trust_enterprise", released).ok).toBe(true);
+
+    const chosen = chooseGrowthPath("trust_enterprise", released);
+    const chosenAgain = chooseGrowthPath("code_vision_lab", chosen);
+    const hydrated = hydrateGameState(serializeGameState(chosen));
+
+    expect(chosen.chosenGrowthPath).toMatchObject({
+      id: "trust_enterprise",
+      title: "신뢰 기반 엔터프라이즈",
+      month: chosen.month,
+    });
+    expect(chosen.resources.trust).toBeGreaterThan(released.resources.trust);
+    expect(chosen.timeline[0]).toContain("성장 경로 선택");
+    expect(chosenAgain.chosenGrowthPath?.id).toBe("trust_enterprise");
+    expect(chosenAgain.resources).toEqual(chosen.resources);
+    expect(hydrated.chosenGrowthPath).toEqual(chosen.chosenGrowthPath);
+  });
+
+  it("blocks growth path commitment before a first release", () => {
+    const check = getGrowthPathChoiceCheck("productivity_line", createInitialState());
+    const attempted = chooseGrowthPath("productivity_line", createInitialState());
+
+    expect(check.ok).toBe(false);
+    expect(check.reasons).toContain("첫 제품 출시 후 선택할 수 있습니다.");
+    expect(attempted.chosenGrowthPath).toBeUndefined();
   });
 
   it("keeps the starter product revenue high enough for early runway", () => {

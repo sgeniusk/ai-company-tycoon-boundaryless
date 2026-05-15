@@ -103,7 +103,13 @@ describe("alpha content data", () => {
       expect(menuIds.has(path.target_menu)).toBe(true);
       expect(path.action_label).toBeTruthy();
       expect(path.payoff).toBeTruthy();
+      expect(path.bonus_description).toBeTruthy();
       expect(path.trigger_tags.length).toBeGreaterThan(0);
+
+      for (const [resourceId, value] of Object.entries(path.commitment_effects ?? {})) {
+        expect(["cash", "users", "compute", "data", "talent", "trust", "hype", "automation"]).toContain(resourceId);
+        expect(typeof value).toBe("number");
+      }
 
       for (const productId of path.recommended_product_ids ?? []) {
         expect(productIds.has(productId)).toBe(true);
