@@ -319,6 +319,8 @@ const allowedCardEffects = new Set([
   "puzzle_score_bonus",
   "puzzle_difficulty_delta",
   "puzzle_tile_limit",
+  "rival_score_delta",
+  "rival_momentum_delta",
 ]);
 for (const card of strategyCards) {
   for (const field of ["name", "category", "rarity", "description", "cost", "effects", "tags", "copies", "unlock_requirements"]) {

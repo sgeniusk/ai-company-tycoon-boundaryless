@@ -55,6 +55,8 @@ export function formatEffects(effects: Record<string, number>): string {
     puzzle_score_bonus: "퍼즐 점수",
     puzzle_difficulty_delta: "퍼즐 난이도",
     puzzle_tile_limit: "퍼즐 선택",
+    rival_score_delta: "경쟁 위협",
+    rival_momentum_delta: "경쟁 모멘텀",
   };
 
   return Object.entries(effects)

@@ -53,6 +53,56 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
     expect(played.timeline[0]).toContain("카드 사용");
   });
 
+  it("plays a rival counter card against the highest pressure competitor", () => {
+    const card = strategyCards.find((entry) => entry.id === "market_repositioning");
+    if (!card) throw new Error("Missing rival counter fixture");
+
+    const initial = createInitialState();
+    const state = {
+      ...initial,
+      month: 5,
+      chosenGrowthPath: {
+        id: "productivity_line",
+        title: "생산성 제품 라인 확장",
+        month: 3,
+        bonusDescription: "생산성 제품군을 빠르게 넓힙니다.",
+        effects: {},
+        monthlyEffects: {},
+      },
+      competitorStates: initial.competitorStates.map((competitor) =>
+        competitor.id === "competitor_chatgody"
+          ? {
+              ...competitor,
+              score: 120,
+              marketShare: 31,
+              momentum: 5,
+              claimedProducts: ["meeting_summary_bot"],
+              lastMove: "회의 요약 봇 시장 선점",
+            }
+          : competitor,
+      ),
+      roguelite: {
+        ...initial.roguelite,
+        deck: {
+          drawPile: [],
+          hand: ["market_repositioning"],
+          discardPile: [],
+          playedThisTurn: [],
+        },
+      },
+    };
+    const before = state.competitorStates.find((competitor) => competitor.id === "competitor_chatgody");
+
+    expect(getStrategyCardPlayCheck(card, state).ok).toBe(true);
+
+    const played = playStrategyCard(card, state);
+    const after = played.competitorStates.find((competitor) => competitor.id === "competitor_chatgody");
+
+    expect(after?.score).toBeLessThan(before?.score ?? 0);
+    expect(after?.momentum).toBeLessThan(before?.momentum ?? 0);
+    expect(played.timeline[0]).toContain("챗지오디");
+  });
+
   it("draws through the discard pile without duplicating played card ids", () => {
     const state = createInitialState();
     const emptied = {

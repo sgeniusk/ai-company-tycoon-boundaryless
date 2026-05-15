@@ -20,6 +20,7 @@ Use the local app URL and append one of these query strings:
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
 | Deck | `?scenario=deck` | Active project with strategy hand, development puzzle, and meta unlock panel |
 | Strategy | `?scenario=strategy` | Chosen growth path, competition signal badges, rival pressure |
+| Counter | `?scenario=counter` | Chosen growth path with a claimed rival product, counter cards, and recommendation UI |
 | Rivals | `?scenario=rivals` | Month-12 market with annual strong rivals already entered |
 | Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
@@ -35,6 +36,7 @@ Examples:
 - `http://localhost:5173/?scenario=shop`
 - `http://localhost:5173/?scenario=deck`
 - `http://localhost:5173/?scenario=strategy`
+- `http://localhost:5173/?scenario=counter`
 - `http://localhost:5173/?scenario=rivals`
 - `http://localhost:5173/?scenario=arc`
 - `http://localhost:5173/?scenario=commercial`
@@ -139,6 +141,16 @@ Examples:
 - Products menu shows a domain filter row and a filter summary.
 - Clicking locked domains still shows their product candidates and locked product reasons.
 - Narrow layout stacks result spotlight and product filters without text overlap.
+
+## v0.12.6 Visual QA Checklist
+
+- Counter scenario opens on the `경쟁` menu.
+- QA pill shows `경쟁 대응 QA`.
+- Ranking cards show `대응` hints for the highest-pressure rivals.
+- Competition profile panel shows `대응 플랜` cards with card/research recommendations.
+- Competitor cards show `추천 대응` with recommended cards, products, and research.
+- Deck menu shows the most urgent rival counter advice above the hand.
+- Playing `시장 리포지셔닝` lowers the top rival's pressure and records the rival name in the timeline.
 
 ## Note
 

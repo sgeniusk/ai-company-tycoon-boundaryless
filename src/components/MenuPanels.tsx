@@ -4,6 +4,7 @@ import { getAchievementStatuses } from "../game/achievements";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getGrowthPathObjectives } from "../game/growth-objectives";
 import { ALL_PRODUCT_DOMAIN_FILTER_ID, getProductDomainFilters, getProductsByDomainFilter } from "../game/product-filters";
+import { getRivalCounterPlans } from "../game/rival-counters";
 import { getTenMonthArc } from "../game/ten-month-arc";
 import {
   createDevelopmentPuzzle,
@@ -210,6 +211,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const projectedInsight = gameState.roguelite.founderInsight + getRunInsightReward(gameState);
   const selectionLimit = getDevelopmentPuzzleSelectionLimit(gameState, activeProject?.id);
   const resolveCheck = activeProject ? getDevelopmentPuzzleResolveCheck(activeProject.id, selectedPuzzleTileIds, gameState) : undefined;
+  const topRivalCounter = getRivalCounterPlans(gameState, 1)[0];
 
   useEffect(() => {
     if (!puzzle) {
@@ -255,6 +257,14 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <span>편집 토큰 {gameState.roguelite.deckEditTokens}</span>
           <span>{pendingReward ? "보상 선택 대기" : "보상 없음"}</span>
         </div>
+        {topRivalCounter && (
+          <div className="counter-advice-strip">
+            <strong>{topRivalCounter.competitorName} 대응</strong>
+            <span>{topRivalCounter.label} · 압박 {topRivalCounter.pressureScore}</span>
+            <small>추천 카드 {formatCardNames(topRivalCounter.counterCardIds)}</small>
+            <small>추천 제품 {formatProductNames(topRivalCounter.recommendedProductIds)}</small>
+          </div>
+        )}
         <div className="card-hand">
           {handCards.map((card) => {
             const check = getStrategyCardPlayCheck(card, gameState);
@@ -1014,6 +1024,7 @@ function ItemCard({
 function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale: LocaleCode }) {
   const rankings = getMarketRankings(gameState);
   const strategySignals = getGrowthPathCompetitionSignals(gameState);
+  const rivalCounterPlans = getRivalCounterPlans(gameState);
   const activeCompetitorIds = new Set(gameState.competitorStates.map((competitor) => competitor.id));
   const upcomingCompetitors = competitors
     .filter((competitor) => (competitor.entry_month ?? 1) > gameState.month && !activeCompetitorIds.has(competitor.id))
@@ -1032,6 +1043,7 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
             const competitor = competitors.find((entry) => entry.id === ranking.id);
             const label = ranking.isPlayer ? t("ui.playerCompany", locale) : competitor ? t(competitor.name_key, locale) : ranking.id;
             const signal = strategySignals.find((entry) => entry.competitorId === ranking.id);
+            const counterPlan = rivalCounterPlans.find((entry) => entry.competitorId === ranking.id);
 
             return (
               <article className={`ranking-card ${ranking.isPlayer ? "player-rank" : ""}`} key={ranking.id}>
@@ -1043,6 +1055,7 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
                 <strong>{ranking.marketShare}%</strong>
                 {signal && <em className={`signal-badge signal-${signal.severity}`}>{signal.label}</em>}
                 <span>{ranking.lastMove}</span>
+                {counterPlan && <small className="counter-hint">대응 {formatCardNames(counterPlan.counterCardIds, 2)}</small>}
               </article>
             );
           })}
@@ -1053,6 +1066,17 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
           <h2>경쟁사 프로필</h2>
           <p>각 회사의 성향과 선점한 제품 공간입니다. 시간이 지나면 강력한 신규 경쟁사가 시장에 들어옵니다.</p>
         </div>
+        {rivalCounterPlans.length > 0 && (
+          <div className="counter-plan-list">
+            {rivalCounterPlans.map((plan) => (
+              <article key={plan.competitorId}>
+                <strong>{plan.competitorName} 대응 플랜</strong>
+                <span>{plan.label} · 압박 {plan.pressureScore}</span>
+                <small>카드 {formatCardNames(plan.counterCardIds, 2)} / 연구 {formatCapabilityNames(plan.recommendedCapabilityIds, 2)}</small>
+              </article>
+            ))}
+          </div>
+        )}
         {upcomingCompetitors.length > 0 && (
           <div className="rival-wave-list">
             {upcomingCompetitors.map((competitor) => (
@@ -1069,6 +1093,7 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
             const identity = getCompetitorIdentity(state.id);
             const claimedProducts = products.filter((product) => state.claimedProducts.includes(product.id));
             const signal = strategySignals.find((entry) => entry.competitorId === state.id);
+            const counterPlan = rivalCounterPlans.find((entry) => entry.competitorId === state.id);
             if (!competitor) return null;
 
             return (
@@ -1101,6 +1126,14 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
                     <span>{signal.reason}</span>
                   </div>
                 )}
+                {counterPlan && (
+                  <div className="counter-plan-card">
+                    <strong>추천 대응</strong>
+                    <span>카드 {formatCardNames(counterPlan.counterCardIds, 2)}</span>
+                    <span>제품 {formatProductNames(counterPlan.recommendedProductIds, 2)}</span>
+                    <small>연구 {formatCapabilityNames(counterPlan.recommendedCapabilityIds, 2)}</small>
+                  </div>
+                )}
                 <div className="claim-list">
                   {claimedProducts.length ? claimedProducts.map((product) => <span key={product.id}>{product.name}</span>) : <span>선점 제품 없음</span>}
                 </div>
@@ -1111,6 +1144,30 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
       </section>
     </div>
   );
+}
+
+function formatCardNames(cardIds: string[], max = 3): string {
+  const names = cardIds
+    .slice(0, max)
+    .map((cardId) => strategyCards.find((card) => card.id === cardId)?.name)
+    .filter((name): name is string => Boolean(name));
+  return names.length ? names.join(", ") : "없음";
+}
+
+function formatProductNames(productIds: string[], max = 3): string {
+  const names = productIds
+    .slice(0, max)
+    .map((productId) => products.find((product) => product.id === productId)?.name)
+    .filter((name): name is string => Boolean(name));
+  return names.length ? names.join(", ") : "없음";
+}
+
+function formatCapabilityNames(capabilityIds: string[], max = 3): string {
+  const names = capabilityIds
+    .slice(0, max)
+    .map((capabilityId) => capabilities.find((capability) => capability.id === capabilityId)?.name)
+    .filter((name): name is string => Boolean(name));
+  return names.length ? names.join(", ") : "없음";
 }
 
 function TimelinePanel({ gameState }: { gameState: GameState }) {

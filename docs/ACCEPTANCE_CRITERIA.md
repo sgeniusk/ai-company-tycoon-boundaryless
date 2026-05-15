@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.12.6: Rival Counter Plans And Cards
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Rival pressure is converted into ranked counter plans | **Passed** |
+| 2 | Counter plans recommend cards, products, and research capabilities | **Passed** |
+| 3 | At least three rival-facing counter cards exist in data | **Passed** |
+| 4 | Counter card effects can reduce rival score or momentum | **Passed** |
+| 5 | Playing a counter card targets the highest-pressure rival | **Passed** |
+| 6 | Competition menu shows top counter plans and per-rival recommendations | **Passed** |
+| 7 | Deck menu shows the most urgent rival counter advice | **Passed** |
+| 8 | Browser QA supports `?scenario=counter` | **Passed** |
+| 9 | `npm run harness:gate` passes | **Passed** |
+
+---
+
 ## Alpha v0.12.5: Run Result And Meta Progression
 
 | # | Criterion | Status |

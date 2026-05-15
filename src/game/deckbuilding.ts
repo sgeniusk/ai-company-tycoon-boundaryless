@@ -1,4 +1,5 @@
-import { capabilities, metaUnlocks, resources, strategyCards } from "./data";
+import { capabilities, competitors, metaUnlocks, resources, strategyCards } from "./data";
+import { getRivalCounterTargetId } from "./rival-counters";
 import type {
   ActionCheck,
   ActiveDevelopmentPuzzleModifier,
@@ -14,6 +15,7 @@ import type {
   StrategyCardDefinition,
   StrategyDeckState,
 } from "./types";
+import { t } from "../i18n";
 
 const handLimit = 7;
 const cardUpgradeMultiplier = 1.25;
@@ -23,6 +25,8 @@ const cardEffectLabels: Record<string, string> = {
   puzzle_score_bonus: "퍼즐 점수",
   puzzle_difficulty_delta: "퍼즐 난이도",
   puzzle_tile_limit: "퍼즐 선택",
+  rival_score_delta: "경쟁 위협",
+  rival_momentum_delta: "경쟁 모멘텀",
 };
 
 export function createInitialStrategyDeck(unlockedMetaIds: string[] = []): StrategyDeckState {
@@ -103,10 +107,12 @@ export function playStrategyCard(card: StrategyCardDefinition, state: GameState)
         }
       : project,
   );
+  const rivalCounter = applyRivalCounterEffects(state, effects);
 
   return {
     ...state,
     resources: resourcesAfterEffects,
+    competitorStates: rivalCounter.competitorStates,
     productProjects: nextProjects,
     activeDevelopmentPuzzleModifiers: puzzleModifier
       ? [...state.activeDevelopmentPuzzleModifiers, puzzleModifier]
@@ -120,7 +126,7 @@ export function playStrategyCard(card: StrategyCardDefinition, state: GameState)
         playedThisTurn: [...state.roguelite.deck.playedThisTurn, card.id],
       },
     },
-    timeline: [`카드 사용: ${card.name} (${formatCardEffects(effects)})`, ...state.timeline].slice(0, 8),
+    timeline: [createCardTimelineEntry(card, effects, rivalCounter.targetName), ...state.timeline].slice(0, 8),
   };
 }
 
@@ -332,6 +338,45 @@ function hasProjectEffect(card: StrategyCardDefinition): boolean {
       card.effects.puzzle_difficulty_delta ||
       card.effects.puzzle_tile_limit,
   );
+}
+
+function applyRivalCounterEffects(
+  state: GameState,
+  effects: Record<string, number>,
+): { competitorStates: GameState["competitorStates"]; targetName?: string } {
+  const scoreDelta = effects.rival_score_delta ?? 0;
+  const momentumDelta = effects.rival_momentum_delta ?? 0;
+
+  if (!scoreDelta && !momentumDelta) {
+    return { competitorStates: state.competitorStates };
+  }
+
+  const targetId = getRivalCounterTargetId(state);
+  if (!targetId) return { competitorStates: state.competitorStates };
+
+  const competitor = competitors.find((entry) => entry.id === targetId);
+  const targetName = competitor ? t(competitor.name_key) : targetId;
+  const competitorStates = state.competitorStates.map((competitorState) =>
+    competitorState.id === targetId
+      ? {
+          ...competitorState,
+          score: clamp(competitorState.score + scoreDelta, 0, 999),
+          momentum: clamp(competitorState.momentum + momentumDelta, -20, 20),
+          lastMove: scoreDelta < 0 || momentumDelta < 0 ? `${targetName} 대응 카드로 기세 둔화` : competitorState.lastMove,
+        }
+      : competitorState,
+  );
+
+  return { competitorStates, targetName };
+}
+
+function createCardTimelineEntry(
+  card: StrategyCardDefinition,
+  effects: Record<string, number>,
+  targetName?: string,
+): string {
+  const base = `카드 사용: ${card.name} (${formatCardEffects(effects)})`;
+  return targetName ? `${base} / ${targetName} 대응` : base;
 }
 
 function createPuzzleModifier(

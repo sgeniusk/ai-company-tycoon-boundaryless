@@ -4,7 +4,7 @@ import { advanceMonth, chooseGrowthPath, createInitialState, hireAgent, startPro
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
 
-export const qaScenarioIds = ["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "rivals", "arc", "commercial", "result"] as const;
+export const qaScenarioIds = ["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "counter", "rivals", "arc", "commercial", "result"] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
 
@@ -81,6 +81,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "전략 경쟁 QA",
       state: strategyState,
+      activeMenu: "competition",
+    };
+  }
+
+  if (id === "counter") {
+    return {
+      id,
+      label: "경쟁 대응 QA",
+      state: createCounterScenarioState(strategyState),
       activeMenu: "competition",
     };
   }
@@ -168,6 +177,52 @@ function createStarterProjectState(): GameState {
   if (!architect || !writingProduct) return createInitialState();
 
   return startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+}
+
+function createCounterScenarioState(strategyState: GameState): GameState {
+  let counterState = strategyState;
+  while (counterState.month < 5) {
+    counterState = advanceMonth(counterState);
+  }
+
+  const counterCardIds = ["market_repositioning", "rival_benchmark_room"];
+  const hand = [
+    ...counterCardIds,
+    ...counterState.roguelite.deck.hand.filter((cardId) => !counterCardIds.includes(cardId)),
+  ].slice(0, 7);
+
+  return {
+    ...counterState,
+    resources: {
+      ...counterState.resources,
+      cash: Math.max(counterState.resources.cash ?? 0, 3200),
+      data: Math.max(counterState.resources.data ?? 0, 12),
+      trust: Math.max(counterState.resources.trust ?? 0, 45),
+    },
+    competitorStates: counterState.competitorStates.map((competitor) =>
+      competitor.id === "competitor_chatgody"
+        ? {
+            ...competitor,
+            score: Math.max(competitor.score, 130),
+            marketShare: Math.max(competitor.marketShare, 32),
+            momentum: Math.max(competitor.momentum, 6),
+            claimedProducts: [...new Set([...competitor.claimedProducts, "meeting_summary_bot"])],
+            lastMove: "회의 요약 봇 시장 선점",
+          }
+        : competitor,
+    ),
+    roguelite: {
+      ...counterState.roguelite,
+      deck: {
+        ...counterState.roguelite.deck,
+        hand,
+        drawPile: counterState.roguelite.deck.drawPile.filter((cardId) => !counterCardIds.includes(cardId)),
+        discardPile: counterState.roguelite.deck.discardPile.filter((cardId) => !counterCardIds.includes(cardId)),
+        playedThisTurn: [],
+      },
+    },
+    timeline: ["경쟁 대응 QA: 챗지오디가 회의 요약 봇 시장을 선점", ...counterState.timeline].slice(0, 8),
+  };
 }
 
 function createResultRecapState(): GameState {

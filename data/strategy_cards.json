@@ -74,6 +74,42 @@
       "unlock_requirements": {"min_capability_code": 1}
     },
     {
+      "id": "rival_benchmark_room",
+      "name": "경쟁사 벤치마크룸",
+      "category": "product",
+      "rarity": "common",
+      "description": "경쟁사가 선점한 제품을 분해해 우리 제품의 포지셔닝과 완성도를 끌어올립니다.",
+      "cost": {"cash": 450, "data": 4},
+      "effects": {"project_quality": 6, "data": 3, "rival_momentum_delta": -2, "puzzle_score_bonus": 4},
+      "tags": ["counter", "ux", "product", "data", "market"],
+      "copies": 1,
+      "unlock_requirements": {"min_products": 1}
+    },
+    {
+      "id": "market_repositioning",
+      "name": "시장 리포지셔닝",
+      "category": "growth",
+      "rarity": "uncommon",
+      "description": "라이벌이 선점한 시장에서 메시지를 바꿔 이용자 관심과 경쟁사 모멘텀을 동시에 흔듭니다.",
+      "cost": {"cash": 600},
+      "effects": {"hype": 5, "users": 120, "rival_score_delta": -8, "rival_momentum_delta": -3},
+      "tags": ["counter", "growth", "market", "product"],
+      "copies": 1,
+      "unlock_requirements": {"min_month": 4}
+    },
+    {
+      "id": "interoperability_shield",
+      "name": "상호운용 방어막",
+      "category": "safety",
+      "rarity": "uncommon",
+      "description": "고객이 한 라이벌에 묶이지 않도록 이전, 호환, 신뢰 장치를 만들어 방어합니다.",
+      "cost": {"cash": 500, "data": 3},
+      "effects": {"trust": 5, "project_quality": 4, "rival_momentum_delta": -3, "puzzle_difficulty_delta": -1},
+      "tags": ["counter", "trust", "safety", "enterprise", "automation"],
+      "copies": 1,
+      "unlock_requirements": {"min_trust": 45}
+    },
+    {
       "id": "redteam_drill",
       "name": "레드팀 드릴",
       "category": "safety",

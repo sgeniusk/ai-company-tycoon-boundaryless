@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.12.6-alpha] — 2026-05-16
+
+### 경쟁사 대응 플랜과 카운터 카드
+
+**추가:**
+- 경쟁사 압박을 점수화하는 `rival-counters` 모듈.
+- 경쟁사별 추천 대응 카드, 추천 제품, 추천 연구 목록.
+- 신규 전략 카드 3장: `경쟁사 벤치마크룸`, `시장 리포지셔닝`, `상호운용 방어막`.
+- 전략 카드 효과 `rival_score_delta`, `rival_momentum_delta`.
+- 카운터 카드 사용 시 가장 압박이 큰 경쟁사의 위협/모멘텀 감소.
+- 경쟁 메뉴의 상위 대응 플랜, 랭킹 대응 힌트, 경쟁사 카드별 추천 대응 표시.
+- 덱 메뉴의 최우선 경쟁 대응 추천 표시.
+- `?scenario=counter` 브라우저 QA 시나리오.
+- 경쟁 대응 순수 함수와 카드 실행 테스트.
+
+**변경:**
+- 데이터 검증기가 경쟁사 카운터 카드 효과를 허용하고 검증한다.
+- 카드 효과 표시가 경쟁 위협/경쟁 모멘텀을 한글 라벨로 보여준다.
+- 경쟁사 압박이 단순 결과 요약을 넘어 다음 카드/제품/연구 선택으로 이어지게 했다.
+
+**검증:**
+- `npm test -- src/game/rival-counters.test.ts src/game/deckbuilding.test.ts src/game/qa-scenarios.test.ts` 통과, 25 tests
+- `npm run harness:gate` 통과, 98 tests
+- Headless Chrome DOM QA: `http://127.0.0.1:5173/?scenario=counter`에서 대응 플랜/추천 대응 렌더링 확인
+
+---
+
 ## [0.12.5-alpha] — 2026-05-16
 
 ### 런 결과, 메타 진행, 제품 탐색 강화
