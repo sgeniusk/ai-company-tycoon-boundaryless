@@ -63,6 +63,10 @@ Use the project roster when present. Add or simulate these lenses when missing:
 - Retention/LTV Agent: first-session motivation, replay reason, long-term goals, return hooks.
 - Shareability Agent: screenshot moments, streamer-readable events, memorable stories.
 - Solo Dev Scope Agent: maximum player value for minimum asset/code burden.
+- Deck System Engineer: card costs, effects, hand flow, rewards, and deck readability.
+- Roguelite Meta Engineer: failure rewards, permanent unlocks, and next-run motivation.
+- Puzzle Mechanics Engineer: short interaction loops that affect product quality.
+- Balance Simulation Engineer: card/meta/economy exploit checks.
 
 ## Retention/LTV Gate
 
@@ -87,6 +91,7 @@ Run the narrowest useful checks, then broaden if risk is high.
 - Save/load changes: explicit serialization/hydration tests.
 - Economy changes: at least one short-path simulation test or balance note.
 - Commercial-readiness changes: add or update a scripted run simulator that reaches the target session window and records integrity/rank outcomes.
+- Roguelite/deckbuilding changes: verify card data references, save/load state, at least one card action, at least one next-run meta effect, and a deck QA scenario.
 - Asset pipeline changes: manifest validation before importing final images.
 
 Common web commands:

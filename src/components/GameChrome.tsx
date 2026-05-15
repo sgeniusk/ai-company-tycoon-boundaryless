@@ -51,6 +51,8 @@ export function TopBar({
         <span className={`status-pill ${gameState.status}`}>{statusLabel(gameState.status)}</span>
         <span className="status-pill">출시 가능 {launchableCount}</span>
         <span className="status-pill">개발 중 {gameState.productProjects.length}</span>
+        <span className="status-pill">런 {gameState.roguelite.runNumber}</span>
+        <span className="status-pill">통찰 {gameState.roguelite.founderInsight}</span>
         <span className="status-pill">점유 {getPlayerMarketShare(gameState)}%</span>
         {qaScenarioLabel && <span className="status-pill qa-pill">{qaScenarioLabel}</span>}
         <button className="locale-toggle" onClick={onToggleLocale}>
@@ -189,6 +191,12 @@ export function GameStage({
           <h2>{companyStage.name}</h2>
           <p>{companyStage.description}</p>
           {gameState.chosenGrowthPath && <span className="growth-identity">전략: {gameState.chosenGrowthPath.title}</span>}
+          <span className="growth-identity">
+            로그라이트 런 {gameState.roguelite.runNumber} · 손패 {gameState.roguelite.deck.hand.length} · 통찰 {gameState.roguelite.founderInsight}
+          </span>
+          {gameState.lastDevelopmentPuzzle && (
+            <span>최근 퍼즐: {gameState.lastDevelopmentPuzzle.verdict} {gameState.lastDevelopmentPuzzle.score}점</span>
+          )}
           <span>해금 분야: {unlockedDomainNames.join(", ")}</span>
         </article>
         <article className="monthly-report">

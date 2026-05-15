@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Company Tycoon 제작 에이전트 조직도</title>
+    <style>
+      :root {
+        --ink: #30363d;
+        --muted: #6b7280;
+        --line: #d6d9df;
+        --paper: #f7f7f9;
+        --panel: #f0f1f4;
+        --head: #4e5a62;
+        --accent: #7b8672;
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      }
+
+      .page {
+        width: min(1080px, 100%);
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 48px 28px 64px;
+      }
+
+      h1 {
+        margin: 0 0 34px;
+        color: #252b31;
+        font-size: clamp(28px, 4vw, 44px);
+        font-weight: 800;
+        letter-spacing: 0;
+        text-align: center;
+      }
+
+      .chart {
+        display: grid;
+        gap: 34px;
+      }
+
+      .top-grid {
+        display: grid;
+        grid-template-columns: 1fr minmax(220px, 280px) 1fr;
+        gap: 26px;
+        align-items: end;
+      }
+
+      .top-grid .side {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+        gap: 16px;
+      }
+
+      .top-grid .side.left {
+        visibility: hidden;
+      }
+
+      .node,
+      .agent {
+        display: grid;
+        min-height: 74px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        text-align: center;
+      }
+
+      .node::before,
+      .agent::before {
+        display: block;
+        padding: 9px 12px;
+        background: var(--head);
+        color: var(--white);
+        content: attr(data-title);
+        font-size: 14px;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+
+      .node.accent::before,
+      .agent.accent::before {
+        background: var(--accent);
+      }
+
+      .node span,
+      .agent span {
+        display: grid;
+        min-height: 44px;
+        place-items: center;
+        padding: 9px 10px 11px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 650;
+        line-height: 1.35;
+      }
+
+      .middle-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(220px, 280px));
+        justify-content: center;
+        gap: 120px;
+        padding-top: 10px;
+      }
+
+      .departments {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 14px;
+        padding-top: 22px;
+      }
+
+      .department {
+        display: grid;
+        gap: 8px;
+      }
+
+      .agent {
+        min-height: 66px;
+      }
+
+      .agent::before {
+        font-size: 13px;
+      }
+
+      .agent span {
+        min-height: 40px;
+        font-size: 13px;
+      }
+
+      @media (max-width: 880px) {
+        .page {
+          padding-inline: 18px;
+        }
+
+        .top-grid {
+          grid-template-columns: minmax(90px, 1fr) minmax(170px, 220px) minmax(180px, 1fr);
+          gap: 10px;
+        }
+
+        .top-grid .side {
+          grid-template-columns: repeat(2, minmax(78px, 1fr));
+          gap: 8px;
+        }
+
+        .middle-grid {
+          grid-template-columns: repeat(2, minmax(170px, 220px));
+          gap: 34px;
+        }
+
+        .departments {
+          gap: 8px;
+        }
+
+        .node::before,
+        .agent::before {
+          padding-inline: 7px;
+          font-size: 11px;
+        }
+
+        .node span,
+        .agent span {
+          padding-inline: 7px;
+          font-size: 11px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .top-grid,
+        .middle-grid,
+        .departments {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .top-grid .side {
+          grid-template-columns: 1fr;
+        }
+
+        .top-grid .side.left {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>AI Company Tycoon 제작 에이전트 조직도</h1>
+      <section class="chart" aria-label="AI Company Tycoon 제작 에이전트 조직도">
+        <div class="top-grid">
+          <div class="side left">
+            <div class="node"><span></span></div>
+            <div class="node"><span></span></div>
+          </div>
+          <div class="node accent" data-title="Founder/User"><span>비전과 최종 승인</span></div>
+          <div class="side">
+            <div class="node" data-title="Harness Gate"><span>테스트, 빌드, 보고서</span></div>
+            <div class="node" data-title="Risk Register"><span>P0/P1/P2/P3 관리</span></div>
+          </div>
+        </div>
+        <div class="middle-grid">
+          <div class="node accent" data-title="Orchestrator Agent"><span>작업 분해와 통합 판단</span></div>
+          <div class="node" data-title="QA/Release Agent"><span>안정성, 저장, 배포 준비</span></div>
+        </div>
+        <div class="departments">
+          <div class="department">
+            <div class="agent accent" data-title="기획/벤치마크"><span>재미의 이유 정리</span></div>
+            <div class="agent" data-title="Product Detail"><span>요구사항 스코프</span></div>
+            <div class="agent" data-title="Benchmark"><span>참고작 패턴 추출</span></div>
+          </div>
+          <div class="department">
+            <div class="agent accent" data-title="덱/메타"><span>반복 플레이 구조</span></div>
+            <div class="agent" data-title="Deck System"><span>카드, 손패, 보상</span></div>
+            <div class="agent" data-title="Roguelite Meta"><span>실패 보상, 영구 해금</span></div>
+          </div>
+          <div class="department">
+            <div class="agent accent" data-title="개발 퍼즐"><span>손맛 있는 제작</span></div>
+            <div class="agent" data-title="Puzzle Mechanics"><span>3x3 이슈 보드</span></div>
+            <div class="agent" data-title="AI/Intelligence"><span>AI 소재/텍스트 결과</span></div>
+          </div>
+          <div class="department">
+            <div class="agent accent" data-title="경제/성장"><span>상용 게임성 검증</span></div>
+            <div class="agent" data-title="Balance Sim"><span>경제와 악용 루프</span></div>
+            <div class="agent" data-title="Retention/LTV"><span>다음 런 이유</span></div>
+          </div>
+          <div class="department">
+            <div class="agent accent" data-title="화면/스코프"><span>읽히는 빌드 유지</span></div>
+            <div class="agent" data-title="UX Flow"><span>첫 30초와 메뉴</span></div>
+            <div class="agent" data-title="Solo Dev Scope"><span>콘텐츠 폭발 방지</span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

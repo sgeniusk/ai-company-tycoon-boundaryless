@@ -12,10 +12,12 @@ import {
   resources,
   rivalEvents,
   startingState,
+  strategyCards,
   upgrades,
   growthPaths,
 } from "./data";
 import { applyAchievementUnlocks } from "./achievements";
+import { createInitialRogueliteState, refreshStrategyDeckForNewMonth } from "./deckbuilding";
 import { createReleaseGrowthPaths } from "./growth-paths";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
 import type {
@@ -26,6 +28,7 @@ import type {
   CapabilityDefinition,
   CompanyStageDefinition,
   CompetitorState,
+  DevelopmentPuzzleResult,
   EventChoiceDefinition,
   EventDefinition,
   GameState,
@@ -37,12 +40,14 @@ import type {
   ReleaseMoment,
   ReleaseReview,
   RivalEventChoiceDefinition,
+  RogueliteState,
   ResourceMap,
+  StrategyDeckState,
   UpgradeDefinition,
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-const SAVE_VERSION = 2;
+const SAVE_VERSION = 3;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -88,6 +93,7 @@ export function createInitialState(): GameState {
       lastMove: "출시 준비 중",
     })),
     productReviews: {},
+    roguelite: createInitialRogueliteState(),
     unlockedAchievements: [],
     eventHistory: [],
     rivalEventHistory: [],
@@ -448,7 +454,7 @@ export function advanceMonth(state: GameState): GameState {
     ? `${nextMonth}개월차: 매출 ${formatMoney(revenue)}, 비용 ${formatMoney(totalCost)}, 이용자 +${newUsers.toLocaleString("ko-KR")}, 데이터 +${generatedData}`
     : `${nextMonth}개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.`;
 
-  return applyAchievementUnlocks({
+  const advancedState = applyAchievementUnlocks({
     ...nextStateForEvent,
     currentEvent: nextEvent,
     currentRivalEvent: nextRivalEvent,
@@ -464,6 +470,8 @@ export function advanceMonth(state: GameState): GameState {
       .filter(Boolean)
       .slice(0, 8),
   });
+
+  return refreshStrategyDeckForNewMonth(advancedState);
 }
 
 export function getUpgradeCheck(upgrade: UpgradeDefinition, state: GameState): ActionCheck {
@@ -682,6 +690,8 @@ export function hydrateGameState(serialized: string): GameState {
     competitorStates: Array.isArray(rawState.competitorStates) ? rawState.competitorStates : initialState.competitorStates,
     productReviews: isRecord(rawState.productReviews) ? rawState.productReviews : {},
     lastRelease: hydrateReleaseMoment(rawState.lastRelease),
+    roguelite: hydrateRogueliteState(rawState.roguelite, initialState.roguelite),
+    lastDevelopmentPuzzle: hydrateDevelopmentPuzzleResult(rawState.lastDevelopmentPuzzle),
     chosenGrowthPath: hydrateChosenGrowthPath(rawState.chosenGrowthPath),
     unlockedAchievements: sanitizeStringArray(rawState.unlockedAchievements),
     eventHistory: sanitizeStringArray(rawState.eventHistory),
@@ -1043,6 +1053,40 @@ function hydrateChosenGrowthPath(chosenGrowthPath: GameState["chosenGrowthPath"]
     ...chosenGrowthPath,
     monthlyEffects: chosenGrowthPath.monthlyEffects ?? path?.monthly_effects ?? {},
   };
+}
+
+function hydrateRogueliteState(value: unknown, fallback: RogueliteState): RogueliteState {
+  if (!isRecord(value)) return fallback;
+
+  const unlockedMetaIds = sanitizeStringArray(value.unlockedMetaIds);
+  const deck = hydrateStrategyDeck(value.deck, fallback.deck);
+
+  return {
+    runNumber: Math.max(1, Math.round(sanitizeNumber(value.runNumber, fallback.runNumber))),
+    founderInsight: Math.max(0, Math.round(sanitizeNumber(value.founderInsight, fallback.founderInsight))),
+    unlockedMetaIds,
+    deck,
+  };
+}
+
+function hydrateStrategyDeck(value: unknown, fallback: StrategyDeckState): StrategyDeckState {
+  if (!isRecord(value)) return fallback;
+
+  const cardIds = strategyCards.map((card) => card.id);
+  return {
+    drawPile: sanitizeStringArray(value.drawPile, cardIds),
+    hand: sanitizeStringArray(value.hand, cardIds),
+    discardPile: sanitizeStringArray(value.discardPile, cardIds),
+    playedThisTurn: sanitizeStringArray(value.playedThisTurn, cardIds),
+  };
+}
+
+function hydrateDevelopmentPuzzleResult(value: unknown): DevelopmentPuzzleResult | undefined {
+  if (!isRecord(value)) return undefined;
+  if (typeof value.projectId !== "string" || typeof value.productId !== "string") return undefined;
+  if (!Array.isArray(value.tiles) || !Array.isArray(value.selectedTileIds)) return undefined;
+
+  return value as unknown as DevelopmentPuzzleResult;
 }
 
 function stageRequirementsMet(stage: CompanyStageDefinition, state: GameState): boolean {

@@ -1643,6 +1643,167 @@ p {
   padding: 6px;
 }
 
+.deck-layout {
+  align-items: start;
+}
+
+.run-summary-strip {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: 12px;
+}
+
+.run-summary-strip span {
+  background: #edf4ff;
+  border: 2px solid #9cb8d6;
+  color: #334b5e;
+  font-size: 0.74rem;
+  font-weight: 900;
+  min-height: 36px;
+  padding: 8px;
+  text-align: center;
+}
+
+.card-hand {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.strategy-card {
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  border-radius: 8px;
+  display: grid;
+  gap: 9px;
+  min-height: 190px;
+  padding: 12px;
+}
+
+.strategy-card.rarity-starter {
+  background: #f8ffef;
+  border-color: #93b771;
+}
+
+.strategy-card.rarity-uncommon,
+.strategy-card.rarity-rare {
+  background: #eef7ff;
+  border-color: #749ad8;
+}
+
+.strategy-card h3,
+.strategy-card p {
+  margin-bottom: 0;
+}
+
+.strategy-card button,
+.wide-action {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 900;
+}
+
+.strategy-card small {
+  color: #7a5730;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.puzzle-board {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 10px;
+}
+
+.puzzle-board span {
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 4px;
+  min-height: 74px;
+  padding: 8px;
+  text-align: center;
+}
+
+.puzzle-board span.selected {
+  background: #dff1df;
+  border-color: var(--green);
+}
+
+.puzzle-board strong {
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.puzzle-board small {
+  color: #68583f;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.wide-action {
+  width: 100%;
+}
+
+.puzzle-result {
+  background: #fff7df;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 9px;
+}
+
+.puzzle-result strong {
+  color: var(--green-dark);
+  font-size: 0.86rem;
+}
+
+.puzzle-result span {
+  color: #5f5546;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.meta-unlock-list {
+  display: grid;
+  gap: 9px;
+}
+
+.meta-unlock-list article {
+  align-items: center;
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 10px;
+}
+
+.meta-unlock-list article.complete {
+  background: #e8f5dc;
+  border-color: var(--green);
+}
+
+.meta-unlock-list h3,
+.meta-unlock-list p {
+  margin-bottom: 0;
+}
+
+.meta-unlock-list small,
+.meta-unlock-list span {
+  color: #5f5546;
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+.meta-unlock-list span {
+  grid-column: 1 / -1;
+}
+
 .capability-row p,
 .capability-row h3,
 .upgrade-row p,
@@ -1757,6 +1918,7 @@ p {
   .monthly-report dl,
   .review-badge,
   .products-list,
+  .card-hand,
   .agent-grid,
   .item-grid,
   .competitor-grid,
@@ -1777,12 +1939,16 @@ p {
 @media (max-width: 520px) {
   .main-menu,
   .products-list,
+  .card-hand,
   .agent-grid,
   .item-grid,
   .competitor-grid,
   .monthly-report dl,
   .objective-strip,
-  .company-summary {
+  .company-summary,
+  .run-summary-strip,
+  .puzzle-board,
+  .meta-unlock-list article {
     grid-template-columns: 1fr;
   }
 }

@@ -1,9 +1,12 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
-import { agentTypes, assetManifest, automationUpgrades, capabilities, competitors, domains, items, products, upgrades } from "../game/data";
+import { agentTypes, assetManifest, automationUpgrades, capabilities, competitors, domains, items, metaUnlocks, products, strategyCards, upgrades } from "../game/data";
 import { getAchievementStatuses } from "../game/achievements";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getGrowthPathObjectives } from "../game/growth-objectives";
 import { getTenMonthArc } from "../game/ten-month-arc";
+import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "../game/development-puzzle";
+import { getStrategyCardById, getStrategyCardPlayCheck, playStrategyCard } from "../game/deckbuilding";
+import { getMetaUnlockCheck, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
 import {
   buyAutomationUpgrade,
   buyItem,
@@ -28,7 +31,16 @@ import {
   upgradeCapability,
   upgradeProduct,
 } from "../game/simulation";
-import type { AgentSpriteDefinition, CompetitorIdentityDefinition, GameState, HiredAgent, ItemDefinition, ItemIconDefinition, AgentTypeDefinition } from "../game/types";
+import type {
+  AgentSpriteDefinition,
+  AgentTypeDefinition,
+  CompetitorIdentityDefinition,
+  GameState,
+  HiredAgent,
+  ItemDefinition,
+  ItemIconDefinition,
+  StrategyCardDefinition,
+} from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, itemCategoryLabel, itemTargetLabel, statLabel } from "../ui/formatters";
 import type { MenuId } from "../ui/menu";
@@ -142,6 +154,10 @@ export function renderMenuContent(
     return <ProductsPanel gameState={gameState} setGameState={setGameState} locale={locale} />;
   }
 
+  if (activeMenu === "deck") {
+    return <DeckPanel gameState={gameState} setGameState={setGameState} />;
+  }
+
   if (activeMenu === "agents") {
     return <AgentsPanel gameState={gameState} setGameState={setGameState} />;
   }
@@ -159,6 +175,124 @@ export function renderMenuContent(
   }
 
   return <TimelinePanel gameState={gameState} />;
+}
+
+function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  const deck = gameState.roguelite.deck;
+  const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
+  const activeProject = gameState.productProjects[0];
+  const activeProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
+  const puzzle = activeProject ? createDevelopmentPuzzle(activeProject.id, gameState) : undefined;
+  const projectedInsight = gameState.roguelite.founderInsight + getRunInsightReward(gameState);
+
+  return (
+    <div className="panel-grid two-col deck-layout">
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>전략 덱</h2>
+          <p>카드는 제품 개발에 직접 개입하는 짧은 선택지입니다. 비용과 효과가 즉시 반영됩니다.</p>
+        </div>
+        <div className="run-summary-strip">
+          <span>런 {gameState.roguelite.runNumber}</span>
+          <span>창업 통찰 {gameState.roguelite.founderInsight}</span>
+          <span>이번 런 보상 예상 +{getRunInsightReward(gameState)}</span>
+          <span>드로우 {deck.drawPile.length}</span>
+          <span>버림 {deck.discardPile.length}</span>
+        </div>
+        <div className="card-hand">
+          {handCards.map((card) => {
+            const check = getStrategyCardPlayCheck(card, gameState);
+            return (
+              <article className={`strategy-card rarity-${card.rarity}`} key={card.id}>
+                <p className="item-meta">{card.category} / {card.rarity}</p>
+                <h3>{card.name}</h3>
+                <p>{card.description}</p>
+                <div className="mini-row">
+                  <span>비용 {formatCost(card.cost)}</span>
+                  <span>효과 {formatEffects(card.effects)}</span>
+                </div>
+                <button disabled={!check.ok} onClick={() => setGameState((current) => playStrategyCard(card, current))}>
+                  사용
+                </button>
+                {!check.ok && <small>{check.reasons.join(" / ")}</small>}
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>개발 퍼즐</h2>
+          <p>{activeProduct ? `${activeProduct.name}의 이슈를 해결해 완성도를 끌어올립니다.` : "제품 개발을 시작하면 3x3 이슈 보드가 열립니다."}</p>
+        </div>
+        {puzzle && activeProject ? (
+          <>
+            <div className="puzzle-board">
+              {puzzle.tiles.map((tile, index) => (
+                <span className={index < 4 ? "selected" : ""} key={tile.id}>
+                  <strong>{tile.label}</strong>
+                  <small>{statLabel(tile.stat)} {tile.difficulty}</small>
+                </span>
+              ))}
+            </div>
+            <button
+              className="wide-action"
+              onClick={() =>
+                setGameState((current) =>
+                  resolveDevelopmentPuzzle(
+                    activeProject.id,
+                    puzzle.tiles.slice(0, 4).map((tile) => tile.id),
+                    current,
+                  ),
+                )
+              }
+            >
+              상위 이슈 해결
+            </button>
+            {gameState.lastDevelopmentPuzzle && (
+              <div className="puzzle-result">
+                <strong>최근 결과 {gameState.lastDevelopmentPuzzle.verdict} · {gameState.lastDevelopmentPuzzle.score}점</strong>
+                <span>진행 +{gameState.lastDevelopmentPuzzle.progressGain} / 완성도 +{gameState.lastDevelopmentPuzzle.qualityGain}</span>
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="empty-note">제품 메뉴에서 프로젝트를 시작하면 퍼즐 점수가 출시 평가에 영향을 줍니다.</p>
+        )}
+      </section>
+
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>로그라이트 해금</h2>
+          <p>망한 런도 창업 통찰로 바뀌고, 다음 회사의 카드와 초반 보너스를 엽니다.</p>
+        </div>
+        <div className="meta-unlock-list">
+          {metaUnlocks.map((unlock) => {
+            const check = getMetaUnlockCheck(unlock.id, gameState, projectedInsight);
+            const unlocked = gameState.roguelite.unlockedMetaIds.includes(unlock.id);
+            const unlockedCards = strategyCards.filter((card) => unlock.unlock_card_ids.includes(card.id));
+            return (
+              <article className={unlocked ? "complete" : ""} key={unlock.id}>
+                <div>
+                  <p className="item-meta">비용 {unlock.cost} 통찰</p>
+                  <h3>{unlock.title}</h3>
+                  <p>{unlock.description}</p>
+                  <small>해금 카드: {unlockedCards.map((card) => card.name).join(", ")}</small>
+                </div>
+                <button disabled={unlocked || !check.ok} onClick={() => setGameState((current) => resetRunWithMetaUnlocks(current, [unlock.id]))}>
+                  {unlocked ? "해금됨" : "새 런"}
+                </button>
+                {!check.ok && !unlocked && <span>{check.reasons[0]}</span>}
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <TimelinePanel gameState={gameState} />
+    </div>
+  );
 }
 
 function ProductsPanel({

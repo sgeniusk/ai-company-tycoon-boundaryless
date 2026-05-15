@@ -1,4 +1,4 @@
-import { competitors, products, resources } from "./data";
+import { competitors, products, resources, strategyCards } from "./data";
 import type { GameState } from "./types";
 
 export interface StateIntegrityReport {
@@ -12,6 +12,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const warnings: string[] = [];
   const productIds = new Set(products.map((product) => product.id));
   const competitorIds = new Set(competitors.map((competitor) => competitor.id));
+  const cardIds = new Set(strategyCards.map((card) => card.id));
 
   for (const resourceId of Object.keys(resources)) {
     const value = state.resources[resourceId];
@@ -49,6 +50,19 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
 
   if (!["playing", "success", "failure"].includes(state.status)) {
     issues.push(`status "${state.status}" is invalid`);
+  }
+
+  if (!Number.isFinite(state.roguelite.runNumber) || state.roguelite.runNumber < 1) {
+    issues.push("roguelite runNumber must be a positive number");
+  }
+
+  for (const cardId of [
+    ...state.roguelite.deck.drawPile,
+    ...state.roguelite.deck.hand,
+    ...state.roguelite.deck.discardPile,
+    ...state.roguelite.deck.playedThisTurn,
+  ]) {
+    if (!cardIds.has(cardId)) issues.push(`strategy deck card "${cardId}" is unknown`);
   }
 
   return { ok: issues.length === 0, issues, warnings };

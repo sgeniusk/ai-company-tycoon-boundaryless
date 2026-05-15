@@ -136,6 +136,54 @@ This document defines the simulated agent roles used during the production of **
 
 ---
 
+### 11. Deck System Engineer
+
+**Responsibility:** Ensure the deckbuilding layer creates meaningful run-to-run choices without hiding the tycoon fantasy.
+
+**Review Focus:**
+- Do cards create distinct company strategies?
+- Are costs, effects, draw/discard states, and hand limits readable?
+- Do cards change product development rather than feeling cosmetic?
+- Are card definitions data-driven and easy to expand?
+
+---
+
+### 12. Roguelite Meta Engineer
+
+**Responsibility:** Ensure failure, success, and restart loops create long-term motivation.
+
+**Review Focus:**
+- Does a failed run produce useful founder insight?
+- Are permanent unlocks exciting without trivializing the next run?
+- Is the next-run setup clear and fast?
+- Are meta rewards tied to player stories, not just grinding?
+
+---
+
+### 13. Puzzle Mechanics Engineer
+
+**Responsibility:** Ensure development puzzles add hands-on agency to product creation.
+
+**Review Focus:**
+- Does puzzle performance affect product progress or quality?
+- Do agent stats and cards matter in puzzle outcomes?
+- Is the puzzle short enough for a tycoon loop?
+- Does the puzzle create mastery without becoming a separate game?
+
+---
+
+### 14. Balance Simulation Engineer
+
+**Responsibility:** Stress-test card, meta, product, and economy loops for exploits and dead ends.
+
+**Review Focus:**
+- Can a card chain create infinite resources?
+- Does meta progression help recovery without removing risk?
+- Do early decks support at least two viable strategies?
+- Are negative effects meaningful but not punitive?
+
+---
+
 ## Agent Review Protocol
 
 After each milestone:

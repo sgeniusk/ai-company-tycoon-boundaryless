@@ -1,0 +1,31 @@
+{
+  "meta_unlocks": [
+    {
+      "id": "eval_harness",
+      "title": "평가 하네스 기억",
+      "description": "이전 런에서 쌓은 평가 체크리스트를 다음 창업에도 가져갑니다.",
+      "cost": 3,
+      "starting_resource_effects": {"trust": 3},
+      "unlock_card_ids": ["redteam_drill"],
+      "tags": ["safety", "quality"]
+    },
+    {
+      "id": "launch_playbook",
+      "title": "런칭 플레이북",
+      "description": "흥행 문법과 공개 타이밍을 기억해 초반 화제성을 다룹니다.",
+      "cost": 4,
+      "starting_resource_effects": {"hype": 4},
+      "unlock_card_ids": ["viral_teaser"],
+      "tags": ["growth", "retention"]
+    },
+    {
+      "id": "automation_memory",
+      "title": "자동화 기억",
+      "description": "지난 회사에서 만든 운영 매뉴얼을 재사용해 초반 반복 작업을 줄입니다.",
+      "cost": 5,
+      "starting_resource_effects": {"automation": 2, "compute": 4},
+      "unlock_card_ids": ["autonomy_macro"],
+      "tags": ["automation", "ops"]
+    }
+  ]
+}

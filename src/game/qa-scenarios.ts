@@ -4,7 +4,7 @@ import { advanceMonth, chooseGrowthPath, createInitialState, hireAgent, startPro
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
 
-export const qaScenarioIds = ["fresh", "project", "release", "shop", "strategy", "arc", "commercial"] as const;
+export const qaScenarioIds = ["fresh", "project", "release", "shop", "deck", "strategy", "arc", "commercial"] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
 
@@ -44,6 +44,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "첫 출시 후 상점 QA",
       state: releaseState,
       activeMenu: "shop",
+    };
+  }
+
+  if (id === "deck") {
+    return {
+      id,
+      label: "덱 퍼즐 QA",
+      state: projectState,
+      activeMenu: "deck",
     };
   }
 

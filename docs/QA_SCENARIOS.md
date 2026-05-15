@@ -16,6 +16,7 @@ Use the local app URL and append one of these query strings:
 | Project | `?scenario=project` | First product in development, progress UI, objective state |
 | Release | `?scenario=release` | Release spotlight, growth fork cards, boundaryless expansion hint, office scene |
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
+| Deck | `?scenario=deck` | Active project with strategy hand, development puzzle, and meta unlock panel |
 | Strategy | `?scenario=strategy` | Chosen growth path, competition signal badges, rival pressure |
 | Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
@@ -26,6 +27,7 @@ Examples:
 - `http://localhost:5173/?scenario=project`
 - `http://localhost:5173/?scenario=release`
 - `http://localhost:5173/?scenario=shop`
+- `http://localhost:5173/?scenario=deck`
 - `http://localhost:5173/?scenario=strategy`
 - `http://localhost:5173/?scenario=arc`
 - `http://localhost:5173/?scenario=commercial`
@@ -68,6 +70,15 @@ Examples:
 - Company panel shows `상용 런 목표`, achievement progress, and strategy monthly effects.
 - Monthly report includes the strategy effect row.
 - Open event panel and run summary can coexist without overlapping the office scene.
+
+## v0.12.0 Visual QA Checklist
+
+- Deck scenario opens on the `덱` menu.
+- Strategy hand shows at least four cards with cost, effect, and use button.
+- Active project puzzle shows a 3x3 issue board.
+- `상위 이슈 해결` updates the recent puzzle result without layout shift.
+- Meta unlock cards show founder insight cost and unlocked card names.
+- Top status bar shows run number and founder insight without overflow.
 
 ## Note
 

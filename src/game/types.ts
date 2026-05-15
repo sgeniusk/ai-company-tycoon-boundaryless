@@ -234,6 +234,71 @@ export interface AchievementStatus extends AchievementDefinition {
   progressLabel: string;
 }
 
+export type StrategyCardCategory = "build" | "ops" | "product" | "safety" | "growth" | "research" | "automation";
+export type StrategyCardRarity = "starter" | "common" | "uncommon" | "rare" | "epic";
+
+export interface StrategyCardDefinition {
+  id: string;
+  name: string;
+  category: StrategyCardCategory;
+  rarity: StrategyCardRarity;
+  description: string;
+  cost: ResourceMap;
+  effects: Record<string, number>;
+  tags: string[];
+  copies: number;
+  unlock_meta_id?: string;
+  unlock_requirements: Record<string, number>;
+}
+
+export interface StrategyDeckState {
+  drawPile: string[];
+  hand: string[];
+  discardPile: string[];
+  playedThisTurn: string[];
+}
+
+export interface MetaUnlockDefinition {
+  id: string;
+  title: string;
+  description: string;
+  cost: number;
+  starting_resource_effects: ResourceMap;
+  unlock_card_ids: string[];
+  tags: string[];
+}
+
+export interface RogueliteState {
+  runNumber: number;
+  founderInsight: number;
+  unlockedMetaIds: string[];
+  deck: StrategyDeckState;
+}
+
+export type DevelopmentChallenge = "ux" | "bug" | "compute" | "safety" | "research" | "market" | "data" | "creative" | "automation";
+
+export interface DevelopmentPuzzleTile {
+  id: string;
+  challenge: DevelopmentChallenge;
+  label: string;
+  difficulty: number;
+  stat: keyof AgentStats;
+}
+
+export interface DevelopmentPuzzleState {
+  projectId: string;
+  productId: string;
+  tiles: DevelopmentPuzzleTile[];
+}
+
+export interface DevelopmentPuzzleResult extends DevelopmentPuzzleState {
+  selectedTileIds: string[];
+  score: number;
+  progressGain: number;
+  qualityGain: number;
+  verdict: string;
+}
+
 export interface AgentStats {
   research: number;
   engineering: number;
@@ -287,7 +352,7 @@ export interface ReleaseReview {
   quote: string;
 }
 
-export type GrowthPathMenuId = "company" | "products" | "agents" | "research" | "shop" | "competition" | "log";
+export type GrowthPathMenuId = "company" | "products" | "deck" | "agents" | "research" | "shop" | "competition" | "log";
 
 export interface GrowthPathDefinition {
   id: string;
@@ -437,6 +502,8 @@ export interface GameState {
   competitorStates: CompetitorState[];
   productReviews: Record<string, ReleaseReview>;
   lastRelease?: ReleaseMoment;
+  roguelite: RogueliteState;
+  lastDevelopmentPuzzle?: DevelopmentPuzzleResult;
   chosenGrowthPath?: ChosenGrowthPath;
   unlockedAchievements: string[];
   eventHistory: string[];

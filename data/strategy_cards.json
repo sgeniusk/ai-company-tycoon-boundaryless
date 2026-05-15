@@ -1,0 +1,103 @@
+{
+  "strategy_cards": [
+    {
+      "id": "prompt_sprint",
+      "name": "프롬프트 스프린트",
+      "category": "build",
+      "rarity": "starter",
+      "description": "핵심 사용 흐름을 빠르게 묶어 개발 진행과 완성도를 동시에 올립니다.",
+      "cost": {"data": 2},
+      "effects": {"project_progress": 18, "project_quality": 4},
+      "tags": ["language", "product", "starter"],
+      "copies": 1,
+      "unlock_requirements": {}
+    },
+    {
+      "id": "gpu_burst",
+      "name": "GPU 버스트",
+      "category": "ops",
+      "rarity": "starter",
+      "description": "짧은 기간 연산력을 태워 구현 속도를 끌어올립니다.",
+      "cost": {"compute": 6, "cash": 250},
+      "effects": {"project_progress": 24},
+      "tags": ["compute", "speed", "starter"],
+      "copies": 1,
+      "unlock_requirements": {}
+    },
+    {
+      "id": "customer_interviews",
+      "name": "고객 인터뷰",
+      "category": "product",
+      "rarity": "starter",
+      "description": "작은 사용자군을 붙잡고 니즈를 확인해 완성도와 신뢰를 올립니다.",
+      "cost": {"cash": 200},
+      "effects": {"project_quality": 7, "trust": 2},
+      "tags": ["ux", "trust", "starter"],
+      "copies": 1,
+      "unlock_requirements": {}
+    },
+    {
+      "id": "safety_review",
+      "name": "세이프티 리뷰",
+      "category": "safety",
+      "rarity": "starter",
+      "description": "출시 전 위험 케이스를 점검해 품질과 신뢰를 확보합니다.",
+      "cost": {"data": 3},
+      "effects": {"project_quality": 6, "trust": 3},
+      "tags": ["safety", "trust", "starter"],
+      "copies": 1,
+      "unlock_requirements": {}
+    },
+    {
+      "id": "viral_teaser",
+      "name": "바이럴 티저",
+      "category": "growth",
+      "rarity": "common",
+      "description": "미완성 데모를 공개해 화제성을 얻지만 품질 부담이 생깁니다.",
+      "cost": {"cash": 350},
+      "effects": {"hype": 8, "project_quality": -1},
+      "tags": ["growth", "hype"],
+      "copies": 1,
+      "unlock_meta_id": "launch_playbook",
+      "unlock_requirements": {}
+    },
+    {
+      "id": "open_source_push",
+      "name": "오픈소스 공개",
+      "category": "research",
+      "rarity": "common",
+      "description": "개발자 커뮤니티에 일부 도구를 공개해 데이터와 진행도를 얻습니다.",
+      "cost": {"cash": 300},
+      "effects": {"project_progress": 12, "data": 5, "hype": 3},
+      "tags": ["developer", "data"],
+      "copies": 1,
+      "unlock_requirements": {"min_capability_code": 1}
+    },
+    {
+      "id": "redteam_drill",
+      "name": "레드팀 드릴",
+      "category": "safety",
+      "rarity": "uncommon",
+      "description": "악용, 환각, 규제 리스크를 압축 테스트해 고점 제품의 사고 확률을 낮춥니다.",
+      "cost": {"data": 4, "cash": 300},
+      "effects": {"project_quality": 10, "trust": 5, "hype": -1},
+      "tags": ["safety", "quality", "meta"],
+      "copies": 1,
+      "unlock_meta_id": "eval_harness",
+      "unlock_requirements": {}
+    },
+    {
+      "id": "autonomy_macro",
+      "name": "자율 업무 매크로",
+      "category": "automation",
+      "rarity": "rare",
+      "description": "반복 업무를 에이전트에게 묶어 자동화와 개발 진행을 동시에 얻습니다.",
+      "cost": {"compute": 8, "data": 4},
+      "effects": {"project_progress": 16, "automation": 3},
+      "tags": ["automation", "agent", "meta"],
+      "copies": 1,
+      "unlock_meta_id": "automation_memory",
+      "unlock_requirements": {"min_capability_agent": 1}
+    }
+  ]
+}

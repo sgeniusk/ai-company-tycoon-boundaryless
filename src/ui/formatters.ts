@@ -49,7 +49,15 @@ export function formatCost(cost: ResourceMap): string {
 }
 
 export function formatEffects(effects: Record<string, number>): string {
+  const effectLabels: Record<string, string> = {
+    project_progress: "개발 진행",
+    project_quality: "완성도",
+  };
+
   return Object.entries(effects)
-    .map(([key, value]) => `${resources[key]?.name ?? statLabel(key)} +${value}`)
+    .map(([key, value]) => {
+      const sign = value >= 0 ? "+" : "";
+      return `${resources[key]?.name ?? effectLabels[key] ?? statLabel(key)} ${sign}${value}`;
+    })
     .join(", ");
 }

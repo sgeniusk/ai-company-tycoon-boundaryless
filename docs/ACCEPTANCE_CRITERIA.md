@@ -6,6 +6,24 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.12.0: Roguelite Deckbuilding Pivot Foundation
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | New runs create a deterministic starter deck, opening hand, draw pile, and discard pile | **Passed** |
+| 2 | Strategy cards are data-driven and validated against known resources, effects, requirements, and meta unlocks | **Passed** |
+| 3 | Playing a card spends costs, moves the card to discard, and changes active project progress or quality | **Passed** |
+| 4 | Development puzzle generation creates a 3x3 issue board for an active project | **Passed** |
+| 5 | Resolving a development puzzle changes project progress and quality and records a result | **Passed** |
+| 6 | Completed or failed runs generate founder insight | **Passed** |
+| 7 | Founder insight can unlock meta upgrades and carry unlocked cards into the next run | **Passed** |
+| 8 | Save/load hydration preserves or backfills roguelite state safely | **Passed** |
+| 9 | UI includes a new `덱` menu for hand cards, puzzle state, and meta unlocks | **Passed** |
+| 10 | Browser QA supports `?scenario=deck` | **Passed** |
+| 11 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.11.0: Commercial Readiness Systems
 
 | # | Criterion | Status |

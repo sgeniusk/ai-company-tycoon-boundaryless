@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.12.0-alpha] — 2026-05-15
+
+### 로그라이트 덱빌딩 전환 기반
+
+**추가:**
+- 시작 덱, 손패, 드로우 더미, 버림 더미를 포함한 전략 덱 시스템.
+- `data/strategy_cards.json`과 `data/meta_unlocks.json` 데이터 파일.
+- 전략 카드 사용으로 자원, 개발 진행도, 완성도를 바꾸는 게임 로직.
+- 3x3 개발 퍼즐 프로토타입과 프로젝트 진행/완성도 반영.
+- 창업 통찰, 메타 해금, 새 런 시작 기능.
+- 덱/퍼즐/메타 해금을 다루는 새 `덱` 메뉴.
+- `?scenario=deck` 브라우저 QA 시나리오.
+- 로그라이트 덱빌딩 전환 설계 문서와 제작 에이전트 조직도.
+
+**변경:**
+- 현재 장르 방향을 “카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 개발 퍼즐”로 재정의.
+- 상단 상태 영역에 런 번호와 창업 통찰을 표시.
+- 저장 버전을 `3`으로 올리고 기존 저장에는 기본 로그라이트 상태를 보강.
+- 데이터 검증기가 전략 카드와 메타 해금 참조를 검증.
+
+**검증:**
+- `npm test` 통과, 78 tests
+- `npm run validate:data` 통과
+- `npm run build` 통과
+
+---
+
 ## [0.11.0-alpha] — 2026-05-15
 
 ### Commercial Readiness Systems Before Final Graphics

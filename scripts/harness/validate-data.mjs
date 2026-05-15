@@ -72,6 +72,8 @@ const rivalEventsData = readJson("rival_events.json");
 const assetManifestData = readJson("asset_manifest.json");
 const growthPathsData = readJson("growth_paths.json");
 const achievementsData = readJson("achievements.json");
+const strategyCardsData = readJson("strategy_cards.json");
+const metaUnlocksData = readJson("meta_unlocks.json");
 const koLocaleData = readJson("locales/ko.json");
 const enLocaleData = readJson("locales/en.json");
 
@@ -91,6 +93,8 @@ const rivalEvents = rivalEventsData?.rival_events ?? [];
 const assetManifest = assetManifestData ?? {};
 const growthPaths = growthPathsData?.growth_paths ?? [];
 const achievements = achievementsData?.achievements ?? [];
+const strategyCards = strategyCardsData?.strategy_cards ?? [];
+const metaUnlocks = metaUnlocksData?.meta_unlocks ?? [];
 const localeKeys = new Set([...Object.keys(koLocaleData ?? {}), ...Object.keys(enLocaleData ?? {})]);
 
 const resourceIds = new Set(Object.keys(resources));
@@ -108,6 +112,8 @@ const competitorIds = idsAreUnique("competitors", competitors);
 idsAreUnique("rival_events", rivalEvents);
 idsAreUnique("growth_paths", growthPaths);
 idsAreUnique("achievements", achievements);
+const strategyCardIds = idsAreUnique("strategy_cards", strategyCards);
+const metaUnlockIds = idsAreUnique("meta_unlocks", metaUnlocks);
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);
@@ -210,7 +216,7 @@ for (const event of rivalEvents) {
   }
 }
 
-const menuIds = new Set(["company", "products", "agents", "research", "shop", "competition", "log"]);
+const menuIds = new Set(["company", "products", "deck", "agents", "research", "shop", "competition", "log"]);
 for (const path of growthPaths) {
   for (const field of ["title", "description", "target_menu", "action_label", "payoff", "bonus_description"]) {
     if (!path[field]) errors.push(`growth_path "${path.id}": missing ${field}`);
@@ -293,6 +299,56 @@ for (const achievement of achievements) {
       errors.push(`achievement "${achievement.id}": condition "${condition}" must be numeric`);
     }
   }
+}
+
+const allowedCardCategories = new Set(["build", "ops", "product", "safety", "growth", "research", "automation"]);
+const allowedCardRarities = new Set(["starter", "common", "uncommon", "rare", "epic"]);
+const allowedCardEffects = new Set([...resourceIds, "project_progress", "project_quality"]);
+for (const card of strategyCards) {
+  for (const field of ["name", "category", "rarity", "description", "cost", "effects", "tags", "copies", "unlock_requirements"]) {
+    if (!(field in card)) errors.push(`strategy_card "${card.id}": missing ${field}`);
+  }
+  if (!allowedCardCategories.has(card.category)) errors.push(`strategy_card "${card.id}": unknown category "${card.category}"`);
+  if (!allowedCardRarities.has(card.rarity)) errors.push(`strategy_card "${card.id}": unknown rarity "${card.rarity}"`);
+  if (typeof card.copies !== "number" || card.copies < 1) errors.push(`strategy_card "${card.id}": copies must be a positive number`);
+  if (!Array.isArray(card.tags) || card.tags.length === 0) errors.push(`strategy_card "${card.id}": tags must be a non-empty array`);
+  if (card.unlock_meta_id && !metaUnlockIds.has(card.unlock_meta_id)) {
+    errors.push(`strategy_card "${card.id}": unknown unlock_meta_id "${card.unlock_meta_id}"`);
+  }
+  validateResourceMap(`strategy_card "${card.id}" cost`, card.cost, resourceIds);
+  for (const [effectKey, value] of Object.entries(card.effects ?? {})) {
+    if (!allowedCardEffects.has(effectKey)) errors.push(`strategy_card "${card.id}": unknown effect "${effectKey}"`);
+    if (typeof value !== "number") errors.push(`strategy_card "${card.id}": effect "${effectKey}" must be numeric`);
+  }
+  for (const [requirement, value] of Object.entries(card.unlock_requirements ?? {})) {
+    if (
+      ![
+        "min_month",
+        "min_products",
+        "min_trust",
+      ].includes(requirement) &&
+      !requirement.startsWith("min_capability_")
+    ) {
+      errors.push(`strategy_card "${card.id}": unknown unlock requirement "${requirement}"`);
+    }
+    if (requirement.startsWith("min_capability_")) {
+      const capabilityId = requirement.replace("min_capability_", "");
+      if (!capabilityIds.has(capabilityId)) errors.push(`strategy_card "${card.id}": unknown capability requirement "${capabilityId}"`);
+    }
+    if (typeof value !== "number") errors.push(`strategy_card "${card.id}": unlock requirement "${requirement}" must be numeric`);
+  }
+}
+
+for (const unlock of metaUnlocks) {
+  for (const field of ["title", "description", "cost", "starting_resource_effects", "unlock_card_ids", "tags"]) {
+    if (!(field in unlock)) errors.push(`meta_unlock "${unlock.id}": missing ${field}`);
+  }
+  if (typeof unlock.cost !== "number" || unlock.cost < 0) errors.push(`meta_unlock "${unlock.id}": cost must be a non-negative number`);
+  validateResourceMap(`meta_unlock "${unlock.id}" starting_resource_effects`, unlock.starting_resource_effects, resourceIds);
+  for (const cardId of unlock.unlock_card_ids ?? []) {
+    if (!strategyCardIds.has(cardId)) errors.push(`meta_unlock "${unlock.id}": unknown card "${cardId}"`);
+  }
+  if (!Array.isArray(unlock.tags) || unlock.tags.length === 0) errors.push(`meta_unlock "${unlock.id}": tags must be a non-empty array`);
 }
 
 if (!assetManifestData) {
