@@ -1,10 +1,21 @@
-import type { Dispatch, SetStateAction } from "react";
-import { domains, products, resources } from "../game/data";
+import type { CSSProperties, Dispatch, SetStateAction } from "react";
+import { assetManifest, domains, products, resources } from "../game/data";
+import { getGuidanceStep, getOpeningObjectives, type GuidanceStep, type OpeningObjective } from "../game/guidance";
 import { advanceMonth, createInitialState, formatResource, getCompanyStage, getPlayerMarketShare, resolveEventChoice, resolveRivalEventChoice } from "../game/simulation";
 import type { GameState } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { statusLabel } from "../ui/formatters";
 import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
+
+function assetPaletteVars(palette?: string[]): CSSProperties {
+  if (!palette?.length) return {};
+
+  return {
+    "--sprite-primary": palette[0],
+    "--sprite-secondary": palette[1] ?? palette[0],
+    "--sprite-accent": palette[2] ?? palette[0],
+  } as CSSProperties;
+}
 
 export function TopBar({
   gameState,
@@ -50,12 +61,35 @@ export function ResourceStrip({ gameState }: { gameState: GameState }) {
   );
 }
 
-export function GameStage({ gameState }: { gameState: GameState }) {
+export function GameStage({
+  gameState,
+  setGameState,
+  setActiveMenu,
+}: {
+  gameState: GameState;
+  setGameState: Dispatch<SetStateAction<GameState>>;
+  setActiveMenu: Dispatch<SetStateAction<MenuId>>;
+}) {
   const companyStage = getCompanyStage(gameState);
+  const guidance = getGuidanceStep(gameState);
+  const openingObjectives = getOpeningObjectives(gameState);
   const activeProducts = products.filter((product) => gameState.activeProducts.includes(product.id));
   const unlockedDomainNames = domains
     .filter((domain) => gameState.unlockedDomains.includes(domain.id))
     .map((domain) => domain.name);
+  const officeObjects = assetManifest.office_objects.slice(0, 7);
+
+  const handleGuidanceAction = () => {
+    if (guidance.id === "advance_project") {
+      setGameState((current) => advanceMonth(current));
+      return;
+    }
+    if (guidance.id === "recover_failure") {
+      setGameState(createInitialState());
+      return;
+    }
+    if (guidance.menu) setActiveMenu(guidance.menu);
+  };
 
   return (
     <section className="game-stage" aria-label="AI 회사 사무실">
@@ -66,6 +100,15 @@ export function GameStage({ gameState }: { gameState: GameState }) {
           <span>RELEASE BOARD</span>
         </div>
         <div className="office-floor">
+          <div className="office-object-layer" aria-hidden="true">
+            {officeObjects.map((object, index) => (
+              <span
+                className={`office-object office-object-${index} object-${object.object_id}`}
+                style={assetPaletteVars(object.palette)}
+                key={object.object_id}
+              />
+            ))}
+          </div>
           {Array.from({ length: Math.min(8, Math.max(1, gameState.hiredAgents.length || gameState.resources.talent || 1)) }).map((_, index) => (
             <span className={`staff-sprite staff-${index % 4}`} key={index} />
           ))}
@@ -82,6 +125,20 @@ export function GameStage({ gameState }: { gameState: GameState }) {
       </div>
 
       <div className="stage-side">
+        <GuidancePanel guidance={guidance} objectives={openingObjectives} onAction={handleGuidanceAction} />
+        {gameState.lastRelease && (
+          <article className="release-spotlight">
+            <p className="eyebrow">출시 결과</p>
+            <div className="release-score">
+              <strong>{gameState.lastRelease.review.grade}</strong>
+              <span>{gameState.lastRelease.review.score}점</span>
+            </div>
+            <h2>{gameState.lastRelease.productName}</h2>
+            <p>{gameState.lastRelease.review.quote}</p>
+            <p className="expansion-hint">{gameState.lastRelease.expansionHint}</p>
+            <small>{gameState.lastRelease.month}개월차 출시 완료</small>
+          </article>
+        )}
         <article className="company-stage">
           <p className="eyebrow">회사 단계</p>
           <h2>{companyStage.name}</h2>
@@ -115,6 +172,34 @@ export function GameStage({ gameState }: { gameState: GameState }) {
         </article>
       </div>
     </section>
+  );
+}
+
+function GuidancePanel({
+  guidance,
+  objectives,
+  onAction,
+}: {
+  guidance: GuidanceStep;
+  objectives: OpeningObjective[];
+  onAction: () => void;
+}) {
+  return (
+    <article className={`guidance-card guidance-${guidance.tone}`}>
+      <div>
+        <p className="eyebrow">다음 목표</p>
+        <h2>{guidance.title}</h2>
+        <p>{guidance.description}</p>
+      </div>
+      <button onClick={onAction}>{guidance.actionLabel}</button>
+      <ol className="objective-strip">
+        {objectives.map((objective) => (
+          <li className={objective.complete ? "complete" : ""} key={objective.id}>
+            {objective.label}
+          </li>
+        ))}
+      </ol>
+    </article>
   );
 }
 

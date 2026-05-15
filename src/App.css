@@ -231,6 +231,69 @@ p {
   position: relative;
 }
 
+.office-object-layer {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.office-object {
+  background: var(--sprite-primary, #8b6540);
+  border: 2px solid var(--line);
+  box-shadow: 2px 2px 0 rgba(61, 51, 35, 0.22);
+  display: block;
+  height: 26px;
+  position: absolute;
+  width: 40px;
+  z-index: 1;
+}
+
+.office-object::before,
+.office-object::after {
+  content: "";
+  display: block;
+  position: absolute;
+}
+
+.office-object::before {
+  background: var(--sprite-secondary, #fff3c7);
+  border: 2px solid var(--line);
+  height: 11px;
+  left: 7px;
+  top: -12px;
+  width: 18px;
+}
+
+.office-object::after {
+  background: var(--sprite-accent, #26342d);
+  bottom: 3px;
+  height: 5px;
+  left: 5px;
+  width: 24px;
+}
+
+.office-object-0 { left: 9%; top: 36px; }
+.office-object-1 { bottom: 26px; left: 55%; height: 52px; width: 32px; }
+.office-object-2 { left: 54%; top: 22px; width: 54px; }
+.office-object-3 { left: 25%; top: 20px; width: 58px; }
+.office-object-4 { bottom: 18px; left: 26%; width: 30px; }
+.office-object-5 { bottom: 54px; left: 67%; height: 30px; width: 52px; }
+.office-object-6 { right: 24px; top: 18px; width: 66px; }
+
+.object-gpu_rack::before,
+.object-server_cooling_wall::before {
+  border-radius: 50%;
+  height: 12px;
+  top: 4px;
+  width: 12px;
+}
+
+.object-launch_board::after,
+.object-research_whiteboard::after {
+  height: 3px;
+  width: 34px;
+}
+
 .staff-sprite {
   background: #254d7d;
   border: 2px solid var(--line);
@@ -239,6 +302,7 @@ p {
   height: 28px;
   position: absolute;
   width: 22px;
+  z-index: 2;
 }
 
 .staff-sprite::before {
@@ -278,6 +342,7 @@ p {
   position: absolute;
   right: 24px;
   width: 88px;
+  z-index: 2;
 }
 
 .server-rack i {
@@ -299,6 +364,7 @@ p {
   right: 130px;
   top: 30px;
   width: 210px;
+  z-index: 3;
 }
 
 .launch-screen strong,
@@ -314,11 +380,121 @@ p {
 }
 
 .company-stage,
-.monthly-report {
+.monthly-report,
+.guidance-card,
+.release-spotlight {
   background: #fff7df;
   border: 2px solid var(--line);
   min-height: 112px;
   padding: 12px;
+}
+
+.guidance-card {
+  border-width: 3px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.objective-strip {
+  display: grid;
+  gap: 5px;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.objective-strip li {
+  background: #fffdf5;
+  border: 2px solid #d8c49b;
+  color: #705a38;
+  font-size: 0.68rem;
+  font-weight: 900;
+  min-height: 28px;
+  padding: 6px 5px;
+  text-align: center;
+}
+
+.objective-strip li.complete {
+  background: #dff1df;
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+
+.guidance-card h2,
+.release-spotlight h2 {
+  font-size: 1.06rem;
+  margin-bottom: 5px;
+}
+
+.guidance-card p,
+.release-spotlight p {
+  margin-bottom: 0;
+}
+
+.guidance-card button {
+  align-self: center;
+  background: var(--green);
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.guidance-warning {
+  background: #fff1df;
+  border-color: var(--red);
+}
+
+.guidance-warning button {
+  background: var(--red);
+}
+
+.guidance-steady {
+  background: #eef7ff;
+  border-color: var(--blue);
+}
+
+.release-spotlight {
+  background: #1e2b24;
+  border-color: #f2cf7f;
+  color: #fff7df;
+  display: grid;
+  gap: 7px;
+}
+
+.release-spotlight p,
+.release-spotlight small {
+  color: #efe4c4;
+}
+
+.release-spotlight .expansion-hint {
+  background: rgba(242, 207, 127, 0.16);
+  border-left: 4px solid #f2cf7f;
+  color: #fff3c7;
+  padding: 7px 8px;
+}
+
+.release-score {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.release-score strong {
+  background: #f2cf7f;
+  border: 2px solid var(--line);
+  color: #2e2415;
+  font-size: 1.28rem;
+  min-width: 42px;
+  padding: 4px 0;
+  text-align: center;
+}
+
+.release-score span {
+  color: #d8ffd7;
+  font-size: 0.85rem;
+  font-weight: 900;
 }
 
 .company-stage h2 {
@@ -1136,9 +1312,14 @@ p {
   .top-bar,
   .command-row,
   .status-cluster,
-  .item-footer {
+  .item-footer,
+  .guidance-card {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .guidance-card {
+    grid-template-columns: 1fr;
   }
 
   h1 {
@@ -1180,6 +1361,7 @@ p {
   .agent-grid,
   .item-grid,
   .competitor-grid,
+  .objective-strip,
   .company-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1200,6 +1382,7 @@ p {
   .item-grid,
   .competitor-grid,
   .monthly-report dl,
+  .objective-strip,
   .company-summary {
     grid-template-columns: 1fr;
   }

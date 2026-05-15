@@ -6,6 +6,23 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.1: Tester-Driven Office And Release Polish
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | New players see a clear next-goal card before any menu decision | **Passed** |
+| 2 | The guidance flow covers hiring, first product development, month advancement, and first item purchase | **Passed** |
+| 3 | Product project completion stores the latest release moment for UI reward feedback | **Passed** |
+| 4 | Save/load preserves the latest release moment | **Passed** |
+| 5 | Office object metadata is represented as visible placeholder tiles in the office scene | **Passed** |
+| 6 | Opening objective strip shows first-session progress states | **Passed** |
+| 7 | Starter product revenue is tuned to at least `₩1,400` monthly revenue | **Passed** |
+| 8 | First release shows a boundaryless expansion hint | **Passed** |
+| 9 | v0.9 synthetic and 10-expert playtest findings are referenced in the production report | **Passed** |
+| 10 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.9.0: Pixel Asset Manifest Scaffold
 
 | # | Criterion | Status |

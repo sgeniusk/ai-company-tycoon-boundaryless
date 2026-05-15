@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.1-alpha] — 2026-05-15
+
+### Tester-Driven Office And Release Polish
+
+**Added:**
+- Player guidance system for the first 60 seconds: hire agent → start product → advance month → buy first item
+- Opening objective strip with completion states for the first-session path
+- Release moment state for the latest product launch, including product name, month, grade, score, and review quote
+- Boundaryless expansion hint after product release
+- Release spotlight card in the office stage
+- Manifest-driven office object placeholders placed directly on the office floor
+- Tests for guidance steps and latest release spotlight state
+
+**Updated:**
+- `AI 글쓰기 비서` monthly revenue increased from `₩800` to `₩1,600` based on the 10-expert direction playtest P1 economy finding
+- Game stage now has an actionable "다음 목표" card informed by synthetic playtest feedback
+- Product project releases now preserve the latest release moment through save/load
+- Office scene now uses the v0.9 asset manifest beyond metadata-only planning
+
+**Verification:**
+- `npm test` passed, 35 tests
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.9.0-alpha] — 2026-05-15
 
 ### Pixel Asset Manifest Scaffold

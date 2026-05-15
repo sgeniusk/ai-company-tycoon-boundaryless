@@ -163,12 +163,20 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
   const nextResources = applyResourceDelta(state.resources, negateCosts(product.launch_cost));
   nextResources.hype = clamp((nextResources.hype ?? 0) + product.hype_on_launch, 0, 100);
   const releaseReview = createReleaseReview(product, state);
+  const lastRelease = {
+    productId: product.id,
+    productName: product.name,
+    month: state.month,
+    review: releaseReview,
+    expansionHint: getReleaseExpansionHint(product),
+  };
 
   return {
     ...state,
     resources: nextResources,
     activeProducts: [...state.activeProducts, product.id],
     productReviews: { ...state.productReviews, [product.id]: releaseReview },
+    lastRelease,
     timeline: [
       `${product.name} 출시: 시장 반응 ${releaseReview.grade} (${releaseReview.score}점)`,
       `${product.name} 출시: 화제성 +${product.hype_on_launch}`,
@@ -555,6 +563,7 @@ export function hydrateGameState(serialized: string): GameState {
     productProjects: parsed.state.productProjects ?? [],
     competitorStates: parsed.state.competitorStates ?? createInitialState().competitorStates,
     productReviews: parsed.state.productReviews ?? {},
+    lastRelease: parsed.state.lastRelease,
     eventHistory: parsed.state.eventHistory ?? [],
     rivalEventHistory: parsed.state.rivalEventHistory ?? [],
     timeline: parsed.state.timeline ?? [],
@@ -671,6 +680,13 @@ function advanceProductProjects(state: GameState): GameState {
 
     if (progressedProject.progress >= 100) {
       const releaseReview = createReleaseReview(product, nextState, progressedProject.quality);
+      const lastRelease = {
+        productId: product.id,
+        productName: product.name,
+        month: state.month,
+        review: releaseReview,
+        expansionHint: getReleaseExpansionHint(product),
+      };
       nextState = {
         ...nextState,
         resources: applyResourceDelta(nextState.resources, {
@@ -679,6 +695,7 @@ function advanceProductProjects(state: GameState): GameState {
         }),
         activeProducts: [...nextState.activeProducts, product.id],
         productReviews: { ...nextState.productReviews, [product.id]: releaseReview },
+        lastRelease,
         hiredAgents: nextState.hiredAgents.map((agent) =>
           progressedProject.assignedAgentIds.includes(agent.id)
             ? { ...agent, assignment: undefined, energy: clamp(agent.energy - 18, 0, 100) }
@@ -758,6 +775,19 @@ function negateCosts(costs: ResourceMap): ResourceMap {
 
 function domainName(id: string): string {
   return domains.find((domain) => domain.id === id)?.name ?? id;
+}
+
+function getReleaseExpansionHint(product: ProductDefinition): string {
+  if (product.tags.includes("language")) {
+    return "언어 능력은 회의 요약, 고객지원, 교육 제품으로 확장될 수 있습니다.";
+  }
+  if (product.tags.includes("vision")) {
+    return "비전 능력은 썸네일, 영상, 디자인 자동화 시장으로 뻗을 수 있습니다.";
+  }
+  if (product.tags.includes("code")) {
+    return "코드 능력은 개발자 도구, 자동화, 엔터프라이즈 에이전트로 이어질 수 있습니다.";
+  }
+  return "이 제품의 기반 능력은 새로운 도메인으로 확장될 수 있습니다.";
 }
 
 function stageRequirementsMet(stage: CompanyStageDefinition, state: GameState): boolean {

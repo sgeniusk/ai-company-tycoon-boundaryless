@@ -45,7 +45,7 @@ describe("simulation milestone 1 shell helpers", () => {
     const nextMonth = advanceMonth(launched);
 
     expect(nextMonth.lastMonthReport).toMatchObject({
-      revenue: 800,
+      revenue: 1600,
       newUsers: expect.any(Number),
       generatedData: 5,
     });
@@ -173,6 +173,35 @@ describe("alpha production systems", () => {
     expect(released.productProjects).toHaveLength(0);
     expect(released.activeProducts).toContain("ai_writing_assistant");
     expect(released.productReviews.ai_writing_assistant.grade).toEqual(expect.any(String));
+  });
+
+  it("stores the latest release moment for the reward spotlight", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing release spotlight fixture");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const released = advanceMonth(advanceMonth(started));
+    const hydrated = hydrateGameState(serializeGameState(released));
+
+    expect(released.lastRelease).toMatchObject({
+      productId: "ai_writing_assistant",
+      productName: writingProduct.name,
+      month: released.month,
+      review: {
+        grade: released.productReviews.ai_writing_assistant.grade,
+        score: released.productReviews.ai_writing_assistant.score,
+      },
+      expansionHint: expect.stringContaining("회의"),
+    });
+    expect(hydrated.lastRelease).toEqual(released.lastRelease);
+  });
+
+  it("keeps the starter product revenue high enough for early runway", () => {
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!writingProduct) throw new Error("Missing starter fixture");
+
+    expect(writingProduct.base_revenue).toBeGreaterThanOrEqual(1400);
   });
 
   it("lets the starter product release within two months with a suitable first agent", () => {

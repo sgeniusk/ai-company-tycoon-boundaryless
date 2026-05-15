@@ -262,6 +262,14 @@ export interface ReleaseReview {
   quote: string;
 }
 
+export interface ReleaseMoment {
+  productId: string;
+  productName: string;
+  month: number;
+  review: ReleaseReview;
+  expansionHint: string;
+}
+
 export interface HiredAgent {
   id: string;
   typeId: string;
@@ -333,6 +341,7 @@ export interface GameState {
   productProjects: ProductProject[];
   competitorStates: CompetitorState[];
   productReviews: Record<string, ReleaseReview>;
+  lastRelease?: ReleaseMoment;
   eventHistory: string[];
   rivalEventHistory: string[];
   timeline: string[];

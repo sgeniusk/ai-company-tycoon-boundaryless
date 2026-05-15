@@ -48,7 +48,7 @@ function App() {
         onToggleLocale={() => setLocale((current) => (current === "ko" ? "en" : "ko"))}
       />
       <ResourceStrip gameState={gameState} />
-      <GameStage gameState={gameState} />
+      <GameStage gameState={gameState} setGameState={setGameState} setActiveMenu={setActiveMenu} />
       <EventPanels gameState={gameState} setGameState={setGameState} locale={locale} />
       <CommandRow gameState={gameState} setGameState={setGameState} onSave={handleSave} onLoad={handleLoad} />
       <section className="menu-layout" aria-label="경영 메뉴">
