@@ -6,6 +6,18 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.10.0: Ten-Month MVP Arc
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Game exposes a five-step 10-month MVP progress arc | **Passed** |
+| 2 | Arc starts at 0% for a new game | **Passed** |
+| 3 | First release and strategy commitment advance the arc | **Passed** |
+| 4 | Company panel renders arc summary, meter, and milestone details | **Passed** |
+| 5 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.9.9: Release Headlines And Market Reaction
 
 | # | Criterion | Status |

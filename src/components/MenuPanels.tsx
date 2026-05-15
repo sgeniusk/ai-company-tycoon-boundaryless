@@ -2,6 +2,7 @@ import type { CSSProperties, Dispatch, SetStateAction } from "react";
 import { agentTypes, assetManifest, automationUpgrades, capabilities, competitors, domains, items, products, upgrades } from "../game/data";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getGrowthPathObjectives } from "../game/growth-objectives";
+import { getTenMonthArc } from "../game/ten-month-arc";
 import {
   buyAutomationUpgrade,
   buyItem,
@@ -58,6 +59,7 @@ export function renderMenuContent(
 ) {
   if (activeMenu === "company") {
     const growthObjectives = getGrowthPathObjectives(gameState);
+    const tenMonthArc = getTenMonthArc(gameState);
 
     return (
       <div className="panel-grid two-col">
@@ -74,6 +76,23 @@ export function renderMenuContent(
             <span>보유 아이템 {gameState.ownedItems.length}개</span>
             <span>해금 분야 {gameState.unlockedDomains.length}개</span>
             <span>자동화 {formatResource("automation", gameState.resources.automation ?? 0)}</span>
+          </div>
+          <div className="ten-month-arc">
+            <div>
+              <h3>{tenMonthArc.summary}</h3>
+              <strong>{tenMonthArc.progressPercent}%</strong>
+            </div>
+            <div className="arc-meter">
+              <i style={{ width: `${tenMonthArc.progressPercent}%` }} />
+            </div>
+            <ol>
+              {tenMonthArc.milestones.map((milestone) => (
+                <li className={milestone.complete ? "complete" : ""} key={milestone.id}>
+                  <strong>{milestone.title}</strong>
+                  <span>{milestone.detail}</span>
+                </li>
+              ))}
+            </ol>
           </div>
           {growthObjectives.length > 0 && (
             <div className="strategy-objectives">

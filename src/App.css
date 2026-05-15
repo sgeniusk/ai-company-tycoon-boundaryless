@@ -797,6 +797,76 @@ p {
   font-size: 1.15rem;
 }
 
+.ten-month-arc {
+  background: #fff7df;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px;
+}
+
+.ten-month-arc > div:first-child {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.ten-month-arc h3 {
+  color: var(--green-dark);
+  margin-bottom: 0;
+}
+
+.ten-month-arc > div:first-child strong {
+  color: var(--green-dark);
+}
+
+.arc-meter {
+  background: #e4d0a6;
+  border: 2px solid var(--line);
+  height: 14px;
+  overflow: hidden;
+}
+
+.arc-meter i {
+  background: var(--green);
+  display: block;
+  height: 100%;
+}
+
+.ten-month-arc ol {
+  display: grid;
+  gap: 5px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ten-month-arc li {
+  align-items: center;
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 5px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 6px;
+}
+
+.ten-month-arc li.complete {
+  background: #e8f5dc;
+  border-color: var(--green);
+}
+
+.ten-month-arc li strong,
+.ten-month-arc li span {
+  font-size: 0.72rem;
+}
+
+.ten-month-arc li span {
+  color: #6a5d49;
+}
+
 .strategy-objectives {
   display: grid;
   gap: 7px;

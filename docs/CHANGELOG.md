@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.10.0-alpha] — 2026-05-15
+
+### Ten-Month MVP Arc
+
+**Added:**
+- 10-month MVP arc with five milestone checkpoints
+- Progress percentage and milestone details in the company panel
+- Tests for initial arc state and release/strategy progress
+
+**Updated:**
+- Company overview now shows both long-arc progress and chosen-strategy objectives
+
+**Verification:**
+- `npm test` passed, 52 tests
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.9.9-alpha] — 2026-05-15
 
 ### Release Headlines And Market Reaction
