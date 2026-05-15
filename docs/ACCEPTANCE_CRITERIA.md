@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.12.4: Boundaryless Industry Expansion
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | New runs include a launchable `foundation_model_v0` product | **Passed** |
+| 2 | Data includes semiconductors, mobility, robotics, odd industries, and toys domains | **Passed** |
+| 3 | Data includes AI chips, autonomous vehicles, robot fleets, AI cafe chain, and toy platform products | **Passed** |
+| 4 | Initial rival field has at least eight active competitors | **Passed** |
+| 5 | Month 12 introduces AutoNova Motors and BrewChain as strong annual challengers | **Passed** |
+| 6 | Robotics capability unlocks the robotics domain | **Passed** |
+| 7 | Robot-style development labor is locked until robotics capability is researched | **Passed** |
+| 8 | Browser QA supports `?scenario=rivals` | **Passed** |
+| 9 | Targeted tests and data validation pass | **Passed** |
+
+---
+
 ## Alpha v0.12.3: Card Rewards And Deck Editing
 
 | # | Criterion | Status |

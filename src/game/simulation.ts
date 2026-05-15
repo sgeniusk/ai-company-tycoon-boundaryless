@@ -27,6 +27,7 @@ import type {
   AutomationUpgradeDefinition,
   CapabilityDefinition,
   CompanyStageDefinition,
+  CompetitorDefinition,
   CompetitorState,
   ActiveDevelopmentPuzzleModifier,
   DevelopmentPuzzleResult,
@@ -87,15 +88,7 @@ export function createInitialState(): GameState {
     ownedItems: [],
     productProjects: [],
     productLevels: {},
-    competitorStates: competitors.map((competitor) => ({
-      id: competitor.id,
-      score: competitor.starting_score,
-      marketShare: competitor.starting_market_share,
-      momentum: 0,
-      claimedProducts: [],
-      researchLevel: 1,
-      lastMove: "출시 준비 중",
-    })),
+    competitorStates: createInitialCompetitorStates(startingState.month),
     productReviews: {},
     roguelite: createInitialRogueliteState(),
     activeDevelopmentPuzzleModifiers: [],
@@ -494,7 +487,8 @@ export function advanceMonth(state: GameState): GameState {
     timeline: [],
   };
   const progressedState = advanceProductProjects(nextStateWithoutEvent);
-  const competedState = advanceCompetitors(progressedState);
+  const entrantState = addScheduledCompetitors(progressedState);
+  const competedState = advanceCompetitors(entrantState);
   const nextStatus = getNextStatus(competedState.resources, competedState.activeProducts.length);
   const nextStateForEvent = { ...competedState, status: nextStatus };
   const nextEvent = state.currentEvent ? state.currentEvent : findNextEligibleEvent(nextStateForEvent);
@@ -802,6 +796,48 @@ function sanitizeProductLevels(value: unknown, activeProducts: unknown): Record<
   return sanitized;
 }
 
+function createInitialCompetitorStates(month: number): CompetitorState[] {
+  return competitors
+    .filter((competitor) => getCompetitorEntryMonth(competitor) <= month)
+    .map(createCompetitorState);
+}
+
+function createCompetitorState(competitor: CompetitorDefinition): CompetitorState {
+  return {
+    id: competitor.id,
+    score: competitor.starting_score,
+    marketShare: competitor.starting_market_share,
+    momentum: 0,
+    claimedProducts: [],
+    researchLevel: Math.max(1, Math.floor(getCompetitorEntryMonth(competitor) / 12) + 1),
+    lastMove: competitor.entry_month ? "신규 시장 진입" : "출시 준비 중",
+  };
+}
+
+function getCompetitorEntryMonth(competitor: CompetitorDefinition): number {
+  return competitor.entry_month ?? 1;
+}
+
+function addScheduledCompetitors(state: GameState): GameState {
+  const activeCompetitorIds = new Set(state.competitorStates.map((competitor) => competitor.id));
+  const entrants = competitors.filter(
+    (competitor) => getCompetitorEntryMonth(competitor) <= state.month && !activeCompetitorIds.has(competitor.id),
+  );
+
+  if (entrants.length === 0) return state;
+
+  return {
+    ...state,
+    competitorStates: [...state.competitorStates, ...entrants.map(createCompetitorState)],
+    timeline: [
+      ...entrants.map(
+        (competitor) => competitor.entry_announcement ?? `강력한 신규 경쟁사 등장: ${competitor.id} 시장 진입`,
+      ),
+      ...state.timeline,
+    ].slice(0, 8),
+  };
+}
+
 function advanceCompetitors(state: GameState): GameState {
   const playerDomains = new Set(
     products.filter((product) => state.activeProducts.includes(product.id)).map((product) => product.domain),
@@ -833,7 +869,7 @@ function advanceCompetitors(state: GameState): GameState {
   return {
     ...state,
     competitorStates: nextCompetitors,
-    timeline: competitionTimeline,
+    timeline: [...competitionTimeline, ...state.timeline].slice(0, 8),
   };
 }
 

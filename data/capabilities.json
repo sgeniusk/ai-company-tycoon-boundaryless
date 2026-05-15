@@ -42,7 +42,7 @@
         {"cash": 15000, "data": 120, "talent": 2},
         {"cash": 28000, "data": 200, "talent": 3}
       ],
-      "unlocks_domains": {"1": "creator_tools"},
+      "unlocks_domains": {"1": "creator_tools", "2": "toys", "3": "mobility"},
       "icon": "👁️"
     },
     {
@@ -126,9 +126,24 @@
         {"cash": 8000, "data": 60, "talent": 1},
         {"cash": 16000, "data": 100, "talent": 2}
       ],
-      "unlocks_domains": {},
+      "unlocks_domains": {"2": "semiconductors"},
       "effects_per_level": {"compute": 10},
       "icon": "⚡"
+    },
+    {
+      "id": "robotics",
+      "name": "로봇공학",
+      "description": "센서, 제어, 조립 자동화, 물리 작업을 수행하는 로봇 기술입니다.",
+      "max_level": 4,
+      "upgrade_costs": [
+        {"cash": 5000, "data": 35, "talent": 1},
+        {"cash": 10000, "data": 70, "talent": 2, "compute": 10},
+        {"cash": 20000, "data": 140, "talent": 3, "compute": 25},
+        {"cash": 40000, "data": 250, "talent": 4, "compute": 50}
+      ],
+      "unlocks_domains": {"1": "robotics", "2": "odd_industries"},
+      "effects_per_level": {"automation": 4},
+      "icon": "🤖"
     }
   ]
 }

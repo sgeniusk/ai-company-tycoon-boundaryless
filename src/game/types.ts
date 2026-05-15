@@ -87,6 +87,9 @@ export interface CompetitorDefinition {
   monthly_growth: number;
   aggression: number;
   weakness_key: string;
+  entry_month?: number;
+  rival_tier?: "initial" | "annual_challenger" | "late_boss";
+  entry_announcement?: string;
 }
 
 export interface CompetitorState {

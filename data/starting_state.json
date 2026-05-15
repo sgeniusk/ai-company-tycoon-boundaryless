@@ -9,9 +9,10 @@
     "agent": 0,
     "enterprise": 0,
     "safety": 0,
-    "optimization": 0
+    "optimization": 0,
+    "robotics": 0
   },
-  "unlocked_domains": ["personal_productivity"],
+  "unlocked_domains": ["foundation_models", "personal_productivity"],
   "active_products": [],
   "purchased_upgrades": [],
   "purchased_automation_upgrades": []

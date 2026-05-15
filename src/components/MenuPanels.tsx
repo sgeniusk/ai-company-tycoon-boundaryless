@@ -359,8 +359,8 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
 
       <section className="panel">
         <div className="panel-heading">
-          <h2>개발 퍼즐</h2>
-          <p>{activeProduct ? `${activeProduct.name}의 이슈를 해결해 완성도를 끌어올립니다.` : "제품 개발을 시작하면 3x3 이슈 보드가 열립니다."}</p>
+          <h2>개발 이슈 대응</h2>
+          <p>{activeProduct ? `${activeProduct.name}의 막힌 지점을 골라 추가 완성도를 얻습니다.` : "직원과 에이전트가 월마다 기본 개발을 진행하고, 이슈 대응은 선택형 보너스로 둡니다."}</p>
         </div>
         {puzzle && activeProject ? (
           <>
@@ -461,6 +461,8 @@ function ProductsPanel({
   const [selectedAgentIdsByProduct, setSelectedAgentIdsByProduct] = useState<Record<string, string[]>>({});
   const availableAgents = gameState.hiredAgents.filter((agent) => !agent.assignment);
   const defaultSelectedAgentIds = availableAgents.slice(0, 3).map((agent) => agent.id);
+  const expansionDomainIds = ["foundation_models", "semiconductors", "mobility", "robotics", "odd_industries", "toys"];
+  const unlockedDomainIds = new Set(gameState.unlockedDomains);
   const getSelectedAgentIds = (productId: string) => {
     const availableAgentIds = new Set(availableAgents.map((agent) => agent.id));
     const selectedIds = selectedAgentIdsByProduct[productId] ?? defaultSelectedAgentIds;
@@ -485,7 +487,22 @@ function ProductsPanel({
     <section className="panel products-panel">
       <div className="panel-heading">
         <h2>제품 개발</h2>
-        <p>제품별 개발 기간보다 팀 조합, 카드, 퍼즐 선택이 완성도와 출시 평가를 가릅니다.</p>
+        <p>AI 모델에서 시작해 앱, 칩, 로봇, 차량, 엉뚱한 소비 산업으로 확장합니다. 핵심 개발력은 투입 팀과 에이전트 조합이 만듭니다.</p>
+      </div>
+      <div className="expansion-map">
+        {expansionDomainIds.map((domainId) => {
+          const domain = domains.find((entry) => entry.id === domainId);
+          if (!domain) return null;
+          const domainProducts = products.filter((product) => product.domain === domain.id);
+          const unlocked = unlockedDomainIds.has(domain.id);
+
+          return (
+            <article className={unlocked ? "unlocked" : ""} key={domain.id}>
+              <strong>{domain.name}</strong>
+              <span>{unlocked ? "진출 가능" : "잠김"} · 제품 {domainProducts.length}개</span>
+            </article>
+          );
+        })}
       </div>
       {!gameState.hiredAgents.length && <p className="empty-note">먼저 에이전트 메뉴에서 첫 에이전트를 고용하면 제품 개발을 시작할 수 있습니다.</p>}
       <div className="item-list products-list">
@@ -955,6 +972,11 @@ function ItemCard({
 function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale: LocaleCode }) {
   const rankings = getMarketRankings(gameState);
   const strategySignals = getGrowthPathCompetitionSignals(gameState);
+  const activeCompetitorIds = new Set(gameState.competitorStates.map((competitor) => competitor.id));
+  const upcomingCompetitors = competitors
+    .filter((competitor) => (competitor.entry_month ?? 1) > gameState.month && !activeCompetitorIds.has(competitor.id))
+    .sort((a, b) => (a.entry_month ?? 1) - (b.entry_month ?? 1))
+    .slice(0, 4);
 
   return (
     <div className="panel-grid two-col">
@@ -987,8 +1009,18 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
       <section className="panel">
         <div className="panel-heading">
           <h2>경쟁사 프로필</h2>
-          <p>각 회사의 성향과 선점한 제품 공간입니다.</p>
+          <p>각 회사의 성향과 선점한 제품 공간입니다. 시간이 지나면 강력한 신규 경쟁사가 시장에 들어옵니다.</p>
         </div>
+        {upcomingCompetitors.length > 0 && (
+          <div className="rival-wave-list">
+            {upcomingCompetitors.map((competitor) => (
+              <article key={competitor.id}>
+                <strong>{t(competitor.name_key, locale)}</strong>
+                <span>{competitor.entry_month}개월차 등장 · {t(competitor.archetype_key, locale)}</span>
+              </article>
+            ))}
+          </div>
+        )}
         <div className="competitor-grid">
           {gameState.competitorStates.map((state) => {
             const competitor = competitors.find((entry) => entry.id === state.id);

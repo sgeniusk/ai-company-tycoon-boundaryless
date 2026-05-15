@@ -1,6 +1,16 @@
 {
   "domains": [
     {
+      "id": "foundation_models",
+      "name": "파운데이션 모델",
+      "description": "모든 제품의 뿌리가 되는 범용 AI 모델을 만드는 핵심 연구 시장입니다.",
+      "unlocked_by_default": true,
+      "unlock_requirements": {},
+      "market_size": "huge",
+      "risk_level": "high",
+      "icon": "🧠"
+    },
+    {
       "id": "personal_productivity",
       "name": "개인 생산성",
       "description": "개인의 업무와 일상 생산성을 높이는 도구 시장입니다.",
@@ -59,6 +69,56 @@
       "market_size": "huge",
       "risk_level": "high",
       "icon": "🏭"
+    },
+    {
+      "id": "semiconductors",
+      "name": "AI 반도체",
+      "description": "모델 학습과 추론을 위한 칩, 가속기, 서버 인프라 시장입니다.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"optimization": 2, "code": 2},
+      "market_size": "huge",
+      "risk_level": "high",
+      "icon": "🧩"
+    },
+    {
+      "id": "mobility",
+      "name": "모빌리티",
+      "description": "자율주행, 차량 소프트웨어, 운송 자동화로 확장되는 시장입니다.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"vision": 3, "agent": 2},
+      "market_size": "huge",
+      "risk_level": "high",
+      "icon": "🚗"
+    },
+    {
+      "id": "robotics",
+      "name": "로봇",
+      "description": "물리 세계에서 일하는 로봇과 자동화 설비를 만드는 시장입니다.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"robotics": 1},
+      "market_size": "large",
+      "risk_level": "high",
+      "icon": "🤖"
+    },
+    {
+      "id": "odd_industries",
+      "name": "기묘한 소비 산업",
+      "description": "AI가 왜 여기까지 왔는지 웃기지만 돈은 되는 생활형 확장 시장입니다.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"agent": 2, "robotics": 1},
+      "market_size": "medium",
+      "risk_level": "medium",
+      "icon": "☕"
+    },
+    {
+      "id": "toys",
+      "name": "장난감",
+      "description": "AI 캐릭터, 교육 완구, 상호작용 장난감으로 팬덤을 만드는 시장입니다.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"vision": 2, "language": 2},
+      "market_size": "medium",
+      "risk_level": "medium",
+      "icon": "🧸"
     }
   ]
 }

@@ -109,6 +109,62 @@
       "logo_size": 32,
       "palette": ["#68717d", "#e4e8ed", "#283039"],
       "mascot_hint": "둥근 자동화 기어 얼굴"
+    },
+    {
+      "competitor_id": "competitor_modelforge",
+      "source_status": "placeholder",
+      "logo_class": "logo-modelforge",
+      "logo_size": 32,
+      "palette": ["#7b5ed7", "#eee7ff", "#2b214d"],
+      "mascot_hint": "모루 위에 떠 있는 보라색 모델 코어"
+    },
+    {
+      "competitor_id": "competitor_chipspark",
+      "source_status": "placeholder",
+      "logo_class": "logo-chipspark",
+      "logo_size": 32,
+      "palette": ["#b58b2a", "#fff2bf", "#48340f"],
+      "mascot_hint": "스파크가 튀는 금색 칩 로고"
+    },
+    {
+      "competitor_id": "competitor_vizionlab",
+      "source_status": "placeholder",
+      "logo_class": "logo-vizionlab",
+      "logo_size": 32,
+      "palette": ["#2f9a94", "#d8fffb", "#123f3c"],
+      "mascot_hint": "렌즈와 실험 플라스크가 겹친 청록 로고"
+    },
+    {
+      "competitor_id": "competitor_autonova_motors",
+      "source_status": "placeholder",
+      "logo_class": "logo-autonova",
+      "logo_size": 32,
+      "palette": ["#355f9f", "#dfeaff", "#13294f"],
+      "mascot_hint": "차선 모양 빛줄기가 있는 파란 방패 로고"
+    },
+    {
+      "competitor_id": "competitor_brewchain",
+      "source_status": "placeholder",
+      "logo_class": "logo-brewchain",
+      "logo_size": 32,
+      "palette": ["#8a5a32", "#f8e4c8", "#3b2414"],
+      "mascot_hint": "커피잔과 회로 링크가 이어진 갈색 로고"
+    },
+    {
+      "competitor_id": "competitor_toycloud",
+      "source_status": "placeholder",
+      "logo_class": "logo-toycloud",
+      "logo_size": 32,
+      "palette": ["#dd6f48", "#ffe1d4", "#5b2515"],
+      "mascot_hint": "구름 모양 장난감 블록 로고"
+    },
+    {
+      "competitor_id": "competitor_ironoracle",
+      "source_status": "placeholder",
+      "logo_class": "logo-ironoracle",
+      "logo_size": 32,
+      "palette": ["#4b5563", "#e5e7eb", "#111827"],
+      "mascot_hint": "금속 눈동자와 회로 왕관이 합쳐진 로고"
     }
   ],
   "office_objects": [

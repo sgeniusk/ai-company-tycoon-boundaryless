@@ -20,6 +20,7 @@ Use the local app URL and append one of these query strings:
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
 | Deck | `?scenario=deck` | Active project with strategy hand, development puzzle, and meta unlock panel |
 | Strategy | `?scenario=strategy` | Chosen growth path, competition signal badges, rival pressure |
+| Rivals | `?scenario=rivals` | Month-12 market with annual strong rivals already entered |
 | Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 
@@ -33,6 +34,7 @@ Examples:
 - `http://localhost:5173/?scenario=shop`
 - `http://localhost:5173/?scenario=deck`
 - `http://localhost:5173/?scenario=strategy`
+- `http://localhost:5173/?scenario=rivals`
 - `http://localhost:5173/?scenario=arc`
 - `http://localhost:5173/?scenario=commercial`
 
@@ -113,6 +115,17 @@ Examples:
 - Removing is disabled for last copies or when no edit token remains.
 - Upgraded cards show stronger positive effects and a visible upgraded state.
 - Narrow layout stacks reward choices and deck edit rows without text overlap.
+
+## v0.12.4 Visual QA Checklist
+
+- Products menu shows the expansion map for foundation models, chips, mobility, robotics, odd industries, and toys.
+- `파운데이션 모델 v0` appears as an early launchable model product.
+- Products include far expansion targets such as AI training chips, autonomous vehicles, robot fleets, AI cafe chain, and toys.
+- Competition menu starts with at least eight active rivals.
+- Rivals scenario opens on month 12+ and shows AutoNova Motors and BrewChain as active competitors.
+- Competition profile panel shows upcoming annual challengers before they enter.
+- Agent menu includes a locked robot-style development worker until robotics capability is researched.
+- Deck menu copy frames the 3x3 board as optional issue response, not the main development loop.
 
 ## Note
 

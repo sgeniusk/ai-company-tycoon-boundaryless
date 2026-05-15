@@ -3,7 +3,7 @@ import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./q
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
-    expect(qaScenarioIds).toEqual(["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "arc", "commercial"]);
+    expect(qaScenarioIds).toEqual(["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "rivals", "arc", "commercial"]);
   });
 
   it("creates a fresh first-screen scenario", () => {
@@ -70,10 +70,14 @@ describe("alpha v0.9.3 QA scenarios", () => {
 
   it("creates strategy and arc scenarios for post-release QA", () => {
     const strategy = createQaScenario("strategy");
+    const rivals = createQaScenario("rivals");
     const arc = createQaScenario("arc");
 
     expect(strategy.activeMenu).toBe("competition");
     expect(strategy.state.chosenGrowthPath?.id).toBe("productivity_line");
+    expect(rivals.activeMenu).toBe("competition");
+    expect(rivals.state.month).toBeGreaterThanOrEqual(12);
+    expect(rivals.state.competitorStates.some((competitor) => competitor.id === "competitor_autonova_motors")).toBe(true);
     expect(arc.activeMenu).toBe("company");
     expect(arc.state.chosenGrowthPath?.id).toBe("productivity_line");
     expect(arc.state.month).toBeGreaterThanOrEqual(6);
@@ -93,6 +97,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=staffing")?.id).toBe("staffing");
     expect(createQaScenarioFromSearch("?scenario=reward")?.id).toBe("reward");
     expect(createQaScenarioFromSearch("?scenario=strategy")?.id).toBe("strategy");
+    expect(createQaScenarioFromSearch("?scenario=rivals")?.id).toBe("rivals");
     expect(createQaScenarioFromSearch("?scenario=deck")?.id).toBe("deck");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");

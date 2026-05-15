@@ -199,6 +199,26 @@
       "upkeep": {"cash": 850, "compute": 5},
       "preferred_items": ["autonomy_planner_board", "agent_orchestra_podium"],
       "quirk": "자동화 투자의 효과를 크게 만드는 후반 핵심입니다."
+    },
+    {
+      "id": "factory_robot_unit",
+      "name": "팩토리 로봇 유닛",
+      "role": "로봇형 개발 인력",
+      "description": "로봇공학이 열린 뒤 고용할 수 있는 물리 작업형 로봇입니다. 프로토타입 제작과 하드웨어 제품 개발에 강합니다.",
+      "rarity": "epic",
+      "stats": {"research": 3, "engineering": 8, "product": 3, "growth": 1, "safety": 5, "operations": 9, "creativity": 2, "autonomy": 7},
+      "appearance": {
+        "palette": ["steel", "signal-yellow", "black"],
+        "silhouette": "낮은 바퀴 다리와 접이식 공구 팔",
+        "hair": "없음",
+        "outfit": "노란 안전 라인이 들어간 금속 차체",
+        "signatureProp": "교체식 그리퍼와 미니 용접 토치"
+      },
+      "unlock_requirements": {"min_capability_robotics": 1},
+      "hire_cost": {"cash": 5200, "compute": 12},
+      "upkeep": {"cash": 900, "compute": 4},
+      "preferred_items": ["gpu_rack_mini", "ci_badge"],
+      "quirk": "반도체, 로봇, 모빌리티 제품의 완성도 고점을 올립니다."
     }
   ]
 }

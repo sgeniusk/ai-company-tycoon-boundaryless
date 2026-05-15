@@ -199,6 +199,15 @@ for (const competitor of competitors) {
   for (const numericField of ["starting_score", "starting_market_share", "monthly_growth", "aggression"]) {
     if (typeof competitor[numericField] !== "number") errors.push(`competitor "${competitor.id}": ${numericField} must be numeric`);
   }
+  if ("entry_month" in competitor && (typeof competitor.entry_month !== "number" || competitor.entry_month < 1)) {
+    errors.push(`competitor "${competitor.id}": entry_month must be a positive number`);
+  }
+  if ("rival_tier" in competitor && !["initial", "annual_challenger", "late_boss"].includes(competitor.rival_tier)) {
+    errors.push(`competitor "${competitor.id}": unknown rival_tier "${competitor.rival_tier}"`);
+  }
+  if ("entry_announcement" in competitor && typeof competitor.entry_announcement !== "string") {
+    errors.push(`competitor "${competitor.id}": entry_announcement must be a string`);
+  }
 }
 
 for (const event of rivalEvents) {

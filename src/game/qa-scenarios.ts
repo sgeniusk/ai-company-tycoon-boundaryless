@@ -4,7 +4,7 @@ import { advanceMonth, chooseGrowthPath, createInitialState, hireAgent, startPro
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
 
-export const qaScenarioIds = ["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "arc", "commercial"] as const;
+export const qaScenarioIds = ["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "rivals", "arc", "commercial"] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
 
@@ -81,6 +81,23 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "전략 경쟁 QA",
       state: strategyState,
+      activeMenu: "competition",
+    };
+  }
+
+  if (id === "rivals") {
+    let rivalState = strategyState;
+    while (rivalState.month < 12) {
+      rivalState = advanceMonth(rivalState);
+    }
+
+    return {
+      id,
+      label: "연간 경쟁사 등장 QA",
+      state: {
+        ...rivalState,
+        timeline: ["강력한 신규 경쟁사 등장 QA: 오토노바 모터스와 브루체인이 시장에 진입", ...rivalState.timeline].slice(0, 8),
+      },
       activeMenu: "competition",
     };
   }
