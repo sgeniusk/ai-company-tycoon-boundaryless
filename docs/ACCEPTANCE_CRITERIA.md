@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.12.5: Run Result And Meta Progression
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Final run summary includes representative product, card, and rival pressure | **Passed** |
+| 2 | Final run summary explains founder insight reward and breakdown | **Passed** |
+| 3 | Failed runs show recovery-oriented failure reasons and a next-run hook | **Passed** |
+| 4 | Result screen can start the next run in one click | **Passed** |
+| 5 | Starting the next run records previous run history with product/card/rival/insight data | **Passed** |
+| 6 | Deck menu displays recent run history when it exists | **Passed** |
+| 7 | Products menu supports domain filters and locked-domain browsing | **Passed** |
+| 8 | Browser QA supports `?scenario=result` | **Passed** |
+| 9 | Targeted tests and production build pass | **Passed** |
+
+---
+
 ## Alpha v0.12.4: Boundaryless Industry Expansion
 
 | # | Criterion | Status |

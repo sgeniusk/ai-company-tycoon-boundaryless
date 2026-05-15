@@ -1,8 +1,43 @@
-import { achievements } from "./data";
+import { achievements, competitors, domains, products, strategyCards } from "./data";
+import { getRunInsightReward } from "./meta-progression";
 import { getTenMonthArc } from "./ten-month-arc";
 import type { GameState } from "./types";
+import { t } from "../i18n";
 
 export type RunRank = "S" | "A" | "B" | "C" | "D";
+
+export interface RunSpotlightProduct {
+  id: string;
+  name: string;
+  grade: string;
+  score: number;
+  domainName: string;
+  quote: string;
+}
+
+export interface RunSpotlightCard {
+  id: string;
+  name: string;
+  rarity: string;
+  reason: string;
+}
+
+export interface RunSpotlightRival {
+  id: string;
+  name: string;
+  marketShare: number;
+  pressure: string;
+}
+
+export interface RunSpotlight {
+  bestProduct?: RunSpotlightProduct;
+  representativeCard?: RunSpotlightCard;
+  rivalPressure?: RunSpotlightRival;
+  insightReward: number;
+  insightBreakdown: string[];
+  failureReasons: string[];
+  nextRunHook: string;
+}
 
 export interface RunSummary {
   isFinal: boolean;
@@ -12,6 +47,7 @@ export interface RunSummary {
   verdict: string;
   strengths: string[];
   recommendation: string;
+  spotlight: RunSpotlight;
 }
 
 export function getRunSummary(state: GameState): RunSummary {
@@ -28,6 +64,7 @@ export function getRunSummary(state: GameState): RunSummary {
     verdict: getVerdict(rank, state),
     strengths,
     recommendation: getRecommendation(state, rank, strengths),
+    spotlight: getRunSpotlight(state, rank),
   };
 }
 
@@ -102,4 +139,131 @@ function getRecommendation(state: GameState, rank: RunRank, strengths: string[])
   if ((state.resources.automation ?? 0) < 8) return "자동화 투자를 늘려 월 비용 압박을 줄이면 10개월 이후 성장 속도가 좋아집니다.";
   if (rank === "S" || strengths.length >= 5) return "다음 버전에서는 경쟁사별 카운터 전략과 고급 제품 업그레이드를 붙이면 장기 플레이가 살아납니다.";
   return "전략 후속 목표 두 개를 완료하고 신뢰 50 이상을 유지하면 다음 런 평점이 크게 올라갑니다.";
+}
+
+function getRunSpotlight(state: GameState, rank: RunRank): RunSpotlight {
+  const bestProduct = getBestProduct(state);
+  const representativeCard = getRepresentativeCard(state);
+
+  return {
+    bestProduct,
+    representativeCard,
+    rivalPressure: getRivalPressure(state, bestProduct?.id),
+    insightReward: getRunInsightReward(state),
+    insightBreakdown: getInsightBreakdown(state),
+    failureReasons: getFailureReasons(state),
+    nextRunHook: getNextRunHook(state, rank, bestProduct, representativeCard),
+  };
+}
+
+function getBestProduct(state: GameState): RunSpotlightProduct | undefined {
+  const reviewedProducts = Object.entries(state.productReviews)
+    .map(([productId, review]) => {
+      const product = products.find((entry) => entry.id === productId);
+      const domain = product ? domains.find((entry) => entry.id === product.domain) : undefined;
+
+      return {
+        id: productId,
+        name: product?.name ?? state.lastRelease?.productName ?? productId,
+        grade: review.grade,
+        score: review.score,
+        domainName: domain?.name ?? product?.domain ?? "미분류",
+        quote: review.quote,
+      };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  if (reviewedProducts[0]) return reviewedProducts[0];
+
+  if (state.lastRelease) {
+    const product = products.find((entry) => entry.id === state.lastRelease?.productId);
+    const domain = product ? domains.find((entry) => entry.id === product.domain) : undefined;
+    return {
+      id: state.lastRelease.productId,
+      name: state.lastRelease.productName,
+      grade: state.lastRelease.review.grade,
+      score: state.lastRelease.review.score,
+      domainName: domain?.name ?? product?.domain ?? "미분류",
+      quote: state.lastRelease.review.quote,
+    };
+  }
+
+  return undefined;
+}
+
+function getRepresentativeCard(state: GameState): RunSpotlightCard | undefined {
+  const rewardChoice = state.roguelite.rewardHistory.find((choice) => strategyCards.some((card) => card.id === choice.chosenCardId));
+  if (rewardChoice) {
+    const card = strategyCards.find((entry) => entry.id === rewardChoice.chosenCardId);
+    if (card) return { id: card.id, name: card.name, rarity: card.rarity, reason: "출시 보상으로 회사 색을 바꾼 카드" };
+  }
+
+  const upgradedCard = strategyCards.find((card) => state.roguelite.upgradedCardIds.includes(card.id));
+  if (upgradedCard) {
+    return { id: upgradedCard.id, name: upgradedCard.name, rarity: upgradedCard.rarity, reason: "이번 런에서 강화한 카드" };
+  }
+
+  const recentCardId = [...state.roguelite.deck.playedThisTurn, ...state.roguelite.deck.discardPile].reverse()[0] ?? state.roguelite.deck.hand[0];
+  const recentCard = strategyCards.find((entry) => entry.id === recentCardId);
+
+  return recentCard
+    ? { id: recentCard.id, name: recentCard.name, rarity: recentCard.rarity, reason: "현재 덱에서 가장 눈에 띄는 카드" }
+    : undefined;
+}
+
+function getRivalPressure(state: GameState, bestProductId?: string): RunSpotlightRival | undefined {
+  const matchingRival = bestProductId
+    ? state.competitorStates.find((competitor) => competitor.claimedProducts.includes(bestProductId))
+    : undefined;
+  const strongestRival =
+    matchingRival ??
+    [...state.competitorStates].sort((a, b) => b.marketShare - a.marketShare || b.score - a.score)[0];
+  const definition = competitors.find((entry) => entry.id === strongestRival?.id);
+
+  if (!strongestRival || !definition) return undefined;
+
+  const claimedProduct = products.find((product) => strongestRival.claimedProducts.includes(product.id));
+  const move = claimedProduct ? `${claimedProduct.name} 선점` : strongestRival.lastMove;
+
+  return {
+    id: strongestRival.id,
+    name: t(definition.name_key, "ko"),
+    marketShare: strongestRival.marketShare,
+    pressure: `${move} · 점유율 ${strongestRival.marketShare}%`,
+  };
+}
+
+function getInsightBreakdown(state: GameState): string[] {
+  const breakdown = [`기본 +1`, `진행 ${Math.floor(state.month / 3)}회 +${Math.floor(state.month / 3)}`];
+  if (state.activeProducts.length > 0) breakdown.push(`출시 제품 ${state.activeProducts.length}개 +${state.activeProducts.length}`);
+  if ((state.resources.users ?? 0) >= 1500) breakdown.push(`이용자 보너스 +${Math.floor((state.resources.users ?? 0) / 1500)}`);
+  if ((state.resources.trust ?? 0) >= 40) breakdown.push(`신뢰 보너스 +${Math.floor((state.resources.trust ?? 0) / 40)}`);
+  if (state.status === "success") breakdown.push("성공 보너스 +3");
+  if (state.status === "failure") breakdown.push("실패 학습 +1");
+  return breakdown;
+}
+
+function getFailureReasons(state: GameState): string[] {
+  const reasons: string[] = [];
+
+  if ((state.resources.cash ?? 0) <= 0) reasons.push("현금 흐름 붕괴");
+  if ((state.resources.trust ?? 0) <= 12) reasons.push("신뢰도 위험");
+  if (state.activeProducts.length === 0) reasons.push("출시 제품 없음");
+  if (state.month >= 4 && !state.chosenGrowthPath) reasons.push("성장 경로 미확정");
+  if (state.productProjects.length === 0 && state.activeProducts.length < 2 && state.month >= 6) reasons.push("후속 제품 공백");
+
+  return reasons.length ? reasons : ["치명적 실패 원인은 없지만 성장 속도가 부족함"];
+}
+
+function getNextRunHook(
+  state: GameState,
+  rank: RunRank,
+  bestProduct?: RunSpotlightProduct,
+  card?: RunSpotlightCard,
+): string {
+  if (state.status === "failure") return "다음 런은 첫 출시를 앞당기고 현금 0원 이전에 자동화나 신뢰 회복을 챙기는 짧은 복구 런으로 시작하세요.";
+  if (bestProduct && card) return `다음 런은 ${bestProduct.name}의 강점과 ${card.name} 카드를 더 일찍 묶어 같은 전략을 빠르게 재현해볼 만합니다.`;
+  if (bestProduct) return `다음 런은 ${bestProduct.name}을 기준점으로 삼고 두 번째 제품을 더 빨리 붙이면 점수가 크게 오릅니다.`;
+  if (rank === "S" || rank === "A") return "다음 런은 다른 산업 도메인으로 넘어가 경쟁사 카운터 덱을 실험해도 됩니다.";
+  return "다음 런은 첫 제품, 첫 카드 사용, 첫 성장 경로 선택을 5개월 안에 묶는 것이 목표입니다.";
 }

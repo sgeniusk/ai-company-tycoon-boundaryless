@@ -9,6 +9,7 @@ import type {
   ProductDefinition,
   ReleaseReview,
   ResourceMap,
+  RunRecord,
   RogueliteState,
   StrategyCardDefinition,
   StrategyDeckState,
@@ -39,6 +40,7 @@ export function createInitialRogueliteState(options: {
   runNumber?: number;
   founderInsight?: number;
   unlockedMetaIds?: string[];
+  runHistory?: RunRecord[];
 } = {}): RogueliteState {
   const unlockedMetaIds = [...new Set(options.unlockedMetaIds ?? [])];
 
@@ -50,6 +52,7 @@ export function createInitialRogueliteState(options: {
     deckEditTokens: 0,
     upgradedCardIds: [],
     rewardHistory: [],
+    runHistory: options.runHistory ?? [],
   };
 }
 

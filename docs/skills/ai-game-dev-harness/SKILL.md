@@ -11,6 +11,7 @@ Use this skill to run a repeatable solo-dev game production loop. It is for maki
 
 Every meaningful improvement gets a version, a gate, and a record.
 
+- If the user says the increments are too small, bundle a larger version slice with at least one player-facing system, one QA scenario or harness update, and documentation/report updates.
 - Small polish, report, harness, or UI pass: bump patch, for example `v0.9.2-alpha`.
 - New player-facing system: bump minor, for example `v0.10.0-alpha`.
 - Major loop or architecture shift: bump the next larger milestone and document why.
@@ -92,6 +93,8 @@ Run the narrowest useful checks, then broaden if risk is high.
 - Economy changes: at least one short-path simulation test or balance note.
 - Commercial-readiness changes: add or update a scripted run simulator that reaches the target session window and records integrity/rank outcomes.
 - Roguelite/deckbuilding changes: verify card data references, save/load state, at least one card action, at least one next-run meta effect, and a deck QA scenario.
+- Run-ending/meta changes: verify result summary, next-run reset, run-history persistence, and a result QA scenario.
+- Content-list growth: add filters, tabs, or stable search surfaces before the list becomes hard to scan.
 - Asset pipeline changes: manifest validation before importing final images.
 
 Common web commands:

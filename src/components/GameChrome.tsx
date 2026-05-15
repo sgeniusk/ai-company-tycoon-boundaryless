@@ -1,6 +1,7 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
 import { agentTypes, assetManifest, domains, products, resources } from "../game/data";
 import { getGuidanceStep, getOpeningObjectives, type GuidanceStep, type OpeningObjective } from "../game/guidance";
+import { resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { getRunSummary } from "../game/run-summary";
 import {
   advanceMonth,
@@ -117,6 +118,11 @@ export function GameStage({
       return;
     }
     if (guidance.menu) setActiveMenu(guidance.menu);
+  };
+
+  const handleStartNextRun = () => {
+    setGameState((current) => resetRunWithMetaUnlocks(current));
+    setActiveMenu("company");
   };
 
   const handleGrowthPathClick = (path: ReleaseGrowthPath) => {
@@ -279,7 +285,42 @@ export function GameStage({
                 <li key={strength}>{strength}</li>
               ))}
             </ul>
+            <div className="run-spotlight-grid">
+              <div>
+                <span>대표 제품</span>
+                <strong>{runSummary.spotlight.bestProduct?.name ?? "출시 제품 없음"}</strong>
+                <small>
+                  {runSummary.spotlight.bestProduct
+                    ? `${runSummary.spotlight.bestProduct.domainName} · ${runSummary.spotlight.bestProduct.grade} / ${runSummary.spotlight.bestProduct.score}점`
+                    : "첫 제품 출시가 다음 런의 최우선 목표"}
+                </small>
+              </div>
+              <div>
+                <span>대표 카드</span>
+                <strong>{runSummary.spotlight.representativeCard?.name ?? "대표 카드 없음"}</strong>
+                <small>{runSummary.spotlight.representativeCard?.reason ?? "출시 보상이나 강화 카드가 아직 없습니다."}</small>
+              </div>
+              <div>
+                <span>경쟁 압박</span>
+                <strong>{runSummary.spotlight.rivalPressure?.name ?? "관측 없음"}</strong>
+                <small>{runSummary.spotlight.rivalPressure?.pressure ?? "경쟁사 시장 압박이 아직 낮습니다."}</small>
+              </div>
+            </div>
+            <div className="run-insight-card">
+              <strong>창업 통찰 +{runSummary.spotlight.insightReward}</strong>
+              <span>{runSummary.spotlight.insightBreakdown.join(" · ")}</span>
+            </div>
+            {runSummary.spotlight.failureReasons.length > 0 && (
+              <div className="run-risk-list">
+                <strong>다음 런에서 조심할 것</strong>
+                <span>{runSummary.spotlight.failureReasons.slice(0, 3).join(" / ")}</span>
+              </div>
+            )}
+            <p className="next-run-hook">{runSummary.spotlight.nextRunHook}</p>
             <small>{runSummary.recommendation}</small>
+            <button className="primary-action" onClick={handleStartNextRun} type="button">
+              통찰 받고 새 런
+            </button>
           </article>
         )}
       </div>

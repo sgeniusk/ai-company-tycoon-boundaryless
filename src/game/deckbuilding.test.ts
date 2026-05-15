@@ -79,11 +79,26 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
       ...createInitialState(),
       month: 8,
       activeProducts: ["ai_writing_assistant", "meeting_summary_bot"],
+      productReviews: {
+        ai_writing_assistant: { grade: "B", score: 76, quote: "첫 제품치고는 좋다" },
+        meeting_summary_bot: { grade: "A", score: 88, quote: "팀 회의가 짧아졌다" },
+      },
       resources: {
         ...createInitialState().resources,
         cash: -3200,
         users: 2500,
         trust: 42,
+      },
+      roguelite: {
+        ...createInitialState().roguelite,
+        rewardHistory: [
+          {
+            rewardId: "reward_test",
+            productId: "meeting_summary_bot",
+            chosenCardId: "customer_interviews",
+            month: 6,
+          },
+        ],
       },
       status: "failure" as const,
     };
@@ -100,6 +115,13 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
     expect(nextRun.roguelite.founderInsight).toBeGreaterThanOrEqual(1);
     expect(nextRun.roguelite.unlockedMetaIds).toContain("eval_harness");
     expect([...nextRun.roguelite.deck.hand, ...nextRun.roguelite.deck.drawPile]).toContain("redteam_drill");
+    expect(nextRun.roguelite.runHistory[0]).toMatchObject({
+      runNumber: 1,
+      status: "failure",
+      bestProductName: "회의 요약 봇",
+      representativeCardName: "고객 인터뷰",
+      insightReward: reward,
+    });
   });
 
   it("resolves a compact development puzzle into project score, progress, and quality", () => {

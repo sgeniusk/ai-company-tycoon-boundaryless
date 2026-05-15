@@ -45,6 +45,7 @@ import type {
   ReleaseReview,
   RivalEventChoiceDefinition,
   RogueliteState,
+  RunRecord,
   ResourceMap,
   ProductProjectForecast,
   StrategyDeckState,
@@ -52,7 +53,7 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-const SAVE_VERSION = 4;
+const SAVE_VERSION = 5;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -1151,6 +1152,7 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState): Roguel
     deckEditTokens: Math.max(0, Math.round(sanitizeNumber(value.deckEditTokens, fallback.deckEditTokens))),
     upgradedCardIds: uniqueStrings(sanitizeStringArray(value.upgradedCardIds, cardIds)),
     rewardHistory: hydrateCardRewardHistory(value.rewardHistory),
+    runHistory: hydrateRunHistory(value.runHistory),
     pendingCardReward: hydratePendingCardReward(value.pendingCardReward),
   };
 }
@@ -1211,6 +1213,39 @@ function hydrateCardRewardHistory(value: unknown): CardRewardChoice[] {
       );
     })
     .slice(0, 12);
+}
+
+function hydrateRunHistory(value: unknown): RunRecord[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter((entry): entry is RunRecord => {
+      if (!isRecord(entry)) return false;
+      return (
+        typeof entry.id === "string" &&
+        typeof entry.runNumber === "number" &&
+        Number.isFinite(entry.runNumber) &&
+        typeof entry.endedMonth === "number" &&
+        Number.isFinite(entry.endedMonth) &&
+        ["playing", "success", "failure"].includes(String(entry.status)) &&
+        typeof entry.score === "number" &&
+        Number.isFinite(entry.score) &&
+        typeof entry.insightReward === "number" &&
+        Number.isFinite(entry.insightReward) &&
+        typeof entry.note === "string"
+      );
+    })
+    .map((entry) => ({
+      ...entry,
+      score: Math.round(clamp(entry.score, 0, 100)),
+      insightReward: Math.max(0, Math.round(entry.insightReward)),
+      runNumber: Math.max(1, Math.round(entry.runNumber)),
+      endedMonth: Math.max(1, Math.round(entry.endedMonth)),
+      bestProductName: typeof entry.bestProductName === "string" ? entry.bestProductName : undefined,
+      representativeCardName: typeof entry.representativeCardName === "string" ? entry.representativeCardName : undefined,
+      rivalName: typeof entry.rivalName === "string" ? entry.rivalName : undefined,
+    }))
+    .slice(0, 8);
 }
 
 function uniqueStrings(values: string[]): string[] {

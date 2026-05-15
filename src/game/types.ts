@@ -277,6 +277,19 @@ export interface CardRewardChoice {
   month: number;
 }
 
+export interface RunRecord {
+  id: string;
+  runNumber: number;
+  endedMonth: number;
+  status: GameState["status"];
+  score: number;
+  bestProductName?: string;
+  representativeCardName?: string;
+  rivalName?: string;
+  insightReward: number;
+  note: string;
+}
+
 export interface MetaUnlockDefinition {
   id: string;
   title: string;
@@ -295,6 +308,7 @@ export interface RogueliteState {
   deckEditTokens: number;
   upgradedCardIds: string[];
   rewardHistory: CardRewardChoice[];
+  runHistory: RunRecord[];
   pendingCardReward?: PendingCardReward;
 }
 

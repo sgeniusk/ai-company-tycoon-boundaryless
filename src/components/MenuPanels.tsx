@@ -3,6 +3,7 @@ import { agentTypes, assetManifest, automationUpgrades, capabilities, competitor
 import { getAchievementStatuses } from "../game/achievements";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getGrowthPathObjectives } from "../game/growth-objectives";
+import { ALL_PRODUCT_DOMAIN_FILTER_ID, getProductDomainFilters, getProductsByDomainFilter } from "../game/product-filters";
 import { getTenMonthArc } from "../game/ten-month-arc";
 import {
   createDevelopmentPuzzle,
@@ -421,6 +422,22 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <h2>로그라이트 해금</h2>
           <p>망한 런도 창업 통찰로 바뀌고, 다음 회사의 카드와 초반 보너스를 엽니다.</p>
         </div>
+        {gameState.roguelite.runHistory.length > 0 && (
+          <div className="run-record-list">
+            <h3>최근 런 기록</h3>
+            {gameState.roguelite.runHistory.slice(0, 4).map((record) => (
+              <article key={record.id}>
+                <strong>런 {record.runNumber} · {record.endedMonth}개월차 · {record.score}점</strong>
+                <span>
+                  {record.bestProductName ?? "출시 제품 없음"}
+                  {record.representativeCardName ? ` / ${record.representativeCardName}` : ""}
+                  {record.rivalName ? ` / 압박 ${record.rivalName}` : ""}
+                </span>
+                <small>{record.note} · 통찰 +{record.insightReward}</small>
+              </article>
+            ))}
+          </div>
+        )}
         <div className="meta-unlock-list">
           {metaUnlocks.map((unlock) => {
             const check = getMetaUnlockCheck(unlock.id, gameState, projectedInsight);
@@ -459,10 +476,14 @@ function ProductsPanel({
   locale: LocaleCode;
 }) {
   const [selectedAgentIdsByProduct, setSelectedAgentIdsByProduct] = useState<Record<string, string[]>>({});
+  const [selectedDomainFilterId, setSelectedDomainFilterId] = useState(ALL_PRODUCT_DOMAIN_FILTER_ID);
   const availableAgents = gameState.hiredAgents.filter((agent) => !agent.assignment);
   const defaultSelectedAgentIds = availableAgents.slice(0, 3).map((agent) => agent.id);
   const expansionDomainIds = ["foundation_models", "semiconductors", "mobility", "robotics", "odd_industries", "toys"];
   const unlockedDomainIds = new Set(gameState.unlockedDomains);
+  const domainFilters = getProductDomainFilters(products, domains, gameState);
+  const filteredProducts = getProductsByDomainFilter(products, selectedDomainFilterId);
+  const selectedFilter = domainFilters.find((filter) => filter.id === selectedDomainFilterId) ?? domainFilters[0];
   const getSelectedAgentIds = (productId: string) => {
     const availableAgentIds = new Set(availableAgents.map((agent) => agent.id));
     const selectedIds = selectedAgentIdsByProduct[productId] ?? defaultSelectedAgentIds;
@@ -505,8 +526,29 @@ function ProductsPanel({
         })}
       </div>
       {!gameState.hiredAgents.length && <p className="empty-note">먼저 에이전트 메뉴에서 첫 에이전트를 고용하면 제품 개발을 시작할 수 있습니다.</p>}
+      <div className="domain-filter" aria-label="제품 산업 필터">
+        {domainFilters.map((filter) => (
+          <button
+            aria-pressed={selectedFilter.id === filter.id}
+            className={`${selectedFilter.id === filter.id ? "selected" : ""}${filter.unlocked ? "" : " locked"}`}
+            key={filter.id}
+            onClick={() => setSelectedDomainFilterId(filter.id)}
+            type="button"
+          >
+            <strong>{filter.label}</strong>
+            <span>
+              제품 {filter.productCount}개{filter.unlocked ? "" : " · 잠김"}
+            </span>
+            {!filter.unlocked && filter.lockedReason && <small>{filter.lockedReason}</small>}
+          </button>
+        ))}
+      </div>
+      <div className="filter-summary">
+        <strong>{selectedFilter.label}</strong>
+        <span>{selectedFilter.id === ALL_PRODUCT_DOMAIN_FILTER_ID ? "모든 제품 후보" : `${filteredProducts.length}개 후보`} 표시</span>
+      </div>
       <div className="item-list products-list">
-        {products.map((product) => {
+        {filteredProducts.map((product) => {
           const domain = domains.find((entry) => entry.id === product.domain);
           const review = gameState.productReviews[product.id];
           const project = gameState.productProjects.find((entry) => entry.productId === product.id);

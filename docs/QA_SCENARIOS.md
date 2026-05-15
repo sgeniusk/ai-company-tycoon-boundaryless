@@ -1,6 +1,6 @@
 # QA Scenarios — AI Company Tycoon: Boundaryless
 
-Date: 2026-05-15
+Date: 2026-05-16
 
 ## Purpose
 
@@ -23,6 +23,7 @@ Use the local app URL and append one of these query strings:
 | Rivals | `?scenario=rivals` | Month-12 market with annual strong rivals already entered |
 | Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
+| Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 
 Examples:
 
@@ -37,6 +38,7 @@ Examples:
 - `http://localhost:5173/?scenario=rivals`
 - `http://localhost:5173/?scenario=arc`
 - `http://localhost:5173/?scenario=commercial`
+- `http://localhost:5173/?scenario=result`
 
 ## v0.9.3 Visual QA Checklist
 
@@ -126,6 +128,17 @@ Examples:
 - Competition profile panel shows upcoming annual challengers before they enter.
 - Agent menu includes a locked robot-style development worker until robotics capability is researched.
 - Deck menu copy frames the 3x3 board as optional issue response, not the main development loop.
+
+## v0.12.5 Visual QA Checklist
+
+- Result scenario opens on the company menu with a visible `런 결과` card.
+- Run result card shows rank, score, representative product, representative card, and rival pressure.
+- Insight reward card shows `창업 통찰 +N` and the reward breakdown.
+- `통찰 받고 새 런` starts a new run and increments the run number.
+- After starting a new run, deck menu shows `최근 런 기록`.
+- Products menu shows a domain filter row and a filter summary.
+- Clicking locked domains still shows their product candidates and locked product reasons.
+- Narrow layout stacks result spotlight and product filters without text overlap.
 
 ## Note
 

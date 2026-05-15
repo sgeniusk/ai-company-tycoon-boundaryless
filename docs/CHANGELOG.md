@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.12.5-alpha] — 2026-05-16
+
+### 런 결과, 메타 진행, 제품 탐색 강화
+
+**추가:**
+- 런 결과 카드에 대표 제품, 대표 카드, 가장 큰 경쟁사 압박을 표시.
+- 창업 통찰 보상과 산식 breakdown 표시.
+- 실패/성공/10개월 종료 후 바로 `통찰 받고 새 런`을 시작하는 버튼.
+- 새 런 시작 시 이전 런 기록을 `roguelite.runHistory`에 저장.
+- 덱 메뉴의 로그라이트 해금 패널에 최근 런 기록 표시.
+- 제품 메뉴 산업별 필터: 전체, 파운데이션 모델, 개인 생산성, 반도체, 로봇 등 제품 도메인별 탐색.
+- `?scenario=result` 브라우저 QA 시나리오.
+- 제품 필터 순수 함수와 테스트.
+
+**변경:**
+- 저장 버전을 `5`로 올리고, 기존 저장에는 빈 런 기록을 안전하게 보강.
+- 런 요약이 단순 점수판이 아니라 “이번 회사의 이야기”를 보여주도록 확장.
+- 제품 수가 늘어난 상태에서도 초반 제품과 후반 잠김 제품을 빠르게 구분할 수 있게 함.
+
+**검증:**
+- `npm test -- src/game/run-summary.test.ts src/game/product-filters.test.ts src/game/qa-scenarios.test.ts src/game/deckbuilding.test.ts src/game/save-integrity.test.ts` 통과, 32 tests
+- `npm run build` 통과
+
+---
+
 ## [0.12.4-alpha] — 2026-05-15
 
 ### AI 모델 출발과 경계 없는 산업 확장

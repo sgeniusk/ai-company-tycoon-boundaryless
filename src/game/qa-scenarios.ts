@@ -4,7 +4,7 @@ import { advanceMonth, chooseGrowthPath, createInitialState, hireAgent, startPro
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
 
-export const qaScenarioIds = ["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "rivals", "arc", "commercial"] as const;
+export const qaScenarioIds = ["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "rivals", "arc", "commercial", "result"] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
 
@@ -125,6 +125,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "result") {
+    return {
+      id,
+      label: "런 결과 QA",
+      state: createResultRecapState(),
+      activeMenu: "company",
+    };
+  }
+
   return {
     id,
     label: "출시 스포트라이트 QA",
@@ -159,4 +168,28 @@ function createStarterProjectState(): GameState {
   if (!architect || !writingProduct) return createInitialState();
 
   return startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+}
+
+function createResultRecapState(): GameState {
+  const commercialState = runScriptedCommercialSimulation("productivity_line", 11).finalState;
+  const reviewedProductId = Object.keys(commercialState.productReviews)[0] ?? "ai_writing_assistant";
+  const rewardHistory = commercialState.roguelite.rewardHistory.length
+    ? commercialState.roguelite.rewardHistory
+    : [
+        {
+          rewardId: "qa_result_reward",
+          productId: reviewedProductId,
+          chosenCardId: "customer_interviews",
+          month: Math.max(2, commercialState.month - 2),
+        },
+      ];
+
+  return {
+    ...commercialState,
+    roguelite: {
+      ...commercialState.roguelite,
+      rewardHistory,
+    },
+    timeline: ["런 결과 QA: 대표 제품, 대표 카드, 경쟁 압박, 창업 통찰 카드 확인", ...commercialState.timeline].slice(0, 8),
+  };
 }

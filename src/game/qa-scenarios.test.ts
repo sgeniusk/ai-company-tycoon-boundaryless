@@ -3,7 +3,7 @@ import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./q
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
-    expect(qaScenarioIds).toEqual(["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "rivals", "arc", "commercial"]);
+    expect(qaScenarioIds).toEqual(["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "rivals", "arc", "commercial", "result"]);
   });
 
   it("creates a fresh first-screen scenario", () => {
@@ -92,6 +92,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.status).not.toBe("failure");
   });
 
+  it("creates a result scenario that focuses the final run recap", () => {
+    const scenario = createQaScenario("result");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("런 결과");
+    expect(scenario.state.month).toBeGreaterThanOrEqual(10);
+    expect(scenario.state.productReviews).not.toEqual({});
+    expect(scenario.state.roguelite.rewardHistory.length).toBeGreaterThanOrEqual(1);
+  });
+
   it("creates scenarios from URL search params for browser QA", () => {
     expect(createQaScenarioFromSearch("?scenario=release")?.id).toBe("release");
     expect(createQaScenarioFromSearch("?scenario=staffing")?.id).toBe("staffing");
@@ -100,6 +110,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=rivals")?.id).toBe("rivals");
     expect(createQaScenarioFromSearch("?scenario=deck")?.id).toBe("deck");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
+    expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
