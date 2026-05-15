@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agentTypes, competitors, items, rivalEvents } from "./data";
+import { agentTypes, capabilities, competitors, growthPaths, items, products, rivalEvents } from "./data";
 import { locales, t } from "../i18n";
 
 describe("alpha content data", () => {
@@ -81,6 +81,38 @@ describe("alpha content data", () => {
       for (const choice of event.choices) {
         expect(t(choice.text_key, "ko")).not.toBe(choice.text_key);
         expect(t(choice.description_key, "en")).not.toBe(choice.description_key);
+      }
+    }
+  });
+
+  it("defines three post-release growth paths with actionable references", () => {
+    const productIds = new Set(products.map((product) => product.id));
+    const capabilityIds = new Set(capabilities.map((capability) => capability.id));
+    const itemIds = new Set(items.map((item) => item.id));
+    const menuIds = new Set(["company", "products", "agents", "research", "shop", "competition", "log"]);
+
+    expect(growthPaths.map((path) => path.id)).toEqual([
+      "productivity_line",
+      "trust_enterprise",
+      "code_vision_lab",
+    ]);
+
+    for (const path of growthPaths) {
+      expect(path.title).toBeTruthy();
+      expect(path.description).toBeTruthy();
+      expect(menuIds.has(path.target_menu)).toBe(true);
+      expect(path.action_label).toBeTruthy();
+      expect(path.payoff).toBeTruthy();
+      expect(path.trigger_tags.length).toBeGreaterThan(0);
+
+      for (const productId of path.recommended_product_ids ?? []) {
+        expect(productIds.has(productId)).toBe(true);
+      }
+      for (const capabilityId of path.recommended_capability_ids ?? []) {
+        expect(capabilityIds.has(capabilityId)).toBe(true);
+      }
+      for (const itemId of path.recommended_item_ids ?? []) {
+        expect(itemIds.has(itemId)).toBe(true);
       }
     }
   });

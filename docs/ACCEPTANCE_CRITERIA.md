@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.5: Post-Release Growth Forks
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | A data-driven growth path file defines three post-release strategic routes | **Passed** |
+| 2 | Growth paths reference valid products, capabilities, items, upgrades, and menu targets | **Passed** |
+| 3 | First release moments include three actionable growth paths | **Passed** |
+| 4 | Save/load hydration preserves or backfills release growth paths | **Passed** |
+| 5 | Post-release guidance tells the player to choose a growth path | **Passed** |
+| 6 | Release spotlight renders growth path cards that route to the relevant menu | **Passed** |
+| 7 | QA release scenario includes growth path coverage | **Passed** |
+| 8 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.9.4: Opening Competitor Pacing
 
 | # | Criterion | Status |

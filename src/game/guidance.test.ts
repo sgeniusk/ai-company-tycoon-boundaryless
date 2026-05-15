@@ -63,7 +63,7 @@ describe("alpha v0.9.1 player guidance", () => {
     });
   });
 
-  it("points a released first product toward buying the first item", () => {
+  it("points a released first product toward choosing a growth path", () => {
     const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
     const product = products.find((entry) => entry.id === "ai_writing_assistant");
     if (!architect || !product) throw new Error("Missing starter fixtures");
@@ -73,9 +73,9 @@ describe("alpha v0.9.1 player guidance", () => {
     const guidance = getGuidanceStep(released);
 
     expect(guidance).toMatchObject({
-      id: "buy_first_item",
-      menu: "shop",
-      actionLabel: "아이템 구매",
+      id: "choose_growth_path",
+      menu: "products",
+      actionLabel: "성장 분기 보기",
     });
   });
 });

@@ -13,6 +13,7 @@ import itemsJson from "../../data/items.json";
 import competitorsJson from "../../data/competitors.json";
 import rivalEventsJson from "../../data/rival_events.json";
 import assetManifestJson from "../../data/asset_manifest.json";
+import growthPathsJson from "../../data/growth_paths.json";
 import type {
   AgentTypeDefinition,
   AssetManifestDefinition,
@@ -23,6 +24,7 @@ import type {
   CompetitorDefinition,
   DomainDefinition,
   EventDefinition,
+  GrowthPathDefinition,
   ProductDefinition,
   ResourceDefinition,
   RivalEventDefinition,
@@ -46,3 +48,4 @@ export const items = itemsJson.items as unknown as ItemDefinition[];
 export const competitors = competitorsJson.competitors as unknown as CompetitorDefinition[];
 export const rivalEvents = rivalEventsJson.rival_events as unknown as RivalEventDefinition[];
 export const assetManifest = assetManifestJson as unknown as AssetManifestDefinition;
+export const growthPaths = growthPathsJson.growth_paths as unknown as GrowthPathDefinition[];

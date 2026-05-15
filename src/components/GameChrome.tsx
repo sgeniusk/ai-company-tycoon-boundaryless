@@ -139,6 +139,18 @@ export function GameStage({
             <h2>{gameState.lastRelease.productName}</h2>
             <p>{gameState.lastRelease.review.quote}</p>
             <p className="expansion-hint">{gameState.lastRelease.expansionHint}</p>
+            {gameState.lastRelease.growthPaths?.length > 0 && (
+              <div className="growth-fork-list">
+                <p className="eyebrow">다음 성장 분기</p>
+                {gameState.lastRelease.growthPaths.map((path) => (
+                  <button className="growth-path-card" key={path.id} onClick={() => setActiveMenu(path.targetMenu)}>
+                    <strong>{path.title}</strong>
+                    <span>{path.description}</span>
+                    <small>{path.payoff}</small>
+                  </button>
+                ))}
+              </div>
+            )}
             <small>{gameState.lastRelease.month}개월차 출시 완료</small>
           </article>
         )}

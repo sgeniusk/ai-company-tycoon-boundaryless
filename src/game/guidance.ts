@@ -18,6 +18,8 @@ export interface OpeningObjective {
 }
 
 export function getOpeningObjectives(state: GameState): OpeningObjective[] {
+  const choseNextPath = hasChosenNextGrowthPath(state);
+
   return [
     {
       id: "hire_agent",
@@ -37,7 +39,7 @@ export function getOpeningObjectives(state: GameState): OpeningObjective[] {
     {
       id: "choose_next_path",
       label: "다음 성장 선택",
-      complete: state.ownedItems.length > 0 || Object.values(state.capabilities).some((level) => level > 1),
+      complete: choseNextPath,
     },
   ];
 }
@@ -96,13 +98,13 @@ export function getGuidanceStep(state: GameState): GuidanceStep {
     };
   }
 
-  if (state.activeProducts.length > 0 && state.ownedItems.length === 0) {
+  if (state.activeProducts.length > 0 && !hasChosenNextGrowthPath(state)) {
     return {
-      id: "buy_first_item",
-      title: "첫 아이템 구매",
-      description: "출시 후에는 장비나 사무실 물건으로 성장 속도와 팀 개성을 키우세요.",
-      actionLabel: "아이템 구매",
-      menu: "shop",
+      id: "choose_growth_path",
+      title: "다음 성장 분기 선택",
+      description: "첫 출시가 끝났습니다. 생산성 제품군, 신뢰 기반 엔터프라이즈, 코드/비전 연구 중 다음 회사를 정하세요.",
+      actionLabel: "성장 분기 보기",
+      menu: "products",
       tone: "primary",
     };
   }
@@ -136,4 +138,13 @@ export function getGuidanceStep(state: GameState): GuidanceStep {
     menu: "research",
     tone: "steady",
   };
+}
+
+function hasChosenNextGrowthPath(state: GameState): boolean {
+  return (
+    state.ownedItems.length > 0 ||
+    state.activeProducts.length > 1 ||
+    (state.activeProducts.length > 0 && state.productProjects.length > 0) ||
+    Object.values(state.capabilities).some((level) => level > 1)
+  );
 }

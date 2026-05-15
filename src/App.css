@@ -503,6 +503,46 @@ p {
   padding: 7px 8px;
 }
 
+.growth-fork-list {
+  display: grid;
+  gap: 6px;
+}
+
+.growth-fork-list .eyebrow {
+  color: #f2cf7f;
+  margin-top: 2px;
+}
+
+.growth-path-card {
+  background: #fff7df;
+  border-color: #f2cf7f;
+  box-shadow: 0 2px 0 #0f1713;
+  color: var(--ink);
+  display: grid;
+  gap: 3px;
+  min-height: 74px;
+  padding: 8px;
+  text-align: left;
+}
+
+.growth-path-card strong {
+  color: var(--green-dark);
+  font-size: 0.86rem;
+  line-height: 1.2;
+}
+
+.growth-path-card span {
+  color: #4d4639;
+  font-size: 0.74rem;
+  line-height: 1.28;
+}
+
+.growth-path-card small {
+  color: #7b551f;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
 .release-score {
   align-items: center;
   display: flex;

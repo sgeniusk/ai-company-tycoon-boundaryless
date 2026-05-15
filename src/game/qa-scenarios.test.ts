@@ -31,6 +31,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.activeProducts).toContain("ai_writing_assistant");
     expect(scenario.state.lastRelease?.productId).toBe("ai_writing_assistant");
     expect(scenario.state.lastRelease?.expansionHint).toContain("회의");
+    expect(scenario.state.lastRelease?.growthPaths).toHaveLength(3);
   });
 
   it("creates a shop guidance scenario after first release", () => {

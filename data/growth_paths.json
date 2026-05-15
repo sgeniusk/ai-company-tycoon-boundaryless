@@ -1,0 +1,44 @@
+{
+  "growth_paths": [
+    {
+      "id": "productivity_line",
+      "order": 1,
+      "title": "생산성 제품 라인 확장",
+      "description": "첫 언어 제품을 기반으로 회의, 문서, 고객 업무로 빠르게 제품군을 넓힙니다.",
+      "target_menu": "products",
+      "action_label": "제품 라인 보기",
+      "payoff": "빠른 현금흐름과 이용자 증가",
+      "trigger_tags": ["language", "writing", "productivity"],
+      "recommended_product_ids": ["meeting_summary_bot", "customer_support_chatbot"],
+      "recommended_capability_ids": ["language"],
+      "recommended_item_ids": ["prompt_notebook", "ux_sticky_wall"]
+    },
+    {
+      "id": "trust_enterprise",
+      "order": 2,
+      "title": "신뢰 기반 엔터프라이즈",
+      "description": "안전, 정책, 고객 피드백을 쌓아 대기업이 살 수 있는 AI 회사로 방향을 잡습니다.",
+      "target_menu": "research",
+      "action_label": "신뢰 연구 보기",
+      "payoff": "높은 단가와 안정적인 장기 매출",
+      "trigger_tags": ["language", "enterprise", "trust"],
+      "recommended_product_ids": ["customer_support_chatbot", "enterprise_workflow_agent"],
+      "recommended_capability_ids": ["safety", "enterprise", "agent"],
+      "recommended_upgrade_ids": ["content_filter_v1", "user_feedback_loop", "enterprise_sales_team"],
+      "recommended_item_ids": ["policy_binder", "feedback_inbox"]
+    },
+    {
+      "id": "code_vision_lab",
+      "order": 3,
+      "title": "코드/비전 연구소",
+      "description": "코드와 비전 능력을 열어 개발자 도구, 크리에이터 제품, 자동화 시장으로 점프합니다.",
+      "target_menu": "research",
+      "action_label": "새 능력 연구",
+      "payoff": "새 도메인과 높은 화제성 제품",
+      "trigger_tags": ["code", "vision", "creative"],
+      "recommended_product_ids": ["ai_coding_assistant", "thumbnail_generator"],
+      "recommended_capability_ids": ["code", "vision", "optimization"],
+      "recommended_item_ids": ["mechanical_keyboard", "style_palette"]
+    }
+  ]
+}

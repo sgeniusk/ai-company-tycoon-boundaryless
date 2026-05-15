@@ -14,7 +14,7 @@ Use the local app URL and append one of these query strings:
 |---|---|---|
 | Fresh | `?scenario=fresh` | First screen, first objective, no hired agents |
 | Project | `?scenario=project` | First product in development, progress UI, objective state |
-| Release | `?scenario=release` | Release spotlight, boundaryless expansion hint, office scene |
+| Release | `?scenario=release` | Release spotlight, growth fork cards, boundaryless expansion hint, office scene |
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
 
 Examples:
@@ -30,8 +30,15 @@ Examples:
 - QA scenario pill appears when a scenario URL is loaded.
 - Office objects do not hide the primary staff sprite or launch screen.
 - Objective strip fits in the guidance card.
-- Release spotlight shows grade, score, quote, and expansion hint.
+- Release spotlight shows grade, score, quote, expansion hint, and three growth fork cards.
 - Mobile/narrow layout hides extra office objects and keeps the launch screen readable.
+
+## v0.9.5 Visual QA Checklist
+
+- Release growth fork cards are visible without hiding the release grade.
+- Growth path titles, descriptions, and payoff lines fit inside each card.
+- Clicking each growth path card routes to its target menu.
+- The post-release guidance card says `다음 성장 분기 선택`.
 
 ## Note
 

@@ -194,7 +194,34 @@ describe("alpha production systems", () => {
       },
       expansionHint: expect.stringContaining("회의"),
     });
+    expect(released.lastRelease?.growthPaths).toHaveLength(3);
+    expect(released.lastRelease?.growthPaths.map((path) => path.id)).toEqual([
+      "productivity_line",
+      "trust_enterprise",
+      "code_vision_lab",
+    ]);
+    expect(released.lastRelease?.growthPaths[0]).toMatchObject({
+      title: "생산성 제품 라인 확장",
+      targetMenu: "products",
+      actionLabel: "제품 라인 보기",
+    });
     expect(hydrated.lastRelease).toEqual(released.lastRelease);
+
+    const releaseMoment = released.lastRelease;
+    if (!releaseMoment) throw new Error("Missing release moment");
+
+    const { growthPaths: _growthPaths, ...legacyLastRelease } = releaseMoment;
+    const legacyHydrated = hydrateGameState(
+      JSON.stringify({
+        version: 1,
+        state: {
+          ...released,
+          lastRelease: legacyLastRelease,
+        },
+      }),
+    );
+
+    expect(legacyHydrated.lastRelease?.growthPaths).toHaveLength(3);
   });
 
   it("keeps the starter product revenue high enough for early runway", () => {

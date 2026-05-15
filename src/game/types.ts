@@ -262,12 +262,40 @@ export interface ReleaseReview {
   quote: string;
 }
 
+export type GrowthPathMenuId = "company" | "products" | "agents" | "research" | "shop" | "competition" | "log";
+
+export interface GrowthPathDefinition {
+  id: string;
+  order: number;
+  title: string;
+  description: string;
+  target_menu: GrowthPathMenuId;
+  action_label: string;
+  payoff: string;
+  trigger_tags: string[];
+  recommended_product_ids?: string[];
+  recommended_capability_ids?: string[];
+  recommended_upgrade_ids?: string[];
+  recommended_item_ids?: string[];
+}
+
+export interface ReleaseGrowthPath {
+  id: string;
+  title: string;
+  description: string;
+  targetMenu: GrowthPathMenuId;
+  actionLabel: string;
+  payoff: string;
+  detail: string;
+}
+
 export interface ReleaseMoment {
   productId: string;
   productName: string;
   month: number;
   review: ReleaseReview;
   expansionHint: string;
+  growthPaths: ReleaseGrowthPath[];
 }
 
 export interface HiredAgent {

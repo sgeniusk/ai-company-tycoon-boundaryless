@@ -14,6 +14,7 @@ import {
   startingState,
   upgrades,
 } from "./data";
+import { createReleaseGrowthPaths } from "./growth-paths";
 import type {
   AgentStats,
   AgentTypeDefinition,
@@ -30,6 +31,7 @@ import type {
   MarketRanking,
   ProductProject,
   ProductDefinition,
+  ReleaseMoment,
   ReleaseReview,
   RivalEventChoiceDefinition,
   ResourceMap,
@@ -169,6 +171,7 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
     month: state.month,
     review: releaseReview,
     expansionHint: getReleaseExpansionHint(product),
+    growthPaths: createReleaseGrowthPaths(product),
   };
 
   return {
@@ -563,7 +566,7 @@ export function hydrateGameState(serialized: string): GameState {
     productProjects: parsed.state.productProjects ?? [],
     competitorStates: parsed.state.competitorStates ?? createInitialState().competitorStates,
     productReviews: parsed.state.productReviews ?? {},
-    lastRelease: parsed.state.lastRelease,
+    lastRelease: hydrateReleaseMoment(parsed.state.lastRelease),
     eventHistory: parsed.state.eventHistory ?? [],
     rivalEventHistory: parsed.state.rivalEventHistory ?? [],
     timeline: parsed.state.timeline ?? [],
@@ -713,6 +716,7 @@ function advanceProductProjects(state: GameState): GameState {
         month: state.month,
         review: releaseReview,
         expansionHint: getReleaseExpansionHint(product),
+        growthPaths: createReleaseGrowthPaths(product),
       };
       nextState = {
         ...nextState,
@@ -815,6 +819,17 @@ function getReleaseExpansionHint(product: ProductDefinition): string {
     return "코드 능력은 개발자 도구, 자동화, 엔터프라이즈 에이전트로 이어질 수 있습니다.";
   }
   return "이 제품의 기반 능력은 새로운 도메인으로 확장될 수 있습니다.";
+}
+
+function hydrateReleaseMoment(lastRelease: ReleaseMoment | undefined): ReleaseMoment | undefined {
+  if (!lastRelease) return undefined;
+  if (lastRelease.growthPaths?.length) return lastRelease;
+
+  const product = products.find((entry) => entry.id === lastRelease.productId);
+  return {
+    ...lastRelease,
+    growthPaths: product ? createReleaseGrowthPaths(product) : [],
+  };
 }
 
 function stageRequirementsMet(stage: CompanyStageDefinition, state: GameState): boolean {

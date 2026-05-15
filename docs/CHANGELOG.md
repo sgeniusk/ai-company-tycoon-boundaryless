@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.5-alpha] — 2026-05-15
+
+### Post-Release Growth Forks
+
+**Added:**
+- Data-driven `growth_paths.json` with three post-release routes: 생산성 제품 라인, 신뢰 기반 엔터프라이즈, 코드/비전 연구소
+- Release moments now carry actionable growth path cards with target menu, action label, payoff, and recommended references
+- Release spotlight UI now shows the three next-growth choices as clickable cards
+- Data validation and tests for growth path references
+
+**Updated:**
+- Post-release guidance now points the player toward choosing a growth path instead of only buying an item
+- QA release scenario now verifies that growth paths appear after first release
+- Old saves with a release moment are hydrated with derived growth paths
+
+**Verification:**
+- `npm test` passed, 43 tests
+- `npm run validate:data` passed
+- `npm run build` passed
+- Vite dev server started at `http://127.0.0.1:5173/`; Computer Use browser inspection timed out and `curl` could not connect from this environment
+
+---
+
 ## [0.9.4-alpha] — 2026-05-15
 
 ### Opening Competitor Pacing

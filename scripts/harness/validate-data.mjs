@@ -70,6 +70,7 @@ const itemsData = readJson("items.json");
 const competitorsData = readJson("competitors.json");
 const rivalEventsData = readJson("rival_events.json");
 const assetManifestData = readJson("asset_manifest.json");
+const growthPathsData = readJson("growth_paths.json");
 const koLocaleData = readJson("locales/ko.json");
 const enLocaleData = readJson("locales/en.json");
 
@@ -87,14 +88,15 @@ const items = itemsData?.items ?? [];
 const competitors = competitorsData?.competitors ?? [];
 const rivalEvents = rivalEventsData?.rival_events ?? [];
 const assetManifest = assetManifestData ?? {};
+const growthPaths = growthPathsData?.growth_paths ?? [];
 const localeKeys = new Set([...Object.keys(koLocaleData ?? {}), ...Object.keys(enLocaleData ?? {})]);
 
 const resourceIds = new Set(Object.keys(resources));
 const capabilityIds = idsAreUnique("capabilities", capabilities);
 const domainIds = idsAreUnique("domains", domains);
-idsAreUnique("products", products);
+const productIds = idsAreUnique("products", products);
 idsAreUnique("events", events);
-idsAreUnique("upgrades", upgrades);
+const upgradeIds = idsAreUnique("upgrades", upgrades);
 idsAreUnique("automation_upgrades", automationUpgrades);
 idsAreUnique("playtest_personas", personas);
 idsAreUnique("company_stages", companyStages);
@@ -102,6 +104,7 @@ const agentTypeIds = idsAreUnique("agent_types", agentTypes);
 const itemIds = idsAreUnique("items", items);
 const competitorIds = idsAreUnique("competitors", competitors);
 idsAreUnique("rival_events", rivalEvents);
+idsAreUnique("growth_paths", growthPaths);
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);
@@ -201,6 +204,30 @@ for (const event of rivalEvents) {
       if (!["score", "momentum"].includes(effectKey)) errors.push(`rival_event "${event.id}" choice "${choice.id}": unknown competitor effect "${effectKey}"`);
       if (typeof value !== "number") errors.push(`rival_event "${event.id}" choice "${choice.id}": competitor effect "${effectKey}" must be numeric`);
     }
+  }
+}
+
+const menuIds = new Set(["company", "products", "agents", "research", "shop", "competition", "log"]);
+for (const path of growthPaths) {
+  for (const field of ["title", "description", "target_menu", "action_label", "payoff"]) {
+    if (!path[field]) errors.push(`growth_path "${path.id}": missing ${field}`);
+  }
+  if (typeof path.order !== "number") errors.push(`growth_path "${path.id}": order must be numeric`);
+  if (!menuIds.has(path.target_menu)) errors.push(`growth_path "${path.id}": unknown target_menu "${path.target_menu}"`);
+  if (!Array.isArray(path.trigger_tags) || path.trigger_tags.length === 0) {
+    errors.push(`growth_path "${path.id}": trigger_tags must be a non-empty array`);
+  }
+  for (const productId of path.recommended_product_ids ?? []) {
+    if (!productIds.has(productId)) errors.push(`growth_path "${path.id}": unknown recommended product "${productId}"`);
+  }
+  for (const capabilityId of path.recommended_capability_ids ?? []) {
+    if (!capabilityIds.has(capabilityId)) errors.push(`growth_path "${path.id}": unknown recommended capability "${capabilityId}"`);
+  }
+  for (const upgradeId of path.recommended_upgrade_ids ?? []) {
+    if (!upgradeIds.has(upgradeId)) errors.push(`growth_path "${path.id}": unknown recommended upgrade "${upgradeId}"`);
+  }
+  for (const itemId of path.recommended_item_ids ?? []) {
+    if (!itemIds.has(itemId)) errors.push(`growth_path "${path.id}": unknown recommended item "${itemId}"`);
   }
 }
 
