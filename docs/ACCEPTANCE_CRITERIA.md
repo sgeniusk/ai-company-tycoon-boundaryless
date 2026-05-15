@@ -6,6 +6,19 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.10.1: Strategy And Arc QA Scenarios
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | QA scenario IDs include `strategy` and `arc` | **Passed** |
+| 2 | Strategy scenario opens the competition menu with a chosen growth path | **Passed** |
+| 3 | Arc scenario opens the company menu with a chosen growth path and later month state | **Passed** |
+| 4 | URL parsing supports `?scenario=strategy` and `?scenario=arc` | **Passed** |
+| 5 | QA scenario docs include new URLs and visual checklist | **Passed** |
+| 6 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.10.0: Ten-Month MVP Arc
 
 | # | Criterion | Status |

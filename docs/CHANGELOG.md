@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.10.1-alpha] — 2026-05-15
+
+### Strategy And Arc QA Scenarios
+
+**Added:**
+- `?scenario=strategy` for chosen-path competition signal QA
+- `?scenario=arc` for 10-month MVP arc and follow-up objective QA
+- Tests for the new scenario IDs and URL parsing
+
+**Updated:**
+- QA scenario documentation now includes strategy and arc URLs/checklists
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.10.0-alpha] — 2026-05-15
 
 ### Ten-Month MVP Arc

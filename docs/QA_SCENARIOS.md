@@ -16,6 +16,8 @@ Use the local app URL and append one of these query strings:
 | Project | `?scenario=project` | First product in development, progress UI, objective state |
 | Release | `?scenario=release` | Release spotlight, growth fork cards, boundaryless expansion hint, office scene |
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
+| Strategy | `?scenario=strategy` | Chosen growth path, competition signal badges, rival pressure |
+| Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
 
 Examples:
 
@@ -23,6 +25,8 @@ Examples:
 - `http://localhost:5173/?scenario=project`
 - `http://localhost:5173/?scenario=release`
 - `http://localhost:5173/?scenario=shop`
+- `http://localhost:5173/?scenario=strategy`
+- `http://localhost:5173/?scenario=arc`
 
 ## v0.9.3 Visual QA Checklist
 
@@ -46,6 +50,13 @@ Examples:
 - The company stage card shows `전략: ...` after choosing a path.
 - Non-selected growth path cards visibly read as lower priority after commitment.
 - The objective strip marks `다음 성장 선택` complete after commitment.
+
+## v0.10.1 Visual QA Checklist
+
+- Strategy scenario opens on the competition menu with signal badges visible.
+- Arc scenario opens on the company menu with 10-month MVP progress visible.
+- Strategy objective checklist and 10-month arc do not overflow the company panel.
+- QA scenario pill appears for `strategy` and `arc`.
 
 ## Note
 
