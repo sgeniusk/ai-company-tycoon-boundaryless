@@ -1,27 +1,27 @@
-# Synthetic Playtest — Alpha v0.11.0
+# 합성 플레이테스트 — 알파 v0.11.0
 
-Date: 2026-05-15
+작성일: 2026-05-15
 
-## Test Frame
+## 테스트 관점
 
-Simulated the AGENTS.md review roster against the v0.11.0 commercial-readiness build.
+`AGENTS.md`의 제작 하네스 리뷰 관점을 기준으로 v0.11.0 상용성 준비 빌드를 점검했다.
 
-## Archetype Notes
+## 플레이어 유형별 메모
 
-- New Player: The objective strip and achievement block now make the next target clearer, but English event titles still break Korean immersion.
-- Tycoon Fan: Product upgrades and two-product expansion add the expected management-game growth beat.
-- Min-Max Player: Productivity path is currently the most reliable early strategy because it reaches product two fastest.
-- Casual Steam Player: `런 결과` gives a satisfying checkpoint after 10 months, even if the run has unresolved events.
-- Harsh Steam Reviewer: Graphics are still placeholder, but the non-graphics systems now read as a real prototype rather than a static dashboard.
-- Accessibility Tester: Text is mostly readable at desktop width; dense company panel needs another pass for narrow screens.
+- 신규 플레이어: 목표 스트립과 업적 블록 덕분에 다음 행동은 더 명확해졌다. 다만 영어 이벤트 제목은 한국어 몰입을 깨뜨린다.
+- 타이쿤 팬: 제품 업그레이드와 두 번째 제품 확장이 경영 게임다운 성장감을 만든다.
+- 최적화 플레이어: 생산성 제품 라인이 현재 가장 안정적인 초반 전략이다. 제품 2개까지 가장 빠르게 도달한다.
+- 캐주얼 Steam 플레이어: unresolved 이벤트가 남아 있어도 `런 결과`가 10개월 플레이의 명확한 보상 지점이 된다.
+- 까다로운 Steam 리뷰어: 그래픽은 아직 플레이스홀더지만, 비그래픽 시스템은 정적인 대시보드가 아니라 실제 프로토타입처럼 보이기 시작했다.
+- 접근성 테스터: 데스크톱 폭에서는 대부분 읽을 수 있다. 좁은 화면의 회사 패널은 추가 압축/정리 작업이 필요하다.
 
-## Requested Improvements
+## 요청 개선
 
-- Localize remaining English event content.
-- Add a compact debt/cash warning when cash is below zero.
-- Make product upgrades more flavorful than numeric level increases.
-- Add a one-click automation recovery recommendation when the run summary flags cash pressure.
+- 남아 있는 영어 이벤트 내용을 한국어로 현지화한다.
+- 현금이 0 아래로 내려갈 때 작은 부채/현금 위험 경고를 추가한다.
+- 제품 업그레이드를 숫자 레벨보다 더 개성 있는 선택지로 만든다.
+- 런 결과가 현금 압박을 지적할 때, 자동화 회복 행동으로 바로 이어지는 버튼이나 목표를 제공한다.
 
-## Verdict
+## 판정
 
-Commercial-readiness direction is positive. The next highest-value pass is polish around warnings, event localization, and upgrade identity.
+상용성 방향은 좋다. 다음으로 가치가 큰 작업은 경고 피드백, 이벤트 한국어화, 업그레이드 정체성 강화다.

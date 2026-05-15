@@ -1,48 +1,49 @@
-# Production Report — Alpha v0.11.0 Commercial Readiness
+# 제작 보고서 — 알파 v0.11.0 상용성 준비
 
-Date: 2026-05-15
+작성일: 2026-05-15
 
-## Scope
+## 범위
 
-Raise the non-graphics prototype toward commercial alpha quality by adding replay goals, persistent strategy effects, clearer run evaluation, safer saves, product upgrades, and automated balance checks.
+그래픽 에셋을 붙이기 전 단계에서, 프로토타입을 상용 알파에 가깝게 끌어올리기 위한 핵심 시스템을 추가했다. 이번 버전의 목표는 반복 플레이 동기, 전략 정체성, 10개월 런 평가, 저장 안정성, 제품 성장, 자동 밸런스 검증을 갖추는 것이다.
 
-## Changes
+## 주요 변경
 
-- Added data-driven achievements in `data/achievements.json`.
-- Added achievement reward application, UI progress, and save persistence.
-- Added monthly growth-path effects to `data/growth_paths.json`.
-- Added strategy effects to monthly reports and the company summary.
-- Added run-summary grading for 10-month/final states.
-- Added safe save recovery and runtime integrity diagnostics.
-- Added scripted commercial simulations across all growth paths.
-- Added product upgrade checks/actions and level-scaled monthly outputs.
-- Added `?scenario=commercial` for browser QA.
+- `data/achievements.json` 기반의 런 목표/업적 시스템을 추가했다.
+- 업적 보상 적용, UI 진행도 표시, 저장/불러오기 보존을 구현했다.
+- 성장 경로마다 월간 지속 효과를 추가했다.
+- 월간 보고와 회사 요약에 전략 효과가 보이도록 했다.
+- 10개월 또는 종료 상태에서 런 결과 랭크, 강점, 판정, 다음 권장 행동을 보여준다.
+- 깨진 저장 데이터를 안전하게 복구하고, 런타임 상태 무결성을 검사하는 모듈을 추가했다.
+- 모든 성장 경로를 자동으로 굴리는 상용성 밸런스 시뮬레이터를 추가했다.
+- 출시된 제품을 업그레이드할 수 있게 했고, 제품 레벨이 월 매출/이용자/데이터/연산 압박에 반영되게 했다.
+- 브라우저 QA용 `?scenario=commercial` 시나리오를 추가했다.
 
-## Harness Results
+## 하네스 결과
 
-- Unit/regression tests: 72 passed.
-- Data validation: passed.
-- Production build: passed.
-- Chrome QA: `http://127.0.0.1:5178/?scenario=commercial` rendered the commercial state with `런 결과 A`, two active products, strategy effects, and achievement progress.
-- Playwright MCP check was attempted but unavailable because the local Node REPL environment did not have `playwright` installed.
+- 단위/회귀 테스트: 72개 통과.
+- 데이터 검증: 통과.
+- 프로덕션 빌드: 통과.
+- Chrome QA: `http://127.0.0.1:5178/?scenario=commercial`에서 상용성 시나리오가 정상 렌더링됨.
+- 확인 내용: `런 결과 A`, 활성 제품 2개, 전략 효과, 업적 진행도, 현금 압박 권장 행동이 표시됨.
+- Playwright MCP 확인은 시도했지만, 현재 Node REPL 환경에 `playwright`가 없어 사용할 수 없었다.
 
-## Agent Review
+## 에이전트 리뷰
 
-- Executive Producer: Passed. The build now has a clearer 10-month destination and post-run feedback.
-- Game Designer: Passed with P2. The strategy paths now have persistent identity; deeper late-game product specialization remains a next target.
-- Systems Architect: Passed. New logic is split into `achievements`, `run-summary`, `state-integrity`, and `run-simulator` modules.
-- QA Agent: Passed. Corrupt save recovery, state integrity, commercial scenario, and product upgrade tests are covered.
-- Balance Agent: Passed with P2. Productivity path now reaches two products; cash pressure remains intentionally visible and is reflected in the run summary.
-- UX Agent: Passed. Company overview, monthly report, and run result expose the new systems without requiring graphics assets.
-- Retention/LTV Agent: Passed. Achievements, product upgrades, and run recommendations improve replay motivation.
+- 총괄 프로듀서: 통과. 10개월 목표와 런 종료 피드백이 명확해졌다.
+- 게임 디자이너: 통과, P2 있음. 전략 경로의 정체성은 생겼고, 후반 제품 전문화는 다음 작업으로 남았다.
+- 시스템 아키텍트: 통과. `achievements`, `run-summary`, `state-integrity`, `run-simulator`로 책임이 분리됐다.
+- QA 에이전트: 통과. 깨진 저장 복구, 상태 무결성, 상용성 시나리오, 제품 업그레이드가 테스트로 고정됐다.
+- 밸런스 에이전트: 통과, P2 있음. 생산성 경로가 10개월 안에 제품 2개까지 도달한다. 현금 압박은 의도적으로 남겨 두고 런 결과에 반영했다.
+- UX 에이전트: 통과. 회사 개요, 월간 보고, 런 결과가 그래픽 에셋 없이도 핵심 상태를 전달한다.
+- 리텐션/LTV 에이전트: 통과. 업적, 제품 업그레이드, 런 권장 행동이 재플레이 동기를 강화한다.
 
-## P2 Backlog
+## P2 백로그
 
-- Add product-specific upgrade names and upgrade-choice branches.
-- Add automation-first recovery objectives when cash drops below zero.
-- Add localized Korean copy for older English event titles.
-- Add a real browser screenshot automation dependency or documented Browser-plugin path.
+- 제품별 업그레이드 이름과 선택지를 추가한다.
+- 현금이 0 아래로 떨어졌을 때 자동화/비용 절감 중심의 회복 목표를 보여준다.
+- 기존 영어 이벤트 제목과 본문을 한국어로 현지화한다.
+- 브라우저 스크린샷 자동화 의존성 또는 Browser 플러그인 절차를 문서화한다.
 
-## Verdict
+## 판정
 
-v0.11.0 is ready as a commercial-readiness alpha slice before final graphics assets.
+v0.11.0은 그래픽 에셋 전 단계의 상용성 알파 조각으로 통과한다. 다음 우선순위는 한국어 이벤트 현지화, 현금 위험 경고, 제품 업그레이드의 개성 강화다.

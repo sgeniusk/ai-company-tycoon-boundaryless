@@ -1,39 +1,39 @@
-# Balance Report — Alpha v0.11.0 Commercial Simulations
+# 밸런스 보고서 — 알파 v0.11.0 상용성 시뮬레이션
 
-Date: 2026-05-15
+작성일: 2026-05-15
 
-## Purpose
+## 목적
 
-Add repeatable balance coverage for the three post-release growth paths so the project does not rely only on manual tester prompts.
+세 개의 출시 후 성장 경로를 반복 검증할 수 있는 밸런스 하네스를 추가했다. 이 작업의 목적은 수동 테스터 프롬프트에만 의존하지 않고, 대표 전략이 10개월 MVP 구간을 통과하는지 자동으로 확인하는 것이다.
 
-## Harness
+## 하네스
 
-Module: `src/game/run-simulator.ts`
+모듈: `src/game/run-simulator.ts`
 
-The simulator:
+시뮬레이터 흐름:
 
-- Starts a normal first-product project.
-- Advances until first release.
-- Commits to a selected growth path.
-- Resolves events by weighted resource value.
-- Attempts recommended products, upgrades, and capabilities.
-- Advances to the 10-month MVP window.
-- Returns final state, run summary, and integrity report.
+- 정상적인 첫 제품 개발 프로젝트로 시작한다.
+- 첫 제품 출시까지 월을 진행한다.
+- 선택한 성장 경로에 커밋한다.
+- 이벤트는 자원 가치 가중치로 가장 유리한 선택지를 고른다.
+- 추천 제품, 투자, 연구를 시도한다.
+- 10개월 MVP 구간까지 진행한다.
+- 최종 상태, 런 요약, 무결성 리포트를 반환한다.
 
-## Findings
+## 발견 사항
 
-- All growth paths are covered by `runAllCommercialSimulations`.
-- All simulated final states pass `validateGameStateIntegrity`.
-- Productivity path now reaches at least two active products by the 10-month window.
-- Cash pressure can remain negative even in otherwise successful growth runs; run summary now penalizes this and recommends recovery.
+- `runAllCommercialSimulations`가 모든 성장 경로를 검증한다.
+- 모든 시뮬레이션 최종 상태가 `validateGameStateIntegrity`를 통과했다.
+- 생산성 제품 라인 경로는 10개월 구간 안에 활성 제품 2개에 도달한다.
+- 성장 지표가 좋아도 현금이 마이너스로 남을 수 있다. 런 결과 점수는 이를 감점하고 회복 행동을 추천한다.
 
-## Balance Adjustments
+## 밸런스 조정
 
-- Added `cash: 1800` to the productivity path commitment effect to make the second product branch viable after a project-based first release.
-- Prioritized recommended product starts before capability upgrades in the scripted simulation, matching the desired Game Dev Story-style expansion fantasy.
+- 프로젝트 기반 첫 출시 이후 두 번째 제품으로 이어질 수 있게, 생산성 경로의 즉시 보상에 `cash: 1800`을 추가했다.
+- 스크립트 시뮬레이션에서는 추천 제품 착수를 연구 업그레이드보다 먼저 시도한다. 이는 카이로소프트식 “제품을 계속 넓혀 가는” 감각에 맞춘 것이다.
 
-## Remaining Balance Risks
+## 남은 밸런스 리스크
 
-- Automation is still underdeveloped as a recovery plan.
-- Trust can stay very high while cash is negative; future work should add investor/debt pressure or financing tools.
-- Product upgrades need differentiated cost curves per product category.
+- 자동화는 아직 회복 전략으로 충분히 강하지 않다.
+- 현금이 마이너스여도 신뢰가 높게 유지될 수 있다. 향후 투자자 압박, 부채, 긴급 자금 조달 같은 재무 이벤트가 필요하다.
+- 제품 업그레이드 비용 곡선이 제품 카테고리별로 더 달라져야 한다.

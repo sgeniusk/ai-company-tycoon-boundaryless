@@ -110,6 +110,8 @@ For each version, update or create:
 - `reports/playtests/<version_topic>_synthetic_playtest.md` when player feel changed
 - `reports/balance/<version_topic>_balance.md` when economy changed
 
+User-facing reports, roadmap notes, QA summaries, balance summaries, and playtest summaries should be written in Korean by default. Keep code identifiers, commands, file paths, and exact UI keys in their original spelling when useful.
+
 Production reports should map changes back to tester findings when applicable.
 
 ## Commit Rule

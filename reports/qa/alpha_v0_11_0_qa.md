@@ -1,33 +1,33 @@
-# QA Report — Alpha v0.11.0
+# QA 보고서 — 알파 v0.11.0
 
-Date: 2026-05-15
+작성일: 2026-05-15
 
-## Automated Verification
+## 자동 검증
 
-- `npm test`: passed, 72 tests.
-- `npm run validate:data`: passed.
-- `npm run build`: passed.
+- `npm test`: 통과, 72개 테스트.
+- `npm run validate:data`: 통과.
+- `npm run build`: 통과.
 
-## Covered Areas
+## 검증 범위
 
-- Achievement unlocks, rewards, and save persistence.
-- Growth-path monthly effects.
-- Run summary ranking and negative-cash penalty.
-- Corrupt save recovery and resource sanitization.
-- Runtime state integrity diagnostics.
-- Product upgrades and level-scaled monthly output.
-- Commercial QA scenario URL generation.
+- 업적 해금, 보상 적용, 저장 보존.
+- 성장 경로 월간 효과.
+- 런 결과 랭킹과 현금 마이너스 페널티.
+- 깨진 저장 데이터 복구와 자원 값 보정.
+- 런타임 상태 무결성 진단.
+- 제품 업그레이드와 제품 레벨 기반 월간 산출량.
+- 상용성 QA 시나리오 URL 생성.
 
-## Browser QA
+## 브라우저 QA
 
-Checked in Chrome:
+Chrome에서 확인했다.
 
 - URL: `http://127.0.0.1:5178/?scenario=commercial`
-- Result: commercial scenario rendered.
-- Observed: `런 결과 A`, two active products, monthly strategy effect row, achievement progress, and event panel.
-- Layout: no major text overlap observed at the inspected desktop viewport.
+- 결과: 상용성 시나리오가 정상 렌더링됨.
+- 관찰 내용: `런 결과 A`, 활성 제품 2개, 월간 전략 효과 행, 업적 진행도, 이벤트 패널이 표시됨.
+- 레이아웃: 확인한 데스크톱 뷰포트에서 주요 텍스트 겹침은 발견되지 않음.
 
-## Notes
+## 참고
 
-- Playwright was unavailable in the Node REPL environment, so Chrome Computer Use was used for visual QA.
-- The scenario intentionally shows negative cash pressure; run summary now labels it as a recovery priority.
+- Node REPL 환경에 Playwright가 없어 Chrome Computer Use로 시각 QA를 진행했다.
+- 해당 시나리오는 일부러 현금 압박을 보여준다. 런 결과는 이를 회복 우선순위로 표시한다.
