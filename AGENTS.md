@@ -98,6 +98,44 @@ This document defines the simulated agent roles used during the production of **
 
 ---
 
+### 8. Retention / LTV Agent
+
+**Responsibility:** Ensure the game creates reasons to keep playing, return later, and build long-term attachment without exceeding solo-dev scope.
+
+**Review Focus:**
+- Is the first 30 seconds clear and motivating?
+- Does the first 5 minutes deliver a satisfying payoff before harsh pressure?
+- Is there a visible reason to return after the session ends?
+- Are long-term goals, collections, unlocks, and mastery paths visible?
+- Does the loop create retention value without relying on exploitative pressure?
+
+---
+
+### 9. Shareability Agent
+
+**Responsibility:** Ensure the game produces moments that are easy to screenshot, stream, explain, and remember.
+
+**Review Focus:**
+- Does the build create a memorable "look what happened" moment?
+- Are product launches, rival moves, failures, and breakthroughs readable to an observer?
+- Would a short clip or screenshot communicate the fantasy?
+- Are names, events, and outcomes distinctive enough to discuss?
+
+---
+
+### 10. Solo Dev Scope Agent
+
+**Responsibility:** Keep the project achievable for a solo developer while preserving the highest-impact fun.
+
+**Review Focus:**
+- Does this feature give high player value for low asset/code burden?
+- Is the implementation small enough to maintain?
+- Can the feature reuse existing data, UI, or systems?
+- Is any proposed content explosion being contained by templates or procedural structure?
+- What should be cut, deferred, or faked for the current version?
+
+---
+
 ## Agent Review Protocol
 
 After each milestone:
@@ -119,3 +157,4 @@ Agents communicate through:
 - Retrospective logs (`reports/retrospectives/`)
 - Risk register (`docs/RISK_REGISTER.md`)
 - Changelog (`docs/CHANGELOG.md`)
+- Game development harness skill draft (`docs/skills/ai-game-dev-harness/SKILL.md`)

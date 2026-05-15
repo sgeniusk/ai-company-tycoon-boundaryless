@@ -6,6 +6,20 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.2: Game Dev Harness Skill Draft
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | A reusable game development harness skill draft exists in `docs/skills/` | **Passed** |
+| 2 | The skill defines versioning rules for future improvements | **Passed** |
+| 3 | The skill defines a question-card protocol for major direction choices | **Passed** |
+| 4 | The skill includes Retention/LTV, shareability, and solo-dev scope gates | **Passed** |
+| 5 | The skill requires changelog, acceptance criteria, reports, verification, and commit records | **Passed** |
+| 6 | `AGENTS.md` includes Retention/LTV, Shareability, and Solo Dev Scope agents | **Passed** |
+| 7 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.9.1: Tester-Driven Office And Release Polish
 
 | # | Criterion | Status |

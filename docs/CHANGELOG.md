@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.2-alpha] — 2026-05-15
+
+### Game Dev Harness Skill Draft
+
+**Added:**
+- Draft `ai-game-dev-harness` skill under `docs/skills/ai-game-dev-harness/SKILL.md`
+- Versioned production workflow for each game improvement
+- Question card protocol for direction choices
+- Retention/LTV, shareability, and solo-dev scope gates
+- Report and commit requirements for future milestones
+
+**Updated:**
+- `AGENTS.md` now includes Retention/LTV Agent, Shareability Agent, and Solo Dev Scope Agent
+- Production communication list now references the game development harness skill draft
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.9.1-alpha] — 2026-05-15
 
 ### Tester-Driven Office And Release Polish
