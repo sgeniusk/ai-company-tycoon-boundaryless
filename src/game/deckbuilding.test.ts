@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { agentTypes, products, strategyCards } from "./data";
 import { drawStrategyCards, getStrategyCardPlayCheck, playStrategyCard } from "./deckbuilding";
-import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
+import {
+  createDevelopmentPuzzle,
+  getDevelopmentPuzzleResolveCheck,
+  getDevelopmentPuzzleSelectionLimit,
+  resolveDevelopmentPuzzle,
+} from "./development-puzzle";
 import { getMetaUnlockCheck, getRunInsightReward, resetRunWithMetaUnlocks } from "./meta-progression";
 import { createInitialState, hireAgent, startProductProject } from "./simulation";
 
@@ -111,5 +116,53 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
     expect(resolved.productProjects[0].progress).toBeGreaterThan(started.productProjects[0].progress);
     expect(resolved.productProjects[0].quality).toBeGreaterThan(started.productProjects[0].quality);
     expect(resolved.timeline[0]).toContain("개발 퍼즐");
+  });
+
+  it("lets cards modify the next development puzzle before it is solved", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    const interviewCard = strategyCards.find((card) => card.id === "customer_interviews");
+    if (!architect || !writingProduct || !interviewCard) throw new Error("Missing puzzle modifier fixture");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const projectId = started.productProjects[0].id;
+    const basePuzzle = createDevelopmentPuzzle(projectId, started);
+    const baseUxTile = basePuzzle.tiles.find((tile) => tile.challenge === "ux");
+    if (!baseUxTile) throw new Error("Missing base UX tile");
+
+    const prepared = playStrategyCard(interviewCard, started);
+    const boostedPuzzle = createDevelopmentPuzzle(projectId, prepared);
+    const boostedUxTile = boostedPuzzle.tiles.find((tile) => tile.challenge === "ux");
+    if (!boostedUxTile) throw new Error("Missing boosted UX tile");
+
+    expect(prepared.activeDevelopmentPuzzleModifiers).toHaveLength(1);
+    expect(boostedUxTile.difficulty).toBeLessThan(baseUxTile.difficulty);
+
+    const selectedTileIds = boostedPuzzle.tiles.slice(0, 4).map((tile) => tile.id);
+    const resolved = resolveDevelopmentPuzzle(projectId, selectedTileIds, prepared);
+
+    expect(resolved.lastDevelopmentPuzzle?.appliedModifierLabels).toContain("고객 인터뷰");
+    expect(resolved.lastDevelopmentPuzzle?.score).toBeGreaterThan(0);
+    expect(resolved.activeDevelopmentPuzzleModifiers).toHaveLength(0);
+  });
+
+  it("enforces direct puzzle selection limits unless a card expands the solve budget", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    const gpuCard = strategyCards.find((card) => card.id === "gpu_burst");
+    if (!architect || !writingProduct || !gpuCard) throw new Error("Missing puzzle limit fixture");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const projectId = started.productProjects[0].id;
+    const puzzle = createDevelopmentPuzzle(projectId, started);
+    const fiveTiles = puzzle.tiles.slice(0, 5).map((tile) => tile.id);
+
+    expect(getDevelopmentPuzzleSelectionLimit(started)).toBe(4);
+    expect(getDevelopmentPuzzleResolveCheck(projectId, fiveTiles, started).ok).toBe(false);
+
+    const expanded = playStrategyCard(gpuCard, started);
+
+    expect(getDevelopmentPuzzleSelectionLimit(expanded)).toBe(5);
+    expect(getDevelopmentPuzzleResolveCheck(projectId, fiveTiles, expanded).ok).toBe(true);
   });
 });

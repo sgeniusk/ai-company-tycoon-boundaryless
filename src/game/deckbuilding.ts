@@ -1,10 +1,22 @@
 import { capabilities, metaUnlocks, resources, strategyCards } from "./data";
-import type { ActionCheck, GameState, ResourceMap, RogueliteState, StrategyCardDefinition, StrategyDeckState } from "./types";
+import type {
+  ActionCheck,
+  ActiveDevelopmentPuzzleModifier,
+  DevelopmentChallenge,
+  GameState,
+  ResourceMap,
+  RogueliteState,
+  StrategyCardDefinition,
+  StrategyDeckState,
+} from "./types";
 
 const handLimit = 7;
 const cardEffectLabels: Record<string, string> = {
   project_progress: "개발 진행",
   project_quality: "완성도",
+  puzzle_score_bonus: "퍼즐 점수",
+  puzzle_difficulty_delta: "퍼즐 난이도",
+  puzzle_tile_limit: "퍼즐 선택",
 };
 
 export function createInitialStrategyDeck(unlockedMetaIds: string[] = []): StrategyDeckState {
@@ -69,6 +81,7 @@ export function playStrategyCard(card: StrategyCardDefinition, state: GameState)
   const projectProgress = card.effects.project_progress ?? 0;
   const projectQuality = card.effects.project_quality ?? 0;
   const targetProjectId = state.productProjects[0]?.id;
+  const puzzleModifier = targetProjectId ? createPuzzleModifier(card, targetProjectId) : undefined;
   const nextProjects = state.productProjects.map((project) =>
     project.id === targetProjectId
       ? {
@@ -83,6 +96,9 @@ export function playStrategyCard(card: StrategyCardDefinition, state: GameState)
     ...state,
     resources: resourcesAfterEffects,
     productProjects: nextProjects,
+    activeDevelopmentPuzzleModifiers: puzzleModifier
+      ? [...state.activeDevelopmentPuzzleModifiers, puzzleModifier]
+      : state.activeDevelopmentPuzzleModifiers,
     roguelite: {
       ...state.roguelite,
       deck: {
@@ -152,7 +168,48 @@ function drawOne(deck: StrategyDeckState): StrategyDeckState {
 }
 
 function hasProjectEffect(card: StrategyCardDefinition): boolean {
-  return Boolean(card.effects.project_progress || card.effects.project_quality);
+  return Boolean(
+    card.effects.project_progress ||
+      card.effects.project_quality ||
+      card.effects.puzzle_score_bonus ||
+      card.effects.puzzle_difficulty_delta ||
+      card.effects.puzzle_tile_limit,
+  );
+}
+
+function createPuzzleModifier(card: StrategyCardDefinition, projectId: string): ActiveDevelopmentPuzzleModifier | undefined {
+  const scoreBonus = card.effects.puzzle_score_bonus ?? 0;
+  const difficultyDelta = card.effects.puzzle_difficulty_delta ?? 0;
+  const tileLimitBonus = card.effects.puzzle_tile_limit ?? 0;
+
+  if (!scoreBonus && !difficultyDelta && !tileLimitBonus) return undefined;
+
+  return {
+    id: `${projectId}_${card.id}`,
+    sourceCardId: card.id,
+    label: card.name,
+    projectId,
+    targetChallenges: getPuzzleTargets(card.tags),
+    scoreBonus,
+    difficultyDelta,
+    tileLimitBonus,
+    usesRemaining: 1,
+  };
+}
+
+function getPuzzleTargets(tags: string[]): DevelopmentChallenge[] {
+  const targets = new Set<DevelopmentChallenge>();
+  const tagSet = new Set(tags);
+
+  if (tagSet.has("ux") || tagSet.has("product") || tagSet.has("language")) targets.add("ux");
+  if (tagSet.has("compute") || tagSet.has("speed")) targets.add("compute");
+  if (tagSet.has("safety") || tagSet.has("quality")) targets.add("safety");
+  if (tagSet.has("growth") || tagSet.has("hype")) targets.add("market");
+  if (tagSet.has("data") || tagSet.has("research")) targets.add("data");
+  if (tagSet.has("developer")) targets.add("bug");
+  if (tagSet.has("automation") || tagSet.has("agent")) targets.add("automation");
+
+  return [...targets];
 }
 
 function appendCostReasons(reasons: string[], cost: ResourceMap = {}, state: GameState): void {

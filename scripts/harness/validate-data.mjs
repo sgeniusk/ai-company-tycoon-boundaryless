@@ -303,7 +303,14 @@ for (const achievement of achievements) {
 
 const allowedCardCategories = new Set(["build", "ops", "product", "safety", "growth", "research", "automation"]);
 const allowedCardRarities = new Set(["starter", "common", "uncommon", "rare", "epic"]);
-const allowedCardEffects = new Set([...resourceIds, "project_progress", "project_quality"]);
+const allowedCardEffects = new Set([
+  ...resourceIds,
+  "project_progress",
+  "project_quality",
+  "puzzle_score_bonus",
+  "puzzle_difficulty_delta",
+  "puzzle_tile_limit",
+]);
 for (const card of strategyCards) {
   for (const field of ["name", "category", "rarity", "description", "cost", "effects", "tags", "copies", "unlock_requirements"]) {
     if (!(field in card)) errors.push(`strategy_card "${card.id}": missing ${field}`);

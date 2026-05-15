@@ -28,6 +28,7 @@ import type {
   CapabilityDefinition,
   CompanyStageDefinition,
   CompetitorState,
+  ActiveDevelopmentPuzzleModifier,
   DevelopmentPuzzleResult,
   EventChoiceDefinition,
   EventDefinition,
@@ -94,6 +95,7 @@ export function createInitialState(): GameState {
     })),
     productReviews: {},
     roguelite: createInitialRogueliteState(),
+    activeDevelopmentPuzzleModifiers: [],
     unlockedAchievements: [],
     eventHistory: [],
     rivalEventHistory: [],
@@ -691,6 +693,7 @@ export function hydrateGameState(serialized: string): GameState {
     productReviews: isRecord(rawState.productReviews) ? rawState.productReviews : {},
     lastRelease: hydrateReleaseMoment(rawState.lastRelease),
     roguelite: hydrateRogueliteState(rawState.roguelite, initialState.roguelite),
+    activeDevelopmentPuzzleModifiers: hydrateDevelopmentPuzzleModifiers(rawState.activeDevelopmentPuzzleModifiers),
     lastDevelopmentPuzzle: hydrateDevelopmentPuzzleResult(rawState.lastDevelopmentPuzzle),
     chosenGrowthPath: hydrateChosenGrowthPath(rawState.chosenGrowthPath),
     unlockedAchievements: sanitizeStringArray(rawState.unlockedAchievements),
@@ -1079,6 +1082,24 @@ function hydrateStrategyDeck(value: unknown, fallback: StrategyDeckState): Strat
     discardPile: sanitizeStringArray(value.discardPile, cardIds),
     playedThisTurn: sanitizeStringArray(value.playedThisTurn, cardIds),
   };
+}
+
+function hydrateDevelopmentPuzzleModifiers(value: unknown): ActiveDevelopmentPuzzleModifier[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((entry): entry is ActiveDevelopmentPuzzleModifier => {
+    if (!isRecord(entry)) return false;
+    return (
+      typeof entry.id === "string" &&
+      typeof entry.sourceCardId === "string" &&
+      typeof entry.label === "string" &&
+      typeof entry.projectId === "string" &&
+      Array.isArray(entry.targetChallenges) &&
+      typeof entry.scoreBonus === "number" &&
+      typeof entry.difficultyDelta === "number" &&
+      typeof entry.tileLimitBonus === "number" &&
+      typeof entry.usesRemaining === "number"
+    );
+  });
 }
 
 function hydrateDevelopmentPuzzleResult(value: unknown): DevelopmentPuzzleResult | undefined {

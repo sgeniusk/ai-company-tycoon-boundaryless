@@ -1,10 +1,15 @@
-import type { CSSProperties, Dispatch, SetStateAction } from "react";
+import { useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import { agentTypes, assetManifest, automationUpgrades, capabilities, competitors, domains, items, metaUnlocks, products, strategyCards, upgrades } from "../game/data";
 import { getAchievementStatuses } from "../game/achievements";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getGrowthPathObjectives } from "../game/growth-objectives";
 import { getTenMonthArc } from "../game/ten-month-arc";
-import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "../game/development-puzzle";
+import {
+  createDevelopmentPuzzle,
+  getDevelopmentPuzzleResolveCheck,
+  getDevelopmentPuzzleSelectionLimit,
+  resolveDevelopmentPuzzle,
+} from "../game/development-puzzle";
 import { getStrategyCardById, getStrategyCardPlayCheck, playStrategyCard } from "../game/deckbuilding";
 import { getMetaUnlockCheck, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
 import {
@@ -178,12 +183,43 @@ export function renderMenuContent(
 }
 
 function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
   const deck = gameState.roguelite.deck;
   const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
   const activeProject = gameState.productProjects[0];
   const activeProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
   const puzzle = activeProject ? createDevelopmentPuzzle(activeProject.id, gameState) : undefined;
   const projectedInsight = gameState.roguelite.founderInsight + getRunInsightReward(gameState);
+  const selectionLimit = getDevelopmentPuzzleSelectionLimit(gameState, activeProject?.id);
+  const resolveCheck = activeProject ? getDevelopmentPuzzleResolveCheck(activeProject.id, selectedPuzzleTileIds, gameState) : undefined;
+
+  useEffect(() => {
+    if (!puzzle) {
+      setSelectedPuzzleTileIds([]);
+      return;
+    }
+
+    const tileIds = new Set(puzzle.tiles.map((tile) => tile.id));
+    setSelectedPuzzleTileIds((current) => {
+      const filtered = current.filter((tileId) => tileIds.has(tileId)).slice(0, selectionLimit);
+      if (filtered.length) return filtered;
+      return puzzle.tiles.slice(0, Math.min(4, selectionLimit)).map((tile) => tile.id);
+    });
+  }, [activeProject?.id, puzzle?.tiles.length, selectionLimit, gameState.activeDevelopmentPuzzleModifiers.length]);
+
+  const togglePuzzleTile = (tileId: string) => {
+    setSelectedPuzzleTileIds((current) => {
+      if (current.includes(tileId)) return current.filter((entry) => entry !== tileId);
+      if (current.length >= selectionLimit) return current;
+      return [...current, tileId];
+    });
+  };
+
+  const resolveSelectedPuzzleTiles = () => {
+    if (!activeProject) return;
+    setGameState((current) => resolveDevelopmentPuzzle(activeProject.id, selectedPuzzleTileIds, current));
+    setSelectedPuzzleTileIds([]);
+  };
 
   return (
     <div className="panel-grid two-col deck-layout">
@@ -228,32 +264,50 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
         </div>
         {puzzle && activeProject ? (
           <>
+            <div className="puzzle-status-row">
+              <span>
+                선택 {selectedPuzzleTileIds.length}/{selectionLimit}
+              </span>
+              <span>{gameState.activeDevelopmentPuzzleModifiers.length ? "카드 보정 적용 중" : "카드 보정 없음"}</span>
+            </div>
+            {gameState.activeDevelopmentPuzzleModifiers.length > 0 && (
+              <div className="puzzle-modifier-list">
+                {gameState.activeDevelopmentPuzzleModifiers.map((modifier) => (
+                  <span key={modifier.id}>
+                    {modifier.label}: 점수 +{modifier.scoreBonus}, 난이도 {modifier.difficultyDelta}, 선택 +{modifier.tileLimitBonus}
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="puzzle-board">
-              {puzzle.tiles.map((tile, index) => (
-                <span className={index < 4 ? "selected" : ""} key={tile.id}>
+              {puzzle.tiles.map((tile) => (
+                <button
+                  aria-pressed={selectedPuzzleTileIds.includes(tile.id)}
+                  className={selectedPuzzleTileIds.includes(tile.id) ? "selected" : ""}
+                  key={tile.id}
+                  onClick={() => togglePuzzleTile(tile.id)}
+                >
                   <strong>{tile.label}</strong>
                   <small>{statLabel(tile.stat)} {tile.difficulty}</small>
-                </span>
+                  {tile.modifierLabel && <em>{tile.modifierLabel}</em>}
+                </button>
               ))}
             </div>
             <button
               className="wide-action"
-              onClick={() =>
-                setGameState((current) =>
-                  resolveDevelopmentPuzzle(
-                    activeProject.id,
-                    puzzle.tiles.slice(0, 4).map((tile) => tile.id),
-                    current,
-                  ),
-                )
-              }
+              disabled={!resolveCheck?.ok}
+              onClick={resolveSelectedPuzzleTiles}
             >
-              상위 이슈 해결
+              선택 이슈 해결
             </button>
+            {resolveCheck && !resolveCheck.ok && <p className="locked-reason">{resolveCheck.reasons.join(" / ")}</p>}
             {gameState.lastDevelopmentPuzzle && (
               <div className="puzzle-result">
                 <strong>최근 결과 {gameState.lastDevelopmentPuzzle.verdict} · {gameState.lastDevelopmentPuzzle.score}점</strong>
                 <span>진행 +{gameState.lastDevelopmentPuzzle.progressGain} / 완성도 +{gameState.lastDevelopmentPuzzle.qualityGain}</span>
+                {gameState.lastDevelopmentPuzzle.appliedModifierLabels.length > 0 && (
+                  <small>카드 보정: {gameState.lastDevelopmentPuzzle.appliedModifierLabels.join(", ")}</small>
+                )}
               </div>
             )}
           </>

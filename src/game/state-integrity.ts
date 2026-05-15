@@ -41,6 +41,13 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     }
   }
 
+  for (const modifier of state.activeDevelopmentPuzzleModifiers) {
+    if (!cardIds.has(modifier.sourceCardId)) issues.push(`puzzle modifier "${modifier.id}" references unknown card "${modifier.sourceCardId}"`);
+    if (!Number.isFinite(modifier.usesRemaining) || modifier.usesRemaining < 0) {
+      issues.push(`puzzle modifier "${modifier.id}" has invalid usesRemaining`);
+    }
+  }
+
   for (const competitor of state.competitorStates) {
     if (!competitorIds.has(competitor.id)) warnings.push(`competitor state "${competitor.id}" is not in current data`);
     if (!Number.isFinite(competitor.score) || !Number.isFinite(competitor.marketShare)) {

@@ -283,6 +283,7 @@ export interface DevelopmentPuzzleTile {
   label: string;
   difficulty: number;
   stat: keyof AgentStats;
+  modifierLabel?: string;
 }
 
 export interface DevelopmentPuzzleState {
@@ -297,6 +298,19 @@ export interface DevelopmentPuzzleResult extends DevelopmentPuzzleState {
   progressGain: number;
   qualityGain: number;
   verdict: string;
+  appliedModifierLabels: string[];
+}
+
+export interface ActiveDevelopmentPuzzleModifier {
+  id: string;
+  sourceCardId: string;
+  label: string;
+  projectId: string;
+  targetChallenges: DevelopmentChallenge[];
+  scoreBonus: number;
+  difficultyDelta: number;
+  tileLimitBonus: number;
+  usesRemaining: number;
 }
 
 export interface AgentStats {
@@ -503,6 +517,7 @@ export interface GameState {
   productReviews: Record<string, ReleaseReview>;
   lastRelease?: ReleaseMoment;
   roguelite: RogueliteState;
+  activeDevelopmentPuzzleModifiers: ActiveDevelopmentPuzzleModifier[];
   lastDevelopmentPuzzle?: DevelopmentPuzzleResult;
   chosenGrowthPath?: ChosenGrowthPath;
   unlockedAchievements: string[];

@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.12.1: Direct Puzzle Selection And Card Synergy
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Development puzzle UI lets the player select puzzle tiles directly | **Passed** |
+| 2 | Puzzle resolution enforces a selection limit and rejects too many tiles | **Passed** |
+| 3 | Strategy cards can create active puzzle modifiers for the current project | **Passed** |
+| 4 | Puzzle modifiers can reduce tile difficulty, add score, or increase the tile selection limit | **Passed** |
+| 5 | Resolving a puzzle consumes applied one-use modifiers | **Passed** |
+| 6 | Puzzle results record the applied modifier labels | **Passed** |
+| 7 | Data validation accepts only known puzzle card effects | **Passed** |
+| 8 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.12.0: Roguelite Deckbuilding Pivot Foundation
 
 | # | Criterion | Status |

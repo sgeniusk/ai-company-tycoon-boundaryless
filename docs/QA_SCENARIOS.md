@@ -76,9 +76,18 @@ Examples:
 - Deck scenario opens on the `덱` menu.
 - Strategy hand shows at least four cards with cost, effect, and use button.
 - Active project puzzle shows a 3x3 issue board.
-- `상위 이슈 해결` updates the recent puzzle result without layout shift.
+- `선택 이슈 해결` updates the recent puzzle result without layout shift.
 - Meta unlock cards show founder insight cost and unlocked card names.
 - Top status bar shows run number and founder insight without overflow.
+
+## v0.12.1 Visual QA Checklist
+
+- Puzzle board tiles are buttons and show selected/unselected state.
+- Selection counter shows the current selected count and the current limit.
+- Playing a puzzle-modifying card shows a visible card modifier row.
+- A modified tile shows the source card name under the tile.
+- The solve button is disabled when no tile is selected or too many tiles are selected.
+- Recent puzzle result shows the applied card modifier name.
 
 ## Note
 

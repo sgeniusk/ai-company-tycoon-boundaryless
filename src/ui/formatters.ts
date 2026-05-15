@@ -52,6 +52,9 @@ export function formatEffects(effects: Record<string, number>): string {
   const effectLabels: Record<string, string> = {
     project_progress: "개발 진행",
     project_quality: "완성도",
+    puzzle_score_bonus: "퍼즐 점수",
+    puzzle_difficulty_delta: "퍼즐 난이도",
+    puzzle_tile_limit: "퍼즐 선택",
   };
 
   return Object.entries(effects)
