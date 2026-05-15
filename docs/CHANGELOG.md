@@ -27,6 +27,10 @@ All notable changes to this project will be documented in this file.
 - `npm run build` 통과
 - `npm run harness:gate` 통과
 
+**배포:**
+- GitHub 공개 저장소 생성 및 `main` 푸시 완료: https://github.com/sgeniusk/ai-company-tycoon-boundaryless
+- Vercel 프로덕션 배포 완료: https://ai-company-tycoon.vercel.app
+
 ---
 
 ## [0.12.0-alpha] — 2026-05-15
