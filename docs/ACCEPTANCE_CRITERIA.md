@@ -6,6 +6,19 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.7: Competition Strategy Signals
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Competition signals classify rivals against the chosen growth path | **Passed** |
+| 2 | Competitors with overlapping target domains show `전략 충돌` | **Passed** |
+| 3 | Competitors that claim products in the chosen path show `선점 충돌` | **Passed** |
+| 4 | Competition ranking cards show strategy signal badges | **Passed** |
+| 5 | Rival profile cards explain the signal reason | **Passed** |
+| 6 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.9.6: Commit To Growth Path
 
 | # | Criterion | Status |

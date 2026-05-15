@@ -1,5 +1,6 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
 import { agentTypes, assetManifest, automationUpgrades, capabilities, competitors, domains, items, products, upgrades } from "../game/data";
+import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
   buyAutomationUpgrade,
   buyItem,
@@ -499,18 +500,20 @@ function ItemCard({
 
 function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale: LocaleCode }) {
   const rankings = getMarketRankings(gameState);
+  const strategySignals = getGrowthPathCompetitionSignals(gameState);
 
   return (
     <div className="panel-grid two-col">
       <section className="panel">
         <div className="panel-heading">
           <h2>경쟁사 랭킹</h2>
-          <p>AI 시장 점유율과 경쟁사의 최근 움직임을 봅니다.</p>
+          <p>{gameState.chosenGrowthPath ? `${gameState.chosenGrowthPath.title} 전략과 부딪히는 경쟁사를 확인합니다.` : "AI 시장 점유율과 경쟁사의 최근 움직임을 봅니다."}</p>
         </div>
         <div className="ranking-list">
           {rankings.map((ranking, index) => {
             const competitor = competitors.find((entry) => entry.id === ranking.id);
             const label = ranking.isPlayer ? t("ui.playerCompany", locale) : competitor ? t(competitor.name_key, locale) : ranking.id;
+            const signal = strategySignals.find((entry) => entry.competitorId === ranking.id);
 
             return (
               <article className={`ranking-card ${ranking.isPlayer ? "player-rank" : ""}`} key={ranking.id}>
@@ -520,6 +523,7 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
                   <p>{ranking.isPlayer ? "제품 출시와 신뢰를 바탕으로 시장을 넓히는 중" : competitor ? t(competitor.tagline_key, locale) : ranking.lastMove}</p>
                 </div>
                 <strong>{ranking.marketShare}%</strong>
+                {signal && <em className={`signal-badge signal-${signal.severity}`}>{signal.label}</em>}
                 <span>{ranking.lastMove}</span>
               </article>
             );
@@ -536,10 +540,11 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
             const competitor = competitors.find((entry) => entry.id === state.id);
             const identity = getCompetitorIdentity(state.id);
             const claimedProducts = products.filter((product) => state.claimedProducts.includes(product.id));
+            const signal = strategySignals.find((entry) => entry.competitorId === state.id);
             if (!competitor) return null;
 
             return (
-              <article className="competitor-card" style={{ borderColor: competitor.color }} key={state.id}>
+              <article className={`competitor-card ${signal ? `signal-${signal.severity}` : ""}`} style={{ borderColor: competitor.color }} key={state.id}>
                 <div className="competitor-top">
                   <div
                     className={`competitor-logo ${identity?.logo_class ?? ""}`}
@@ -562,6 +567,12 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
                   <span>위협 {Math.round(state.score)}</span>
                   <span>연구 Lv.{state.researchLevel}</span>
                 </div>
+                {signal && (
+                  <div className="strategy-signal">
+                    <strong>{signal.label}</strong>
+                    <span>{signal.reason}</span>
+                  </div>
+                )}
                 <div className="claim-list">
                   {claimedProducts.length ? claimedProducts.map((product) => <span key={product.id}>{product.name}</span>) : <span>선점 제품 없음</span>}
                 </div>

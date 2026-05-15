@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.7-alpha] — 2026-05-15
+
+### Competition Strategy Signals
+
+**Added:**
+- Growth-path competition signal calculator for rival overlap, watch states, and claimed-space conflicts
+- Competition ranking and rival cards now show `전략 충돌`, `선점 충돌`, `관찰 필요`, or `간접 경쟁`
+- Tests for chosen-strategy overlap and claim escalation
+
+**Updated:**
+- Competition panel copy now reflects the chosen growth strategy when one exists
+- Rival cards visually distinguish strategic and contested pressure
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.9.6-alpha] — 2026-05-15
 
 ### Commit To Growth Path
