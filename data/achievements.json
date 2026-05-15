@@ -1,0 +1,94 @@
+{
+  "achievements": [
+    {
+      "id": "first_release",
+      "order": 1,
+      "title": "첫 제품 출시",
+      "description": "AI 회사의 첫 상용 제품을 시장에 내놓습니다.",
+      "condition": {
+        "min_products": 1
+      },
+      "reward": {
+        "hype": 2,
+        "data": 5
+      }
+    },
+    {
+      "id": "first_research_upgrade",
+      "order": 2,
+      "title": "첫 연구 업그레이드",
+      "description": "핵심 AI 능력을 한 번 이상 연구합니다.",
+      "condition": {
+        "min_capability_upgrades": 1
+      },
+      "reward": {
+        "data": 8
+      }
+    },
+    {
+      "id": "two_product_company",
+      "order": 3,
+      "title": "두 제품 회사",
+      "description": "한 제품 원툴을 넘어 두 번째 제품을 운영합니다.",
+      "condition": {
+        "min_products": 2
+      },
+      "reward": {
+        "cash": 900,
+        "hype": 3
+      }
+    },
+    {
+      "id": "strategy_followthrough",
+      "order": 4,
+      "title": "전략 실행력",
+      "description": "선택한 성장 경로의 후속 목표를 두 개 이상 완료합니다.",
+      "condition": {
+        "min_growth_objectives": 2
+      },
+      "reward": {
+        "trust": 2,
+        "automation": 1
+      }
+    },
+    {
+      "id": "issue_operator",
+      "order": 5,
+      "title": "이슈 오퍼레이터",
+      "description": "운영 이벤트와 경쟁사 이슈를 합쳐 두 번 이상 대응합니다.",
+      "condition": {
+        "min_resolved_events": 2
+      },
+      "reward": {
+        "trust": 2,
+        "automation": 2
+      }
+    },
+    {
+      "id": "market_foothold",
+      "order": 6,
+      "title": "시장 발판",
+      "description": "월간 누적 이용자 1,000명을 돌파합니다.",
+      "condition": {
+        "min_users": 1000
+      },
+      "reward": {
+        "cash": 1200,
+        "hype": 2
+      }
+    },
+    {
+      "id": "ten_month_survivor",
+      "order": 7,
+      "title": "10개월 생존",
+      "description": "초기 10개월 운영 압박을 버텨 냅니다.",
+      "condition": {
+        "min_month": 10
+      },
+      "reward": {
+        "trust": 3,
+        "data": 12
+      }
+    }
+  ]
+}

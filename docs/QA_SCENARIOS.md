@@ -18,6 +18,7 @@ Use the local app URL and append one of these query strings:
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
 | Strategy | `?scenario=strategy` | Chosen growth path, competition signal badges, rival pressure |
 | Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
+| Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 
 Examples:
 
@@ -27,6 +28,7 @@ Examples:
 - `http://localhost:5173/?scenario=shop`
 - `http://localhost:5173/?scenario=strategy`
 - `http://localhost:5173/?scenario=arc`
+- `http://localhost:5173/?scenario=commercial`
 
 ## v0.9.3 Visual QA Checklist
 
@@ -57,6 +59,15 @@ Examples:
 - Arc scenario opens on the company menu with 10-month MVP progress visible.
 - Strategy objective checklist and 10-month arc do not overflow the company panel.
 - QA scenario pill appears for `strategy` and `arc`.
+
+## v0.11.0 Visual QA Checklist
+
+- Commercial scenario opens with a visible `런 결과` card.
+- Commercial scenario shows at least two active products in the command row.
+- Run summary rank penalizes heavy negative cash and recommends a cash/automation recovery action.
+- Company panel shows `상용 런 목표`, achievement progress, and strategy monthly effects.
+- Monthly report includes the strategy effect row.
+- Open event panel and run summary can coexist without overlapping the office scene.
 
 ## Note
 

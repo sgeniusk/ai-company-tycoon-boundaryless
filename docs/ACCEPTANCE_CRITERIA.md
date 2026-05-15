@@ -6,6 +6,24 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.11.0: Commercial Readiness Systems
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Run achievements are data-driven, unlock once, apply rewards, and persist through save/load | **Passed** |
+| 2 | Growth paths define monthly effects and month reports surface strategy effects | **Passed** |
+| 3 | Final or 10-month runs show a rank, verdict, strengths, and next recommendation | **Passed** |
+| 4 | Corrupt save data recovers to a playable state and invalid resources are sanitized | **Passed** |
+| 5 | Runtime state integrity validator reports malformed snapshots | **Passed** |
+| 6 | Scripted commercial simulations cover all growth paths and keep integrity clean | **Passed** |
+| 7 | Productivity commercial simulation reaches the 10-month window with at least two active products | **Passed** |
+| 8 | Active products can be upgraded and upgraded products increase monthly output | **Passed** |
+| 9 | Browser QA supports `?scenario=commercial` | **Passed** |
+| 10 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+| 11 | Chrome visual QA confirms the commercial scenario renders run result, two products, achievements, and strategy effects | **Passed** |
+
+---
+
 ## Alpha v0.10.1: Strategy And Arc QA Scenarios
 
 | # | Criterion | Status |

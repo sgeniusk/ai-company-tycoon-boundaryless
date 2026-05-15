@@ -14,7 +14,9 @@ import competitorsJson from "../../data/competitors.json";
 import rivalEventsJson from "../../data/rival_events.json";
 import assetManifestJson from "../../data/asset_manifest.json";
 import growthPathsJson from "../../data/growth_paths.json";
+import achievementsJson from "../../data/achievements.json";
 import type {
+  AchievementDefinition,
   AgentTypeDefinition,
   AssetManifestDefinition,
   AutomationUpgradeDefinition,
@@ -49,3 +51,4 @@ export const competitors = competitorsJson.competitors as unknown as CompetitorD
 export const rivalEvents = rivalEventsJson.rival_events as unknown as RivalEventDefinition[];
 export const assetManifest = assetManifestJson as unknown as AssetManifestDefinition;
 export const growthPaths = growthPathsJson.growth_paths as unknown as GrowthPathDefinition[];
+export const achievements = achievementsJson.achievements as unknown as AchievementDefinition[];

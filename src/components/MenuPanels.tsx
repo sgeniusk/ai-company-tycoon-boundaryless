@@ -1,5 +1,6 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
 import { agentTypes, assetManifest, automationUpgrades, capabilities, competitors, domains, items, products, upgrades } from "../game/data";
+import { getAchievementStatuses } from "../game/achievements";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getGrowthPathObjectives } from "../game/growth-objectives";
 import { getTenMonthArc } from "../game/ten-month-arc";
@@ -17,11 +18,15 @@ import {
   getEquipItemCheck,
   getItemCheck,
   getMarketRankings,
+  getProductLevel,
   getProductProjectCheck,
+  getProductUpgradeCheck,
+  getProductUpgradeCost,
   getUpgradeCheck,
   hireAgent,
   startProductProject,
   upgradeCapability,
+  upgradeProduct,
 } from "../game/simulation";
 import type { AgentSpriteDefinition, CompetitorIdentityDefinition, GameState, HiredAgent, ItemDefinition, ItemIconDefinition, AgentTypeDefinition } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
@@ -60,6 +65,8 @@ export function renderMenuContent(
   if (activeMenu === "company") {
     const growthObjectives = getGrowthPathObjectives(gameState);
     const tenMonthArc = getTenMonthArc(gameState);
+    const achievementStatuses = getAchievementStatuses(gameState);
+    const unlockedAchievementCount = achievementStatuses.filter((achievement) => achievement.unlocked).length;
 
     return (
       <div className="panel-grid two-col">
@@ -76,6 +83,11 @@ export function renderMenuContent(
             <span>보유 아이템 {gameState.ownedItems.length}개</span>
             <span>해금 분야 {gameState.unlockedDomains.length}개</span>
             <span>자동화 {formatResource("automation", gameState.resources.automation ?? 0)}</span>
+            {gameState.chosenGrowthPath && (
+              <span className="strategy-summary">
+                전략 {gameState.chosenGrowthPath.title} · 월간 {formatEffects(gameState.chosenGrowthPath.monthlyEffects)}
+              </span>
+            )}
           </div>
           <div className="ten-month-arc">
             <div>
@@ -105,6 +117,21 @@ export function renderMenuContent(
               ))}
             </div>
           )}
+          <div className="achievement-block">
+            <div>
+              <h3>상용 런 목표</h3>
+              <strong>{unlockedAchievementCount}/{achievementStatuses.length}</strong>
+            </div>
+            <div className="achievement-list">
+              {achievementStatuses.map((achievement) => (
+                <article className={achievement.unlocked ? "complete" : ""} key={achievement.id}>
+                  <strong>{achievement.title}</strong>
+                  <span>{achievement.progressLabel}</span>
+                  <small>{achievement.unlocked ? "완료" : achievement.description}</small>
+                </article>
+              ))}
+            </div>
+          </div>
         </section>
         <TimelinePanel gameState={gameState} />
       </div>
@@ -157,6 +184,8 @@ function ProductsPanel({
           const review = gameState.productReviews[product.id];
           const project = gameState.productProjects.find((entry) => entry.productId === product.id);
           const isActive = gameState.activeProducts.includes(product.id);
+          const productLevel = getProductLevel(product.id, gameState);
+          const upgradeCheck = getProductUpgradeCheck(product, gameState);
           const claimers = gameState.competitorStates.filter((competitor) => competitor.claimedProducts.includes(product.id));
 
           return (
@@ -191,15 +220,24 @@ function ProductsPanel({
                 </div>
               )}
               <div className="item-footer">
-                <span>월 매출 {formatResource("cash", product.base_revenue)} / 이용자 +{product.base_users_per_month}</span>
+                <span>Lv.{productLevel || 1} · 월 매출 {formatResource("cash", product.base_revenue)} / 이용자 +{product.base_users_per_month}</span>
                 <button
                   disabled={!check.ok || gameState.status !== "playing" || Boolean(project) || isActive}
                   onClick={() => setGameState((current) => startProductProject(product, current))}
                 >
                   {isActive ? "운영 중" : project ? "개발 중" : "개발 시작"}
                 </button>
+                {isActive && (
+                  <button
+                    disabled={!upgradeCheck.ok || gameState.status !== "playing"}
+                    onClick={() => setGameState((current) => upgradeProduct(product, current))}
+                  >
+                    업그레이드 {formatCost(getProductUpgradeCost(product, gameState))}
+                  </button>
+                )}
               </div>
-              {!check.ok && <p className="locked-reason">{check.reasons.join(" / ")}</p>}
+              {!check.ok && !isActive && <p className="locked-reason">{check.reasons.join(" / ")}</p>}
+              {isActive && !upgradeCheck.ok && <p className="locked-reason">{upgradeCheck.reasons.join(" / ")}</p>}
             </article>
           );
         })}

@@ -71,6 +71,7 @@ const competitorsData = readJson("competitors.json");
 const rivalEventsData = readJson("rival_events.json");
 const assetManifestData = readJson("asset_manifest.json");
 const growthPathsData = readJson("growth_paths.json");
+const achievementsData = readJson("achievements.json");
 const koLocaleData = readJson("locales/ko.json");
 const enLocaleData = readJson("locales/en.json");
 
@@ -89,6 +90,7 @@ const competitors = competitorsData?.competitors ?? [];
 const rivalEvents = rivalEventsData?.rival_events ?? [];
 const assetManifest = assetManifestData ?? {};
 const growthPaths = growthPathsData?.growth_paths ?? [];
+const achievements = achievementsData?.achievements ?? [];
 const localeKeys = new Set([...Object.keys(koLocaleData ?? {}), ...Object.keys(enLocaleData ?? {})]);
 
 const resourceIds = new Set(Object.keys(resources));
@@ -105,6 +107,7 @@ const itemIds = idsAreUnique("items", items);
 const competitorIds = idsAreUnique("competitors", competitors);
 idsAreUnique("rival_events", rivalEvents);
 idsAreUnique("growth_paths", growthPaths);
+idsAreUnique("achievements", achievements);
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);
@@ -214,6 +217,10 @@ for (const path of growthPaths) {
   }
   if (typeof path.order !== "number") errors.push(`growth_path "${path.id}": order must be numeric`);
   validateResourceMap(`growth_path "${path.id}" commitment_effects`, path.commitment_effects, resourceIds);
+  validateResourceMap(`growth_path "${path.id}" monthly_effects`, path.monthly_effects, resourceIds);
+  if (!path.monthly_effects || Object.keys(path.monthly_effects).length === 0) {
+    errors.push(`growth_path "${path.id}": monthly_effects must not be empty`);
+  }
   if (!menuIds.has(path.target_menu)) errors.push(`growth_path "${path.id}": unknown target_menu "${path.target_menu}"`);
   if (!Array.isArray(path.trigger_tags) || path.trigger_tags.length === 0) {
     errors.push(`growth_path "${path.id}": trigger_tags must be a non-empty array`);
@@ -259,6 +266,31 @@ for (const path of growthPaths) {
     }
     if ("min_value" in completion && typeof completion.min_value !== "number") {
       errors.push(`growth_path "${path.id}" objective "${objective.id}": min_value must be numeric`);
+    }
+  }
+}
+
+const allowedAchievementConditions = new Set([
+  "min_month",
+  "min_products",
+  "min_capability_upgrades",
+  "min_growth_objectives",
+  "min_resolved_events",
+  "min_users",
+  "min_cash",
+]);
+for (const achievement of achievements) {
+  for (const field of ["title", "description", "condition", "reward"]) {
+    if (!achievement[field]) errors.push(`achievement "${achievement.id}": missing ${field}`);
+  }
+  if (typeof achievement.order !== "number") errors.push(`achievement "${achievement.id}": order must be numeric`);
+  validateResourceMap(`achievement "${achievement.id}" reward`, achievement.reward, resourceIds);
+  for (const [condition, value] of Object.entries(achievement.condition ?? {})) {
+    if (!allowedAchievementConditions.has(condition)) {
+      errors.push(`achievement "${achievement.id}": unknown condition "${condition}"`);
+    }
+    if (typeof value !== "number") {
+      errors.push(`achievement "${achievement.id}": condition "${condition}" must be numeric`);
     }
   }
 }

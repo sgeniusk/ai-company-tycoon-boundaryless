@@ -393,7 +393,8 @@ p {
 .company-stage,
 .monthly-report,
 .guidance-card,
-.release-spotlight {
+.release-spotlight,
+.run-summary {
   background: #fff7df;
   border: 2px solid var(--line);
   min-height: 112px;
@@ -641,6 +642,68 @@ p {
   overflow-wrap: anywhere;
 }
 
+.monthly-report .wide-report-row {
+  grid-column: 1 / -1;
+}
+
+.run-summary {
+  background: #eef7ff;
+  border-color: var(--blue);
+  display: grid;
+  gap: 7px;
+}
+
+.run-summary h2,
+.run-summary p {
+  margin-bottom: 0;
+}
+
+.run-rank {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.run-rank strong {
+  background: #f2cf7f;
+  border: 2px solid var(--line);
+  color: #2e2415;
+  font-size: 1.34rem;
+  min-width: 46px;
+  padding: 4px 0;
+  text-align: center;
+}
+
+.run-rank span {
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.run-summary ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.run-summary li,
+.run-summary small {
+  color: #4d4639;
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+.run-summary.rank-S,
+.run-summary.rank-A {
+  background: #e8f5dc;
+  border-color: var(--green);
+}
+
+.run-summary.rank-D {
+  background: #fff1df;
+  border-color: var(--red);
+}
+
 .event-panel {
   align-items: center;
   background: #ffe6d8;
@@ -797,6 +860,14 @@ p {
   font-size: 1.15rem;
 }
 
+.company-summary .strategy-summary {
+  background: #e8f5dc;
+  border-color: var(--green);
+  color: var(--green-dark);
+  font-weight: 900;
+  grid-column: 1 / -1;
+}
+
 .ten-month-arc {
   background: #fff7df;
   border: 2px solid #d8c49b;
@@ -900,6 +971,60 @@ p {
   color: #5f5546;
   font-size: 0.74rem;
   line-height: 1.3;
+}
+
+.achievement-block {
+  background: #fff7df;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px;
+}
+
+.achievement-block > div:first-child {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.achievement-block h3,
+.achievement-block > div:first-child strong {
+  color: var(--green-dark);
+  margin-bottom: 0;
+}
+
+.achievement-list {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.achievement-list article {
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 3px;
+  min-height: 88px;
+  padding: 8px;
+}
+
+.achievement-list article.complete {
+  background: #e8f5dc;
+  border-color: var(--green);
+}
+
+.achievement-list strong {
+  color: #2e2415;
+  font-size: 0.78rem;
+}
+
+.achievement-list span,
+.achievement-list small {
+  color: #5f5546;
+  font-size: 0.7rem;
+  line-height: 1.25;
 }
 
 .panel-heading {

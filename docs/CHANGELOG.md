@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.11.0-alpha] — 2026-05-15
+
+### Commercial Readiness Systems Before Final Graphics
+
+**Added:**
+- Data-driven run achievements with one-time rewards and company-panel progress.
+- Growth-path monthly strategy effects and monthly report/timeline surfacing.
+- Run summary grading with rank, strengths, verdict, and next recommendation.
+- Safe save hydration and `validateGameStateIntegrity` diagnostics.
+- Scripted commercial balance simulator covering all growth paths.
+- Product level upgrades for active products with level-scaled revenue, users, data, and compute pressure.
+- `?scenario=commercial` browser QA scenario for final-summary and long-run checks.
+
+**Updated:**
+- Productivity growth path now gives enough early cash support to branch into a second product.
+- Run summary scoring now penalizes heavy negative cash instead of over-rewarding growth alone.
+- QA scenario docs include commercial readiness checks.
+
+**Verification:**
+- `npm test` passed, 72 tests
+- `npm run validate:data` passed
+- `npm run build` passed
+- Chrome visual QA passed at `http://127.0.0.1:5178/?scenario=commercial`
+
+---
+
 ## [0.10.1-alpha] — 2026-05-15
 
 ### Strategy And Arc QA Scenarios

@@ -1,6 +1,7 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
 import { assetManifest, domains, products, resources } from "../game/data";
 import { getGuidanceStep, getOpeningObjectives, type GuidanceStep, type OpeningObjective } from "../game/guidance";
+import { getRunSummary } from "../game/run-summary";
 import {
   advanceMonth,
   chooseGrowthPath,
@@ -13,7 +14,7 @@ import {
 } from "../game/simulation";
 import type { GameState, ReleaseGrowthPath } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
-import { statusLabel } from "../ui/formatters";
+import { formatEffects, statusLabel } from "../ui/formatters";
 import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
@@ -91,6 +92,7 @@ export function GameStage({
     .map((domain) => domain.name);
   const officeObjects = assetManifest.office_objects.slice(0, 7);
   const chosenGrowthPathId = gameState.chosenGrowthPath?.id;
+  const runSummary = getRunSummary(gameState);
   const growthPathCardClass = (pathId: string) =>
     ["growth-path-card", chosenGrowthPathId === pathId ? "selected" : "", chosenGrowthPathId && chosenGrowthPathId !== pathId ? "locked" : ""]
       .filter(Boolean)
@@ -209,11 +211,34 @@ export function GameStage({
                 <dt>연산 압박</dt>
                 <dd>-{formatResource("compute", gameState.lastMonthReport.computePressure)}</dd>
               </div>
+              {gameState.lastMonthReport.strategyEffects && (
+                <div className="wide-report-row">
+                  <dt>전략 효과</dt>
+                  <dd>{formatEffects(gameState.lastMonthReport.strategyEffects)}</dd>
+                </div>
+              )}
             </dl>
           ) : (
             <p>제품을 출시하고 다음 달로 넘기면 첫 성과 보고가 올라옵니다.</p>
           )}
         </article>
+        {runSummary.isFinal && (
+          <article className={`run-summary rank-${runSummary.rank}`}>
+            <p className="eyebrow">런 결과</p>
+            <div className="run-rank">
+              <strong>{runSummary.rank}</strong>
+              <span>{runSummary.score}점</span>
+            </div>
+            <h2>{runSummary.title}</h2>
+            <p>{runSummary.verdict}</p>
+            <ul>
+              {runSummary.strengths.slice(0, 4).map((strength) => (
+                <li key={strength}>{strength}</li>
+              ))}
+            </ul>
+            <small>{runSummary.recommendation}</small>
+          </article>
+        )}
       </div>
     </section>
   );

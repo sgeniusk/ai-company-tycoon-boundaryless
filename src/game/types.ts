@@ -209,6 +209,31 @@ export interface AutomationUpgradeDefinition {
   monthly_benefit: string;
 }
 
+export interface AchievementConditionDefinition {
+  min_month?: number;
+  min_products?: number;
+  min_capability_upgrades?: number;
+  min_growth_objectives?: number;
+  min_resolved_events?: number;
+  min_users?: number;
+  min_cash?: number;
+}
+
+export interface AchievementDefinition {
+  id: string;
+  order: number;
+  title: string;
+  description: string;
+  condition: AchievementConditionDefinition;
+  reward: ResourceMap;
+}
+
+export interface AchievementStatus extends AchievementDefinition {
+  unlocked: boolean;
+  ready: boolean;
+  progressLabel: string;
+}
+
 export interface AgentStats {
   research: number;
   engineering: number;
@@ -274,6 +299,7 @@ export interface GrowthPathDefinition {
   payoff: string;
   bonus_description: string;
   commitment_effects: ResourceMap;
+  monthly_effects: ResourceMap;
   trigger_tags: string[];
   recommended_product_ids?: string[];
   recommended_capability_ids?: string[];
@@ -323,6 +349,7 @@ export interface ChosenGrowthPath {
   month: number;
   bonusDescription: string;
   effects: ResourceMap;
+  monthlyEffects: ResourceMap;
 }
 
 export interface ReleaseMoment {
@@ -392,6 +419,7 @@ export interface MonthlyReport {
   newUsers: number;
   generatedData: number;
   computePressure: number;
+  strategyEffects?: ResourceMap;
 }
 
 export interface GameState {
@@ -405,10 +433,12 @@ export interface GameState {
   hiredAgents: HiredAgent[];
   ownedItems: string[];
   productProjects: ProductProject[];
+  productLevels: Record<string, number>;
   competitorStates: CompetitorState[];
   productReviews: Record<string, ReleaseReview>;
   lastRelease?: ReleaseMoment;
   chosenGrowthPath?: ChosenGrowthPath;
+  unlockedAchievements: string[];
   eventHistory: string[];
   rivalEventHistory: string[];
   timeline: string[];

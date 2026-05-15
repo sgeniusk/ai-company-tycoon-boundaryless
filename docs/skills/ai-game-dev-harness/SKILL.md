@@ -86,6 +86,7 @@ Run the narrowest useful checks, then broaden if risk is high.
 - UI changes: build plus browser or screenshot QA when available.
 - Save/load changes: explicit serialization/hydration tests.
 - Economy changes: at least one short-path simulation test or balance note.
+- Commercial-readiness changes: add or update a scripted run simulator that reaches the target session window and records integrity/rank outcomes.
 - Asset pipeline changes: manifest validation before importing final images.
 
 Common web commands:

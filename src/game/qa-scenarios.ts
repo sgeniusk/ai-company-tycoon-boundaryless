@@ -1,9 +1,10 @@
 import { agentTypes, products } from "./data";
+import { runScriptedCommercialSimulation } from "./run-simulator";
 import { advanceMonth, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
 
-export const qaScenarioIds = ["fresh", "project", "release", "shop", "strategy", "arc"] as const;
+export const qaScenarioIds = ["fresh", "project", "release", "shop", "strategy", "arc", "commercial"] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
 
@@ -67,6 +68,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "10개월 아크 QA",
       state: arcState,
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "commercial") {
+    return {
+      id,
+      label: "상용 준비 QA",
+      state: runScriptedCommercialSimulation("productivity_line").finalState,
       activeMenu: "company",
     };
   }

@@ -15,6 +15,7 @@ import {
   upgrades,
   growthPaths,
 } from "./data";
+import { applyAchievementUnlocks } from "./achievements";
 import { createReleaseGrowthPaths } from "./growth-paths";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
 import type {
@@ -41,6 +42,7 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+const SAVE_VERSION = 2;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -75,6 +77,7 @@ export function createInitialState(): GameState {
     hiredAgents: [],
     ownedItems: [],
     productProjects: [],
+    productLevels: {},
     competitorStates: competitors.map((competitor) => ({
       id: competitor.id,
       score: competitor.starting_score,
@@ -85,6 +88,7 @@ export function createInitialState(): GameState {
       lastMove: "출시 준비 중",
     })),
     productReviews: {},
+    unlockedAchievements: [],
     eventHistory: [],
     rivalEventHistory: [],
     timeline: ["회사는 작은 AI 생산성 도구 팀으로 시작했습니다."],
@@ -178,10 +182,11 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
     growthPaths: createReleaseGrowthPaths(product),
   };
 
-  return {
+  return applyAchievementUnlocks({
     ...state,
     resources: nextResources,
     activeProducts: [...state.activeProducts, product.id],
+    productLevels: { ...state.productLevels, [product.id]: 1 },
     productReviews: { ...state.productReviews, [product.id]: releaseReview },
     lastRelease,
     timeline: [
@@ -189,7 +194,7 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
       `${product.name} 출시: 화제성 +${product.hype_on_launch}`,
       ...state.timeline,
     ].slice(0, 8),
-  };
+  });
 }
 
 export function getAgentHireCheck(agent: AgentTypeDefinition, state: GameState): ActionCheck {
@@ -366,7 +371,7 @@ export function upgradeCapability(capability: CapabilityDefinition, state: GameS
     unlockedDomains.add(unlockedDomainId);
   }
 
-  return {
+  return applyAchievementUnlocks({
     ...state,
     resources: nextResources,
     capabilities: { ...state.capabilities, [capability.id]: nextLevel },
@@ -375,7 +380,7 @@ export function upgradeCapability(capability: CapabilityDefinition, state: GameS
       `${capability.name} Lv.${nextLevel} 연구 완료${unlockedDomainId ? `: 새 분야 ${domainName(unlockedDomainId)} 해금` : ""}`,
       ...state.timeline,
     ].slice(0, 8),
-  };
+  });
 }
 
 export function advanceMonth(state: GameState): GameState {
@@ -391,24 +396,31 @@ export function advanceMonth(state: GameState): GameState {
         ? balance.trust_low_penalty
         : 1;
   const growthMultiplier = balance.growth_rate_base + (hype / 100) * (balance.hype_growth_multiplier - 1);
-  const revenue = active.reduce((sum, product) => sum + product.base_revenue, 0);
-  const newUsers = Math.round(active.reduce((sum, product) => sum + product.base_users_per_month, 0) * growthMultiplier * trustMultiplier);
-  const generatedData = active.reduce((sum, product) => sum + product.data_generated_per_month, 0);
+  const revenue = active.reduce((sum, product) => sum + getProductMonthlyRevenue(product, state), 0);
+  const newUsers = Math.round(active.reduce((sum, product) => sum + getProductMonthlyUsers(product, state), 0) * growthMultiplier * trustMultiplier);
+  const generatedData = active.reduce((sum, product) => sum + getProductMonthlyData(product, state), 0);
   const currentUsers = state.resources.users ?? 0;
   const computeCashCost = Math.ceil(((currentUsers + newUsers) / 1000) * balance.compute_cost_per_1000_users);
   const salaryCost = (state.resources.talent ?? 0) * balance.salary_per_talent;
   const automationDiscount = clamp((state.resources.automation ?? 0) * balance.automation_cost_reduction_per_point, 0, 0.75);
   const totalCost = Math.round((balance.base_monthly_cash_cost + salaryCost + computeCashCost) * (1 - automationDiscount));
-  const computePressure = Math.ceil(active.reduce((sum, product) => sum + product.compute_per_1000_users, 0) * Math.max(1, newUsers / 1000) * 0.08);
+  const computePressure = Math.ceil(active.reduce((sum, product) => sum + getProductComputePressure(product, state), 0) * Math.max(1, newUsers / 1000) * 0.08);
+  const strategyEffects = getChosenGrowthPathMonthlyEffects(state);
 
-  const nextResources = applyResourceDelta(state.resources, {
-    cash: revenue - totalCost,
-    users: newUsers,
-    data: generatedData,
-    compute: -computePressure,
-    hype: -balance.monthly_hype_decay,
-    trust: trust < balance.trust_recovery_threshold ? balance.trust_recovery_amount : 0,
-  });
+  const nextResources = applyResourceDelta(
+    state.resources,
+    mergeResourceDelta(
+      {
+        cash: revenue - totalCost,
+        users: newUsers,
+        data: generatedData,
+        compute: -computePressure,
+        hype: -balance.monthly_hype_decay,
+        trust: trust < balance.trust_recovery_threshold ? balance.trust_recovery_amount : 0,
+      },
+      strategyEffects ?? {},
+    ),
+  );
 
   const nextMonth = state.month + 1;
   const nextStateWithoutEvent: GameState = {
@@ -421,6 +433,7 @@ export function advanceMonth(state: GameState): GameState {
       newUsers,
       generatedData,
       computePressure,
+      strategyEffects,
     },
     status: getNextStatus(nextResources, state.activeProducts.length),
     timeline: [],
@@ -435,7 +448,7 @@ export function advanceMonth(state: GameState): GameState {
     ? `${nextMonth}개월차: 매출 ${formatMoney(revenue)}, 비용 ${formatMoney(totalCost)}, 이용자 +${newUsers.toLocaleString("ko-KR")}, 데이터 +${generatedData}`
     : `${nextMonth}개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.`;
 
-  return {
+  return applyAchievementUnlocks({
     ...nextStateForEvent,
     currentEvent: nextEvent,
     currentRivalEvent: nextRivalEvent,
@@ -444,12 +457,13 @@ export function advanceMonth(state: GameState): GameState {
       nextRivalEvent ? `경쟁사 이슈: ${nextRivalEvent.id}` : "",
       nextEvent ? `이슈 발생: ${nextEvent.name}` : "",
       ...competedState.timeline,
+      strategyEffects ? `전략 효과: ${formatResourceDelta(strategyEffects)}` : "",
       summary,
       ...state.timeline,
     ]
       .filter(Boolean)
       .slice(0, 8),
-  };
+  });
 }
 
 export function getUpgradeCheck(upgrade: UpgradeDefinition, state: GameState): ActionCheck {
@@ -459,6 +473,50 @@ export function getUpgradeCheck(upgrade: UpgradeDefinition, state: GameState): A
   }
   appendCostReasons(reasons, upgrade.cost, state);
   return { ok: reasons.length === 0, reasons };
+}
+
+export function getProductLevel(productId: string, state: GameState): number {
+  return state.productLevels[productId] ?? (state.activeProducts.includes(productId) ? 1 : 0);
+}
+
+export function getProductUpgradeCost(product: ProductDefinition, state: GameState): ResourceMap {
+  const currentLevel = Math.max(1, getProductLevel(product.id, state));
+  return Object.fromEntries(
+    Object.entries(product.launch_cost).map(([resourceId, value]) => [
+      resourceId,
+      Math.round(value * product.upgrade_cost_multiplier * currentLevel),
+    ]),
+  );
+}
+
+export function getProductUpgradeCheck(product: ProductDefinition, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+  const currentLevel = getProductLevel(product.id, state);
+
+  if (!state.activeProducts.includes(product.id)) {
+    reasons.push("출시한 제품만 업그레이드할 수 있습니다.");
+  }
+  if (currentLevel >= product.max_level) {
+    reasons.push("최대 레벨입니다.");
+  }
+  appendCostReasons(reasons, getProductUpgradeCost(product, state), state);
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function upgradeProduct(product: ProductDefinition, state: GameState): GameState {
+  const check = getProductUpgradeCheck(product, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const currentLevel = getProductLevel(product.id, state);
+  const nextLevel = currentLevel + 1;
+
+  return {
+    ...state,
+    resources: applyResourceDelta(state.resources, negateCosts(getProductUpgradeCost(product, state))),
+    productLevels: { ...state.productLevels, [product.id]: nextLevel },
+    timeline: [`제품 업그레이드: ${product.name} Lv.${nextLevel}`, ...state.timeline].slice(0, 8),
+  };
 }
 
 export function buyUpgrade(upgrade: UpgradeDefinition, state: GameState): GameState {
@@ -528,7 +586,7 @@ export function chooseGrowthPath(pathId: string, state: GameState): GameState {
   const path = growthPaths.find((entry) => entry.id === pathId);
   if (!check.ok || !path) return state;
 
-  return {
+  return applyAchievementUnlocks({
     ...state,
     resources: applyResourceDelta(state.resources, path.commitment_effects),
     chosenGrowthPath: {
@@ -537,9 +595,10 @@ export function chooseGrowthPath(pathId: string, state: GameState): GameState {
       month: state.month,
       bonusDescription: path.bonus_description,
       effects: path.commitment_effects,
+      monthlyEffects: path.monthly_effects,
     },
     timeline: [`성장 경로 선택: ${path.title} - ${path.bonus_description}`, ...state.timeline].slice(0, 8),
-  };
+  });
 }
 
 export function resolveEventChoice(choice: EventChoiceDefinition, state: GameState): GameState {
@@ -547,13 +606,13 @@ export function resolveEventChoice(choice: EventChoiceDefinition, state: GameSta
 
   const nextResources = applyResourceDelta(state.resources, choice.effects);
 
-  return {
+  return applyAchievementUnlocks({
     ...state,
     resources: nextResources,
     currentEvent: undefined,
     eventHistory: [...state.eventHistory, state.currentEvent.id],
     timeline: [`결정: ${choice.text}`, ...state.timeline].slice(0, 8),
-  };
+  });
 }
 
 export function resolveRivalEventChoice(choice: RivalEventChoiceDefinition, state: GameState): GameState {
@@ -574,14 +633,14 @@ export function resolveRivalEventChoice(choice: RivalEventChoiceDefinition, stat
     state,
   );
 
-  return {
+  return applyAchievementUnlocks({
     ...state,
     resources: applyResourceDelta(state.resources, choice.effects),
     competitorStates: nextCompetitors,
     currentRivalEvent: undefined,
     rivalEventHistory: [...state.rivalEventHistory, state.currentRivalEvent.id],
     timeline: [`경쟁 대응: ${choice.id}`, ...state.timeline].slice(0, 8),
-  };
+  });
 }
 
 export function getCompanyStage(state: GameState): CompanyStageDefinition {
@@ -590,33 +649,97 @@ export function getCompanyStage(state: GameState): CompanyStageDefinition {
 }
 
 export function serializeGameState(state: GameState): string {
-  return JSON.stringify({ version: 1, state });
+  return JSON.stringify({ version: SAVE_VERSION, state });
 }
 
 export function hydrateGameState(serialized: string): GameState {
-  const parsed = JSON.parse(serialized) as { version?: number; state?: GameState };
-  if (!parsed.state) return createInitialState();
+  let parsed: { version?: number; state?: Partial<GameState> } | undefined;
 
+  try {
+    parsed = JSON.parse(serialized) as { version?: number; state?: Partial<GameState> };
+  } catch {
+    return createRecoveryState("저장 데이터 복구 실패: 새 게임 상태로 안전하게 되돌렸습니다.");
+  }
+
+  if (!parsed.state) return createRecoveryState("저장 데이터 복구 실패: 저장된 회사 상태가 비어 있습니다.");
+
+  const initialState = createInitialState();
+  const rawState = parsed.state;
   return {
-    ...createInitialState(),
-    ...parsed.state,
-    resources: { ...createInitialState().resources, ...parsed.state.resources },
-    capabilities: { ...createInitialState().capabilities, ...parsed.state.capabilities },
-    activeProducts: parsed.state.activeProducts ?? [],
-    unlockedDomains: parsed.state.unlockedDomains ?? createInitialState().unlockedDomains,
-    purchasedUpgrades: parsed.state.purchasedUpgrades ?? [],
-    purchasedAutomationUpgrades: parsed.state.purchasedAutomationUpgrades ?? [],
-    hiredAgents: parsed.state.hiredAgents ?? [],
-    ownedItems: parsed.state.ownedItems ?? [],
-    productProjects: parsed.state.productProjects ?? [],
-    competitorStates: parsed.state.competitorStates ?? createInitialState().competitorStates,
-    productReviews: parsed.state.productReviews ?? {},
-    lastRelease: hydrateReleaseMoment(parsed.state.lastRelease),
-    chosenGrowthPath: parsed.state.chosenGrowthPath,
-    eventHistory: parsed.state.eventHistory ?? [],
-    rivalEventHistory: parsed.state.rivalEventHistory ?? [],
-    timeline: parsed.state.timeline ?? [],
+    ...initialState,
+    ...rawState,
+    month: sanitizeNumber(rawState.month, initialState.month),
+    resources: sanitizeResourceMap(rawState.resources, initialState.resources),
+    capabilities: { ...initialState.capabilities, ...(isRecord(rawState.capabilities) ? rawState.capabilities : {}) },
+    activeProducts: sanitizeStringArray(rawState.activeProducts, products.map((product) => product.id)),
+    unlockedDomains: sanitizeStringArray(rawState.unlockedDomains, domains.map((domain) => domain.id), initialState.unlockedDomains),
+    purchasedUpgrades: sanitizeStringArray(rawState.purchasedUpgrades),
+    purchasedAutomationUpgrades: sanitizeStringArray(rawState.purchasedAutomationUpgrades),
+    hiredAgents: Array.isArray(rawState.hiredAgents) ? rawState.hiredAgents : [],
+    ownedItems: sanitizeStringArray(rawState.ownedItems),
+    productProjects: Array.isArray(rawState.productProjects) ? rawState.productProjects : [],
+    productLevels: sanitizeProductLevels(rawState.productLevels, rawState.activeProducts ?? []),
+    competitorStates: Array.isArray(rawState.competitorStates) ? rawState.competitorStates : initialState.competitorStates,
+    productReviews: isRecord(rawState.productReviews) ? rawState.productReviews : {},
+    lastRelease: hydrateReleaseMoment(rawState.lastRelease),
+    chosenGrowthPath: hydrateChosenGrowthPath(rawState.chosenGrowthPath),
+    unlockedAchievements: sanitizeStringArray(rawState.unlockedAchievements),
+    eventHistory: sanitizeStringArray(rawState.eventHistory),
+    rivalEventHistory: sanitizeStringArray(rawState.rivalEventHistory),
+    timeline: sanitizeStringArray(rawState.timeline),
+    status: rawState.status === "success" || rawState.status === "failure" || rawState.status === "playing" ? rawState.status : "playing",
   };
+}
+
+function createRecoveryState(message: string): GameState {
+  const initialState = createInitialState();
+  return {
+    ...initialState,
+    timeline: [message, ...initialState.timeline].slice(0, 8),
+  };
+}
+
+function sanitizeNumber(value: unknown, fallback: number): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function sanitizeResourceMap(value: unknown, fallback: ResourceMap): ResourceMap {
+  const raw = isRecord(value) ? (value as Record<string, unknown>) : {};
+  const sanitized: ResourceMap = {};
+
+  for (const [resourceId, fallbackValue] of Object.entries(fallback)) {
+    const definition = resources[resourceId];
+    const nextValue = sanitizeNumber(raw[resourceId], fallbackValue);
+    sanitized[resourceId] = definition ? clamp(nextValue, definition.min_value, definition.max_value) : nextValue;
+  }
+
+  return sanitized;
+}
+
+function sanitizeStringArray(value: unknown, allowedValues?: string[], fallback: string[] = []): string[] {
+  if (!Array.isArray(value)) return [...fallback];
+
+  const allowed = allowedValues ? new Set(allowedValues) : undefined;
+  return value.filter((entry): entry is string => typeof entry === "string" && (!allowed || allowed.has(entry)));
+}
+
+function sanitizeProductLevels(value: unknown, activeProducts: unknown): Record<string, number> {
+  const raw = isRecord(value) ? value : {};
+  const activeProductIds = new Set(sanitizeStringArray(activeProducts, products.map((product) => product.id)));
+  const sanitized: Record<string, number> = {};
+
+  for (const product of products) {
+    const rawLevel = raw[product.id];
+    const fallbackLevel = activeProductIds.has(product.id) ? 1 : 0;
+    const level = sanitizeNumber(rawLevel, fallbackLevel);
+    if (level > 0) sanitized[product.id] = Math.round(clamp(level, 1, product.max_level));
+  }
+
+  return sanitized;
 }
 
 function advanceCompetitors(state: GameState): GameState {
@@ -773,6 +896,7 @@ function advanceProductProjects(state: GameState): GameState {
           trust: progressedProject.quality >= 82 ? 2 : 0,
         }),
         activeProducts: [...nextState.activeProducts, product.id],
+        productLevels: { ...nextState.productLevels, [product.id]: 1 },
         productReviews: { ...nextState.productReviews, [product.id]: releaseReview },
         lastRelease,
         hiredAgents: nextState.hiredAgents.map((agent) =>
@@ -848,6 +972,34 @@ function applyResourceDelta(current: ResourceMap, delta: ResourceMap): ResourceM
   return next;
 }
 
+function mergeResourceDelta(base: ResourceMap, extra: ResourceMap): ResourceMap {
+  const next = { ...base };
+
+  for (const [resourceId, amount] of Object.entries(extra)) {
+    next[resourceId] = (next[resourceId] ?? 0) + amount;
+  }
+
+  return next;
+}
+
+function getChosenGrowthPathMonthlyEffects(state: GameState): ResourceMap | undefined {
+  if (!state.chosenGrowthPath) return undefined;
+
+  const path = growthPaths.find((entry) => entry.id === state.chosenGrowthPath?.id);
+  if (!path || Object.keys(path.monthly_effects ?? {}).length === 0) return undefined;
+  return path.monthly_effects;
+}
+
+function formatResourceDelta(delta: ResourceMap): string {
+  return Object.entries(delta)
+    .map(([resourceId, amount]) => {
+      const resourceName = resources[resourceId]?.name ?? resourceId;
+      const sign = amount >= 0 ? "+" : "";
+      return `${resourceName} ${sign}${amount.toLocaleString("ko-KR")}`;
+    })
+    .join(", ");
+}
+
 function negateCosts(costs: ResourceMap): ResourceMap {
   return Object.fromEntries(Object.entries(costs).map(([resourceId, value]) => [resourceId, -value]));
 }
@@ -880,6 +1032,16 @@ function hydrateReleaseMoment(lastRelease: ReleaseMoment | undefined): ReleaseMo
     headline: lastRelease.headline ?? (product ? createReleaseHeadline(product, review) : `${lastRelease.productName} 출시`),
     marketReaction: lastRelease.marketReaction ?? (product ? createMarketReaction(product, review) : "시장 반응을 다시 집계하고 있습니다."),
     growthPaths: product ? createReleaseGrowthPaths(product) : [],
+  };
+}
+
+function hydrateChosenGrowthPath(chosenGrowthPath: GameState["chosenGrowthPath"]): GameState["chosenGrowthPath"] {
+  if (!chosenGrowthPath) return undefined;
+
+  const path = growthPaths.find((entry) => entry.id === chosenGrowthPath.id);
+  return {
+    ...chosenGrowthPath,
+    monthlyEffects: chosenGrowthPath.monthlyEffects ?? path?.monthly_effects ?? {},
   };
 }
 
@@ -961,6 +1123,38 @@ function createReleaseReview(product: ProductDefinition, state: GameState, proje
 function getProductClaimPenalty(product: ProductDefinition, state: GameState): number {
   const claimCount = state.competitorStates.filter((competitor) => competitor.claimedProducts.includes(product.id)).length;
   return clamp(claimCount * 5, 0, 15);
+}
+
+function getProductMonthlyRevenue(product: ProductDefinition, state: GameState): number {
+  return Math.round(product.base_revenue * getProductRevenueMultiplier(product.id, state));
+}
+
+function getProductMonthlyUsers(product: ProductDefinition, state: GameState): number {
+  return Math.round(product.base_users_per_month * getProductUserMultiplier(product.id, state));
+}
+
+function getProductMonthlyData(product: ProductDefinition, state: GameState): number {
+  return Math.round(product.data_generated_per_month * getProductDataMultiplier(product.id, state));
+}
+
+function getProductComputePressure(product: ProductDefinition, state: GameState): number {
+  return product.compute_per_1000_users * getProductComputeMultiplier(product.id, state);
+}
+
+function getProductRevenueMultiplier(productId: string, state: GameState): number {
+  return 1 + Math.max(0, getProductLevel(productId, state) - 1) * 0.35;
+}
+
+function getProductUserMultiplier(productId: string, state: GameState): number {
+  return 1 + Math.max(0, getProductLevel(productId, state) - 1) * 0.25;
+}
+
+function getProductDataMultiplier(productId: string, state: GameState): number {
+  return 1 + Math.max(0, getProductLevel(productId, state) - 1) * 0.2;
+}
+
+function getProductComputeMultiplier(productId: string, state: GameState): number {
+  return 1 + Math.max(0, getProductLevel(productId, state) - 1) * 0.15;
 }
 
 function findNextEligibleEvent(state: GameState): EventDefinition | undefined {
