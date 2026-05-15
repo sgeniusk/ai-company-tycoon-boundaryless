@@ -6,6 +6,20 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.4: Opening Competitor Pacing
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Rival companies do not claim product spaces during months 1-3 | **Passed** |
+| 2 | Rival companies can foreshadow market entry during months 2-3 | **Passed** |
+| 3 | Foreshadowing appears in the timeline with clear `예고` wording | **Passed** |
+| 4 | Rival product-space claims resume from month 4 onward | **Passed** |
+| 5 | Early contested-domain copy is softer than direct pressure | **Passed** |
+| 6 | The v0.9.1 10-expert P2 competitor pacing issue is referenced in the production report | **Passed** |
+| 7 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.9.3: Browser QA Scenarios And Screen Polish
 
 | # | Criterion | Status |

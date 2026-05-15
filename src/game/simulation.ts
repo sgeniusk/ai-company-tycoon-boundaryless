@@ -579,8 +579,10 @@ function advanceCompetitors(state: GameState): GameState {
     if (!definition) return competitorState;
 
     const contestedDomain = definition.focus_domains.some((domainId) => playerDomains.has(domainId));
-    const claim = shouldCompetitorClaimProduct(definition.id, state.month);
-    const productToClaim = claim ? getNextClaimableProduct(definition.focus_domains, competitorState.claimedProducts) : undefined;
+    const nextClaimableProduct = getNextClaimableProduct(definition.focus_domains, competitorState.claimedProducts);
+    const productToClaim = shouldCompetitorClaimProduct(definition.id, state.month) ? nextClaimableProduct : undefined;
+    const productToPrepare =
+      !productToClaim && shouldCompetitorPrepareProduct(definition.id, state.month) ? nextClaimableProduct : undefined;
     const scoreGain = definition.monthly_growth + competitorState.momentum + (contestedDomain ? definition.aggression : 0);
     const claimedProducts = productToClaim ? [...competitorState.claimedProducts, productToClaim.id] : competitorState.claimedProducts;
 
@@ -590,7 +592,7 @@ function advanceCompetitors(state: GameState): GameState {
       momentum: clamp(competitorState.momentum * 0.65, -12, 12),
       claimedProducts,
       researchLevel: competitorState.researchLevel + (state.month % 4 === 0 ? 1 : 0),
-      lastMove: productToClaim ? `${productToClaim.name} 시장 선점` : contestedDomain ? "우리 제품 분야를 압박" : "기초 모델 연구 강화",
+      lastMove: getCompetitorLastMove(productToClaim, productToPrepare, contestedDomain, state.month),
     };
   });
   const nextCompetitors = recalculateMarketShares(movedCompetitors, state);
@@ -628,7 +630,24 @@ function getPlayerCompetitiveScore(state: GameState): number {
 
 function shouldCompetitorClaimProduct(competitorId: string, month: number): boolean {
   const competitorIndex = competitors.findIndex((competitor) => competitor.id === competitorId);
-  return month > 0 && (month + competitorIndex) % 3 === 0;
+  return month >= 4 && (month + competitorIndex) % 3 === 0;
+}
+
+function shouldCompetitorPrepareProduct(competitorId: string, month: number): boolean {
+  const competitorIndex = competitors.findIndex((competitor) => competitor.id === competitorId);
+  return month >= 2 && month <= 3 && (month + competitorIndex) % 2 === 0;
+}
+
+function getCompetitorLastMove(
+  productToClaim: ProductDefinition | undefined,
+  productToPrepare: ProductDefinition | undefined,
+  contestedDomain: boolean,
+  month: number,
+): string {
+  if (productToClaim) return `${productToClaim.name} 시장 선점`;
+  if (productToPrepare) return `${productToPrepare.name} 시장 진입 준비`;
+  if (contestedDomain) return month <= 3 ? "우리 제품 분야를 관찰" : "우리 제품 분야를 압박";
+  return "기초 모델 연구 강화";
 }
 
 function getNextClaimableProduct(focusDomains: string[], claimedProducts: string[]): ProductDefinition | undefined {
@@ -636,12 +655,20 @@ function getNextClaimableProduct(focusDomains: string[], claimedProducts: string
 }
 
 function getCompetitionTimeline(previous: CompetitorState[], next: CompetitorState[]): string[] {
-  return next
-    .filter((competitor) => {
-      const old = previous.find((entry) => entry.id === competitor.id);
-      return old && competitor.claimedProducts.length > old.claimedProducts.length;
-    })
-    .map((competitor) => `경쟁사 ${competitor.id} 선점: ${competitor.lastMove}`);
+  return next.flatMap((competitor) => {
+    const old = previous.find((entry) => entry.id === competitor.id);
+    if (!old) return [];
+
+    if (competitor.claimedProducts.length > old.claimedProducts.length) {
+      return [`경쟁사 ${competitor.id} 선점: ${competitor.lastMove}`];
+    }
+
+    if (competitor.lastMove !== old.lastMove && competitor.lastMove.includes("준비")) {
+      return [`경쟁사 ${competitor.id} 예고: ${competitor.lastMove}`];
+    }
+
+    return [];
+  });
 }
 
 function findNextEligibleRivalEvent(state: GameState) {

@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.4-alpha] — 2026-05-15
+
+### Opening Competitor Pacing
+
+**Added:**
+- Early rival foreshadowing during months 2-3 before any product-space claims happen
+- Timeline entries for rival preparation, using `경쟁사 ... 예고` wording
+- Simulation tests that lock the opening learning window and post-window rival claims
+
+**Updated:**
+- Rival product-space claims now begin from month 4 instead of appearing during the first three months
+- Early contested-domain copy now reads as observation before it becomes direct pressure
+- v0.9.1 10-expert P2 competitor pacing feedback is recorded as addressed for this slice
+
+**Verification:**
+- `npm test` passed
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.9.3-alpha] — 2026-05-15
 
 ### Browser QA Scenarios And Screen Polish

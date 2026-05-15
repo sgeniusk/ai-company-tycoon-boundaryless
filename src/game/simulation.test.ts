@@ -265,9 +265,21 @@ describe("v0.5-v0.8 competitive market systems", () => {
     expect(getPlayerMarketShare(nextMonth)).toBeLessThanOrEqual(100);
   });
 
-  it("lets rivals claim product spaces and creates competitive pressure", () => {
+  it("foreshadows rival claims through the first three months without taking spaces", () => {
     let state = createInitialState();
-    for (let month = 0; month < 3; month += 1) {
+    while (state.month < 3) {
+      state = advanceMonth(state);
+    }
+
+    expect(state.month).toBe(3);
+    expect(state.competitorStates.every((competitor) => competitor.claimedProducts.length === 0)).toBe(true);
+    expect(state.competitorStates.some((competitor) => competitor.lastMove.includes("준비"))).toBe(true);
+    expect(state.timeline.some((entry) => entry.includes("경쟁사") && entry.includes("예고"))).toBe(true);
+  });
+
+  it("lets rivals claim product spaces after the opening learning window", () => {
+    let state = createInitialState();
+    while (state.month < 4) {
       state = advanceMonth(state);
     }
 
