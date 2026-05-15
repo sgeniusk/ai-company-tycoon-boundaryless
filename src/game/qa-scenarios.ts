@@ -4,7 +4,23 @@ import { advanceMonth, buyItem, buyOfficeExpansion, chooseGrowthPath, createInit
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
 
-export const qaScenarioIds = ["fresh", "staffing", "project", "release", "reward", "shop", "office", "deck", "strategy", "counter", "rivals", "arc", "commercial", "result"] as const;
+export const qaScenarioIds = [
+  "fresh",
+  "staffing",
+  "project",
+  "release",
+  "reward",
+  "shop",
+  "office",
+  "deck",
+  "strategy",
+  "counter",
+  "rivals",
+  "arc",
+  "flow",
+  "commercial",
+  "result",
+] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
 
@@ -134,6 +150,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "flow") {
+    return {
+      id,
+      label: "첫 10분 흐름 QA",
+      state: createFirstTenMinuteFlowState(strategyState),
+      activeMenu: "company",
+    };
+  }
+
   if (id === "commercial") {
     return {
       id,
@@ -209,6 +234,27 @@ function createOfficeScenarioState(releaseState: GameState): GameState {
   return {
     ...decoratedState,
     timeline: ["사무실 확장 QA: 스타트업 스위트와 핵심 장식을 배치", ...decoratedState.timeline].slice(0, 8),
+  };
+}
+
+function createFirstTenMinuteFlowState(strategyState: GameState): GameState {
+  const startupSuite = officeExpansions.find((expansion) => expansion.id === "startup_suite");
+  const gpuRack = items.find((item) => item.id === "gpu_rack_mini");
+  const fundedState: GameState = {
+    ...strategyState,
+    resources: {
+      ...strategyState.resources,
+      cash: Math.max(strategyState.resources.cash ?? 0, 12000),
+      data: Math.max(strategyState.resources.data ?? 0, 40),
+      compute: Math.max(strategyState.resources.compute ?? 0, 80),
+    },
+  };
+  const expandedState = startupSuite ? buyOfficeExpansion(startupSuite, fundedState) : fundedState;
+  const decoratedState = gpuRack ? buyItem(gpuRack, expandedState) : expandedState;
+
+  return {
+    ...decoratedState,
+    timeline: ["첫 10분 흐름 QA: 출시, 성장 선택, 사무실 정비 후 경쟁 대응 직전", ...decoratedState.timeline].slice(0, 8),
   };
 }
 

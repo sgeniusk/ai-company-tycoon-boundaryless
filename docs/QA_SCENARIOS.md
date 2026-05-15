@@ -24,6 +24,7 @@ Use the local app URL and append one of these query strings:
 | Counter | `?scenario=counter` | Chosen growth path with a claimed rival product, counter cards, and recommendation UI |
 | Rivals | `?scenario=rivals` | Month-12 market with annual strong rivals already entered |
 | Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
+| Flow | `?scenario=flow` | First 10-minute loop with growth choice, office setup, and next rival counter guidance |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 
@@ -41,6 +42,7 @@ Examples:
 - `http://localhost:5173/?scenario=counter`
 - `http://localhost:5173/?scenario=rivals`
 - `http://localhost:5173/?scenario=arc`
+- `http://localhost:5173/?scenario=flow`
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
 
@@ -164,6 +166,16 @@ Examples:
 - Stored decorations list shows unplaced decor or an empty state.
 - Company summary shows office name, hire capacity, and active decoration count.
 - Narrow layout stacks office expansion and decoration rows without button/text overlap.
+
+## v0.12.8 Visual QA Checklist
+
+- Fresh scenario guidance shows `1단계` and the active `에이전트 고용` roadmap item.
+- Project scenario guidance points to `카드와 개발 이슈로 품질 올리기`.
+- Guidance card shows the full `첫 10분 루프` roadmap.
+- Completed roadmap items use a different state from the current active item.
+- Flow scenario opens on the `회사` menu with QA pill `첫 10분 흐름 QA`.
+- Flow scenario shows `사무실 정비` complete and `경쟁 대응` as the next visible objective.
+- Roadmap stacks cleanly on narrow layouts without text overlap.
 
 ## Note
 

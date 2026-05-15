@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.12.8: First Ten Minute Flow Compression
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Guidance exposes a seven-step first-session roadmap | **Passed** |
+| 2 | The roadmap order is hire, start product, card/issue, release, growth, office, rival counter | **Passed** |
+| 3 | Active product projects guide players to the deck/issue step before month advancement | **Passed** |
+| 4 | Solved development issue states guide players toward release progress | **Passed** |
+| 5 | Post-growth states guide players to shop/office setup before rival planning | **Passed** |
+| 6 | Office-ready post-growth states guide players to competition/counter planning | **Passed** |
+| 7 | Browser QA supports `?scenario=flow` | **Passed** |
+| 8 | Targeted guidance and QA scenario tests pass | **Passed** |
+
+---
+
 ## Alpha v0.12.7: Office Expansion And Decoration
 
 | # | Criterion | Status |

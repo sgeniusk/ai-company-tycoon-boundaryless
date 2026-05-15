@@ -3,7 +3,23 @@ import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./q
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
-    expect(qaScenarioIds).toEqual(["fresh", "staffing", "project", "release", "reward", "shop", "office", "deck", "strategy", "counter", "rivals", "arc", "commercial", "result"]);
+    expect(qaScenarioIds).toEqual([
+      "fresh",
+      "staffing",
+      "project",
+      "release",
+      "reward",
+      "shop",
+      "office",
+      "deck",
+      "strategy",
+      "counter",
+      "rivals",
+      "arc",
+      "flow",
+      "commercial",
+      "result",
+    ]);
   });
 
   it("creates a fresh first-screen scenario", () => {
@@ -105,6 +121,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.status).not.toBe("failure");
   });
 
+  it("creates a first ten minute flow scenario for guidance QA", () => {
+    const scenario = createQaScenario("flow");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("첫 10분");
+    expect(scenario.state.chosenGrowthPath?.id).toBe("productivity_line");
+    expect(scenario.state.office.expansionId).toBe("startup_suite");
+    expect(scenario.state.ownedItems).toContain("gpu_rack_mini");
+  });
+
   it("creates a result scenario that focuses the final run recap", () => {
     const scenario = createQaScenario("result");
 
@@ -124,6 +150,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=counter")?.id).toBe("counter");
     expect(createQaScenarioFromSearch("?scenario=rivals")?.id).toBe("rivals");
     expect(createQaScenarioFromSearch("?scenario=deck")?.id).toBe("deck");
+    expect(createQaScenarioFromSearch("?scenario=flow")?.id).toBe("flow");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
     expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");

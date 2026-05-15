@@ -1,6 +1,14 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
 import { agentTypes, assetManifest, domains, products, resources } from "../game/data";
-import { getGuidanceStep, getOpeningObjectives, type GuidanceStep, type OpeningObjective } from "../game/guidance";
+import {
+  getFirstTenMinutePlan,
+  getFirstTenMinuteProgress,
+  getGuidanceStep,
+  getOpeningObjectives,
+  type FirstTenMinuteStep,
+  type GuidanceStep,
+  type OpeningObjective,
+} from "../game/guidance";
 import { resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { getRunSummary } from "../game/run-summary";
 import {
@@ -98,6 +106,8 @@ export function GameStage({
   const companyStage = getCompanyStage(gameState);
   const guidance = getGuidanceStep(gameState);
   const openingObjectives = getOpeningObjectives(gameState);
+  const firstTenMinutePlan = getFirstTenMinutePlan(gameState);
+  const firstTenMinuteProgress = getFirstTenMinuteProgress(gameState);
   const activeProducts = products.filter((product) => gameState.activeProducts.includes(product.id));
   const activeProject = gameState.productProjects[0];
   const activeProjectProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
@@ -205,7 +215,13 @@ export function GameStage({
       </div>
 
       <div className="stage-side">
-        <GuidancePanel guidance={guidance} objectives={openingObjectives} onAction={handleGuidanceAction} />
+        <GuidancePanel
+          firstTenMinutePlan={firstTenMinutePlan}
+          firstTenMinuteProgress={firstTenMinuteProgress}
+          guidance={guidance}
+          objectives={openingObjectives}
+          onAction={handleGuidanceAction}
+        />
         {gameState.lastRelease && (
           <article className="release-spotlight">
             <p className="eyebrow">출시 결과</p>
@@ -343,10 +359,14 @@ export function GameStage({
 }
 
 function GuidancePanel({
+  firstTenMinutePlan,
+  firstTenMinuteProgress,
   guidance,
   objectives,
   onAction,
 }: {
+  firstTenMinutePlan: FirstTenMinuteStep[];
+  firstTenMinuteProgress: number;
   guidance: GuidanceStep;
   objectives: OpeningObjective[];
   onAction: () => void;
@@ -354,11 +374,26 @@ function GuidancePanel({
   return (
     <article className={`guidance-card guidance-${guidance.tone}`}>
       <div>
-        <p className="eyebrow">다음 목표</p>
+        <p className="eyebrow">{guidance.priorityLabel ?? "다음 목표"}</p>
         <h2>{guidance.title}</h2>
         <p>{guidance.description}</p>
+        {guidance.helperText && <small>{guidance.helperText}</small>}
       </div>
       <button onClick={onAction}>{guidance.actionLabel}</button>
+      <div className="first-ten-minute-roadmap">
+        <div>
+          <strong>첫 10분 루프</strong>
+          <span>{firstTenMinuteProgress}%</span>
+        </div>
+        <ol>
+          {firstTenMinutePlan.map((step) => (
+            <li className={[step.complete ? "complete" : "", step.active ? "active" : ""].filter(Boolean).join(" ")} key={step.id}>
+              <span>{step.label}</span>
+              <small>{step.detail}</small>
+            </li>
+          ))}
+        </ol>
+      </div>
       <ol className="objective-strip">
         {objectives.map((objective) => (
           <li className={objective.complete ? "complete" : ""} key={objective.id}>

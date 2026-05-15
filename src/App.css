@@ -523,11 +523,94 @@ p {
   margin-bottom: 0;
 }
 
+.guidance-card small {
+  color: #6b5a3d;
+  display: block;
+  font-size: 0.73rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin-top: 6px;
+}
+
 .guidance-card button {
   align-self: center;
   background: var(--green);
   color: #ffffff;
   font-weight: 900;
+}
+
+.first-ten-minute-roadmap {
+  background: rgba(255, 253, 245, 0.76);
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 8px;
+  grid-column: 1 / -1;
+  padding: 8px;
+}
+
+.first-ten-minute-roadmap > div {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.first-ten-minute-roadmap > div strong {
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+.first-ten-minute-roadmap > div span {
+  background: var(--blue);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 4px 7px;
+}
+
+.first-ten-minute-roadmap ol {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.first-ten-minute-roadmap li {
+  background: #fffdf5;
+  border: 2px solid #d8c49b;
+  min-height: 58px;
+  padding: 6px;
+}
+
+.first-ten-minute-roadmap li span,
+.first-ten-minute-roadmap li small {
+  display: block;
+}
+
+.first-ten-minute-roadmap li span {
+  color: #4f3b21;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.first-ten-minute-roadmap li small {
+  color: #7a684b;
+  font-size: 0.62rem;
+  line-height: 1.25;
+  margin-top: 3px;
+}
+
+.first-ten-minute-roadmap li.complete {
+  background: #e1f3df;
+  border-color: var(--green);
+}
+
+.first-ten-minute-roadmap li.active {
+  background: #fff1c6;
+  border-color: var(--yellow-dark);
+  box-shadow: 0 0 0 2px rgba(224, 160, 40, 0.18);
 }
 
 .guidance-warning {
@@ -2556,6 +2639,10 @@ p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .first-ten-minute-roadmap ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .stat-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2591,6 +2678,7 @@ p {
   .deck-token-strip,
   .reward-choice-heading,
   .deck-edit-card,
+  .first-ten-minute-roadmap ol,
   .meta-unlock-list article {
     grid-template-columns: 1fr;
   }

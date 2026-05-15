@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.12.8-alpha] — 2026-05-16
+
+### 첫 10분 행동 흐름 압축
+
+**추가:**
+- `getFirstTenMinutePlan` 행동 큐.
+- 첫 10분 루프: `에이전트 고용 → 제품 시작 → 카드/이슈 대응 → 첫 출시 → 성장 선택 → 사무실 정비 → 경쟁 대응`.
+- 첫 10분 진행률 계산 `getFirstTenMinuteProgress`.
+- 가이드 카드 안의 `첫 10분 루프` 로드맵 UI.
+- 상황별 우선순위 라벨과 보조 설명 문구.
+- `?scenario=flow` 브라우저 QA 시나리오.
+
+**변경:**
+- 활성 프로젝트가 있을 때 바로 `다음 달`을 누르기보다 먼저 덱/개발 이슈 대응을 안내한다.
+- 출시 후 성장 선택이 끝나면 상점/사무실 정비를 먼저 보여 준다.
+- 사무실 정비 후에는 경쟁사 대응 플랜 확인으로 이어지게 했다.
+- 이벤트가 열려 있어도 첫 10분 핵심 행동 큐가 계속 보이게 했다.
+
+**검증:**
+- `npm test -- src/game/guidance.test.ts src/game/qa-scenarios.test.ts` 통과, 25 tests
+- `npm run harness:gate` 통과, 110 tests
+- Headless Chrome DOM QA: `http://127.0.0.1:5173/?scenario=flow`에서 첫 10분 루프 렌더링 확인
+
+---
+
 ## [0.12.7-alpha] — 2026-05-16
 
 ### 사무실 확장과 회사 꾸미기 효과
