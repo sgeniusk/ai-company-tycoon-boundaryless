@@ -16,6 +16,7 @@ Use the local app URL and append one of these query strings:
 | Staffing | `?scenario=staffing` | Two hired agents, no active project, explicit product team assignment UI |
 | Project | `?scenario=project` | First product in development, progress UI, objective state |
 | Release | `?scenario=release` | Release spotlight, growth fork cards, boundaryless expansion hint, office scene |
+| Reward | `?scenario=reward` | Post-release card reward, deck edit tokens, card remove/upgrade UI |
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
 | Deck | `?scenario=deck` | Active project with strategy hand, development puzzle, and meta unlock panel |
 | Strategy | `?scenario=strategy` | Chosen growth path, competition signal badges, rival pressure |
@@ -28,6 +29,7 @@ Examples:
 - `http://localhost:5173/?scenario=staffing`
 - `http://localhost:5173/?scenario=project`
 - `http://localhost:5173/?scenario=release`
+- `http://localhost:5173/?scenario=reward`
 - `http://localhost:5173/?scenario=shop`
 - `http://localhost:5173/?scenario=deck`
 - `http://localhost:5173/?scenario=strategy`
@@ -100,6 +102,17 @@ Examples:
 - Office scene shows hired agent sprites with name tags and a project board.
 - Shop scenario shows inventory counts for owned items, unequipped gear, and office effects.
 - Deck scenario still shows card hand, puzzle board, and selected puzzle solve button after the staffing UI changes.
+
+## v0.12.3 Visual QA Checklist
+
+- Reward scenario opens on the `덱` menu.
+- The `카드 보상과 덱 편집` panel is visible.
+- Pending release reward shows three card choices and a `덱에 추가` button for each valid choice.
+- Deck summary shows edit token count and reward pending state.
+- Deck edit list shows each current card count, effect text, and `강화`/`제거` buttons.
+- Removing is disabled for last copies or when no edit token remains.
+- Upgraded cards show stronger positive effects and a visible upgraded state.
+- Narrow layout stacks reward choices and deck edit rows without text overlap.
 
 ## Note
 

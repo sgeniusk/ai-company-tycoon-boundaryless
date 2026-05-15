@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.12.3-alpha] — 2026-05-15
+
+### 카드 보상과 덱 편집
+
+**추가:**
+- 제품 출시 후 카드 보상 3택1 생성.
+- 카드 보상 선택 시 선택 카드가 버림 더미에 추가되는 런 내 덱 성장 루프.
+- 출시마다 덱 편집 토큰을 지급하는 구조.
+- 덱 편집 토큰으로 카드 1장 제거 또는 카드 1종 강화.
+- 강화 카드는 긍정 효과가 25% 상승하고, 카드 사용/퍼즐 보정에 반영.
+- 덱 메뉴의 `카드 보상과 덱 편집` 패널.
+- `?scenario=reward` 브라우저 QA 시나리오.
+
+**변경:**
+- 저장 버전을 `4`로 올리고, 기존 저장 데이터에는 덱 편집 토큰, 강화 카드, 보상 이력을 안전하게 보강.
+- 상태 무결성 검증이 강화 카드와 대기 중인 카드 보상을 확인.
+- 덱 메뉴 요약에 편집 토큰과 보상 대기 상태를 표시.
+
+**검증:**
+- `npm test -- src/game/deckbuilding.test.ts src/game/qa-scenarios.test.ts src/game/save-integrity.test.ts` 통과, 25 tests
+- `npm run harness:gate` 통과, 88 tests
+- `npm run validate:data` 통과
+- `npm run build` 통과
+
+---
+
 ## [0.12.2-alpha] — 2026-05-15
 
 ### 완성도 중심 출시와 직원 배치

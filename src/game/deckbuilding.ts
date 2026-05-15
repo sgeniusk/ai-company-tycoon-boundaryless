@@ -2,8 +2,12 @@ import { capabilities, metaUnlocks, resources, strategyCards } from "./data";
 import type {
   ActionCheck,
   ActiveDevelopmentPuzzleModifier,
+  CardRewardChoice,
   DevelopmentChallenge,
   GameState,
+  PendingCardReward,
+  ProductDefinition,
+  ReleaseReview,
   ResourceMap,
   RogueliteState,
   StrategyCardDefinition,
@@ -11,6 +15,7 @@ import type {
 } from "./types";
 
 const handLimit = 7;
+const cardUpgradeMultiplier = 1.25;
 const cardEffectLabels: Record<string, string> = {
   project_progress: "개발 진행",
   project_quality: "완성도",
@@ -42,6 +47,9 @@ export function createInitialRogueliteState(options: {
     founderInsight: options.founderInsight ?? 0,
     unlockedMetaIds,
     deck: createInitialStrategyDeck(unlockedMetaIds),
+    deckEditTokens: 0,
+    upgradedCardIds: [],
+    rewardHistory: [],
   };
 }
 
@@ -76,12 +84,13 @@ export function playStrategyCard(card: StrategyCardDefinition, state: GameState)
   const check = getStrategyCardPlayCheck(card, state);
   if (!check.ok) return state;
 
+  const effects = getStrategyCardEffects(card, state);
   const resourcesAfterCost = applyResourceDelta(state.resources, negateCosts(card.cost));
-  const resourcesAfterEffects = applyResourceDelta(resourcesAfterCost, pickResourceEffects(card.effects));
-  const projectProgress = card.effects.project_progress ?? 0;
-  const projectQuality = card.effects.project_quality ?? 0;
+  const resourcesAfterEffects = applyResourceDelta(resourcesAfterCost, pickResourceEffects(effects));
+  const projectProgress = effects.project_progress ?? 0;
+  const projectQuality = effects.project_quality ?? 0;
   const targetProjectId = state.productProjects[0]?.id;
-  const puzzleModifier = targetProjectId ? createPuzzleModifier(card, targetProjectId) : undefined;
+  const puzzleModifier = targetProjectId ? createPuzzleModifier(card, effects, targetProjectId) : undefined;
   const nextProjects = state.productProjects.map((project) =>
     project.id === targetProjectId
       ? {
@@ -108,8 +117,153 @@ export function playStrategyCard(card: StrategyCardDefinition, state: GameState)
         playedThisTurn: [...state.roguelite.deck.playedThisTurn, card.id],
       },
     },
-    timeline: [`카드 사용: ${card.name} (${formatCardEffects(card.effects)})`, ...state.timeline].slice(0, 8),
+    timeline: [`카드 사용: ${card.name} (${formatCardEffects(effects)})`, ...state.timeline].slice(0, 8),
   };
+}
+
+export function createReleaseCardReward(product: ProductDefinition, review: ReleaseReview, state: GameState): RogueliteState {
+  const rewardHistory = state.roguelite.rewardHistory ?? [];
+  const deckEditTokens = (state.roguelite.deckEditTokens ?? 0) + 1;
+
+  if (state.roguelite.pendingCardReward) {
+    return {
+      ...state.roguelite,
+      deckEditTokens,
+    };
+  }
+
+  return {
+    ...state.roguelite,
+    deckEditTokens,
+    pendingCardReward: {
+      id: `reward_${rewardHistory.length + 1}_${product.id}_${state.month}`,
+      productId: product.id,
+      productName: product.name,
+      month: state.month,
+      reviewGrade: review.grade,
+      offeredCardIds: getReleaseRewardCardIds(product, review, state),
+    },
+  };
+}
+
+export function getCardRewardChoiceCheck(cardId: string, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+  const reward = state.roguelite.pendingCardReward;
+
+  if (state.status !== "playing") reasons.push("운영 중인 런에서만 보상을 고를 수 있습니다.");
+  if (!reward) reasons.push("선택할 카드 보상이 없습니다.");
+  if (!strategyCards.some((card) => card.id === cardId)) reasons.push("알 수 없는 카드입니다.");
+  if (reward && !reward.offeredCardIds.includes(cardId)) reasons.push("이번 보상 후보에 없는 카드입니다.");
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function chooseCardReward(cardId: string, state: GameState): GameState {
+  const check = getCardRewardChoiceCheck(cardId, state);
+  const reward = state.roguelite.pendingCardReward;
+  const card = getStrategyCardById(cardId);
+  if (!check.ok || !reward || !card) return state;
+
+  const historyEntry: CardRewardChoice = {
+    rewardId: reward.id,
+    productId: reward.productId,
+    chosenCardId: card.id,
+    month: state.month,
+  };
+
+  return {
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      pendingCardReward: undefined,
+      rewardHistory: [historyEntry, ...(state.roguelite.rewardHistory ?? [])].slice(0, 12),
+      deck: {
+        ...state.roguelite.deck,
+        discardPile: [...state.roguelite.deck.discardPile, card.id],
+      },
+    },
+    timeline: [`카드 보상 선택: ${card.name}이 덱에 추가됨`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export type DeckEditAction = "remove" | "upgrade";
+
+export function getDeckEditCheck(action: DeckEditAction, cardId: string, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+  const card = getStrategyCardById(cardId);
+  const cardCount = getDeckCardCount(cardId, state.roguelite.deck);
+  const totalCards = getDeckTotalCount(state.roguelite.deck);
+
+  if (state.status !== "playing") reasons.push("운영 중인 런에서만 덱을 편집할 수 있습니다.");
+  if ((state.roguelite.deckEditTokens ?? 0) <= 0) reasons.push("덱 편집 토큰이 없습니다.");
+  if (!card) reasons.push("알 수 없는 카드입니다.");
+  if (cardCount <= 0) reasons.push("덱에 없는 카드입니다.");
+
+  if (action === "remove") {
+    if (cardCount <= 1) reasons.push("마지막 카드 사본은 제거할 수 없습니다.");
+    if (totalCards <= 4) reasons.push("덱은 최소 4장을 유지해야 합니다.");
+  }
+
+  if (action === "upgrade" && (state.roguelite.upgradedCardIds ?? []).includes(cardId)) {
+    reasons.push("이미 강화한 카드입니다.");
+  }
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function removeStrategyCardFromDeck(cardId: string, state: GameState): GameState {
+  const check = getDeckEditCheck("remove", cardId, state);
+  const card = getStrategyCardById(cardId);
+  if (!check.ok || !card) return state;
+
+  return {
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      deckEditTokens: Math.max(0, (state.roguelite.deckEditTokens ?? 0) - 1),
+      deck: removeOneCardFromDeck(cardId, state.roguelite.deck),
+    },
+    timeline: [`덱 정리: ${card.name} 1장 제거`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function upgradeStrategyCard(cardId: string, state: GameState): GameState {
+  const check = getDeckEditCheck("upgrade", cardId, state);
+  const card = getStrategyCardById(cardId);
+  if (!check.ok || !card) return state;
+
+  return {
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      deckEditTokens: Math.max(0, (state.roguelite.deckEditTokens ?? 0) - 1),
+      upgradedCardIds: [...(state.roguelite.upgradedCardIds ?? []), card.id],
+    },
+    timeline: [`카드 강화: ${card.name}의 긍정 효과 상승`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getStrategyCardEffects(card: StrategyCardDefinition, state: GameState): Record<string, number> {
+  if (!(state.roguelite.upgradedCardIds ?? []).includes(card.id)) return card.effects;
+
+  return Object.fromEntries(
+    Object.entries(card.effects).map(([effectId, amount]) => [
+      effectId,
+      amount > 0 ? Math.ceil(amount * cardUpgradeMultiplier) : amount,
+    ]),
+  );
+}
+
+export function getDeckCardCounts(deck: StrategyDeckState): Array<{ cardId: string; count: number }> {
+  const counts = new Map<string, number>();
+
+  for (const cardId of [...deck.hand, ...deck.drawPile, ...deck.discardPile, ...deck.playedThisTurn]) {
+    counts.set(cardId, (counts.get(cardId) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .map(([cardId, count]) => ({ cardId, count }))
+    .sort((a, b) => a.cardId.localeCompare(b.cardId));
 }
 
 export function drawStrategyCards(count: number, state: GameState): GameState {
@@ -177,10 +331,14 @@ function hasProjectEffect(card: StrategyCardDefinition): boolean {
   );
 }
 
-function createPuzzleModifier(card: StrategyCardDefinition, projectId: string): ActiveDevelopmentPuzzleModifier | undefined {
-  const scoreBonus = card.effects.puzzle_score_bonus ?? 0;
-  const difficultyDelta = card.effects.puzzle_difficulty_delta ?? 0;
-  const tileLimitBonus = card.effects.puzzle_tile_limit ?? 0;
+function createPuzzleModifier(
+  card: StrategyCardDefinition,
+  effects: Record<string, number>,
+  projectId: string,
+): ActiveDevelopmentPuzzleModifier | undefined {
+  const scoreBonus = effects.puzzle_score_bonus ?? 0;
+  const difficultyDelta = effects.puzzle_difficulty_delta ?? 0;
+  const tileLimitBonus = effects.puzzle_tile_limit ?? 0;
 
   if (!scoreBonus && !difficultyDelta && !tileLimitBonus) return undefined;
 
@@ -270,6 +428,50 @@ function removeFirst(values: string[], target: string): string[] {
     }
     return true;
   });
+}
+
+function getReleaseRewardCardIds(product: ProductDefinition, review: ReleaseReview, state: GameState): string[] {
+  const availableCards = getUnlockedStrategyCards(state.roguelite.unlockedMetaIds).filter(
+    (card) => getRequirementReasons(card.unlock_requirements, state).length === 0,
+  );
+  const productTags = new Set(product.tags);
+  const ownedCounts = getDeckCardCounts(state.roguelite.deck);
+  const countById = new Map(ownedCounts.map(({ cardId, count }) => [cardId, count]));
+  const gradeBonus = review.score >= 85 ? 4 : review.score >= 70 ? 2 : 0;
+  const rankedCards = availableCards
+    .map((card) => ({
+      card,
+      score:
+        card.tags.filter((tag) => productTags.has(tag)).length * 14 +
+        (card.rarity === "starter" ? 2 : 8) +
+        gradeBonus -
+        (countById.get(card.id) ?? 0) * 2,
+    }))
+    .sort((a, b) => b.score - a.score || a.card.id.localeCompare(b.card.id))
+    .map(({ card }) => card.id);
+
+  return [...new Set(rankedCards)].slice(0, 3);
+}
+
+function getDeckCardCount(cardId: string, deck: StrategyDeckState): number {
+  return getDeckCardCounts(deck).find((entry) => entry.cardId === cardId)?.count ?? 0;
+}
+
+function getDeckTotalCount(deck: StrategyDeckState): number {
+  return deck.hand.length + deck.drawPile.length + deck.discardPile.length + deck.playedThisTurn.length;
+}
+
+function removeOneCardFromDeck(cardId: string, deck: StrategyDeckState): StrategyDeckState {
+  if (deck.hand.includes(cardId)) {
+    return { ...deck, hand: removeFirst(deck.hand, cardId) };
+  }
+  if (deck.drawPile.includes(cardId)) {
+    return { ...deck, drawPile: removeFirst(deck.drawPile, cardId) };
+  }
+  if (deck.discardPile.includes(cardId)) {
+    return { ...deck, discardPile: removeFirst(deck.discardPile, cardId) };
+  }
+  return { ...deck, playedThisTurn: removeFirst(deck.playedThisTurn, cardId) };
 }
 
 function formatCardEffects(effects: Record<string, number>): string {

@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.12.3: Card Rewards And Deck Editing
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Completing or launching a product creates a pending three-card reward | **Passed** |
+| 2 | Choosing a reward adds the selected card to the discard pile and clears the pending reward | **Passed** |
+| 3 | Each release grants a deck edit token | **Passed** |
+| 4 | Deck edit tokens can remove exactly one non-last card copy | **Passed** |
+| 5 | Deck edit tokens can upgrade a card once | **Passed** |
+| 6 | Upgraded cards increase positive card effects when played | **Passed** |
+| 7 | Save/load hydration preserves or safely backfills reward, edit-token, and upgrade state | **Passed** |
+| 8 | Browser QA supports `?scenario=reward` | **Passed** |
+| 9 | `npm run harness:gate` passes | **Passed** |
+
+---
+
 ## Alpha v0.12.2: Quality-Centered Staffing And Inventory
 
 | # | Criterion | Status |

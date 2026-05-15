@@ -17,7 +17,7 @@ import {
   growthPaths,
 } from "./data";
 import { applyAchievementUnlocks } from "./achievements";
-import { createInitialRogueliteState, refreshStrategyDeckForNewMonth } from "./deckbuilding";
+import { createInitialRogueliteState, createReleaseCardReward, refreshStrategyDeckForNewMonth } from "./deckbuilding";
 import { createReleaseGrowthPaths } from "./growth-paths";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
 import type {
@@ -36,6 +36,8 @@ import type {
   HiredAgent,
   ItemDefinition,
   MarketRanking,
+  CardRewardChoice,
+  PendingCardReward,
   ProductProject,
   ProductDefinition,
   ReleaseMoment,
@@ -49,7 +51,7 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-const SAVE_VERSION = 3;
+const SAVE_VERSION = 4;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -198,6 +200,7 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
     productLevels: { ...state.productLevels, [product.id]: 1 },
     productReviews: { ...state.productReviews, [product.id]: releaseReview },
     lastRelease,
+    roguelite: createReleaseCardReward(product, releaseReview, state),
     timeline: [
       `${product.name} 출시: 시장 반응 ${releaseReview.grade} (${releaseReview.score}점)`,
       `${product.name} 출시: 화제성 +${product.hype_on_launch}`,
@@ -956,6 +959,7 @@ function advanceProductProjects(state: GameState): GameState {
         productLevels: { ...nextState.productLevels, [product.id]: 1 },
         productReviews: { ...nextState.productReviews, [product.id]: releaseReview },
         lastRelease,
+        roguelite: createReleaseCardReward(product, releaseReview, nextState),
         hiredAgents: nextState.hiredAgents.map((agent) =>
           progressedProject.assignedAgentIds.includes(agent.id)
             ? { ...agent, assignment: undefined, energy: clamp(agent.energy - 18, 0, 100) }
@@ -1101,12 +1105,17 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState): Roguel
 
   const unlockedMetaIds = sanitizeStringArray(value.unlockedMetaIds);
   const deck = hydrateStrategyDeck(value.deck, fallback.deck);
+  const cardIds = strategyCards.map((card) => card.id);
 
   return {
     runNumber: Math.max(1, Math.round(sanitizeNumber(value.runNumber, fallback.runNumber))),
     founderInsight: Math.max(0, Math.round(sanitizeNumber(value.founderInsight, fallback.founderInsight))),
     unlockedMetaIds,
     deck,
+    deckEditTokens: Math.max(0, Math.round(sanitizeNumber(value.deckEditTokens, fallback.deckEditTokens))),
+    upgradedCardIds: uniqueStrings(sanitizeStringArray(value.upgradedCardIds, cardIds)),
+    rewardHistory: hydrateCardRewardHistory(value.rewardHistory),
+    pendingCardReward: hydratePendingCardReward(value.pendingCardReward),
   };
 }
 
@@ -1120,6 +1129,56 @@ function hydrateStrategyDeck(value: unknown, fallback: StrategyDeckState): Strat
     discardPile: sanitizeStringArray(value.discardPile, cardIds),
     playedThisTurn: sanitizeStringArray(value.playedThisTurn, cardIds),
   };
+}
+
+function hydratePendingCardReward(value: unknown): PendingCardReward | undefined {
+  if (!isRecord(value)) return undefined;
+  const product = typeof value.productId === "string" ? products.find((entry) => entry.id === value.productId) : undefined;
+  const offeredCardIds = uniqueStrings(sanitizeStringArray(value.offeredCardIds, strategyCards.map((card) => card.id))).slice(0, 3);
+
+  if (
+    typeof value.id !== "string" ||
+    !product ||
+    typeof value.productName !== "string" ||
+    typeof value.reviewGrade !== "string" ||
+    offeredCardIds.length === 0
+  ) {
+    return undefined;
+  }
+
+  return {
+    id: value.id,
+    productId: product.id,
+    productName: value.productName,
+    month: Math.max(1, Math.round(sanitizeNumber(value.month, 1))),
+    reviewGrade: value.reviewGrade,
+    offeredCardIds,
+  };
+}
+
+function hydrateCardRewardHistory(value: unknown): CardRewardChoice[] {
+  if (!Array.isArray(value)) return [];
+  const productIds = new Set(products.map((product) => product.id));
+  const cardIds = new Set(strategyCards.map((card) => card.id));
+
+  return value
+    .filter((entry): entry is CardRewardChoice => {
+      if (!isRecord(entry)) return false;
+      return (
+        typeof entry.rewardId === "string" &&
+        typeof entry.productId === "string" &&
+        productIds.has(entry.productId) &&
+        typeof entry.chosenCardId === "string" &&
+        cardIds.has(entry.chosenCardId) &&
+        typeof entry.month === "number" &&
+        Number.isFinite(entry.month)
+      );
+    })
+    .slice(0, 12);
+}
+
+function uniqueStrings(values: string[]): string[] {
+  return [...new Set(values)];
 }
 
 function hydrateDevelopmentPuzzleModifiers(value: unknown): ActiveDevelopmentPuzzleModifier[] {

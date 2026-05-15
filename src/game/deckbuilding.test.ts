@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { agentTypes, products, strategyCards } from "./data";
-import { drawStrategyCards, getStrategyCardPlayCheck, playStrategyCard } from "./deckbuilding";
+import {
+  chooseCardReward,
+  drawStrategyCards,
+  getCardRewardChoiceCheck,
+  getDeckEditCheck,
+  getStrategyCardEffects,
+  getStrategyCardPlayCheck,
+  playStrategyCard,
+  removeStrategyCardFromDeck,
+  upgradeStrategyCard,
+} from "./deckbuilding";
 import {
   createDevelopmentPuzzle,
   getDevelopmentPuzzleResolveCheck,
@@ -8,7 +18,7 @@ import {
   resolveDevelopmentPuzzle,
 } from "./development-puzzle";
 import { getMetaUnlockCheck, getRunInsightReward, resetRunWithMetaUnlocks } from "./meta-progression";
-import { createInitialState, hireAgent, startProductProject } from "./simulation";
+import { advanceMonth, createInitialState, hireAgent, startProductProject } from "./simulation";
 
 describe("v0.12 roguelite deckbuilding foundation", () => {
   it("starts each run with a deterministic starter deck and opening hand", () => {
@@ -164,5 +174,88 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
 
     expect(getDevelopmentPuzzleSelectionLimit(expanded)).toBe(5);
     expect(getDevelopmentPuzzleResolveCheck(projectId, fiveTiles, expanded).ok).toBe(true);
+  });
+
+  it("creates a three-card reward after release and adds the chosen card to discard", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing card reward fixture");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const released = advanceMonth(advanceMonth(started));
+    const reward = released.roguelite.pendingCardReward;
+    if (!reward) throw new Error("Missing pending card reward");
+
+    expect(reward.offeredCardIds).toHaveLength(3);
+    expect(new Set(reward.offeredCardIds).size).toBe(3);
+    expect(released.roguelite.deckEditTokens).toBe(1);
+    expect(getCardRewardChoiceCheck(reward.offeredCardIds[0], released).ok).toBe(true);
+
+    const chosen = chooseCardReward(reward.offeredCardIds[0], released);
+
+    expect(chosen.roguelite.pendingCardReward).toBeUndefined();
+    expect(chosen.roguelite.deck.discardPile).toContain(reward.offeredCardIds[0]);
+    expect(chosen.roguelite.rewardHistory[0]).toMatchObject({
+      productId: "ai_writing_assistant",
+      chosenCardId: reward.offeredCardIds[0],
+    });
+  });
+
+  it("uses deck edit tokens to remove exactly one non-last card copy", () => {
+    const state = {
+      ...createInitialState(),
+      roguelite: {
+        ...createInitialState().roguelite,
+        deckEditTokens: 1,
+        deck: {
+          drawPile: ["prompt_sprint", "gpu_burst"],
+          hand: ["prompt_sprint", "customer_interviews"],
+          discardPile: ["safety_review"],
+          playedThisTurn: [],
+        },
+      },
+    };
+
+    expect(getDeckEditCheck("remove", "prompt_sprint", state).ok).toBe(true);
+
+    const removed = removeStrategyCardFromDeck("prompt_sprint", state);
+
+    expect(removed.roguelite.deckEditTokens).toBe(0);
+    expect(removed.roguelite.deck.hand).toEqual(["customer_interviews"]);
+    expect(removed.roguelite.deck.drawPile).toContain("prompt_sprint");
+    expect(removeStrategyCardFromDeck("gpu_burst", removed)).toBe(removed);
+  });
+
+  it("upgrades a card once and boosts positive effects when played", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    const sprintCard = strategyCards.find((card) => card.id === "prompt_sprint");
+    if (!architect || !writingProduct || !sprintCard) throw new Error("Missing card upgrade fixture");
+
+    const state = {
+      ...startProductProject(writingProduct, hireAgent(architect, createInitialState())),
+      roguelite: {
+        ...createInitialState().roguelite,
+        deckEditTokens: 1,
+        deck: {
+          drawPile: [],
+          hand: ["prompt_sprint"],
+          discardPile: [],
+          playedThisTurn: [],
+        },
+      },
+    };
+    const baseEffects = getStrategyCardEffects(sprintCard, state);
+    const upgraded = upgradeStrategyCard("prompt_sprint", state);
+    const upgradedEffects = getStrategyCardEffects(sprintCard, upgraded);
+
+    expect(upgraded.roguelite.deckEditTokens).toBe(0);
+    expect(upgraded.roguelite.upgradedCardIds).toContain("prompt_sprint");
+    expect(upgradedEffects.project_progress).toBeGreaterThan(baseEffects.project_progress);
+    expect(upgradedEffects.project_quality).toBeGreaterThan(baseEffects.project_quality);
+
+    const played = playStrategyCard(sprintCard, upgraded);
+
+    expect(played.productProjects[0].progress).toBeGreaterThan(state.productProjects[0].progress + baseEffects.project_progress);
   });
 });

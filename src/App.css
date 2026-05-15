@@ -1821,7 +1821,7 @@ p {
 .run-summary-strip {
   display: grid;
   gap: 6px;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
   margin-bottom: 12px;
 }
 
@@ -1863,6 +1863,12 @@ p {
   border-color: #749ad8;
 }
 
+.strategy-card.upgraded,
+.deck-edit-card.upgraded {
+  background: #fff7df;
+  border-color: var(--yellow);
+}
+
 .strategy-card h3,
 .strategy-card p {
   margin-bottom: 0;
@@ -1879,6 +1885,88 @@ p {
   color: #7a5730;
   font-size: 0.72rem;
   line-height: 1.25;
+}
+
+.deck-token-strip,
+.reward-choice-heading {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 10px;
+}
+
+.deck-token-strip span,
+.reward-choice-heading span,
+.reward-choice-heading strong {
+  background: #edf4ff;
+  border: 2px solid #9cb8d6;
+  color: #334b5e;
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 8px;
+  text-align: center;
+}
+
+.reward-choice-heading {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.reward-choice-heading strong {
+  text-align: left;
+}
+
+.reward-choice-block {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.reward-choice-list,
+.deck-edit-list {
+  display: grid;
+  gap: 9px;
+}
+
+.reward-choice {
+  min-height: 0;
+}
+
+.deck-edit-card {
+  align-items: center;
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 10px;
+}
+
+.deck-edit-card h3,
+.deck-edit-card p {
+  margin-bottom: 0;
+}
+
+.deck-edit-card span,
+.deck-edit-card small {
+  color: #5f5546;
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.3;
+  margin-top: 4px;
+}
+
+.deck-edit-actions {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(54px, 1fr));
+}
+
+.deck-edit-actions button {
+  min-width: 54px;
+  padding-left: 9px;
+  padding-right: 9px;
 }
 
 .puzzle-board {
@@ -2169,6 +2257,9 @@ p {
   .assignment-forecast,
   .assignment-agent-grid,
   .inventory-strip,
+  .deck-token-strip,
+  .reward-choice-heading,
+  .deck-edit-card,
   .meta-unlock-list article {
     grid-template-columns: 1fr;
   }

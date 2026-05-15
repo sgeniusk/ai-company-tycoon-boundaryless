@@ -63,6 +63,10 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     issues.push("roguelite runNumber must be a positive number");
   }
 
+  if (!Number.isFinite(state.roguelite.deckEditTokens) || state.roguelite.deckEditTokens < 0) {
+    issues.push("roguelite deckEditTokens must be a non-negative number");
+  }
+
   for (const cardId of [
     ...state.roguelite.deck.drawPile,
     ...state.roguelite.deck.hand,
@@ -70,6 +74,19 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     ...state.roguelite.deck.playedThisTurn,
   ]) {
     if (!cardIds.has(cardId)) issues.push(`strategy deck card "${cardId}" is unknown`);
+  }
+
+  for (const cardId of state.roguelite.upgradedCardIds) {
+    if (!cardIds.has(cardId)) issues.push(`upgraded strategy card "${cardId}" is unknown`);
+  }
+
+  if (state.roguelite.pendingCardReward) {
+    if (!productIds.has(state.roguelite.pendingCardReward.productId)) {
+      issues.push(`pending card reward product "${state.roguelite.pendingCardReward.productId}" is unknown`);
+    }
+    for (const cardId of state.roguelite.pendingCardReward.offeredCardIds) {
+      if (!cardIds.has(cardId)) issues.push(`pending card reward card "${cardId}" is unknown`);
+    }
   }
 
   return { ok: issues.length === 0, issues, warnings };

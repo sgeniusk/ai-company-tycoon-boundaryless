@@ -10,7 +10,18 @@ import {
   getDevelopmentPuzzleSelectionLimit,
   resolveDevelopmentPuzzle,
 } from "../game/development-puzzle";
-import { getStrategyCardById, getStrategyCardPlayCheck, playStrategyCard } from "../game/deckbuilding";
+import {
+  chooseCardReward,
+  getCardRewardChoiceCheck,
+  getDeckCardCounts,
+  getDeckEditCheck,
+  getStrategyCardById,
+  getStrategyCardEffects,
+  getStrategyCardPlayCheck,
+  playStrategyCard,
+  removeStrategyCardFromDeck,
+  upgradeStrategyCard,
+} from "../game/deckbuilding";
 import { getMetaUnlockCheck, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
 import {
   buyAutomationUpgrade,
@@ -187,6 +198,11 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
   const deck = gameState.roguelite.deck;
   const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
+  const deckCards = getDeckCardCounts(deck)
+    .map(({ cardId, count }) => ({ card: getStrategyCardById(cardId), count }))
+    .filter((entry): entry is { card: StrategyCardDefinition; count: number } => Boolean(entry.card));
+  const pendingReward = gameState.roguelite.pendingCardReward;
+  const upgradedCardIds = new Set(gameState.roguelite.upgradedCardIds);
   const activeProject = gameState.productProjects[0];
   const activeProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
   const puzzle = activeProject ? createDevelopmentPuzzle(activeProject.id, gameState) : undefined;
@@ -235,23 +251,106 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <span>이번 런 보상 예상 +{getRunInsightReward(gameState)}</span>
           <span>드로우 {deck.drawPile.length}</span>
           <span>버림 {deck.discardPile.length}</span>
+          <span>편집 토큰 {gameState.roguelite.deckEditTokens}</span>
+          <span>{pendingReward ? "보상 선택 대기" : "보상 없음"}</span>
         </div>
         <div className="card-hand">
           {handCards.map((card) => {
             const check = getStrategyCardPlayCheck(card, gameState);
+            const effects = getStrategyCardEffects(card, gameState);
             return (
-              <article className={`strategy-card rarity-${card.rarity}`} key={card.id}>
+              <article className={`strategy-card rarity-${card.rarity}${upgradedCardIds.has(card.id) ? " upgraded" : ""}`} key={card.id}>
                 <p className="item-meta">{card.category} / {card.rarity}</p>
                 <h3>{card.name}</h3>
                 <p>{card.description}</p>
                 <div className="mini-row">
                   <span>비용 {formatCost(card.cost)}</span>
-                  <span>효과 {formatEffects(card.effects)}</span>
+                  <span>효과 {formatEffects(effects)}</span>
                 </div>
                 <button disabled={!check.ok} onClick={() => setGameState((current) => playStrategyCard(card, current))}>
                   사용
                 </button>
                 {!check.ok && <small>{check.reasons.join(" / ")}</small>}
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>카드 보상과 덱 편집</h2>
+          <p>출시 성과는 다음 제품에 영향을 주는 카드 선택과 덱 정리 기회로 이어집니다.</p>
+        </div>
+        <div className="deck-token-strip">
+          <span>편집 토큰 {gameState.roguelite.deckEditTokens}</span>
+          <span>강화 {gameState.roguelite.upgradedCardIds.length}장</span>
+          <span>보상 선택 {gameState.roguelite.rewardHistory.length}회</span>
+        </div>
+        {pendingReward ? (
+          <div className="reward-choice-block">
+            <div className="reward-choice-heading">
+              <strong>{pendingReward.productName} 출시 보상</strong>
+              <span>리뷰 {pendingReward.reviewGrade} · 3택1</span>
+            </div>
+            <div className="reward-choice-list">
+              {pendingReward.offeredCardIds.map((cardId) => {
+                const card = getStrategyCardById(cardId);
+                if (!card) return null;
+                const check = getCardRewardChoiceCheck(card.id, gameState);
+                const effects = getStrategyCardEffects(card, gameState);
+                return (
+                  <article className={`strategy-card reward-choice rarity-${card.rarity}`} key={card.id}>
+                    <p className="item-meta">{card.category} / {card.rarity}</p>
+                    <h3>{card.name}</h3>
+                    <p>{card.description}</p>
+                    <div className="mini-row">
+                      <span>비용 {formatCost(card.cost)}</span>
+                      <span>효과 {formatEffects(effects)}</span>
+                    </div>
+                    <button disabled={!check.ok} onClick={() => setGameState((current) => chooseCardReward(card.id, current))}>
+                      덱에 추가
+                    </button>
+                    {!check.ok && <small>{check.reasons.join(" / ")}</small>}
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <p className="empty-note">제품을 완성하면 출시 리뷰에 맞춘 카드 보상 3장이 표시됩니다.</p>
+        )}
+        <div className="deck-edit-list">
+          {deckCards.map(({ card, count }) => {
+            const removeCheck = getDeckEditCheck("remove", card.id, gameState);
+            const upgradeCheck = getDeckEditCheck("upgrade", card.id, gameState);
+            const effects = getStrategyCardEffects(card, gameState);
+            const upgraded = upgradedCardIds.has(card.id);
+
+            return (
+              <article className={upgraded ? "deck-edit-card upgraded" : "deck-edit-card"} key={card.id}>
+                <div>
+                  <p className="item-meta">{card.category} / {card.rarity}</p>
+                  <h3>{card.name}</h3>
+                  <span>{count}장 · {formatEffects(effects)}</span>
+                  {!removeCheck.ok && !upgradeCheck.ok && <small>{removeCheck.reasons[0] ?? upgradeCheck.reasons[0]}</small>}
+                </div>
+                <div className="deck-edit-actions">
+                  <button
+                    disabled={!upgradeCheck.ok}
+                    onClick={() => setGameState((current) => upgradeStrategyCard(card.id, current))}
+                    type="button"
+                  >
+                    {upgraded ? "강화됨" : "강화"}
+                  </button>
+                  <button
+                    disabled={!removeCheck.ok}
+                    onClick={() => setGameState((current) => removeStrategyCardFromDeck(card.id, current))}
+                    type="button"
+                  >
+                    제거
+                  </button>
+                </div>
               </article>
             );
           })}

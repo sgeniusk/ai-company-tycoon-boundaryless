@@ -258,6 +258,22 @@ export interface StrategyDeckState {
   playedThisTurn: string[];
 }
 
+export interface PendingCardReward {
+  id: string;
+  productId: string;
+  productName: string;
+  month: number;
+  reviewGrade: string;
+  offeredCardIds: string[];
+}
+
+export interface CardRewardChoice {
+  rewardId: string;
+  productId: string;
+  chosenCardId: string;
+  month: number;
+}
+
 export interface MetaUnlockDefinition {
   id: string;
   title: string;
@@ -273,6 +289,10 @@ export interface RogueliteState {
   founderInsight: number;
   unlockedMetaIds: string[];
   deck: StrategyDeckState;
+  deckEditTokens: number;
+  upgradedCardIds: string[];
+  rewardHistory: CardRewardChoice[];
+  pendingCardReward?: PendingCardReward;
 }
 
 export type DevelopmentChallenge = "ux" | "bug" | "compute" | "safety" | "research" | "market" | "data" | "creative" | "automation";

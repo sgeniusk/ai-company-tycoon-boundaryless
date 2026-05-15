@@ -3,7 +3,7 @@ import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./q
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
-    expect(qaScenarioIds).toEqual(["fresh", "staffing", "project", "release", "shop", "deck", "strategy", "arc", "commercial"]);
+    expect(qaScenarioIds).toEqual(["fresh", "staffing", "project", "release", "reward", "shop", "deck", "strategy", "arc", "commercial"]);
   });
 
   it("creates a fresh first-screen scenario", () => {
@@ -51,6 +51,15 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.ownedItems).toHaveLength(0);
   });
 
+  it("creates a card reward scenario after first release", () => {
+    const scenario = createQaScenario("reward");
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.state.activeProducts).toContain("ai_writing_assistant");
+    expect(scenario.state.roguelite.pendingCardReward?.offeredCardIds).toHaveLength(3);
+    expect(scenario.state.roguelite.deckEditTokens).toBeGreaterThanOrEqual(1);
+  });
+
   it("creates a deck and puzzle scenario for roguelite QA", () => {
     const scenario = createQaScenario("deck");
 
@@ -82,6 +91,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
   it("creates scenarios from URL search params for browser QA", () => {
     expect(createQaScenarioFromSearch("?scenario=release")?.id).toBe("release");
     expect(createQaScenarioFromSearch("?scenario=staffing")?.id).toBe("staffing");
+    expect(createQaScenarioFromSearch("?scenario=reward")?.id).toBe("reward");
     expect(createQaScenarioFromSearch("?scenario=strategy")?.id).toBe("strategy");
     expect(createQaScenarioFromSearch("?scenario=deck")?.id).toBe("deck");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
