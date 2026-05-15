@@ -503,6 +503,19 @@ p {
   padding: 7px 8px;
 }
 
+.release-spotlight .release-headline {
+  color: #fff7df;
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+.release-spotlight .market-reaction {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(242, 207, 127, 0.35);
+  color: #efe4c4;
+  padding: 7px 8px;
+}
+
 .growth-fork-list {
   display: grid;
   gap: 6px;

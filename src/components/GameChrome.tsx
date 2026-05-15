@@ -158,7 +158,9 @@ export function GameStage({
               <span>{gameState.lastRelease.review.score}점</span>
             </div>
             <h2>{gameState.lastRelease.productName}</h2>
+            <p className="release-headline">{gameState.lastRelease.headline}</p>
             <p>{gameState.lastRelease.review.quote}</p>
+            <p className="market-reaction">{gameState.lastRelease.marketReaction}</p>
             <p className="expansion-hint">{gameState.lastRelease.expansionHint}</p>
             {gameState.lastRelease.growthPaths?.length > 0 && (
               <div className="growth-fork-list">

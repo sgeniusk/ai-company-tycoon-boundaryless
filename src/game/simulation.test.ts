@@ -194,6 +194,8 @@ describe("alpha production systems", () => {
         grade: released.productReviews.ai_writing_assistant.grade,
         score: released.productReviews.ai_writing_assistant.score,
       },
+      headline: expect.stringContaining("AI 글쓰기 비서"),
+      marketReaction: expect.stringContaining("이용자"),
       expansionHint: expect.stringContaining("회의"),
     });
     expect(released.lastRelease?.growthPaths).toHaveLength(3);

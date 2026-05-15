@@ -6,6 +6,18 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.9.9: Release Headlines And Market Reaction
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Release moments include a product-specific headline | **Passed** |
+| 2 | Release moments include market reaction copy with expected user signal | **Passed** |
+| 3 | Release spotlight renders headline and market reaction text | **Passed** |
+| 4 | Older release saves are hydrated with fallback headline/reaction copy | **Passed** |
+| 5 | `npm test`, `npm run validate:data`, and `npm run build` pass | **Passed** |
+
+---
+
 ## Alpha v0.9.8: Growth Path Follow-Up Objectives
 
 | # | Criterion | Status |

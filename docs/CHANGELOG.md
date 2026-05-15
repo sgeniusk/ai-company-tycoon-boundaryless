@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.9.9-alpha] — 2026-05-15
+
+### Release Headlines And Market Reaction
+
+**Added:**
+- Release headline generation based on product and review score
+- Market reaction copy for consumer, developer, and enterprise launches
+- Release spotlight display for headline and reaction text
+- Save hydration backfill for older release moments
+
+**Updated:**
+- Release moment tests now verify headline and market reaction presence
+
+**Verification:**
+- `npm test` passed, 50 tests
+- `npm run validate:data` passed
+- `npm run build` passed
+
+---
+
 ## [0.9.8-alpha] — 2026-05-15
 
 ### Growth Path Follow-Up Objectives

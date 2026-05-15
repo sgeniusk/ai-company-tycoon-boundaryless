@@ -330,6 +330,8 @@ export interface ReleaseMoment {
   productName: string;
   month: number;
   review: ReleaseReview;
+  headline: string;
+  marketReaction: string;
   expansionHint: string;
   growthPaths: ReleaseGrowthPath[];
 }

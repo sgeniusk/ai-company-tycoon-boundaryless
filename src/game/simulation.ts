@@ -16,6 +16,7 @@ import {
   growthPaths,
 } from "./data";
 import { createReleaseGrowthPaths } from "./growth-paths";
+import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
 import type {
   AgentStats,
   AgentTypeDefinition,
@@ -171,6 +172,8 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
     productName: product.name,
     month: state.month,
     review: releaseReview,
+    headline: createReleaseHeadline(product, releaseReview),
+    marketReaction: createMarketReaction(product, releaseReview),
     expansionHint: getReleaseExpansionHint(product),
     growthPaths: createReleaseGrowthPaths(product),
   };
@@ -758,6 +761,8 @@ function advanceProductProjects(state: GameState): GameState {
         productName: product.name,
         month: state.month,
         review: releaseReview,
+        headline: createReleaseHeadline(product, releaseReview),
+        marketReaction: createMarketReaction(product, releaseReview),
         expansionHint: getReleaseExpansionHint(product),
         growthPaths: createReleaseGrowthPaths(product),
       };
@@ -869,8 +874,11 @@ function hydrateReleaseMoment(lastRelease: ReleaseMoment | undefined): ReleaseMo
   if (lastRelease.growthPaths?.length) return lastRelease;
 
   const product = products.find((entry) => entry.id === lastRelease.productId);
+  const review = lastRelease.review;
   return {
     ...lastRelease,
+    headline: lastRelease.headline ?? (product ? createReleaseHeadline(product, review) : `${lastRelease.productName} 출시`),
+    marketReaction: lastRelease.marketReaction ?? (product ? createMarketReaction(product, review) : "시장 반응을 다시 집계하고 있습니다."),
     growthPaths: product ? createReleaseGrowthPaths(product) : [],
   };
 }
