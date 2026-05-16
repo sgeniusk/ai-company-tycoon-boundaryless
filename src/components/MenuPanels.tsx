@@ -9,7 +9,7 @@ import {
   getAnnualReviewProgress,
   getCurrentAnnualReview,
 } from "../game/annual-review";
-import { getAnnualStrategyAdvice } from "../game/annual-strategy-advisor";
+import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
@@ -747,7 +747,13 @@ function ProductsPanel({
   const expansionDomainIds = ["foundation_models", "semiconductors", "mobility", "robotics", "odd_industries", "toys"];
   const unlockedDomainIds = new Set(gameState.unlockedDomains);
   const domainFilters = getProductDomainFilters(products, domains, gameState);
-  const filteredProducts = getProductsByDomainFilter(products, selectedDomainFilterId);
+  const strategyFocus = getAnnualStrategyMenuFocus(gameState, "products");
+  const filteredProducts = prioritizeAnnualStrategyFocus(
+    getProductsByDomainFilter(products, selectedDomainFilterId).map((product) => product.id),
+    strategyFocus,
+  )
+    .map((productId) => products.find((product) => product.id === productId))
+    .filter((product): product is NonNullable<typeof product> => Boolean(product));
   const selectedFilter = domainFilters.find((filter) => filter.id === selectedDomainFilterId) ?? domainFilters[0];
   const getSelectedAgentIds = (productId: string) => {
     const availableAgentIds = new Set(availableAgents.map((agent) => agent.id));
@@ -775,6 +781,12 @@ function ProductsPanel({
         <h2>제품 개발</h2>
         <p>AI 모델에서 시작해 앱, 칩, 로봇, 차량, 엉뚱한 소비 산업으로 확장합니다. 핵심 개발력은 투입 팀과 에이전트 조합이 만듭니다.</p>
       </div>
+      {strategyFocus && (
+        <div className="strategy-focus-strip">
+          <strong>{strategyFocus.title}: {strategyFocus.label}</strong>
+          <span>{strategyFocus.reason}</span>
+        </div>
+      )}
       <div className="expansion-map">
         {expansionDomainIds.map((domainId) => {
           const domain = domains.find((entry) => entry.id === domainId);
@@ -830,7 +842,7 @@ function ProductsPanel({
           const claimers = gameState.competitorStates.filter((competitor) => competitor.claimedProducts.includes(product.id));
 
           return (
-            <article className="item-card product-card" key={product.id}>
+            <article className={`item-card product-card${strategyFocus?.targetId === product.id ? " strategy-focus" : ""}`} key={product.id}>
               <div>
                 <p className="item-meta">{domain?.name ?? product.domain}</p>
                 <h3>{product.name}</h3>
@@ -1161,19 +1173,30 @@ function AgentCard({
 }
 
 function ResearchPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  const strategyFocus = getAnnualStrategyMenuFocus(gameState, "research");
+  const orderedCapabilities = prioritizeAnnualStrategyFocus(capabilities.map((capability) => capability.id), strategyFocus)
+    .map((capabilityId) => capabilities.find((capability) => capability.id === capabilityId))
+    .filter((capability): capability is NonNullable<typeof capability> => Boolean(capability));
+
   return (
     <section className="panel">
       <div className="panel-heading">
         <h2>AI 연구</h2>
         <p>재사용 가능한 능력이 새 시장을 엽니다.</p>
       </div>
+      {strategyFocus && (
+        <div className="strategy-focus-strip">
+          <strong>{strategyFocus.title}: {strategyFocus.label}</strong>
+          <span>{strategyFocus.reason}</span>
+        </div>
+      )}
       <div className="item-list compact">
-        {capabilities.map((capability) => {
+        {orderedCapabilities.map((capability) => {
           const currentLevel = gameState.capabilities[capability.id] ?? 0;
           const check = getCapabilityCheck(capability, gameState);
 
           return (
-            <article className="capability-row" key={capability.id}>
+            <article className={`capability-row${strategyFocus?.targetId === capability.id ? " strategy-focus" : ""}`} key={capability.id}>
               <div>
                 <h3>{capability.name}</h3>
                 <p>Lv.{currentLevel} / {capability.max_level}</p>
@@ -1441,6 +1464,10 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
   const rankings = getMarketRankings(gameState);
   const strategySignals = getGrowthPathCompetitionSignals(gameState);
   const rivalCounterPlans = getRivalCounterPlans(gameState);
+  const strategyFocus = getAnnualStrategyMenuFocus(gameState, "competition");
+  const orderedCompetitorStates = prioritizeAnnualStrategyFocus(gameState.competitorStates.map((competitor) => competitor.id), strategyFocus)
+    .map((competitorId) => gameState.competitorStates.find((competitor) => competitor.id === competitorId))
+    .filter((competitor): competitor is NonNullable<typeof competitor> => Boolean(competitor));
   const activeCompetitorIds = new Set(gameState.competitorStates.map((competitor) => competitor.id));
   const upcomingCompetitors = competitors
     .filter((competitor) => (competitor.entry_month ?? 1) > gameState.month && !activeCompetitorIds.has(competitor.id))
@@ -1482,6 +1509,12 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
           <h2>경쟁사 프로필</h2>
           <p>각 회사의 성향과 선점한 제품 공간입니다. 시간이 지나면 강력한 신규 경쟁사가 시장에 들어옵니다.</p>
         </div>
+        {strategyFocus && (
+          <div className="strategy-focus-strip">
+            <strong>{strategyFocus.title}: {strategyFocus.label}</strong>
+            <span>{strategyFocus.reason}</span>
+          </div>
+        )}
         {rivalCounterPlans.length > 0 && (
           <div className="counter-plan-list">
             {rivalCounterPlans.map((plan) => (
@@ -1504,7 +1537,7 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
           </div>
         )}
         <div className="competitor-grid">
-          {gameState.competitorStates.map((state) => {
+          {orderedCompetitorStates.map((state) => {
             const competitor = competitors.find((entry) => entry.id === state.id);
             const identity = getCompetitorIdentity(state.id);
             const claimedProducts = products.filter((product) => state.claimedProducts.includes(product.id));
@@ -1513,7 +1546,11 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
             if (!competitor) return null;
 
             return (
-              <article className={`competitor-card ${signal ? `signal-${signal.severity}` : ""}`} style={{ borderColor: competitor.color }} key={state.id}>
+              <article
+                className={`competitor-card ${signal ? `signal-${signal.severity}` : ""}${strategyFocus?.targetId === state.id ? " strategy-focus" : ""}`}
+                style={{ borderColor: competitor.color }}
+                key={state.id}
+              >
                 <div className="competitor-top">
                   <div
                     className={`competitor-logo ${identity?.logo_class ?? ""}`}

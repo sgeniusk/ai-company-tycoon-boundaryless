@@ -29,6 +29,14 @@ export interface AnnualStrategyAction {
   description: string;
 }
 
+export interface AnnualStrategyMenuFocus {
+  menu: "products" | "research" | "competition";
+  targetId: string;
+  title: string;
+  label: string;
+  reason: string;
+}
+
 const strategyTagLabels: Record<string, string> = {
   trust: "신뢰",
   safety: "안전",
@@ -95,6 +103,56 @@ export function getAnnualStrategyAdvice(state: GameState): AnnualStrategyAdvice 
     rivalRecommendations,
     actionRecommendations,
   };
+}
+
+export function getAnnualStrategyMenuFocus(
+  state: GameState,
+  menu: AnnualStrategyMenuFocus["menu"],
+): AnnualStrategyMenuFocus | undefined {
+  const advice = getAnnualStrategyAdvice(state);
+  if (!advice) return undefined;
+
+  if (menu === "products") {
+    const product = advice.productRecommendations[0];
+    if (!product) return undefined;
+    return {
+      menu,
+      targetId: product.id,
+      title: "전략실 추천 제품",
+      label: product.name,
+      reason: product.reason,
+    };
+  }
+
+  if (menu === "research") {
+    const capability = advice.capabilityRecommendations[0];
+    if (!capability) return undefined;
+    return {
+      menu,
+      targetId: capability.id,
+      title: "전략실 추천 연구",
+      label: capability.name,
+      reason: capability.reason,
+    };
+  }
+
+  const rival = advice.rivalRecommendations[0];
+  if (!rival) return undefined;
+  return {
+    menu,
+    targetId: rival.competitorId,
+    title: "전략실 추천 대응",
+    label: rival.competitorName,
+    reason: `${rival.label} · 압박 ${rival.pressureScore}`,
+  };
+}
+
+export function prioritizeAnnualStrategyFocus<T extends string>(
+  ids: T[],
+  focus: Pick<AnnualStrategyMenuFocus, "targetId"> | undefined,
+): T[] {
+  if (!focus || !ids.includes(focus.targetId as T)) return ids;
+  return [focus.targetId as T, ...ids.filter((id) => id !== focus.targetId)];
 }
 
 function toMenuId(value: string): MenuId {

@@ -4,6 +4,22 @@
 
 ---
 
+## [0.15.2-alpha] — 2026-05-17
+
+### 전략실 추천 실행감
+
+**추가:**
+- 제품, 연구, 경쟁 메뉴에 `전략실 추천` 상단 포커스 스트립을 추가했다.
+- 추천 대상 제품/연구/경쟁사 카드에 강조 스타일을 적용했다.
+- QA URL에서 `menu` 파라미터로 초기 메뉴를 덮어쓸 수 있게 했다.
+
+**검증:**
+- `npm test -- src/game/annual-strategy-advisor.test.ts src/game/qa-scenarios.test.ts` 통과, 26 tests
+- `npm run harness:gate` 통과, 156 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=annual-strategy&menu=products` 1366x768 렌더링 확인, 제품 메뉴 전략실 포커스 표시 확인
+
+---
+
 ## [0.15.1-alpha] — 2026-05-16
 
 ### 연간 전략실 액션화와 문서 정리

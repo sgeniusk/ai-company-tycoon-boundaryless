@@ -254,4 +254,11 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
+
+  it("allows QA URLs to override the active menu", () => {
+    expect(createQaScenarioFromSearch("?scenario=annual-strategy&menu=products")?.activeMenu).toBe("products");
+    expect(createQaScenarioFromSearch("?scenario=annual-strategy&menu=research")?.activeMenu).toBe("research");
+    expect(createQaScenarioFromSearch("?scenario=annual-strategy&menu=competition")?.activeMenu).toBe("competition");
+    expect(createQaScenarioFromSearch("?scenario=annual-strategy&menu=unknown")?.activeMenu).toBe("company");
+  });
 });

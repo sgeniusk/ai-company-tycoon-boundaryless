@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { chooseAnnualDirective } from "./annual-review";
-import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
+import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "./annual-strategy-advisor";
 import { advanceMonth, createInitialState } from "./simulation";
 import type { GameState } from "./types";
 
@@ -31,6 +31,41 @@ describe("v0.15 annual strategy advisor", () => {
 
   it("returns undefined when there is no active annual directive with reward bias tags", () => {
     expect(getAnnualStrategyAdvice(createInitialState())).toBeUndefined();
+  });
+
+  it("creates menu-specific focus rows from annual strategy advice", () => {
+    const state = createTrustedEnterpriseDirectiveState();
+
+    expect(getAnnualStrategyMenuFocus(state, "products")).toMatchObject({
+      menu: "products",
+      title: "전략실 추천 제품",
+      targetId: "customer_support_chatbot",
+    });
+    expect(getAnnualStrategyMenuFocus(state, "research")).toMatchObject({
+      menu: "research",
+      title: "전략실 추천 연구",
+      targetId: "enterprise",
+    });
+    expect(getAnnualStrategyMenuFocus(state, "competition")).toMatchObject({
+      menu: "competition",
+      title: "전략실 추천 대응",
+      targetId: "competitor_chatgody",
+    });
+  });
+
+  it("moves the focused recommendation to the top of menu lists", () => {
+    const state = createTrustedEnterpriseDirectiveState();
+    const focus = getAnnualStrategyMenuFocus(state, "products");
+
+    expect(prioritizeAnnualStrategyFocus(["foundation_model_v0", "ai_writing_assistant", "customer_support_chatbot"], focus)).toEqual([
+      "customer_support_chatbot",
+      "foundation_model_v0",
+      "ai_writing_assistant",
+    ]);
+    expect(prioritizeAnnualStrategyFocus(["foundation_model_v0", "ai_writing_assistant"], focus)).toEqual([
+      "foundation_model_v0",
+      "ai_writing_assistant",
+    ]);
   });
 });
 

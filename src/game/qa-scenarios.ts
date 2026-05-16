@@ -405,7 +405,16 @@ export function getQaScenarioId(value: string | null): QaScenarioId | undefined 
 export function createQaScenarioFromSearch(search: string): QaScenario | undefined {
   const params = new URLSearchParams(search);
   const scenarioId = getQaScenarioId(params.get("scenario") ?? params.get("qa"));
-  return scenarioId ? createQaScenario(scenarioId) : undefined;
+  if (!scenarioId) return undefined;
+
+  const scenario = createQaScenario(scenarioId);
+  const menu = getQaMenuId(params.get("menu"));
+  return menu ? { ...scenario, activeMenu: menu } : scenario;
+}
+
+function getQaMenuId(value: string | null): MenuId | undefined {
+  const menuIds: MenuId[] = ["company", "products", "deck", "agents", "research", "shop", "competition", "log"];
+  return menuIds.find((menuId) => menuId === value);
 }
 
 function createStaffingState(): GameState {
