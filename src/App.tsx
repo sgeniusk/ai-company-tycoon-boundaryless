@@ -128,7 +128,7 @@ function App() {
       <CommandRow gameState={gameState} setGameState={setGameState} onSave={handleSave} onLoad={handleLoad} />
       <section className="menu-layout" aria-label="경영 메뉴">
         <MainMenu activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-        <div className="menu-panel">{renderMenuContent(activeMenu, gameState, setGameState, locale)}</div>
+        <div className="menu-panel">{renderMenuContent(activeMenu, gameState, setGameState, locale, setActiveMenu)}</div>
       </section>
     </main>
   );

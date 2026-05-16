@@ -19,6 +19,14 @@ export interface AnnualStrategyAdvice {
   productRecommendations: AnnualStrategyRecommendation[];
   capabilityRecommendations: AnnualStrategyRecommendation[];
   rivalRecommendations: RivalCounterPlan[];
+  actionRecommendations: AnnualStrategyAction[];
+}
+
+export interface AnnualStrategyAction {
+  label: string;
+  menu: MenuId;
+  targetId?: string;
+  description: string;
 }
 
 const strategyTagLabels: Record<string, string> = {
@@ -75,6 +83,7 @@ export function getAnnualStrategyAdvice(state: GameState): AnnualStrategyAdvice 
   const tagLabels = directiveTags.map((tag) => strategyTagLabels[tag] ?? tag);
   const leadingProduct = productRecommendations[0]?.name ?? "다음 제품";
   const leadingCapability = capabilityRecommendations[0]?.name ?? "핵심 연구";
+  const actionRecommendations = createActionRecommendations(productRecommendations, capabilityRecommendations, rivalRecommendations);
 
   return {
     directiveTitle: directive.title,
@@ -84,6 +93,7 @@ export function getAnnualStrategyAdvice(state: GameState): AnnualStrategyAdvice 
     productRecommendations,
     capabilityRecommendations,
     rivalRecommendations,
+    actionRecommendations,
   };
 }
 
@@ -162,6 +172,44 @@ function scoreRivalPlansForDirective(state: GameState, directiveTags: string[]):
     })
     .sort((a, b) => b.score - a.score || a.plan.competitorName.localeCompare(b.plan.competitorName, "ko"))
     .map(({ plan }) => plan);
+}
+
+function createActionRecommendations(
+  productRecommendations: AnnualStrategyRecommendation[],
+  capabilityRecommendations: AnnualStrategyRecommendation[],
+  rivalRecommendations: RivalCounterPlan[],
+): AnnualStrategyAction[] {
+  const actions: AnnualStrategyAction[] = [];
+  const product = productRecommendations[0];
+  const capability = capabilityRecommendations[0];
+  const rival = rivalRecommendations[0];
+
+  if (product) {
+    actions.push({
+      label: "제품 후보 보기",
+      menu: "products",
+      targetId: product.id,
+      description: `${product.name} 개발 가능성을 확인합니다.`,
+    });
+  }
+  if (capability) {
+    actions.push({
+      label: "연구 후보 보기",
+      menu: "research",
+      targetId: capability.id,
+      description: `${capability.name} 연구 비용과 해금 효과를 확인합니다.`,
+    });
+  }
+  if (rival) {
+    actions.push({
+      label: "경쟁 대응 보기",
+      menu: "competition",
+      targetId: rival.competitorId,
+      description: `${rival.competitorName} 대응 카드와 제품 후보를 확인합니다.`,
+    });
+  }
+
+  return actions;
 }
 
 function formatProductReason(product: ProductDefinition, matches: string[], missingCapabilities: string[]): string {

@@ -19,6 +19,13 @@ describe("v0.15 annual strategy advisor", () => {
     expect(advice?.rivalRecommendations[0]).toMatchObject({
       competitorId: "competitor_chatgody",
     });
+    expect(advice?.actionRecommendations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ label: "제품 후보 보기", menu: "products", targetId: "customer_support_chatbot" }),
+        expect.objectContaining({ label: "연구 후보 보기", menu: "research", targetId: "enterprise" }),
+        expect.objectContaining({ label: "경쟁 대응 보기", menu: "competition", targetId: "competitor_chatgody" }),
+      ]),
+    );
     expect(advice?.summary).toContain("신뢰 복리 프로그램");
   });
 

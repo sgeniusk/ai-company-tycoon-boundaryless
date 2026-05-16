@@ -1456,6 +1456,30 @@ p {
   color: var(--green-dark);
 }
 
+.annual-strategy-actions {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.annual-strategy-actions button {
+  align-items: start;
+  background: #f5d37a;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  display: grid;
+  gap: 3px;
+  justify-items: start;
+  min-height: 56px;
+  padding: 7px;
+  text-align: left;
+}
+
+.annual-strategy-actions button span {
+  font-size: 0.66rem;
+  line-height: 1.25;
+}
+
 .annual-choice-panel {
   display: grid;
   gap: 8px;
@@ -3298,6 +3322,7 @@ p {
   .objective-strip,
   .annual-review-meta,
   .annual-strategy-grid,
+  .annual-strategy-actions,
   .annual-goal-list,
   .company-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3345,6 +3370,7 @@ p {
   .first-ten-minute-roadmap ol,
   .annual-choice-list,
   .annual-strategy-grid,
+  .annual-strategy-actions,
   .annual-review-header,
   .annual-review-meta,
   .annual-goal-list,

@@ -133,6 +133,7 @@ export function renderMenuContent(
   gameState: GameState,
   setGameState: Dispatch<SetStateAction<GameState>>,
   locale: LocaleCode,
+  setActiveMenu?: Dispatch<SetStateAction<MenuId>>,
 ) {
   if (activeMenu === "company") {
     const growthObjectives = getGrowthPathObjectives(gameState);
@@ -199,6 +200,14 @@ export function renderMenuContent(
                   <strong>{annualStrategyAdvice.directiveTitle}</strong>
                   <span>{annualStrategyAdvice.summary}</span>
                   <small>편향 태그 {annualStrategyAdvice.tagLabels.join(", ")} · 추천 메뉴 {getMenuLabel(annualStrategyAdvice.recommendedMenu)}</small>
+                </div>
+                <div className="annual-strategy-actions">
+                  {annualStrategyAdvice.actionRecommendations.map((action) => (
+                    <button key={`${action.menu}-${action.targetId ?? action.label}`} onClick={() => setActiveMenu?.(action.menu)} type="button">
+                      <strong>{action.label}</strong>
+                      <span>{action.description}</span>
+                    </button>
+                  ))}
                 </div>
                 <div className="annual-strategy-grid">
                   <article>
