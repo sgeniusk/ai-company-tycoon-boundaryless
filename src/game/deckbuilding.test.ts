@@ -8,6 +8,7 @@ import {
   getCardRewardChoiceCheck,
   getDeckEditCheck,
   getAnnualDirectiveRewardBiasSummary,
+  getAnnualDirectiveRewardBiasMatch,
   getStrategyCardEffects,
   getStrategyCardPlayCheck,
   playStrategyCard,
@@ -336,6 +337,36 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
       tagLabels: ["신뢰", "안전", "기업"],
       description: "다음 카드 보상 후보가 신뢰, 안전, 기업 태그 쪽으로 기울어집니다.",
     });
+  });
+
+  it("explains why a reward card matches the active annual directive", () => {
+    const reviewed = advanceMonth({
+      ...createInitialState(),
+      month: 11,
+      activeProducts: ["foundation_model_v0", "ai_writing_assistant"],
+      productLevels: {
+        foundation_model_v0: 1,
+        ai_writing_assistant: 1,
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 16000,
+        users: 1800,
+        trust: 42,
+        hype: 30,
+        automation: 8,
+      },
+    });
+    const directed = chooseAnnualDirective("trust_compound_program", reviewed);
+    const shieldCard = strategyCards.find((card) => card.id === "interoperability_shield");
+    const sprintCard = strategyCards.find((card) => card.id === "prompt_sprint");
+    if (!shieldCard || !sprintCard) throw new Error("Missing reward bias match fixture");
+
+    expect(getAnnualDirectiveRewardBiasMatch(shieldCard, directed)).toMatchObject({
+      matchedTagLabels: ["신뢰", "안전", "기업"],
+      label: "지시 보너스: 신뢰, 안전, 기업",
+    });
+    expect(getAnnualDirectiveRewardBiasMatch(sprintCard, directed)).toBeUndefined();
   });
 
   it("uses deck edit tokens to remove exactly one non-last card copy", () => {

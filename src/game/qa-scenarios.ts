@@ -276,7 +276,7 @@ function createAnnualReviewScenarioState(): GameState {
 function createAnnualRewardBiasScenarioState(): GameState {
   const reviewedState = createAnnualReviewScenarioState();
   const directedState = chooseAnnualDirective("trust_compound_program", reviewedState);
-  const rewardProduct = products.find((product) => product.id === "ai_writing_assistant");
+  const rewardProduct = products.find((product) => product.id === "customer_support_chatbot");
   if (!rewardProduct) return directedState;
 
   return {

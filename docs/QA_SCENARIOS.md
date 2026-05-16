@@ -64,6 +64,7 @@ Examples:
 - The bias strip names the directive and explains the favored card tags.
 - The strip appears above the three reward card choices and does not push buttons out of view.
 - `?scenario=reward-bias` opens directly on this state.
+- Reward cards matching the annual directive show a `지시 보너스` badge.
 
 ## v0.14.6 Functional QA Checklist
 

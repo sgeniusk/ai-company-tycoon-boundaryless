@@ -34,6 +34,7 @@ import {
 import {
   chooseCardReward,
   getAnnualDirectiveRewardBiasSummary,
+  getAnnualDirectiveRewardBiasMatch,
   getCardRewardChoiceCheck,
   getDeckCardCounts,
   getDeckEditCheck,
@@ -520,11 +521,13 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                 if (!card) return null;
                 const check = getCardRewardChoiceCheck(card.id, gameState);
                 const effects = getStrategyCardEffects(card, gameState);
+                const biasMatch = getAnnualDirectiveRewardBiasMatch(card, gameState);
                 return (
                   <article className={`strategy-card reward-choice rarity-${card.rarity}`} key={card.id}>
                     <p className="item-meta">{card.category} / {card.rarity}</p>
                     <h3>{card.name}</h3>
                     <p>{card.description}</p>
+                    {biasMatch && <small className="reward-bias-match">{biasMatch.label}</small>}
                     <div className="mini-row">
                       <span>비용 {formatCost(card.cost)}</span>
                       <span>효과 {formatEffects(effects)}</span>

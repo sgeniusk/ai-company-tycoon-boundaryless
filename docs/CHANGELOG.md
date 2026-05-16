@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.14.9-alpha] — 2026-05-16
+
+### 보상 카드 지시 보너스 배지
+
+**추가:**
+- 보상 카드별로 현재 연간 지시와 일치하는 태그를 보여 주는 `지시 보너스` 배지를 추가했다.
+- `getAnnualDirectiveRewardBiasMatch` 읽기 모델을 추가했다.
+
+**변경:**
+- 보상 후보가 왜 연간 지시와 맞는지 카드 단위로 설명된다.
+
+**검증:**
+- `npm test -- src/game/deckbuilding.test.ts` 통과, 14 tests
+- `npm test -- src/game/deckbuilding.test.ts src/game/qa-scenarios.test.ts` 통과, 34 tests
+- `npm run harness:gate` 통과, 150 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=reward-bias` 1366x768 렌더링 확인, 보상 카드 `지시 보너스` 배지 확인
+
+**배포:**
+- Vercel 배포 없음. 큰 버전업 때만 배포한다.
+
+---
+
 ## [0.14.8-alpha] — 2026-05-16
 
 ### 연간 지시 보상 편향 QA 시나리오

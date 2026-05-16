@@ -53,6 +53,11 @@ export interface AnnualDirectiveRewardBiasSummary {
   description: string;
 }
 
+export interface AnnualDirectiveRewardBiasMatch {
+  matchedTagLabels: string[];
+  label: string;
+}
+
 export function createInitialStrategyDeck(unlockedMetaIds: string[] = []): StrategyDeckState {
   const cardIds = getUnlockedStrategyCards(unlockedMetaIds).flatMap((card) => Array.from({ length: card.copies }, () => card.id));
 
@@ -102,6 +107,20 @@ export function getAnnualDirectiveRewardBiasSummary(state: GameState): AnnualDir
     title: directive.title,
     tagLabels,
     description: `다음 카드 보상 후보가 ${tagLabels.join(", ")} 태그 쪽으로 기울어집니다.`,
+  };
+}
+
+export function getAnnualDirectiveRewardBiasMatch(
+  card: StrategyCardDefinition,
+  state: GameState,
+): AnnualDirectiveRewardBiasMatch | undefined {
+  const directiveTags = new Set(state.annualDirective?.rewardBiasTags ?? []);
+  const matchedTagLabels = card.tags.filter((tag) => directiveTags.has(tag)).map((tag) => cardTagLabels[tag] ?? tag);
+  if (matchedTagLabels.length === 0) return undefined;
+
+  return {
+    matchedTagLabels,
+    label: `지시 보너스: ${matchedTagLabels.join(", ")}`,
   };
 }
 

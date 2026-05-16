@@ -6,6 +6,18 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.14.9: Reward Card Directive Bonus Badges
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Reward card can report matching active directive bias tags | **Passed** |
+| 2 | Matching tags are shown as readable Korean labels | **Passed** |
+| 3 | Non-matching reward cards do not show a directive bonus badge | **Passed** |
+| 4 | Reward cards render a `지시 보너스` badge when tags match | **Passed** |
+| 5 | Targeted deckbuilding and QA scenario tests pass | **Passed** |
+
+---
+
 ## Alpha v0.14.8: Reward Bias QA Scenario
 
 | # | Criterion | Status |
