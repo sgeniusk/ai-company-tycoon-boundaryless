@@ -87,6 +87,9 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     if (!Number.isFinite(state.annualDirective.expiresMonth)) {
       issues.push(`annual directive "${state.annualDirective.title}" has invalid expiresMonth`);
     }
+    if (!Array.isArray(state.annualDirective.rewardBiasTags)) {
+      issues.push(`annual directive "${state.annualDirective.title}" rewardBiasTags must be an array`);
+    }
   }
 
   if (state.pendingAnnualDirectiveChoices) {

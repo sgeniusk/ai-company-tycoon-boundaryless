@@ -206,6 +206,7 @@ function createAnnualDirective(review: AnnualReviewDefinition, passed: boolean):
     monthlyEffects: template.monthly_effects,
     recommendedMenu: template.recommended_menu,
     rivalMomentumDelta: template.rival_momentum_delta,
+    rewardBiasTags: [],
   };
 }
 
@@ -224,6 +225,7 @@ function createAnnualDirectiveFromChoice(
     monthlyEffects: choice.monthly_effects,
     recommendedMenu: choice.recommended_menu,
     rivalMomentumDelta: choice.rival_momentum_delta,
+    rewardBiasTags: [...choice.reward_bias_tags],
   };
 }
 

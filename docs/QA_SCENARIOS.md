@@ -56,6 +56,14 @@ Examples:
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
 
+## v0.14.6 Functional QA Checklist
+
+- Choose `신뢰 복리 프로그램` after an annual review.
+- Release a product while that directive is active.
+- Card reward choices should favor trust/safety/enterprise cards such as `세이프티 리뷰` or `상호운용 방어막`.
+- Save and reload should preserve the active directive's reward bias tags.
+- Data validation should fail if an annual directive choice has no `reward_bias_tags`.
+
 ## v0.14.5 Visual QA Checklist
 
 - Review scenario shows `다음 해 운영 지시 3택1` inside the annual review card.

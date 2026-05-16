@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.14.6-alpha] — 2026-05-16
+
+### 연간 지시와 카드 보상 연결
+
+**추가:**
+- 연간 운영 지시 선택 데이터에 `reward_bias_tags`를 추가했다.
+- 선택한 연간 지시가 활성 지시에 `rewardBiasTags`로 저장된다.
+- 제품 출시 후 카드 보상 3택1이 선택한 연간 지시의 태그를 반영해 후보를 편향한다.
+
+**변경:**
+- 신뢰형 지시를 고르면 신뢰/안전/기업 태그 카드가 보상 후보에서 더 높은 우선순위를 받는다.
+- 데이터 검증 하네스가 연간 지시 선택의 카드 보상 편향 태그를 검사한다.
+- 저장/로드가 활성 연간 지시의 카드 보상 편향 태그를 보존한다.
+- 상태 무결성 검사가 `rewardBiasTags` 배열 형식을 확인한다.
+
+**검증:**
+- `npm test -- src/game/deckbuilding.test.ts src/game/annual-review.test.ts src/game/save-integrity.test.ts` 통과, 28 tests
+
+**배포:**
+- Vercel 배포 없음. 큰 버전업 때만 배포한다.
+
+---
+
 ## [0.14.5-alpha] — 2026-05-16
 
 ### 연간 심사 후 3택1 운영 지시

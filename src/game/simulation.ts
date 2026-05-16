@@ -1579,6 +1579,7 @@ function hydrateAnnualDirective(value: unknown): AnnualDirectiveState | undefine
     monthlyEffects: sanitizeResourceDelta(value.monthlyEffects),
     recommendedMenu: value.recommendedMenu,
     rivalMomentumDelta: Math.round(clamp(sanitizeNumber(value.rivalMomentumDelta, 0), -12, 12)),
+    rewardBiasTags: sanitizeStringArray(value.rewardBiasTags),
   };
 }
 

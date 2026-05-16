@@ -300,7 +300,7 @@ if (annualDirectiveChoices.length < 6) {
   errors.push(`annual_directive_choices: expected at least 6 choices, found ${annualDirectiveChoices.length}`);
 }
 for (const choice of annualDirectiveChoices) {
-  for (const field of ["title", "description", "sources", "year_range", "monthly_effects", "recommended_menu", "rival_momentum_delta", "tags"]) {
+  for (const field of ["title", "description", "sources", "year_range", "monthly_effects", "recommended_menu", "rival_momentum_delta", "tags", "reward_bias_tags"]) {
     if (!(field in choice)) errors.push(`annual_directive_choice "${choice.id}": missing ${field}`);
   }
   if (!Array.isArray(choice.sources) || choice.sources.length === 0) {
@@ -332,6 +332,9 @@ for (const choice of annualDirectiveChoices) {
   }
   if (!Array.isArray(choice.tags) || choice.tags.length === 0) {
     errors.push(`annual_directive_choice "${choice.id}": tags must be a non-empty array`);
+  }
+  if (!Array.isArray(choice.reward_bias_tags) || choice.reward_bias_tags.length === 0) {
+    errors.push(`annual_directive_choice "${choice.id}": reward_bias_tags must be a non-empty array`);
   }
 }
 

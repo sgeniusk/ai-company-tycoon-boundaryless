@@ -279,6 +279,7 @@ export interface AnnualDirectiveChoiceDefinition extends AnnualReviewDirectiveTe
   sources: AnnualDirectiveSource[];
   year_range: [number, number];
   tags: string[];
+  reward_bias_tags: string[];
 }
 
 export interface AnnualReviewHistoryEntry {
@@ -304,6 +305,7 @@ export interface AnnualDirectiveState {
   monthlyEffects: ResourceMap;
   recommendedMenu: string;
   rivalMomentumDelta: number;
+  rewardBiasTags: string[];
 }
 
 export interface PendingAnnualDirectiveChoices {

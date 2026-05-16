@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { agentTypes, products, strategyCards } from "./data";
+import { chooseAnnualDirective } from "./annual-review";
 import {
   chooseCardReward,
+  createReleaseCardReward,
   drawStrategyCards,
   getCardRewardChoiceCheck,
   getDeckEditCheck,
@@ -271,6 +273,40 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
       productId: "ai_writing_assistant",
       chosenCardId: reward.offeredCardIds[0],
     });
+  });
+
+  it("biases release card rewards toward the chosen annual directive tags", () => {
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!writingProduct) throw new Error("Missing annual directive reward fixture");
+
+    const reviewed = advanceMonth({
+      ...createInitialState(),
+      month: 11,
+      activeProducts: ["foundation_model_v0", "ai_writing_assistant"],
+      productLevels: {
+        foundation_model_v0: 1,
+        ai_writing_assistant: 1,
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 16000,
+        users: 1800,
+        trust: 42,
+        hype: 30,
+        automation: 8,
+      },
+    });
+    const directed = chooseAnnualDirective("trust_compound_program", reviewed);
+    const roguelite = createReleaseCardReward(
+      writingProduct,
+      { grade: "A", score: 88, quote: "기업 고객이 안심할 수 있다." },
+      directed,
+    );
+
+    expect(directed.annualDirective?.rewardBiasTags).toEqual(expect.arrayContaining(["trust", "safety", "enterprise"]));
+    expect(roguelite.pendingCardReward?.offeredCardIds.slice(0, 2)).toEqual(
+      expect.arrayContaining(["interoperability_shield", "safety_review"]),
+    );
   });
 
   it("uses deck edit tokens to remove exactly one non-last card copy", () => {

@@ -6,6 +6,20 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.14.6: Annual Directive Card Reward Synergy
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Annual directive choices define card reward bias tags | **Passed** |
+| 2 | Choosing an annual directive stores reward bias tags on the active directive | **Passed** |
+| 3 | Save hydration preserves active directive reward bias tags | **Passed** |
+| 4 | Release card reward ranking includes active directive bias tags | **Passed** |
+| 5 | Trust-focused directives can push trust/safety/enterprise cards into top reward offers | **Passed** |
+| 6 | Data validation checks non-empty reward bias tags | **Passed** |
+| 7 | State integrity checks active directive reward bias tag shape | **Passed** |
+
+---
+
 ## Alpha v0.14.5: Annual Directive Choices
 
 | # | Criterion | Status |

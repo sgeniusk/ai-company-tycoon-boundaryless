@@ -483,6 +483,7 @@ function getReleaseRewardCardIds(product: ProductDefinition, review: ReleaseRevi
     (card) => getRequirementReasons(card.unlock_requirements, state).length === 0,
   );
   const productTags = new Set(product.tags);
+  const directiveRewardBiasTags = new Set(state.annualDirective?.rewardBiasTags ?? []);
   const ownedCounts = getDeckCardCounts(state.roguelite.deck);
   const countById = new Map(ownedCounts.map(({ cardId, count }) => [cardId, count]));
   const gradeBonus = review.score >= 85 ? 4 : review.score >= 70 ? 2 : 0;
@@ -491,6 +492,7 @@ function getReleaseRewardCardIds(product: ProductDefinition, review: ReleaseRevi
       card,
       score:
         card.tags.filter((tag) => productTags.has(tag)).length * 14 +
+        card.tags.filter((tag) => directiveRewardBiasTags.has(tag)).length * 18 +
         (card.rarity === "starter" ? 2 : 8) +
         gradeBonus -
         (countById.get(card.id) ?? 0) * 2,

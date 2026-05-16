@@ -139,6 +139,18 @@ describe("v0.14.5 annual directive choices", () => {
     expect(hydrated.annualDirective).toBeUndefined();
     expect(hydrated.pendingAnnualDirectiveChoices).toBeUndefined();
   });
+
+  it("preserves annual directive reward bias tags through save hydration", () => {
+    const reviewed = advanceMonth({
+      ...createYearOneReadyState(),
+      month: 11,
+      annualReviewHistory: [],
+    });
+    const chosen = chooseAnnualDirective("trust_compound_program", reviewed);
+    const hydrated = hydrateGameState(serializeGameState(chosen));
+
+    expect(hydrated.annualDirective?.rewardBiasTags).toEqual(expect.arrayContaining(["trust", "safety", "enterprise"]));
+  });
 });
 
 function createYearOneReadyState(): GameState {

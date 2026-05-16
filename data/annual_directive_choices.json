@@ -9,7 +9,8 @@
       "monthly_effects": {"users": 180, "data": 4, "hype": 1},
       "recommended_menu": "products",
       "rival_momentum_delta": 1,
-      "tags": ["products", "users", "early"]
+      "tags": ["products", "users", "early"],
+      "reward_bias_tags": ["product", "growth", "ux"]
     },
     {
       "id": "trust_compound_program",
@@ -20,7 +21,8 @@
       "monthly_effects": {"trust": 1, "cash": 220},
       "recommended_menu": "research",
       "rival_momentum_delta": 0,
-      "tags": ["trust", "enterprise", "recovery"]
+      "tags": ["trust", "enterprise", "recovery"],
+      "reward_bias_tags": ["trust", "safety", "enterprise"]
     },
     {
       "id": "research_lab_sprint",
@@ -31,7 +33,8 @@
       "monthly_effects": {"data": 8, "compute": 4},
       "recommended_menu": "research",
       "rival_momentum_delta": 1,
-      "tags": ["research", "capability"]
+      "tags": ["research", "capability"],
+      "reward_bias_tags": ["research", "data", "developer"]
     },
     {
       "id": "cashflow_discipline",
@@ -42,7 +45,8 @@
       "monthly_effects": {"cash": 420, "compute": 3},
       "recommended_menu": "shop",
       "rival_momentum_delta": 2,
-      "tags": ["cash", "recovery", "ops"]
+      "tags": ["cash", "recovery", "ops"],
+      "reward_bias_tags": ["compute", "speed", "automation"]
     },
     {
       "id": "automation_backbone",
@@ -53,7 +57,8 @@
       "monthly_effects": {"automation": 1, "cash": 300},
       "recommended_menu": "shop",
       "rival_momentum_delta": 1,
-      "tags": ["automation", "ops"]
+      "tags": ["automation", "ops"],
+      "reward_bias_tags": ["automation", "agent", "compute"]
     },
     {
       "id": "rival_war_room",
@@ -64,7 +69,8 @@
       "monthly_effects": {"cash": 260, "hype": 1, "trust": 1},
       "recommended_menu": "competition",
       "rival_momentum_delta": -2,
-      "tags": ["rival", "competition"]
+      "tags": ["rival", "competition"],
+      "reward_bias_tags": ["counter", "market", "product"]
     },
     {
       "id": "industry_expansion_bet",
@@ -75,7 +81,8 @@
       "monthly_effects": {"users": 420, "hype": 2, "data": 6},
       "recommended_menu": "products",
       "rival_momentum_delta": 2,
-      "tags": ["industry", "boundaryless"]
+      "tags": ["industry", "boundaryless"],
+      "reward_bias_tags": ["product", "research", "automation"]
     },
     {
       "id": "global_brand_push",
@@ -86,7 +93,8 @@
       "monthly_effects": {"users": 620, "hype": 2, "trust": 1},
       "recommended_menu": "company",
       "rival_momentum_delta": 3,
-      "tags": ["global", "brand"]
+      "tags": ["global", "brand"],
+      "reward_bias_tags": ["growth", "hype", "trust"]
     }
   ]
 }
