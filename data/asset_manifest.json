@@ -226,6 +226,132 @@
       "readable_shape": "팬과 냉각 파이프가 반복되는 벽면 장치",
       "palette": ["#667580", "#d8dde4", "#56d6e9"],
       "linked_item_id": "cooling_fan_wall"
+    },
+    {
+      "object_id": "ux_postit_wall",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "알록달록 포스트잇이 붙은 낮은 벽면",
+      "palette": ["#fff0c8", "#5fc6a6", "#d8922b"],
+      "linked_item_id": "ux_sticky_wall"
+    },
+    {
+      "object_id": "feedback_inbox_crate",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [1, 1],
+      "readable_shape": "편지와 버그 리포트가 꽂힌 수집함",
+      "palette": ["#b7844d", "#fffaf0", "#547ad8"],
+      "linked_item_id": "feedback_inbox"
+    },
+    {
+      "object_id": "noodle_corner",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [1, 1],
+      "readable_shape": "컵라면 상자와 작은 전기포트가 있는 선반",
+      "palette": ["#dd6f48", "#fff1ba", "#3d3323"],
+      "linked_item_id": "instant_noodle_corner"
+    },
+    {
+      "object_id": "pager_alarm_desk",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [1, 1],
+      "readable_shape": "깜빡이는 호출기와 전화기가 놓인 작은 책상",
+      "palette": ["#20292d", "#a9e45c", "#d8dde4"],
+      "linked_item_id": "pager_phone"
+    },
+    {
+      "object_id": "customer_story_board",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "고객 사진과 말풍선 카드가 붙은 보드",
+      "palette": ["#39a6a3", "#fff4dc", "#f28a32"],
+      "linked_item_id": "customer_story_wall"
+    },
+    {
+      "object_id": "hiring_banner_stand",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [1, 2],
+      "readable_shape": "채용 문구가 적힌 세로 배너 스탠드",
+      "palette": ["#7d60c7", "#fff0c8", "#d6a640"],
+      "linked_item_id": "hiring_banner"
+    },
+    {
+      "object_id": "nap_pod_capsule",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "둥근 캡슐형 쪽잠 침대",
+      "palette": ["#d8dde4", "#547ad8", "#26342d"],
+      "linked_item_id": "nap_pod"
+    },
+    {
+      "object_id": "benchmark_console",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "막대그래프와 순위표가 떠 있는 분석 콘솔",
+      "palette": ["#355f9f", "#dfeaff", "#f09a38"],
+      "linked_item_id": "benchmark_dashboard"
+    },
+    {
+      "object_id": "mirror_playtest_room",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 2],
+      "readable_shape": "반투명 거울과 의자가 있는 작은 테스트룸",
+      "palette": ["#e5e7eb", "#4b5563", "#5fc6a6"],
+      "linked_item_id": "playtest_mirror_room"
+    },
+    {
+      "object_id": "simulation_sandbox_pod",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "분기 그래프가 떠 있는 검은 시뮬레이션 포드",
+      "palette": ["#20231f", "#56d6e9", "#b84c38"],
+      "linked_item_id": "simulation_sandbox"
+    },
+    {
+      "object_id": "prototype_printer_table",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "작은 모형을 뽑는 노란 시제품 프린터",
+      "palette": ["#f2c14e", "#26342d", "#fffaf0"],
+      "linked_item_id": "prototype_printer"
+    },
+    {
+      "object_id": "robot_charging_mat_tile",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 1],
+      "readable_shape": "충전 표시등이 줄지어 있는 바닥 매트",
+      "palette": ["#667580", "#f28a32", "#20292d"],
+      "linked_item_id": "robot_charging_mat"
+    },
+    {
+      "object_id": "inventory_beacon_stack",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [1, 1],
+      "readable_shape": "파란 신호등이 달린 부품 상자 더미",
+      "palette": ["#334b5e", "#7ed6f1", "#d8c49b"],
+      "linked_item_id": "inventory_beacon"
+    },
+    {
+      "object_id": "lab_safety_cage_frame",
+      "source_status": "placeholder",
+      "tile_size": 16,
+      "footprint": [2, 2],
+      "readable_shape": "투명 보호벽과 노란 안전선이 있는 실험 케이지",
+      "palette": ["#fffaf0", "#f2c14e", "#20231f"],
+      "linked_item_id": "lab_safety_cage"
     }
   ],
   "item_icons": [
@@ -276,6 +402,102 @@
       "icon_size": 24,
       "palette": ["#f28a32", "#39a6a3", "#fff4dc"],
       "readable_shape": "재생 버튼 렌즈가 있는 카메라"
+    },
+    {
+      "item_id": "pager_phone",
+      "source_status": "placeholder",
+      "icon_class": "icon-pager-phone",
+      "icon_size": 24,
+      "palette": ["#20292d", "#a9e45c", "#d8dde4"],
+      "readable_shape": "초록 불이 깜빡이는 호출기 폰"
+    },
+    {
+      "item_id": "instant_noodle_corner",
+      "source_status": "placeholder",
+      "icon_class": "icon-noodle-corner",
+      "icon_size": 24,
+      "palette": ["#dd6f48", "#fff1ba", "#3d3323"],
+      "readable_shape": "젓가락이 꽂힌 컵라면"
+    },
+    {
+      "item_id": "customer_story_wall",
+      "source_status": "placeholder",
+      "icon_class": "icon-customer-story-wall",
+      "icon_size": 24,
+      "palette": ["#39a6a3", "#fff4dc", "#f28a32"],
+      "readable_shape": "웃는 얼굴 카드가 붙은 보드"
+    },
+    {
+      "item_id": "hiring_banner",
+      "source_status": "placeholder",
+      "icon_class": "icon-hiring-banner",
+      "icon_size": 24,
+      "palette": ["#7d60c7", "#fff0c8", "#d6a640"],
+      "readable_shape": "작은 세로 배너"
+    },
+    {
+      "item_id": "nap_pod",
+      "source_status": "placeholder",
+      "icon_class": "icon-nap-pod",
+      "icon_size": 24,
+      "palette": ["#d8dde4", "#547ad8", "#26342d"],
+      "readable_shape": "둥근 휴식 캡슐"
+    },
+    {
+      "item_id": "benchmark_dashboard",
+      "source_status": "placeholder",
+      "icon_class": "icon-benchmark-dashboard",
+      "icon_size": 24,
+      "palette": ["#355f9f", "#dfeaff", "#f09a38"],
+      "readable_shape": "막대그래프가 있는 모니터"
+    },
+    {
+      "item_id": "playtest_mirror_room",
+      "source_status": "placeholder",
+      "icon_class": "icon-playtest-mirror-room",
+      "icon_size": 24,
+      "palette": ["#e5e7eb", "#4b5563", "#5fc6a6"],
+      "readable_shape": "반투명 거울과 의자"
+    },
+    {
+      "item_id": "simulation_sandbox",
+      "source_status": "placeholder",
+      "icon_class": "icon-simulation-sandbox",
+      "icon_size": 24,
+      "palette": ["#20231f", "#56d6e9", "#b84c38"],
+      "readable_shape": "분기선이 들어간 검은 큐브"
+    },
+    {
+      "item_id": "prototype_printer",
+      "source_status": "placeholder",
+      "icon_class": "icon-prototype-printer",
+      "icon_size": 24,
+      "palette": ["#f2c14e", "#26342d", "#fffaf0"],
+      "readable_shape": "작은 물체를 뽑는 프린터"
+    },
+    {
+      "item_id": "robot_charging_mat",
+      "source_status": "placeholder",
+      "icon_class": "icon-robot-charging-mat",
+      "icon_size": 24,
+      "palette": ["#667580", "#f28a32", "#20292d"],
+      "readable_shape": "충전 불빛이 있는 바닥 매트"
+    },
+    {
+      "item_id": "inventory_beacon",
+      "source_status": "placeholder",
+      "icon_class": "icon-inventory-beacon",
+      "icon_size": 24,
+      "palette": ["#334b5e", "#7ed6f1", "#d8c49b"],
+      "readable_shape": "신호등이 달린 작은 상자"
+    },
+    {
+      "item_id": "precision_tool_cart",
+      "source_status": "placeholder",
+      "icon_class": "icon-precision-tool-cart",
+      "icon_size": 24,
+      "palette": ["#4b5563", "#e5e7eb", "#f2c14e"],
+      "readable_shape": "공구가 꽂힌 이동 카트"
     }
   ]
 }

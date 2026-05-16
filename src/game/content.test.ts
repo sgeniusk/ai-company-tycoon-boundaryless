@@ -18,13 +18,30 @@ describe("alpha content data", () => {
     }
   });
 
+  it("prepares a long-term hiring roster across humans, AI agents, and robots", () => {
+    const countsByKind = agentTypes.reduce<Record<string, number>>((counts, agent) => {
+      counts[agent.kind ?? "missing"] = (counts[agent.kind ?? "missing"] ?? 0) + 1;
+      return counts;
+    }, {});
+
+    expect(agentTypes.length).toBeGreaterThanOrEqual(22);
+    expect(countsByKind.human).toBeGreaterThanOrEqual(6);
+    expect(countsByKind.ai_agent).toBeGreaterThanOrEqual(12);
+    expect(countsByKind.robot).toBeGreaterThanOrEqual(3);
+    expect(countsByKind.missing ?? 0).toBe(0);
+
+    expect(agentTypes.some((agent) => (agent.unlock_requirements.min_month ?? 0) >= 12)).toBe(true);
+    expect(agentTypes.some((agent) => (agent.unlock_requirements.min_star ?? 0) >= 3)).toBe(true);
+    expect(agentTypes.every((agent) => agent.preferred_items.length >= 2)).toBe(true);
+  });
+
   it("defines item categories for office, equipment, research, safety, and marketing", () => {
     const categories = new Set(items.map((item) => item.category));
 
-    for (const category of ["office", "equipment", "research", "safety", "marketing"]) {
+    for (const category of ["office", "equipment", "research", "safety", "marketing", "hardware", "comfort", "manufacturing", "mobility"]) {
       expect(categories.has(category)).toBe(true);
     }
-    expect(items.length).toBeGreaterThanOrEqual(12);
+    expect(items.length).toBeGreaterThanOrEqual(36);
   });
 
   it("keeps item effects attached to known game concepts", () => {

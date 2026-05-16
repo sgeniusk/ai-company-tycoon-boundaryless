@@ -51,12 +51,27 @@ describe("alpha v0.9 pixel asset manifest", () => {
   });
 
   it("maps first-shop item icons to known items", () => {
-    expect(assetManifest.item_icons.length).toBeGreaterThanOrEqual(6);
+    expect(assetManifest.item_icons.length).toBeGreaterThanOrEqual(18);
 
     for (const icon of assetManifest.item_icons) {
       expect(knownItemIds.has(icon.item_id)).toBe(true);
       expect(icon.icon_size).toBe(assetManifest.sprite_grid.icon_size);
       expect(icon.readable_shape).toBeTruthy();
+    }
+  });
+
+  it("prepares a larger office object library for item-driven decoration", () => {
+    const linkedItemIds = new Set(assetManifest.office_objects.flatMap((object) => object.linked_item_id ? [object.linked_item_id] : []));
+
+    expect(assetManifest.office_objects.length).toBeGreaterThanOrEqual(18);
+    expect(linkedItemIds.size).toBeGreaterThanOrEqual(12);
+
+    for (const object of assetManifest.office_objects) {
+      expect(object.footprint[0]).toBeGreaterThanOrEqual(1);
+      expect(object.footprint[1]).toBeGreaterThanOrEqual(1);
+      expect(object.readable_shape).toBeTruthy();
+      expect(object.palette.length).toBeGreaterThanOrEqual(3);
+      if (object.linked_item_id) expect(knownItemIds.has(object.linked_item_id)).toBe(true);
     }
   });
 });

@@ -68,6 +68,7 @@
       "name": "모델 연구원",
       "role": "연구형 에이전트",
       "description": "새로운 AI 능력과 모델 효율을 연구합니다.",
+      "kind": "ai_agent",
       "rarity": "rare",
       "stats": {"research": 8, "engineering": 4, "product": 2, "growth": 1, "safety": 3, "operations": 2, "creativity": 5, "autonomy": 3},
       "appearance": {
@@ -88,6 +89,7 @@
       "name": "코드 스미스",
       "role": "개발형 에이전트",
       "description": "제품 구현, 버그 수정, 내부 도구 제작에 특화되어 있습니다.",
+      "kind": "ai_agent",
       "rarity": "common",
       "stats": {"research": 3, "engineering": 8, "product": 4, "growth": 1, "safety": 2, "operations": 4, "creativity": 3, "autonomy": 5},
       "appearance": {
@@ -108,6 +110,7 @@
       "name": "데이터 큐레이터",
       "role": "데이터형 에이전트",
       "description": "학습 데이터 품질을 관리하고 피드백 루프를 정리합니다.",
+      "kind": "ai_agent",
       "rarity": "common",
       "stats": {"research": 5, "engineering": 3, "product": 3, "growth": 2, "safety": 5, "operations": 5, "creativity": 2, "autonomy": 4},
       "appearance": {
@@ -128,6 +131,7 @@
       "name": "세이프티 레드팀",
       "role": "안전형 에이전트",
       "description": "위험 출력, 환각, 악용 시나리오를 찾아 신뢰를 지킵니다.",
+      "kind": "ai_agent",
       "rarity": "rare",
       "stats": {"research": 4, "engineering": 4, "product": 2, "growth": 1, "safety": 9, "operations": 4, "creativity": 4, "autonomy": 3},
       "appearance": {
@@ -148,6 +152,7 @@
       "name": "그로스 해커",
       "role": "성장형 에이전트",
       "description": "제품을 빠르게 퍼뜨리고 화제성을 매출 기회로 바꿉니다.",
+      "kind": "ai_agent",
       "rarity": "common",
       "stats": {"research": 1, "engineering": 3, "product": 4, "growth": 9, "safety": 1, "operations": 3, "creativity": 7, "autonomy": 6},
       "appearance": {
@@ -168,6 +173,7 @@
       "name": "인프라 오퍼레이터",
       "role": "운영형 에이전트",
       "description": "서버, GPU, 장애 대응, 비용 최적화를 담당합니다.",
+      "kind": "ai_agent",
       "rarity": "common",
       "stats": {"research": 2, "engineering": 6, "product": 1, "growth": 1, "safety": 3, "operations": 9, "creativity": 2, "autonomy": 5},
       "appearance": {
@@ -188,6 +194,7 @@
       "name": "엔터프라이즈 클로저",
       "role": "영업형 에이전트",
       "description": "대기업 계약과 신뢰 기반 매출을 만들어냅니다.",
+      "kind": "ai_agent",
       "rarity": "rare",
       "stats": {"research": 1, "engineering": 2, "product": 5, "growth": 6, "safety": 4, "operations": 5, "creativity": 3, "autonomy": 5},
       "appearance": {
@@ -208,6 +215,7 @@
       "name": "비전 아티스트",
       "role": "창작형 에이전트",
       "description": "이미지, 영상, 크리에이터 도구의 감각적 완성도를 끌어올립니다.",
+      "kind": "ai_agent",
       "rarity": "rare",
       "stats": {"research": 3, "engineering": 3, "product": 6, "growth": 4, "safety": 2, "operations": 2, "creativity": 9, "autonomy": 4},
       "appearance": {
@@ -228,6 +236,7 @@
       "name": "자율기획 에이전트",
       "role": "자동화형 에이전트",
       "description": "복잡한 업무를 단계로 쪼개고 다른 에이전트를 조율합니다.",
+      "kind": "ai_agent",
       "rarity": "epic",
       "stats": {"research": 5, "engineering": 5, "product": 6, "growth": 3, "safety": 5, "operations": 7, "creativity": 5, "autonomy": 9},
       "appearance": {
@@ -242,6 +251,153 @@
       "upkeep": {"cash": 850, "compute": 5},
       "preferred_items": ["autonomy_planner_board", "agent_orchestra_podium"],
       "quirk": "자동화 투자의 효과를 크게 만드는 후반 핵심입니다."
+    },
+    {
+      "id": "garage_pm_intern",
+      "name": "차고 PM 인턴",
+      "role": "사람 직원",
+      "description": "첫 사용자 반응을 메모하고 기능 우선순위를 정리하는 초보 제품 매니저입니다.",
+      "kind": "human",
+      "rarity": "common",
+      "stats": {"research": 2, "engineering": 1, "product": 5, "growth": 2, "safety": 2, "operations": 3, "creativity": 3, "autonomy": 1},
+      "appearance": {
+        "palette": ["sky", "cream", "navy"],
+        "silhouette": "큰 메신저백과 포스트잇 뭉치를 든 작은 체형",
+        "hair": "짧은 검은 단발",
+        "outfit": "밝은 셔츠와 파란 가디건",
+        "signatureProp": "사용자 인터뷰 메모장"
+      },
+      "unlock_requirements": {},
+      "hire_cost": {"cash": 720},
+      "upkeep": {"cash": 190},
+      "preferred_items": ["feedback_inbox", "ux_sticky_wall"],
+      "quirk": "초반 제품 완성도를 사람 손으로 끌어올립니다."
+    },
+    {
+      "id": "night_shift_operator",
+      "name": "야간 서버 당직",
+      "role": "사람 직원",
+      "description": "밤 작업 시간에 장애 알림을 보고 서버와 에이전트 큐를 살피는 운영 담당자입니다.",
+      "kind": "human",
+      "rarity": "common",
+      "stats": {"research": 1, "engineering": 3, "product": 1, "growth": 1, "safety": 4, "operations": 6, "creativity": 1, "autonomy": 1},
+      "appearance": {
+        "palette": ["charcoal", "lime", "paper"],
+        "silhouette": "보온 점퍼와 호출기를 찬 느긋한 자세",
+        "hair": "모자 아래로 나온 짧은 머리",
+        "outfit": "야간 작업 점퍼와 슬리퍼",
+        "signatureProp": "깜빡이는 호출기"
+      },
+      "unlock_requirements": {"min_month": 2},
+      "hire_cost": {"cash": 840},
+      "upkeep": {"cash": 220},
+      "preferred_items": ["pager_phone", "instant_noodle_corner"],
+      "quirk": "밤에도 회사가 멈추지 않는 느낌을 만들어 줍니다."
+    },
+    {
+      "id": "field_sales_rep",
+      "name": "현장 영업 담당",
+      "role": "사람 직원",
+      "description": "지방 행사와 고객사를 돌며 아직 작은 AI 회사를 직접 설명하는 영업 인력입니다.",
+      "kind": "human",
+      "rarity": "uncommon",
+      "stats": {"research": 1, "engineering": 1, "product": 4, "growth": 6, "safety": 2, "operations": 4, "creativity": 4, "autonomy": 2},
+      "appearance": {
+        "palette": ["brown", "white", "green"],
+        "silhouette": "브로슈어 가방과 접이식 배너를 든 활동적인 체형",
+        "hair": "단정한 갈색 머리",
+        "outfit": "편한 정장 재킷과 운동화",
+        "signatureProp": "접이식 영업 배너"
+      },
+      "unlock_requirements": {"min_products": 1},
+      "hire_cost": {"cash": 1100},
+      "upkeep": {"cash": 280},
+      "preferred_items": ["enterprise_pitch_deck", "customer_story_wall"],
+      "quirk": "제품이 하나라도 생긴 뒤 이용자와 계약의 불씨를 만듭니다."
+    },
+    {
+      "id": "hr_culture_manager",
+      "name": "조직문화 매니저",
+      "role": "사람 직원",
+      "description": "사무실 확장 이후 채용, 온보딩, 번아웃 방지를 챙기는 사람 담당자입니다.",
+      "kind": "human",
+      "rarity": "uncommon",
+      "stats": {"research": 1, "engineering": 1, "product": 3, "growth": 3, "safety": 4, "operations": 6, "creativity": 3, "autonomy": 2},
+      "appearance": {
+        "palette": ["lavender", "cream", "gold"],
+        "silhouette": "명찰 목걸이와 작은 식물 화분을 든 단정한 인상",
+        "hair": "묶은 흑갈색 머리",
+        "outfit": "니트 조끼와 편한 슬랙스",
+        "signatureProp": "온보딩 카드 묶음"
+      },
+      "unlock_requirements": {"min_star": 2},
+      "hire_cost": {"cash": 1700},
+      "upkeep": {"cash": 360},
+      "preferred_items": ["hiring_banner", "nap_pod"],
+      "quirk": "팀이 커진 뒤 사람과 AI가 함께 일하는 리듬을 유지합니다."
+    },
+    {
+      "id": "benchmark_analyst",
+      "name": "벤치마크 분석 에이전트",
+      "role": "평가형 에이전트",
+      "description": "경쟁 모델, 제품 리뷰, 테스터 반응을 표로 정리해 다음 개발 방향을 제안합니다.",
+      "kind": "ai_agent",
+      "rarity": "uncommon",
+      "stats": {"research": 7, "engineering": 3, "product": 5, "growth": 4, "safety": 3, "operations": 4, "creativity": 3, "autonomy": 5},
+      "appearance": {
+        "palette": ["blue", "white", "orange"],
+        "silhouette": "차트가 떠 있는 반투명 코트와 네모난 눈",
+        "hair": "푸른 홀로그램 단발",
+        "outfit": "그래프 패턴이 도는 분석 재킷",
+        "signatureProp": "움직이는 벤치마크 대시보드"
+      },
+      "unlock_requirements": {"min_month": 4},
+      "hire_cost": {"cash": 2100, "data": 8},
+      "upkeep": {"cash": 520, "compute": 2, "data": 1},
+      "preferred_items": ["benchmark_dashboard", "playtest_mirror_room"],
+      "quirk": "테스터 보고서를 제품 숫자로 바꾸는 데 강합니다."
+    },
+    {
+      "id": "scenario_simulator",
+      "name": "시나리오 시뮬레이터",
+      "role": "검증형 에이전트",
+      "description": "수천 개의 사용 상황을 가정해 사고, 악용, 실패 루트를 미리 흔들어 봅니다.",
+      "kind": "ai_agent",
+      "rarity": "rare",
+      "stats": {"research": 6, "engineering": 5, "product": 3, "growth": 1, "safety": 8, "operations": 6, "creativity": 4, "autonomy": 6},
+      "appearance": {
+        "palette": ["black", "cyan", "red"],
+        "silhouette": "분기 그래프가 망토처럼 펼쳐진 긴 실루엣",
+        "hair": "짧은 청록색 빛 머리",
+        "outfit": "검은 시뮬레이션 슈트",
+        "signatureProp": "분기 세계가 담긴 큐브"
+      },
+      "unlock_requirements": {"min_star": 2, "min_trust": 45},
+      "hire_cost": {"cash": 3400, "compute": 10, "data": 10},
+      "upkeep": {"cash": 760, "compute": 4},
+      "preferred_items": ["simulation_sandbox", "redteam_toolkit"],
+      "quirk": "후반 제품 실패를 막고 하네스 검증 판타지를 살립니다."
+    },
+    {
+      "id": "industrial_designer_ai",
+      "name": "산업 디자인 AI",
+      "role": "산업 확장형 에이전트",
+      "description": "로봇, 자동차, 장난감 같은 물리 제품의 형태와 사용감을 빠르게 스케치합니다.",
+      "kind": "ai_agent",
+      "rarity": "rare",
+      "stats": {"research": 4, "engineering": 5, "product": 7, "growth": 3, "safety": 3, "operations": 3, "creativity": 8, "autonomy": 5},
+      "appearance": {
+        "palette": ["yellow", "ink", "white"],
+        "silhouette": "공중에 제품 실루엣을 그리는 긴 팔",
+        "hair": "노란 픽셀 불꽃 모양",
+        "outfit": "산업용 앞치마와 디지털 장갑",
+        "signatureProp": "접히는 프로토타입 프린터"
+      },
+      "unlock_requirements": {"min_capability_vision": 2, "min_month": 12},
+      "hire_cost": {"cash": 3900, "data": 16},
+      "upkeep": {"cash": 820, "compute": 3},
+      "preferred_items": ["style_palette", "prototype_printer"],
+      "quirk": "AI 회사가 엉뚱한 산업으로 뻗어 나가는 순간을 준비합니다."
     },
     {
       "id": "factory_robot_unit",
@@ -263,6 +419,48 @@
       "upkeep": {"cash": 900, "compute": 4},
       "preferred_items": ["gpu_rack_mini", "ci_badge"],
       "quirk": "반도체, 로봇, 모빌리티 제품의 완성도 고점을 올립니다."
+    },
+    {
+      "id": "warehouse_bot_cluster",
+      "name": "물류 로봇 클러스터",
+      "role": "로봇형 운영 인력",
+      "description": "작은 바퀴 로봇 여러 대가 재고, 시제품, 서버 부품을 사무실 안팎으로 나릅니다.",
+      "kind": "robot",
+      "rarity": "rare",
+      "stats": {"research": 2, "engineering": 5, "product": 2, "growth": 1, "safety": 4, "operations": 8, "creativity": 1, "autonomy": 6},
+      "appearance": {
+        "palette": ["steel", "orange", "black"],
+        "silhouette": "낮은 바퀴형 본체가 세 대 묶인 형태",
+        "hair": "없음",
+        "outfit": "주황 안전 라인이 들어간 금속 차체",
+        "signatureProp": "깜빡이는 재고 비콘"
+      },
+      "unlock_requirements": {"min_capability_robotics": 1, "min_star": 2},
+      "hire_cost": {"cash": 4400, "compute": 10},
+      "upkeep": {"cash": 760, "compute": 3},
+      "preferred_items": ["robot_charging_mat", "inventory_beacon"],
+      "quirk": "사무실이 연구실에서 작은 공장으로 변하는 느낌을 줍니다."
+    },
+    {
+      "id": "humanoid_lab_assistant",
+      "name": "휴머노이드 랩 어시스턴트",
+      "role": "로봇형 연구 인력",
+      "description": "사람 옆에서 실험, 조립, 안전 점검을 돕는 고급 휴머노이드 연구 보조입니다.",
+      "kind": "robot",
+      "rarity": "epic",
+      "stats": {"research": 6, "engineering": 7, "product": 4, "growth": 1, "safety": 7, "operations": 7, "creativity": 3, "autonomy": 7},
+      "appearance": {
+        "palette": ["white", "cyan", "graphite"],
+        "silhouette": "둥근 어깨와 길고 섬세한 공구 손",
+        "hair": "없음",
+        "outfit": "흰 실험실 외장과 청록 상태등",
+        "signatureProp": "정밀 공구 카트"
+      },
+      "unlock_requirements": {"min_capability_robotics": 2, "min_star": 3},
+      "hire_cost": {"cash": 7600, "compute": 18},
+      "upkeep": {"cash": 1200, "compute": 6},
+      "preferred_items": ["precision_tool_cart", "lab_safety_cage"],
+      "quirk": "후반 하드웨어와 로봇 제품의 실험실 판타지를 강화합니다."
     }
   ]
 }

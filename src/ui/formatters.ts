@@ -29,6 +29,10 @@ export function itemCategoryLabel(category: string): string {
     research: "연구",
     safety: "안전",
     marketing: "마케팅",
+    hardware: "하드웨어",
+    comfort: "복지",
+    manufacturing: "제조",
+    mobility: "모빌리티",
   };
   return labels[category] ?? category;
 }
