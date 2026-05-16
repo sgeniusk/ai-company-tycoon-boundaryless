@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.14.2: Content Foundation Recommendations
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Campaign state maps to a content phase | **Passed** |
+| 2 | Hiring candidates expose kind, availability, recommendation, and phase labels | **Passed** |
+| 3 | Item rows expose availability, ownership, recommendation, and office placement state | **Passed** |
+| 4 | Enterprise-stage state recommends robot or hardware/manufacturing/mobility foundations | **Passed** |
+| 5 | Company menu shows a content foundation summary | **Passed** |
+| 6 | Agent menu supports people/AI/robot filtering | **Passed** |
+| 7 | Shop menu supports item category filtering | **Passed** |
+| 8 | Browser QA supports `?scenario=foundation` | **Passed** |
+
+---
+
 ## Alpha v0.14.0: Ten-Year Campaign And Offline Settlement
 
 | # | Criterion | Status |

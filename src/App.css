@@ -1293,6 +1293,7 @@ p {
 }
 
 .campaign-panel,
+.foundation-panel,
 .location-panel,
 .team-ops-summary {
   background: #fff7df;
@@ -1304,12 +1305,14 @@ p {
 }
 
 .campaign-panel h3,
+.foundation-panel h3,
 .location-panel h3 {
   color: var(--green-dark);
   margin-bottom: 2px;
 }
 
 .campaign-panel span,
+.foundation-panel span,
 .location-card span,
 .location-card small,
 .team-ops-summary span {
@@ -1317,6 +1320,62 @@ p {
   font-size: 0.74rem;
   font-weight: 900;
   line-height: 1.3;
+}
+
+.foundation-panel.compact {
+  background: #f6fbef;
+  border-color: #99bf91;
+}
+
+.foundation-strip,
+.recommendation-list {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.recommendation-list {
+  grid-template-columns: 1fr;
+}
+
+.foundation-strip span,
+.recommendation-list span,
+.recommendation-badge {
+  background: #fffdf7;
+  border: 1px solid #d8c49b;
+  color: #4f473a;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.3;
+  padding: 7px;
+}
+
+.recommendation-badge {
+  background: #eef7ff;
+  border-color: #9cb8d6;
+  color: #334b5e;
+}
+
+.content-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.content-filter button {
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  color: #5a4b35;
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 7px 9px;
+}
+
+.content-filter button.selected {
+  background: #315d42;
+  border-color: #244a33;
+  color: #fffaf0;
 }
 
 .compact-heading {

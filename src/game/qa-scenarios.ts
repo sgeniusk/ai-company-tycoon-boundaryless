@@ -22,6 +22,7 @@ export const qaScenarioIds = [
   "alpha",
   "next-run",
   "finale",
+  "foundation",
   "commercial",
   "result",
 ] as const;
@@ -190,6 +191,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "foundation") {
+    return {
+      id,
+      label: "콘텐츠 기반 추천 QA",
+      state: createFoundationScenarioState(),
+      activeMenu: "agents",
+    };
+  }
+
   if (id === "commercial") {
     return {
       id,
@@ -234,6 +244,47 @@ function createFinaleState(): GameState {
     },
     status: "success",
     timeline: ["10년 엔딩 QA: 시골 차고에서 출발해 서울 AI 타워의 세계적 회사가 됨", ...createInitialState().timeline].slice(0, 8),
+  };
+}
+
+function createFoundationScenarioState(): GameState {
+  const activeProductIds = products.slice(0, 6).map((product) => product.id);
+
+  return {
+    ...createInitialState(),
+    month: 48,
+    locationId: "seoul_ai_tower",
+    activeProducts: activeProductIds,
+    productLevels: Object.fromEntries(activeProductIds.map((productId) => [productId, 2])),
+    unlockedDomains: [
+      "foundation_models",
+      "personal_productivity",
+      "developer_tools",
+      "creator_tools",
+      "robotics",
+      "mobility",
+    ],
+    capabilities: {
+      ...createInitialState().capabilities,
+      language: 3,
+      code: 3,
+      vision: 3,
+      video: 2,
+      agent: 2,
+      robotics: 2,
+    },
+    resources: {
+      ...createInitialState().resources,
+      cash: 120000,
+      compute: 1200,
+      data: 1200,
+      users: 60000,
+      trust: 80,
+      hype: 35,
+      automation: 65,
+      talent: 20,
+    },
+    timeline: ["콘텐츠 기반 QA: 기업 단계에서 추천 고용과 추천 아이템을 확인", ...createInitialState().timeline].slice(0, 8),
   };
 }
 

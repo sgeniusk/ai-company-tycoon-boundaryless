@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.14.2-alpha] — 2026-05-16
+
+### 콘텐츠 기반 추천과 필터
+
+**추가:**
+- 캠페인 상태를 차고, 초기 스타트업, 스케일업, 기업/산업 확장, 프런티어 단계로 분류하는 `content-foundation` 모듈.
+- 현재 상태에 맞는 추천 고용 후보와 추천 아이템 계산.
+- 회사 화면의 `기반 다지기` 요약 카드.
+- 고용 화면의 사람/AI/로봇 필터와 추천 후보 묶음.
+- 상점 화면의 카테고리 필터와 추천 아이템 묶음.
+- `?scenario=foundation` 콘텐츠 추천 QA 시나리오.
+
+**변경:**
+- 고용 후보와 아이템 카드에 단계 라벨과 추천 사유를 표시한다.
+- 상점/고용 UI가 콘텐츠 수가 늘어도 필터로 스캔 가능하게 정리됐다.
+
+**검증:**
+- `npm test -- src/game/content-foundation.test.ts src/game/content.test.ts src/game/asset-manifest.test.ts` 통과, 17 tests
+- `npm test -- src/game/qa-scenarios.test.ts src/game/content-foundation.test.ts` 통과, 23 tests
+- `npm run harness:gate` 통과, 132 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5173/?scenario=foundation` 1366x768 렌더링 확인
+
+**배포:**
+- Vercel 배포 없음. 큰 버전업 때만 배포한다.
+
+---
+
 ## [0.14.1-alpha] — 2026-05-16
 
 ### 인력·아이템·사무실 사물 콘텐츠 확장

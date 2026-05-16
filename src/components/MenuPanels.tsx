@@ -3,6 +3,16 @@ import { agentTypes, assetManifest, automationUpgrades, capabilities, companyLoc
 import { getAchievementStatuses } from "../game/achievements";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
+import {
+  getAgentContentRows,
+  getCampaignContentPhase,
+  getFoundationRecommendations,
+  getFoundationSnapshot,
+  getItemContentRows,
+  type AgentContentRow,
+  type AgentKind,
+  type ItemContentRow,
+} from "../game/content-foundation";
 import { getGrowthPathObjectives } from "../game/growth-objectives";
 import { ALL_PRODUCT_DOMAIN_FILTER_ID, getProductDomainFilters, getProductsByDomainFilter } from "../game/product-filters";
 import { getRivalCounterPlans } from "../game/rival-counters";
@@ -119,6 +129,7 @@ export function renderMenuContent(
     const calendar = getCampaignCalendar(gameState);
     const finale = getCampaignFinale(gameState);
     const currentLocation = getCurrentLocation(gameState);
+    const foundationSnapshot = getFoundationSnapshot(gameState);
 
     return (
       <div className="panel-grid two-col">
@@ -140,11 +151,25 @@ export function renderMenuContent(
             <span>장식 효과 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
             <span>해금 분야 {gameState.unlockedDomains.length}개</span>
             <span>자동화 {formatResource("automation", gameState.resources.automation ?? 0)}</span>
+            <span>콘텐츠 기반 {foundationSnapshot.phase.label}</span>
+            <span>추천 후보 {foundationSnapshot.recommendedAgentIds.length + foundationSnapshot.recommendedItemIds.length}개</span>
             {gameState.chosenGrowthPath && (
               <span className="strategy-summary">
                 전략 {gameState.chosenGrowthPath.title} · 월간 {formatEffects(gameState.chosenGrowthPath.monthlyEffects)}
               </span>
             )}
+          </div>
+          <div className="foundation-panel">
+            <div>
+              <p className="eyebrow">기반 다지기</p>
+              <h3>{foundationSnapshot.phase.label}</h3>
+              <span>{foundationSnapshot.phase.description}</span>
+            </div>
+            <div className="foundation-strip">
+              <span>고용 후보 {foundationSnapshot.availableAgents}/{foundationSnapshot.agentTotal}</span>
+              <span>구매 가능 {foundationSnapshot.availableItems}/{foundationSnapshot.itemTotal}</span>
+              <span>추천 {foundationSnapshot.recommendedAgentIds.length + foundationSnapshot.recommendedItemIds.length}</span>
+            </div>
           </div>
           <div className="campaign-panel">
             <div>
@@ -766,6 +791,11 @@ function ProductsPanel({
 }
 
 function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  const [kindFilter, setKindFilter] = useState<"all" | AgentKind>("all");
+  const agentRows = getAgentContentRows(gameState);
+  const recommendations = getFoundationRecommendations(gameState, 4);
+  const phase = getCampaignContentPhase(gameState);
+  const filteredAgentRows = agentRows.filter((row) => kindFilter === "all" || row.kind === kindFilter);
   const ownedAgentItems = items.filter(
     (item) =>
       item.target === "agent" &&
@@ -784,6 +814,18 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
           <span>AI 운용 {getAiAgentCount(gameState)}/{getAiOperationCapacity(gameState)}</span>
           <span>사람 직원이 늘면 AI 에이전트를 더 안정적으로 굴릴 수 있습니다.</span>
         </div>
+        <div className="foundation-panel compact">
+          <div>
+            <p className="eyebrow">현재 기반</p>
+            <h3>{phase.label}</h3>
+            <span>{phase.description}</span>
+          </div>
+          <div className="recommendation-list">
+            {recommendations.agents.map((row) => (
+              <span key={row.agent.id}>{row.agent.name} · {row.recommendationReason}</span>
+            ))}
+          </div>
+        </div>
         {gameState.hiredAgents.length ? (
           <div className="hired-list">
             {gameState.hiredAgents.map((agent) => (
@@ -799,19 +841,38 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
           <h2>에이전트 도감</h2>
           <p>능력치, 역할, 픽셀아트 외형 키워드를 기준으로 영입합니다.</p>
         </div>
+        <div className="content-filter" role="tablist" aria-label="고용 후보 필터">
+          {[
+            ["all", "전체"],
+            ["human", "사람"],
+            ["ai_agent", "AI"],
+            ["robot", "로봇"],
+          ].map(([id, label]) => (
+            <button
+              aria-selected={kindFilter === id}
+              className={kindFilter === id ? "selected" : ""}
+              key={id}
+              onClick={() => setKindFilter(id as "all" | AgentKind)}
+              type="button"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         <div className="agent-grid">
-          {agentTypes.map((agent) => {
-            const check = getAgentHireCheck(agent, gameState);
-            const isHired = gameState.hiredAgents.some((hiredAgent) => hiredAgent.typeId === agent.id);
+          {filteredAgentRows.map((row) => {
+            const check = getAgentHireCheck(row.agent, gameState);
+            const isHired = gameState.hiredAgents.some((hiredAgent) => hiredAgent.typeId === row.agent.id);
 
             return (
               <AgentCard
-                agent={agent}
+                agent={row.agent}
                 check={check}
+                contentRow={row}
                 isHired={isHired}
-                key={agent.id}
-                onHire={() => setGameState((current) => hireAgent(agent, current))}
-                hireCostLabel={formatCost(getAgentHireCost(agent, gameState))}
+                key={row.agent.id}
+                onHire={() => setGameState((current) => hireAgent(row.agent, current))}
+                hireCostLabel={formatCost(getAgentHireCost(row.agent, gameState))}
               />
             );
           })}
@@ -901,12 +962,14 @@ function HiredAgentCard({
 function AgentCard({
   agent,
   check,
+  contentRow,
   hireCostLabel,
   isHired,
   onHire,
 }: {
   agent: AgentTypeDefinition;
   check: { ok: boolean; reasons: string[] };
+  contentRow: AgentContentRow;
   hireCostLabel: string;
   isHired: boolean;
   onHire: () => void;
@@ -926,11 +989,12 @@ function AgentCard({
           <span className="agent-prop" />
         </div>
         <div>
-          <p className="item-meta">{agent.role}</p>
+          <p className="item-meta">{contentRow.kindLabel} / {contentRow.phaseLabel}</p>
           <h3>{agent.name}</h3>
           <p>{agent.description}</p>
         </div>
       </div>
+      {contentRow.recommended && <div className="recommendation-badge">{contentRow.recommendationReason}</div>}
       <div className="stat-grid">
         {Object.entries(agent.stats).map(([stat, value]) => (
           <span key={stat}>
@@ -991,6 +1055,11 @@ function ResearchPanel({ gameState, setGameState }: { gameState: GameState; setG
 }
 
 function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const itemRows = getItemContentRows(gameState);
+  const recommendations = getFoundationRecommendations(gameState, 5);
+  const itemCategories = ["all", ...Array.from(new Set(itemRows.map((row) => row.item.category)))];
+  const filteredItemRows = itemRows.filter((row) => categoryFilter === "all" || row.item.category === categoryFilter);
   const ownedItems = items.filter((item) => gameState.ownedItems.includes(item.id));
   const equippedItemIds = new Set(gameState.hiredAgents.flatMap((agent) => agent.equippedItemIds));
   const unequippedAgentItems = ownedItems.filter((item) => item.target === "agent" && !equippedItemIds.has(item.id));
@@ -1009,9 +1078,34 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <h2>아이템 상점</h2>
           <p>장비와 사무실 물건은 에이전트 특색과 회사 분위기를 만듭니다.</p>
         </div>
+        <div className="foundation-panel compact">
+          <div>
+            <p className="eyebrow">상점 추천</p>
+            <h3>{recommendations.phase.label}</h3>
+            <span>{recommendations.phase.description}</span>
+          </div>
+          <div className="recommendation-list">
+            {recommendations.items.map((row) => (
+              <span key={row.item.id}>{row.item.name} · {row.recommendationReason}</span>
+            ))}
+          </div>
+        </div>
+        <div className="content-filter" role="tablist" aria-label="아이템 카테고리 필터">
+          {itemCategories.map((category) => (
+            <button
+              aria-selected={categoryFilter === category}
+              className={categoryFilter === category ? "selected" : ""}
+              key={category}
+              onClick={() => setCategoryFilter(category)}
+              type="button"
+            >
+              {category === "all" ? "전체" : itemCategoryLabel(category)}
+            </button>
+          ))}
+        </div>
         <div className="item-grid">
-          {items.map((item) => (
-            <ItemCard item={item} gameState={gameState} setGameState={setGameState} key={item.id} />
+          {filteredItemRows.map((row) => (
+            <ItemCard contentRow={row} item={row.item} gameState={gameState} setGameState={setGameState} key={row.item.id} />
           ))}
         </div>
       </section>
@@ -1160,10 +1254,12 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
 }
 
 function ItemCard({
+  contentRow,
   item,
   gameState,
   setGameState,
 }: {
+  contentRow: ItemContentRow;
   item: ItemDefinition;
   gameState: GameState;
   setGameState: Dispatch<SetStateAction<GameState>>;
@@ -1185,10 +1281,12 @@ function ItemCard({
         )}
         <h3>{item.name}</h3>
       </div>
+      {contentRow.recommended && <div className="recommendation-badge">{contentRow.recommendationReason}</div>}
       <p>{item.description}</p>
       <div className="mini-row">
         <span>비용 {formatCost(item.cost)}</span>
         <span>대상 {itemTargetLabel(item.target)}</span>
+        <span>단계 {contentRow.phaseLabel}</span>
         <span>효과 {formatEffects(item.effects)}</span>
       </div>
       <button disabled={!check.ok || isOwned || gameState.status !== "playing"} onClick={() => setGameState((current) => buyItem(item, current))}>

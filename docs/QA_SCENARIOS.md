@@ -28,6 +28,7 @@ Use the local app URL and append one of these query strings:
 | Alpha | `?scenario=alpha` | 10-minute alpha completion with run result, insight reward, and next-run readiness |
 | Next Run | `?scenario=next-run` | New run after accepting alpha insight, deck onboarding, run history, and meta unlock candidates |
 | Finale | `?scenario=finale` | 10-year campaign ending, final rank, Seoul location, and campaign summary |
+| Foundation | `?scenario=foundation` | Enterprise-stage content foundation, hiring recommendations, agent filters, item recommendations |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 
@@ -49,8 +50,17 @@ Examples:
 - `http://localhost:5173/?scenario=alpha`
 - `http://localhost:5173/?scenario=next-run`
 - `http://localhost:5173/?scenario=finale`
+- `http://localhost:5173/?scenario=foundation`
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
+
+## v0.14.2 Visual QA Checklist
+
+- Company menu shows the `기반 다지기` card with current content phase.
+- Agents menu shows current foundation phase, recommendation reasons, and people/AI/robot filters.
+- Shop menu shows item recommendation reasons and category filters.
+- `?scenario=foundation` opens directly on the agent menu in an enterprise-stage company.
+- Recommended enterprise-stage content includes robot or hardware/manufacturing/mobility foundations.
 
 ## v0.14.0 Visual QA Checklist
 
