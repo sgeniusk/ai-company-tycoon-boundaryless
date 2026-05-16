@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { annualReviews } from "./data";
+import { annualDirectiveChoices, annualReviews } from "./data";
 import {
+  chooseAnnualDirective,
   getAnnualReviewForMonth,
   getActiveAnnualDirective,
+  getAnnualDirectiveChoiceRows,
   getAnnualReviewProgress,
   getCurrentAnnualReview,
   getDueAnnualReviewResult,
@@ -10,7 +12,7 @@ import {
 import { advanceMonth, calculateMonthlyEconomy, createInitialState, hydrateGameState, serializeGameState } from "./simulation";
 import type { GameState } from "./types";
 
-describe("v0.14.4 annual review foundation", () => {
+describe("v0.14.5 annual directive choices", () => {
   it("defines ten annual review milestones for the 10-year campaign", () => {
     expect(annualReviews).toHaveLength(10);
     expect(annualReviews.map((review) => review.month)).toEqual([12, 24, 36, 48, 60, 72, 84, 96, 108, 120]);
@@ -22,6 +24,11 @@ describe("v0.14.4 annual review foundation", () => {
     ).toBe(true);
     expect(annualReviews[0].directive.passed.monthly_effects.cash).toBeGreaterThan(0);
     expect(annualReviews[0].directive.recovery.monthly_effects.cash).toBeGreaterThan(0);
+  });
+
+  it("defines a reusable pool of annual directive choices", () => {
+    expect(annualDirectiveChoices.length).toBeGreaterThanOrEqual(6);
+    expect(annualDirectiveChoices.every((choice) => choice.title && choice.monthly_effects && choice.recommended_menu)).toBe(true);
   });
 
   it("selects the current annual review from campaign month", () => {
@@ -77,10 +84,31 @@ describe("v0.14.4 annual review foundation", () => {
       source: "passed",
       expiresMonth: 24,
     });
+    expect(reviewed.pendingAnnualDirectiveChoices?.offeredDirectiveIds).toHaveLength(3);
     expect(getActiveAnnualDirective(reviewed)?.title).toContain("투자자");
 
     const economy = calculateMonthlyEconomy(reviewed);
     expect(economy.strategyEffects?.cash).toBeGreaterThanOrEqual(reviewed.annualDirective?.monthlyEffects.cash ?? 0);
+  });
+
+  it("lets the player choose one of the offered annual directives", () => {
+    const reviewed = advanceMonth({
+      ...createYearOneReadyState(),
+      month: 11,
+      annualReviewHistory: [],
+    });
+    const choices = getAnnualDirectiveChoiceRows(reviewed);
+    const selectedChoice = choices.find((choice) => choice.id === "product_launch_marathon") ?? choices[0];
+    const chosen = chooseAnnualDirective(selectedChoice.id, reviewed);
+
+    expect(choices).toHaveLength(3);
+    expect(chosen.pendingAnnualDirectiveChoices).toBeUndefined();
+    expect(chosen.annualDirective).toMatchObject({
+      reviewId: "year_1_local_demo_day",
+      title: selectedChoice.title,
+      recommendedMenu: selectedChoice.recommended_menu,
+    });
+    expect(chosen.timeline[0]).toContain("연간 지시 선택");
   });
 
   it("ignores expired annual directives after the next review month", () => {
@@ -103,11 +131,13 @@ describe("v0.14.4 annual review foundation", () => {
     const parsed = JSON.parse(serialized);
     delete parsed.state.annualReviewHistory;
     delete parsed.state.annualDirective;
+    delete parsed.state.pendingAnnualDirectiveChoices;
 
     const hydrated = hydrateGameState(JSON.stringify(parsed));
 
     expect(hydrated.annualReviewHistory).toEqual([]);
     expect(hydrated.annualDirective).toBeUndefined();
+    expect(hydrated.pendingAnnualDirectiveChoices).toBeUndefined();
   });
 });
 

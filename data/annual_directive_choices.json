@@ -1,0 +1,92 @@
+{
+  "annual_directive_choices": [
+    {
+      "id": "product_launch_marathon",
+      "title": "제품 출시 마라톤",
+      "description": "다음 1년은 작은 제품을 빠르게 완성해 이용자와 데이터 흐름을 키웁니다.",
+      "sources": ["passed", "recovery"],
+      "year_range": [1, 6],
+      "monthly_effects": {"users": 180, "data": 4, "hype": 1},
+      "recommended_menu": "products",
+      "rival_momentum_delta": 1,
+      "tags": ["products", "users", "early"]
+    },
+    {
+      "id": "trust_compound_program",
+      "title": "신뢰 복리 프로그램",
+      "description": "안전, 고객 응답, 정책 정비를 반복해 기업 고객이 믿을 수 있는 회사가 됩니다.",
+      "sources": ["passed", "recovery"],
+      "year_range": [1, 10],
+      "monthly_effects": {"trust": 1, "cash": 220},
+      "recommended_menu": "research",
+      "rival_momentum_delta": 0,
+      "tags": ["trust", "enterprise", "recovery"]
+    },
+    {
+      "id": "research_lab_sprint",
+      "title": "연구소 스프린트",
+      "description": "새 모델 능력과 도메인 해금을 노리고 데이터와 연산력을 꾸준히 비축합니다.",
+      "sources": ["passed"],
+      "year_range": [1, 8],
+      "monthly_effects": {"data": 8, "compute": 4},
+      "recommended_menu": "research",
+      "rival_momentum_delta": 1,
+      "tags": ["research", "capability"]
+    },
+    {
+      "id": "cashflow_discipline",
+      "title": "현금흐름 절제 모드",
+      "description": "무리한 확장보다 생존성과 비용 절감에 집중해 다음 심사까지 버틸 체력을 만듭니다.",
+      "sources": ["recovery"],
+      "year_range": [1, 10],
+      "monthly_effects": {"cash": 420, "compute": 3},
+      "recommended_menu": "shop",
+      "rival_momentum_delta": 2,
+      "tags": ["cash", "recovery", "ops"]
+    },
+    {
+      "id": "automation_backbone",
+      "title": "자동화 백본 구축",
+      "description": "반복 운영을 자동화해 고정비 압박을 줄이고 장기 성장의 바닥을 다집니다.",
+      "sources": ["passed", "recovery"],
+      "year_range": [3, 10],
+      "monthly_effects": {"automation": 1, "cash": 300},
+      "recommended_menu": "shop",
+      "rival_momentum_delta": 1,
+      "tags": ["automation", "ops"]
+    },
+    {
+      "id": "rival_war_room",
+      "title": "경쟁사 전황실",
+      "description": "주요 경쟁사의 선점 제품을 추적하고 대응 카드와 연구 우선순위를 고정합니다.",
+      "sources": ["passed", "recovery"],
+      "year_range": [2, 10],
+      "monthly_effects": {"cash": 260, "hype": 1, "trust": 1},
+      "recommended_menu": "competition",
+      "rival_momentum_delta": -2,
+      "tags": ["rival", "competition"]
+    },
+    {
+      "id": "industry_expansion_bet",
+      "title": "산업 확장 베팅",
+      "description": "반도체, 로봇, 모빌리티, 장난감 같은 경계 없는 확장 제품을 준비합니다.",
+      "sources": ["passed"],
+      "year_range": [5, 10],
+      "monthly_effects": {"users": 420, "hype": 2, "data": 6},
+      "recommended_menu": "products",
+      "rival_momentum_delta": 2,
+      "tags": ["industry", "boundaryless"]
+    },
+    {
+      "id": "global_brand_push",
+      "title": "글로벌 브랜드 푸시",
+      "description": "세계 시장에서 기억되는 회사명을 만들기 위해 화제성과 신뢰를 함께 끌어올립니다.",
+      "sources": ["passed"],
+      "year_range": [7, 10],
+      "monthly_effects": {"users": 620, "hype": 2, "trust": 1},
+      "recommended_menu": "company",
+      "rival_momentum_delta": 3,
+      "tags": ["global", "brand"]
+    }
+  ]
+}

@@ -56,6 +56,14 @@ Examples:
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
 
+## v0.14.5 Visual QA Checklist
+
+- Review scenario shows `다음 해 운영 지시 3택1` inside the annual review card.
+- Three directive choices are visible after the year-one review.
+- Each directive choice shows title, description, monthly effects, recommended menu, and a `선택` button.
+- Choosing a directive replaces the active `다음 해 지시` and clears the pending choice list.
+- The chosen directive remains compact enough to fit in the company panel without page-level scrolling.
+
 ## v0.14.4 Visual QA Checklist
 
 - Review scenario shows `다음 해 지시` inside the annual review card.

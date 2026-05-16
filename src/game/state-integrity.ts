@@ -1,4 +1,4 @@
-import { annualReviews, companyLocations, competitors, products, resources, strategyCards } from "./data";
+import { annualDirectiveChoices, annualReviews, companyLocations, competitors, products, resources, strategyCards } from "./data";
 import type { GameState } from "./types";
 
 export interface StateIntegrityReport {
@@ -15,6 +15,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const locationIds = new Set(companyLocations.map((location) => location.id));
   const cardIds = new Set(strategyCards.map((card) => card.id));
   const annualReviewIds = new Set(annualReviews.map((review) => review.id));
+  const annualDirectiveChoiceIds = new Set(annualDirectiveChoices.map((choice) => choice.id));
 
   for (const resourceId of Object.keys(resources)) {
     const value = state.resources[resourceId];
@@ -85,6 +86,25 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     }
     if (!Number.isFinite(state.annualDirective.expiresMonth)) {
       issues.push(`annual directive "${state.annualDirective.title}" has invalid expiresMonth`);
+    }
+  }
+
+  if (state.pendingAnnualDirectiveChoices) {
+    const pending = state.pendingAnnualDirectiveChoices;
+    if (!annualReviewIds.has(pending.reviewId)) {
+      issues.push(`pending annual directive review "${pending.reviewId}" is unknown`);
+    }
+    if (!["passed", "recovery"].includes(pending.source)) {
+      issues.push(`pending annual directive source "${pending.source}" is invalid`);
+    }
+    if (!Array.isArray(pending.offeredDirectiveIds) || pending.offeredDirectiveIds.length === 0 || pending.offeredDirectiveIds.length > 3) {
+      issues.push("pending annual directive choices must include 1-3 offers");
+    } else {
+      for (const choiceId of pending.offeredDirectiveIds) {
+        if (!annualDirectiveChoiceIds.has(choiceId)) {
+          issues.push(`pending annual directive choice "${choiceId}" is unknown`);
+        }
+      }
     }
   }
 

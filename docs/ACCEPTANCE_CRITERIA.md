@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.14.5: Annual Directive Choices
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | A reusable annual directive choice pool exists in data | **Passed** |
+| 2 | Year-end reviews create three eligible directive choices | **Passed** |
+| 3 | Choosing a directive replaces the default next-year directive | **Passed** |
+| 4 | Choosing a directive clears the pending choice state | **Passed** |
+| 5 | Company menu shows the three directive choices with effects and action buttons | **Passed** |
+| 6 | Long-run simulation reaches month 24+ and chooses at least one directive | **Passed** |
+| 7 | Data validation checks directive choice sources, year ranges, effects, menus, and tags | **Passed** |
+| 8 | State integrity checks pending directive choices | **Passed** |
+
+---
+
 ## Alpha v0.14.4: Annual Directives And Next-Year Momentum
 
 | # | Criterion | Status |

@@ -1,11 +1,13 @@
-import { annualReviews, capabilities, resources } from "./data";
+import { annualDirectiveChoices, annualReviews, capabilities, resources } from "./data";
 import { getCompanyStarRating, MONTHS_PER_YEAR } from "./campaign";
 import type {
+  AnnualDirectiveChoiceDefinition,
   AnnualDirectiveState,
   AnnualReviewDefinition,
   AnnualReviewHistoryEntry,
   CompetitorState,
   GameState,
+  PendingAnnualDirectiveChoices,
   ResourceMap,
 } from "./types";
 
@@ -31,6 +33,10 @@ export interface AnnualReviewProgress {
 
 export interface AnnualReviewResult extends AnnualReviewHistoryEntry {
   passed: boolean;
+}
+
+export interface AnnualDirectiveChoiceRow extends AnnualDirectiveChoiceDefinition {
+  selected: boolean;
 }
 
 export function getAnnualReviewForMonth(month: number): AnnualReviewDefinition | undefined {
@@ -93,12 +99,14 @@ export function applyDueAnnualReview(state: GameState): GameState {
   if (!result) return state;
   const review = annualReviews.find((entry) => entry.id === result.reviewId);
   const directive = review ? createAnnualDirective(review, result.passed) : undefined;
+  const pendingAnnualDirectiveChoices = review ? createPendingAnnualDirectiveChoices(review, result.passed) : undefined;
 
   return {
     ...state,
     resources: applyReviewReward(state.resources, result.reward),
     annualReviewHistory: [result, ...state.annualReviewHistory].slice(0, 12),
     annualDirective: directive,
+    pendingAnnualDirectiveChoices,
     competitorStates: directive ? applyAnnualDirectiveRivalReaction(state.competitorStates, directive) : state.competitorStates,
     timeline: [
       `연간 심사: ${result.summary}`,
@@ -107,6 +115,38 @@ export function applyDueAnnualReview(state: GameState): GameState {
     ]
       .filter(Boolean)
       .slice(0, 8),
+  };
+}
+
+export function getAnnualDirectiveChoiceRows(state: GameState): AnnualDirectiveChoiceRow[] {
+  const pending = state.pendingAnnualDirectiveChoices;
+  if (!pending) return [];
+
+  return pending.offeredDirectiveIds
+    .map((choiceId) => annualDirectiveChoices.find((choice) => choice.id === choiceId))
+    .filter((choice): choice is AnnualDirectiveChoiceDefinition => Boolean(choice))
+    .map((choice) => ({
+      ...choice,
+      selected: state.annualDirective?.title === choice.title,
+    }));
+}
+
+export function chooseAnnualDirective(choiceId: string, state: GameState): GameState {
+  const pending = state.pendingAnnualDirectiveChoices;
+  if (!pending || state.status !== "playing") return state;
+  if (!pending.offeredDirectiveIds.includes(choiceId)) return state;
+
+  const choice = annualDirectiveChoices.find((entry) => entry.id === choiceId);
+  const review = annualReviews.find((entry) => entry.id === pending.reviewId);
+  if (!choice || !review) return state;
+
+  const directive = createAnnualDirectiveFromChoice(choice, pending, review);
+
+  return {
+    ...state,
+    annualDirective: directive,
+    pendingAnnualDirectiveChoices: undefined,
+    timeline: [`연간 지시 선택: ${choice.title}`, ...state.timeline].slice(0, 8),
   };
 }
 
@@ -123,6 +163,36 @@ export function getAnnualReviewCountdown(state: GameState): string {
   return `${review.title}까지 ${monthsLeft}개월`;
 }
 
+function createPendingAnnualDirectiveChoices(review: AnnualReviewDefinition, passed: boolean): PendingAnnualDirectiveChoices {
+  const source = passed ? "passed" : "recovery";
+  const eligibleChoices = annualDirectiveChoices
+    .filter((choice) => choice.sources.includes(source))
+    .filter((choice) => review.year >= choice.year_range[0] && review.year <= choice.year_range[1]);
+  const preferredChoiceIds = getPreferredDirectiveChoiceIds(source);
+  const sortedChoices = [...eligibleChoices].sort((a, b) => {
+    const aPreferred = preferredChoiceIds.indexOf(a.id);
+    const bPreferred = preferredChoiceIds.indexOf(b.id);
+    const aScore = aPreferred === -1 ? 99 : aPreferred;
+    const bScore = bPreferred === -1 ? 99 : bPreferred;
+    return aScore - bScore;
+  });
+
+  return {
+    reviewId: review.id,
+    year: review.year,
+    month: review.month,
+    source,
+    offeredDirectiveIds: sortedChoices.slice(0, 3).map((choice) => choice.id),
+  };
+}
+
+function getPreferredDirectiveChoiceIds(source: "passed" | "recovery"): string[] {
+  if (source === "recovery") {
+    return ["cashflow_discipline", "trust_compound_program", "product_launch_marathon", "rival_war_room"];
+  }
+  return ["product_launch_marathon", "trust_compound_program", "research_lab_sprint", "automation_backbone", "rival_war_room"];
+}
+
 function createAnnualDirective(review: AnnualReviewDefinition, passed: boolean): AnnualDirectiveState {
   const template = passed ? review.directive.passed : review.directive.recovery;
 
@@ -136,6 +206,24 @@ function createAnnualDirective(review: AnnualReviewDefinition, passed: boolean):
     monthlyEffects: template.monthly_effects,
     recommendedMenu: template.recommended_menu,
     rivalMomentumDelta: template.rival_momentum_delta,
+  };
+}
+
+function createAnnualDirectiveFromChoice(
+  choice: AnnualDirectiveChoiceDefinition,
+  pending: NonNullable<GameState["pendingAnnualDirectiveChoices"]>,
+  review: AnnualReviewDefinition,
+): AnnualDirectiveState {
+  return {
+    reviewId: pending.reviewId,
+    year: pending.year,
+    source: pending.source,
+    title: choice.title,
+    description: choice.description,
+    expiresMonth: Math.min(review.month + MONTHS_PER_YEAR, annualReviews[annualReviews.length - 1]?.month ?? review.month + MONTHS_PER_YEAR),
+    monthlyEffects: choice.monthly_effects,
+    recommendedMenu: choice.recommended_menu,
+    rivalMomentumDelta: choice.rival_momentum_delta,
   };
 }
 

@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.14.5-alpha] — 2026-05-16
+
+### 연간 심사 후 3택1 운영 지시
+
+**추가:**
+- 연간 심사 직후 다음 해 운영 방향을 고르는 `annual_directive_choices.json` 데이터 풀을 추가했다.
+- 통과/회복 결과와 연차 범위에 맞춰 3개의 운영 지시 후보를 제안한다.
+- 플레이어가 선택한 지시가 기존 기본 지시를 대체하고 다음 1년 월간 효과로 적용된다.
+- 회사 화면의 연간 심사 카드에 `다음 해 운영 지시 3택1` 선택 UI를 추가했다.
+- 24개월 이상 진행하며 연간 지시 선택까지 자동 처리하는 `runAnnualDirectiveSimulation` 하네스를 추가했다.
+
+**변경:**
+- 저장 상태에 `pendingAnnualDirectiveChoices`를 추가하고 레거시 저장 데이터는 안전하게 비워 둔다.
+- 데이터 검증 하네스가 연간 지시 선택 풀의 소스, 연차 범위, 월간 효과, 추천 메뉴, 태그를 검사한다.
+- 상태 무결성 검사가 대기 중인 연간 지시 선택의 심사 참조와 선택지 ID를 검사한다.
+- `?scenario=review` QA가 3택1 선택 후보를 노출하는지 확인한다.
+
+**검증:**
+- `npm test -- src/game/annual-review.test.ts src/game/run-simulator.test.ts src/game/qa-scenarios.test.ts` 통과, 33 tests
+- `node scripts/harness/validate-data.mjs` 통과
+- `npm run harness:gate` 통과, 145 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=review` 1366x768 렌더링 확인
+
+**배포:**
+- Vercel 배포 없음. 큰 버전업 때만 배포한다.
+
+---
+
 ## [0.14.4-alpha] — 2026-05-16
 
 ### 연간 심사 후속 지시와 다음 해 모멘텀

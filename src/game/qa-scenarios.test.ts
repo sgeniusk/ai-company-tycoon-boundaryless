@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./qa-scenarios";
+import { getAnnualDirectiveChoiceRows } from "./annual-review";
 import { getFoundationSnapshot } from "./content-foundation";
 
 describe("alpha v0.9.3 QA scenarios", () => {
@@ -190,6 +191,8 @@ describe("alpha v0.9.3 QA scenarios", () => {
       passed: true,
     });
     expect(scenario.state.annualDirective?.title).toContain("투자자");
+    expect(scenario.state.pendingAnnualDirectiveChoices?.offeredDirectiveIds).toHaveLength(3);
+    expect(getAnnualDirectiveChoiceRows(scenario.state).map((choice) => choice.id)).toContain("product_launch_marathon");
   });
 
   it("creates a foundation scenario for content recommendation QA", () => {

@@ -77,6 +77,7 @@ const strategyCardsData = readJson("strategy_cards.json");
 const metaUnlocksData = readJson("meta_unlocks.json");
 const officeExpansionsData = readJson("office_expansions.json");
 const annualReviewsData = readJson("annual_reviews.json");
+const annualDirectiveChoicesData = readJson("annual_directive_choices.json");
 const koLocaleData = readJson("locales/ko.json");
 const enLocaleData = readJson("locales/en.json");
 
@@ -101,6 +102,7 @@ const strategyCards = strategyCardsData?.strategy_cards ?? [];
 const metaUnlocks = metaUnlocksData?.meta_unlocks ?? [];
 const officeExpansions = officeExpansionsData?.office_expansions ?? [];
 const annualReviews = annualReviewsData?.annual_reviews ?? [];
+const annualDirectiveChoices = annualDirectiveChoicesData?.annual_directive_choices ?? [];
 const localeKeys = new Set([...Object.keys(koLocaleData ?? {}), ...Object.keys(enLocaleData ?? {})]);
 
 const resourceIds = new Set(Object.keys(resources));
@@ -123,6 +125,7 @@ const strategyCardIds = idsAreUnique("strategy_cards", strategyCards);
 const metaUnlockIds = idsAreUnique("meta_unlocks", metaUnlocks);
 idsAreUnique("office_expansions", officeExpansions);
 idsAreUnique("annual_reviews", annualReviews);
+idsAreUnique("annual_directive_choices", annualDirectiveChoices);
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);
@@ -290,6 +293,45 @@ for (const [index, review] of annualReviews.entries()) {
     if (typeof directive.rival_momentum_delta !== "number") {
       errors.push(`annual_review "${review.id}" ${outcome} directive: rival_momentum_delta must be numeric`);
     }
+  }
+}
+
+if (annualDirectiveChoices.length < 6) {
+  errors.push(`annual_directive_choices: expected at least 6 choices, found ${annualDirectiveChoices.length}`);
+}
+for (const choice of annualDirectiveChoices) {
+  for (const field of ["title", "description", "sources", "year_range", "monthly_effects", "recommended_menu", "rival_momentum_delta", "tags"]) {
+    if (!(field in choice)) errors.push(`annual_directive_choice "${choice.id}": missing ${field}`);
+  }
+  if (!Array.isArray(choice.sources) || choice.sources.length === 0) {
+    errors.push(`annual_directive_choice "${choice.id}": sources must be a non-empty array`);
+  } else {
+    for (const source of choice.sources) {
+      if (!["passed", "recovery"].includes(source)) {
+        errors.push(`annual_directive_choice "${choice.id}": unknown source "${source}"`);
+      }
+    }
+  }
+  if (
+    !Array.isArray(choice.year_range) ||
+    choice.year_range.length !== 2 ||
+    typeof choice.year_range[0] !== "number" ||
+    typeof choice.year_range[1] !== "number" ||
+    choice.year_range[0] < 1 ||
+    choice.year_range[1] > 10 ||
+    choice.year_range[0] > choice.year_range[1]
+  ) {
+    errors.push(`annual_directive_choice "${choice.id}": year_range must be [min,max] within 1-10`);
+  }
+  validateResourceMap(`annual_directive_choice "${choice.id}" monthly_effects`, choice.monthly_effects, resourceIds);
+  if (!annualReviewMenuIds.has(choice.recommended_menu)) {
+    errors.push(`annual_directive_choice "${choice.id}": unknown recommended_menu "${choice.recommended_menu}"`);
+  }
+  if (typeof choice.rival_momentum_delta !== "number") {
+    errors.push(`annual_directive_choice "${choice.id}": rival_momentum_delta must be numeric`);
+  }
+  if (!Array.isArray(choice.tags) || choice.tags.length === 0) {
+    errors.push(`annual_directive_choice "${choice.id}": tags must be a non-empty array`);
   }
 }
 

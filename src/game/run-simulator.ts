@@ -1,4 +1,5 @@
 import { agentTypes, capabilities, growthPaths, items, officeExpansions, products, upgrades } from "./data";
+import { chooseAnnualDirective } from "./annual-review";
 import { chooseCardReward, getStrategyCardById, getStrategyCardPlayCheck, playStrategyCard } from "./deckbuilding";
 import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
@@ -32,6 +33,10 @@ export interface CommercialSimulationResult {
 
 export interface TenMinuteAlphaSimulationResult extends CommercialSimulationResult {
   nextRunPreview: GameState;
+}
+
+export interface AnnualDirectiveSimulationResult extends CommercialSimulationResult {
+  directiveChoicesMade: number;
 }
 
 export function runAllCommercialSimulations(): CommercialSimulationResult[] {
@@ -105,6 +110,37 @@ export function runScriptedCommercialSimulation(strategyId = "productivity_line"
     finalState: state,
     summary: getRunSummary(state),
     integrity: validateGameStateIntegrity(state),
+  };
+}
+
+export function runAnnualDirectiveSimulation(strategyId = "productivity_line", targetMonth = 24): AnnualDirectiveSimulationResult {
+  let state = seedStarterRun();
+  let monthsSimulated = 0;
+  let directiveChoicesMade = 0;
+
+  state = chooseGrowthPath(strategyId, resolveOpenIssues(state));
+
+  while (state.month < targetMonth && state.status === "playing" && monthsSimulated < targetMonth + 8) {
+    state = resolveOpenIssues(state);
+    state = chooseFirstAvailableReward(state);
+    state = applyStrategyPolicy(strategyId, state);
+    state = advanceMonth(state);
+    monthsSimulated += 1;
+
+    if (state.pendingAnnualDirectiveChoices?.offeredDirectiveIds.length) {
+      const choiceId = pickAnnualDirectiveChoice(strategyId, state.pendingAnnualDirectiveChoices.offeredDirectiveIds);
+      state = chooseAnnualDirective(choiceId, state);
+      directiveChoicesMade += 1;
+    }
+  }
+
+  return {
+    strategyId,
+    monthsSimulated,
+    finalState: state,
+    summary: getRunSummary(state),
+    integrity: validateGameStateIntegrity(state),
+    directiveChoicesMade,
   };
 }
 
@@ -189,6 +225,17 @@ function playFirstCounterCard(state: GameState): GameState {
   const card = getStrategyCardById("market_repositioning");
   if (!card || !getStrategyCardPlayCheck(card, state).ok) return state;
   return playStrategyCard(card, state);
+}
+
+function pickAnnualDirectiveChoice(strategyId: string, offeredDirectiveIds: string[]): string {
+  const preferredByStrategy: Record<string, string[]> = {
+    productivity_line: ["product_launch_marathon", "automation_backbone", "cashflow_discipline"],
+    trust_enterprise: ["trust_compound_program", "rival_war_room", "cashflow_discipline"],
+    code_vision_lab: ["research_lab_sprint", "automation_backbone", "product_launch_marathon"],
+    market_blitz: ["global_brand_push", "rival_war_room", "product_launch_marathon"],
+  };
+  const preferredIds = preferredByStrategy[strategyId] ?? ["product_launch_marathon", "trust_compound_program", "cashflow_discipline"];
+  return preferredIds.find((choiceId) => offeredDirectiveIds.includes(choiceId)) ?? offeredDirectiveIds[0];
 }
 
 function seedStarterRun(): GameState {

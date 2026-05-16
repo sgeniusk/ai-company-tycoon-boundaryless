@@ -1,7 +1,14 @@
 import { useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import { agentTypes, assetManifest, automationUpgrades, capabilities, companyLocations, competitors, domains, items, metaUnlocks, products, strategyCards, upgrades } from "../game/data";
 import { getAchievementStatuses } from "../game/achievements";
-import { getActiveAnnualDirective, getAnnualReviewCountdown, getAnnualReviewProgress, getCurrentAnnualReview } from "../game/annual-review";
+import {
+  chooseAnnualDirective,
+  getActiveAnnualDirective,
+  getAnnualDirectiveChoiceRows,
+  getAnnualReviewCountdown,
+  getAnnualReviewProgress,
+  getCurrentAnnualReview,
+} from "../game/annual-review";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
@@ -89,7 +96,7 @@ import type {
 } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, itemCategoryLabel, itemTargetLabel, statLabel } from "../ui/formatters";
-import type { MenuId } from "../ui/menu";
+import { menus, type MenuId } from "../ui/menu";
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
   if (!palette?.length) return {};
@@ -114,6 +121,10 @@ function getItemIcon(itemId: string): ItemIconDefinition | undefined {
   return assetManifest.item_icons.find((icon) => icon.item_id === itemId);
 }
 
+function getMenuLabel(menuId: string): string {
+  return menus.find((menu) => menu.id === menuId)?.label ?? menuId;
+}
+
 export function renderMenuContent(
   activeMenu: MenuId,
   gameState: GameState,
@@ -136,6 +147,7 @@ export function renderMenuContent(
     const annualReviewCountdown = getAnnualReviewCountdown(gameState);
     const recentAnnualReview = gameState.annualReviewHistory[0];
     const annualDirective = getActiveAnnualDirective(gameState);
+    const annualDirectiveChoices = getAnnualDirectiveChoiceRows(gameState);
 
     return (
       <div className="panel-grid two-col">
@@ -172,8 +184,35 @@ export function renderMenuContent(
                 <strong>다음 해 지시: {annualDirective.title}</strong>
                 <span>{annualDirective.description}</span>
                 <small>
-                  월간 {formatEffects(annualDirective.monthlyEffects)} · 추천 메뉴 {annualDirective.recommendedMenu} · {annualDirective.expiresMonth}개월차까지
+                  월간 {formatEffects(annualDirective.monthlyEffects)} · 추천 메뉴 {getMenuLabel(annualDirective.recommendedMenu)} · {annualDirective.expiresMonth}개월차까지
                 </small>
+              </div>
+            )}
+            {annualDirectiveChoices.length > 0 && (
+              <div className="annual-choice-panel">
+                <div>
+                  <strong>다음 해 운영 지시 3택1</strong>
+                  <span>심사 결과를 바탕으로 내년 회사 운영의 월간 보너스와 추천 메뉴를 직접 고릅니다.</span>
+                </div>
+                <div className="annual-choice-list">
+                  {annualDirectiveChoices.map((choice) => (
+                    <article className={choice.selected ? "selected" : ""} key={choice.id}>
+                      <div>
+                        <h4>{choice.title}</h4>
+                        <span>{choice.description}</span>
+                        <small>
+                          월간 {formatEffects(choice.monthly_effects)} · 추천 {getMenuLabel(choice.recommended_menu)}
+                        </small>
+                      </div>
+                      <button
+                        disabled={gameState.status !== "playing"}
+                        onClick={() => setGameState((currentState) => chooseAnnualDirective(choice.id, currentState))}
+                      >
+                        {choice.selected ? "적용 중" : "선택"}
+                      </button>
+                    </article>
+                  ))}
+                </div>
               </div>
             )}
             <div className="annual-goal-list">

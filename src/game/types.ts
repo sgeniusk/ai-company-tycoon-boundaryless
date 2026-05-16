@@ -274,6 +274,13 @@ export interface AnnualReviewDirectiveTemplate {
   rival_momentum_delta: number;
 }
 
+export interface AnnualDirectiveChoiceDefinition extends AnnualReviewDirectiveTemplate {
+  id: string;
+  sources: AnnualDirectiveSource[];
+  year_range: [number, number];
+  tags: string[];
+}
+
 export interface AnnualReviewHistoryEntry {
   reviewId: string;
   year: number;
@@ -297,6 +304,14 @@ export interface AnnualDirectiveState {
   monthlyEffects: ResourceMap;
   recommendedMenu: string;
   rivalMomentumDelta: number;
+}
+
+export interface PendingAnnualDirectiveChoices {
+  reviewId: string;
+  year: number;
+  month: number;
+  source: AnnualDirectiveSource;
+  offeredDirectiveIds: string[];
 }
 
 export type StrategyCardCategory = "build" | "ops" | "product" | "safety" | "growth" | "research" | "automation";
@@ -656,6 +671,7 @@ export interface GameState {
   unlockedAchievements: string[];
   annualReviewHistory: AnnualReviewHistoryEntry[];
   annualDirective?: AnnualDirectiveState;
+  pendingAnnualDirectiveChoices?: PendingAnnualDirectiveChoices;
   eventHistory: string[];
   rivalEventHistory: string[];
   timeline: string[];

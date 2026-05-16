@@ -17,11 +17,13 @@ import assetManifestJson from "../../data/asset_manifest.json";
 import growthPathsJson from "../../data/growth_paths.json";
 import achievementsJson from "../../data/achievements.json";
 import annualReviewsJson from "../../data/annual_reviews.json";
+import annualDirectiveChoicesJson from "../../data/annual_directive_choices.json";
 import strategyCardsJson from "../../data/strategy_cards.json";
 import metaUnlocksJson from "../../data/meta_unlocks.json";
 import officeExpansionsJson from "../../data/office_expansions.json";
 import type {
   AchievementDefinition,
+  AnnualDirectiveChoiceDefinition,
   AnnualReviewDefinition,
   AgentTypeDefinition,
   AssetManifestDefinition,
@@ -64,6 +66,7 @@ export const assetManifest = assetManifestJson as unknown as AssetManifestDefini
 export const growthPaths = growthPathsJson.growth_paths as unknown as GrowthPathDefinition[];
 export const achievements = achievementsJson.achievements as unknown as AchievementDefinition[];
 export const annualReviews = annualReviewsJson.annual_reviews as unknown as AnnualReviewDefinition[];
+export const annualDirectiveChoices = annualDirectiveChoicesJson.annual_directive_choices as unknown as AnnualDirectiveChoiceDefinition[];
 export const strategyCards = strategyCardsJson.strategy_cards as unknown as StrategyCardDefinition[];
 export const metaUnlocks = metaUnlocksJson.meta_unlocks as unknown as MetaUnlockDefinition[];
 export const officeExpansions = officeExpansionsJson.office_expansions as unknown as OfficeExpansionDefinition[];

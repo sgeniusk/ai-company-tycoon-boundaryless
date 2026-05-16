@@ -1,5 +1,6 @@
 import {
   agentTypes,
+  annualDirectiveChoices,
   annualReviews,
   automationUpgrades,
   balance,
@@ -50,6 +51,7 @@ import type {
   OfficeState,
   CardRewardChoice,
   PendingCardReward,
+  PendingAnnualDirectiveChoices,
   ProductProject,
   ProductDefinition,
   ReleaseMoment,
@@ -955,6 +957,7 @@ export function hydrateGameState(serialized: string): GameState {
     unlockedAchievements: sanitizeStringArray(rawState.unlockedAchievements),
     annualReviewHistory: hydrateAnnualReviewHistory(rawState.annualReviewHistory),
     annualDirective: hydrateAnnualDirective(rawState.annualDirective),
+    pendingAnnualDirectiveChoices: hydratePendingAnnualDirectiveChoices(rawState.pendingAnnualDirectiveChoices),
     eventHistory: sanitizeStringArray(rawState.eventHistory),
     rivalEventHistory: sanitizeStringArray(rawState.rivalEventHistory),
     timeline: sanitizeStringArray(rawState.timeline),
@@ -1576,6 +1579,25 @@ function hydrateAnnualDirective(value: unknown): AnnualDirectiveState | undefine
     monthlyEffects: sanitizeResourceDelta(value.monthlyEffects),
     recommendedMenu: value.recommendedMenu,
     rivalMomentumDelta: Math.round(clamp(sanitizeNumber(value.rivalMomentumDelta, 0), -12, 12)),
+  };
+}
+
+function hydratePendingAnnualDirectiveChoices(value: unknown): PendingAnnualDirectiveChoices | undefined {
+  if (!isRecord(value)) return undefined;
+  const reviewId = typeof value.reviewId === "string" ? value.reviewId : "";
+  const review = annualReviews.find((entry) => entry.id === reviewId);
+  const source = value.source === "passed" || value.source === "recovery" ? value.source : undefined;
+  const annualDirectiveChoiceIds = annualDirectiveChoices.map((choice) => choice.id);
+  const offeredDirectiveIds = uniqueStrings(sanitizeStringArray(value.offeredDirectiveIds, annualDirectiveChoiceIds)).slice(0, 3);
+
+  if (!review || !source || offeredDirectiveIds.length === 0) return undefined;
+
+  return {
+    reviewId,
+    year: Math.max(1, Math.round(sanitizeNumber(value.year, review.year))),
+    month: Math.max(1, Math.round(sanitizeNumber(value.month, review.month))),
+    source,
+    offeredDirectiveIds,
   };
 }
 
