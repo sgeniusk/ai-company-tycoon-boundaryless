@@ -27,6 +27,7 @@ Use the local app URL and append one of these query strings:
 | Flow | `?scenario=flow` | First 10-minute loop with growth choice, office setup, and next rival counter guidance |
 | Alpha | `?scenario=alpha` | 10-minute alpha completion with run result, insight reward, and next-run readiness |
 | Next Run | `?scenario=next-run` | New run after accepting alpha insight, deck onboarding, run history, and meta unlock candidates |
+| Finale | `?scenario=finale` | 10-year campaign ending, final rank, Seoul location, and campaign summary |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 
@@ -47,8 +48,19 @@ Examples:
 - `http://localhost:5173/?scenario=flow`
 - `http://localhost:5173/?scenario=alpha`
 - `http://localhost:5173/?scenario=next-run`
+- `http://localhost:5173/?scenario=finale`
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
+
+## v0.14.0 Visual QA Checklist
+
+- Fresh scenario starts in `강원 산골 차고` with a 1-star company.
+- Top HUD shows campaign year/month, company stars, day/night phase, and region.
+- Advancing a month alternates the office mood between day and night.
+- Company menu shows 10-year campaign progress and regional relocation cards.
+- Agent menu shows AI operation capacity and human staff guidance.
+- `?scenario=finale` shows a 10-year ending card with rank and final score.
+- Loading a saved game after at least one real day shows the offline settlement popup.
 
 ## v0.9.3 Visual QA Checklist
 

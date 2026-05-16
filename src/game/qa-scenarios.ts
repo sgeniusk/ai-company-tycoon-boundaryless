@@ -21,6 +21,7 @@ export const qaScenarioIds = [
   "flow",
   "alpha",
   "next-run",
+  "finale",
   "commercial",
   "result",
 ] as const;
@@ -180,6 +181,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "finale") {
+    return {
+      id,
+      label: "10년 엔딩 QA",
+      state: createFinaleState(),
+      activeMenu: "company",
+    };
+  }
+
   if (id === "commercial") {
     return {
       id,
@@ -203,6 +213,27 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     label: "출시 스포트라이트 QA",
     state: releaseState,
     activeMenu: "company",
+  };
+}
+
+function createFinaleState(): GameState {
+  return {
+    ...createInitialState(),
+    month: 120,
+    locationId: "seoul_ai_tower",
+    activeProducts: products.slice(0, 7).map((product) => product.id),
+    productLevels: Object.fromEntries(products.slice(0, 7).map((product) => [product.id, 2])),
+    resources: {
+      ...createInitialState().resources,
+      cash: 320000,
+      users: 220000,
+      trust: 88,
+      automation: 72,
+      data: 600,
+      compute: 420,
+    },
+    status: "success",
+    timeline: ["10년 엔딩 QA: 시골 차고에서 출발해 서울 AI 타워의 세계적 회사가 됨", ...createInitialState().timeline].slice(0, 8),
   };
 }
 

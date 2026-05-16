@@ -11,12 +11,14 @@ import {
 } from "../game/guidance";
 import { resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { getRunSummary } from "../game/run-summary";
+import { getCampaignCalendar, getCampaignFinale, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
   advanceMonth,
   chooseGrowthPath,
   createInitialState,
   formatResource,
   getCompanyStage,
+  getAiOperationCapacity,
   getOfficeDecorationSlots,
   getOfficeExpansion,
   getOfficeHireCapacity,
@@ -58,6 +60,10 @@ export function TopBar({
   qaScenarioLabel?: string;
   onToggleLocale: () => void;
 }) {
+  const calendar = getCampaignCalendar(gameState);
+  const phase = getDayPhase(gameState);
+  const location = getCurrentLocation(gameState);
+
   return (
     <section className="top-bar" aria-label="회사 상태">
       <div>
@@ -65,7 +71,10 @@ export function TopBar({
         <h1>경계 없는 회사</h1>
       </div>
       <div className="status-cluster">
-        <span className="status-pill">{gameState.month}개월차</span>
+        <span className="status-pill">{calendar.year}년 {calendar.monthOfYear}월</span>
+        <span className="status-pill">{getCompanyStarRating(gameState)}성</span>
+        <span className="status-pill">{phase.label}</span>
+        <span className="status-pill">{location.region}</span>
         <span className={`status-pill ${gameState.status}`}>{statusLabel(gameState.status)}</span>
         <span className="status-pill">출시 가능 {launchableCount}</span>
         <span className="status-pill">개발 중 {gameState.productProjects.length}</span>
@@ -124,6 +133,10 @@ export function GameStage({
     .slice(0, Math.min(7, officeDecorationSlots + 3));
   const chosenGrowthPathId = gameState.chosenGrowthPath?.id;
   const runSummary = getRunSummary(gameState);
+  const calendar = getCampaignCalendar(gameState);
+  const finale = getCampaignFinale(gameState);
+  const phase = getDayPhase(gameState);
+  const location = getCurrentLocation(gameState);
   const growthPathCardClass = (pathId: string) =>
     ["growth-path-card", chosenGrowthPathId === pathId ? "selected" : "", chosenGrowthPathId && chosenGrowthPathId !== pathId ? "locked" : ""]
       .filter(Boolean)
@@ -155,11 +168,11 @@ export function GameStage({
 
   return (
     <section className="game-stage" aria-label="AI 회사 사무실">
-      <div className={`office-scene office-level-${officeExpansion.level}`}>
+      <div className={`office-scene office-level-${officeExpansion.level} office-phase-${phase.id}`}>
         <div className="office-wall">
-          <span>{officeExpansion.name}</span>
+          <span>{location.name}</span>
           <span>TEAM {gameState.hiredAgents.length}/{officeHireCapacity}</span>
-          <span>DECOR {placedOfficeItems.length}/{officeDecorationSlots}</span>
+          <span>AI OPS {getAiOperationCapacity(gameState)}</span>
         </div>
         <div className="office-floor">
           <div className="office-object-layer" aria-hidden="true">
@@ -215,6 +228,17 @@ export function GameStage({
       </div>
 
       <div className="stage-side">
+        {finale.isFinal && (
+          <article className={`run-summary rank-${finale.rank}`}>
+            <p className="eyebrow">10년 엔딩</p>
+            <div className="run-rank">
+              <strong>{finale.rank}</strong>
+              <span>{finale.endingName} · {finale.score}점</span>
+            </div>
+            <h2>{finale.title}</h2>
+            <p>{finale.verdict}</p>
+          </article>
+        )}
         <GuidancePanel
           firstTenMinutePlan={firstTenMinutePlan}
           firstTenMinuteProgress={firstTenMinuteProgress}
@@ -259,6 +283,12 @@ export function GameStage({
           <h2>{companyStage.name}</h2>
           <p>{companyStage.description}</p>
           {gameState.chosenGrowthPath && <span className="growth-identity">전략: {gameState.chosenGrowthPath.title}</span>}
+          <span className="growth-identity">
+            10년 캠페인 {calendar.progressPercent}% · 남은 {calendar.remainingMonths}개월
+          </span>
+          <span className="growth-identity">
+            {phase.description}
+          </span>
           <span className="growth-identity">
             로그라이트 런 {gameState.roguelite.runNumber} · 손패 {gameState.roguelite.deck.hand.length} · 통찰 {gameState.roguelite.founderInsight}
           </span>

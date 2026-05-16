@@ -221,6 +221,27 @@ p {
   position: relative;
 }
 
+.office-phase-night {
+  background: #33556d;
+}
+
+.office-phase-night .office-wall {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    #2f5068;
+}
+
+.office-phase-night .office-floor {
+  background:
+    linear-gradient(45deg, rgba(255, 245, 180, 0.12) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 245, 180, 0.08) 25%, transparent 25%),
+    #7a6a4f;
+}
+
+.office-phase-night .launch-screen {
+  box-shadow: 0 0 0 3px rgba(115, 224, 140, 0.22), 0 0 18px rgba(115, 224, 140, 0.28);
+}
+
 .office-scene.office-level-2 {
   min-height: 0;
 }
@@ -1103,6 +1124,60 @@ p {
   min-width: 52px;
 }
 
+.offline-modal {
+  align-items: center;
+  background: rgba(32, 35, 31, 0.55);
+  display: grid;
+  inset: 0;
+  justify-items: center;
+  padding: 18px;
+  position: fixed;
+  z-index: 20;
+}
+
+.offline-modal > div {
+  background: #fffaf0;
+  border: 3px solid var(--line);
+  box-shadow: 0 6px 0 var(--line);
+  display: grid;
+  gap: 10px;
+  max-width: 460px;
+  padding: 16px;
+  width: min(100%, 460px);
+}
+
+.offline-modal h2,
+.offline-modal p {
+  margin-bottom: 0;
+}
+
+.offline-delta-list {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.offline-delta-list span {
+  background: #edf4ff;
+  border: 2px solid #9cb8d6;
+  color: #334b5e;
+  font-size: 0.78rem;
+  font-weight: 900;
+  padding: 8px;
+}
+
+.offline-delta-list .negative {
+  background: #fff1df;
+  border-color: var(--red);
+  color: #8a1f13;
+}
+
+.offline-delta-list .positive {
+  background: #e8f5dc;
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+
 .menu-layout {
   display: grid;
   gap: 8px;
@@ -1214,6 +1289,74 @@ p {
   border-color: var(--green);
   color: var(--green-dark);
   font-weight: 900;
+  grid-column: 1 / -1;
+}
+
+.campaign-panel,
+.location-panel,
+.team-ops-summary {
+  background: #fff7df;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px;
+}
+
+.campaign-panel h3,
+.location-panel h3 {
+  color: var(--green-dark);
+  margin-bottom: 2px;
+}
+
+.campaign-panel span,
+.location-card span,
+.location-card small,
+.team-ops-summary span {
+  color: #5f5546;
+  font-size: 0.74rem;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.compact-heading {
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+}
+
+.location-list {
+  display: grid;
+  gap: 8px;
+}
+
+.location-card {
+  align-items: center;
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 9px;
+}
+
+.location-card.current {
+  background: #e8f5dc;
+  border-color: var(--green);
+}
+
+.location-card h3,
+.location-card p {
+  margin-bottom: 4px;
+}
+
+.location-card button {
+  background: var(--blue);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.location-card small {
   grid-column: 1 / -1;
 }
 

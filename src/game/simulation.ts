@@ -3,6 +3,7 @@ import {
   automationUpgrades,
   balance,
   capabilities,
+  companyLocations,
   companyStages,
   competitors,
   domains,
@@ -18,6 +19,7 @@ import {
   growthPaths,
 } from "./data";
 import { applyAchievementUnlocks } from "./achievements";
+import { CAMPAIGN_FINAL_MONTH, getCompanyStarRating, getCurrentLocation, getLocationRequirementReasons } from "./campaign";
 import { createInitialRogueliteState, createReleaseCardReward, refreshStrategyDeckForNewMonth } from "./deckbuilding";
 import { createReleaseGrowthPaths } from "./growth-paths";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
@@ -27,6 +29,7 @@ import type {
   ActionCheck,
   AutomationUpgradeDefinition,
   CapabilityDefinition,
+  CompanyLocationDefinition,
   CompanyStageDefinition,
   CompetitorDefinition,
   CompetitorState,
@@ -38,6 +41,7 @@ import type {
   HiredAgent,
   ItemDefinition,
   MarketRanking,
+  MonthlyEconomy,
   OfficeExpansionDefinition,
   OfficeState,
   CardRewardChoice,
@@ -56,7 +60,7 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-const SAVE_VERSION = 6;
+const SAVE_VERSION = 7;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -82,6 +86,7 @@ export function createInitialState(): GameState {
 
   return {
     month: startingState.month,
+    locationId: companyLocations[0]?.id ?? "rural_garage",
     resources: initialResources,
     capabilities: { ...startingState.capabilities },
     activeProducts: [...startingState.active_products],
@@ -217,10 +222,41 @@ export function getAgentHireCheck(agent: AgentTypeDefinition, state: GameState):
   if (state.hiredAgents.length >= hireCapacity) {
     reasons.push(`사무실 수용 인원 ${hireCapacity}명 한도입니다. 상점에서 사무실을 확장하세요.`);
   }
+  if (getAgentKind(agent) === "ai_agent" && getAiAgentCount(state) >= getAiOperationCapacity(state)) {
+    reasons.push(`사람 직원 운용력이 부족합니다. 현재 AI 운용 한도 ${getAiOperationCapacity(state)}개입니다.`);
+  }
 
-  appendCostReasons(reasons, agent.hire_cost, state);
+  appendCostReasons(reasons, getAgentHireCost(agent, state), state);
 
   return { ok: reasons.length === 0, reasons };
+}
+
+export function getAgentHireCost(agent: AgentTypeDefinition, state: GameState): ResourceMap {
+  if (getAgentKind(agent) !== "human") return agent.hire_cost;
+
+  const location = getCurrentLocation(state);
+  const multiplier = Math.max(0.5, 1 - location.human_hire_discount);
+  return Object.fromEntries(
+    Object.entries(agent.hire_cost).map(([resourceId, amount]) => [
+      resourceId,
+      resourceId === "cash" ? Math.round(amount * multiplier) : amount,
+    ]),
+  );
+}
+
+export function getAiOperationCapacity(state: GameState): number {
+  const humanOperators = state.hiredAgents.filter((agent) => {
+    const type = agentTypes.find((entry) => entry.id === agent.typeId);
+    return type ? getAgentKind(type) === "human" : false;
+  }).length;
+  return 3 + humanOperators * 2 + getCurrentLocation(state).ai_operation_bonus;
+}
+
+export function getAiAgentCount(state: GameState): number {
+  return state.hiredAgents.filter((agent) => {
+    const type = agentTypes.find((entry) => entry.id === agent.typeId);
+    return !type || getAgentKind(type) === "ai_agent";
+  }).length;
 }
 
 export function getOfficeExpansion(state: GameState): OfficeExpansionDefinition {
@@ -268,6 +304,37 @@ export function buyOfficeExpansion(expansion: OfficeExpansionDefinition, state: 
       placedItemIds: state.office.placedItemIds.slice(0, expansion.decoration_slots),
     },
     timeline: [`사무실 확장: ${expansion.name}으로 이전`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getRelocationCheck(locationId: string, state: GameState): ActionCheck {
+  const location = companyLocations.find((entry) => entry.id === locationId);
+  const reasons: string[] = [];
+
+  if (!location) {
+    reasons.push("알 수 없는 지역입니다.");
+    return { ok: false, reasons };
+  }
+  if (state.locationId === location.id) {
+    reasons.push("이미 이 지역에서 운영 중입니다.");
+  }
+
+  reasons.push(...getLocationRequirementReasons(location, state));
+  appendCostReasons(reasons, location.cost, state);
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function relocateCompany(locationId: string, state: GameState): GameState {
+  const location = companyLocations.find((entry) => entry.id === locationId);
+  const check = getRelocationCheck(locationId, state);
+  if (!location || !check.ok || state.status !== "playing") return state;
+
+  return {
+    ...state,
+    locationId: location.id,
+    resources: applyResourceDelta(state.resources, negateCosts(location.cost)),
+    timeline: [`지역 이전: ${location.name} (${location.region})으로 거점을 옮겼습니다.`, ...state.timeline].slice(0, 8),
   };
 }
 
@@ -335,7 +402,7 @@ export function hireAgent(agent: AgentTypeDefinition, state: GameState): GameSta
 
   return {
     ...state,
-    resources: applyResourceDelta(applyResourceDelta(state.resources, negateCosts(agent.hire_cost)), { talent: 1 }),
+    resources: applyResourceDelta(applyResourceDelta(state.resources, negateCosts(getAgentHireCost(agent, state))), { talent: 1 }),
     hiredAgents: [...state.hiredAgents, hiredAgent],
     timeline: [`고용 완료: ${agent.name} 합류`, ...state.timeline].slice(0, 8),
   };
@@ -540,9 +607,7 @@ export function upgradeCapability(capability: CapabilityDefinition, state: GameS
   });
 }
 
-export function advanceMonth(state: GameState): GameState {
-  if (state.status !== "playing") return state;
-
+export function calculateMonthlyEconomy(state: GameState): MonthlyEconomy {
   const active = products.filter((product) => state.activeProducts.includes(product.id));
   const hype = state.resources.hype ?? 0;
   const trust = state.resources.trust ?? 0;
@@ -560,23 +625,42 @@ export function advanceMonth(state: GameState): GameState {
   const computeCashCost = Math.ceil(((currentUsers + newUsers) / 1000) * balance.compute_cost_per_1000_users);
   const salaryCost = (state.resources.talent ?? 0) * balance.salary_per_talent;
   const automationDiscount = clamp((state.resources.automation ?? 0) * balance.automation_cost_reduction_per_point, 0, 0.75);
-  const totalCost = Math.round((balance.base_monthly_cash_cost + salaryCost + computeCashCost) * (1 - automationDiscount));
+  const locationCostModifier = getCurrentLocation(state).monthly_cost_modifier;
+  const totalCost = Math.round((balance.base_monthly_cash_cost + salaryCost + computeCashCost) * locationCostModifier * (1 - automationDiscount));
   const computePressure = Math.ceil(active.reduce((sum, product) => sum + getProductComputePressure(product, state), 0) * Math.max(1, newUsers / 1000) * 0.08);
   const strategyEffects = getChosenGrowthPathMonthlyEffects(state);
+  const resourceDelta = mergeResourceDelta(
+    {
+      cash: revenue - totalCost,
+      users: newUsers,
+      data: generatedData,
+      compute: -computePressure,
+      hype: -balance.monthly_hype_decay,
+      trust: trust < balance.trust_recovery_threshold ? balance.trust_recovery_amount : 0,
+    },
+    strategyEffects ?? {},
+  );
+
+  return {
+    revenue,
+    totalCost,
+    newUsers,
+    generatedData,
+    computePressure,
+    strategyEffects,
+    resourceDelta,
+  };
+}
+
+export function advanceMonth(state: GameState): GameState {
+  if (state.status !== "playing") return state;
+
+  const active = products.filter((product) => state.activeProducts.includes(product.id));
+  const monthlyEconomy = calculateMonthlyEconomy(state);
 
   const nextResources = applyResourceDelta(
     state.resources,
-    mergeResourceDelta(
-      {
-        cash: revenue - totalCost,
-        users: newUsers,
-        data: generatedData,
-        compute: -computePressure,
-        hype: -balance.monthly_hype_decay,
-        trust: trust < balance.trust_recovery_threshold ? balance.trust_recovery_amount : 0,
-      },
-      strategyEffects ?? {},
-    ),
+    monthlyEconomy.resourceDelta,
   );
 
   const nextMonth = state.month + 1;
@@ -585,25 +669,25 @@ export function advanceMonth(state: GameState): GameState {
     month: nextMonth,
     resources: nextResources,
     lastMonthReport: {
-      revenue,
-      totalCost,
-      newUsers,
-      generatedData,
-      computePressure,
-      strategyEffects,
+      revenue: monthlyEconomy.revenue,
+      totalCost: monthlyEconomy.totalCost,
+      newUsers: monthlyEconomy.newUsers,
+      generatedData: monthlyEconomy.generatedData,
+      computePressure: monthlyEconomy.computePressure,
+      strategyEffects: monthlyEconomy.strategyEffects,
     },
-    status: getNextStatus(nextResources, state.activeProducts.length),
+    status: getNextStatus(nextResources, state.activeProducts.length, nextMonth),
     timeline: [],
   };
   const progressedState = advanceProductProjects(nextStateWithoutEvent);
   const entrantState = addScheduledCompetitors(progressedState);
   const competedState = advanceCompetitors(entrantState);
-  const nextStatus = getNextStatus(competedState.resources, competedState.activeProducts.length);
+  const nextStatus = getNextStatus(competedState.resources, competedState.activeProducts.length, nextMonth);
   const nextStateForEvent = { ...competedState, status: nextStatus };
   const nextEvent = state.currentEvent ? state.currentEvent : findNextEligibleEvent(nextStateForEvent);
   const nextRivalEvent = state.currentRivalEvent ? state.currentRivalEvent : findNextEligibleRivalEvent(nextStateForEvent);
   const summary = active.length
-    ? `${nextMonth}개월차: 매출 ${formatMoney(revenue)}, 비용 ${formatMoney(totalCost)}, 이용자 +${newUsers.toLocaleString("ko-KR")}, 데이터 +${generatedData}`
+    ? `${nextMonth}개월차: 매출 ${formatMoney(monthlyEconomy.revenue)}, 비용 ${formatMoney(monthlyEconomy.totalCost)}, 이용자 +${monthlyEconomy.newUsers.toLocaleString("ko-KR")}, 데이터 +${monthlyEconomy.generatedData}`
     : `${nextMonth}개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.`;
 
   const advancedState = applyAchievementUnlocks({
@@ -615,7 +699,8 @@ export function advanceMonth(state: GameState): GameState {
       nextRivalEvent ? `경쟁사 이슈: ${nextRivalEvent.id}` : "",
       nextEvent ? `이슈 발생: ${nextEvent.name}` : "",
       ...competedState.timeline,
-      strategyEffects ? `전략 효과: ${formatResourceDelta(strategyEffects)}` : "",
+      monthlyEconomy.strategyEffects ? `전략 효과: ${formatResourceDelta(monthlyEconomy.strategyEffects)}` : "",
+      nextMonth >= CAMPAIGN_FINAL_MONTH ? `10년차 최종 평가: ${nextStatus === "success" ? "성공 엔딩" : "재도전 엔딩"}` : "",
       summary,
       ...state.timeline,
     ]
@@ -808,8 +893,21 @@ export function getCompanyStage(state: GameState): CompanyStageDefinition {
   return orderedStages.find((stage) => stageRequirementsMet(stage, state)) ?? orderedStages[orderedStages.length - 1];
 }
 
-export function serializeGameState(state: GameState): string {
-  return JSON.stringify({ version: SAVE_VERSION, state });
+export function serializeGameState(state: GameState, savedAt = new Date()): string {
+  return JSON.stringify({ version: SAVE_VERSION, savedAt: savedAt.toISOString(), state });
+}
+
+export function hydrateSavedGame(serialized: string): { state: GameState; savedAt?: Date } {
+  try {
+    const parsed = JSON.parse(serialized) as { savedAt?: unknown };
+    const savedAt = typeof parsed.savedAt === "string" ? new Date(parsed.savedAt) : undefined;
+    return {
+      state: hydrateGameState(serialized),
+      savedAt: savedAt && !Number.isNaN(savedAt.getTime()) ? savedAt : undefined,
+    };
+  } catch {
+    return { state: hydrateGameState(serialized) };
+  }
 }
 
 export function hydrateGameState(serialized: string): GameState {
@@ -830,6 +928,7 @@ export function hydrateGameState(serialized: string): GameState {
     ...initialState,
     ...rawState,
     month: sanitizeNumber(rawState.month, initialState.month),
+    locationId: sanitizeLocationId(rawState.locationId, initialState.locationId),
     resources: sanitizeResourceMap(rawState.resources, initialState.resources),
     capabilities: { ...initialState.capabilities, ...(isRecord(rawState.capabilities) ? rawState.capabilities : {}) },
     activeProducts: sanitizeStringArray(rawState.activeProducts, products.map((product) => product.id)),
@@ -920,6 +1019,11 @@ function sanitizeStringArray(value: unknown, allowedValues?: string[], fallback:
 
   const allowed = allowedValues ? new Set(allowedValues) : undefined;
   return value.filter((entry): entry is string => typeof entry === "string" && (!allowed || allowed.has(entry)));
+}
+
+function sanitizeLocationId(value: unknown, fallback: string): string {
+  if (typeof value === "string" && companyLocations.some((location) => location.id === value)) return value;
+  return fallback;
 }
 
 function sanitizeProductLevels(value: unknown, activeProducts: unknown): Record<string, number> {
@@ -1176,20 +1280,27 @@ function getStartingProjectQuality(assignedAgents: HiredAgent[], state: GameStat
   return Math.round(clamp(35 + stats.product * 0.7 + stats.creativity * 0.5 + stats.safety * 0.25, 35, 72));
 }
 
-function getNextStatus(nextResources: ResourceMap, activeProductCount: number): GameState["status"] {
+function getNextStatus(nextResources: ResourceMap, activeProductCount: number, month: number): GameState["status"] {
   if ((nextResources.cash ?? 0) < balance.game_over_cash_threshold && (nextResources.trust ?? 0) < balance.game_over_trust_threshold) {
     return "failure";
   }
 
-  if (
-    (nextResources.users ?? 0) >= balance.success_users_threshold ||
-    (nextResources.cash ?? 0) >= balance.success_cash_threshold ||
-    ((nextResources.automation ?? 0) >= balance.success_automation_threshold && activeProductCount >= balance.success_min_products)
-  ) {
+  if (month >= CAMPAIGN_FINAL_MONTH && hasCampaignSuccessResources(nextResources, activeProductCount)) {
     return "success";
   }
 
+  if (month >= CAMPAIGN_FINAL_MONTH) return "failure";
+
   return "playing";
+}
+
+function hasCampaignSuccessResources(nextResources: ResourceMap, activeProductCount: number): boolean {
+  return (
+    (nextResources.users ?? 0) >= balance.success_users_threshold ||
+    (nextResources.cash ?? 0) >= balance.success_cash_threshold ||
+    ((nextResources.automation ?? 0) >= balance.success_automation_threshold && activeProductCount >= balance.success_min_products) ||
+    (activeProductCount >= 3 && (nextResources.cash ?? 0) >= 0 && (nextResources.trust ?? 0) >= 45)
+  );
 }
 
 function applyResourceDelta(current: ResourceMap, delta: ResourceMap): ResourceMap {
@@ -1596,6 +1707,7 @@ function getRequirementReasons(requirements: Record<string, number>, state: Game
     if (requirement === "min_automation" && (state.resources.automation ?? 0) < needed) reasons.push(`자동화 ${needed} 필요`);
     if (requirement === "min_cash" && (state.resources.cash ?? 0) < needed) reasons.push(`자금 ${formatMoney(needed)} 필요`);
     if (requirement === "min_data" && (state.resources.data ?? 0) < needed) reasons.push(`데이터 ${needed} 필요`);
+    if (requirement === "min_star" && getCompanyStarRating(state) < needed) reasons.push(`${needed}성 회사 필요`);
     if (requirement.startsWith("min_capability_")) {
       const capabilityId = requirement.replace("min_capability_", "");
       const currentLevel = state.capabilities[capabilityId] ?? 0;
@@ -1607,6 +1719,10 @@ function getRequirementReasons(requirements: Record<string, number>, state: Game
   }
 
   return reasons;
+}
+
+function getAgentKind(agent: AgentTypeDefinition): NonNullable<AgentTypeDefinition["kind"]> {
+  return agent.kind ?? "ai_agent";
 }
 
 function appendCostReasons(reasons: string[], cost: ResourceMap = {}, state: GameState): void {

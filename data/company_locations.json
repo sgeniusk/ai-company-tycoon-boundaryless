@@ -1,0 +1,64 @@
+{
+  "company_locations": [
+    {
+      "id": "rural_garage",
+      "name": "강원 산골 차고",
+      "region": "한국 시골",
+      "description": "낡은 창고를 개조한 첫 거점입니다. 유지비는 싸지만 좋은 인재 풀은 좁습니다.",
+      "talent_pool": "초보 인재 중심",
+      "monthly_cost_modifier": 0.82,
+      "human_hire_discount": 0.18,
+      "ai_operation_bonus": 0,
+      "cost": {},
+      "unlock_requirements": {}
+    },
+    {
+      "id": "local_startup_center",
+      "name": "지방 창업센터",
+      "region": "지역 거점 도시",
+      "description": "정부 지원과 멘토링을 받을 수 있는 작은 창업센터입니다.",
+      "talent_pool": "주니어와 실무형 인재",
+      "monthly_cost_modifier": 0.95,
+      "human_hire_discount": 0.1,
+      "ai_operation_bonus": 1,
+      "cost": {"cash": 2500},
+      "unlock_requirements": {"min_star": 2}
+    },
+    {
+      "id": "pangyo_shared_office",
+      "name": "판교 공유오피스",
+      "region": "판교",
+      "description": "스타트업 네트워크와 AI 인재 접근성이 좋아지는 성장 거점입니다.",
+      "talent_pool": "제품형·개발형 인재 증가",
+      "monthly_cost_modifier": 1.18,
+      "human_hire_discount": 0,
+      "ai_operation_bonus": 2,
+      "cost": {"cash": 9000},
+      "unlock_requirements": {"min_star": 2, "min_users": 5000}
+    },
+    {
+      "id": "seoul_ai_tower",
+      "name": "서울 AI 타워",
+      "region": "서울",
+      "description": "최고급 인재와 기업 고객을 노릴 수 있지만, 월 비용과 경쟁 압박이 큽니다.",
+      "talent_pool": "고급 연구·영업 인재",
+      "monthly_cost_modifier": 1.45,
+      "human_hire_discount": -0.12,
+      "ai_operation_bonus": 3,
+      "cost": {"cash": 26000, "trust": 5},
+      "unlock_requirements": {"min_star": 3, "min_trust": 55}
+    },
+    {
+      "id": "global_campus",
+      "name": "글로벌 AI 캠퍼스",
+      "region": "글로벌",
+      "description": "모델, 반도체, 로봇, 소비 산업이 한 번에 돌아가는 최종권 거점입니다.",
+      "talent_pool": "세계급 핵심 인재",
+      "monthly_cost_modifier": 1.8,
+      "human_hire_discount": -0.2,
+      "ai_operation_bonus": 5,
+      "cost": {"cash": 80000, "data": 80, "compute": 80},
+      "unlock_requirements": {"min_star": 4, "min_products": 5, "min_users": 50000}
+    }
+  ]
+}

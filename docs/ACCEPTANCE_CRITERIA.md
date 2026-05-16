@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.14.0: Ten-Year Campaign And Offline Settlement
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Campaign calendar uses 120 months as the 10-year ending window | **Passed** |
+| 2 | The starting state is a 1-star rural Korean garage company | **Passed** |
+| 3 | Monthly turns alternate the office day/night phase | **Passed** |
+| 4 | Month 120 can produce a final campaign ending | **Passed** |
+| 5 | Region relocation is data-driven and charges a cost | **Passed** |
+| 6 | Human staff and AI operation capacity are visible systems | **Passed** |
+| 7 | Saved games include a timestamp for offline settlement | **Passed** |
+| 8 | Offline settlement applies real elapsed days as game days without advancing the monthly turn | **Passed** |
+| 9 | Browser QA supports `?scenario=finale` | **Passed** |
+
+---
+
 ## Alpha v0.13.3: Compact Game Shell
 
 | # | Criterion | Status |

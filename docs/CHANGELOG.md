@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.14.0-alpha] — 2026-05-16
+
+### 10년 캠페인과 방치 정산
+
+**추가:**
+- 10년 캠페인 시계: 1턴은 1개월, 최종 평가는 120개월차에 발생한다.
+- 회사 별 등급과 한국 지역 거점: 강원 산골 차고, 지방 창업센터, 판교 공유오피스, 서울 AI 타워, 글로벌 AI 캠퍼스.
+- 지역 이전 비용, 해금 조건, 유지비 배율, 인재풀 설명.
+- 낮/밤 사무실 분위기 전환.
+- 사람 직원 2종: 차고 초보 개발자, 시골 운영 도우미.
+- 사람 직원 기반 AI 운용 한도.
+- 저장 시각 기반 오프라인 정산: 실제 1일 미접속은 게임 기준 1일치 손익만 반영하고 월 턴은 진행하지 않는다.
+- `?scenario=finale` 10년 엔딩 QA 시나리오.
+
+**변경:**
+- 조기 성공은 즉시 엔딩이 아니라 10년차 최종 평가의 성공 조건으로 이동했다.
+- 월 비용에 현재 지역의 유지비 배율이 반영된다.
+- 회사 화면에 캠페인 진행률, 지역 이전, AI 운용 한도를 표시한다.
+
+**검증:**
+- `npm test -- src/game/campaign.test.ts src/game/offline.test.ts src/game/qa-scenarios.test.ts` 통과, 24 tests
+- `npm run harness:gate` 통과, 124 tests
+- Headless Chrome screenshot QA: 1366x768에서 `?scenario=fresh`, `?scenario=finale` 렌더링 확인
+
+---
+
 ## [0.13.3-alpha] — 2026-05-16
 
 ### 한 화면형 컴팩트 게임 셸

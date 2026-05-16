@@ -1,10 +1,53 @@
 {
   "agent_types": [
     {
+      "id": "garage_junior_dev",
+      "name": "차고 초보 개발자",
+      "role": "사람 직원",
+      "description": "동네에서 합류한 첫 사람 개발자입니다. 능력치는 낮지만 AI 에이전트를 굴릴 손과 눈이 되어 줍니다.",
+      "kind": "human",
+      "rarity": "common",
+      "stats": {"research": 1, "engineering": 3, "product": 2, "growth": 1, "safety": 2, "operations": 3, "creativity": 2, "autonomy": 1},
+      "appearance": {
+        "palette": ["denim", "cream", "green"],
+        "silhouette": "큰 백팩과 중고 노트북을 든 작은 체형",
+        "hair": "헝클어진 검은 머리",
+        "outfit": "후드티와 낡은 청바지",
+        "signatureProp": "스티커 붙은 중고 노트북"
+      },
+      "unlock_requirements": {},
+      "hire_cost": {"cash": 650},
+      "upkeep": {"cash": 180},
+      "preferred_items": ["mechanical_keyboard", "prompt_notebook"],
+      "quirk": "AI 에이전트 운용 한도를 늘리는 초반 핵심 인력입니다."
+    },
+    {
+      "id": "rural_ops_helper",
+      "name": "시골 운영 도우미",
+      "role": "사람 직원",
+      "description": "영수증, 전화, 서버 재부팅, 택배까지 맡는 만능 운영 인력입니다.",
+      "kind": "human",
+      "rarity": "common",
+      "stats": {"research": 1, "engineering": 2, "product": 2, "growth": 2, "safety": 3, "operations": 5, "creativity": 1, "autonomy": 1},
+      "appearance": {
+        "palette": ["olive", "tan", "white"],
+        "silhouette": "작은 메모장을 든 단정한 작업복",
+        "hair": "갈색 짧은 머리",
+        "outfit": "작업 조끼와 운동화",
+        "signatureProp": "체크리스트 클립보드"
+      },
+      "unlock_requirements": {},
+      "hire_cost": {"cash": 520},
+      "upkeep": {"cash": 160},
+      "preferred_items": ["feedback_inbox", "cooling_fan_wall"],
+      "quirk": "운영 사고를 줄이고 초반 고정 업무를 버티게 해 줍니다."
+    },
+    {
       "id": "prompt_architect",
       "name": "프롬프트 설계가",
       "role": "제품 기획형 에이전트",
       "description": "사용자 요구를 구조화해 제품 기능과 대화 흐름으로 바꿉니다.",
+      "kind": "ai_agent",
       "rarity": "common",
       "stats": {"research": 2, "engineering": 2, "product": 6, "growth": 3, "safety": 2, "operations": 2, "creativity": 6, "autonomy": 4},
       "appearance": {
@@ -205,6 +248,7 @@
       "name": "팩토리 로봇 유닛",
       "role": "로봇형 개발 인력",
       "description": "로봇공학이 열린 뒤 고용할 수 있는 물리 작업형 로봇입니다. 프로토타입 제작과 하드웨어 제품 개발에 강합니다.",
+      "kind": "robot",
       "rarity": "epic",
       "stats": {"research": 3, "engineering": 8, "product": 3, "growth": 1, "safety": 5, "operations": 9, "creativity": 2, "autonomy": 7},
       "appearance": {

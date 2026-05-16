@@ -1,4 +1,4 @@
-import { competitors, products, resources, strategyCards } from "./data";
+import { companyLocations, competitors, products, resources, strategyCards } from "./data";
 import type { GameState } from "./types";
 
 export interface StateIntegrityReport {
@@ -12,6 +12,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const warnings: string[] = [];
   const productIds = new Set(products.map((product) => product.id));
   const competitorIds = new Set(competitors.map((competitor) => competitor.id));
+  const locationIds = new Set(companyLocations.map((location) => location.id));
   const cardIds = new Set(strategyCards.map((card) => card.id));
 
   for (const resourceId of Object.keys(resources)) {
@@ -19,6 +20,10 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     if (typeof value !== "number" || !Number.isFinite(value)) {
       issues.push(`resource "${resourceId}" must be a finite number`);
     }
+  }
+
+  if (!locationIds.has(state.locationId)) {
+    issues.push(`location "${state.locationId}" is unknown`);
   }
 
   for (const productId of state.activeProducts) {

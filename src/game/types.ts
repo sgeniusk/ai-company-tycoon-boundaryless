@@ -59,6 +59,19 @@ export interface CompanyStageDefinition {
   order: number;
 }
 
+export interface CompanyLocationDefinition {
+  id: string;
+  name: string;
+  region: string;
+  description: string;
+  talent_pool: string;
+  monthly_cost_modifier: number;
+  human_hire_discount: number;
+  ai_operation_bonus: number;
+  cost: ResourceMap;
+  unlock_requirements: Record<string, number>;
+}
+
 export interface EventChoiceDefinition {
   id: string;
   text: string;
@@ -374,6 +387,7 @@ export interface AgentTypeDefinition {
   name: string;
   role: string;
   description: string;
+  kind?: "human" | "ai_agent" | "robot";
   rarity: string;
   stats: AgentStats;
   appearance: AgentAppearance;
@@ -565,8 +579,13 @@ export interface MonthlyReport {
   strategyEffects?: ResourceMap;
 }
 
+export interface MonthlyEconomy extends MonthlyReport {
+  resourceDelta: ResourceMap;
+}
+
 export interface GameState {
   month: number;
+  locationId: string;
   resources: ResourceMap;
   capabilities: CapabilityMap;
   activeProducts: string[];

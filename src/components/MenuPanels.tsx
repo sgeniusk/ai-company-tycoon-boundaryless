@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
-import { agentTypes, assetManifest, automationUpgrades, capabilities, competitors, domains, items, metaUnlocks, products, strategyCards, upgrades } from "../game/data";
+import { agentTypes, assetManifest, automationUpgrades, capabilities, companyLocations, competitors, domains, items, metaUnlocks, products, strategyCards, upgrades } from "../game/data";
 import { getAchievementStatuses } from "../game/achievements";
+import { getCampaignCalendar, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getGrowthPathObjectives } from "../game/growth-objectives";
 import { ALL_PRODUCT_DOMAIN_FILTER_ID, getProductDomainFilters, getProductsByDomainFilter } from "../game/product-filters";
@@ -31,8 +32,11 @@ import {
   buyUpgrade,
   equipItem,
   formatResource,
+  getAgentHireCost,
   getAgentEffectiveStats,
   getAgentHireCheck,
+  getAiAgentCount,
+  getAiOperationCapacity,
   getAutomationUpgradeCheck,
   getCapabilityCheck,
   getCompanyStage,
@@ -52,9 +56,11 @@ import {
   getProductUpgradeCheck,
   getProductUpgradeCost,
   getUpgradeCheck,
+  getRelocationCheck,
   hireAgent,
   buyOfficeExpansion,
   placeOfficeItem,
+  relocateCompany,
   startProductProject,
   unplaceOfficeItem,
   upgradeCapability,
@@ -110,6 +116,9 @@ export function renderMenuContent(
     const unlockedAchievementCount = achievementStatuses.filter((achievement) => achievement.unlocked).length;
     const officeExpansion = getOfficeExpansion(gameState);
     const placedOfficeItems = getPlacedOfficeItems(gameState);
+    const calendar = getCampaignCalendar(gameState);
+    const finale = getCampaignFinale(gameState);
+    const currentLocation = getCurrentLocation(gameState);
 
     return (
       <div className="panel-grid two-col">
@@ -119,13 +128,15 @@ export function renderMenuContent(
             <p>성장 단계, 해금 분야, 활성 제품을 한눈에 봅니다.</p>
           </div>
           <div className="company-summary">
-            <strong>{getCompanyStage(gameState).name}</strong>
+            <strong>{"★".repeat(getCompanyStarRating(gameState))} {getCompanyStage(gameState).name}</strong>
             <span>활성 제품 {gameState.activeProducts.length}개</span>
             <span>개발 프로젝트 {gameState.productProjects.length}개</span>
             <span>고용 에이전트 {gameState.hiredAgents.length}명</span>
             <span>보유 아이템 {gameState.ownedItems.length}개</span>
+            <span>지역 {currentLocation.region}</span>
             <span>사무실 {officeExpansion.name}</span>
             <span>고용 한도 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
+            <span>AI 운용 {getAiAgentCount(gameState)}/{getAiOperationCapacity(gameState)}</span>
             <span>장식 효과 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
             <span>해금 분야 {gameState.unlockedDomains.length}개</span>
             <span>자동화 {formatResource("automation", gameState.resources.automation ?? 0)}</span>
@@ -134,6 +145,47 @@ export function renderMenuContent(
                 전략 {gameState.chosenGrowthPath.title} · 월간 {formatEffects(gameState.chosenGrowthPath.monthlyEffects)}
               </span>
             )}
+          </div>
+          <div className="campaign-panel">
+            <div>
+              <p className="eyebrow">10년 캠페인</p>
+              <h3>{calendar.year}년차 {calendar.monthOfYear}월 · 남은 {calendar.remainingMonths}개월</h3>
+              <span>{finale.isFinal ? `${finale.endingName} / ${finale.score}점` : "최종 평가는 10년차 120개월에 진행됩니다."}</span>
+            </div>
+            <div className="arc-meter">
+              <i style={{ width: `${calendar.progressPercent}%` }} />
+            </div>
+          </div>
+          <div className="location-panel">
+            <div className="panel-heading compact-heading">
+              <h3>지역 이전</h3>
+              <p>싼 시골 차고에서 시작해 판교, 서울, 글로벌 캠퍼스로 옮길 수 있습니다.</p>
+            </div>
+            <div className="location-list">
+              {companyLocations.map((location) => {
+                const check = getRelocationCheck(location.id, gameState);
+                const current = location.id === currentLocation.id;
+                return (
+                  <article className={current ? "location-card current" : "location-card"} key={location.id}>
+                    <div>
+                      <p className="item-meta">{location.region}</p>
+                      <h3>{location.name}</h3>
+                      <p>{location.description}</p>
+                      <span>
+                        인재풀: {location.talent_pool} · 유지비 x{location.monthly_cost_modifier}
+                      </span>
+                    </div>
+                    <button
+                      disabled={current || !check.ok || gameState.status !== "playing"}
+                      onClick={() => setGameState((currentState) => relocateCompany(location.id, currentState))}
+                    >
+                      {current ? "현재" : "이전"}
+                    </button>
+                    {!check.ok && !current && <small>{check.reasons.join(" / ")}</small>}
+                  </article>
+                );
+              })}
+            </div>
           </div>
           <div className="ten-month-arc">
             <div>
@@ -728,6 +780,10 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
           <h2>고용 에이전트</h2>
           <p>현재 팀, 장착 아이템, 개발 배치를 관리합니다.</p>
         </div>
+        <div className="team-ops-summary">
+          <span>AI 운용 {getAiAgentCount(gameState)}/{getAiOperationCapacity(gameState)}</span>
+          <span>사람 직원이 늘면 AI 에이전트를 더 안정적으로 굴릴 수 있습니다.</span>
+        </div>
         {gameState.hiredAgents.length ? (
           <div className="hired-list">
             {gameState.hiredAgents.map((agent) => (
@@ -755,6 +811,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
                 isHired={isHired}
                 key={agent.id}
                 onHire={() => setGameState((current) => hireAgent(agent, current))}
+                hireCostLabel={formatCost(getAgentHireCost(agent, gameState))}
               />
             );
           })}
@@ -844,11 +901,13 @@ function HiredAgentCard({
 function AgentCard({
   agent,
   check,
+  hireCostLabel,
   isHired,
   onHire,
 }: {
   agent: AgentTypeDefinition;
   check: { ok: boolean; reasons: string[] };
+  hireCostLabel: string;
   isHired: boolean;
   onHire: () => void;
 }) {
@@ -888,7 +947,7 @@ function AgentCard({
       </div>
       <p className="agent-quirk">{agent.quirk}</p>
       <div className="item-footer">
-        <span>영입 비용 {formatCost(agent.hire_cost)} / 유지 {formatCost(agent.upkeep)}</span>
+        <span>영입 비용 {hireCostLabel} / 유지 {formatCost(agent.upkeep)}</span>
         <button disabled={!check.ok || isHired} onClick={onHire}>
           {isHired ? "고용됨" : "고용"}
         </button>

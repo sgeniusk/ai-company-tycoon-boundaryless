@@ -65,6 +65,7 @@ const balanceData = readJson("balance.json");
 const startingState = readJson("starting_state.json");
 const personasData = readJson("playtest_personas.json");
 const companyStagesData = readJson("company_stages.json");
+const companyLocationsData = readJson("company_locations.json");
 const agentTypesData = readJson("agent_types.json");
 const itemsData = readJson("items.json");
 const competitorsData = readJson("competitors.json");
@@ -87,6 +88,7 @@ const upgrades = upgradesData?.upgrades ?? [];
 const automationUpgrades = automationData?.automation_upgrades ?? [];
 const personas = personasData?.personas ?? [];
 const companyStages = companyStagesData?.company_stages ?? [];
+const companyLocations = companyLocationsData?.company_locations ?? [];
 const agentTypes = agentTypesData?.agent_types ?? [];
 const items = itemsData?.items ?? [];
 const competitors = competitorsData?.competitors ?? [];
@@ -108,6 +110,7 @@ const upgradeIds = idsAreUnique("upgrades", upgrades);
 idsAreUnique("automation_upgrades", automationUpgrades);
 idsAreUnique("playtest_personas", personas);
 idsAreUnique("company_stages", companyStages);
+idsAreUnique("company_locations", companyLocations);
 const agentTypeIds = idsAreUnique("agent_types", agentTypes);
 const itemIds = idsAreUnique("items", items);
 const competitorIds = idsAreUnique("competitors", competitors);
@@ -168,8 +171,29 @@ for (const stage of companyStages) {
   }
 }
 
+for (const location of companyLocations) {
+  for (const field of ["name", "region", "description", "talent_pool", "monthly_cost_modifier", "human_hire_discount", "ai_operation_bonus", "cost", "unlock_requirements"]) {
+    if (!(field in location)) errors.push(`company_location "${location.id}": missing ${field}`);
+  }
+  for (const numericField of ["monthly_cost_modifier", "human_hire_discount", "ai_operation_bonus"]) {
+    if (typeof location[numericField] !== "number") {
+      errors.push(`company_location "${location.id}": ${numericField} must be numeric`);
+    }
+  }
+  validateResourceMap(`company_location "${location.id}" cost`, location.cost, resourceIds);
+  for (const [requirement, value] of Object.entries(location.unlock_requirements ?? {})) {
+    if (!["min_star", "min_month", "min_products", "min_users", "min_trust", "min_cash"].includes(requirement)) {
+      errors.push(`company_location "${location.id}": unknown unlock requirement "${requirement}"`);
+    }
+    if (typeof value !== "number") errors.push(`company_location "${location.id}": unlock requirement "${requirement}" must be numeric`);
+  }
+}
+
 const allowedAgentStats = new Set(["research", "engineering", "product", "growth", "safety", "operations", "creativity", "autonomy"]);
 for (const agent of agentTypes) {
+  if ("kind" in agent && !["human", "ai_agent", "robot"].includes(agent.kind)) {
+    errors.push(`agent_type "${agent.id}": unknown kind "${agent.kind}"`);
+  }
   for (const stat of allowedAgentStats) {
     if (typeof agent.stats?.[stat] !== "number") errors.push(`agent_type "${agent.id}": missing numeric stat "${stat}"`);
   }
