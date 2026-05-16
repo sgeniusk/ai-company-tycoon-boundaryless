@@ -1,4 +1,6 @@
 import { agentTypes, items, officeExpansions, products } from "./data";
+import { chooseAnnualDirective } from "./annual-review";
+import { createReleaseCardReward } from "./deckbuilding";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { runScriptedCommercialSimulation, runTenMinuteAlphaSimulation } from "./run-simulator";
 import { advanceMonth, buyItem, buyOfficeExpansion, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
@@ -23,6 +25,7 @@ export const qaScenarioIds = [
   "next-run",
   "finale",
   "review",
+  "reward-bias",
   "foundation",
   "commercial",
   "result",
@@ -201,6 +204,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "reward-bias") {
+    return {
+      id,
+      label: "연간 지시 보상 편향 QA",
+      state: createAnnualRewardBiasScenarioState(),
+      activeMenu: "deck",
+    };
+  }
+
   if (id === "foundation") {
     return {
       id,
@@ -258,6 +270,23 @@ function createAnnualReviewScenarioState(): GameState {
   return {
     ...reviewedState,
     timeline: ["연간 심사 QA: 목표 달성, 보상, 최근 결과 카드 확인", ...reviewedState.timeline].slice(0, 8),
+  };
+}
+
+function createAnnualRewardBiasScenarioState(): GameState {
+  const reviewedState = createAnnualReviewScenarioState();
+  const directedState = chooseAnnualDirective("trust_compound_program", reviewedState);
+  const rewardProduct = products.find((product) => product.id === "ai_writing_assistant");
+  if (!rewardProduct) return directedState;
+
+  return {
+    ...directedState,
+    roguelite: createReleaseCardReward(
+      rewardProduct,
+      { grade: "A", score: 88, quote: "기업 고객이 안심할 수 있다." },
+      directedState,
+    ),
+    timeline: ["연간 지시 보상 편향 QA: 신뢰 지시가 카드 보상 후보를 기울임", ...directedState.timeline].slice(0, 8),
   };
 }
 

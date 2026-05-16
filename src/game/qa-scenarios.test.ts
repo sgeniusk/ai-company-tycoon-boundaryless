@@ -23,6 +23,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "next-run",
       "finale",
       "review",
+      "reward-bias",
       "foundation",
       "commercial",
       "result",
@@ -195,6 +196,18 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(getAnnualDirectiveChoiceRows(scenario.state).map((choice) => choice.id)).toContain("product_launch_marathon");
   });
 
+  it("creates an annual directive reward-bias scenario for deck QA", () => {
+    const scenario = createQaScenario("reward-bias");
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("보상 편향");
+    expect(scenario.state.annualDirective?.title).toBe("신뢰 복리 프로그램");
+    expect(scenario.state.annualDirective?.rewardBiasTags).toEqual(expect.arrayContaining(["trust", "safety", "enterprise"]));
+    expect(scenario.state.roguelite.pendingCardReward?.offeredCardIds).toEqual(
+      expect.arrayContaining(["interoperability_shield", "safety_review"]),
+    );
+  });
+
   it("creates a foundation scenario for content recommendation QA", () => {
     const scenario = createQaScenario("foundation");
     const snapshot = getFoundationSnapshot(scenario.state);
@@ -220,6 +233,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=next-run")?.id).toBe("next-run");
     expect(createQaScenarioFromSearch("?scenario=finale")?.id).toBe("finale");
     expect(createQaScenarioFromSearch("?scenario=review")?.id).toBe("review");
+    expect(createQaScenarioFromSearch("?scenario=reward-bias")?.id).toBe("reward-bias");
     expect(createQaScenarioFromSearch("?scenario=foundation")?.id).toBe("foundation");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
     expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");

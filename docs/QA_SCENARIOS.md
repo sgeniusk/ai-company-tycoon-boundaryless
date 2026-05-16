@@ -29,6 +29,7 @@ Use the local app URL and append one of these query strings:
 | Next Run | `?scenario=next-run` | New run after accepting alpha insight, deck onboarding, run history, and meta unlock candidates |
 | Finale | `?scenario=finale` | 10-year campaign ending, final rank, Seoul location, and campaign summary |
 | Review | `?scenario=review` | Year-one annual review with passed goals, reward application, and recent review history |
+| Reward Bias | `?scenario=reward-bias` | Deck reward screen with an active annual directive biasing reward cards |
 | Foundation | `?scenario=foundation` | Enterprise-stage content foundation, hiring recommendations, agent filters, item recommendations |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
@@ -52,6 +53,7 @@ Examples:
 - `http://localhost:5173/?scenario=next-run`
 - `http://localhost:5173/?scenario=finale`
 - `http://localhost:5173/?scenario=review`
+- `http://localhost:5173/?scenario=reward-bias`
 - `http://localhost:5173/?scenario=foundation`
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
@@ -61,6 +63,7 @@ Examples:
 - Card reward panel shows the current annual directive bias while a reward choice is pending.
 - The bias strip names the directive and explains the favored card tags.
 - The strip appears above the three reward card choices and does not push buttons out of view.
+- `?scenario=reward-bias` opens directly on this state.
 
 ## v0.14.6 Functional QA Checklist
 

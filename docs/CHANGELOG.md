@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.14.8-alpha] — 2026-05-16
+
+### 연간 지시 보상 편향 QA 시나리오
+
+**추가:**
+- `?scenario=reward-bias` 브라우저 QA 시나리오를 추가했다.
+- 신뢰형 연간 지시가 활성화된 상태에서 카드 보상 3택1과 보상 편향 안내를 바로 확인할 수 있다.
+
+**검증:**
+- `npm test -- src/game/qa-scenarios.test.ts` 통과, 20 tests
+- `npm run harness:gate` 통과, 149 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=reward-bias` 1366x768 렌더링 확인
+
+**배포:**
+- Vercel 배포 없음. 큰 버전업 때만 배포한다.
+
+---
+
 ## [0.14.7-alpha] — 2026-05-16
 
 ### 카드 보상 편향 표시

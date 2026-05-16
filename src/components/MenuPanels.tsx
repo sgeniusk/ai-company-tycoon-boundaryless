@@ -469,6 +469,12 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             <small>추천 제품 {formatProductNames(topRivalCounter.recommendedProductIds)}</small>
           </div>
         )}
+        {pendingReward && rewardBiasSummary && (
+          <div className="reward-bias-strip">
+            <strong>{rewardBiasSummary.title}</strong>
+            <span>{rewardBiasSummary.description}</span>
+          </div>
+        )}
         <div className="card-hand">
           {handCards.map((card) => {
             const check = getStrategyCardPlayCheck(card, gameState);
@@ -508,12 +514,6 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
               <strong>{pendingReward.productName} 출시 보상</strong>
               <span>리뷰 {pendingReward.reviewGrade} · 3택1</span>
             </div>
-            {rewardBiasSummary && (
-              <div className="reward-bias-strip">
-                <strong>{rewardBiasSummary.title}</strong>
-                <span>{rewardBiasSummary.description}</span>
-              </div>
-            )}
             <div className="reward-choice-list">
               {pendingReward.offeredCardIds.map((cardId) => {
                 const card = getStrategyCardById(cardId);

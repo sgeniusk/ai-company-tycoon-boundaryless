@@ -6,6 +6,18 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.14.8: Reward Bias QA Scenario
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Browser QA supports `?scenario=reward-bias` | **Passed** |
+| 2 | Reward-bias scenario opens on the deck menu | **Passed** |
+| 3 | Scenario has `신뢰 복리 프로그램` as active annual directive | **Passed** |
+| 4 | Scenario includes trust/safety/enterprise reward bias tags | **Passed** |
+| 5 | Scenario has a pending three-card reward affected by the directive | **Passed** |
+
+---
+
 ## Alpha v0.14.7: Card Reward Bias Visibility
 
 | # | Criterion | Status |
