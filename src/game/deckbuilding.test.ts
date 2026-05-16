@@ -7,6 +7,7 @@ import {
   drawStrategyCards,
   getCardRewardChoiceCheck,
   getDeckEditCheck,
+  getAnnualDirectiveRewardBiasSummary,
   getStrategyCardEffects,
   getStrategyCardPlayCheck,
   playStrategyCard,
@@ -307,6 +308,34 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
     expect(roguelite.pendingCardReward?.offeredCardIds.slice(0, 2)).toEqual(
       expect.arrayContaining(["interoperability_shield", "safety_review"]),
     );
+  });
+
+  it("summarizes the active annual directive reward bias for deck UI", () => {
+    const reviewed = advanceMonth({
+      ...createInitialState(),
+      month: 11,
+      activeProducts: ["foundation_model_v0", "ai_writing_assistant"],
+      productLevels: {
+        foundation_model_v0: 1,
+        ai_writing_assistant: 1,
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 16000,
+        users: 1800,
+        trust: 42,
+        hype: 30,
+        automation: 8,
+      },
+    });
+    const directed = chooseAnnualDirective("trust_compound_program", reviewed);
+    const summary = getAnnualDirectiveRewardBiasSummary(directed);
+
+    expect(summary).toMatchObject({
+      title: "신뢰 복리 프로그램",
+      tagLabels: ["신뢰", "안전", "기업"],
+      description: "다음 카드 보상 후보가 신뢰, 안전, 기업 태그 쪽으로 기울어집니다.",
+    });
   });
 
   it("uses deck edit tokens to remove exactly one non-last card copy", () => {

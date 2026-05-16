@@ -6,6 +6,17 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.14.7: Card Reward Bias Visibility
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Deck UI can summarize the active directive reward bias | **Passed** |
+| 2 | Summary includes directive title and readable tag labels | **Passed** |
+| 3 | Card reward panel shows the active directive bias before reward choice | **Passed** |
+| 4 | Targeted deckbuilding tests pass | **Passed** |
+
+---
+
 ## Alpha v0.14.6: Annual Directive Card Reward Synergy
 
 | # | Criterion | Status |

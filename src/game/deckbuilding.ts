@@ -29,6 +29,30 @@ const cardEffectLabels: Record<string, string> = {
   rival_momentum_delta: "경쟁 모멘텀",
 };
 
+const cardTagLabels: Record<string, string> = {
+  automation: "자동화",
+  compute: "연산",
+  counter: "경쟁 대응",
+  data: "데이터",
+  developer: "개발자",
+  enterprise: "기업",
+  growth: "성장",
+  hype: "화제성",
+  market: "시장",
+  product: "제품",
+  research: "연구",
+  safety: "안전",
+  speed: "속도",
+  trust: "신뢰",
+  ux: "UX",
+};
+
+export interface AnnualDirectiveRewardBiasSummary {
+  title: string;
+  tagLabels: string[];
+  description: string;
+}
+
 export function createInitialStrategyDeck(unlockedMetaIds: string[] = []): StrategyDeckState {
   const cardIds = getUnlockedStrategyCards(unlockedMetaIds).flatMap((card) => Array.from({ length: card.copies }, () => card.id));
 
@@ -67,6 +91,18 @@ export function getUnlockedStrategyCards(unlockedMetaIds: string[] = []): Strate
     if (card.unlock_meta_id && !unlockedMeta.has(card.unlock_meta_id)) return false;
     return true;
   });
+}
+
+export function getAnnualDirectiveRewardBiasSummary(state: GameState): AnnualDirectiveRewardBiasSummary | undefined {
+  const directive = state.annualDirective;
+  const tagLabels = [...new Set(directive?.rewardBiasTags ?? [])].map((tag) => cardTagLabels[tag] ?? tag);
+  if (!directive || tagLabels.length === 0) return undefined;
+
+  return {
+    title: directive.title,
+    tagLabels,
+    description: `다음 카드 보상 후보가 ${tagLabels.join(", ")} 태그 쪽으로 기울어집니다.`,
+  };
 }
 
 export function getStrategyCardPlayCheck(card: StrategyCardDefinition, state: GameState): ActionCheck {

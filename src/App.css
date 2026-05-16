@@ -2242,7 +2242,8 @@ p {
 
 .counter-plan-list article,
 .counter-plan-card,
-.counter-advice-strip {
+.counter-advice-strip,
+.reward-bias-strip {
   background: #eef7ff;
   border: 2px solid #9cb8d6;
   display: grid;
@@ -2252,7 +2253,8 @@ p {
 
 .counter-plan-list strong,
 .counter-plan-card strong,
-.counter-advice-strip strong {
+.counter-advice-strip strong,
+.reward-bias-strip strong {
   color: #263d55;
   font-size: 0.82rem;
 }
@@ -2262,7 +2264,8 @@ p {
 .counter-plan-card span,
 .counter-plan-card small,
 .counter-advice-strip span,
-.counter-advice-strip small {
+.counter-advice-strip small,
+.reward-bias-strip span {
   color: #334b5e;
   font-size: 0.74rem;
   font-weight: 900;

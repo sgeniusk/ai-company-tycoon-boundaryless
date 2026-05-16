@@ -56,6 +56,12 @@ Examples:
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
 
+## v0.14.7 Visual QA Checklist
+
+- Card reward panel shows the current annual directive bias while a reward choice is pending.
+- The bias strip names the directive and explains the favored card tags.
+- The strip appears above the three reward card choices and does not push buttons out of view.
+
 ## v0.14.6 Functional QA Checklist
 
 - Choose `신뢰 복리 프로그램` after an annual review.

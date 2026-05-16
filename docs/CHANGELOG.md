@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.14.7-alpha] — 2026-05-16
+
+### 카드 보상 편향 표시
+
+**추가:**
+- 덱 보상 화면에 현재 연간 지시가 어떤 카드 태그를 밀어주는지 보여 주는 `reward-bias` 안내를 추가했다.
+- 덱 UI용 `getAnnualDirectiveRewardBiasSummary` 읽기 모델을 추가했다.
+
+**변경:**
+- 숨은 카드 보상 편향 효과를 플레이어가 카드 보상 선택 전에 이해할 수 있게 했다.
+
+**검증:**
+- `npm test -- src/game/deckbuilding.test.ts` 통과, 13 tests
+
+**배포:**
+- Vercel 배포 없음. 큰 버전업 때만 배포한다.
+
+---
+
 ## [0.14.6-alpha] — 2026-05-16
 
 ### 연간 지시와 카드 보상 연결

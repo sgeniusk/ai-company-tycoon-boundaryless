@@ -33,6 +33,7 @@ import {
 } from "../game/development-puzzle";
 import {
   chooseCardReward,
+  getAnnualDirectiveRewardBiasSummary,
   getCardRewardChoiceCheck,
   getDeckCardCounts,
   getDeckEditCheck,
@@ -382,6 +383,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
     .map(({ cardId, count }) => ({ card: getStrategyCardById(cardId), count }))
     .filter((entry): entry is { card: StrategyCardDefinition; count: number } => Boolean(entry.card));
   const pendingReward = gameState.roguelite.pendingCardReward;
+  const rewardBiasSummary = getAnnualDirectiveRewardBiasSummary(gameState);
   const upgradedCardIds = new Set(gameState.roguelite.upgradedCardIds);
   const activeProject = gameState.productProjects[0];
   const activeProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
@@ -506,6 +508,12 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
               <strong>{pendingReward.productName} 출시 보상</strong>
               <span>리뷰 {pendingReward.reviewGrade} · 3택1</span>
             </div>
+            {rewardBiasSummary && (
+              <div className="reward-bias-strip">
+                <strong>{rewardBiasSummary.title}</strong>
+                <span>{rewardBiasSummary.description}</span>
+              </div>
+            )}
             <div className="reward-choice-list">
               {pendingReward.offeredCardIds.map((cardId) => {
                 const card = getStrategyCardById(cardId);
