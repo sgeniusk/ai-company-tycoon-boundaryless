@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./qa-scenarios";
 import { getAnnualDirectiveChoiceRows } from "./annual-review";
+import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
 import { getFoundationSnapshot } from "./content-foundation";
 
 describe("alpha v0.9.3 QA scenarios", () => {
@@ -24,6 +25,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "finale",
       "review",
       "reward-bias",
+      "annual-strategy",
       "foundation",
       "commercial",
       "result",
@@ -208,6 +210,17 @@ describe("alpha v0.9.3 QA scenarios", () => {
     );
   });
 
+  it("creates an annual strategy advisor scenario for company QA", () => {
+    const scenario = createQaScenario("annual-strategy");
+    const advice = getAnnualStrategyAdvice(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("전략실");
+    expect(advice?.directiveTitle).toBe("신뢰 복리 프로그램");
+    expect(advice?.productRecommendations.map((row) => row.id)).toContain("customer_support_chatbot");
+    expect(advice?.capabilityRecommendations.map((row) => row.id)).toEqual(expect.arrayContaining(["safety", "enterprise"]));
+  });
+
   it("creates a foundation scenario for content recommendation QA", () => {
     const scenario = createQaScenario("foundation");
     const snapshot = getFoundationSnapshot(scenario.state);
@@ -234,6 +247,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=finale")?.id).toBe("finale");
     expect(createQaScenarioFromSearch("?scenario=review")?.id).toBe("review");
     expect(createQaScenarioFromSearch("?scenario=reward-bias")?.id).toBe("reward-bias");
+    expect(createQaScenarioFromSearch("?scenario=annual-strategy")?.id).toBe("annual-strategy");
     expect(createQaScenarioFromSearch("?scenario=foundation")?.id).toBe("foundation");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
     expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");

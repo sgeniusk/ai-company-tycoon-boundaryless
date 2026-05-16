@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.15.0-alpha] — 2026-05-16
+
+### 연간 전략실
+
+**추가:**
+- 활성 연간 운영 지시를 제품, 연구, 경쟁 대응 추천으로 확장하는 `annual-strategy-advisor` 모듈을 추가했다.
+- 회사 화면의 연간 심사 패널에 `연간 전략실` 영역을 추가했다.
+- `?scenario=annual-strategy` 브라우저 QA 시나리오를 추가했다.
+
+**변경:**
+- 연간 지시의 보상 편향 태그가 카드 보상에만 머물지 않고 다음 제품 후보, 연구 후보, 경쟁 대응 플랜까지 안내한다.
+
+**검증:**
+- `npm test -- src/game/annual-strategy-advisor.test.ts src/game/qa-scenarios.test.ts` 통과, 23 tests
+- `npm run harness:gate` 통과, 153 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=annual-strategy` 1366x768 렌더링 확인, 회사 화면의 `연간 전략실` 표시 확인
+
+**배포:**
+- Vercel 배포 없음. 큰 버전업 때만 배포한다.
+
+---
+
 ## [0.14.9-alpha] — 2026-05-16
 
 ### 보상 카드 지시 보너스 배지

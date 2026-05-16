@@ -6,6 +6,19 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.15.0: Annual Strategy Room
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Active annual directive can produce strategic advice | **Passed** |
+| 2 | Advice includes readable Korean tag labels | **Passed** |
+| 3 | Advice ranks product recommendations from directive tags | **Passed** |
+| 4 | Advice ranks capability recommendations from directive tags | **Passed** |
+| 5 | Advice includes rival counter recommendations when pressure exists | **Passed** |
+| 6 | Browser QA scenario can open the strategy room state | **Passed** |
+
+---
+
 ## Alpha v0.14.9: Reward Card Directive Bonus Badges
 
 | # | Criterion | Status |

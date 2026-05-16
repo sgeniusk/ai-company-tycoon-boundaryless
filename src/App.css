@@ -1366,6 +1366,7 @@ p {
 .annual-goal-list article,
 .annual-history,
 .annual-directive,
+.annual-strategy-room,
 .annual-choice-panel {
   background: #fffdf7;
   border: 1px solid #c5d3a4;
@@ -1399,7 +1400,10 @@ p {
 .annual-history span,
 .annual-directive strong,
 .annual-directive span,
-.annual-directive small {
+.annual-directive small,
+.annual-strategy-room strong,
+.annual-strategy-room span,
+.annual-strategy-room small {
   display: block;
   overflow-wrap: anywhere;
 }
@@ -1414,6 +1418,42 @@ p {
   color: #516447;
   font-size: 0.68rem;
   line-height: 1.3;
+}
+
+.annual-strategy-room {
+  border-color: #7fb08e;
+  display: grid;
+  gap: 8px;
+}
+
+.annual-strategy-room > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.annual-strategy-room small {
+  color: #516447;
+  font-size: 0.68rem;
+  line-height: 1.3;
+}
+
+.annual-strategy-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 1fr;
+}
+
+.annual-strategy-grid article {
+  background: #eef8e8;
+  border: 1px solid #c5d3a4;
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 7px;
+}
+
+.annual-strategy-grid article strong {
+  color: var(--green-dark);
 }
 
 .annual-choice-panel {
@@ -3257,6 +3297,7 @@ p {
   .assignment-agent-grid,
   .objective-strip,
   .annual-review-meta,
+  .annual-strategy-grid,
   .annual-goal-list,
   .company-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3303,6 +3344,7 @@ p {
   .deck-edit-card,
   .first-ten-minute-roadmap ol,
   .annual-choice-list,
+  .annual-strategy-grid,
   .annual-review-header,
   .annual-review-meta,
   .annual-goal-list,

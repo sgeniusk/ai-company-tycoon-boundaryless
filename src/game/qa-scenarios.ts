@@ -26,6 +26,7 @@ export const qaScenarioIds = [
   "finale",
   "review",
   "reward-bias",
+  "annual-strategy",
   "foundation",
   "commercial",
   "result",
@@ -213,6 +214,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "annual-strategy") {
+    return {
+      id,
+      label: "연간 전략실 QA",
+      state: createAnnualStrategyScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
   if (id === "foundation") {
     return {
       id,
@@ -287,6 +297,42 @@ function createAnnualRewardBiasScenarioState(): GameState {
       directedState,
     ),
     timeline: ["연간 지시 보상 편향 QA: 신뢰 지시가 카드 보상 후보를 기울임", ...directedState.timeline].slice(0, 8),
+  };
+}
+
+function createAnnualStrategyScenarioState(): GameState {
+  const reviewedState = createAnnualReviewScenarioState();
+  const directedState = chooseAnnualDirective("trust_compound_program", {
+    ...reviewedState,
+    capabilities: {
+      ...reviewedState.capabilities,
+      language: Math.max(reviewedState.capabilities.language ?? 0, 2),
+    },
+    unlockedDomains: [...new Set([...reviewedState.unlockedDomains, "customer_support"])],
+    resources: {
+      ...reviewedState.resources,
+      cash: Math.max(reviewedState.resources.cash ?? 0, 22000),
+      compute: Math.max(reviewedState.resources.compute ?? 0, 90),
+      data: Math.max(reviewedState.resources.data ?? 0, 90),
+      talent: Math.max(reviewedState.resources.talent ?? 0, 4),
+    },
+  });
+
+  return {
+    ...directedState,
+    competitorStates: directedState.competitorStates.map((competitor) =>
+      competitor.id === "competitor_chatgody"
+        ? {
+            ...competitor,
+            score: Math.max(competitor.score, 145),
+            marketShare: Math.max(competitor.marketShare, 34),
+            momentum: Math.max(competitor.momentum, 7),
+            claimedProducts: [...new Set([...competitor.claimedProducts, "customer_support_chatbot"])],
+            lastMove: "고객지원 시장 신뢰 인증 선점",
+          }
+        : competitor,
+    ),
+    timeline: ["연간 전략실 QA: 신뢰 지시가 제품, 연구, 경쟁 대응 추천으로 확장", ...directedState.timeline].slice(0, 8),
   };
 }
 

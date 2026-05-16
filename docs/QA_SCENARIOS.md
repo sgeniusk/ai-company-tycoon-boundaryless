@@ -66,6 +66,21 @@ Examples:
 - `?scenario=reward-bias` opens directly on this state.
 - Reward cards matching the annual directive show a `지시 보너스` badge.
 
+## v0.15.0 Annual Strategy Room QA
+
+URL:
+
+- `?scenario=annual-strategy`
+
+Expected:
+
+- The company menu opens directly.
+- The annual directive is `신뢰 복리 프로그램`.
+- The `연간 전략실` panel is visible in the annual review area.
+- Product recommendations include a trust/enterprise-aligned product such as `고객지원 챗봇`.
+- Research recommendations include safety or enterprise-aligned capabilities.
+- Rival counter recommendations show the pressured competitor when one has claimed a matching product space.
+
 ## v0.14.6 Functional QA Checklist
 
 - Choose `신뢰 복리 프로그램` after an annual review.

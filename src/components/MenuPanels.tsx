@@ -9,6 +9,7 @@ import {
   getAnnualReviewProgress,
   getCurrentAnnualReview,
 } from "../game/annual-review";
+import { getAnnualStrategyAdvice } from "../game/annual-strategy-advisor";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
@@ -150,6 +151,7 @@ export function renderMenuContent(
     const recentAnnualReview = gameState.annualReviewHistory[0];
     const annualDirective = getActiveAnnualDirective(gameState);
     const annualDirectiveChoices = getAnnualDirectiveChoiceRows(gameState);
+    const annualStrategyAdvice = getAnnualStrategyAdvice(gameState);
 
     return (
       <div className="panel-grid two-col">
@@ -188,6 +190,37 @@ export function renderMenuContent(
                 <small>
                   월간 {formatEffects(annualDirective.monthlyEffects)} · 추천 메뉴 {getMenuLabel(annualDirective.recommendedMenu)} · {annualDirective.expiresMonth}개월차까지
                 </small>
+              </div>
+            )}
+            {annualStrategyAdvice && (
+              <div className="annual-strategy-room">
+                <div>
+                  <p className="eyebrow">연간 전략실</p>
+                  <strong>{annualStrategyAdvice.directiveTitle}</strong>
+                  <span>{annualStrategyAdvice.summary}</span>
+                  <small>편향 태그 {annualStrategyAdvice.tagLabels.join(", ")} · 추천 메뉴 {getMenuLabel(annualStrategyAdvice.recommendedMenu)}</small>
+                </div>
+                <div className="annual-strategy-grid">
+                  <article>
+                    <strong>제품 후보</strong>
+                    {annualStrategyAdvice.productRecommendations.slice(0, 2).map((row) => (
+                      <span key={row.id}>{row.name} · {row.reason}</span>
+                    ))}
+                  </article>
+                  <article>
+                    <strong>연구 후보</strong>
+                    {annualStrategyAdvice.capabilityRecommendations.slice(0, 2).map((row) => (
+                      <span key={row.id}>{row.name} · {row.reason}</span>
+                    ))}
+                  </article>
+                  <article>
+                    <strong>경쟁 대응</strong>
+                    {annualStrategyAdvice.rivalRecommendations.slice(0, 2).map((row) => (
+                      <span key={row.competitorId}>{row.competitorName} · {row.label} · 압박 {row.pressureScore}</span>
+                    ))}
+                    {annualStrategyAdvice.rivalRecommendations.length === 0 && <span>현재 지시와 직접 맞물리는 압박 경쟁사는 약합니다.</span>}
+                  </article>
+                </div>
               </div>
             )}
             {annualDirectiveChoices.length > 0 && (
