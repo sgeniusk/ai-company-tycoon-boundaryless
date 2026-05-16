@@ -6,6 +6,20 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.13.1: Result Screen And Next-Run Briefing
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Final run summaries include projected next run number | **Passed** |
+| 2 | Final run summaries include projected founder insight after reward | **Passed** |
+| 3 | Final run summaries list carryovers into the next run | **Passed** |
+| 4 | Final run summaries list affordable meta unlock options when available | **Passed** |
+| 5 | Final run summaries recommend three opening moves for the next run | **Passed** |
+| 6 | Result UI renders a `다음 런 브리핑` section before the new-run button | **Passed** |
+| 7 | Targeted run summary and QA scenario tests pass | **Passed** |
+
+---
+
 ## Alpha v0.13.0: 10-Minute Roguelite Alpha Completion
 
 | # | Criterion | Status |

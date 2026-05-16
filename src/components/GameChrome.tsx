@@ -346,6 +346,33 @@ export function GameStage({
                 <span>{runSummary.spotlight.failureReasons.slice(0, 3).join(" / ")}</span>
               </div>
             )}
+            <div className="next-run-preview">
+              <div>
+                <p className="eyebrow">다음 런 브리핑</p>
+                <strong>
+                  런 {runSummary.spotlight.nextRunPreview.projectedRunNumber} · 통찰 {runSummary.spotlight.nextRunPreview.projectedFounderInsight}
+                </strong>
+              </div>
+              <div className="next-run-preview-grid">
+                <section>
+                  <span>이어지는 것</span>
+                  {runSummary.spotlight.nextRunPreview.carryovers.slice(0, 3).map((carryover) => (
+                    <small key={carryover}>{carryover}</small>
+                  ))}
+                </section>
+                <section>
+                  <span>해금 후보</span>
+                  {runSummary.spotlight.nextRunPreview.unlockOptions.slice(0, 3).map((option) => (
+                    <small key={option}>{option}</small>
+                  ))}
+                </section>
+              </div>
+              <ol>
+                {runSummary.spotlight.nextRunPreview.openingMoves.map((move) => (
+                  <li key={move}>{move}</li>
+                ))}
+              </ol>
+            </div>
             <p className="next-run-hook">{runSummary.spotlight.nextRunHook}</p>
             <small>{runSummary.recommendation}</small>
             <button className="primary-action" onClick={handleStartNextRun} type="button">

@@ -188,6 +188,15 @@ Examples:
 - `통찰 받고 새 런` button is visible.
 - Company timeline includes `10분 알파 완주 QA`.
 - The first 10-minute roadmap is fully complete or points to the post-run action.
+
+## v0.13.1 Visual QA Checklist
+
+- Alpha scenario result card shows `다음 런 브리핑`.
+- Next-run briefing shows projected run number and founder insight.
+- Next-run briefing lists carryovers and unlock candidates before the button.
+- Next-run briefing lists three opening moves for the next run.
+- `통찰 받고 새 런` remains visible after the briefing.
+- Narrow layout stacks the briefing grid without text overlap.
 - Narrow layout keeps run result, insight card, and roadmap readable.
 
 ## Note

@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.13.1-alpha] — 2026-05-16
+
+### 결과 화면과 새 런 브리핑 강화
+
+**추가:**
+- 런 결과 스포트라이트에 `nextRunPreview` 데이터 추가.
+- 다음 런 번호, 예상 보유 통찰, 이어지는 보너스, 해금 후보, 첫 행동 3단계 브리핑.
+- 결과 카드 안의 `다음 런 브리핑` UI.
+
+**변경:**
+- `통찰 받고 새 런` 버튼 앞에서 플레이어가 다음 런에 무엇을 가져가는지 먼저 볼 수 있게 했다.
+- 10분 알파 하네스가 다음 런 전환 가치까지 검증한다.
+
+**검증:**
+- `npm test -- src/game/run-summary.test.ts src/game/qa-scenarios.test.ts` 통과, 21 tests
+- `npm run harness:gate` 통과, 113 tests
+- Headless Chrome DOM QA: `http://127.0.0.1:5174/?scenario=alpha`에서 `다음 런 브리핑`, 해금 후보, 첫 행동 3단계, 새 런 버튼 렌더링 확인
+
+---
+
 ## [0.13.0-alpha] — 2026-05-16
 
 ### 10분 로그라이트 알파 완성 루프

@@ -1,4 +1,4 @@
-import { achievements, competitors, domains, products, strategyCards } from "./data";
+import { achievements, competitors, domains, metaUnlocks, products, resources, strategyCards } from "./data";
 import { getRunInsightReward } from "./meta-progression";
 import { getTenMonthArc } from "./ten-month-arc";
 import type { GameState } from "./types";
@@ -29,6 +29,14 @@ export interface RunSpotlightRival {
   pressure: string;
 }
 
+export interface RunNextPreview {
+  projectedRunNumber: number;
+  projectedFounderInsight: number;
+  carryovers: string[];
+  unlockOptions: string[];
+  openingMoves: string[];
+}
+
 export interface RunSpotlight {
   bestProduct?: RunSpotlightProduct;
   representativeCard?: RunSpotlightCard;
@@ -37,6 +45,7 @@ export interface RunSpotlight {
   insightBreakdown: string[];
   failureReasons: string[];
   nextRunHook: string;
+  nextRunPreview: RunNextPreview;
 }
 
 export interface RunSummary {
@@ -144,15 +153,18 @@ function getRecommendation(state: GameState, rank: RunRank, strengths: string[])
 function getRunSpotlight(state: GameState, rank: RunRank): RunSpotlight {
   const bestProduct = getBestProduct(state);
   const representativeCard = getRepresentativeCard(state);
+  const rivalPressure = getRivalPressure(state, bestProduct?.id);
+  const insightReward = getRunInsightReward(state);
 
   return {
     bestProduct,
     representativeCard,
-    rivalPressure: getRivalPressure(state, bestProduct?.id),
-    insightReward: getRunInsightReward(state),
+    rivalPressure,
+    insightReward,
     insightBreakdown: getInsightBreakdown(state),
     failureReasons: getFailureReasons(state),
     nextRunHook: getNextRunHook(state, rank, bestProduct, representativeCard),
+    nextRunPreview: getNextRunPreview(state, insightReward, bestProduct, representativeCard, rivalPressure),
   };
 }
 
@@ -266,4 +278,61 @@ function getNextRunHook(
   if (bestProduct) return `다음 런은 ${bestProduct.name}을 기준점으로 삼고 두 번째 제품을 더 빨리 붙이면 점수가 크게 오릅니다.`;
   if (rank === "S" || rank === "A") return "다음 런은 다른 산업 도메인으로 넘어가 경쟁사 카운터 덱을 실험해도 됩니다.";
   return "다음 런은 첫 제품, 첫 카드 사용, 첫 성장 경로 선택을 5개월 안에 묶는 것이 목표입니다.";
+}
+
+function getNextRunPreview(
+  state: GameState,
+  insightReward: number,
+  bestProduct?: RunSpotlightProduct,
+  card?: RunSpotlightCard,
+  rival?: RunSpotlightRival,
+): RunNextPreview {
+  const projectedFounderInsight = state.roguelite.founderInsight + insightReward;
+  const carryovers = [
+    `창업 통찰 ${projectedFounderInsight} 보유`,
+    `런 ${state.roguelite.runNumber + 1} 시작`,
+    ...getUnlockedMetaCarryovers(state),
+  ].slice(0, 4);
+  const unlockOptions = metaUnlocks
+    .filter((unlock) => !state.roguelite.unlockedMetaIds.includes(unlock.id))
+    .filter((unlock) => unlock.cost <= projectedFounderInsight)
+    .slice(0, 3)
+    .map((unlock) => `${unlock.title} 해금 가능 · 비용 ${unlock.cost}`);
+
+  return {
+    projectedRunNumber: state.roguelite.runNumber + 1,
+    projectedFounderInsight,
+    carryovers,
+    unlockOptions: unlockOptions.length ? unlockOptions : ["이번 통찰은 저장하고 다음 런 보너스 선택지를 기다리기"],
+    openingMoves: getNextOpeningMoves(state, bestProduct, card, rival),
+  };
+}
+
+function getUnlockedMetaCarryovers(state: GameState): string[] {
+  return state.roguelite.unlockedMetaIds
+    .map((metaId) => metaUnlocks.find((unlock) => unlock.id === metaId))
+    .filter((unlock): unlock is NonNullable<typeof unlock> => Boolean(unlock))
+    .map((unlock) => {
+      const effects = Object.entries(unlock.starting_resource_effects)
+        .map(([resourceId, amount]) => `${resources[resourceId]?.name ?? resourceId} +${amount}`)
+        .join(", ");
+      return effects ? `${unlock.title}: ${effects}` : unlock.title;
+    });
+}
+
+function getNextOpeningMoves(
+  state: GameState,
+  bestProduct?: RunSpotlightProduct,
+  card?: RunSpotlightCard,
+  rival?: RunSpotlightRival,
+): string[] {
+  if (state.status === "failure") {
+    return ["첫 제품을 3개월 안에 출시", "현금 0원 이전에 비용 절감 선택", "신뢰가 낮으면 위험 이벤트 회피"];
+  }
+
+  return [
+    bestProduct ? `${bestProduct.name} 계열 제품을 초반 기준점으로 잡기` : "첫 제품을 즉시 개발 시작",
+    card ? `${card.name} 카드를 첫 개발 이슈 전에 사용` : "손패에서 개발 보정 카드를 먼저 확인",
+    rival ? `${rival.name} 압박을 보고 카운터 제품 준비` : "첫 출시 후 경쟁사 점유율 확인",
+  ];
 }

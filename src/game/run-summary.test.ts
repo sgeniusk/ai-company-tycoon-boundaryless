@@ -129,4 +129,18 @@ describe("v0.11 commercial run summary", () => {
       insightReward: result.summary.spotlight.insightReward,
     });
   });
+
+  it("summarizes what carries into the next run after the 10-minute alpha", () => {
+    const result = runTenMinuteAlphaSimulation("productivity_line");
+    const preview = result.summary.spotlight.nextRunPreview;
+
+    expect(preview.projectedRunNumber).toBe(2);
+    expect(preview.projectedFounderInsight).toBe(
+      result.finalState.roguelite.founderInsight + result.summary.spotlight.insightReward,
+    );
+    expect(preview.carryovers.some((carryover) => carryover.includes("창업 통찰"))).toBe(true);
+    expect(preview.openingMoves).toHaveLength(3);
+    expect(preview.openingMoves[0]).toContain(result.summary.spotlight.bestProduct?.name ?? "");
+    expect(preview.unlockOptions.length).toBeGreaterThan(0);
+  });
 });
