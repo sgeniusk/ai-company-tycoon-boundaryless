@@ -4,6 +4,22 @@
 
 ---
 
+## [0.15.3-alpha] — 2026-05-17
+
+### 10년 캠페인 압축 플레이 하네스
+
+**추가:**
+- `runTenYearCampaignSimulation` 장기 캠페인 하네스를 추가했다.
+- 120개월 진행 결과, 연간 스냅샷, 연간 심사 통과 수, 운영 지시 선택 수, 주요 마일스톤을 기록한다.
+- `?scenario=ten-year-sim` 브라우저 QA 시나리오를 추가했다.
+
+**검증:**
+- `npm test -- src/game/run-simulator.test.ts src/game/qa-scenarios.test.ts` 통과, 27 tests
+- `npm run harness:gate` 통과, 158 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=ten-year-sim` 1366x768 렌더링 확인, 10년차 엔딩 화면 표시 확인
+
+---
+
 ## [0.15.2-alpha] — 2026-05-17
 
 ### 전략실 추천 실행감

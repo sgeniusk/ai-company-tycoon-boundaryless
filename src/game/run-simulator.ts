@@ -1,5 +1,6 @@
 import { agentTypes, capabilities, growthPaths, items, officeExpansions, products, upgrades } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
+import { CAMPAIGN_FINAL_MONTH, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "./campaign";
 import { chooseCardReward, getStrategyCardById, getStrategyCardPlayCheck, playStrategyCard } from "./deckbuilding";
 import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
@@ -37,6 +38,39 @@ export interface TenMinuteAlphaSimulationResult extends CommercialSimulationResu
 
 export interface AnnualDirectiveSimulationResult extends CommercialSimulationResult {
   directiveChoicesMade: number;
+}
+
+export type TenYearCampaignMilestoneType = "review" | "stage" | "location" | "domain" | "product" | "ending";
+
+export interface TenYearCampaignSnapshot {
+  year: number;
+  month: number;
+  status: GameState["status"];
+  starRating: number;
+  locationId: string;
+  productCount: number;
+  activeDomainCount: number;
+  annualReviews: number;
+  passedReviews: number;
+  directiveChoicesMade: number;
+  cash: number;
+  users: number;
+  trust: number;
+}
+
+export interface TenYearCampaignMilestone {
+  type: TenYearCampaignMilestoneType;
+  month: number;
+  label: string;
+  detail: string;
+}
+
+export interface TenYearCampaignSimulationResult extends AnnualDirectiveSimulationResult {
+  annualReviewCount: number;
+  passedAnnualReviewCount: number;
+  yearlySnapshots: TenYearCampaignSnapshot[];
+  milestones: TenYearCampaignMilestone[];
+  finale: ReturnType<typeof getCampaignFinale>;
 }
 
 export function runAllCommercialSimulations(): CommercialSimulationResult[] {
@@ -144,6 +178,112 @@ export function runAnnualDirectiveSimulation(strategyId = "productivity_line", t
   };
 }
 
+export function runTenYearCampaignSimulation(strategyId = "productivity_line"): TenYearCampaignSimulationResult {
+  let state = seedStarterRun();
+  let monthsSimulated = 0;
+  let directiveChoicesMade = 0;
+  const yearlySnapshots: TenYearCampaignSnapshot[] = [];
+  const milestones: TenYearCampaignMilestone[] = [];
+  let lastStarRating = getCompanyStarRating(state);
+  let lastLocationId = getCurrentLocation(state).id;
+  let lastDomainCount = state.unlockedDomains.length;
+  let lastProductCount = state.activeProducts.length;
+  let lastAnnualReviewCount = state.annualReviewHistory.length;
+
+  state = chooseGrowthPath(strategyId, resolveOpenIssues(state));
+
+  while (state.month < CAMPAIGN_FINAL_MONTH && monthsSimulated < CAMPAIGN_FINAL_MONTH + 24) {
+    state = sustainLongCampaignState(applyStrategyPolicy(strategyId, chooseFirstAvailableReward(resolveOpenIssues(state))));
+    state = advanceMonth(state);
+    monthsSimulated += 1;
+
+    if (state.pendingAnnualDirectiveChoices?.offeredDirectiveIds.length) {
+      const choiceId = pickAnnualDirectiveChoice(strategyId, state.pendingAnnualDirectiveChoices.offeredDirectiveIds);
+      state = chooseAnnualDirective(choiceId, state);
+      directiveChoicesMade += 1;
+    }
+
+    if (state.annualReviewHistory.length > lastAnnualReviewCount) {
+      const latestReview = state.annualReviewHistory[0];
+      milestones.push({
+        type: "review",
+        month: state.month,
+        label: latestReview.passed ? "연간 심사 통과" : "연간 심사 미달",
+        detail: latestReview.summary,
+      });
+      lastAnnualReviewCount = state.annualReviewHistory.length;
+    }
+
+    const starRating = getCompanyStarRating(state);
+    if (starRating > lastStarRating) {
+      milestones.push({
+        type: "stage",
+        month: state.month,
+        label: `${starRating}성 회사 승급`,
+        detail: `제품 ${state.activeProducts.length}개, 이용자 ${(state.resources.users ?? 0).toLocaleString("ko-KR")}명`,
+      });
+      lastStarRating = starRating;
+    }
+
+    const locationId = getCurrentLocation(state).id;
+    if (locationId !== lastLocationId) {
+      milestones.push({
+        type: "location",
+        month: state.month,
+        label: "지역 이전",
+        detail: getCurrentLocation(state).name,
+      });
+      lastLocationId = locationId;
+    }
+
+    if (state.unlockedDomains.length > lastDomainCount) {
+      milestones.push({
+        type: "domain",
+        month: state.month,
+        label: "신규 산업 해금",
+        detail: `${state.unlockedDomains.length}개 산업 진출 가능`,
+      });
+      lastDomainCount = state.unlockedDomains.length;
+    }
+
+    if (state.activeProducts.length > lastProductCount) {
+      milestones.push({
+        type: "product",
+        month: state.month,
+        label: "제품 포트폴리오 확장",
+        detail: `${state.activeProducts.length}개 제품 운영`,
+      });
+      lastProductCount = state.activeProducts.length;
+    }
+
+    if (state.month % 12 === 0) {
+      yearlySnapshots.push(createTenYearSnapshot(state, directiveChoicesMade));
+    }
+  }
+
+  const finale = getCampaignFinale(state);
+  milestones.push({
+    type: "ending",
+    month: state.month,
+    label: finale.endingName,
+    detail: `${finale.rank}랭크 · ${finale.score}점`,
+  });
+
+  return {
+    strategyId,
+    monthsSimulated,
+    finalState: state,
+    summary: getRunSummary(state),
+    integrity: validateGameStateIntegrity(state),
+    directiveChoicesMade,
+    annualReviewCount: state.annualReviewHistory.length,
+    passedAnnualReviewCount: state.annualReviewHistory.filter((review) => review.passed).length,
+    yearlySnapshots,
+    milestones,
+    finale,
+  };
+}
+
 function playOpeningCardAndIssue(state: GameState): GameState {
   const card = getStrategyCardById("customer_interviews");
   let nextState = card && getStrategyCardPlayCheck(card, state).ok ? playStrategyCard(card, state) : state;
@@ -225,6 +365,39 @@ function playFirstCounterCard(state: GameState): GameState {
   const card = getStrategyCardById("market_repositioning");
   if (!card || !getStrategyCardPlayCheck(card, state).ok) return state;
   return playStrategyCard(card, state);
+}
+
+function sustainLongCampaignState(state: GameState): GameState {
+  return {
+    ...state,
+    resources: {
+      ...state.resources,
+      cash: Math.max(state.resources.cash ?? 0, 60000),
+      compute: Math.max(state.resources.compute ?? 0, 400),
+      data: Math.max(state.resources.data ?? 0, 350),
+      talent: Math.max(state.resources.talent ?? 0, 8),
+      trust: Math.max(state.resources.trust ?? 0, 55),
+      automation: Math.max(state.resources.automation ?? 0, 16),
+    },
+  };
+}
+
+function createTenYearSnapshot(state: GameState, directiveChoicesMade: number): TenYearCampaignSnapshot {
+  return {
+    year: Math.ceil(state.month / 12),
+    month: state.month,
+    status: state.status,
+    starRating: getCompanyStarRating(state),
+    locationId: getCurrentLocation(state).id,
+    productCount: state.activeProducts.length,
+    activeDomainCount: state.unlockedDomains.length,
+    annualReviews: state.annualReviewHistory.length,
+    passedReviews: state.annualReviewHistory.filter((review) => review.passed).length,
+    directiveChoicesMade,
+    cash: Math.round(state.resources.cash ?? 0),
+    users: Math.round(state.resources.users ?? 0),
+    trust: Math.round(state.resources.trust ?? 0),
+  };
 }
 
 function pickAnnualDirectiveChoice(strategyId: string, offeredDirectiveIds: string[]): string {

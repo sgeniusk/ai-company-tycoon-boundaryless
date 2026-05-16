@@ -2,7 +2,7 @@ import { agentTypes, items, officeExpansions, products } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
 import { createReleaseCardReward } from "./deckbuilding";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
-import { runScriptedCommercialSimulation, runTenMinuteAlphaSimulation } from "./run-simulator";
+import { runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
 import { advanceMonth, buyItem, buyOfficeExpansion, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
@@ -27,6 +27,7 @@ export const qaScenarioIds = [
   "review",
   "reward-bias",
   "annual-strategy",
+  "ten-year-sim",
   "foundation",
   "commercial",
   "result",
@@ -219,6 +220,22 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "연간 전략실 QA",
       state: createAnnualStrategyScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ten-year-sim") {
+    const result = runTenYearCampaignSimulation("productivity_line");
+    return {
+      id,
+      label: "10년 압축 캠페인 QA",
+      state: {
+        ...result.finalState,
+        timeline: [
+          `10년 압축 캠페인 QA: ${result.finale.endingName} / ${result.finale.rank}랭크 / ${result.annualReviewCount}회 심사`,
+          ...result.finalState.timeline,
+        ].slice(0, 8),
+      },
       activeMenu: "company",
     };
   }
