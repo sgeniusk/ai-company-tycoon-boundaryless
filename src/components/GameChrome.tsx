@@ -143,7 +143,7 @@ export function GameStage({
 
   const handleStartNextRun = () => {
     setGameState((current) => resetRunWithMetaUnlocks(current));
-    setActiveMenu("company");
+    setActiveMenu("deck");
   };
 
   const handleGrowthPathClick = (path: ReleaseGrowthPath) => {

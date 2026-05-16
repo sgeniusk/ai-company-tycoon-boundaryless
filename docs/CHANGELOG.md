@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.13.2-alpha] — 2026-05-16
+
+### 새 런 진입 후 덱 안내 강화
+
+**추가:**
+- `?scenario=next-run` 브라우저 QA 시나리오.
+- 새 런 시작 직후 덱 메뉴 상단에 `새 런 브리핑` 표시.
+- 최근 런 점수/대표 제품/대표 카드 요약과 첫 행동 3단계 안내.
+
+**변경:**
+- 결과 화면의 `통찰 받고 새 런` 버튼이 이제 회사 화면이 아니라 덱 메뉴로 이동한다.
+- 새 런 QA 타임라인이 덱 메뉴에서 최근 런 기록과 메타 해금 후보를 확인하도록 안내한다.
+
+**검증:**
+- `npm test -- src/game/qa-scenarios.test.ts` 통과, 16 tests
+- `npm run harness:gate` 통과, 114 tests
+- Headless Chrome DOM QA: `http://127.0.0.1:5174/?scenario=next-run`에서 덱 메뉴, `새 런 브리핑`, 최근 런 기록, 메타 해금 후보 렌더링 확인
+
+---
+
 ## [0.13.1-alpha] — 2026-05-16
 
 ### 결과 화면과 새 런 브리핑 강화

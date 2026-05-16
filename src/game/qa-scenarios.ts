@@ -1,4 +1,5 @@
 import { agentTypes, items, officeExpansions, products } from "./data";
+import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { runScriptedCommercialSimulation, runTenMinuteAlphaSimulation } from "./run-simulator";
 import { advanceMonth, buyItem, buyOfficeExpansion, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
 import type { GameState } from "./types";
@@ -19,6 +20,7 @@ export const qaScenarioIds = [
   "arc",
   "flow",
   "alpha",
+  "next-run",
   "commercial",
   "result",
 ] as const;
@@ -169,6 +171,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "next-run") {
+    return {
+      id,
+      label: "새 런 진입 QA",
+      state: createNextRunState(),
+      activeMenu: "deck",
+    };
+  }
+
   if (id === "commercial") {
     return {
       id,
@@ -274,6 +285,16 @@ function createTenMinuteAlphaState(): GameState {
   return {
     ...alphaState,
     timeline: ["10분 알파 완주 QA: 결과 화면, 통찰 보상, 다음 런 전환 확인", ...alphaState.timeline].slice(0, 8),
+  };
+}
+
+function createNextRunState(): GameState {
+  const alphaState = runTenMinuteAlphaSimulation("productivity_line").finalState;
+  const nextRunState = resetRunWithMetaUnlocks(alphaState);
+
+  return {
+    ...nextRunState,
+    timeline: ["새 런 진입 QA: 덱 메뉴에서 최근 런 기록과 메타 해금 후보 확인", ...nextRunState.timeline].slice(0, 8),
   };
 }
 

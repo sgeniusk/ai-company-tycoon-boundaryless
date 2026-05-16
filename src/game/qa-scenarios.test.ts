@@ -18,6 +18,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "arc",
       "flow",
       "alpha",
+      "next-run",
       "commercial",
       "result",
     ]);
@@ -143,6 +144,17 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.lastDevelopmentPuzzle?.score).toBeGreaterThan(0);
   });
 
+  it("creates a next-run scenario after accepting alpha insight", () => {
+    const scenario = createQaScenario("next-run");
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("새 런");
+    expect(scenario.state.roguelite.runNumber).toBe(2);
+    expect(scenario.state.roguelite.founderInsight).toBeGreaterThan(0);
+    expect(scenario.state.roguelite.runHistory[0]).toMatchObject({ runNumber: 1 });
+    expect(scenario.state.timeline[0]).toContain("덱");
+  });
+
   it("creates a result scenario that focuses the final run recap", () => {
     const scenario = createQaScenario("result");
 
@@ -164,6 +176,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=deck")?.id).toBe("deck");
     expect(createQaScenarioFromSearch("?scenario=flow")?.id).toBe("flow");
     expect(createQaScenarioFromSearch("?scenario=alpha")?.id).toBe("alpha");
+    expect(createQaScenarioFromSearch("?scenario=next-run")?.id).toBe("next-run");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
     expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");

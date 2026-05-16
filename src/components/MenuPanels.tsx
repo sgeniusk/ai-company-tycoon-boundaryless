@@ -224,6 +224,11 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const activeProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
   const puzzle = activeProject ? createDevelopmentPuzzle(activeProject.id, gameState) : undefined;
   const projectedInsight = gameState.roguelite.founderInsight + getRunInsightReward(gameState);
+  const latestRunRecord = gameState.roguelite.runHistory[0];
+  const affordableMetaUnlocks = metaUnlocks
+    .filter((unlock) => !gameState.roguelite.unlockedMetaIds.includes(unlock.id))
+    .filter((unlock) => getMetaUnlockCheck(unlock.id, gameState).ok)
+    .slice(0, 3);
   const selectionLimit = getDevelopmentPuzzleSelectionLimit(gameState, activeProject?.id);
   const resolveCheck = activeProject ? getDevelopmentPuzzleResolveCheck(activeProject.id, selectedPuzzleTileIds, gameState) : undefined;
   const topRivalCounter = getRivalCounterPlans(gameState, 1)[0];
@@ -272,6 +277,25 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <span>편집 토큰 {gameState.roguelite.deckEditTokens}</span>
           <span>{pendingReward ? "보상 선택 대기" : "보상 없음"}</span>
         </div>
+        {latestRunRecord && (
+          <div className="next-run-onboarding">
+            <div>
+              <p className="eyebrow">새 런 브리핑</p>
+              <strong>
+                런 {gameState.roguelite.runNumber} 시작 · 통찰 {gameState.roguelite.founderInsight}
+              </strong>
+              <span>
+                이전 런 {latestRunRecord.score}점 · {latestRunRecord.bestProductName ?? "출시 제품 없음"}
+                {latestRunRecord.representativeCardName ? ` / ${latestRunRecord.representativeCardName}` : ""}
+              </span>
+            </div>
+            <ol>
+              <li>최근 런 기록에서 강했던 제품과 카드를 확인</li>
+              <li>{affordableMetaUnlocks.length ? `${affordableMetaUnlocks[0].title} 같은 메타 해금 후보 검토` : "창업 통찰을 아껴 다음 해금 후보 준비"}</li>
+              <li>제품 메뉴에서 첫 프로젝트를 시작해 새 런의 기준점 만들기</li>
+            </ol>
+          </div>
+        )}
         {topRivalCounter && (
           <div className="counter-advice-strip">
             <strong>{topRivalCounter.competitorName} 대응</strong>

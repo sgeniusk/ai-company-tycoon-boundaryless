@@ -6,6 +6,20 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.13.2: Next-Run Deck Onboarding
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Browser QA supports `?scenario=next-run` | **Passed** |
+| 2 | Next-run scenario opens on the deck menu | **Passed** |
+| 3 | Next-run scenario starts run number 2 after alpha insight | **Passed** |
+| 4 | Next-run scenario keeps the previous run in run history | **Passed** |
+| 5 | Deck menu shows a `새 런 브리핑` when run history exists | **Passed** |
+| 6 | Result button routes the player to the deck menu after starting a new run | **Passed** |
+| 7 | Targeted QA scenario tests pass | **Passed** |
+
+---
+
 ## Alpha v0.13.1: Result Screen And Next-Run Briefing
 
 | # | Criterion | Status |

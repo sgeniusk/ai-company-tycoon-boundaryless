@@ -26,6 +26,7 @@ Use the local app URL and append one of these query strings:
 | Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
 | Flow | `?scenario=flow` | First 10-minute loop with growth choice, office setup, and next rival counter guidance |
 | Alpha | `?scenario=alpha` | 10-minute alpha completion with run result, insight reward, and next-run readiness |
+| Next Run | `?scenario=next-run` | New run after accepting alpha insight, deck onboarding, run history, and meta unlock candidates |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 
@@ -45,6 +46,7 @@ Examples:
 - `http://localhost:5173/?scenario=arc`
 - `http://localhost:5173/?scenario=flow`
 - `http://localhost:5173/?scenario=alpha`
+- `http://localhost:5173/?scenario=next-run`
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
 
@@ -198,6 +200,15 @@ Examples:
 - `통찰 받고 새 런` remains visible after the briefing.
 - Narrow layout stacks the briefing grid without text overlap.
 - Narrow layout keeps run result, insight card, and roadmap readable.
+
+## v0.13.2 Visual QA Checklist
+
+- Next Run scenario opens on the `덱` menu.
+- QA pill shows `새 런 진입 QA`.
+- Deck menu shows `새 런 브리핑`.
+- New run briefing shows run 2, current founder insight, and previous run score/product/card.
+- New run briefing lists three first actions for the new run.
+- `최근 런 기록` and `로그라이트 해금` remain visible below the briefing.
 
 ## Note
 
