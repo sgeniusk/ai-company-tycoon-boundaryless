@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.13.0-alpha] — 2026-05-16
+
+### 10분 로그라이트 알파 완성 루프
+
+**추가:**
+- `runTenMinuteAlphaSimulation` 시뮬레이션 하네스.
+- 첫 카드 사용, 개발 이슈 해결, 첫 출시, 카드 보상 선택, 성장 선택, 사무실 정비, 경쟁 대응, 10개월 결과까지 이어지는 스크립트 검증 루프.
+- 다음 런 미리보기 `nextRunPreview`: 런 결과에서 통찰을 받고 런 2가 시작되는지 확인.
+- `?scenario=alpha` 브라우저 QA 시나리오.
+
+**변경:**
+- 10분 알파 검증이 단순 중간 상태가 아니라 `런 결과`, `대표 제품`, `대표 카드`, `경쟁 압박`, `창업 통찰`, `최근 런 기록`까지 확인한다.
+- QA 시나리오 목록에 `alpha`를 추가해 공개 URL에서 바로 10분 완주 상태를 볼 수 있게 했다.
+
+**검증:**
+- `npm test -- src/game/run-summary.test.ts src/game/qa-scenarios.test.ts` 통과, 20 tests
+- `npm run harness:gate` 통과, 112 tests
+- Headless Chrome DOM QA: `http://127.0.0.1:5176/?scenario=alpha`에서 10개월 알파 완주, 런 결과, 통찰 보상, 새 런 버튼 렌더링 확인
+
+---
+
 ## [0.12.8-alpha] — 2026-05-16
 
 ### 첫 10분 행동 흐름 압축

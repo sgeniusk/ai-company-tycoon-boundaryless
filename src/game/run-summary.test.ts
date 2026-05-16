@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getRunSummary } from "./run-summary";
+import { runTenMinuteAlphaSimulation } from "./run-simulator";
 import { createInitialState } from "./simulation";
 
 describe("v0.11 commercial run summary", () => {
@@ -108,5 +109,24 @@ describe("v0.11 commercial run summary", () => {
 
     expect(summary.rank).not.toBe("S");
     expect(summary.recommendation).toContain("현금");
+  });
+
+  it("simulates a complete 10-minute alpha loop into a next-run preview", () => {
+    const result = runTenMinuteAlphaSimulation("productivity_line");
+
+    expect(result.finalState.month).toBeGreaterThanOrEqual(10);
+    expect(result.summary.isFinal).toBe(true);
+    expect(result.summary.spotlight.bestProduct?.name).toBeTruthy();
+    expect(result.summary.spotlight.representativeCard?.name).toBeTruthy();
+    expect(result.summary.spotlight.rivalPressure?.name).toBeTruthy();
+    expect(result.summary.spotlight.insightReward).toBeGreaterThanOrEqual(1);
+    expect(result.finalState.roguelite.rewardHistory.length).toBeGreaterThanOrEqual(1);
+    expect(result.finalState.lastDevelopmentPuzzle?.score).toBeGreaterThan(0);
+    expect(result.integrity.ok).toBe(true);
+    expect(result.nextRunPreview.roguelite.runNumber).toBe(2);
+    expect(result.nextRunPreview.roguelite.runHistory[0]).toMatchObject({
+      runNumber: 1,
+      insightReward: result.summary.spotlight.insightReward,
+    });
   });
 });

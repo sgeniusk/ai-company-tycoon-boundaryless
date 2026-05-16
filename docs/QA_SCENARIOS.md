@@ -25,6 +25,7 @@ Use the local app URL and append one of these query strings:
 | Rivals | `?scenario=rivals` | Month-12 market with annual strong rivals already entered |
 | Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
 | Flow | `?scenario=flow` | First 10-minute loop with growth choice, office setup, and next rival counter guidance |
+| Alpha | `?scenario=alpha` | 10-minute alpha completion with run result, insight reward, and next-run readiness |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 
@@ -43,6 +44,7 @@ Examples:
 - `http://localhost:5173/?scenario=rivals`
 - `http://localhost:5173/?scenario=arc`
 - `http://localhost:5173/?scenario=flow`
+- `http://localhost:5173/?scenario=alpha`
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
 
@@ -176,6 +178,17 @@ Examples:
 - Flow scenario opens on the `회사` menu with QA pill `첫 10분 흐름 QA`.
 - Flow scenario shows `사무실 정비` complete and `경쟁 대응` as the next visible objective.
 - Roadmap stacks cleanly on narrow layouts without text overlap.
+
+## v0.13.0 Visual QA Checklist
+
+- Alpha scenario opens on the `회사` menu.
+- QA pill shows `10분 알파 완주 QA`.
+- Run result card is visible.
+- Run result card shows rank, score, representative product, representative card, rival pressure, and insight reward.
+- `통찰 받고 새 런` button is visible.
+- Company timeline includes `10분 알파 완주 QA`.
+- The first 10-minute roadmap is fully complete or points to the post-run action.
+- Narrow layout keeps run result, insight card, and roadmap readable.
 
 ## Note
 

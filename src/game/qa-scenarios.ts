@@ -1,5 +1,5 @@
 import { agentTypes, items, officeExpansions, products } from "./data";
-import { runScriptedCommercialSimulation } from "./run-simulator";
+import { runScriptedCommercialSimulation, runTenMinuteAlphaSimulation } from "./run-simulator";
 import { advanceMonth, buyItem, buyOfficeExpansion, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
@@ -18,6 +18,7 @@ export const qaScenarioIds = [
   "rivals",
   "arc",
   "flow",
+  "alpha",
   "commercial",
   "result",
 ] as const;
@@ -159,6 +160,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "alpha") {
+    return {
+      id,
+      label: "10분 알파 완주 QA",
+      state: createTenMinuteAlphaState(),
+      activeMenu: "company",
+    };
+  }
+
   if (id === "commercial") {
     return {
       id,
@@ -255,6 +265,15 @@ function createFirstTenMinuteFlowState(strategyState: GameState): GameState {
   return {
     ...decoratedState,
     timeline: ["첫 10분 흐름 QA: 출시, 성장 선택, 사무실 정비 후 경쟁 대응 직전", ...decoratedState.timeline].slice(0, 8),
+  };
+}
+
+function createTenMinuteAlphaState(): GameState {
+  const alphaState = runTenMinuteAlphaSimulation("productivity_line").finalState;
+
+  return {
+    ...alphaState,
+    timeline: ["10분 알파 완주 QA: 결과 화면, 통찰 보상, 다음 런 전환 확인", ...alphaState.timeline].slice(0, 8),
   };
 }
 

@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.13.0: 10-Minute Roguelite Alpha Completion
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | A scripted 10-minute alpha simulation reaches month 10 or later | **Passed** |
+| 2 | The simulation includes first card use and development issue resolution | **Passed** |
+| 3 | The simulation produces a final run summary | **Passed** |
+| 4 | The final summary includes representative product, card, rival pressure, and insight reward | **Passed** |
+| 5 | The simulation creates a next-run preview with run number 2 | **Passed** |
+| 6 | The next-run preview stores the previous run in run history | **Passed** |
+| 7 | Browser QA supports `?scenario=alpha` | **Passed** |
+| 8 | Targeted run summary and QA scenario tests pass | **Passed** |
+
+---
+
 ## Alpha v0.12.8: First Ten Minute Flow Compression
 
 | # | Criterion | Status |
