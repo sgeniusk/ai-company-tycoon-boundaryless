@@ -1268,6 +1268,7 @@ p {
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
 }
 
 .company-summary strong,
@@ -1363,7 +1364,8 @@ p {
 
 .annual-review-meta span,
 .annual-goal-list article,
-.annual-history {
+.annual-history,
+.annual-directive {
   background: #fffdf7;
   border: 1px solid #c5d3a4;
   color: #405536;
@@ -1393,9 +1395,24 @@ p {
 .annual-goal-list strong,
 .annual-goal-list span,
 .annual-history strong,
-.annual-history span {
+.annual-history span,
+.annual-directive strong,
+.annual-directive span,
+.annual-directive small {
   display: block;
   overflow-wrap: anywhere;
+}
+
+.annual-directive {
+  border-color: #99bf91;
+  display: grid;
+  gap: 4px;
+}
+
+.annual-directive small {
+  color: #516447;
+  font-size: 0.68rem;
+  line-height: 1.3;
 }
 
 .foundation-strip,

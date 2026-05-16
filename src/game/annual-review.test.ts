@@ -2,17 +2,26 @@ import { describe, expect, it } from "vitest";
 import { annualReviews } from "./data";
 import {
   getAnnualReviewForMonth,
+  getActiveAnnualDirective,
   getAnnualReviewProgress,
   getCurrentAnnualReview,
   getDueAnnualReviewResult,
 } from "./annual-review";
-import { advanceMonth, createInitialState, hydrateGameState, serializeGameState } from "./simulation";
+import { advanceMonth, calculateMonthlyEconomy, createInitialState, hydrateGameState, serializeGameState } from "./simulation";
 import type { GameState } from "./types";
 
-describe("v0.14.3 annual review foundation", () => {
+describe("v0.14.4 annual review foundation", () => {
   it("defines ten annual review milestones for the 10-year campaign", () => {
     expect(annualReviews).toHaveLength(10);
     expect(annualReviews.map((review) => review.month)).toEqual([12, 24, 36, 48, 60, 72, 84, 96, 108, 120]);
+  });
+
+  it("defines pass and recovery directives for each annual review", () => {
+    expect(
+      annualReviews.every((review) => review.directive.passed.title && review.directive.recovery.title),
+    ).toBe(true);
+    expect(annualReviews[0].directive.passed.monthly_effects.cash).toBeGreaterThan(0);
+    expect(annualReviews[0].directive.recovery.monthly_effects.cash).toBeGreaterThan(0);
   });
 
   it("selects the current annual review from campaign month", () => {
@@ -55,14 +64,50 @@ describe("v0.14.3 annual review foundation", () => {
     expect(next.timeline[0]).toContain("연간 심사");
   });
 
+  it("creates a next-year directive after an annual review and applies its monthly effects", () => {
+    const state = {
+      ...createYearOneReadyState(),
+      month: 11,
+      annualReviewHistory: [],
+    };
+    const reviewed = advanceMonth(state);
+
+    expect(reviewed.annualDirective).toMatchObject({
+      reviewId: "year_1_local_demo_day",
+      source: "passed",
+      expiresMonth: 24,
+    });
+    expect(getActiveAnnualDirective(reviewed)?.title).toContain("투자자");
+
+    const economy = calculateMonthlyEconomy(reviewed);
+    expect(economy.strategyEffects?.cash).toBeGreaterThanOrEqual(reviewed.annualDirective?.monthlyEffects.cash ?? 0);
+  });
+
+  it("ignores expired annual directives after the next review month", () => {
+    const reviewed = advanceMonth({
+      ...createYearOneReadyState(),
+      month: 11,
+      annualReviewHistory: [],
+    });
+    const expired = {
+      ...reviewed,
+      month: reviewed.annualDirective?.expiresMonth ?? 24,
+    };
+
+    expect(getActiveAnnualDirective(expired)).toBeUndefined();
+    expect(calculateMonthlyEconomy(expired).strategyEffects?.cash ?? 0).toBe(0);
+  });
+
   it("hydrates legacy saves without annual review history", () => {
     const serialized = serializeGameState(createInitialState());
     const parsed = JSON.parse(serialized);
     delete parsed.state.annualReviewHistory;
+    delete parsed.state.annualDirective;
 
     const hydrated = hydrateGameState(JSON.stringify(parsed));
 
     expect(hydrated.annualReviewHistory).toEqual([]);
+    expect(hydrated.annualDirective).toBeUndefined();
   });
 });
 

@@ -260,6 +260,18 @@ export interface AnnualReviewDefinition {
   reward: ResourceMap;
   consolation_reward: ResourceMap;
   spotlight: string;
+  directive: {
+    passed: AnnualReviewDirectiveTemplate;
+    recovery: AnnualReviewDirectiveTemplate;
+  };
+}
+
+export interface AnnualReviewDirectiveTemplate {
+  title: string;
+  description: string;
+  monthly_effects: ResourceMap;
+  recommended_menu: string;
+  rival_momentum_delta: number;
 }
 
 export interface AnnualReviewHistoryEntry {
@@ -271,6 +283,20 @@ export interface AnnualReviewHistoryEntry {
   title: string;
   summary: string;
   reward: ResourceMap;
+}
+
+export type AnnualDirectiveSource = "passed" | "recovery";
+
+export interface AnnualDirectiveState {
+  reviewId: string;
+  year: number;
+  source: AnnualDirectiveSource;
+  title: string;
+  description: string;
+  expiresMonth: number;
+  monthlyEffects: ResourceMap;
+  recommendedMenu: string;
+  rivalMomentumDelta: number;
 }
 
 export type StrategyCardCategory = "build" | "ops" | "product" | "safety" | "growth" | "research" | "automation";
@@ -629,6 +655,7 @@ export interface GameState {
   chosenGrowthPath?: ChosenGrowthPath;
   unlockedAchievements: string[];
   annualReviewHistory: AnnualReviewHistoryEntry[];
+  annualDirective?: AnnualDirectiveState;
   eventHistory: string[];
   rivalEventHistory: string[];
   timeline: string[];

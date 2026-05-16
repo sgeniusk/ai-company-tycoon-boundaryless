@@ -189,6 +189,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       reviewId: "year_1_local_demo_day",
       passed: true,
     });
+    expect(scenario.state.annualDirective?.title).toContain("투자자");
   });
 
   it("creates a foundation scenario for content recommendation QA", () => {

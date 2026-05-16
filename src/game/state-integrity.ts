@@ -76,6 +76,18 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     }
   }
 
+  if (state.annualDirective) {
+    if (!annualReviewIds.has(state.annualDirective.reviewId)) {
+      issues.push(`annual directive review "${state.annualDirective.reviewId}" is unknown`);
+    }
+    if (!["passed", "recovery"].includes(state.annualDirective.source)) {
+      issues.push(`annual directive source "${state.annualDirective.source}" is invalid`);
+    }
+    if (!Number.isFinite(state.annualDirective.expiresMonth)) {
+      issues.push(`annual directive "${state.annualDirective.title}" has invalid expiresMonth`);
+    }
+  }
+
   if (!Number.isFinite(state.roguelite.runNumber) || state.roguelite.runNumber < 1) {
     issues.push("roguelite runNumber must be a positive number");
   }

@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.14.4-alpha] — 2026-05-16
+
+### 연간 심사 후속 지시와 다음 해 모멘텀
+
+**추가:**
+- 각 연간 심사에 통과/회복 후속 지시를 추가했다.
+- 심사 결과에 따라 다음 1년 동안 적용되는 월간 효과를 생성한다.
+- 활성 연간 지시가 월간 경제 계산에 반영된다.
+- 심사 결과에 따라 경쟁사 모멘텀과 최근 행동 문구가 바뀐다.
+- 회사 화면의 연간 심사 카드에 `다음 해 지시` 섹션을 추가했다.
+
+**변경:**
+- `annualDirective` 저장 상태를 추가하고 레거시 저장 데이터는 안전하게 비워 둔다.
+- 데이터 검증 하네스가 연간 지시의 월간 효과, 추천 메뉴, 경쟁사 모멘텀 값을 검사한다.
+- 상태 무결성 검사가 활성 연간 지시의 잘못된 심사 참조와 만료 월을 검사한다.
+
+**검증:**
+- `npm test -- src/game/annual-review.test.ts src/game/qa-scenarios.test.ts` 통과, 28 tests
+- `npm run validate:data` 통과
+- `npm run harness:gate` 통과, 142 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5173/?scenario=review` 1366x768 렌더링 확인
+
+**배포:**
+- Vercel 배포 없음. 큰 버전업 때만 배포한다.
+
+---
+
 ## [0.14.3-alpha] — 2026-05-16
 
 ### 연간 심사와 10년 캠페인 중간 목표

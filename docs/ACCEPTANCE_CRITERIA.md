@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.14.4: Annual Directives And Next-Year Momentum
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Each annual review defines both passed and recovery directives | **Passed** |
+| 2 | Passing a review creates an active next-year directive | **Passed** |
+| 3 | Active annual directives contribute monthly resource effects | **Passed** |
+| 4 | Expired annual directives no longer affect monthly economy | **Passed** |
+| 5 | Review outcomes adjust rival momentum and last-move text | **Passed** |
+| 6 | Company menu shows the active next-year directive | **Passed** |
+| 7 | Legacy saves without annual directives hydrate safely | **Passed** |
+| 8 | Data validation checks annual directive effects and recommended menus | **Passed** |
+
+---
+
 ## Alpha v0.14.3: Annual Reviews And Mid-Campaign Goals
 
 | # | Criterion | Status |

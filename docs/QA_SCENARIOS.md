@@ -56,6 +56,14 @@ Examples:
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
 
+## v0.14.4 Visual QA Checklist
+
+- Review scenario shows `다음 해 지시` inside the annual review card.
+- The directive shows monthly effects, recommended menu, and expiry month.
+- Month-12 review scenario creates the passed directive `지역 투자자 모멘텀`.
+- Timeline keeps the annual review result readable before the directive entry.
+- Competition movement after a review has a visible benchmark or pressure signal.
+
 ## v0.14.3 Visual QA Checklist
 
 - Company menu shows the `연간 심사` card under the 10-year campaign card.

@@ -250,9 +250,10 @@ const allowedAnnualReviewRequirements = new Set([
   "min_talent",
   "min_star",
 ]);
+const annualReviewMenuIds = new Set(["company", "products", "deck", "agents", "research", "shop", "competition", "log"]);
 if (annualReviews.length !== 10) errors.push(`annual_reviews: expected 10 yearly reviews, found ${annualReviews.length}`);
 for (const [index, review] of annualReviews.entries()) {
-  for (const field of ["year", "month", "title", "description", "requirements", "reward", "consolation_reward", "spotlight"]) {
+  for (const field of ["year", "month", "title", "description", "requirements", "reward", "consolation_reward", "spotlight", "directive"]) {
     if (!(field in review)) errors.push(`annual_review "${review.id}": missing ${field}`);
   }
   if (typeof review.year !== "number" || review.year !== index + 1) {
@@ -272,6 +273,23 @@ for (const [index, review] of annualReviews.entries()) {
       if (!capabilityIds.has(capabilityId)) errors.push(`annual_review "${review.id}": unknown capability requirement "${capabilityId}"`);
     }
     if (typeof value !== "number") errors.push(`annual_review "${review.id}": requirement "${requirement}" must be numeric`);
+  }
+  for (const outcome of ["passed", "recovery"]) {
+    const directive = review.directive?.[outcome];
+    if (!directive) {
+      errors.push(`annual_review "${review.id}": missing ${outcome} directive`);
+      continue;
+    }
+    for (const field of ["title", "description", "monthly_effects", "recommended_menu", "rival_momentum_delta"]) {
+      if (!(field in directive)) errors.push(`annual_review "${review.id}" ${outcome} directive: missing ${field}`);
+    }
+    validateResourceMap(`annual_review "${review.id}" ${outcome} directive monthly_effects`, directive.monthly_effects, resourceIds);
+    if (!annualReviewMenuIds.has(directive.recommended_menu)) {
+      errors.push(`annual_review "${review.id}" ${outcome} directive: unknown recommended_menu "${directive.recommended_menu}"`);
+    }
+    if (typeof directive.rival_momentum_delta !== "number") {
+      errors.push(`annual_review "${review.id}" ${outcome} directive: rival_momentum_delta must be numeric`);
+    }
   }
 }
 

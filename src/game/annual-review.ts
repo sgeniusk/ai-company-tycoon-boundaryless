@@ -1,6 +1,15 @@
 import { annualReviews, capabilities, resources } from "./data";
 import { getCompanyStarRating, MONTHS_PER_YEAR } from "./campaign";
-import type { AnnualReviewDefinition, AnnualReviewHistoryEntry, GameState, ResourceMap } from "./types";
+import type {
+  AnnualDirectiveState,
+  AnnualReviewDefinition,
+  AnnualReviewHistoryEntry,
+  CompetitorState,
+  GameState,
+  ResourceMap,
+} from "./types";
+
+const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 export interface AnnualReviewProgressItem {
   requirement: string;
@@ -82,13 +91,28 @@ export function getDueAnnualReviewResult(state: GameState): AnnualReviewResult |
 export function applyDueAnnualReview(state: GameState): GameState {
   const result = getDueAnnualReviewResult(state);
   if (!result) return state;
+  const review = annualReviews.find((entry) => entry.id === result.reviewId);
+  const directive = review ? createAnnualDirective(review, result.passed) : undefined;
 
   return {
     ...state,
     resources: applyReviewReward(state.resources, result.reward),
     annualReviewHistory: [result, ...state.annualReviewHistory].slice(0, 12),
-    timeline: [`연간 심사: ${result.summary}`, ...state.timeline].slice(0, 8),
+    annualDirective: directive,
+    competitorStates: directive ? applyAnnualDirectiveRivalReaction(state.competitorStates, directive) : state.competitorStates,
+    timeline: [
+      `연간 심사: ${result.summary}`,
+      directive ? `연간 지시: ${directive.title}` : "",
+      ...state.timeline,
+    ]
+      .filter(Boolean)
+      .slice(0, 8),
   };
+}
+
+export function getActiveAnnualDirective(state: GameState): AnnualDirectiveState | undefined {
+  if (!state.annualDirective) return undefined;
+  return state.month < state.annualDirective.expiresMonth ? state.annualDirective : undefined;
 }
 
 export function getAnnualReviewCountdown(state: GameState): string {
@@ -97,6 +121,35 @@ export function getAnnualReviewCountdown(state: GameState): string {
   if (monthsLeft === 0) return `${review.year}년차 심사 월`;
   if (monthsLeft >= MONTHS_PER_YEAR) return `${review.year}년차까지 ${monthsLeft}개월`;
   return `${review.title}까지 ${monthsLeft}개월`;
+}
+
+function createAnnualDirective(review: AnnualReviewDefinition, passed: boolean): AnnualDirectiveState {
+  const template = passed ? review.directive.passed : review.directive.recovery;
+
+  return {
+    reviewId: review.id,
+    year: review.year,
+    source: passed ? "passed" : "recovery",
+    title: template.title,
+    description: template.description,
+    expiresMonth: Math.min(review.month + MONTHS_PER_YEAR, annualReviews[annualReviews.length - 1]?.month ?? review.month + MONTHS_PER_YEAR),
+    monthlyEffects: template.monthly_effects,
+    recommendedMenu: template.recommended_menu,
+    rivalMomentumDelta: template.rival_momentum_delta,
+  };
+}
+
+function applyAnnualDirectiveRivalReaction(competitorStates: CompetitorState[], directive: AnnualDirectiveState): CompetitorState[] {
+  if (directive.rivalMomentumDelta === 0) return competitorStates;
+
+  return competitorStates.map((competitor) => ({
+    ...competitor,
+    momentum: clamp(competitor.momentum + directive.rivalMomentumDelta, -12, 12),
+    lastMove:
+      directive.source === "passed"
+        ? `${directive.year}년차 심사 결과를 벤치마크`
+        : `${directive.year}년차 미달을 보고 시장 공세 강화`,
+  }));
 }
 
 function applyReviewReward(resourcesBefore: ResourceMap, reward: ResourceMap): ResourceMap {

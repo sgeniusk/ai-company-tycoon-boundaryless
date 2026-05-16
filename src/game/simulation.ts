@@ -1,5 +1,6 @@
 import {
   agentTypes,
+  annualReviews,
   automationUpgrades,
   balance,
   capabilities,
@@ -19,7 +20,7 @@ import {
   growthPaths,
 } from "./data";
 import { applyAchievementUnlocks } from "./achievements";
-import { applyDueAnnualReview } from "./annual-review";
+import { applyDueAnnualReview, getActiveAnnualDirective } from "./annual-review";
 import { CAMPAIGN_FINAL_MONTH, getCompanyStarRating, getCurrentLocation, getLocationRequirementReasons } from "./campaign";
 import { createInitialRogueliteState, createReleaseCardReward, refreshStrategyDeckForNewMonth } from "./deckbuilding";
 import { createReleaseGrowthPaths } from "./growth-paths";
@@ -28,6 +29,7 @@ import type {
   AgentStats,
   AgentTypeDefinition,
   ActionCheck,
+  AnnualDirectiveState,
   AnnualReviewHistoryEntry,
   AutomationUpgradeDefinition,
   CapabilityDefinition,
@@ -631,7 +633,7 @@ export function calculateMonthlyEconomy(state: GameState): MonthlyEconomy {
   const locationCostModifier = getCurrentLocation(state).monthly_cost_modifier;
   const totalCost = Math.round((balance.base_monthly_cash_cost + salaryCost + computeCashCost) * locationCostModifier * (1 - automationDiscount));
   const computePressure = Math.ceil(active.reduce((sum, product) => sum + getProductComputePressure(product, state), 0) * Math.max(1, newUsers / 1000) * 0.08);
-  const strategyEffects = getChosenGrowthPathMonthlyEffects(state);
+  const strategyEffects = getMonthlyStrategicEffects(state);
   const resourceDelta = mergeResourceDelta(
     {
       cash: revenue - totalCost,
@@ -952,6 +954,7 @@ export function hydrateGameState(serialized: string): GameState {
     chosenGrowthPath: hydrateChosenGrowthPath(rawState.chosenGrowthPath),
     unlockedAchievements: sanitizeStringArray(rawState.unlockedAchievements),
     annualReviewHistory: hydrateAnnualReviewHistory(rawState.annualReviewHistory),
+    annualDirective: hydrateAnnualDirective(rawState.annualDirective),
     eventHistory: sanitizeStringArray(rawState.eventHistory),
     rivalEventHistory: sanitizeStringArray(rawState.rivalEventHistory),
     timeline: sanitizeStringArray(rawState.timeline),
@@ -1337,6 +1340,19 @@ function getChosenGrowthPathMonthlyEffects(state: GameState): ResourceMap | unde
   return path.monthly_effects;
 }
 
+function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
+  const annualDirective = getActiveAnnualDirective(state);
+  const effects: ResourceMap[] = [];
+  const growthPathEffects = getChosenGrowthPathMonthlyEffects(state);
+  if (growthPathEffects && Object.keys(growthPathEffects).length > 0) effects.push(growthPathEffects);
+  if (annualDirective?.monthlyEffects && Object.keys(annualDirective.monthlyEffects).length > 0) {
+    effects.push(annualDirective.monthlyEffects);
+  }
+
+  if (effects.length === 0) return undefined;
+  return effects.reduce<ResourceMap>((combined, effect) => mergeResourceDelta(combined, effect), {});
+}
+
 function formatResourceDelta(delta: ResourceMap): string {
   return Object.entries(delta)
     .map(([resourceId, amount]) => {
@@ -1531,6 +1547,36 @@ function hydrateAnnualReviewHistory(value: unknown): AnnualReviewHistoryEntry[] 
       reward: sanitizeResourceDelta(entry.reward),
     }))
     .slice(0, 12);
+}
+
+function hydrateAnnualDirective(value: unknown): AnnualDirectiveState | undefined {
+  if (!isRecord(value)) return undefined;
+  const reviewId = typeof value.reviewId === "string" ? value.reviewId : "";
+  const review = annualReviews.find((entry) => entry.id === reviewId);
+  const source = value.source === "passed" || value.source === "recovery" ? value.source : undefined;
+
+  if (
+    !review ||
+    !source ||
+    typeof value.title !== "string" ||
+    typeof value.description !== "string" ||
+    typeof value.recommendedMenu !== "string" ||
+    !isRecord(value.monthlyEffects)
+  ) {
+    return undefined;
+  }
+
+  return {
+    reviewId,
+    year: Math.max(1, Math.round(sanitizeNumber(value.year, review.year))),
+    source,
+    title: value.title,
+    description: value.description,
+    expiresMonth: Math.max(review.month + 1, Math.round(sanitizeNumber(value.expiresMonth, review.month + 12))),
+    monthlyEffects: sanitizeResourceDelta(value.monthlyEffects),
+    recommendedMenu: value.recommendedMenu,
+    rivalMomentumDelta: Math.round(clamp(sanitizeNumber(value.rivalMomentumDelta, 0), -12, 12)),
+  };
 }
 
 function sanitizeResourceDelta(value: Record<string, unknown>): ResourceMap {

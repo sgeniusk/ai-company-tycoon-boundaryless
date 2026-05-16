@@ -9,7 +9,23 @@
       "requirements": {"min_products": 1, "min_users": 800, "min_trust": 30},
       "reward": {"cash": 3500, "trust": 4, "hype": 6},
       "consolation_reward": {"cash": 900, "hype": 2},
-      "spotlight": "첫 심사를 통과하면 지역 투자자와 초기 고객이 회사를 기억하기 시작합니다."
+      "spotlight": "첫 심사를 통과하면 지역 투자자와 초기 고객이 회사를 기억하기 시작합니다.",
+      "directive": {
+        "passed": {
+          "title": "지역 투자자 모멘텀",
+          "description": "지역 데모데이 통과로 다음 1년 동안 초기 고객 소개와 작은 투자 제안이 이어집니다.",
+          "monthly_effects": {"cash": 180, "users": 60, "hype": 1},
+          "recommended_menu": "products",
+          "rival_momentum_delta": 1
+        },
+        "recovery": {
+          "title": "차고 재정비 플랜",
+          "description": "심사 미달 후에도 지역 멘토가 붙어 생존 자금과 신뢰 회복 루트를 열어 줍니다.",
+          "monthly_effects": {"cash": 120, "trust": 1},
+          "recommended_menu": "agents",
+          "rival_momentum_delta": 2
+        }
+      }
     },
     {
       "id": "year_2_startup_league",
@@ -20,7 +36,23 @@
       "requirements": {"min_products": 2, "min_users": 5000, "min_cash": 12000},
       "reward": {"cash": 7000, "trust": 5, "talent": 1},
       "consolation_reward": {"cash": 1800, "trust": 1},
-      "spotlight": "전국 무대에 이름을 올리면 더 좋은 직원과 에이전트가 회사를 눈여겨봅니다."
+      "spotlight": "전국 무대에 이름을 올리면 더 좋은 직원과 에이전트가 회사를 눈여겨봅니다.",
+      "directive": {
+        "passed": {
+          "title": "전국 리그 채용 버프",
+          "description": "전국 스타트업 리그에서 이름이 알려져 다음 해 채용과 제품 확장이 쉬워집니다.",
+          "monthly_effects": {"cash": 260, "users": 120, "talent": 0.08},
+          "recommended_menu": "agents",
+          "rival_momentum_delta": 2
+        },
+        "recovery": {
+          "title": "생존형 제품 집중",
+          "description": "전국 무대에서 밀렸지만 작은 제품 라인을 반복 출시하는 회복 플랜을 받습니다.",
+          "monthly_effects": {"cash": 190, "data": 3},
+          "recommended_menu": "products",
+          "rival_momentum_delta": 3
+        }
+      }
     },
     {
       "id": "year_3_model_quality_awards",
@@ -31,7 +63,23 @@
       "requirements": {"min_products": 3, "min_trust": 50, "min_data": 120},
       "reward": {"cash": 12000, "trust": 7, "data": 40},
       "consolation_reward": {"cash": 3000, "data": 15},
-      "spotlight": "품질상을 받으면 시장은 회사가 장난감 앱을 넘어섰다고 보기 시작합니다."
+      "spotlight": "품질상을 받으면 시장은 회사가 장난감 앱을 넘어섰다고 보기 시작합니다.",
+      "directive": {
+        "passed": {
+          "title": "품질 인증 신뢰 루프",
+          "description": "모델 품질상이 고객 신뢰와 데이터 피드백을 꾸준히 끌어올립니다.",
+          "monthly_effects": {"trust": 1, "data": 6, "cash": 240},
+          "recommended_menu": "research",
+          "rival_momentum_delta": 2
+        },
+        "recovery": {
+          "title": "모델 품질 개선 스프린트",
+          "description": "품질 미달을 만회하기 위해 사용자 피드백과 안전 연구를 강화합니다.",
+          "monthly_effects": {"data": 5, "trust": 1},
+          "recommended_menu": "research",
+          "rival_momentum_delta": 4
+        }
+      }
     },
     {
       "id": "year_4_enterprise_pilot",
@@ -42,7 +90,23 @@
       "requirements": {"min_trust": 60, "min_cash": 30000, "min_automation": 18},
       "reward": {"cash": 18000, "trust": 8, "automation": 5},
       "consolation_reward": {"cash": 5000, "trust": 2},
-      "spotlight": "기업 파일럿을 따내면 매출 기반이 더 단단해집니다."
+      "spotlight": "기업 파일럿을 따내면 매출 기반이 더 단단해집니다.",
+      "directive": {
+        "passed": {
+          "title": "기업 파일럿 파이프라인",
+          "description": "기업 파일럿 계약이 다음 1년 동안 안정적인 현금과 신뢰를 제공합니다.",
+          "monthly_effects": {"cash": 520, "trust": 1},
+          "recommended_menu": "research",
+          "rival_momentum_delta": 2
+        },
+        "recovery": {
+          "title": "운영 안정화 태스크포스",
+          "description": "파일럿 심사 미달 후 운영 자동화와 신뢰 회복을 우선합니다.",
+          "monthly_effects": {"cash": 280, "automation": 1},
+          "recommended_menu": "shop",
+          "rival_momentum_delta": 4
+        }
+      }
     },
     {
       "id": "year_5_platform_pressure",
@@ -53,7 +117,23 @@
       "requirements": {"min_products": 4, "min_domains": 3, "min_users": 25000},
       "reward": {"cash": 26000, "compute": 90, "trust": 5},
       "consolation_reward": {"cash": 7000, "compute": 25},
-      "spotlight": "플랫폼 압박을 버티면 단일 제품 회사에서 벗어납니다."
+      "spotlight": "플랫폼 압박을 버티면 단일 제품 회사에서 벗어납니다.",
+      "directive": {
+        "passed": {
+          "title": "플랫폼 네트워크 효과",
+          "description": "여러 제품이 서로 고객과 데이터를 밀어 주는 플랫폼 효과가 시작됩니다.",
+          "monthly_effects": {"users": 360, "data": 8, "compute": 4},
+          "recommended_menu": "products",
+          "rival_momentum_delta": 3
+        },
+        "recovery": {
+          "title": "플랫폼 부채 정리",
+          "description": "복잡해진 제품군을 정리하고 연산력과 운영 여유를 회복합니다.",
+          "monthly_effects": {"cash": 360, "compute": 6},
+          "recommended_menu": "shop",
+          "rival_momentum_delta": 5
+        }
+      }
     },
     {
       "id": "year_6_robotics_showcase",
@@ -64,7 +144,23 @@
       "requirements": {"min_capability_robotics": 1, "min_products": 5, "min_automation": 30},
       "reward": {"cash": 34000, "compute": 120, "automation": 8},
       "consolation_reward": {"cash": 9000, "compute": 35},
-      "spotlight": "로봇 쇼케이스는 소프트웨어 회사를 산업 회사로 바꾸는 문턱입니다."
+      "spotlight": "로봇 쇼케이스는 소프트웨어 회사를 산업 회사로 바꾸는 문턱입니다.",
+      "directive": {
+        "passed": {
+          "title": "로봇 랩 생산성",
+          "description": "로봇 쇼케이스 이후 자동화 장비와 현장 데이터가 꾸준히 쌓입니다.",
+          "monthly_effects": {"automation": 1, "data": 10, "compute": 5},
+          "recommended_menu": "agents",
+          "rival_momentum_delta": 3
+        },
+        "recovery": {
+          "title": "로봇 파일럿 재설계",
+          "description": "쇼케이스 미달 후 작은 자동화 실험부터 다시 쌓는 회복 지시입니다.",
+          "monthly_effects": {"automation": 1, "cash": 420},
+          "recommended_menu": "research",
+          "rival_momentum_delta": 5
+        }
+      }
     },
     {
       "id": "year_7_industry_expansion_fair",
@@ -75,7 +171,23 @@
       "requirements": {"min_domains": 4, "min_users": 50000, "min_cash": 70000},
       "reward": {"cash": 46000, "hype": 10, "talent": 2},
       "consolation_reward": {"cash": 12000, "hype": 3},
-      "spotlight": "박람회에서 웃긴 확장이 진지한 사업 기회로 바뀝니다."
+      "spotlight": "박람회에서 웃긴 확장이 진지한 사업 기회로 바뀝니다.",
+      "directive": {
+        "passed": {
+          "title": "산업 확장 밈 모멘텀",
+          "description": "엉뚱한 산업 확장이 화제가 되어 이용자와 인재 관심을 끌어옵니다.",
+          "monthly_effects": {"hype": 2, "users": 520, "talent": 0.1},
+          "recommended_menu": "products",
+          "rival_momentum_delta": 4
+        },
+        "recovery": {
+          "title": "확장 포트폴리오 정리",
+          "description": "넓게 벌린 산업 실험을 정리하고 가장 가능성 있는 제품에 자원을 모읍니다.",
+          "monthly_effects": {"cash": 520, "data": 6},
+          "recommended_menu": "products",
+          "rival_momentum_delta": 5
+        }
+      }
     },
     {
       "id": "year_8_global_regulation_audit",
@@ -86,7 +198,23 @@
       "requirements": {"min_trust": 75, "min_products": 6, "min_automation": 45},
       "reward": {"cash": 58000, "trust": 10, "data": 80},
       "consolation_reward": {"cash": 14000, "trust": 3},
-      "spotlight": "규제 감사를 통과하면 세계 고객이 회사 이름을 믿기 시작합니다."
+      "spotlight": "규제 감사를 통과하면 세계 고객이 회사 이름을 믿기 시작합니다.",
+      "directive": {
+        "passed": {
+          "title": "글로벌 신뢰 인증",
+          "description": "규제 감사를 통과해 세계 고객의 신뢰와 기업 계약이 증가합니다.",
+          "monthly_effects": {"cash": 760, "trust": 1, "users": 420},
+          "recommended_menu": "competition",
+          "rival_momentum_delta": 4
+        },
+        "recovery": {
+          "title": "규제 리커버리 모드",
+          "description": "감사 미달 후 신뢰 손상을 막기 위해 안전과 운영 개선에 집중합니다.",
+          "monthly_effects": {"trust": 1, "automation": 1},
+          "recommended_menu": "research",
+          "rival_momentum_delta": 6
+        }
+      }
     },
     {
       "id": "year_9_boundaryless_summit",
@@ -97,7 +225,23 @@
       "requirements": {"min_domains": 5, "min_users": 90000, "min_cash": 120000},
       "reward": {"cash": 76000, "hype": 12, "automation": 10},
       "consolation_reward": {"cash": 18000, "hype": 4},
-      "spotlight": "서밋 성공은 마지막 1년의 엔딩 랭크를 크게 밀어 올립니다."
+      "spotlight": "서밋 성공은 마지막 1년의 엔딩 랭크를 크게 밀어 올립니다.",
+      "directive": {
+        "passed": {
+          "title": "세계 서밋 후광",
+          "description": "경계 없는 AI 서밋의 후광이 마지막 1년 동안 시장 관심을 밀어 올립니다.",
+          "monthly_effects": {"cash": 980, "hype": 2, "users": 720},
+          "recommended_menu": "company",
+          "rival_momentum_delta": 5
+        },
+        "recovery": {
+          "title": "최종년도 압축 성장",
+          "description": "서밋에서 밀렸지만 마지막 1년을 압축 성장과 엔딩 조건 회복에 씁니다.",
+          "monthly_effects": {"cash": 720, "automation": 1, "trust": 1},
+          "recommended_menu": "company",
+          "rival_momentum_delta": 7
+        }
+      }
     },
     {
       "id": "year_10_final_world_expo",
@@ -108,7 +252,23 @@
       "requirements": {"min_products": 7, "min_users": 150000, "min_automation": 60, "min_trust": 80},
       "reward": {"cash": 100000, "trust": 12, "hype": 15},
       "consolation_reward": {"cash": 25000, "trust": 4},
-      "spotlight": "마지막 세계 엑스포는 10년 캠페인의 기억에 남을 장면입니다."
+      "spotlight": "마지막 세계 엑스포는 10년 캠페인의 기억에 남을 장면입니다.",
+      "directive": {
+        "passed": {
+          "title": "엔딩 명예의 전당",
+          "description": "최종 평가 통과 후 다음 런에서 기억될 창업 서사를 남깁니다.",
+          "monthly_effects": {"cash": 0},
+          "recommended_menu": "company",
+          "rival_momentum_delta": 0
+        },
+        "recovery": {
+          "title": "다음 런 교훈 정리",
+          "description": "최종 평가 미달의 원인을 다음 런의 창업 통찰로 정리합니다.",
+          "monthly_effects": {"cash": 0},
+          "recommended_menu": "company",
+          "rival_momentum_delta": 0
+        }
+      }
     }
   ]
 }
