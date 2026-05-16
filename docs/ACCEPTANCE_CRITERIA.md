@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.14.3: Annual Reviews And Mid-Campaign Goals
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Ten annual review milestones exist for months 12 through 120 | **Passed** |
+| 2 | Annual review progress exposes readable requirement labels and values | **Passed** |
+| 3 | Advancing into a review month applies pass or consolation rewards | **Passed** |
+| 4 | Annual review results are recorded in state history | **Passed** |
+| 5 | Legacy saves without annual review history hydrate safely | **Passed** |
+| 6 | Company menu shows current annual review goals and recent result | **Passed** |
+| 7 | Browser QA supports `?scenario=review` | **Passed** |
+| 8 | Data validation checks annual review requirements and rewards | **Passed** |
+
+---
+
 ## Alpha v0.14.2: Content Foundation Recommendations
 
 | # | Criterion | Status |

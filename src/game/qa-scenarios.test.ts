@@ -21,6 +21,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "alpha",
       "next-run",
       "finale",
+      "review",
       "foundation",
       "commercial",
       "result",
@@ -178,6 +179,18 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.locationId).toBe("seoul_ai_tower");
   });
 
+  it("creates an annual review scenario for year-end milestone QA", () => {
+    const scenario = createQaScenario("review");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("연간");
+    expect(scenario.state.month).toBe(12);
+    expect(scenario.state.annualReviewHistory[0]).toMatchObject({
+      reviewId: "year_1_local_demo_day",
+      passed: true,
+    });
+  });
+
   it("creates a foundation scenario for content recommendation QA", () => {
     const scenario = createQaScenario("foundation");
     const snapshot = getFoundationSnapshot(scenario.state);
@@ -202,6 +215,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=alpha")?.id).toBe("alpha");
     expect(createQaScenarioFromSearch("?scenario=next-run")?.id).toBe("next-run");
     expect(createQaScenarioFromSearch("?scenario=finale")?.id).toBe("finale");
+    expect(createQaScenarioFromSearch("?scenario=review")?.id).toBe("review");
     expect(createQaScenarioFromSearch("?scenario=foundation")?.id).toBe("foundation");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
     expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");

@@ -1,0 +1,114 @@
+{
+  "annual_reviews": [
+    {
+      "id": "year_1_local_demo_day",
+      "year": 1,
+      "month": 12,
+      "title": "지역 AI 데모데이",
+      "description": "차고에서 만든 첫 AI 제품이 지역 창업 심사에서 살아남는지 평가합니다.",
+      "requirements": {"min_products": 1, "min_users": 800, "min_trust": 30},
+      "reward": {"cash": 3500, "trust": 4, "hype": 6},
+      "consolation_reward": {"cash": 900, "hype": 2},
+      "spotlight": "첫 심사를 통과하면 지역 투자자와 초기 고객이 회사를 기억하기 시작합니다."
+    },
+    {
+      "id": "year_2_startup_league",
+      "year": 2,
+      "month": 24,
+      "title": "전국 스타트업 리그",
+      "description": "첫 제품 하나를 넘어 반복 가능한 출시와 이용자 성장을 증명합니다.",
+      "requirements": {"min_products": 2, "min_users": 5000, "min_cash": 12000},
+      "reward": {"cash": 7000, "trust": 5, "talent": 1},
+      "consolation_reward": {"cash": 1800, "trust": 1},
+      "spotlight": "전국 무대에 이름을 올리면 더 좋은 직원과 에이전트가 회사를 눈여겨봅니다."
+    },
+    {
+      "id": "year_3_model_quality_awards",
+      "year": 3,
+      "month": 36,
+      "title": "모델 품질 어워즈",
+      "description": "단순 출시가 아니라 신뢰, 데이터, 모델 품질을 함께 평가합니다.",
+      "requirements": {"min_products": 3, "min_trust": 50, "min_data": 120},
+      "reward": {"cash": 12000, "trust": 7, "data": 40},
+      "consolation_reward": {"cash": 3000, "data": 15},
+      "spotlight": "품질상을 받으면 시장은 회사가 장난감 앱을 넘어섰다고 보기 시작합니다."
+    },
+    {
+      "id": "year_4_enterprise_pilot",
+      "year": 4,
+      "month": 48,
+      "title": "엔터프라이즈 파일럿 심사",
+      "description": "기업 고객이 맡길 수 있는 안정성과 운영력을 확인합니다.",
+      "requirements": {"min_trust": 60, "min_cash": 30000, "min_automation": 18},
+      "reward": {"cash": 18000, "trust": 8, "automation": 5},
+      "consolation_reward": {"cash": 5000, "trust": 2},
+      "spotlight": "기업 파일럿을 따내면 매출 기반이 더 단단해집니다."
+    },
+    {
+      "id": "year_5_platform_pressure",
+      "year": 5,
+      "month": 60,
+      "title": "AI 플랫폼 압박 테스트",
+      "description": "여러 제품과 도메인을 동시에 운영할 수 있는지 압박합니다.",
+      "requirements": {"min_products": 4, "min_domains": 3, "min_users": 25000},
+      "reward": {"cash": 26000, "compute": 90, "trust": 5},
+      "consolation_reward": {"cash": 7000, "compute": 25},
+      "spotlight": "플랫폼 압박을 버티면 단일 제품 회사에서 벗어납니다."
+    },
+    {
+      "id": "year_6_robotics_showcase",
+      "year": 6,
+      "month": 72,
+      "title": "로봇공학 쇼케이스",
+      "description": "AI가 물리 세계로 확장할 준비가 되었는지 평가합니다.",
+      "requirements": {"min_capability_robotics": 1, "min_products": 5, "min_automation": 30},
+      "reward": {"cash": 34000, "compute": 120, "automation": 8},
+      "consolation_reward": {"cash": 9000, "compute": 35},
+      "spotlight": "로봇 쇼케이스는 소프트웨어 회사를 산업 회사로 바꾸는 문턱입니다."
+    },
+    {
+      "id": "year_7_industry_expansion_fair",
+      "year": 7,
+      "month": 84,
+      "title": "산업 확장 박람회",
+      "description": "반도체, 자동차, 커피 체인, 장난감 같은 엉뚱한 확장 가능성을 평가합니다.",
+      "requirements": {"min_domains": 4, "min_users": 50000, "min_cash": 70000},
+      "reward": {"cash": 46000, "hype": 10, "talent": 2},
+      "consolation_reward": {"cash": 12000, "hype": 3},
+      "spotlight": "박람회에서 웃긴 확장이 진지한 사업 기회로 바뀝니다."
+    },
+    {
+      "id": "year_8_global_regulation_audit",
+      "year": 8,
+      "month": 96,
+      "title": "글로벌 규제 감사",
+      "description": "성장한 AI 회사가 신뢰와 안전을 지키며 세계 시장으로 갈 수 있는지 봅니다.",
+      "requirements": {"min_trust": 75, "min_products": 6, "min_automation": 45},
+      "reward": {"cash": 58000, "trust": 10, "data": 80},
+      "consolation_reward": {"cash": 14000, "trust": 3},
+      "spotlight": "규제 감사를 통과하면 세계 고객이 회사 이름을 믿기 시작합니다."
+    },
+    {
+      "id": "year_9_boundaryless_summit",
+      "year": 9,
+      "month": 108,
+      "title": "경계 없는 AI 서밋",
+      "description": "소프트웨어와 물리 산업을 넘나드는 종합 AI 회사인지 평가합니다.",
+      "requirements": {"min_domains": 5, "min_users": 90000, "min_cash": 120000},
+      "reward": {"cash": 76000, "hype": 12, "automation": 10},
+      "consolation_reward": {"cash": 18000, "hype": 4},
+      "spotlight": "서밋 성공은 마지막 1년의 엔딩 랭크를 크게 밀어 올립니다."
+    },
+    {
+      "id": "year_10_final_world_expo",
+      "year": 10,
+      "month": 120,
+      "title": "세계 AI 엑스포 최종 평가",
+      "description": "10년 동안 쌓은 제품, 신뢰, 자동화, 산업 확장을 최종 평가합니다.",
+      "requirements": {"min_products": 7, "min_users": 150000, "min_automation": 60, "min_trust": 80},
+      "reward": {"cash": 100000, "trust": 12, "hype": 15},
+      "consolation_reward": {"cash": 25000, "trust": 4},
+      "spotlight": "마지막 세계 엑스포는 10년 캠페인의 기억에 남을 장면입니다."
+    }
+  ]
+}

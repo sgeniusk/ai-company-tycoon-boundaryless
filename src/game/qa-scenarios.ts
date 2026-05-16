@@ -22,6 +22,7 @@ export const qaScenarioIds = [
   "alpha",
   "next-run",
   "finale",
+  "review",
   "foundation",
   "commercial",
   "result",
@@ -191,6 +192,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "review") {
+    return {
+      id,
+      label: "연간 심사 QA",
+      state: createAnnualReviewScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
   if (id === "foundation") {
     return {
       id,
@@ -223,6 +233,31 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     label: "출시 스포트라이트 QA",
     state: releaseState,
     activeMenu: "company",
+  };
+}
+
+function createAnnualReviewScenarioState(): GameState {
+  const activeProductIds = ["foundation_model_v0", "ai_writing_assistant"];
+  const readyState: GameState = {
+    ...createInitialState(),
+    month: 11,
+    activeProducts: activeProductIds,
+    productLevels: Object.fromEntries(activeProductIds.map((productId) => [productId, 1])),
+    resources: {
+      ...createInitialState().resources,
+      cash: 16000,
+      users: 1800,
+      trust: 42,
+      hype: 30,
+      automation: 8,
+    },
+    timeline: ["연간 심사 QA: 1년차 지역 데모데이 직전 상태", ...createInitialState().timeline].slice(0, 8),
+  };
+  const reviewedState = advanceMonth(readyState);
+
+  return {
+    ...reviewedState,
+    timeline: ["연간 심사 QA: 목표 달성, 보상, 최근 결과 카드 확인", ...reviewedState.timeline].slice(0, 8),
   };
 }
 

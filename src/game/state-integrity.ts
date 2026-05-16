@@ -1,4 +1,4 @@
-import { companyLocations, competitors, products, resources, strategyCards } from "./data";
+import { annualReviews, companyLocations, competitors, products, resources, strategyCards } from "./data";
 import type { GameState } from "./types";
 
 export interface StateIntegrityReport {
@@ -14,6 +14,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const competitorIds = new Set(competitors.map((competitor) => competitor.id));
   const locationIds = new Set(companyLocations.map((location) => location.id));
   const cardIds = new Set(strategyCards.map((card) => card.id));
+  const annualReviewIds = new Set(annualReviews.map((review) => review.id));
 
   for (const resourceId of Object.keys(resources)) {
     const value = state.resources[resourceId];
@@ -62,6 +63,17 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
 
   if (!["playing", "success", "failure"].includes(state.status)) {
     issues.push(`status "${state.status}" is invalid`);
+  }
+
+  if (!Array.isArray(state.annualReviewHistory)) {
+    issues.push("annualReviewHistory must be an array");
+  } else {
+    for (const entry of state.annualReviewHistory) {
+      if (!annualReviewIds.has(entry.reviewId)) issues.push(`annual review "${entry.reviewId}" is unknown`);
+      if (!Number.isFinite(entry.month) || !Number.isFinite(entry.score)) {
+        issues.push(`annual review "${entry.reviewId}" has invalid month or score`);
+      }
+    }
   }
 
   if (!Number.isFinite(state.roguelite.runNumber) || state.roguelite.runNumber < 1) {

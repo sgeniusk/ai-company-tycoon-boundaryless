@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import { agentTypes, assetManifest, automationUpgrades, capabilities, companyLocations, competitors, domains, items, metaUnlocks, products, strategyCards, upgrades } from "../game/data";
 import { getAchievementStatuses } from "../game/achievements";
+import { getAnnualReviewCountdown, getAnnualReviewProgress, getCurrentAnnualReview } from "../game/annual-review";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
@@ -130,6 +131,10 @@ export function renderMenuContent(
     const finale = getCampaignFinale(gameState);
     const currentLocation = getCurrentLocation(gameState);
     const foundationSnapshot = getFoundationSnapshot(gameState);
+    const annualReview = getCurrentAnnualReview(gameState);
+    const annualReviewProgress = getAnnualReviewProgress(annualReview, gameState);
+    const annualReviewCountdown = getAnnualReviewCountdown(gameState);
+    const recentAnnualReview = gameState.annualReviewHistory[0];
 
     return (
       <div className="panel-grid two-col">
@@ -157,6 +162,38 @@ export function renderMenuContent(
               <span className="strategy-summary">
                 전략 {gameState.chosenGrowthPath.title} · 월간 {formatEffects(gameState.chosenGrowthPath.monthlyEffects)}
               </span>
+            )}
+          </div>
+          <div className="annual-review-panel">
+            <div className="annual-review-header">
+              <div>
+                <p className="eyebrow">연간 심사</p>
+                <h3>{annualReview.title}</h3>
+                <span>{annualReview.description}</span>
+              </div>
+              <strong>{annualReviewProgress.progressPercent}%</strong>
+            </div>
+            <div className="arc-meter">
+              <i style={{ width: `${annualReviewProgress.progressPercent}%` }} />
+            </div>
+            <div className="annual-review-meta">
+              <span>{annualReviewCountdown}</span>
+              <span>목표 {annualReviewProgress.completed}/{annualReviewProgress.total}</span>
+              <span>통과 보상 {formatEffects(annualReview.reward)}</span>
+            </div>
+            <div className="annual-goal-list">
+              {annualReviewProgress.items.map((item) => (
+                <article className={item.complete ? "complete" : ""} key={item.requirement}>
+                  <strong>{item.label}</strong>
+                  <span>{item.currentLabel} / {item.targetLabel}</span>
+                </article>
+              ))}
+            </div>
+            {recentAnnualReview && (
+              <div className={recentAnnualReview.passed ? "annual-history passed" : "annual-history"}>
+                <strong>최근 결과: {recentAnnualReview.passed ? "통과" : "미달"} · {recentAnnualReview.score}점</strong>
+                <span>{recentAnnualReview.summary}</span>
+              </div>
             )}
           </div>
           <div className="foundation-panel">

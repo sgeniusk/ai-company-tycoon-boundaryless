@@ -76,6 +76,7 @@ const achievementsData = readJson("achievements.json");
 const strategyCardsData = readJson("strategy_cards.json");
 const metaUnlocksData = readJson("meta_unlocks.json");
 const officeExpansionsData = readJson("office_expansions.json");
+const annualReviewsData = readJson("annual_reviews.json");
 const koLocaleData = readJson("locales/ko.json");
 const enLocaleData = readJson("locales/en.json");
 
@@ -99,6 +100,7 @@ const achievements = achievementsData?.achievements ?? [];
 const strategyCards = strategyCardsData?.strategy_cards ?? [];
 const metaUnlocks = metaUnlocksData?.meta_unlocks ?? [];
 const officeExpansions = officeExpansionsData?.office_expansions ?? [];
+const annualReviews = annualReviewsData?.annual_reviews ?? [];
 const localeKeys = new Set([...Object.keys(koLocaleData ?? {}), ...Object.keys(enLocaleData ?? {})]);
 
 const resourceIds = new Set(Object.keys(resources));
@@ -120,6 +122,7 @@ idsAreUnique("achievements", achievements);
 const strategyCardIds = idsAreUnique("strategy_cards", strategyCards);
 const metaUnlockIds = idsAreUnique("meta_unlocks", metaUnlocks);
 idsAreUnique("office_expansions", officeExpansions);
+idsAreUnique("annual_reviews", annualReviews);
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);
@@ -231,6 +234,44 @@ for (const expansion of officeExpansions) {
       errors.push(`office_expansion "${expansion.id}": unknown unlock requirement "${requirement}"`);
     }
     if (typeof value !== "number") errors.push(`office_expansion "${expansion.id}": unlock requirement "${requirement}" must be numeric`);
+  }
+}
+
+const allowedAnnualReviewRequirements = new Set([
+  "min_products",
+  "min_domains",
+  "min_users",
+  "min_hype",
+  "min_trust",
+  "min_cash",
+  "min_data",
+  "min_compute",
+  "min_automation",
+  "min_talent",
+  "min_star",
+]);
+if (annualReviews.length !== 10) errors.push(`annual_reviews: expected 10 yearly reviews, found ${annualReviews.length}`);
+for (const [index, review] of annualReviews.entries()) {
+  for (const field of ["year", "month", "title", "description", "requirements", "reward", "consolation_reward", "spotlight"]) {
+    if (!(field in review)) errors.push(`annual_review "${review.id}": missing ${field}`);
+  }
+  if (typeof review.year !== "number" || review.year !== index + 1) {
+    errors.push(`annual_review "${review.id}": year must equal ${index + 1}`);
+  }
+  if (typeof review.month !== "number" || review.month !== (index + 1) * 12) {
+    errors.push(`annual_review "${review.id}": month must equal ${(index + 1) * 12}`);
+  }
+  validateResourceMap(`annual_review "${review.id}" reward`, review.reward, resourceIds);
+  validateResourceMap(`annual_review "${review.id}" consolation_reward`, review.consolation_reward, resourceIds);
+  for (const [requirement, value] of Object.entries(review.requirements ?? {})) {
+    if (!allowedAnnualReviewRequirements.has(requirement) && !requirement.startsWith("min_capability_")) {
+      errors.push(`annual_review "${review.id}": unknown requirement "${requirement}"`);
+    }
+    if (requirement.startsWith("min_capability_")) {
+      const capabilityId = requirement.replace("min_capability_", "");
+      if (!capabilityIds.has(capabilityId)) errors.push(`annual_review "${review.id}": unknown capability requirement "${capabilityId}"`);
+    }
+    if (typeof value !== "number") errors.push(`annual_review "${review.id}": requirement "${requirement}" must be numeric`);
   }
 }
 

@@ -1293,6 +1293,7 @@ p {
 }
 
 .campaign-panel,
+.annual-review-panel,
 .foundation-panel,
 .location-panel,
 .team-ops-summary {
@@ -1305,6 +1306,7 @@ p {
 }
 
 .campaign-panel h3,
+.annual-review-panel h3,
 .foundation-panel h3,
 .location-panel h3 {
   color: var(--green-dark);
@@ -1312,6 +1314,7 @@ p {
 }
 
 .campaign-panel span,
+.annual-review-panel span,
 .foundation-panel span,
 .location-card span,
 .location-card small,
@@ -1325,6 +1328,74 @@ p {
 .foundation-panel.compact {
   background: #f6fbef;
   border-color: #99bf91;
+}
+
+.annual-review-panel {
+  background: #f6fbef;
+  border-color: #99bf91;
+}
+
+.annual-review-header,
+.annual-review-meta,
+.annual-goal-list {
+  display: grid;
+  gap: 6px;
+}
+
+.annual-review-header {
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.annual-review-header strong {
+  background: #315d42;
+  color: #fffaf0;
+  font-size: 0.86rem;
+  font-weight: 900;
+  min-width: 54px;
+  padding: 7px;
+  text-align: center;
+}
+
+.annual-review-meta {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.annual-review-meta span,
+.annual-goal-list article,
+.annual-history {
+  background: #fffdf7;
+  border: 1px solid #c5d3a4;
+  color: #405536;
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1.3;
+  min-width: 0;
+  padding: 7px;
+}
+
+.annual-goal-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.annual-goal-list article {
+  display: grid;
+  gap: 3px;
+}
+
+.annual-goal-list article.complete,
+.annual-history.passed {
+  background: #e0f1dc;
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+
+.annual-goal-list strong,
+.annual-goal-list span,
+.annual-history strong,
+.annual-history span {
+  display: block;
+  overflow-wrap: anywhere;
 }
 
 .foundation-strip,
@@ -3083,6 +3154,8 @@ p {
   .assignment-forecast,
   .assignment-agent-grid,
   .objective-strip,
+  .annual-review-meta,
+  .annual-goal-list,
   .company-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3127,6 +3200,9 @@ p {
   .reward-choice-heading,
   .deck-edit-card,
   .first-ten-minute-roadmap ol,
+  .annual-review-header,
+  .annual-review-meta,
+  .annual-goal-list,
   .meta-unlock-list article {
     grid-template-columns: 1fr;
   }

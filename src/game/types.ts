@@ -250,6 +250,29 @@ export interface AchievementStatus extends AchievementDefinition {
   progressLabel: string;
 }
 
+export interface AnnualReviewDefinition {
+  id: string;
+  year: number;
+  month: number;
+  title: string;
+  description: string;
+  requirements: Record<string, number>;
+  reward: ResourceMap;
+  consolation_reward: ResourceMap;
+  spotlight: string;
+}
+
+export interface AnnualReviewHistoryEntry {
+  reviewId: string;
+  year: number;
+  month: number;
+  passed: boolean;
+  score: number;
+  title: string;
+  summary: string;
+  reward: ResourceMap;
+}
+
 export type StrategyCardCategory = "build" | "ops" | "product" | "safety" | "growth" | "research" | "automation";
 export type StrategyCardRarity = "starter" | "common" | "uncommon" | "rare" | "epic";
 
@@ -605,6 +628,7 @@ export interface GameState {
   lastDevelopmentPuzzle?: DevelopmentPuzzleResult;
   chosenGrowthPath?: ChosenGrowthPath;
   unlockedAchievements: string[];
+  annualReviewHistory: AnnualReviewHistoryEntry[];
   eventHistory: string[];
   rivalEventHistory: string[];
   timeline: string[];

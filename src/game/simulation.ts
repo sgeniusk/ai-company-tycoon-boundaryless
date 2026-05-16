@@ -19,6 +19,7 @@ import {
   growthPaths,
 } from "./data";
 import { applyAchievementUnlocks } from "./achievements";
+import { applyDueAnnualReview } from "./annual-review";
 import { CAMPAIGN_FINAL_MONTH, getCompanyStarRating, getCurrentLocation, getLocationRequirementReasons } from "./campaign";
 import { createInitialRogueliteState, createReleaseCardReward, refreshStrategyDeckForNewMonth } from "./deckbuilding";
 import { createReleaseGrowthPaths } from "./growth-paths";
@@ -27,6 +28,7 @@ import type {
   AgentStats,
   AgentTypeDefinition,
   ActionCheck,
+  AnnualReviewHistoryEntry,
   AutomationUpgradeDefinition,
   CapabilityDefinition,
   CompanyLocationDefinition,
@@ -103,6 +105,7 @@ export function createInitialState(): GameState {
     roguelite: createInitialRogueliteState(),
     activeDevelopmentPuzzleModifiers: [],
     unlockedAchievements: [],
+    annualReviewHistory: [],
     eventHistory: [],
     rivalEventHistory: [],
     timeline: ["회사는 작은 AI 생산성 도구 팀으로 시작했습니다."],
@@ -708,7 +711,7 @@ export function advanceMonth(state: GameState): GameState {
       .slice(0, 8),
   });
 
-  return refreshStrategyDeckForNewMonth(advancedState);
+  return refreshStrategyDeckForNewMonth(applyDueAnnualReview(advancedState));
 }
 
 export function getUpgradeCheck(upgrade: UpgradeDefinition, state: GameState): ActionCheck {
@@ -948,6 +951,7 @@ export function hydrateGameState(serialized: string): GameState {
     lastDevelopmentPuzzle: hydrateDevelopmentPuzzleResult(rawState.lastDevelopmentPuzzle),
     chosenGrowthPath: hydrateChosenGrowthPath(rawState.chosenGrowthPath),
     unlockedAchievements: sanitizeStringArray(rawState.unlockedAchievements),
+    annualReviewHistory: hydrateAnnualReviewHistory(rawState.annualReviewHistory),
     eventHistory: sanitizeStringArray(rawState.eventHistory),
     rivalEventHistory: sanitizeStringArray(rawState.rivalEventHistory),
     timeline: sanitizeStringArray(rawState.timeline),
@@ -1497,6 +1501,48 @@ function hydrateRunHistory(value: unknown): RunRecord[] {
       rivalName: typeof entry.rivalName === "string" ? entry.rivalName : undefined,
     }))
     .slice(0, 8);
+}
+
+function hydrateAnnualReviewHistory(value: unknown): AnnualReviewHistoryEntry[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter((entry): entry is AnnualReviewHistoryEntry => {
+      if (!isRecord(entry)) return false;
+      return (
+        typeof entry.reviewId === "string" &&
+        typeof entry.year === "number" &&
+        Number.isFinite(entry.year) &&
+        typeof entry.month === "number" &&
+        Number.isFinite(entry.month) &&
+        typeof entry.passed === "boolean" &&
+        typeof entry.score === "number" &&
+        Number.isFinite(entry.score) &&
+        typeof entry.title === "string" &&
+        typeof entry.summary === "string" &&
+        isRecord(entry.reward)
+      );
+    })
+    .map((entry) => ({
+      ...entry,
+      year: Math.max(1, Math.round(entry.year)),
+      month: Math.max(1, Math.round(entry.month)),
+      score: Math.round(clamp(entry.score, 0, 100)),
+      reward: sanitizeResourceDelta(entry.reward),
+    }))
+    .slice(0, 12);
+}
+
+function sanitizeResourceDelta(value: Record<string, unknown>): ResourceMap {
+  const sanitized: ResourceMap = {};
+
+  for (const [resourceId, amount] of Object.entries(value)) {
+    if (resources[resourceId] && typeof amount === "number" && Number.isFinite(amount)) {
+      sanitized[resourceId] = amount;
+    }
+  }
+
+  return sanitized;
 }
 
 function uniqueStrings(values: string[]): string[] {

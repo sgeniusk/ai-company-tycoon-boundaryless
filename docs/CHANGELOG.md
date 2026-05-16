@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.14.3-alpha] — 2026-05-16
+
+### 연간 심사와 10년 캠페인 중간 목표
+
+**추가:**
+- 10년 캠페인을 1년 단위로 끊어 주는 `annual_reviews.json` 데이터.
+- 1년차 지역 AI 데모데이부터 10년차 세계 엑스포까지 10개의 연간 심사.
+- 연간 심사 목표 진행도, 통과 보상, 미달 위로 보상 계산 모듈.
+- 월 진행 중 12개월 단위에 자동으로 연간 심사를 적용하고 결과를 히스토리에 저장.
+- 회사 화면의 `연간 심사` 카드.
+- `?scenario=review` 연간 심사 QA 시나리오.
+
+**변경:**
+- 저장/로드 복구가 과거 저장 데이터에 `annualReviewHistory`가 없어도 안전하게 초기화한다.
+- 데이터 검증 하네스가 연간 심사 수, 월 배치, 요구 조건, 보상 리소스를 검사한다.
+- 런타임 상태 무결성 검사가 연간 심사 히스토리의 잘못된 참조를 잡는다.
+
+**검증:**
+- `npm test -- src/game/annual-review.test.ts src/game/qa-scenarios.test.ts src/game/save-integrity.test.ts` 통과, 29 tests
+- `npm run harness:gate` 통과, 139 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5173/?scenario=review` 1366x768 렌더링 확인
+
+**배포:**
+- Vercel 배포 없음. 큰 버전업 때만 배포한다.
+
+---
+
 ## [0.14.2-alpha] — 2026-05-16
 
 ### 콘텐츠 기반 추천과 필터
