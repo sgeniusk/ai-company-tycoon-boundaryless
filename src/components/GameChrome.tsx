@@ -1,4 +1,4 @@
-import type { CSSProperties, Dispatch, SetStateAction } from "react";
+import { Fragment, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import { agentTypes, assetManifest, domains, products, resources } from "../game/data";
 import {
   getFirstTenMinutePlan,
@@ -28,7 +28,7 @@ import {
 import type { GameState, ReleaseGrowthPath } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatEffects, statusLabel } from "../ui/formatters";
-import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
+import { menuGroupLabels, menus, orderedResourceIds, type MenuId } from "../ui/menu";
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
   if (!palette?.length) return {};
@@ -523,11 +523,19 @@ export function MainMenu({
 }) {
   return (
     <nav className="main-menu">
-      {menus.map((menu) => (
-        <button className={activeMenu === menu.id ? "active" : ""} key={menu.id} onClick={() => setActiveMenu(menu.id)}>
-          <strong>{menu.label}</strong>
-          <span>{menu.hint}</span>
-        </button>
+      {menus.map((menu, index) => (
+        <Fragment key={menu.id}>
+          {(index === 0 || menus[index - 1].group !== menu.group) && (
+            <span className="menu-group-label">{menuGroupLabels[menu.group]}</span>
+          )}
+          <button
+            className={[activeMenu === menu.id ? "active" : "", `menu-group-${menu.group}`].filter(Boolean).join(" ")}
+            onClick={() => setActiveMenu(menu.id)}
+          >
+            <strong>{menu.label}</strong>
+            <span>{menu.hint}</span>
+          </button>
+        </Fragment>
       ))}
     </nav>
   );

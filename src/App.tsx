@@ -53,7 +53,9 @@ function App() {
       />
       <ResourceStrip gameState={gameState} />
       <GameStage gameState={gameState} setGameState={setGameState} setActiveMenu={setActiveMenu} />
-      <EventPanels gameState={gameState} setGameState={setGameState} locale={locale} />
+      <div className="event-stack">
+        <EventPanels gameState={gameState} setGameState={setGameState} locale={locale} />
+      </div>
       <CommandRow gameState={gameState} setGameState={setGameState} onSave={handleSave} onLoad={handleLoad} />
       <section className="menu-layout" aria-label="경영 메뉴">
         <MainMenu activeMenu={activeMenu} setActiveMenu={setActiveMenu} />

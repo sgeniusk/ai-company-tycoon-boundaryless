@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [0.13.3-alpha] — 2026-05-16
+
+### 한 화면형 컴팩트 게임 셸
+
+**추가:**
+- 데스크톱 고정 HUD 레이아웃: 상단 상태바, 좌측 자원/명령, 중앙 사무실, 우측 메뉴 패널.
+- 메뉴 그룹 데이터: 운영, 성장, 시장.
+- 인터페이스 구성 분석 보고를 반영한 레이아웃 계약 테스트.
+
+**변경:**
+- 전체 페이지 스크롤 대신 우측 메뉴 패널 내부 스크롤을 우선 사용한다.
+- `다음 달` 버튼과 핵심 자원은 좌측 HUD에 고정했다.
+- 메뉴 버튼은 세로 레일 형태로 압축하고 그룹 라벨을 붙였다.
+- 모바일에서는 보조 상태칩을 줄이고 단일 열 흐름으로 안전하게 접는다.
+
+**검증:**
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 2 tests
+- `npm run harness:gate` 통과, 116 tests
+- Headless Chrome screenshot QA: 1366x768과 390x844에서 `?scenario=next-run` 렌더링 확인
+
+---
+
 ## [0.13.2-alpha] — 2026-05-16
 
 ### 새 런 진입 후 덱 안내 강화

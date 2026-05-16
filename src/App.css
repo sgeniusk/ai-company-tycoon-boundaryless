@@ -30,6 +30,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 button {
@@ -54,13 +55,20 @@ button:disabled {
 }
 
 .app-shell {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  gap: 10px;
+  grid-template-areas:
+    "top top top"
+    "resources stage menu"
+    "commands stage menu";
+  grid-template-columns: 210px minmax(0, 1fr) minmax(360px, 430px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100vh;
   margin: 0 auto;
-  max-width: 1500px;
-  min-height: 100vh;
-  padding: 14px;
+  max-width: 1600px;
+  min-height: 0;
+  overflow: hidden;
+  padding: 10px;
 }
 
 .top-bar,
@@ -77,9 +85,10 @@ button:disabled {
 .top-bar {
   align-items: center;
   display: flex;
+  grid-area: top;
   justify-content: space-between;
-  min-height: 76px;
-  padding: 14px 16px;
+  min-height: 58px;
+  padding: 9px 12px;
 }
 
 .eyebrow,
@@ -101,7 +110,7 @@ p {
 
 h1 {
   color: var(--green-dark);
-  font-size: 2.1rem;
+  font-size: 1.62rem;
   line-height: 1.05;
   margin-bottom: 0;
   text-shadow: 2px 2px 0 #f1cc7d;
@@ -140,9 +149,9 @@ p {
   border: 2px solid var(--line);
   border-radius: 6px;
   color: var(--green-dark);
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   font-weight: 900;
-  padding: 7px 10px;
+  padding: 5px 8px;
   white-space: nowrap;
 }
 
@@ -163,21 +172,25 @@ p {
 
 .resource-strip {
   display: grid;
-  gap: 8px;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+  align-content: start;
+  gap: 6px;
+  grid-area: resources;
+  grid-template-columns: 1fr;
+  min-height: 0;
+  overflow: auto;
 }
 
 .resource-tile {
-  min-height: 68px;
-  padding: 9px;
+  min-height: 48px;
+  padding: 7px 8px;
 }
 
 .resource-tile span {
   color: #6d5f47;
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 900;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 
 .resource-tile strong {
@@ -189,10 +202,12 @@ p {
 
 .game-stage {
   display: grid;
-  gap: 12px;
-  grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.85fr);
-  min-height: 288px;
-  padding: 12px;
+  gap: 10px;
+  grid-area: stage;
+  grid-template-columns: minmax(0, 1.35fr) minmax(270px, 0.72fr);
+  min-height: 0;
+  overflow: hidden;
+  padding: 10px;
 }
 
 .office-scene {
@@ -201,18 +216,18 @@ p {
   display: grid;
   grid-template-rows: 64px 1fr;
   isolation: isolate;
-  min-height: 260px;
+  min-height: 0;
   overflow: hidden;
   position: relative;
 }
 
 .office-scene.office-level-2 {
-  min-height: 282px;
+  min-height: 0;
 }
 
 .office-scene.office-level-3,
 .office-scene.office-level-4 {
-  min-height: 306px;
+  min-height: 0;
 }
 
 .office-wall {
@@ -465,6 +480,9 @@ p {
 .stage-side {
   display: grid;
   gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
 }
 
 .company-stage,
@@ -580,8 +598,8 @@ p {
 .first-ten-minute-roadmap li {
   background: #fffdf5;
   border: 2px solid #d8c49b;
-  min-height: 58px;
-  padding: 6px;
+  min-height: 38px;
+  padding: 5px;
 }
 
 .first-ten-minute-roadmap li span,
@@ -600,6 +618,24 @@ p {
   font-size: 0.62rem;
   line-height: 1.25;
   margin-top: 3px;
+}
+
+.event-stack {
+  align-self: end;
+  display: grid;
+  gap: 8px;
+  grid-area: stage;
+  justify-self: stretch;
+  max-height: 42%;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.event-stack:empty {
+  display: none;
 }
 
 .first-ten-minute-roadmap li.complete {
@@ -983,6 +1019,7 @@ p {
   gap: 12px;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   padding: 12px;
+  pointer-events: auto;
 }
 
 .rival-event-panel {
@@ -1018,12 +1055,33 @@ p {
 }
 
 .command-row {
+  align-content: start;
+  display: grid;
+  gap: 7px;
+  grid-area: commands;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   min-height: 58px;
-  padding: 10px;
+  padding: 8px;
 }
 
 .command-row p {
-  margin: 0 0 0 auto;
+  color: #6a5b42;
+  font-size: 0.72rem;
+  font-weight: 900;
+  grid-column: 1 / -1;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.command-row .primary-action {
+  grid-column: 1 / -1;
+  min-height: 46px;
+}
+
+.command-row .secondary-action {
+  font-size: 0.74rem;
+  min-height: 32px;
+  padding: 0 7px;
 }
 
 .primary-action {
@@ -1047,8 +1105,11 @@ p {
 
 .menu-layout {
   display: grid;
-  gap: 12px;
-  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 8px;
+  grid-area: menu;
+  grid-template-columns: 78px minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
 }
 
 .main-menu {
@@ -1056,8 +1117,11 @@ p {
   border: 3px solid var(--line);
   box-shadow: var(--shadow);
   display: grid;
-  gap: 8px;
-  padding: 10px;
+  align-content: start;
+  gap: 6px;
+  min-height: 0;
+  overflow: auto;
+  padding: 7px;
 }
 
 .main-menu button {
@@ -1065,8 +1129,9 @@ p {
   background: #f2cf7f;
   display: grid;
   gap: 2px;
-  min-height: 58px;
-  text-align: left;
+  min-height: 43px;
+  padding: 5px 4px;
+  text-align: center;
 }
 
 .main-menu button.active {
@@ -1080,8 +1145,20 @@ p {
   opacity: 0.8;
 }
 
+.menu-group-label {
+  color: #705a38;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  padding: 3px 2px 0;
+  text-align: center;
+}
+
 .menu-panel {
   min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
 }
 
 .panel-grid {
@@ -1090,18 +1167,18 @@ p {
 }
 
 .panel-grid.two-col {
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.78fr);
+  grid-template-columns: 1fr;
 }
 
 .dashboard-grid {
   display: grid;
   gap: 12px;
-  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.9fr) minmax(320px, 0.9fr);
+  grid-template-columns: 1fr;
 }
 
 .panel {
-  min-height: 240px;
-  padding: 12px;
+  min-height: 0;
+  padding: 10px;
 }
 
 .products-panel {
@@ -1270,7 +1347,7 @@ p {
 .achievement-list {
   display: grid;
   gap: 6px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
 }
 
 .achievement-list article {
@@ -1319,14 +1396,14 @@ p {
 }
 
 .products-list {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
 }
 
 .expansion-map,
 .rival-wave-list {
   display: grid;
   gap: 8px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   margin-bottom: 12px;
 }
 
@@ -1363,7 +1440,7 @@ p {
 .domain-filter {
   display: grid;
   gap: 7px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-bottom: 10px;
 }
 
@@ -2317,7 +2394,7 @@ p {
 .card-hand {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
 }
 
 .strategy-card {
@@ -2654,9 +2731,30 @@ p {
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1100px) {
+  body {
+    overflow: auto;
+  }
+
+  .app-shell {
+    grid-template-areas:
+      "top"
+      "stage"
+      "events"
+      "resources"
+      "commands"
+      "menu";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+    max-width: 900px;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
   .resource-strip {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: visible;
   }
 
   .game-stage,
@@ -2667,8 +2765,29 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .game-stage,
+  .menu-layout,
+  .menu-panel,
+  .stage-side {
+    overflow: visible;
+  }
+
+  .event-stack {
+    grid-area: events;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+    pointer-events: auto;
+  }
+
   .main-menu {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: visible;
+  }
+
+  .menu-group-label {
+    grid-column: 1 / -1;
+    text-align: left;
   }
 
   .products-panel {
@@ -2692,6 +2811,22 @@ p {
 
   .guidance-card {
     grid-template-columns: 1fr;
+  }
+
+  .status-cluster {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .status-cluster .status-pill:nth-of-type(3),
+  .status-cluster .status-pill:nth-of-type(4),
+  .status-cluster .status-pill:nth-of-type(7) {
+    display: none;
+  }
+
+  .locale-toggle {
+    grid-column: 1 / -1;
+    min-height: 34px;
   }
 
   h1 {

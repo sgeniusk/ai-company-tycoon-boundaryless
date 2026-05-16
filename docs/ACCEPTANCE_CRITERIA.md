@@ -6,6 +6,20 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.13.3: Compact Game Shell
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Desktop layout uses a fixed top/resource/stage/command/menu grid | **Passed** |
+| 2 | Page-level scrolling is disabled on desktop compact shell | **Passed** |
+| 3 | Menu panel owns long-content scrolling | **Passed** |
+| 4 | Menu entries are grouped into operation/growth/market sections | **Passed** |
+| 5 | `다음 달` remains a persistent primary action | **Passed** |
+| 6 | 1366x768 browser screenshot shows office, resources, command row, and menu panel in one viewport | **Passed** |
+| 7 | Mobile screenshot does not break layout and hides secondary status chips | **Passed** |
+
+---
+
 ## Alpha v0.13.2: Next-Run Deck Onboarding
 
 | # | Criterion | Status |

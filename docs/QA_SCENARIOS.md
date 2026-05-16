@@ -210,6 +210,15 @@ Examples:
 - New run briefing lists three first actions for the new run.
 - `최근 런 기록` and `로그라이트 해금` remain visible below the briefing.
 
+## v0.13.3 Visual QA Checklist
+
+- Desktop 1366x768 shows top status, left resource rail, center office scene, and right menu panel in one viewport.
+- Page body does not become a long web document on desktop.
+- Right menu panel scrolls internally when deck/product content is long.
+- `다음 달` remains the largest persistent command in the left rail.
+- Menu rail shows grouped sections: `운영`, `성장`, `시장`.
+- Mobile width hides secondary status chips and keeps the office scene readable.
+
 ## Note
 
 If local browser automation cannot connect from the Codex environment, still run:
