@@ -506,6 +506,13 @@ p {
   padding-right: 2px;
 }
 
+.stage-side > article {
+  max-height: min(245px, 34vh);
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
 .company-stage,
 .monthly-report,
 .guidance-card,
@@ -2001,6 +2008,61 @@ p {
   font-size: 0.72rem;
   font-weight: 900;
   line-height: 1.25;
+}
+
+.boundaryless-goal-panel {
+  background: #eef7ff;
+  border: 2px solid #9cb8d6;
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px;
+}
+
+.boundaryless-goal-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.boundaryless-goal-grid article {
+  background: #fffdf7;
+  border: 2px solid #c5d8e8;
+  display: grid;
+  gap: 4px;
+  overflow: hidden;
+  padding: 8px;
+  position: relative;
+}
+
+.boundaryless-goal-grid article.goal-unlocked {
+  background: #fff7df;
+  border-color: #c99c55;
+}
+
+.boundaryless-goal-grid article.goal-launched {
+  background: #e8f5dc;
+  border-color: var(--green);
+}
+
+.boundaryless-goal-grid strong {
+  color: #263f52;
+  font-size: 0.78rem;
+}
+
+.boundaryless-goal-grid span,
+.boundaryless-goal-grid small {
+  color: #465d6c;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.boundaryless-goal-grid i {
+  background: var(--green);
+  display: block;
+  height: 4px;
+  margin-top: 3px;
 }
 
 .domain-filter {

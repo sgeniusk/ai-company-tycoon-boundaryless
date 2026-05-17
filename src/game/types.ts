@@ -397,6 +397,9 @@ export interface RunRecord {
   endedMonth: number;
   status: GameState["status"];
   score: number;
+  campaignRank?: "S" | "A" | "B" | "C" | "D";
+  endingName?: string;
+  survivedYears?: number;
   bestProductName?: string;
   representativeCardName?: string;
   rivalName?: string;

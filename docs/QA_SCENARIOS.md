@@ -33,6 +33,7 @@ Use the local app URL and append one of these query strings:
 | Foundation | `?scenario=foundation` | Enterprise-stage content foundation, hiring recommendations, agent filters, item recommendations |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
+| Readiness | `?scenario=readiness` | v0.20 alpha readiness state from the integrated simulation harness |
 
 Examples:
 
@@ -57,6 +58,21 @@ Examples:
 - `http://localhost:5173/?scenario=foundation`
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
+- `http://localhost:5173/?scenario=readiness`
+
+## v0.20 Alpha Readiness QA
+
+URL:
+
+- `?scenario=readiness`
+
+Expected:
+
+- The top QA pill says `v0.20 알파 준비도 QA`.
+- The company state is at the 10-year ending window.
+- The timeline includes `v0.20 알파 준비도`.
+- The company panel shows annual review, run result, and campaign progress without blocking the office scene.
+- This scenario is the default visual entry point before a v0.20 playtest pass.
 
 ## v0.14.7 Visual QA Checklist
 

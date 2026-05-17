@@ -488,4 +488,19 @@ describe("v0.5-v0.8 competitive market systems", () => {
     expect(hydrated.competitorStates).toEqual(state.competitorStates);
     expect(hydrated.currentRivalEvent?.id).toBe(state.currentRivalEvent?.id);
   });
+
+  it("applies unresolved season challenge pressure during monthly advancement", () => {
+    let state = createInitialState();
+    while (state.month < 12) {
+      state = advanceMonth(state);
+    }
+
+    const pressureTargetId = state.competitorStates[0].id;
+    const beforeMomentum = state.competitorStates.find((competitor) => competitor.id === pressureTargetId)?.momentum ?? 0;
+    const advanced = advanceMonth(state);
+    const afterMomentum = advanced.competitorStates.find((competitor) => competitor.id === pressureTargetId)?.momentum ?? 0;
+
+    expect(afterMomentum).toBeGreaterThan(beforeMomentum * 0.65);
+    expect(advanced.timeline.some((entry) => entry.includes("시즌 압박"))).toBe(true);
+  });
 });

@@ -25,6 +25,7 @@ import {
 import { applyAchievementUnlocks } from "./achievements";
 import { applyDueAnnualReview, getActiveAnnualDirective } from "./annual-review";
 import { CAMPAIGN_FINAL_MONTH, getCompanyStarRating, getCurrentLocation, getLocationRequirementReasons } from "./campaign";
+import { getCompetitionSeasonChallenges } from "./competition-signals";
 import { createInitialRogueliteState, createReleaseCardReward, refreshStrategyDeckForNewMonth } from "./deckbuilding";
 import { createReleaseGrowthPaths } from "./growth-paths";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
@@ -796,7 +797,8 @@ export function advanceMonth(state: GameState): GameState {
   };
   const progressedState = advanceProductProjects(nextStateWithoutEvent);
   const entrantState = addScheduledCompetitors(progressedState);
-  const competedState = advanceCompetitors(entrantState);
+  const seasonAdjustedState = applySeasonChallengeOutcomes(entrantState);
+  const competedState = advanceCompetitors(seasonAdjustedState);
   const nextStatus = getNextStatus(competedState.resources, competedState.activeProducts.length, nextMonth);
   const nextStateForEvent = { ...competedState, status: nextStatus };
   const nextEvent = state.currentEvent ? state.currentEvent : findNextEligibleEvent(nextStateForEvent);
@@ -813,10 +815,10 @@ export function advanceMonth(state: GameState): GameState {
     timeline: [
       nextRivalEvent ? `경쟁사 이슈: ${nextRivalEvent.id}` : "",
       nextEvent ? `이슈 발생: ${nextEvent.name}` : "",
-      ...competedState.timeline,
       getOfficeMonthlyTimelineEntry(state) ?? "",
       getOfficeSynergyTimelineEntry(state) ?? "",
       monthlyEconomy.strategyEffects ? `전략 효과: ${formatResourceDelta(monthlyEconomy.strategyEffects)}` : "",
+      ...competedState.timeline,
       nextMonth >= CAMPAIGN_FINAL_MONTH ? `10년차 최종 평가: ${nextStatus === "success" ? "성공 엔딩" : "재도전 엔딩"}` : "",
       summary,
       ...state.timeline,
@@ -1203,6 +1205,44 @@ function addScheduledCompetitors(state: GameState): GameState {
   };
 }
 
+function applySeasonChallengeOutcomes(state: GameState): GameState {
+  const challenges = getCompetitionSeasonChallenges(state);
+  if (challenges.length === 0) return state;
+
+  const completed = challenges.filter((challenge) => challenge.complete);
+  const unresolved = challenges.filter((challenge) => !challenge.complete);
+  const unresolvedCompetitorIds = new Set(unresolved.flatMap((challenge) => challenge.relatedCompetitorIds));
+  const nextCompetitors = state.competitorStates.map((competitor) =>
+    unresolvedCompetitorIds.has(competitor.id)
+      ? {
+          ...competitor,
+          momentum: clamp(competitor.momentum + 2, -12, 12),
+          lastMove: competitor.lastMove.includes("시즌 압박") ? competitor.lastMove : `${competitor.lastMove} · 시즌 압박`,
+        }
+      : competitor,
+  );
+  const rewardDelta: ResourceMap = completed.length
+    ? {
+        trust: completed.length,
+        users: completed.length * 80,
+        data: completed.length * 2,
+      }
+    : {};
+
+  return {
+    ...state,
+    competitorStates: nextCompetitors,
+    resources: Object.keys(rewardDelta).length ? applyResourceDelta(state.resources, rewardDelta) : state.resources,
+    timeline: [
+      ...state.timeline,
+      completed.length ? `시즌 과제 보상: ${completed.length}개 대응 완료 (${formatResourceDelta(rewardDelta)})` : "",
+      unresolved.length ? `시즌 압박: ${unresolved.map((challenge) => challenge.title).join(", ")}` : "",
+    ]
+      .filter(Boolean)
+      .slice(0, 8),
+  };
+}
+
 function advanceCompetitors(state: GameState): GameState {
   const playerDomains = new Set(
     products.filter((product) => state.activeProducts.includes(product.id)).map((product) => product.domain),
@@ -1229,7 +1269,7 @@ function advanceCompetitors(state: GameState): GameState {
     };
   });
   const nextCompetitors = recalculateMarketShares(movedCompetitors, state);
-  const competitionTimeline = getCompetitionTimeline(state.competitorStates, nextCompetitors);
+  const competitionTimeline = getCompetitionTimeline(state.competitorStates, nextCompetitors).slice(0, 3);
 
   return {
     ...state,

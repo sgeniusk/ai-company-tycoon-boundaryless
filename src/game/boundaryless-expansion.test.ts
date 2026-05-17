@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { agentTypes, capabilities, domains, products } from "./data";
+import { getBoundarylessExpansionGoals } from "./boundaryless-expansion";
 import { advanceMonth, createInitialState, getAgentHireCheck, getProductCheck } from "./simulation";
 
 describe("v0.12.4 boundaryless expansion direction", () => {
@@ -62,5 +63,31 @@ describe("v0.12.4 boundaryless expansion direction", () => {
     expect(robotUnit?.role).toContain("로봇");
     expect(getAgentHireCheck(robotUnit!, initial).ok).toBe(false);
     expect(getAgentHireCheck(robotUnit!, roboticsReady).ok).toBe(true);
+  });
+
+  it("summarizes boundaryless industry expansion goals from locked to launched", () => {
+    const initial = createInitialState();
+    const roboticsReady = {
+      ...initial,
+      unlockedDomains: [...initial.unlockedDomains, "robotics"],
+    };
+    const launchedRobotFleet = {
+      ...roboticsReady,
+      activeProducts: ["warehouse_robot_fleet"],
+    };
+
+    expect(getBoundarylessExpansionGoals(initial).find((goal) => goal.domainId === "robotics")).toMatchObject({
+      status: "locked",
+      progressPercent: 0,
+    });
+    expect(getBoundarylessExpansionGoals(roboticsReady).find((goal) => goal.domainId === "robotics")).toMatchObject({
+      status: "unlocked",
+      progressPercent: 50,
+      nextProductId: "warehouse_robot_fleet",
+    });
+    expect(getBoundarylessExpansionGoals(launchedRobotFleet).find((goal) => goal.domainId === "robotics")).toMatchObject({
+      status: "launched",
+      progressPercent: 100,
+    });
   });
 });

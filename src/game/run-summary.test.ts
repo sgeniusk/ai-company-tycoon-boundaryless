@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { getRunSummary } from "./run-summary";
 import { runTenMinuteAlphaSimulation } from "./run-simulator";
 import { createInitialState } from "./simulation";
@@ -142,5 +143,39 @@ describe("v0.11 commercial run summary", () => {
     expect(preview.openingMoves).toHaveLength(3);
     expect(preview.openingMoves[0]).toContain(result.summary.spotlight.bestProduct?.name ?? "");
     expect(preview.unlockOptions.length).toBeGreaterThan(0);
+  });
+
+  it("records the 10-year campaign ending in roguelite run history", () => {
+    const initial = createInitialState();
+    const finished = {
+      ...initial,
+      month: 120,
+      status: "success" as const,
+      activeProducts: [
+        "ai_writing_assistant",
+        "meeting_summary_bot",
+        "customer_support_agent",
+        "foundation_model_api",
+        "robotics_control_os",
+      ],
+      unlockedDomains: ["personal_productivity", "customer_support", "foundation_models", "robotics", "mobility"],
+      resources: {
+        ...initial.resources,
+        cash: 250000,
+        users: 180000,
+        trust: 92,
+        automation: 70,
+      },
+    };
+
+    const nextRun = resetRunWithMetaUnlocks(finished);
+
+    expect(nextRun.roguelite.runHistory[0]).toMatchObject({
+      runNumber: 1,
+      campaignRank: "S",
+      survivedYears: 10,
+    });
+    expect(nextRun.roguelite.runHistory[0].endingName).toContain("AI");
+    expect(nextRun.roguelite.runHistory[0].note).toContain("10년");
   });
 });

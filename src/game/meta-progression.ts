@@ -1,4 +1,5 @@
 import { competitors, metaUnlocks, products, resources, strategyCards } from "./data";
+import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
 import type { ActionCheck, GameState, MetaUnlockDefinition, ResourceMap, RunRecord } from "./types";
@@ -96,6 +97,7 @@ function createRunRecord(state: GameState, insightReward: number): RunRecord {
   const bestProduct = getBestReviewedProduct(state);
   const representativeCard = getRepresentativeCard(state);
   const rival = getStrongestRival(state);
+  const campaignFinale = state.month >= CAMPAIGN_FINAL_MONTH ? getCampaignFinale(state) : undefined;
 
   return {
     id: `run_${state.roguelite.runNumber}_${state.month}`,
@@ -103,11 +105,14 @@ function createRunRecord(state: GameState, insightReward: number): RunRecord {
     endedMonth: state.month,
     status: state.status,
     score: estimateRecordScore(state),
+    campaignRank: campaignFinale?.rank,
+    endingName: campaignFinale?.endingName,
+    survivedYears: campaignFinale?.survivedYears,
     bestProductName: bestProduct?.name,
     representativeCardName: representativeCard?.name,
     rivalName: rival?.name,
     insightReward,
-    note: createRecordNote(state, bestProduct?.name, representativeCard?.name),
+    note: createRecordNote(state, bestProduct?.name, representativeCard?.name, campaignFinale?.endingName),
   };
 }
 
@@ -145,7 +150,8 @@ function estimateRecordScore(state: GameState): number {
   return Math.round(Math.max(0, Math.min(100, productScore + userScore + cashScore + trustScore + statusBonus)));
 }
 
-function createRecordNote(state: GameState, productName?: string, cardName?: string): string {
+function createRecordNote(state: GameState, productName?: string, cardName?: string, endingName?: string): string {
+  if (endingName) return `10년 엔딩 ${endingName}: ${productName ?? "대표 제품"}을 남기고 다음 창업 기록으로 이어진 런`;
   if (state.status === "failure") return `${productName ?? "첫 제품"}을 살리고 현금 흐름을 더 빨리 안정화해야 했던 런`;
   if (productName && cardName) return `${productName}과 ${cardName} 조합이 기억할 만했던 런`;
   if (productName) return `${productName}을 중심으로 확장을 시작한 런`;

@@ -2,7 +2,7 @@ import { agentTypes, items, officeExpansions, products } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
 import { createReleaseCardReward } from "./deckbuilding";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
-import { runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
+import { evaluateAlphaReadiness, runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
 import { advanceMonth, buyItem, buyOfficeExpansion, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
@@ -31,6 +31,7 @@ export const qaScenarioIds = [
   "foundation",
   "commercial",
   "result",
+  "readiness",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -263,6 +264,24 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "런 결과 QA",
       state: createResultRecapState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "readiness") {
+    const readiness = evaluateAlphaReadiness();
+    const campaign = runTenYearCampaignSimulation("productivity_line");
+    return {
+      id,
+      label: "v0.20 알파 준비도 QA",
+      state: {
+        ...campaign.finalState,
+        timeline: [
+          `v0.20 알파 준비도: ${readiness.pass ? "통과" : "점검 필요"} / ${readiness.score}점 / ${readiness.coveredStrategies}개 전략`,
+          ...readiness.gates.map((gate) => `${gate.id}: ${gate.status} · ${gate.detail}`),
+          ...campaign.finalState.timeline,
+        ].slice(0, 8),
+      },
       activeMenu: "company",
     };
   }

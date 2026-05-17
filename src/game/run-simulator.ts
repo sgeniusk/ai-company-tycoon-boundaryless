@@ -73,8 +73,75 @@ export interface TenYearCampaignSimulationResult extends AnnualDirectiveSimulati
   finale: ReturnType<typeof getCampaignFinale>;
 }
 
+export interface AlphaReadinessGate {
+  id: "commercial_paths" | "ten_year_campaign" | "integrity" | "ending";
+  status: "pass" | "warn" | "fail";
+  detail: string;
+}
+
+export interface AlphaReadinessReport {
+  versionTarget: "v0.20-alpha";
+  pass: boolean;
+  score: number;
+  coveredStrategies: number;
+  gates: AlphaReadinessGate[];
+  recommendations: string[];
+}
+
 export function runAllCommercialSimulations(): CommercialSimulationResult[] {
   return growthPaths.map((path) => runScriptedCommercialSimulation(path.id));
+}
+
+export function evaluateAlphaReadiness(): AlphaReadinessReport {
+  const commercialResults = runAllCommercialSimulations();
+  const campaignResult = runTenYearCampaignSimulation("productivity_line");
+  const commercialPassCount = commercialResults.filter(
+    (result) => result.integrity.ok && result.finalState.status !== "failure" && result.finalState.activeProducts.length >= 2,
+  ).length;
+  const integrityOk = commercialResults.every((result) => result.integrity.ok) && campaignResult.integrity.ok;
+  const campaignComplete = campaignResult.finalState.month >= CAMPAIGN_FINAL_MONTH && campaignResult.finalState.status !== "playing";
+  const endingGoodEnough = campaignResult.finale.rank !== "D";
+  const gates: AlphaReadinessGate[] = [
+    {
+      id: "commercial_paths",
+      status: commercialPassCount === commercialResults.length ? "pass" : commercialPassCount > 0 ? "warn" : "fail",
+      detail: `${commercialPassCount}/${commercialResults.length}개 성장 경로가 10개월 상용 루프를 통과`,
+    },
+    {
+      id: "ten_year_campaign",
+      status: campaignComplete ? "pass" : "fail",
+      detail: `10년 캠페인 ${campaignResult.finalState.month}개월차 / 연간 심사 ${campaignResult.annualReviewCount}회`,
+    },
+    {
+      id: "integrity",
+      status: integrityOk ? "pass" : "fail",
+      detail: integrityOk ? "모든 시뮬레이션 상태 무결성 통과" : "상태 무결성 오류 확인 필요",
+    },
+    {
+      id: "ending",
+      status: endingGoodEnough ? "pass" : "warn",
+      detail: `10년 엔딩 ${campaignResult.finale.rank}랭크 · ${campaignResult.finale.score}점`,
+    },
+  ];
+  const score = Math.round(
+    (commercialPassCount / Math.max(1, commercialResults.length)) * 40 +
+      (campaignComplete ? 25 : 0) +
+      (integrityOk ? 20 : 0) +
+      (endingGoodEnough ? 15 : 5),
+  );
+
+  return {
+    versionTarget: "v0.20-alpha",
+    pass: gates.every((gate) => gate.status !== "fail") && score >= 70,
+    score,
+    coveredStrategies: commercialResults.length,
+    gates,
+    recommendations: [
+      "v0.20에서는 브라우저 QA 스크린샷 세트를 갱신한다.",
+      "v0.20 이후에는 UI 패널 압축과 코드 스플리팅을 우선순위로 둔다.",
+      "경쟁사 시즌 과제의 보상/압박 수치를 플레이테스트로 재조정한다.",
+    ],
+  };
 }
 
 export function runTenMinuteAlphaSimulation(strategyId = "productivity_line"): TenMinuteAlphaSimulationResult {

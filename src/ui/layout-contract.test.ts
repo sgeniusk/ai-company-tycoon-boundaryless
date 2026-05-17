@@ -27,4 +27,10 @@ describe("v0.13.3 compact game shell layout", () => {
       "meta:log",
     ]);
   });
+
+  it("caps stage-side cards so long campaign summaries scroll instead of overlapping", () => {
+    expect(appCss).toMatch(/\.stage-side\s*>\s*article\s*{[^}]*max-height:/s);
+    expect(appCss).toMatch(/\.stage-side\s*>\s*article\s*{[^}]*overflow:\s*auto/s);
+    expect(appCss).toMatch(/\.stage-side\s*>\s*article\s*{[^}]*scrollbar-width:\s*thin/s);
+  });
 });

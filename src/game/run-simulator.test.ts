@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { growthPaths } from "./data";
-import { runAllCommercialSimulations, runAnnualDirectiveSimulation, runScriptedCommercialSimulation, runTenYearCampaignSimulation } from "./run-simulator";
+import {
+  evaluateAlphaReadiness,
+  runAllCommercialSimulations,
+  runAnnualDirectiveSimulation,
+  runScriptedCommercialSimulation,
+  runTenYearCampaignSimulation,
+} from "./run-simulator";
 
 describe("v0.11 commercial balance simulation harness", () => {
   it("runs a scripted productivity strategy through the 10-month MVP window", () => {
@@ -43,5 +49,17 @@ describe("v0.11 commercial balance simulation harness", () => {
     expect(result.milestones.some((milestone) => milestone.type === "stage")).toBe(true);
     expect(result.milestones.some((milestone) => milestone.type === "product")).toBe(true);
     expect(result.integrity.ok).toBe(true);
+  });
+
+  it("summarizes alpha readiness across commercial paths and the 10-year campaign", () => {
+    const readiness = evaluateAlphaReadiness();
+
+    expect(readiness.versionTarget).toBe("v0.20-alpha");
+    expect(readiness.coveredStrategies).toBe(growthPaths.length);
+    expect(readiness.gates.map((gate) => gate.id)).toEqual(
+      expect.arrayContaining(["commercial_paths", "ten_year_campaign", "integrity", "ending"]),
+    );
+    expect(readiness.pass).toBe(true);
+    expect(readiness.score).toBeGreaterThanOrEqual(70);
   });
 });

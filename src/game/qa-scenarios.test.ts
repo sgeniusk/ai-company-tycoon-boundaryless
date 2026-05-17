@@ -31,6 +31,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "foundation",
       "commercial",
       "result",
+      "readiness",
     ]);
   });
 
@@ -173,6 +174,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.month).toBeGreaterThanOrEqual(10);
     expect(scenario.state.productReviews).not.toEqual({});
     expect(scenario.state.roguelite.rewardHistory.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("creates a v0.20 alpha readiness scenario from the integrated harness", () => {
+    const scenario = createQaScenario("readiness");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("v0.20");
+    expect(scenario.state.timeline[0]).toContain("알파 준비도");
+    expect(scenario.state.month).toBeGreaterThanOrEqual(120);
+    expect(scenario.state.status).not.toBe("playing");
   });
 
   it("creates a 10-year finale scenario for ending QA", () => {

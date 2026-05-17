@@ -10,6 +10,7 @@ import {
   getCurrentAnnualReview,
 } from "../game/annual-review";
 import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
+import { getBoundarylessExpansionGoals } from "../game/boundaryless-expansion";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
@@ -774,6 +775,11 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             {gameState.roguelite.runHistory.slice(0, 4).map((record) => (
               <article key={record.id}>
                 <strong>런 {record.runNumber} · {record.endedMonth}개월차 · {record.score}점</strong>
+                {record.endingName && (
+                  <span>
+                    10년 엔딩 {record.campaignRank} · {record.endingName} · {record.survivedYears}년 생존
+                  </span>
+                )}
                 <span>
                   {record.bestProductName ?? "출시 제품 없음"}
                   {record.representativeCardName ? ` / ${record.representativeCardName}` : ""}
@@ -847,6 +853,7 @@ function ProductsPanel({
   const defaultSelectedAgentIds = availableAgents.slice(0, 3).map((agent) => agent.id);
   const expansionDomainIds = ["foundation_models", "semiconductors", "mobility", "robotics", "odd_industries", "toys"];
   const unlockedDomainIds = new Set(gameState.unlockedDomains);
+  const boundarylessGoals = getBoundarylessExpansionGoals(gameState);
   const domainFilters = getProductDomainFilters(products, domains, gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "products");
   const filteredProducts = prioritizeAnnualStrategyFocus(
@@ -902,6 +909,22 @@ function ProductsPanel({
             </article>
           );
         })}
+      </div>
+      <div className="boundaryless-goal-panel">
+        <div className="panel-heading compact-heading">
+          <h3>경계 확장 목표</h3>
+          <p>AI 모델 회사가 물리 산업과 엉뚱한 소비 산업까지 넘어가는 장기 목표입니다.</p>
+        </div>
+        <div className="boundaryless-goal-grid">
+          {boundarylessGoals.map((goal) => (
+            <article className={`goal-${goal.status}`} key={goal.domainId}>
+              <strong>{goal.domainName} · {boundarylessStatusLabel(goal.status)}</strong>
+              <span>{goal.nextProductName ? `다음: ${goal.nextProductName}` : "제품 출시 완료"}</span>
+              <small>{goal.payoff}</small>
+              <i style={{ width: `${goal.progressPercent}%` }} />
+            </article>
+          ))}
+        </div>
       </div>
       {!gameState.hiredAgents.length && <p className="empty-note">먼저 에이전트 메뉴에서 첫 에이전트를 고용하면 제품 개발을 시작할 수 있습니다.</p>}
       <div className="domain-filter" aria-label="제품 산업 필터">
@@ -1808,6 +1831,12 @@ function formatCapabilityNames(capabilityIds: string[], max = 3): string {
     .map((capabilityId) => capabilities.find((capability) => capability.id === capabilityId)?.name)
     .filter((name): name is string => Boolean(name));
   return names.length ? names.join(", ") : "없음";
+}
+
+function boundarylessStatusLabel(status: "locked" | "unlocked" | "launched"): string {
+  if (status === "launched") return "출시 완료";
+  if (status === "unlocked") return "진출 가능";
+  return "잠김";
 }
 
 function TimelinePanel({ gameState }: { gameState: GameState }) {
