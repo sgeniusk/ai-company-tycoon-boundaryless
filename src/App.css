@@ -1997,6 +1997,7 @@ p {
 .annual-review-panel,
 .foundation-panel,
 .location-panel,
+.recruitment-channel-panel,
 .team-ops-summary,
 .workforce-synergy-panel {
   background: #fff7df;
@@ -2012,7 +2013,8 @@ p {
 .season-brief-panel h3,
 .annual-review-panel h3,
 .foundation-panel h3,
-.location-panel h3 {
+.location-panel h3,
+.recruitment-channel-panel h3 {
   color: var(--green-dark);
   margin-bottom: 2px;
 }
@@ -2024,6 +2026,7 @@ p {
 .foundation-panel span,
 .location-card span,
 .location-card small,
+.recruitment-channel-panel span,
 .team-ops-summary span,
 .workforce-synergy-panel span {
   color: #5f5546;
@@ -2035,6 +2038,65 @@ p {
 .workforce-synergy-panel {
   background: #eef7ff;
   border-color: #9cb8d6;
+}
+
+.recruitment-channel-panel {
+  background: #f4fbec;
+  border-color: #9fbe72;
+  display: grid;
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+.recruitment-channel-buttons {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.recruitment-channel-button {
+  background: #fffdf7;
+  border: 2px solid #cbb98f;
+  color: #3f3524;
+  display: grid;
+  gap: 3px;
+  min-height: 48px;
+  padding: 7px;
+  text-align: left;
+}
+
+.recruitment-channel-button.selected {
+  background: #315d42;
+  border-color: #244a33;
+  color: #fffaf0;
+}
+
+.recruitment-channel-button span {
+  color: inherit;
+  font-size: 0.66rem;
+}
+
+.contract-summary,
+.contract-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.contract-badge {
+  background: #fffdf7;
+  border: 1px solid #cbb98f;
+  color: #3f3524;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.2;
+  padding: 5px 6px;
+}
+
+.contract-badge.risk {
+  background: #fff0d9;
+  border-color: #c99c55;
+  color: #6b431b;
 }
 
 .season-brief-panel {
@@ -3259,6 +3321,10 @@ p {
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.agent-grid {
+  grid-template-columns: 1fr;
 }
 
 .agent-card,

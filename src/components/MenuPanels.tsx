@@ -66,9 +66,8 @@ import {
   buyUpgrade,
   equipItem,
   formatResource,
-  getAgentHireCost,
   getAgentEffectiveStats,
-  getAgentHireCheck,
+  getAgentHireCheckForChannel,
   getAiAgentCount,
   getAiOperationCapacity,
   getAutomationUpgradeCheck,
@@ -96,12 +95,14 @@ import {
   getProductRenewalProjectCheck,
   getProductUpgradeCheck,
   getProductUpgradeCost,
+  getRecruitmentOffer,
   getUpgradeCheck,
   getWorkforceSynergySummary,
   getRelocationCheck,
-  hireAgent,
+  hireAgentViaChannel,
   buyOfficeExpansion,
   placeOfficeItem,
+  recruitmentChannels,
   relocateCompany,
   startProductConceptProject,
   startProductProject,
@@ -109,6 +110,8 @@ import {
   unplaceOfficeItem,
   upgradeCapability,
   upgradeProduct,
+  type RecruitmentOffer,
+  type RecruitmentChannelId,
 } from "../game/simulation";
 import type {
   AgentSpriteDefinition,
@@ -1282,11 +1285,13 @@ function ProductsPanel({
 
 function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
   const [kindFilter, setKindFilter] = useState<"all" | AgentKind>("all");
+  const [recruitmentChannelId, setRecruitmentChannelId] = useState<RecruitmentChannelId>("open_recruiting");
   const agentRows = getAgentContentRows(gameState);
   const recommendations = getFoundationRecommendations(gameState, 4);
   const phase = getCampaignContentPhase(gameState);
   const filteredAgentRows = agentRows.filter((row) => kindFilter === "all" || row.kind === kindFilter);
   const workforceSynergySummary = getWorkforceSynergySummary(gameState);
+  const selectedRecruitmentChannel = recruitmentChannels.find((channel) => channel.id === recruitmentChannelId) ?? recruitmentChannels[0];
   const ownedAgentItems = items.filter(
     (item) =>
       item.target === "agent" &&
@@ -1353,6 +1358,33 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
           <h2>에이전트 도감</h2>
           <p>능력치, 역할, 픽셀아트 외형 키워드를 기준으로 영입합니다.</p>
         </div>
+        <div className="recruitment-channel-panel">
+          <div>
+            <p className="eyebrow">채용 방식</p>
+            <h3>{selectedRecruitmentChannel.label}</h3>
+            <span>{selectedRecruitmentChannel.description}</span>
+          </div>
+          <div className="recruitment-channel-buttons" role="tablist" aria-label="채용 방식 선택">
+            {recruitmentChannels.map((channel) => (
+              <button
+                aria-selected={recruitmentChannelId === channel.id}
+                className={`recruitment-channel-button${recruitmentChannelId === channel.id ? " selected" : ""}`}
+                key={channel.id}
+                onClick={() => setRecruitmentChannelId(channel.id)}
+                type="button"
+              >
+                <strong>{channel.label}</strong>
+                <span>계약 {channel.qualityLabel}</span>
+              </button>
+            ))}
+          </div>
+          <div className="contract-summary">
+            <span className="contract-badge">채용비 x{selectedRecruitmentChannel.costMultiplier}</span>
+            <span className="contract-badge">연봉 x{selectedRecruitmentChannel.upkeepMultiplier}</span>
+            <span className="contract-badge">능력 +{selectedRecruitmentChannel.statBonus}</span>
+            <span className="contract-badge risk">{selectedRecruitmentChannel.riskLabel}</span>
+          </div>
+        </div>
         <div className="content-filter" role="tablist" aria-label="고용 후보 필터">
           {[
             ["all", "전체"],
@@ -1373,7 +1405,8 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
         </div>
         <div className="agent-grid">
           {filteredAgentRows.map((row) => {
-            const check = getAgentHireCheck(row.agent, gameState);
+            const check = getAgentHireCheckForChannel(row.agent, gameState, recruitmentChannelId);
+            const offer = getRecruitmentOffer(row.agent, gameState, recruitmentChannelId);
             const isHired = gameState.hiredAgents.some((hiredAgent) => hiredAgent.typeId === row.agent.id);
 
             return (
@@ -1381,10 +1414,10 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
                 agent={row.agent}
                 check={check}
                 contentRow={row}
+                offer={offer}
                 isHired={isHired}
                 key={row.agent.id}
-                onHire={() => setGameState((current) => hireAgent(row.agent, current))}
-                hireCostLabel={formatCost(getAgentHireCost(row.agent, gameState))}
+                onHire={() => setGameState((current) => hireAgentViaChannel(row.agent, current, recruitmentChannelId))}
               />
             );
           })}
@@ -1413,6 +1446,8 @@ function HiredAgentCard({
     ? getAvailableProductDefinitions(gameState).find((product) => product.id === assignedProject.productId)
     : undefined;
   const agentSprite = getAgentSprite(agentType?.id);
+  const recruitmentChannel = recruitmentChannels.find((channel) => channel.id === agent.recruitmentChannelId);
+  const contractUpkeep = agent.upkeep ?? agentType?.upkeep ?? {};
 
   return (
     <article className="hired-card">
@@ -1443,6 +1478,12 @@ function HiredAgentCard({
         <span>Lv.{agent.level}</span>
         <span>체력 {agent.energy}</span>
         <span>장착 {equippedItems.length}/2</span>
+        <span>{recruitmentChannel?.label ?? "기본 계약"}</span>
+      </div>
+      <div className="contract-row">
+        <span className="contract-badge">월 유지 {formatCost(contractUpkeep)}</span>
+        {agent.qualityLabel && <span className="contract-badge">{agent.qualityLabel}</span>}
+        {agent.riskLabel && <span className="contract-badge risk">{agent.riskLabel}</span>}
       </div>
       <div className="equip-row">
         {equippedItems.length ? (
@@ -1477,14 +1518,14 @@ function AgentCard({
   agent,
   check,
   contentRow,
-  hireCostLabel,
+  offer,
   isHired,
   onHire,
 }: {
   agent: AgentTypeDefinition;
   check: { ok: boolean; reasons: string[] };
   contentRow: AgentContentRow;
-  hireCostLabel: string;
+  offer: RecruitmentOffer;
   isHired: boolean;
   onHire: () => void;
 }) {
@@ -1509,8 +1550,13 @@ function AgentCard({
         </div>
       </div>
       {contentRow.recommended && <div className="recommendation-badge">{contentRow.recommendationReason}</div>}
+      <div className="contract-row">
+        <span className="contract-badge">{offer.channel.label}</span>
+        <span className="contract-badge">{offer.qualityLabel}</span>
+        <span className="contract-badge risk">{offer.riskLabel}</span>
+      </div>
       <div className="stat-grid">
-        {Object.entries(agent.stats).map(([stat, value]) => (
+        {Object.entries(offer.adjustedStats).map(([stat, value]) => (
           <span key={stat}>
             {statLabel(stat)} <strong>{value}</strong>
           </span>
@@ -1525,7 +1571,7 @@ function AgentCard({
       </div>
       <p className="agent-quirk">{agent.quirk}</p>
       <div className="item-footer">
-        <span>영입 비용 {hireCostLabel} / 유지 {formatCost(agent.upkeep)}</span>
+        <span>영입 비용 {formatCost(offer.hireCost)} / 월 유지 {formatCost(offer.upkeep)}</span>
         <button disabled={!check.ok || isHired} onClick={onHire}>
           {isHired ? "고용됨" : "고용"}
         </button>

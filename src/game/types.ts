@@ -866,6 +866,12 @@ export interface HiredAgent {
   level: number;
   energy: number;
   equippedItemIds: string[];
+  recruitmentChannelId?: string;
+  salaryMultiplier?: number;
+  statBonus?: number;
+  upkeep?: ResourceMap;
+  qualityLabel?: string;
+  riskLabel?: string;
   assignment?: string;
 }
 

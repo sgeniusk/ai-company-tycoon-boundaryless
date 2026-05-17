@@ -90,6 +90,63 @@ const statKeys: Array<keyof AgentStats> = [
   "autonomy",
 ];
 
+export type RecruitmentChannelId = "open_recruiting" | "career_recruiting" | "headhunter";
+
+export interface RecruitmentChannelDefinition {
+  id: RecruitmentChannelId;
+  label: string;
+  description: string;
+  costMultiplier: number;
+  upkeepMultiplier: number;
+  statBonus: number;
+  qualityLabel: string;
+  riskLabel: string;
+}
+
+export interface RecruitmentOffer {
+  agent: AgentTypeDefinition;
+  channel: RecruitmentChannelDefinition;
+  adjustedStats: AgentStats;
+  hireCost: ResourceMap;
+  upkeep: ResourceMap;
+  qualityLabel: string;
+  riskLabel: string;
+  recommendationReason: string;
+}
+
+export const recruitmentChannels: RecruitmentChannelDefinition[] = [
+  {
+    id: "open_recruiting",
+    label: "공채",
+    description: "지역 인재풀을 기반으로 저렴하게 채용합니다. 초반 인원 확장에 유리하지만 능력치 보정은 없습니다.",
+    costMultiplier: 1,
+    upkeepMultiplier: 0.95,
+    statBonus: 0,
+    qualityLabel: "지역 인재풀",
+    riskLabel: "품질 편차 낮음",
+  },
+  {
+    id: "career_recruiting",
+    label: "경력 채용",
+    description: "연봉을 높여 실무형 후보를 끌어옵니다. 채용비와 유지비가 늘지만 즉시 전력감입니다.",
+    costMultiplier: 1.55,
+    upkeepMultiplier: 1.35,
+    statBonus: 1,
+    qualityLabel: "실무 검증",
+    riskLabel: "연봉 압박",
+  },
+  {
+    id: "headhunter",
+    label: "헤드헌터",
+    description: "수수료를 크게 써서 상위권 후보를 찾습니다. 강력하지만 고정비와 검증 리스크가 큽니다.",
+    costMultiplier: 2.25,
+    upkeepMultiplier: 1.75,
+    statBonus: 2,
+    qualityLabel: "핵심 인재 후보",
+    riskLabel: "검증 필요",
+  },
+];
+
 const formatMoney = (value: number) =>
   new Intl.NumberFormat("ko-KR", {
     style: "currency",
@@ -242,9 +299,18 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
   });
 }
 
+export function getRecruitmentChannel(channelId: RecruitmentChannelId): RecruitmentChannelDefinition {
+  return recruitmentChannels.find((channel) => channel.id === channelId) ?? recruitmentChannels[0];
+}
+
 export function getAgentHireCheck(agent: AgentTypeDefinition, state: GameState): ActionCheck {
+  return getAgentHireCheckForChannel(agent, state, "open_recruiting");
+}
+
+export function getAgentHireCheckForChannel(agent: AgentTypeDefinition, state: GameState, channelId: RecruitmentChannelId): ActionCheck {
   const reasons = getRequirementReasons(agent.unlock_requirements, state);
   const hireCapacity = getOfficeHireCapacity(state);
+  const channel = getRecruitmentChannel(channelId);
 
   if (state.hiredAgents.some((hiredAgent) => hiredAgent.typeId === agent.id)) {
     reasons.push("이미 고용한 에이전트입니다.");
@@ -256,22 +322,77 @@ export function getAgentHireCheck(agent: AgentTypeDefinition, state: GameState):
     reasons.push(`사람 직원 운용력이 부족합니다. 현재 AI 운용 한도 ${getAiOperationCapacity(state)}개입니다.`);
   }
 
-  appendCostReasons(reasons, getAgentHireCost(agent, state), state);
+  if (channel.id === "headhunter" && getCompanyStarRating(state) < 2 && getAgentKind(agent) !== "human") {
+    reasons.push("2성 회사부터 AI·로봇 헤드헌터 의뢰가 가능합니다.");
+  }
+
+  appendCostReasons(reasons, getAgentHireCostForChannel(agent, state, channel.id), state);
 
   return { ok: reasons.length === 0, reasons };
 }
 
 export function getAgentHireCost(agent: AgentTypeDefinition, state: GameState): ResourceMap {
-  if (getAgentKind(agent) !== "human") return agent.hire_cost;
+  return getAgentHireCostForChannel(agent, state, "open_recruiting");
+}
 
+export function getAgentHireCostForChannel(agent: AgentTypeDefinition, state: GameState, channelId: RecruitmentChannelId): ResourceMap {
+  const channel = getRecruitmentChannel(channelId);
+  const baseCost = channel.id === "open_recruiting" && getAgentKind(agent) === "human"
+    ? applyHumanLocationHireModifier(agent.hire_cost, state)
+    : agent.hire_cost;
+
+  return scaleResourceMap(baseCost, channel.costMultiplier);
+}
+
+export function getAgentUpkeepForChannel(agent: AgentTypeDefinition, channelId: RecruitmentChannelId): ResourceMap {
+  return scaleResourceMap(agent.upkeep, getRecruitmentChannel(channelId).upkeepMultiplier);
+}
+
+export function getAgentStatsForChannel(agent: AgentTypeDefinition, channelId: RecruitmentChannelId): AgentStats {
+  const channel = getRecruitmentChannel(channelId);
+  if (channel.statBonus <= 0) return { ...agent.stats };
+
+  return addStats(agent.stats, Object.fromEntries(statKeys.map((stat) => [stat, channel.statBonus])));
+}
+
+export function getRecruitmentOffer(agent: AgentTypeDefinition, state: GameState, channelId: RecruitmentChannelId): RecruitmentOffer {
+  const channel = getRecruitmentChannel(channelId);
   const location = getCurrentLocation(state);
-  const multiplier = Math.max(0.5, 1 - location.human_hire_discount);
-  return Object.fromEntries(
-    Object.entries(agent.hire_cost).map(([resourceId, amount]) => [
-      resourceId,
-      resourceId === "cash" ? Math.round(amount * multiplier) : amount,
-    ]),
-  );
+  const kind = getAgentKind(agent);
+  const locationHint =
+    kind === "human" && channel.id === "open_recruiting"
+      ? `${location.region} ${location.talent_pool}`
+      : channel.id === "headhunter"
+        ? "비공개 후보 검증 필요"
+        : "즉시 전력 후보";
+
+  return {
+    agent,
+    channel,
+    adjustedStats: getAgentStatsForChannel(agent, channel.id),
+    hireCost: getAgentHireCostForChannel(agent, state, channel.id),
+    upkeep: getAgentUpkeepForChannel(agent, channel.id),
+    qualityLabel: channel.qualityLabel,
+    riskLabel: channel.riskLabel,
+    recommendationReason: locationHint,
+  };
+}
+
+export function getHiredAgentMonthlyUpkeep(agent: HiredAgent): ResourceMap {
+  if (agent.upkeep) return agent.upkeep;
+
+  const type = agentTypes.find((entry) => entry.id === agent.typeId);
+  if (!type) return {};
+
+  return scaleResourceMap(type.upkeep, agent.salaryMultiplier ?? 1);
+}
+
+export function getTeamMonthlySalaryCost(state: GameState): number {
+  const floatingTalentCount = Math.max(0, (state.resources.talent ?? 0) - state.hiredAgents.length);
+  const floatingTalentSalary = floatingTalentCount * balance.salary_per_talent;
+  const contractSalary = state.hiredAgents.reduce((total, agent) => total + (getHiredAgentMonthlyUpkeep(agent).cash ?? 0), 0);
+
+  return floatingTalentSalary + contractSalary;
 }
 
 export function getAiOperationCapacity(state: GameState): number {
@@ -727,8 +848,14 @@ export function unplaceOfficeItem(itemId: string, state: GameState): GameState {
 }
 
 export function hireAgent(agent: AgentTypeDefinition, state: GameState): GameState {
-  const check = getAgentHireCheck(agent, state);
+  return hireAgentViaChannel(agent, state, "open_recruiting");
+}
+
+export function hireAgentViaChannel(agent: AgentTypeDefinition, state: GameState, channelId: RecruitmentChannelId): GameState {
+  const channel = getRecruitmentChannel(channelId);
+  const check = getAgentHireCheckForChannel(agent, state, channel.id);
   if (!check.ok || state.status !== "playing") return state;
+  const offer = getRecruitmentOffer(agent, state, channel.id);
 
   const hiredAgent: HiredAgent = {
     id: `agent_${state.hiredAgents.length + 1}_${agent.id}`,
@@ -737,13 +864,19 @@ export function hireAgent(agent: AgentTypeDefinition, state: GameState): GameSta
     level: 1,
     energy: 100,
     equippedItemIds: [],
+    recruitmentChannelId: channel.id,
+    salaryMultiplier: channel.upkeepMultiplier,
+    statBonus: channel.statBonus,
+    upkeep: offer.upkeep,
+    qualityLabel: offer.qualityLabel,
+    riskLabel: offer.riskLabel,
   };
 
   return {
     ...state,
-    resources: applyResourceDelta(applyResourceDelta(state.resources, negateCosts(getAgentHireCost(agent, state))), { talent: 1 }),
+    resources: applyResourceDelta(applyResourceDelta(state.resources, negateCosts(offer.hireCost)), { talent: 1 }),
     hiredAgents: [...state.hiredAgents, hiredAgent],
-    timeline: [`고용 완료: ${agent.name} 합류`, ...state.timeline].slice(0, 8),
+    timeline: [`${channel.label} 고용 완료: ${agent.name} 합류 (${offer.qualityLabel})`, ...state.timeline].slice(0, 8),
   };
 }
 
@@ -1036,8 +1169,9 @@ export function getAgentEffectiveStats(agent: HiredAgent, state: GameState): Age
   const type = agentTypes.find((agentType) => agentType.id === agent.typeId);
   const baseStats = type?.stats ?? createEmptyStats();
   const equippedItems = items.filter((item) => agent.equippedItemIds.includes(item.id));
+  const contractStats = addStats(baseStats, Object.fromEntries(statKeys.map((stat) => [stat, agent.statBonus ?? 0])));
 
-  return equippedItems.reduce((stats, item) => addStats(stats, item.effects), { ...baseStats });
+  return equippedItems.reduce((stats, item) => addStats(stats, item.effects), contractStats);
 }
 
 export function getCapabilityCheck(capability: CapabilityDefinition, state: GameState): ActionCheck {
@@ -1105,7 +1239,7 @@ export function calculateMonthlyEconomy(state: GameState): MonthlyEconomy {
   const generatedData = active.reduce((sum, product) => sum + getProductMonthlyData(product, state), 0);
   const currentUsers = state.resources.users ?? 0;
   const computeCashCost = Math.ceil(((currentUsers + newUsers) / 1000) * balance.compute_cost_per_1000_users);
-  const salaryCost = (state.resources.talent ?? 0) * balance.salary_per_talent;
+  const salaryCost = getTeamMonthlySalaryCost(state);
   const automationDiscount = clamp((state.resources.automation ?? 0) * balance.automation_cost_reduction_per_point, 0, 0.75);
   const locationCostModifier = getCurrentLocation(state).monthly_cost_modifier;
   const totalCost = Math.round((balance.base_monthly_cash_cost + salaryCost + computeCashCost) * locationCostModifier * (1 - automationDiscount));
@@ -2454,6 +2588,20 @@ function getRequirementReasons(requirements: Record<string, number>, state: Game
 
 function getAgentKind(agent: AgentTypeDefinition): NonNullable<AgentTypeDefinition["kind"]> {
   return agent.kind ?? "ai_agent";
+}
+
+function applyHumanLocationHireModifier(cost: ResourceMap, state: GameState): ResourceMap {
+  const location = getCurrentLocation(state);
+  const multiplier = Math.max(0.5, 1 - location.human_hire_discount);
+
+  if (cost.cash === undefined) return { ...cost };
+  return { ...cost, cash: Math.round(cost.cash * multiplier) };
+}
+
+function scaleResourceMap(resourcesToScale: ResourceMap = {}, multiplier: number): ResourceMap {
+  return Object.fromEntries(
+    Object.entries(resourcesToScale).map(([resourceId, amount]) => [resourceId, Math.max(0, Math.round(amount * multiplier))]),
+  );
 }
 
 function appendCostReasons(reasons: string[], cost: ResourceMap = {}, state: GameState): void {

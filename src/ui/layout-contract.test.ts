@@ -216,4 +216,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.campaign-shock-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.campaign-shock-action-grid\s*{[^}]*grid-template-columns:/s);
   });
+
+  it("adds recruitment channels and contract badges to the agent console", () => {
+    expect(menuPanels).toContain("recruitment-channel-panel");
+    expect(menuPanels).toContain("recruitment-channel-button");
+    expect(menuPanels).toContain("getRecruitmentOffer");
+    expect(menuPanels).toContain("hireAgentViaChannel");
+    expect(menuPanels).toContain("getAgentHireCheckForChannel");
+    expect(appCss).toMatch(/\.recruitment-channel-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.recruitment-channel-buttons\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.contract-badge\s*{[^}]*font-weight:\s*900/s);
+    expect(appCss).toMatch(/\.agent-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
 });
