@@ -10,7 +10,8 @@ export interface StateIntegrityReport {
 export function validateGameStateIntegrity(state: GameState): StateIntegrityReport {
   const issues: string[] = [];
   const warnings: string[] = [];
-  const productIds = new Set(products.map((product) => product.id));
+  const allProducts = [...products, ...(state.generatedProducts ?? [])];
+  const productIds = new Set(allProducts.map((product) => product.id));
   const competitorIds = new Set(competitors.map((competitor) => competitor.id));
   const locationIds = new Set(companyLocations.map((location) => location.id));
   const cardIds = new Set(strategyCards.map((card) => card.id));
@@ -33,7 +34,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   }
 
   for (const [productId, level] of Object.entries(state.productLevels)) {
-    const product = products.find((entry) => entry.id === productId);
+    const product = allProducts.find((entry) => entry.id === productId);
     if (!product) {
       issues.push(`product level "${productId}" is unknown`);
     } else if (!Number.isFinite(level) || level < 1 || level > product.max_level) {

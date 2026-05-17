@@ -39,7 +39,8 @@ const challengeOrder: DevelopmentChallenge[] = ["ux", "bug", "compute", "safety"
 
 export function createDevelopmentPuzzle(projectId: string, state: GameState): DevelopmentPuzzleState {
   const project = state.productProjects.find((entry) => entry.id === projectId);
-  const product = project ? products.find((entry) => entry.id === project.productId) : undefined;
+  const availableProducts = [...products, ...(state.generatedProducts ?? [])];
+  const product = project ? availableProducts.find((entry) => entry.id === project.productId) : undefined;
   const productId = product?.id ?? project?.productId ?? "unknown_product";
   const tagPressure = product?.tags.length ?? 1;
   const activeModifiers = getActivePuzzleModifiers(projectId, state);

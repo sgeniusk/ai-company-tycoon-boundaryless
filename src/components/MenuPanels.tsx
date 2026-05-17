@@ -71,6 +71,7 @@ import {
   getAiAgentCount,
   getAiOperationCapacity,
   getAutomationUpgradeCheck,
+  getAvailableProductDefinitions,
   getCapabilityCheck,
   getCompanyStage,
   getEquipItemCheck,
@@ -86,8 +87,11 @@ import {
   getPlacedOfficeItems,
   getPlaceOfficeItemCheck,
   getProductLevel,
+  getProductConceptProjectCheck,
   getProductProjectForecast,
   getProductProjectCheck,
+  getProductRenewalCost,
+  getProductRenewalProjectCheck,
   getProductUpgradeCheck,
   getProductUpgradeCost,
   getUpgradeCheck,
@@ -97,7 +101,9 @@ import {
   buyOfficeExpansion,
   placeOfficeItem,
   relocateCompany,
+  startProductConceptProject,
   startProductProject,
+  startProductRenewalProject,
   unplaceOfficeItem,
   upgradeCapability,
   upgradeProduct,
@@ -501,7 +507,8 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const rewardBiasSummary = getAnnualDirectiveRewardBiasSummary(gameState);
   const upgradedCardIds = new Set(gameState.roguelite.upgradedCardIds);
   const activeProject = gameState.productProjects[0];
-  const activeProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
+  const availableProducts = getAvailableProductDefinitions(gameState);
+  const activeProduct = activeProject ? availableProducts.find((product) => product.id === activeProject.productId) : undefined;
   const puzzle = activeProject ? createDevelopmentPuzzle(activeProject.id, gameState) : undefined;
   const projectedInsight = gameState.roguelite.founderInsight + getRunInsightReward(gameState);
   const latestRunRecord = gameState.roguelite.runHistory[0];
@@ -863,19 +870,21 @@ function ProductsPanel({
   const [selectedIdeaOptionId, setSelectedIdeaOptionId] = useState(productIdeaBoldOptions[0]?.id ?? "");
   const availableAgents = gameState.hiredAgents.filter((agent) => !agent.assignment);
   const defaultSelectedAgentIds = availableAgents.slice(0, 3).map((agent) => agent.id);
+  const availableProducts = getAvailableProductDefinitions(gameState);
   const expansionDomainIds = ["foundation_models", "semiconductors", "mobility", "robotics", "odd_industries", "toys"];
   const unlockedDomainIds = new Set(gameState.unlockedDomains);
   const boundarylessGoals = getBoundarylessExpansionGoals(gameState);
-  const domainFilters = getProductDomainFilters(products, domains, gameState);
+  const domainFilters = getProductDomainFilters(availableProducts, domains, gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "products");
   const ideaCoverage = getProductIdeaCoverage();
   const selectedConcept = createProductConcept(selectedIdeaSubjectId, selectedIdeaTypeId, selectedIdeaOptionId);
-  const renewalProducts = products.filter((product) => gameState.activeProducts.includes(product.id)).slice(0, 3);
+  const conceptCheck = getProductConceptProjectCheck(selectedConcept, gameState, defaultSelectedAgentIds);
+  const renewalProducts = availableProducts.filter((product) => gameState.activeProducts.includes(product.id)).slice(0, 3);
   const filteredProducts = prioritizeAnnualStrategyFocus(
-    getProductsByDomainFilter(products, selectedDomainFilterId).map((product) => product.id),
+    getProductsByDomainFilter(availableProducts, selectedDomainFilterId).map((product) => product.id),
     strategyFocus,
   )
-    .map((productId) => products.find((product) => product.id === productId))
+    .map((productId) => availableProducts.find((product) => product.id === productId))
     .filter((product): product is NonNullable<typeof product> => Boolean(product));
   const selectedFilter = domainFilters.find((filter) => filter.id === selectedDomainFilterId) ?? domainFilters[0];
   const getSelectedAgentIds = (productId: string) => {
@@ -959,6 +968,20 @@ function ProductsPanel({
             {selectedConcept.strengths.slice(0, 4).map((strength) => <span key={strength}>강점 {strength}</span>)}
             {selectedConcept.risks.slice(0, 3).map((risk) => <span className="risk" key={risk}>위험 {risk}</span>)}
           </div>
+          <div className="idea-action-row">
+            <button
+              disabled={!conceptCheck.ok || gameState.status !== "playing"}
+              onClick={() => setGameState((current) => startProductConceptProject(selectedConcept, current, defaultSelectedAgentIds))}
+              type="button"
+            >
+              조합 개발 시작
+            </button>
+            <small>
+              {conceptCheck.ok
+                ? `투입 예정 ${defaultSelectedAgentIds.length}명 · 출시 후 제품 목록에 등록`
+                : conceptCheck.reasons.join(" / ")}
+            </small>
+          </div>
         </article>
       </div>
       <div className="renewal-option-panel">
@@ -969,14 +992,32 @@ function ProductsPanel({
         {renewalProducts.length ? (
           <div className="renewal-option-grid">
             {renewalProducts.flatMap((product) =>
-              getRenewalReleaseOptions(product, getProductLevel(product.id, gameState) + 1).map((option) => (
-                <article key={`${product.id}-${option.id}`}>
-                  <p className="item-meta">{product.name}</p>
-                  <strong>{option.releaseName}</strong>
-                  <span>{option.description}</span>
-                  <small>{option.effects.join(" / ")}</small>
-                </article>
-              )),
+              getRenewalReleaseOptions(product, getProductLevel(product.id, gameState) + 1).map((option) => {
+                const renewalCheck = getProductRenewalProjectCheck(product, option.id, gameState, defaultSelectedAgentIds);
+
+                return (
+                  <article key={`${product.id}-${option.id}`}>
+                    <p className="item-meta">{product.name}</p>
+                    <strong>{option.releaseName}</strong>
+                    <span>{option.description}</span>
+                    <small>{option.effects.join(" / ")}</small>
+                    <div className="idea-action-row">
+                      <button
+                        disabled={!renewalCheck.ok || gameState.status !== "playing"}
+                        onClick={() => setGameState((current) => startProductRenewalProject(product, option.id, current, defaultSelectedAgentIds))}
+                        type="button"
+                      >
+                        리뉴얼 개발
+                      </button>
+                      <small>
+                        {renewalCheck.ok
+                          ? `비용 ${formatCost(getProductRenewalCost(product, gameState))}`
+                          : renewalCheck.reasons.join(" / ")}
+                      </small>
+                    </div>
+                  </article>
+                );
+              }),
             )}
           </div>
         ) : (
@@ -987,7 +1028,7 @@ function ProductsPanel({
         {expansionDomainIds.map((domainId) => {
           const domain = domains.find((entry) => entry.id === domainId);
           if (!domain) return null;
-          const domainProducts = products.filter((product) => product.domain === domain.id);
+          const domainProducts = availableProducts.filter((product) => product.domain === domain.id);
           const unlocked = unlockedDomainIds.has(domain.id);
 
           return (
@@ -1282,7 +1323,9 @@ function HiredAgentCard({
   const stats = getAgentEffectiveStats(agent, gameState);
   const equippedItems = items.filter((item) => agent.equippedItemIds.includes(item.id));
   const assignedProject = gameState.productProjects.find((project) => project.id === agent.assignment);
-  const assignedProduct = assignedProject ? products.find((product) => product.id === assignedProject.productId) : undefined;
+  const assignedProduct = assignedProject
+    ? getAvailableProductDefinitions(gameState).find((product) => product.id === assignedProject.productId)
+    : undefined;
   const agentSprite = getAgentSprite(agentType?.id);
 
   return (

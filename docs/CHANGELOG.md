@@ -4,6 +4,26 @@
 
 ---
 
+## [0.28-alpha] — 2026-05-17
+
+### 조합형 제품과 리뉴얼의 실제 개발 루프 연결
+
+**추가:**
+- 아이디어 조합실 결과를 실제 `ProductDefinition`으로 변환해 개발 프로젝트를 시작할 수 있게 했다.
+- 조합형 제품은 출시 전에는 개발 프로젝트로만 존재하고, 완성 후 정식 활성 제품/리뷰/카드 보상/월간 경제에 포함된다.
+- 출시한 기존 제품은 `메이저 업데이트`, `리뉴얼 출시`, `파생 제품` 후보 중 하나를 골라 리뉴얼 개발 프로젝트로 진행할 수 있다.
+- 리뉴얼 프로젝트는 즉시 레벨업이 아니라 개발 기간을 거친 뒤 `AI 글쓰기 비서 v2` 같은 출시명으로 시장 반응을 만든다.
+- 생성 제품 저장/불러오기 호환을 위해 세이브 버전을 8로 올리고 `generatedProducts`를 정식 상태에 추가했다.
+- 제품 메뉴, 사무실 HUD, 덱 퍼즐, 런 요약, 출시 충격 패널이 생성 제품을 정식 제품처럼 읽도록 연결했다.
+
+**검증:**
+- `npm test -- src/game/product-concept-projects.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 18 tests
+- `npm run validate:data` 통과
+- `npm run harness:gate` 통과, 32 files / 205 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://172.20.10.3:5180/?scenario=launch-impact&menu=products` 데스크톱/모바일 렌더링 확인
+
+---
+
 ## [0.27-alpha] — 2026-05-17
 
 ### 제품 아이디어 조합실과 리뉴얼 출시 기반

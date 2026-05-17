@@ -169,9 +169,10 @@ function getRunSpotlight(state: GameState, rank: RunRank): RunSpotlight {
 }
 
 function getBestProduct(state: GameState): RunSpotlightProduct | undefined {
+  const availableProducts = [...products, ...(state.generatedProducts ?? [])];
   const reviewedProducts = Object.entries(state.productReviews)
     .map(([productId, review]) => {
-      const product = products.find((entry) => entry.id === productId);
+      const product = availableProducts.find((entry) => entry.id === productId);
       const domain = product ? domains.find((entry) => entry.id === product.domain) : undefined;
 
       return {
@@ -188,7 +189,7 @@ function getBestProduct(state: GameState): RunSpotlightProduct | undefined {
   if (reviewedProducts[0]) return reviewedProducts[0];
 
   if (state.lastRelease) {
-    const product = products.find((entry) => entry.id === state.lastRelease?.productId);
+    const product = availableProducts.find((entry) => entry.id === state.lastRelease?.productId);
     const domain = product ? domains.find((entry) => entry.id === product.domain) : undefined;
     return {
       id: state.lastRelease.productId,
@@ -234,7 +235,7 @@ function getRivalPressure(state: GameState, bestProductId?: string): RunSpotligh
 
   if (!strongestRival || !definition) return undefined;
 
-  const claimedProduct = products.find((product) => strongestRival.claimedProducts.includes(product.id));
+  const claimedProduct = [...products, ...(state.generatedProducts ?? [])].find((product) => strongestRival.claimedProducts.includes(product.id));
   const move = claimedProduct ? `${claimedProduct.name} 선점` : strongestRival.lastMove;
 
   return {

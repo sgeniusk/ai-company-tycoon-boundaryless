@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
-import { agentTypes, assetManifest, domains, products, resources } from "../game/data";
+import { agentTypes, assetManifest, domains, resources } from "../game/data";
 import {
   getFirstTenMinutePlan,
   getFirstTenMinuteProgress,
@@ -20,6 +20,7 @@ import {
   formatResource,
   getCompanyStage,
   getAiOperationCapacity,
+  getAvailableProductDefinitions,
   getOfficeDecorationSlots,
   getOfficeExpansion,
   getOfficeHireCapacity,
@@ -127,9 +128,10 @@ export function GameStage({
   const openingObjectives = getOpeningObjectives(gameState);
   const firstTenMinutePlan = getFirstTenMinutePlan(gameState);
   const firstTenMinuteProgress = getFirstTenMinuteProgress(gameState);
-  const activeProducts = products.filter((product) => gameState.activeProducts.includes(product.id));
+  const availableProducts = getAvailableProductDefinitions(gameState);
+  const activeProducts = availableProducts.filter((product) => gameState.activeProducts.includes(product.id));
   const activeProject = gameState.productProjects[0];
-  const activeProjectProduct = activeProject ? products.find((product) => product.id === activeProject.productId) : undefined;
+  const activeProjectProduct = activeProject ? availableProducts.find((product) => product.id === activeProject.productId) : undefined;
   const officeExpansion = getOfficeExpansion(gameState);
   const placedOfficeItems = getPlacedOfficeItems(gameState);
   const placedOfficeItemIds = new Set(placedOfficeItems.map((item) => item.id));
@@ -664,7 +666,7 @@ export function CommandRow({
   onSave: () => void;
   onLoad: () => void;
 }) {
-  const activeProducts = products.filter((product) => gameState.activeProducts.includes(product.id));
+  const activeProducts = getAvailableProductDefinitions(gameState).filter((product) => gameState.activeProducts.includes(product.id));
 
   return (
     <section className="command-row" aria-label="주요 명령">

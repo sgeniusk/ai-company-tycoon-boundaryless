@@ -121,7 +121,7 @@ function getBestReviewedProduct(state: GameState) {
     .sort(([, first], [, second]) => second.score - first.score)[0]?.[0];
   const productId = reviewedProductId ?? state.lastRelease?.productId ?? state.activeProducts[0];
 
-  return products.find((product) => product.id === productId);
+  return [...products, ...(state.generatedProducts ?? [])].find((product) => product.id === productId);
 }
 
 function getRepresentativeCard(state: GameState) {

@@ -41,7 +41,7 @@ export function getReleaseImpactSummary(state: GameState): ReleaseImpactSummary 
   const release = state.lastRelease;
   if (!release) return undefined;
 
-  const product = products.find((entry) => entry.id === release.productId);
+  const product = [...products, ...(state.generatedProducts ?? [])].find((entry) => entry.id === release.productId);
   const cardInfluences = getReleaseCardInfluences(state);
   const pendingRewardCount = state.roguelite.pendingCardReward?.offeredCardIds.length ?? 0;
   const isFirstLaunch = state.activeProducts.length <= 1;

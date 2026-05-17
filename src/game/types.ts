@@ -736,6 +736,9 @@ export interface HiredAgent {
 export interface ProductProject {
   id: string;
   productId: string;
+  kind?: "new" | "renewal";
+  renewalOptionId?: string;
+  releaseName?: string;
   progress: number;
   quality: number;
   assignedAgentIds: string[];
@@ -803,6 +806,7 @@ export interface GameState {
   resources: ResourceMap;
   capabilities: CapabilityMap;
   activeProducts: string[];
+  generatedProducts: ProductDefinition[];
   unlockedDomains: string[];
   purchasedUpgrades: string[];
   purchasedAutomationUpgrades: string[];

@@ -2313,6 +2313,28 @@ p {
   color: #7a301f;
 }
 
+.idea-action-row {
+  align-items: center;
+  display: grid;
+  gap: 7px;
+  grid-template-columns: minmax(120px, 0.46fr) minmax(0, 1fr);
+}
+
+.idea-action-row button {
+  background: var(--green);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 900;
+  padding-inline: 8px;
+}
+
+.idea-action-row small {
+  color: #5f5546;
+  font-size: 0.7rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .renewal-option-grid article {
   display: grid;
   gap: 5px;

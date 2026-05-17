@@ -113,6 +113,10 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("idea-composer-panel");
     expect(menuPanels).toContain("renewal-option-grid");
     expect(menuPanels).toContain("createProductConcept");
+    expect(menuPanels).toContain("getProductConceptProjectCheck");
+    expect(menuPanels).toContain("startProductConceptProject");
+    expect(menuPanels).toContain("getProductRenewalProjectCheck");
+    expect(menuPanels).toContain("startProductRenewalProject");
     expect(appCss).toMatch(/\.idea-composer-panel\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.idea-result-card\s*{[^}]*background:/s);
     expect(appCss).toMatch(/\.renewal-option-grid\s*{[^}]*grid-template-columns:/s);

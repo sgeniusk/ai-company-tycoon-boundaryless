@@ -28,6 +28,7 @@ import { CAMPAIGN_FINAL_MONTH, getCompanyStarRating, getCurrentLocation, getLoca
 import { getCompetitionSeasonChallenges } from "./competition-signals";
 import { createInitialRogueliteState, createReleaseCardReward, refreshStrategyDeckForNewMonth } from "./deckbuilding";
 import { createReleaseGrowthPaths } from "./growth-paths";
+import { getRenewalReleaseOptions, type ProductConcept } from "./product-ideas";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
 import type {
   AgentStats,
@@ -73,7 +74,7 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-const SAVE_VERSION = 7;
+const SAVE_VERSION = 8;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -103,6 +104,7 @@ export function createInitialState(): GameState {
     resources: initialResources,
     capabilities: { ...startingState.capabilities },
     activeProducts: [...startingState.active_products],
+    generatedProducts: [],
     unlockedDomains: [...new Set([...domains.filter((domain) => domain.unlocked_by_default).map((domain) => domain.id), ...startingState.unlocked_domains])],
     purchasedUpgrades: [...startingState.purchased_upgrades],
     purchasedAutomationUpgrades: [...startingState.purchased_automation_upgrades],
@@ -153,6 +155,14 @@ export function getPlayerMarketShare(state: GameState): number {
   const rivalScore = state.competitorStates.reduce((sum, competitor) => sum + competitor.score, 0);
   const totalScore = Math.max(1, playerScore + rivalScore);
   return Math.round((playerScore / totalScore) * 100);
+}
+
+export function getAvailableProductDefinitions(state: GameState): ProductDefinition[] {
+  return [...products, ...(state.generatedProducts ?? [])];
+}
+
+function getProductDefinition(productId: string, state: GameState): ProductDefinition | undefined {
+  return getAvailableProductDefinitions(state).find((product) => product.id === productId);
 }
 
 export function getProductCheck(product: ProductDefinition, state: GameState): ActionCheck {
@@ -618,6 +628,7 @@ export function startProductProject(product: ProductDefinition, state: GameState
   const project: ProductProject = {
     id: projectId,
     productId: product.id,
+    kind: "new",
     progress: 0,
     quality: getStartingProjectQuality(assignedAgents, state),
     assignedAgentIds: assignedAgents.map((agent) => agent.id),
@@ -632,6 +643,143 @@ export function startProductProject(product: ProductDefinition, state: GameState
     ),
     productProjects: [...state.productProjects, project],
     timeline: [`개발 시작: ${product.name} (${assignedAgents.map((agent) => agent.name).join(", ")})`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function createProductDefinitionFromConcept(concept: ProductConcept, state: GameState): ProductDefinition {
+  const id = `concept_${concept.id}_${state.month}_${(state.generatedProducts ?? []).length + 1}`;
+  const capabilityEntries = Object.entries({
+    ...concept.subject.capability_bias,
+    ...concept.productType.capability_bias,
+  }).slice(0, 4);
+  const requiredCapabilities = Object.fromEntries(
+    capabilityEntries.map(([capabilityId, level]) => [capabilityId, clamp(Math.round(level), 1, 3)]),
+  );
+
+  return {
+    id,
+    name: concept.title,
+    description: concept.pitch,
+    domain: concept.suggestedDomain,
+    required_capabilities: requiredCapabilities,
+    launch_cost: concept.prototypeCost,
+    base_revenue: Math.round(500 + concept.score * 24 + concept.subject.market_heat * 90),
+    base_users_per_month: Math.round(80 + concept.score * 7 + concept.subject.market_heat * 30),
+    compute_per_1000_users: Math.max(8, Math.round(8 + concept.tags.length * 1.6 + concept.subject.risk)),
+    data_generated_per_month: Math.max(4, Math.round(4 + concept.score / 12 + concept.productType.score_bonus)),
+    hype_on_launch: clamp(Math.round(4 + concept.score / 12 + concept.boldOption.score_delta / 2), 3, 18),
+    trust_requirement: clamp(Math.round(concept.subject.risk * 6 - concept.boldOption.risk_delta), 0, 85),
+    level: 1,
+    max_level: 3,
+    upgrade_cost_multiplier: 1.55,
+    tags: concept.tags,
+  };
+}
+
+export function getProductConceptProjectCheck(
+  concept: ProductConcept,
+  state: GameState,
+  assignedAgentIds?: string[],
+): ActionCheck {
+  return getProductProjectCheck(createProductDefinitionFromConcept(concept, state), state, assignedAgentIds);
+}
+
+export function startProductConceptProject(
+  concept: ProductConcept,
+  state: GameState,
+  assignedAgentIds?: string[],
+): GameState {
+  const generatedProduct = createProductDefinitionFromConcept(concept, state);
+  const check = getProductProjectCheck(generatedProduct, state, assignedAgentIds);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const projectState = {
+    ...state,
+    generatedProducts: [...(state.generatedProducts ?? []), generatedProduct],
+  };
+  const started = startProductProject(generatedProduct, projectState, assignedAgentIds);
+
+  return {
+    ...started,
+    timeline: [`아이디어 채택: ${generatedProduct.name}`, ...started.timeline].slice(0, 8),
+  };
+}
+
+export function getProductRenewalCost(product: ProductDefinition, state: GameState): ResourceMap {
+  const currentLevel = Math.max(1, getProductLevel(product.id, state));
+  return Object.fromEntries(
+    Object.entries(product.launch_cost).map(([resourceId, value]) => [
+      resourceId,
+      Math.round(value * product.upgrade_cost_multiplier * currentLevel * 0.9),
+    ]),
+  );
+}
+
+export function getProductRenewalProjectCheck(
+  product: ProductDefinition,
+  renewalOptionId: string,
+  state: GameState,
+  assignedAgentIds?: string[],
+): ActionCheck {
+  const reasons: string[] = [];
+  const currentLevel = getProductLevel(product.id, state);
+
+  if (!state.activeProducts.includes(product.id)) reasons.push("출시한 제품만 리뉴얼할 수 있습니다.");
+  if (currentLevel >= product.max_level) reasons.push("최대 레벨입니다.");
+  if (state.productProjects.some((project) => project.productId === product.id)) {
+    reasons.push("이미 이 제품의 개발 프로젝트가 진행 중입니다.");
+  }
+  if (!getRenewalReleaseOptions(product, currentLevel + 1).some((option) => option.id === renewalOptionId)) {
+    reasons.push("알 수 없는 리뉴얼 방식입니다.");
+  }
+  appendCostReasons(reasons, getProductRenewalCost(product, state), state);
+
+  const selectedAgents = assignedAgentIds ? [...new Set(assignedAgentIds)] : getAvailableAgents(state).slice(0, 1).map((agent) => agent.id);
+  if (selectedAgents.length === 0) reasons.push("투입 가능한 에이전트가 필요합니다.");
+  if (selectedAgents.length > 3) reasons.push("한 프로젝트에는 최대 3명까지 투입할 수 있습니다.");
+  for (const agentId of selectedAgents) {
+    const agent = state.hiredAgents.find((hiredAgent) => hiredAgent.id === agentId);
+    if (!agent) reasons.push("알 수 없는 에이전트가 포함되어 있습니다.");
+    else if (agent.assignment) reasons.push(`${agent.name}은 이미 다른 프로젝트에 투입되어 있습니다.`);
+  }
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function startProductRenewalProject(
+  product: ProductDefinition,
+  renewalOptionId: string,
+  state: GameState,
+  assignedAgentIds?: string[],
+): GameState {
+  const check = getProductRenewalProjectCheck(product, renewalOptionId, state, assignedAgentIds);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const assignedAgents = getSelectedProjectAgents(state, assignedAgentIds);
+  const nextLevel = getProductLevel(product.id, state) + 1;
+  const renewalOption = getRenewalReleaseOptions(product, nextLevel).find((option) => option.id === renewalOptionId);
+  const releaseName = renewalOption?.releaseName ?? `${product.name} v${nextLevel}`;
+  const projectId = `renewal_${state.productProjects.length + 1}_${product.id}_${renewalOptionId}`;
+  const project: ProductProject = {
+    id: projectId,
+    productId: product.id,
+    kind: "renewal",
+    renewalOptionId,
+    releaseName,
+    progress: 0,
+    quality: getStartingProjectQuality(assignedAgents, state) + 4,
+    assignedAgentIds: assignedAgents.map((agent) => agent.id),
+    startedMonth: state.month,
+  };
+
+  return {
+    ...state,
+    resources: applyResourceDelta(state.resources, negateCosts(getProductRenewalCost(product, state))),
+    hiredAgents: state.hiredAgents.map((agent) =>
+      project.assignedAgentIds.includes(agent.id) ? { ...agent, assignment: project.id } : agent,
+    ),
+    productProjects: [...state.productProjects, project],
+    timeline: [`리뉴얼 개발 시작: ${releaseName} (${assignedAgents.map((agent) => agent.name).join(", ")})`, ...state.timeline].slice(0, 8),
   };
 }
 
@@ -724,7 +872,7 @@ export function upgradeCapability(capability: CapabilityDefinition, state: GameS
 }
 
 export function calculateMonthlyEconomy(state: GameState): MonthlyEconomy {
-  const active = products.filter((product) => state.activeProducts.includes(product.id));
+  const active = getAvailableProductDefinitions(state).filter((product) => state.activeProducts.includes(product.id));
   const hype = state.resources.hype ?? 0;
   const trust = state.resources.trust ?? 0;
   const trustMultiplier =
@@ -771,7 +919,7 @@ export function calculateMonthlyEconomy(state: GameState): MonthlyEconomy {
 export function advanceMonth(state: GameState): GameState {
   if (state.status !== "playing") return state;
 
-  const active = products.filter((product) => state.activeProducts.includes(product.id));
+  const active = getAvailableProductDefinitions(state).filter((product) => state.activeProducts.includes(product.id));
   const monthlyEconomy = calculateMonthlyEconomy(state);
 
   const nextResources = applyResourceDelta(
@@ -1043,6 +1191,11 @@ export function hydrateGameState(serialized: string): GameState {
   const initialState = createInitialState();
   const rawState = parsed.state;
   const ownedItems = sanitizeStringArray(rawState.ownedItems);
+  const generatedProducts = sanitizeGeneratedProducts(rawState.generatedProducts);
+  const hydratedActiveProducts = sanitizeStringArray(rawState.activeProducts, [
+    ...products.map((product) => product.id),
+    ...generatedProducts.map((product) => product.id),
+  ]);
   return {
     ...initialState,
     ...rawState,
@@ -1050,7 +1203,8 @@ export function hydrateGameState(serialized: string): GameState {
     locationId: sanitizeLocationId(rawState.locationId, initialState.locationId),
     resources: sanitizeResourceMap(rawState.resources, initialState.resources),
     capabilities: { ...initialState.capabilities, ...(isRecord(rawState.capabilities) ? rawState.capabilities : {}) },
-    activeProducts: sanitizeStringArray(rawState.activeProducts, products.map((product) => product.id)),
+    activeProducts: hydratedActiveProducts,
+    generatedProducts,
     unlockedDomains: sanitizeStringArray(rawState.unlockedDomains, domains.map((domain) => domain.id), initialState.unlockedDomains),
     purchasedUpgrades: sanitizeStringArray(rawState.purchasedUpgrades),
     purchasedAutomationUpgrades: sanitizeStringArray(rawState.purchasedAutomationUpgrades),
@@ -1058,11 +1212,11 @@ export function hydrateGameState(serialized: string): GameState {
     ownedItems,
     office: hydrateOfficeState(rawState.office, ownedItems),
     productProjects: Array.isArray(rawState.productProjects) ? rawState.productProjects : [],
-    productLevels: sanitizeProductLevels(rawState.productLevels, rawState.activeProducts ?? []),
+    productLevels: sanitizeProductLevels(rawState.productLevels, hydratedActiveProducts, generatedProducts),
     competitorStates: Array.isArray(rawState.competitorStates) ? rawState.competitorStates : initialState.competitorStates,
     productReviews: isRecord(rawState.productReviews) ? rawState.productReviews : {},
-    lastRelease: hydrateReleaseMoment(rawState.lastRelease),
-    roguelite: hydrateRogueliteState(rawState.roguelite, initialState.roguelite),
+    lastRelease: hydrateReleaseMoment(rawState.lastRelease, generatedProducts),
+    roguelite: hydrateRogueliteState(rawState.roguelite, initialState.roguelite, generatedProducts),
     activeDevelopmentPuzzleModifiers: hydrateDevelopmentPuzzleModifiers(rawState.activeDevelopmentPuzzleModifiers),
     lastDevelopmentPuzzle: hydrateDevelopmentPuzzleResult(rawState.lastDevelopmentPuzzle),
     chosenGrowthPath: hydrateChosenGrowthPath(rawState.chosenGrowthPath),
@@ -1148,12 +1302,52 @@ function sanitizeLocationId(value: unknown, fallback: string): string {
   return fallback;
 }
 
-function sanitizeProductLevels(value: unknown, activeProducts: unknown): Record<string, number> {
+function sanitizeGeneratedProducts(value: unknown): ProductDefinition[] {
+  if (!Array.isArray(value)) return [];
+
+  const seenIds = new Set<string>();
+  return value
+    .filter((entry): entry is ProductDefinition => {
+      if (!isRecord(entry)) return false;
+      if (typeof entry.id !== "string" || seenIds.has(entry.id) || products.some((product) => product.id === entry.id)) return false;
+      if (typeof entry.name !== "string" || typeof entry.description !== "string") return false;
+      if (typeof entry.domain !== "string" || !domains.some((domain) => domain.id === entry.domain)) return false;
+      if (!isRecord(entry.required_capabilities) || !isRecord(entry.launch_cost)) return false;
+      for (const capabilityId of Object.keys(entry.required_capabilities)) {
+        if (!capabilities.some((capability) => capability.id === capabilityId)) return false;
+      }
+      for (const resourceId of Object.keys(entry.launch_cost)) {
+        if (!resources[resourceId]) return false;
+      }
+      seenIds.add(entry.id);
+      return true;
+    })
+    .map((product) => ({
+      ...product,
+      base_revenue: sanitizeNumber(product.base_revenue, 500),
+      base_users_per_month: sanitizeNumber(product.base_users_per_month, 100),
+      compute_per_1000_users: sanitizeNumber(product.compute_per_1000_users, 10),
+      data_generated_per_month: sanitizeNumber(product.data_generated_per_month, 5),
+      hype_on_launch: sanitizeNumber(product.hype_on_launch, 5),
+      trust_requirement: sanitizeNumber(product.trust_requirement, 0),
+      level: sanitizeNumber(product.level, 1),
+      max_level: sanitizeNumber(product.max_level, 3),
+      upgrade_cost_multiplier: sanitizeNumber(product.upgrade_cost_multiplier, 1.5),
+      tags: Array.isArray(product.tags) ? product.tags.filter((tag): tag is string => typeof tag === "string") : [],
+    }));
+}
+
+function sanitizeProductLevels(
+  value: unknown,
+  activeProducts: unknown,
+  generatedProducts: ProductDefinition[] = [],
+): Record<string, number> {
   const raw = isRecord(value) ? value : {};
-  const activeProductIds = new Set(sanitizeStringArray(activeProducts, products.map((product) => product.id)));
+  const allProducts = [...products, ...generatedProducts];
+  const activeProductIds = new Set(sanitizeStringArray(activeProducts, allProducts.map((product) => product.id)));
   const sanitized: Record<string, number> = {};
 
-  for (const product of products) {
+  for (const product of allProducts) {
     const rawLevel = raw[product.id];
     const fallbackLevel = activeProductIds.has(product.id) ? 1 : 0;
     const level = sanitizeNumber(rawLevel, fallbackLevel);
@@ -1245,7 +1439,7 @@ function applySeasonChallengeOutcomes(state: GameState): GameState {
 
 function advanceCompetitors(state: GameState): GameState {
   const playerDomains = new Set(
-    products.filter((product) => state.activeProducts.includes(product.id)).map((product) => product.domain),
+    getAvailableProductDefinitions(state).filter((product) => state.activeProducts.includes(product.id)).map((product) => product.domain),
   );
   const movedCompetitors = state.competitorStates.map((competitorState) => {
     const definition = competitors.find((competitor) => competitor.id === competitorState.id);
@@ -1366,7 +1560,7 @@ function advanceProductProjects(state: GameState): GameState {
   const releaseTimeline: string[] = [];
 
   for (const project of state.productProjects) {
-    const product = products.find((entry) => entry.id === project.productId);
+    const product = getProductDefinition(project.productId, state);
     if (!product) continue;
 
     const teamStats = getProjectTeamStats(project, state);
@@ -1380,9 +1574,12 @@ function advanceProductProjects(state: GameState): GameState {
 
     if (progressedProject.progress >= 100) {
       const releaseReview = createReleaseReview(product, nextState, progressedProject.quality);
+      const isRenewal = progressedProject.kind === "renewal";
+      const nextLevel = isRenewal ? Math.min(product.max_level, getProductLevel(product.id, nextState) + 1) : 1;
+      const releaseName = progressedProject.releaseName ?? product.name;
       const lastRelease = {
         productId: product.id,
-        productName: product.name,
+        productName: releaseName,
         month: state.month,
         review: releaseReview,
         headline: createReleaseHeadline(product, releaseReview),
@@ -1393,11 +1590,11 @@ function advanceProductProjects(state: GameState): GameState {
       nextState = {
         ...nextState,
         resources: applyResourceDelta(nextState.resources, {
-          hype: product.hype_on_launch,
-          trust: progressedProject.quality >= 82 ? 2 : 0,
+          hype: isRenewal ? Math.ceil(product.hype_on_launch * 0.55) : product.hype_on_launch,
+          trust: progressedProject.quality >= 82 ? (isRenewal ? 3 : 2) : 0,
         }),
-        activeProducts: [...nextState.activeProducts, product.id],
-        productLevels: { ...nextState.productLevels, [product.id]: 1 },
+        activeProducts: isRenewal || nextState.activeProducts.includes(product.id) ? nextState.activeProducts : [...nextState.activeProducts, product.id],
+        productLevels: { ...nextState.productLevels, [product.id]: nextLevel },
         productReviews: { ...nextState.productReviews, [product.id]: releaseReview },
         lastRelease,
         roguelite: createReleaseCardReward(product, releaseReview, nextState),
@@ -1407,7 +1604,11 @@ function advanceProductProjects(state: GameState): GameState {
             : agent,
         ),
       };
-      releaseTimeline.push(`${product.name} 완성: ${releaseReview.grade} (${releaseReview.score}점) 출시`);
+      releaseTimeline.push(
+        isRenewal
+          ? `${releaseName} 리뉴얼 출시: ${releaseReview.grade} (${releaseReview.score}점)`
+          : `${product.name} 완성: ${releaseReview.grade} (${releaseReview.score}점) 출시`,
+      );
     } else {
       continuingProjects.push(progressedProject);
       releaseTimeline.push(`${product.name} 개발 ${Math.round(progressedProject.progress)}% / 완성도 ${Math.round(progressedProject.quality)}`);
@@ -1563,11 +1764,11 @@ function getReleaseExpansionHint(product: ProductDefinition): string {
   return "이 제품의 기반 능력은 새로운 도메인으로 확장될 수 있습니다.";
 }
 
-function hydrateReleaseMoment(lastRelease: ReleaseMoment | undefined): ReleaseMoment | undefined {
+function hydrateReleaseMoment(lastRelease: ReleaseMoment | undefined, generatedProducts: ProductDefinition[] = []): ReleaseMoment | undefined {
   if (!lastRelease) return undefined;
   if (lastRelease.growthPaths?.length) return lastRelease;
 
-  const product = products.find((entry) => entry.id === lastRelease.productId);
+  const product = [...products, ...generatedProducts].find((entry) => entry.id === lastRelease.productId);
   const review = lastRelease.review;
   return {
     ...lastRelease,
@@ -1587,7 +1788,7 @@ function hydrateChosenGrowthPath(chosenGrowthPath: GameState["chosenGrowthPath"]
   };
 }
 
-function hydrateRogueliteState(value: unknown, fallback: RogueliteState): RogueliteState {
+function hydrateRogueliteState(value: unknown, fallback: RogueliteState, generatedProducts: ProductDefinition[] = []): RogueliteState {
   if (!isRecord(value)) return fallback;
 
   const unlockedMetaIds = sanitizeStringArray(value.unlockedMetaIds);
@@ -1604,7 +1805,7 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState): Roguel
     upgradedCardIds: uniqueStrings(sanitizeStringArray(value.upgradedCardIds, cardIds)),
     rewardHistory: hydrateCardRewardHistory(value.rewardHistory),
     runHistory: hydrateRunHistory(value.runHistory),
-    pendingCardReward: hydratePendingCardReward(value.pendingCardReward),
+    pendingCardReward: hydratePendingCardReward(value.pendingCardReward, generatedProducts),
   };
 }
 
@@ -1620,9 +1821,11 @@ function hydrateStrategyDeck(value: unknown, fallback: StrategyDeckState): Strat
   };
 }
 
-function hydratePendingCardReward(value: unknown): PendingCardReward | undefined {
+function hydratePendingCardReward(value: unknown, generatedProducts: ProductDefinition[] = []): PendingCardReward | undefined {
   if (!isRecord(value)) return undefined;
-  const product = typeof value.productId === "string" ? products.find((entry) => entry.id === value.productId) : undefined;
+  const product = typeof value.productId === "string"
+    ? [...products, ...generatedProducts].find((entry) => entry.id === value.productId)
+    : undefined;
   const offeredCardIds = uniqueStrings(sanitizeStringArray(value.offeredCardIds, strategyCards.map((card) => card.id))).slice(0, 3);
 
   if (
