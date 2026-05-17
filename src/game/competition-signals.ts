@@ -1,4 +1,4 @@
-import { competitors, growthPaths, products } from "./data";
+import { competitors, domains, growthPaths, products, strategyCards } from "./data";
 import { getCampaignCalendar, MONTHS_PER_YEAR } from "./campaign";
 import type { GameState } from "./types";
 import { t } from "../i18n";
@@ -36,6 +36,19 @@ export interface CompetitionSeasonBrief {
   recentEntrants: CompetitionSeasonEntrant[];
   nextEntrants: CompetitionSeasonEntrant[];
   topPressure?: CompetitionSeasonPressure;
+}
+
+export interface CompetitionSeasonChallenge {
+  id: "pressure_counter" | "new_entrant_watch";
+  title: string;
+  description: string;
+  targetMenu: "competition" | "products" | "deck" | "research";
+  rewardPreview: string;
+  riskPreview: string;
+  complete: boolean;
+  relatedCompetitorIds: string[];
+  recommendedProductIds: string[];
+  recommendedCardIds: string[];
 }
 
 export function getGrowthPathCompetitionSignals(state: GameState): GrowthPathCompetitionSignal[] {
@@ -141,6 +154,52 @@ export function getCompetitionSeasonBrief(state: GameState): CompetitionSeasonBr
   };
 }
 
+export function getCompetitionSeasonChallenges(state: GameState): CompetitionSeasonChallenge[] {
+  const brief = getCompetitionSeasonBrief(state);
+  const challenges: CompetitionSeasonChallenge[] = [];
+
+  if (brief.topPressure) {
+    const pressureCompetitor = competitors.find((competitor) => competitor.id === brief.topPressure?.competitorId);
+    const recommendedProductIds = getRecommendedProductsForDomains(pressureCompetitor?.focus_domains ?? [], state);
+    const recommendedCardIds = getCounterCardIds(pressureCompetitor?.focus_domains ?? []);
+    const complete = hasActiveProductInDomains(state, pressureCompetitor?.focus_domains ?? []) || hasPlayedCounterCard(state, recommendedCardIds);
+
+    challenges.push({
+      id: "pressure_counter",
+      title: `${brief.topPressure.competitorName} 압박 대응`,
+      description: `${brief.topPressure.lastMove} 흐름을 끊기 위해 겹치는 제품군이나 대응 카드를 준비합니다.`,
+      targetMenu: "competition",
+      rewardPreview: `대응 카드 ${formatCardNames(recommendedCardIds)} 우선 확보, 시장 점유율 방어`,
+      riskPreview: "방치하면 경쟁사가 핵심 제품군을 더 빠르게 선점합니다.",
+      complete,
+      relatedCompetitorIds: [brief.topPressure.competitorId],
+      recommendedProductIds,
+      recommendedCardIds,
+    });
+  }
+
+  if (brief.recentEntrants.length > 0) {
+    const entrantDomains = [...new Set(brief.recentEntrants.flatMap((entrant) => entrant.focusDomains))];
+    const recommendedProductIds = getRecommendedProductsForDomains(entrantDomains, state);
+    const recommendedCardIds = getCounterCardIds(entrantDomains);
+
+    challenges.push({
+      id: "new_entrant_watch",
+      title: "신규 경쟁자 파동 대응",
+      description: `${brief.recentEntrants.map((entrant) => entrant.name).join(", ")} 진입으로 새 시장 파동이 시작됐습니다.`,
+      targetMenu: recommendedProductIds.length ? "products" : "competition",
+      rewardPreview: "신규 시장 선점 보너스와 다음 연간 심사 안정성",
+      riskPreview: "새 경쟁사가 후반 산업의 첫 인상을 가져갑니다.",
+      complete: hasActiveProductInDomains(state, entrantDomains),
+      relatedCompetitorIds: brief.recentEntrants.map((entrant) => entrant.id),
+      recommendedProductIds,
+      recommendedCardIds,
+    });
+  }
+
+  return challenges;
+}
+
 function getCompetitorEntryMonth(competitor: { entry_month?: number }): number {
   return competitor.entry_month ?? 1;
 }
@@ -157,4 +216,46 @@ function toSeasonEntrant(competitor: (typeof competitors)[number]): CompetitionS
 
 function sortEntrantsBySchedule(a: CompetitionSeasonEntrant, b: CompetitionSeasonEntrant): number {
   return a.entryMonth - b.entryMonth || competitors.findIndex((competitor) => competitor.id === a.id) - competitors.findIndex((competitor) => competitor.id === b.id);
+}
+
+function hasActiveProductInDomains(state: GameState, domainIds: string[]): boolean {
+  return products.some((product) => domainIds.includes(product.domain) && state.activeProducts.includes(product.id));
+}
+
+function hasPlayedCounterCard(state: GameState, cardIds: string[]): boolean {
+  return state.roguelite.deck.playedThisTurn.some((cardId) => cardIds.includes(cardId));
+}
+
+function getRecommendedProductsForDomains(domainIds: string[], state: GameState): string[] {
+  const uniqueDomains = new Set(domainIds.filter((domainId) => domains.some((domain) => domain.id === domainId)));
+
+  return products
+    .filter((product) => uniqueDomains.has(product.domain) && !state.activeProducts.includes(product.id))
+    .sort((a, b) => a.level - b.level || a.name.localeCompare(b.name))
+    .map((product) => product.id)
+    .slice(0, 3);
+}
+
+function getCounterCardIds(domainIds: string[]): string[] {
+  const desiredTags = new Set(["counter", ...domainIds]);
+
+  return strategyCards
+    .filter((card) => card.tags.includes("counter") || Boolean(card.effects.rival_score_delta || card.effects.rival_momentum_delta))
+    .map((card) => ({
+      card,
+      score:
+        card.tags.filter((tag) => desiredTags.has(tag)).length * 8 +
+        Math.abs(card.effects.rival_score_delta ?? 0) +
+        Math.abs(card.effects.rival_momentum_delta ?? 0) * 3,
+    }))
+    .sort((a, b) => b.score - a.score || a.card.name.localeCompare(b.card.name))
+    .map(({ card }) => card.id)
+    .slice(0, 3);
+}
+
+function formatCardNames(cardIds: string[]): string {
+  const names = cardIds
+    .map((cardId) => strategyCards.find((card) => card.id === cardId)?.name)
+    .filter((name): name is string => Boolean(name));
+  return names.length ? names.join(", ") : "없음";
 }

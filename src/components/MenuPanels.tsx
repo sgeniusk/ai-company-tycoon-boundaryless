@@ -11,7 +11,7 @@ import {
 } from "../game/annual-review";
 import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
-import { getCompetitionSeasonBrief, getGrowthPathCompetitionSignals } from "../game/competition-signals";
+import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
   getAgentContentRows,
   getCampaignContentPhase,
@@ -160,6 +160,7 @@ export function renderMenuContent(
     const annualDirectiveChoices = getAnnualDirectiveChoiceRows(gameState);
     const annualStrategyAdvice = getAnnualStrategyAdvice(gameState);
     const competitionSeason = getCompetitionSeasonBrief(gameState);
+    const competitionChallenges = getCompetitionSeasonChallenges(gameState);
 
     return (
       <div className="panel-grid two-col">
@@ -343,6 +344,12 @@ export function renderMenuContent(
               <span>예고 {competitionSeason.nextEntrants.length}곳</span>
               <span>{competitionSeason.topPressure ? `압박 ${competitionSeason.topPressure.competitorName}` : "압박 없음"}</span>
             </div>
+            {competitionChallenges[0] && (
+              <button className="season-action-button" onClick={() => setActiveMenu?.(competitionChallenges[0].targetMenu)}>
+                <strong>{competitionChallenges[0].title}</strong>
+                <span>{competitionChallenges[0].complete ? "대응 완료" : competitionChallenges[0].rewardPreview}</span>
+              </button>
+            )}
           </div>
           <div className="foundation-panel">
             <div>
@@ -1610,6 +1617,7 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
   const rankings = getMarketRankings(gameState);
   const strategySignals = getGrowthPathCompetitionSignals(gameState);
   const seasonBrief = getCompetitionSeasonBrief(gameState);
+  const seasonChallenges = getCompetitionSeasonChallenges(gameState);
   const rivalCounterPlans = getRivalCounterPlans(gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "competition");
   const orderedCompetitorStates = prioritizeAnnualStrategyFocus(gameState.competitorStates.map((competitor) => competitor.id), strategyFocus)
@@ -1639,6 +1647,21 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
             </span>
           )}
         </div>
+        {seasonChallenges.length > 0 && (
+          <div className="season-challenge-list">
+            {seasonChallenges.map((challenge) => (
+              <article className={challenge.complete ? "complete" : ""} key={challenge.id}>
+                <div>
+                  <strong>{challenge.title}</strong>
+                  <span>{challenge.description}</span>
+                </div>
+                <small>보상: {challenge.rewardPreview}</small>
+                <small>위험: {challenge.riskPreview}</small>
+                <small>추천 제품 {formatProductNames(challenge.recommendedProductIds, 2)} · 추천 카드 {formatCardNames(challenge.recommendedCardIds, 2)}</small>
+              </article>
+            ))}
+          </div>
+        )}
         <div className="ranking-list">
           {rankings.map((ranking, index) => {
             const competitor = competitors.find((entry) => entry.id === ranking.id);

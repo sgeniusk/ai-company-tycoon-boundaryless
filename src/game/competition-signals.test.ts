@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { agentTypes, products } from "./data";
 import { advanceMonth, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
-import { getCompetitionSeasonBrief, getGrowthPathCompetitionSignals } from "./competition-signals";
+import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "./competition-signals";
 
 describe("alpha v0.9.7 growth path competition signals", () => {
   it("marks competitors that overlap the chosen growth path", () => {
@@ -61,5 +61,22 @@ describe("alpha v0.9.7 growth path competition signals", () => {
     expect(brief.nextEntrants.map((entry) => entry.entryMonth)).toEqual([24, 24]);
     expect(brief.topPressure?.competitorId).toBeTruthy();
     expect(brief.summary).toContain("신규 경쟁사 2곳");
+  });
+
+  it("turns the rival season into actionable response challenges", () => {
+    let state = createInitialState();
+    while (state.month < 12) {
+      state = advanceMonth(state);
+    }
+
+    const challenges = getCompetitionSeasonChallenges(state);
+
+    expect(challenges[0]).toMatchObject({
+      id: "pressure_counter",
+      targetMenu: "competition",
+      complete: false,
+    });
+    expect(challenges[0].rewardPreview).toContain("대응 카드");
+    expect(challenges.some((challenge) => challenge.id === "new_entrant_watch")).toBe(true);
   });
 });

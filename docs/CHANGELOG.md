@@ -4,6 +4,25 @@
 
 ---
 
+## [0.15.6-alpha] — 2026-05-17
+
+### 시즌 대응 과제
+
+**추가:**
+- 경쟁사 시즌을 행동 목표로 바꾸는 `getCompetitionSeasonChallenges`를 추가했다.
+- 최대 압박 경쟁사 대응 과제와 신규 경쟁자 파동 대응 과제를 생성한다.
+- 각 과제에 보상 예상, 방치 위험, 추천 제품, 추천 대응 카드를 표시한다.
+- 회사 현황의 시장 시즌 패널에서 첫 대응 과제로 이동할 수 있다.
+- 경쟁 메뉴 상단에 시즌 대응 과제 목록을 추가했다.
+
+**검증:**
+- `npm test -- src/game/competition-signals.test.ts` 통과, 4 tests
+- `npm test -- src/game/competition-signals.test.ts src/game/qa-scenarios.test.ts` 통과, 27 tests
+- `npm run build` 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=ten-year-sim&menu=competition` 렌더링 확인
+
+---
+
 ## [0.15.5-alpha] — 2026-05-17
 
 ### 경쟁사 시즌 브리프

@@ -1401,6 +1401,25 @@ p {
   border: 1px solid #d8c49b;
 }
 
+.season-action-button {
+  align-items: start;
+  background: #f5d37a;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  display: grid;
+  gap: 3px;
+  justify-items: start;
+  padding: 7px;
+  text-align: left;
+}
+
+.season-action-button strong,
+.season-action-button span {
+  color: inherit;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
 .workforce-synergy-panel > div,
 .workforce-synergy-panel article {
   display: grid;
@@ -2427,6 +2446,38 @@ p {
   display: grid;
   gap: 8px;
   margin-bottom: 10px;
+}
+
+.season-challenge-list {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.season-challenge-list article {
+  background: #fff0d9;
+  border: 2px solid #c99c55;
+  display: grid;
+  gap: 5px;
+  padding: 9px;
+}
+
+.season-challenge-list article.complete {
+  background: #e8f5dc;
+  border-color: var(--green);
+}
+
+.season-challenge-list strong {
+  color: #68420f;
+  font-size: 0.82rem;
+}
+
+.season-challenge-list span,
+.season-challenge-list small {
+  color: #5f5546;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.3;
 }
 
 .counter-plan-list article,
