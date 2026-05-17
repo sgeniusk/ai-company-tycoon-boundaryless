@@ -2705,7 +2705,7 @@ p {
 }
 
 .office-summary-card {
-  grid-template-columns: minmax(0, 1fr) repeat(2, auto);
+  grid-template-columns: minmax(0, 1fr) repeat(3, auto);
 }
 
 .office-summary-card strong,

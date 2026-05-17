@@ -13,6 +13,7 @@ import {
   getOfficeExpansionCheck,
   getOfficeHireCapacity,
   getOfficeSynergySummary,
+  getOfficeMonthlyEffects,
   getPlacedOfficeItems,
   getPlaceOfficeItemCheck,
   hireAgent,
@@ -59,6 +60,37 @@ describe("v0.12.7 office expansion and decoration", () => {
     expect(getOfficeHireCapacity(expanded)).toBe(5);
     expect(getOfficeDecorationSlots(expanded)).toBe(5);
     expect(expanded.resources.cash).toBe(initial.resources.cash - nextExpansion.cost.cash);
+  });
+
+  it("applies office expansion monthly effects after moving into a larger office", () => {
+    const initial = {
+      ...createRichInitialState(),
+      activeProducts: ["ai_writing_assistant"],
+      productLevels: { ai_writing_assistant: 1 },
+      resources: {
+        ...createRichInitialState().resources,
+        cash: 100000,
+        data: 50,
+        compute: 50,
+      },
+    };
+    const startupSuite = officeExpansions.find((expansion) => expansion.id === "startup_suite");
+    if (!startupSuite) throw new Error("Missing startup suite");
+
+    const expanded = buyOfficeExpansion(startupSuite, initial);
+
+    expect(getOfficeMonthlyEffects(expanded)).toMatchObject({
+      cash: 120,
+      users: 40,
+    });
+
+    const advanced = advanceMonth(expanded);
+
+    expect(advanced.lastMonthReport?.strategyEffects).toMatchObject({
+      cash: 120,
+      users: 40,
+    });
+    expect(advanced.timeline.some((entry) => entry.includes("사무실 효과"))).toBe(true);
   });
 
   it("auto-places office decorations while slots remain and lets stored decor be swapped in", () => {

@@ -235,7 +235,7 @@ for (const item of items) {
 }
 
 for (const expansion of officeExpansions) {
-  for (const field of ["name", "description", "level", "hire_capacity", "decoration_slots", "cost", "unlock_requirements"]) {
+  for (const field of ["name", "description", "level", "hire_capacity", "decoration_slots", "monthly_effects", "cost", "unlock_requirements"]) {
     if (!(field in expansion)) errors.push(`office_expansion "${expansion.id}": missing ${field}`);
   }
   for (const numericField of ["level", "hire_capacity", "decoration_slots"]) {
@@ -243,6 +243,7 @@ for (const expansion of officeExpansions) {
       errors.push(`office_expansion "${expansion.id}": ${numericField} must be a positive number`);
     }
   }
+  validateResourceMap(`office_expansion "${expansion.id}" monthly_effects`, expansion.monthly_effects, resourceIds);
   validateResourceMap(`office_expansion "${expansion.id}" cost`, expansion.cost, resourceIds);
   for (const [requirement, value] of Object.entries(expansion.unlock_requirements ?? {})) {
     if (!["min_month", "min_products", "min_users", "min_trust", "min_cash", "min_data", "min_talent", "min_automation"].includes(requirement)) {

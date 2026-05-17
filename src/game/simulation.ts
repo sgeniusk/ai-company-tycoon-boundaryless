@@ -319,6 +319,10 @@ export function getOfficeDecorationSlots(state: GameState): number {
   return getOfficeExpansion(state).decoration_slots;
 }
 
+export function getOfficeMonthlyEffects(state: GameState): ResourceMap {
+  return getOfficeExpansion(state).monthly_effects ?? {};
+}
+
 export function getNextOfficeExpansion(state: GameState): OfficeExpansionDefinition | undefined {
   const currentLevel = getOfficeExpansion(state).level;
   return [...officeExpansions].sort((a, b) => a.level - b.level).find((expansion) => expansion.level === currentLevel + 1);
@@ -810,6 +814,7 @@ export function advanceMonth(state: GameState): GameState {
       nextRivalEvent ? `경쟁사 이슈: ${nextRivalEvent.id}` : "",
       nextEvent ? `이슈 발생: ${nextEvent.name}` : "",
       ...competedState.timeline,
+      getOfficeMonthlyTimelineEntry(state) ?? "",
       getOfficeSynergyTimelineEntry(state) ?? "",
       monthlyEconomy.strategyEffects ? `전략 효과: ${formatResourceDelta(monthlyEconomy.strategyEffects)}` : "",
       nextMonth >= CAMPAIGN_FINAL_MONTH ? `10년차 최종 평가: ${nextStatus === "success" ? "성공 엔딩" : "재도전 엔딩"}` : "",
@@ -1460,11 +1465,13 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   const annualDirective = getActiveAnnualDirective(state);
   const effects: ResourceMap[] = [];
   const growthPathEffects = getChosenGrowthPathMonthlyEffects(state);
+  const officeMonthlyEffects = getOfficeMonthlyEffects(state);
   const officeSynergyEffects = getOfficeSynergySummary(state).totalMonthlyEffects;
   if (growthPathEffects && Object.keys(growthPathEffects).length > 0) effects.push(growthPathEffects);
   if (annualDirective?.monthlyEffects && Object.keys(annualDirective.monthlyEffects).length > 0) {
     effects.push(annualDirective.monthlyEffects);
   }
+  if (Object.keys(officeMonthlyEffects).length > 0) effects.push(officeMonthlyEffects);
   if (Object.keys(officeSynergyEffects).length > 0) effects.push(officeSynergyEffects);
 
   if (effects.length === 0) return undefined;
@@ -1476,6 +1483,13 @@ function getOfficeSynergyTimelineEntry(state: GameState): string | undefined {
   if (activeSynergies.length === 0) return undefined;
 
   return `사무실 시너지: ${activeSynergies.map((synergy) => synergy.title).join(", ")}`;
+}
+
+function getOfficeMonthlyTimelineEntry(state: GameState): string | undefined {
+  const effects = getOfficeMonthlyEffects(state);
+  if (Object.keys(effects).length === 0) return undefined;
+
+  return `사무실 효과: ${getOfficeExpansion(state).name} (${formatResourceDelta(effects)})`;
 }
 
 function formatResourceDelta(delta: ResourceMap): string {

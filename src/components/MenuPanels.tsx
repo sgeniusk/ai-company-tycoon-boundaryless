@@ -71,6 +71,7 @@ import {
   getOfficeExpansion,
   getOfficeExpansionCheck,
   getOfficeHireCapacity,
+  getOfficeMonthlyEffects,
   getOfficeSynergySummary,
   getPlacedOfficeItems,
   getPlaceOfficeItemCheck,
@@ -1293,6 +1294,7 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const officeExpansion = getOfficeExpansion(gameState);
   const nextOfficeExpansion = getNextOfficeExpansion(gameState);
   const nextOfficeCheck = nextOfficeExpansion ? getOfficeExpansionCheck(nextOfficeExpansion, gameState) : undefined;
+  const officeMonthlyEffects = getOfficeMonthlyEffects(gameState);
   const placedOfficeItems = getPlacedOfficeItems(gameState);
   const placedOfficeItemIds = new Set(placedOfficeItems.map((item) => item.id));
   const officeItems = ownedItems.filter((item) => item.target !== "agent");
@@ -1353,6 +1355,7 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             <strong>{officeExpansion.name}</strong>
             <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
             <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
+            <span>월간 {Object.keys(officeMonthlyEffects).length ? formatEffects(officeMonthlyEffects) : "없음"}</span>
           </div>
           <div className="office-synergy-panel">
             <div>
@@ -1382,7 +1385,7 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                 <h3>{nextOfficeExpansion.name}</h3>
                 <p>{nextOfficeExpansion.description}</p>
                 <span>
-                  고용 {nextOfficeExpansion.hire_capacity}명 · 장식 {nextOfficeExpansion.decoration_slots}칸 · 비용 {formatCost(nextOfficeExpansion.cost)}
+                  고용 {nextOfficeExpansion.hire_capacity}명 · 장식 {nextOfficeExpansion.decoration_slots}칸 · 월간 {formatEffects(nextOfficeExpansion.monthly_effects)} · 비용 {formatCost(nextOfficeExpansion.cost)}
                 </span>
               </div>
               <button

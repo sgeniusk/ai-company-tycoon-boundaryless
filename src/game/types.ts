@@ -547,6 +547,7 @@ export interface OfficeExpansionDefinition {
   description: string;
   hire_capacity: number;
   decoration_slots: number;
+  monthly_effects: ResourceMap;
   cost: ResourceMap;
   unlock_requirements: Record<string, number>;
 }

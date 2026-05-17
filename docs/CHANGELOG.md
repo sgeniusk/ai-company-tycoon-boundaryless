@@ -4,6 +4,24 @@
 
 ---
 
+## [0.4.2-alpha] — 2026-05-17
+
+### 사무실 확장 월간 효과
+
+**추가:**
+- 사무실 확장 단계별 `monthly_effects`를 추가했다.
+- 현재 사무실 단계의 월간 효과를 계산하는 `getOfficeMonthlyEffects`를 추가했다.
+- 월간 진행 시 사무실 효과가 `strategyEffects`에 합산된다.
+- 상점/인벤토리 패널에서 현재 사무실과 다음 확장의 월간 효과를 표시한다.
+
+**검증:**
+- `npm test -- src/game/office.test.ts src/game/qa-scenarios.test.ts` 통과, 31 tests
+- `npm run validate:data` 통과
+- `npm run build` 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=office` 렌더링 확인
+
+---
+
 ## [0.4.1-alpha] — 2026-05-17
 
 ### 사람/AI/로봇 인력 조합 시너지

@@ -7,6 +7,7 @@
       "description": "책상 몇 개와 GPU 랙 하나로 버티는 첫 사무실입니다.",
       "hire_capacity": 3,
       "decoration_slots": 3,
+      "monthly_effects": {},
       "cost": {},
       "unlock_requirements": {}
     },
@@ -17,6 +18,7 @@
       "description": "팀이 동시에 일할 회의실과 장식 공간이 생기는 작은 사무실입니다.",
       "hire_capacity": 5,
       "decoration_slots": 5,
+      "monthly_effects": {"cash": 120, "users": 40},
       "cost": {"cash": 3500},
       "unlock_requirements": {"min_products": 1}
     },
@@ -27,6 +29,7 @@
       "description": "여러 제품 라인이 돌아가는 한 층짜리 AI 회사 사무실입니다.",
       "hire_capacity": 8,
       "decoration_slots": 7,
+      "monthly_effects": {"cash": 260, "users": 110, "data": 3},
       "cost": {"cash": 8500, "data": 20},
       "unlock_requirements": {"min_month": 6, "min_products": 2}
     },
@@ -37,6 +40,7 @@
       "description": "모델, 제품, 로봇, 하드웨어 팀이 함께 움직이는 큰 연구동입니다.",
       "hire_capacity": 12,
       "decoration_slots": 10,
+      "monthly_effects": {"cash": 520, "data": 8, "automation": 1},
       "cost": {"cash": 18000, "compute": 40},
       "unlock_requirements": {"min_month": 12, "min_trust": 55}
     }
