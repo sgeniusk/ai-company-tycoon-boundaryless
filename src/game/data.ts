@@ -1,5 +1,6 @@
 import resourcesJson from "../../data/resources.json";
 import productsJson from "../../data/products.json";
+import productIdeasJson from "../../data/product_ideas.json";
 import capabilitiesJson from "../../data/capabilities.json";
 import domainsJson from "../../data/domains.json";
 import balanceJson from "../../data/balance.json";
@@ -47,6 +48,7 @@ import type {
   OfficeSynergyDefinition,
   PlaytestPersonaDefinition,
   ProductDefinition,
+  ProductIdeaDatabaseDefinition,
   ResourceDefinition,
   RivalEventDefinition,
   StartingStateDefinition,
@@ -59,6 +61,7 @@ import type {
 
 export const resources = resourcesJson.resources as Record<string, ResourceDefinition>;
 export const products = productsJson.products as unknown as ProductDefinition[];
+export const productIdeas = productIdeasJson as unknown as ProductIdeaDatabaseDefinition;
 export const capabilities = capabilitiesJson.capabilities as unknown as CapabilityDefinition[];
 export const domains = domainsJson.domains as unknown as DomainDefinition[];
 export const balance = balanceJson.balance as BalanceDefinition;

@@ -4,6 +4,7 @@ import { menus } from "./menu";
 
 const appCss = readFileSync(new URL("../App.css", import.meta.url), "utf8");
 const gameChrome = readFileSync(new URL("../components/GameChrome.tsx", import.meta.url), "utf8");
+const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
@@ -106,5 +107,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.status-cluster\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.status-cluster \.status-pill:nth-of-type\(n \+ 5\)\s*{[^}]*display:\s*none/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.office-wall\s*{[^}]*min-height:\s*0/s);
+  });
+
+  it("surfaces product idea combinations and renewal release paths in the products menu", () => {
+    expect(menuPanels).toContain("idea-composer-panel");
+    expect(menuPanels).toContain("renewal-option-grid");
+    expect(menuPanels).toContain("createProductConcept");
+    expect(appCss).toMatch(/\.idea-composer-panel\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.idea-result-card\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.renewal-option-grid\s*{[^}]*grid-template-columns:/s);
   });
 });

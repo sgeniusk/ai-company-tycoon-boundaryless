@@ -56,6 +56,7 @@ function validateAssetStatus(label, status) {
 
 const resourcesData = readJson("resources.json");
 const productsData = readJson("products.json");
+const productIdeasData = readJson("product_ideas.json");
 const capabilitiesData = readJson("capabilities.json");
 const domainsData = readJson("domains.json");
 const eventsData = readJson("events.json");
@@ -87,6 +88,10 @@ const enLocaleData = readJson("locales/en.json");
 
 const resources = resourcesData?.resources ?? {};
 const products = productsData?.products ?? [];
+const productIdeaSubjects = productIdeasData?.subjects ?? [];
+const productIdeaTypes = productIdeasData?.product_types ?? [];
+const productIdeaBoldOptions = productIdeasData?.bold_options ?? [];
+const productIdeaRules = productIdeasData?.compatibility_rules ?? [];
 const capabilities = capabilitiesData?.capabilities ?? [];
 const domains = domainsData?.domains ?? [];
 const events = eventsData?.events ?? [];
@@ -117,6 +122,10 @@ const resourceIds = new Set(Object.keys(resources));
 const capabilityIds = idsAreUnique("capabilities", capabilities);
 const domainIds = idsAreUnique("domains", domains);
 const productIds = idsAreUnique("products", products);
+idsAreUnique("product_ideas.subjects", productIdeaSubjects);
+idsAreUnique("product_ideas.product_types", productIdeaTypes);
+idsAreUnique("product_ideas.bold_options", productIdeaBoldOptions);
+idsAreUnique("product_ideas.compatibility_rules", productIdeaRules);
 idsAreUnique("events", events);
 const upgradeIds = idsAreUnique("upgrades", upgrades);
 idsAreUnique("automation_upgrades", automationUpgrades);
@@ -154,6 +163,40 @@ for (const product of products) {
     if (!capabilityIds.has(capabilityId)) errors.push(`product "${product.id}": unknown capability "${capabilityId}"`);
     if (typeof requiredLevel !== "number") errors.push(`product "${product.id}": capability "${capabilityId}" level must be numeric`);
   }
+}
+
+for (const subject of productIdeaSubjects) {
+  if (!domainIds.has(subject.domain)) errors.push(`product_ideas subject "${subject.id}": unknown domain "${subject.domain}"`);
+  if (!Array.isArray(subject.tags) || subject.tags.length === 0) errors.push(`product_ideas subject "${subject.id}": tags required`);
+  if (typeof subject.market_heat !== "number") errors.push(`product_ideas subject "${subject.id}": market_heat must be numeric`);
+  if (typeof subject.risk !== "number") errors.push(`product_ideas subject "${subject.id}": risk must be numeric`);
+  for (const capabilityId of Object.keys(subject.capability_bias ?? {})) {
+    if (!capabilityIds.has(capabilityId)) errors.push(`product_ideas subject "${subject.id}": unknown capability "${capabilityId}"`);
+  }
+}
+
+for (const productType of productIdeaTypes) {
+  if (!Array.isArray(productType.tags) || productType.tags.length === 0) errors.push(`product_ideas type "${productType.id}": tags required`);
+  if (typeof productType.cost_multiplier !== "number") errors.push(`product_ideas type "${productType.id}": cost_multiplier must be numeric`);
+  if (typeof productType.score_bonus !== "number") errors.push(`product_ideas type "${productType.id}": score_bonus must be numeric`);
+  for (const capabilityId of Object.keys(productType.capability_bias ?? {})) {
+    if (!capabilityIds.has(capabilityId)) errors.push(`product_ideas type "${productType.id}": unknown capability "${capabilityId}"`);
+  }
+}
+
+for (const option of productIdeaBoldOptions) {
+  if (!Array.isArray(option.tags) || option.tags.length === 0) errors.push(`product_ideas option "${option.id}": tags required`);
+  for (const field of ["cost_multiplier", "score_delta", "risk_delta"]) {
+    if (typeof option[field] !== "number") errors.push(`product_ideas option "${option.id}": ${field} must be numeric`);
+  }
+}
+
+if (productIdeaSubjects.length * productIdeaTypes.length * productIdeaBoldOptions.length < 5000) {
+  errors.push("product_ideas: expected at least 5000 possible combinations");
+}
+
+if (productIdeaRules.length < 30) {
+  errors.push("product_ideas: expected at least 30 compatibility rules");
 }
 
 for (const capability of capabilities) {

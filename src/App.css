@@ -2220,6 +2220,122 @@ p {
   grid-template-columns: 1fr;
 }
 
+.idea-composer-panel,
+.renewal-option-panel {
+  background: #f4fbff;
+  border: 2px solid #9cb8d6;
+  display: grid;
+  gap: 9px;
+  grid-template-columns: 1fr;
+  margin-bottom: 12px;
+  padding: 10px;
+}
+
+.idea-composer-panel {
+  grid-template-columns: 1fr;
+}
+
+.idea-picker-grid {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.idea-picker-grid label {
+  display: grid;
+  gap: 4px;
+}
+
+.idea-picker-grid span {
+  color: #334b5e;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.idea-picker-grid select {
+  background: #fffdf7;
+  border: 2px solid var(--line);
+  color: #2e2415;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 900;
+  min-height: 36px;
+  padding: 6px;
+  width: 100%;
+}
+
+.idea-result-card {
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.idea-result-card.tier-wild,
+.idea-result-card.tier-legendary {
+  background: #fff7df;
+  border-color: #d8922b;
+}
+
+.idea-result-card h3,
+.idea-result-card p {
+  margin-bottom: 0;
+}
+
+.idea-score-grid,
+.idea-tag-list,
+.renewal-option-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.idea-score-grid span,
+.idea-tag-list span,
+.renewal-option-grid article {
+  background: #fffaf0;
+  border: 2px solid #d8c49b;
+  color: #4f3b21;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.25;
+  padding: 7px;
+}
+
+.idea-tag-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.idea-tag-list .risk {
+  background: #fff1df;
+  border-color: #d8a18a;
+  color: #7a301f;
+}
+
+.renewal-option-grid article {
+  display: grid;
+  gap: 5px;
+  min-height: 120px;
+}
+
+.renewal-option-grid strong,
+.renewal-option-grid span,
+.renewal-option-grid small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.renewal-option-grid strong {
+  color: var(--green-dark);
+  font-size: 0.8rem;
+}
+
+.renewal-option-grid span,
+.renewal-option-grid small {
+  color: #5f5546;
+}
+
 .expansion-map,
 .rival-wave-list {
   display: grid;

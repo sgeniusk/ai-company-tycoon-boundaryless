@@ -31,6 +31,56 @@ export interface ProductDefinition {
   tags: string[];
 }
 
+export interface ProductIdeaSubjectDefinition {
+  id: string;
+  name: string;
+  description: string;
+  domain: string;
+  tags: string[];
+  capability_bias: Record<string, number>;
+  market_heat: number;
+  risk: number;
+}
+
+export interface ProductIdeaTypeDefinition {
+  id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  capability_bias: Record<string, number>;
+  cost_multiplier: number;
+  score_bonus: number;
+}
+
+export interface ProductIdeaBoldOptionDefinition {
+  id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  cost_multiplier: number;
+  score_delta: number;
+  risk_delta: number;
+}
+
+export interface ProductIdeaCompatibilityRuleDefinition {
+  id: string;
+  subject_tags?: string[];
+  type_tags?: string[];
+  option_tags?: string[];
+  title_prefix?: string;
+  pitch?: string;
+  score_bonus: number;
+  strengths: string[];
+  risks: string[];
+}
+
+export interface ProductIdeaDatabaseDefinition {
+  subjects: ProductIdeaSubjectDefinition[];
+  product_types: ProductIdeaTypeDefinition[];
+  bold_options: ProductIdeaBoldOptionDefinition[];
+  compatibility_rules: ProductIdeaCompatibilityRuleDefinition[];
+}
+
 export interface CapabilityDefinition {
   id: string;
   name: string;

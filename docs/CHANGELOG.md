@@ -4,6 +4,25 @@
 
 ---
 
+## [0.27-alpha] — 2026-05-17
+
+### 제품 아이디어 조합실과 리뉴얼 출시 기반
+
+**추가:**
+- `data/product_ideas.json`을 추가해 소재/산업 24개, 제품 타입 12개, 파격 옵션 18개, 특수 궁합 규칙 36개를 데이터화했다.
+- `createProductConcept()` 조합 엔진을 추가해 모든 소재 × 타입 × 옵션 조합이 제목, 피치, 궁합 점수, 비용, 필요 역량, 강점/위험을 생성한다.
+- 기존 제품을 `메이저 업데이트`, `리뉴얼 출시`, `파생 제품`으로 다시 출시할 수 있는 후보 모델을 추가했다.
+- 제품 메뉴 상단에 `아이디어 조합실`과 `기존 제품 리뉴얼 후보` 패널을 추가했다.
+- 데이터 검증 하네스가 제품 아이디어 데이터의 도메인, 역량, 조합 수, 궁합 규칙 수를 검사한다.
+
+**검증:**
+- `npm test -- src/game/product-ideas.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 19 tests
+- `npm run validate:data` 통과
+- `npm run harness:gate` 통과, 31 files / 202 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5180/?scenario=launch-impact&menu=products` 데스크톱/모바일 렌더링 확인
+
+---
+
 ## [0.26-alpha] — 2026-05-17
 
 ### 게임 화면 프레임 2차 압축

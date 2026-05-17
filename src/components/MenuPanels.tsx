@@ -24,6 +24,14 @@ import {
   type ItemContentRow,
 } from "../game/content-foundation";
 import { getGrowthPathObjectives } from "../game/growth-objectives";
+import {
+  createProductConcept,
+  getProductIdeaCoverage,
+  getRenewalReleaseOptions,
+  productIdeaBoldOptions,
+  productIdeaSubjects,
+  productIdeaTypes,
+} from "../game/product-ideas";
 import { ALL_PRODUCT_DOMAIN_FILTER_ID, getProductDomainFilters, getProductsByDomainFilter } from "../game/product-filters";
 import { getRivalCounterPlans } from "../game/rival-counters";
 import { getShareableMoments } from "../game/shareable-moments";
@@ -850,6 +858,9 @@ function ProductsPanel({
 }) {
   const [selectedAgentIdsByProduct, setSelectedAgentIdsByProduct] = useState<Record<string, string[]>>({});
   const [selectedDomainFilterId, setSelectedDomainFilterId] = useState(ALL_PRODUCT_DOMAIN_FILTER_ID);
+  const [selectedIdeaSubjectId, setSelectedIdeaSubjectId] = useState(productIdeaSubjects[0]?.id ?? "");
+  const [selectedIdeaTypeId, setSelectedIdeaTypeId] = useState(productIdeaTypes[0]?.id ?? "");
+  const [selectedIdeaOptionId, setSelectedIdeaOptionId] = useState(productIdeaBoldOptions[0]?.id ?? "");
   const availableAgents = gameState.hiredAgents.filter((agent) => !agent.assignment);
   const defaultSelectedAgentIds = availableAgents.slice(0, 3).map((agent) => agent.id);
   const expansionDomainIds = ["foundation_models", "semiconductors", "mobility", "robotics", "odd_industries", "toys"];
@@ -857,6 +868,9 @@ function ProductsPanel({
   const boundarylessGoals = getBoundarylessExpansionGoals(gameState);
   const domainFilters = getProductDomainFilters(products, domains, gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "products");
+  const ideaCoverage = getProductIdeaCoverage();
+  const selectedConcept = createProductConcept(selectedIdeaSubjectId, selectedIdeaTypeId, selectedIdeaOptionId);
+  const renewalProducts = products.filter((product) => gameState.activeProducts.includes(product.id)).slice(0, 3);
   const filteredProducts = prioritizeAnnualStrategyFocus(
     getProductsByDomainFilter(products, selectedDomainFilterId).map((product) => product.id),
     strategyFocus,
@@ -896,6 +910,79 @@ function ProductsPanel({
           <span>{strategyFocus.reason}</span>
         </div>
       )}
+      <div className="idea-composer-panel">
+        <div className="panel-heading compact-heading">
+          <h3>아이디어 조합실</h3>
+          <p>
+            소재 {ideaCoverage.subjects}개 × 타입 {ideaCoverage.productTypes}개 × 파격 옵션 {ideaCoverage.boldOptions}개,
+            총 {ideaCoverage.totalCombinations.toLocaleString("ko-KR")}개 조합을 검토합니다.
+          </p>
+        </div>
+        <div className="idea-picker-grid">
+          <label>
+            <span>소재/산업</span>
+            <select value={selectedIdeaSubjectId} onChange={(event) => setSelectedIdeaSubjectId(event.target.value)}>
+              {productIdeaSubjects.map((subject) => (
+                <option value={subject.id} key={subject.id}>{subject.name}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>제품 타입</span>
+            <select value={selectedIdeaTypeId} onChange={(event) => setSelectedIdeaTypeId(event.target.value)}>
+              {productIdeaTypes.map((ideaType) => (
+                <option value={ideaType.id} key={ideaType.id}>{ideaType.name}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>파격 옵션</span>
+            <select value={selectedIdeaOptionId} onChange={(event) => setSelectedIdeaOptionId(event.target.value)}>
+              {productIdeaBoldOptions.map((option) => (
+                <option value={option.id} key={option.id}>{option.name}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <article className={`idea-result-card tier-${selectedConcept.noveltyTier}`}>
+          <div>
+            <p className="item-meta">{selectedConcept.suggestedDomain} / {selectedConcept.noveltyTier}</p>
+            <h3>{selectedConcept.title}</h3>
+            <p>{selectedConcept.pitch}</p>
+          </div>
+          <div className="idea-score-grid">
+            <span>궁합 {selectedConcept.score}점</span>
+            <span>비용 {formatCost(selectedConcept.prototypeCost)}</span>
+            <span>필요 {selectedConcept.capabilityRequirements.slice(0, 2).join(", ")}</span>
+          </div>
+          <div className="idea-tag-list">
+            {selectedConcept.strengths.slice(0, 4).map((strength) => <span key={strength}>강점 {strength}</span>)}
+            {selectedConcept.risks.slice(0, 3).map((risk) => <span className="risk" key={risk}>위험 {risk}</span>)}
+          </div>
+        </article>
+      </div>
+      <div className="renewal-option-panel">
+        <div className="panel-heading compact-heading">
+          <h3>기존 제품 리뉴얼 후보</h3>
+          <p>새 제품만 찍어내는 대신 대표 제품을 메이저 업데이트, 리뉴얼, 파생 라인으로 다시 출시합니다.</p>
+        </div>
+        {renewalProducts.length ? (
+          <div className="renewal-option-grid">
+            {renewalProducts.flatMap((product) =>
+              getRenewalReleaseOptions(product, getProductLevel(product.id, gameState) + 1).map((option) => (
+                <article key={`${product.id}-${option.id}`}>
+                  <p className="item-meta">{product.name}</p>
+                  <strong>{option.releaseName}</strong>
+                  <span>{option.description}</span>
+                  <small>{option.effects.join(" / ")}</small>
+                </article>
+              )),
+            )}
+          </div>
+        ) : (
+          <p className="empty-note">첫 제품을 출시하면 여기에서 v2, 리뉴얼, 파생 라인 후보가 뜹니다.</p>
+        )}
+      </div>
       <div className="expansion-map">
         {expansionDomainIds.map((domainId) => {
           const domain = domains.find((entry) => entry.id === domainId);
