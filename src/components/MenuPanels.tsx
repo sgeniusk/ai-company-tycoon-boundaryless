@@ -26,6 +26,7 @@ import {
 import { getGrowthPathObjectives } from "../game/growth-objectives";
 import { ALL_PRODUCT_DOMAIN_FILTER_ID, getProductDomainFilters, getProductsByDomainFilter } from "../game/product-filters";
 import { getRivalCounterPlans } from "../game/rival-counters";
+import { getShareableMoments } from "../game/shareable-moments";
 import { getTenMonthArc } from "../game/ten-month-arc";
 import {
   createDevelopmentPuzzle,
@@ -1840,12 +1841,27 @@ function boundarylessStatusLabel(status: "locked" | "unlocked" | "launched"): st
 }
 
 function TimelinePanel({ gameState }: { gameState: GameState }) {
+  const moments = getShareableMoments(gameState);
+
   return (
     <section className="panel timeline-panel">
       <div className="panel-heading">
         <h2>회사 기록</h2>
         <p>결정의 결과가 즉시 기록됩니다.</p>
       </div>
+      {moments.length > 0 && (
+        <div className="highlight-moment-grid">
+          {moments.map((moment) => (
+            <article className={`highlight-moment-card tone-${moment.tone}`} key={`${moment.type}-${moment.title}`}>
+              <div>
+                <strong>{moment.title}</strong>
+                <span>{moment.badge}</span>
+              </div>
+              <p>{moment.detail}</p>
+            </article>
+          ))}
+        </div>
+      )}
       <ol className="timeline">
         {gameState.timeline.map((entry, index) => (
           <li key={`${entry}-${index}`}>{entry}</li>

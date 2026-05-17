@@ -33,6 +33,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "result",
       "readiness",
       "persona20",
+      "launch-impact",
     ]);
   });
 
@@ -196,6 +197,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.timeline.some((entry) => entry.includes("우측 보조 패널"))).toBe(true);
   });
 
+  it("creates a v0.22 launch impact scenario with card-influenced release feedback", () => {
+    const scenario = createQaScenario("launch-impact");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("출시 체감");
+    expect(scenario.state.lastRelease?.productName).toBeTruthy();
+    expect(scenario.state.timeline[0]).toContain("출시 체감 QA");
+    expect(scenario.state.roguelite.deck.discardPile).toEqual(expect.arrayContaining(["prompt_sprint", "customer_interviews"]));
+  });
+
   it("creates a 10-year finale scenario for ending QA", () => {
     const scenario = createQaScenario("finale");
 
@@ -287,6 +298,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
     expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");
     expect(createQaScenarioFromSearch("?scenario=persona20")?.id).toBe("persona20");
+    expect(createQaScenarioFromSearch("?scenario=launch-impact")?.id).toBe("launch-impact");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });

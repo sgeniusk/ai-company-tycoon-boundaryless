@@ -39,4 +39,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.stage-side-panel\s*{[^}]*overflow:\s*auto/s);
     expect(appCss).toMatch(/\.stage-side-panel\s*>\s*article/s);
   });
+
+  it("gives launch impact feedback a distinct reward panel inside the results tab", () => {
+    expect(appCss).toMatch(/\.launch-impact-panel\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.launch-impact-badges\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.card-impact-list\s*{[^}]*gap:/s);
+  });
+
+  it("shows shareable timeline moments as a compact highlight grid", () => {
+    expect(appCss).toMatch(/\.highlight-moment-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.highlight-moment-card\s*{[^}]*min-height:/s);
+    expect(appCss).toMatch(/\.highlight-moment-card\.tone-positive/s);
+  });
 });

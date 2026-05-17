@@ -1,0 +1,55 @@
+import { describe, expect, it } from "vitest";
+import { products } from "./data";
+import { getShareableMoments } from "./shareable-moments";
+import { createInitialState, launchProduct } from "./simulation";
+
+describe("v0.23 shareable moment harness", () => {
+  it("captures a release as a screenshot-worthy moment", () => {
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!writingProduct) throw new Error("Missing writing product");
+
+    const launched = launchProduct(writingProduct, createInitialState());
+    const moments = getShareableMoments(launched);
+
+    expect(moments[0]).toMatchObject({
+      type: "launch",
+      title: expect.stringContaining("AI 글쓰기"),
+      tone: "positive",
+    });
+    expect(moments[0].badge).toContain("점");
+  });
+
+  it("captures rival pressure and final endings alongside launch moments", () => {
+    const finalState = {
+      ...createInitialState(),
+      month: 120,
+      status: "success" as const,
+      locationId: "seoul_ai_tower",
+      activeProducts: products.slice(0, 6).map((product) => product.id),
+      productLevels: Object.fromEntries(products.slice(0, 6).map((product) => [product.id, 1])),
+      resources: {
+        ...createInitialState().resources,
+        cash: 240000,
+        users: 180000,
+        trust: 86,
+        automation: 70,
+      },
+      competitorStates: createInitialState().competitorStates.map((competitor) =>
+        competitor.id === "competitor_chatgody"
+          ? {
+              ...competitor,
+              marketShare: 42,
+              score: 180,
+              lastMove: "고객지원 챗봇 시장 선점",
+            }
+          : competitor,
+      ),
+    };
+
+    const moments = getShareableMoments(finalState);
+
+    expect(moments.map((moment) => moment.type)).toEqual(expect.arrayContaining(["ending", "rival"]));
+    expect(moments.find((moment) => moment.type === "ending")?.badge).toMatch(/[SABCD]랭크/);
+    expect(moments.find((moment) => moment.type === "rival")?.detail).toContain("고객지원");
+  });
+});

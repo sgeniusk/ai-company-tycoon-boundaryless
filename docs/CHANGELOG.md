@@ -4,6 +4,25 @@
 
 ---
 
+## [0.23-alpha] — 2026-05-17
+
+### 출시 체감과 공유 가능한 사건
+
+**추가:**
+- `v0.22` 출시 체감 패널을 추가했다.
+- 출시 결과에 첫 5분 보상, 카드 보상, 카드 영향 배지를 표시한다.
+- 최근 사용 카드가 개발 진행/완성도/신뢰 등에 준 영향을 출시 결과에서 보여준다.
+- `?scenario=launch-impact` QA 시나리오를 추가했다.
+- `evaluateSeasonChallengeBalance`로 시즌 과제 보상/압박 가드레일을 점검한다.
+- `v0.23` 회사 기록 메뉴에 공유 가능한 하이라이트 카드를 추가했다.
+
+**검증:**
+- `npm test -- src/game/release-impact.test.ts src/game/shareable-moments.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts src/game/run-simulator.test.ts` 통과, 5 files / 42 tests
+- `npm run harness:gate` 통과, 29 files / 186 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5180/?scenario=launch-impact` 렌더링 확인, `/tmp/ai-company-v023-launch-impact.png`
+
+---
+
 ## [0.21-alpha] — 2026-05-17
 
 ### 20인 검증과 보조 패널 압축

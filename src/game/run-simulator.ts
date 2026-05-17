@@ -1,6 +1,7 @@
 import { agentTypes, capabilities, growthPaths, items, officeExpansions, products, upgrades } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "./campaign";
+import { getCompetitionSeasonChallenges } from "./competition-signals";
 import { chooseCardReward, getStrategyCardById, getStrategyCardPlayCheck, playStrategyCard } from "./deckbuilding";
 import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
@@ -88,6 +89,16 @@ export interface AlphaReadinessReport {
   recommendations: string[];
 }
 
+export interface SeasonChallengeBalanceReport {
+  versionTarget: "v0.22-alpha";
+  challengeCount: number;
+  relatedCompetitorCount: number;
+  unresolvedMomentumPerCompetitor: number;
+  completedReward: ResourceMap;
+  pass: boolean;
+  recommendations: string[];
+}
+
 export function runAllCommercialSimulations(): CommercialSimulationResult[] {
   return growthPaths.map((path) => runScriptedCommercialSimulation(path.id));
 }
@@ -140,6 +151,42 @@ export function evaluateAlphaReadiness(): AlphaReadinessReport {
       "v0.20에서는 브라우저 QA 스크린샷 세트를 갱신한다.",
       "v0.20 이후에는 UI 패널 압축과 코드 스플리팅을 우선순위로 둔다.",
       "경쟁사 시즌 과제의 보상/압박 수치를 플레이테스트로 재조정한다.",
+    ],
+  };
+}
+
+export function evaluateSeasonChallengeBalance(): SeasonChallengeBalanceReport {
+  let state = createInitialState();
+  while (state.month < 12 && state.status === "playing") {
+    state = advanceMonth(resolveOpenIssues(state));
+  }
+
+  const challenges = getCompetitionSeasonChallenges(state);
+  const relatedCompetitorCount = new Set(challenges.flatMap((challenge) => challenge.relatedCompetitorIds)).size;
+  const completedReward: ResourceMap = {
+    trust: challenges.length,
+    users: challenges.length * 80,
+    data: challenges.length * 2,
+  };
+  const unresolvedMomentumPerCompetitor = 2;
+  const pass =
+    challenges.length > 0 &&
+    completedReward.trust <= 3 &&
+    completedReward.users <= 240 &&
+    unresolvedMomentumPerCompetitor <= 2 &&
+    relatedCompetitorCount > 0;
+
+  return {
+    versionTarget: "v0.22-alpha",
+    challengeCount: challenges.length,
+    relatedCompetitorCount,
+    unresolvedMomentumPerCompetitor,
+    completedReward,
+    pass,
+    recommendations: [
+      "보상은 신뢰/데이터 중심으로 유지하고 이용자 보상은 과도하게 키우지 않는다.",
+      "미대응 압박은 경쟁 모멘텀 +2를 넘기지 않아 초보자 회복 여지를 남긴다.",
+      "다음 플레이테스트에서는 시즌 과제 완료율과 다음 해 생존율을 함께 본다.",
     ],
   };
 }

@@ -10,6 +10,7 @@ import {
   type OpeningObjective,
 } from "../game/guidance";
 import { resetRunWithMetaUnlocks } from "../game/meta-progression";
+import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
@@ -142,6 +143,7 @@ export function GameStage({
     .slice(0, Math.min(7, officeDecorationSlots + 3));
   const chosenGrowthPathId = gameState.chosenGrowthPath?.id;
   const runSummary = getRunSummary(gameState);
+  const releaseImpact = getReleaseImpactSummary(gameState);
   const calendar = getCampaignCalendar(gameState);
   const finale = getCampaignFinale(gameState);
   const stageProgress = getCompanyStageProgress(gameState);
@@ -369,6 +371,7 @@ export function GameStage({
                   </div>
                   <h2>{gameState.lastRelease.productName}</h2>
                   <p className="release-headline">{gameState.lastRelease.headline}</p>
+                  {releaseImpact && <LaunchImpactPanel summary={releaseImpact} />}
                   <p>{gameState.lastRelease.review.quote}</p>
                   <p className="market-reaction">{gameState.lastRelease.marketReaction}</p>
                   <p className="expansion-hint">{gameState.lastRelease.expansionHint}</p>
@@ -483,6 +486,41 @@ export function GameStage({
         </div>
       </div>
     </section>
+  );
+}
+
+function LaunchImpactPanel({ summary }: { summary: ReleaseImpactSummary }) {
+  return (
+    <div className="launch-impact-panel">
+      <div>
+        <strong>{summary.headline}</strong>
+        <span>{summary.description}</span>
+      </div>
+      <div className="launch-impact-badges">
+        {summary.badges.map((badge) => (
+          <span key={badge}>{badge}</span>
+        ))}
+      </div>
+      <div className="launch-resource-list">
+        {summary.resourceHighlights.map((highlight) => (
+          <span className={highlight.amount > 0 ? "positive" : ""} key={highlight.resourceId}>
+            {highlight.label} {highlight.amount > 0 ? "+" : ""}
+            {highlight.amount.toLocaleString("ko-KR")}
+          </span>
+        ))}
+      </div>
+      {summary.cardInfluences.length > 0 && (
+        <div className="card-impact-list">
+          {summary.cardInfluences.map((influence) => (
+            <span key={influence.cardId}>
+              <strong>{influence.cardName}</strong>
+              {influence.effects}
+            </span>
+          ))}
+        </div>
+      )}
+      <small>{summary.nextAction}</small>
+    </div>
   );
 }
 

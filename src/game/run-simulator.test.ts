@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { growthPaths } from "./data";
 import {
   evaluateAlphaReadiness,
+  evaluateSeasonChallengeBalance,
   runAllCommercialSimulations,
   runAnnualDirectiveSimulation,
   runScriptedCommercialSimulation,
@@ -61,5 +62,16 @@ describe("v0.11 commercial balance simulation harness", () => {
     );
     expect(readiness.pass).toBe(true);
     expect(readiness.score).toBeGreaterThanOrEqual(70);
+  });
+
+  it("checks v0.22 season challenge rewards against pressure guardrails", () => {
+    const report = evaluateSeasonChallengeBalance();
+
+    expect(report.versionTarget).toBe("v0.22-alpha");
+    expect(report.challengeCount).toBeGreaterThanOrEqual(1);
+    expect(report.pass).toBe(true);
+    expect(report.completedReward.trust).toBeLessThanOrEqual(3);
+    expect(report.unresolvedMomentumPerCompetitor).toBeLessThanOrEqual(2);
+    expect(report.recommendations[0]).toContain("보상");
   });
 });

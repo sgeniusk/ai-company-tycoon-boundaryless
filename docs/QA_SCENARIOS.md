@@ -35,6 +35,7 @@ Use the local app URL and append one of these query strings:
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 | Readiness | `?scenario=readiness` | v0.20 alpha readiness state from the integrated simulation harness |
 | Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
+| Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 
 Examples:
 
@@ -61,6 +62,22 @@ Examples:
 - `http://localhost:5173/?scenario=result`
 - `http://localhost:5173/?scenario=readiness`
 - `http://localhost:5173/?scenario=persona20`
+- `http://localhost:5173/?scenario=launch-impact`
+
+## v0.22 Launch Impact QA
+
+URL:
+
+- `?scenario=launch-impact`
+- `?scenario=launch-impact&menu=log`
+
+Expected:
+
+- The QA pill says `v0.22 출시 체감 QA`.
+- The result tab shows a launch impact panel under the release headline.
+- The impact panel includes `첫 5분 보상`, `카드 보상 3장`, and `카드 영향`.
+- The panel names recently used cards such as `프롬프트 스프린트` and `고객 인터뷰`.
+- The log menu shows compact highlight moment cards for launch, rival pressure, or deck reward.
 
 ## v0.21 Persona 20 QA
 

@@ -1,6 +1,6 @@
 import { agentTypes, items, officeExpansions, products } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
-import { createReleaseCardReward } from "./deckbuilding";
+import { createReleaseCardReward, getStrategyCardById, playStrategyCard } from "./deckbuilding";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { runPersonaPlaytestReview } from "./persona-playtest";
 import { evaluateAlphaReadiness, runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
@@ -34,6 +34,7 @@ export const qaScenarioIds = [
   "result",
   "readiness",
   "persona20",
+  "launch-impact",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -307,11 +308,40 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "launch-impact") {
+    return {
+      id,
+      label: "v0.22 출시 체감 QA",
+      state: createLaunchImpactScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
   return {
     id,
     label: "출시 스포트라이트 QA",
     state: releaseState,
     activeMenu: "company",
+  };
+}
+
+function createLaunchImpactScenarioState(): GameState {
+  const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+  const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+  if (!architect || !writingProduct) return createInitialState();
+
+  let state = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+  for (const cardId of ["prompt_sprint", "customer_interviews"]) {
+    const card = getStrategyCardById(cardId);
+    if (card) state = playStrategyCard(card, state);
+  }
+  while (state.productProjects.length > 0 && state.month < 6) {
+    state = advanceMonth(state);
+  }
+
+  return {
+    ...state,
+    timeline: ["출시 체감 QA: 카드가 첫 제품 성과와 보상 패널에 반영됨", ...state.timeline].slice(0, 8),
   };
 }
 
