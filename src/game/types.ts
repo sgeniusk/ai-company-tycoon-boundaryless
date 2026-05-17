@@ -333,6 +333,41 @@ export interface StrategyCardDefinition {
   unlock_requirements: Record<string, number>;
 }
 
+export interface DeckArchetypeDefinition {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  recommended_next_tags: string[];
+  warning_missing_tags: string[];
+}
+
+export interface DeckArchetypeScore extends DeckArchetypeDefinition {
+  matchScore: number;
+  matchedTags: string[];
+}
+
+export interface DeckArchetypeSummary {
+  primary: DeckArchetypeScore;
+  secondary: DeckArchetypeScore[];
+  recommendedNextTags: string[];
+  warning: string;
+}
+
+export interface StarterDeckDefinition {
+  id: string;
+  title: string;
+  description: string;
+  required_meta_id?: string;
+  card_ids: string[];
+  tags: string[];
+}
+
+export interface StarterDeckOption extends StarterDeckDefinition {
+  available: boolean;
+  lockedReason?: string;
+}
+
 export interface StrategyDeckState {
   drawPile: string[];
   hand: string[];
@@ -383,6 +418,7 @@ export interface RogueliteState {
   runNumber: number;
   founderInsight: number;
   unlockedMetaIds: string[];
+  starterDeckId?: string;
   deck: StrategyDeckState;
   deckEditTokens: number;
   upgradedCardIds: string[];

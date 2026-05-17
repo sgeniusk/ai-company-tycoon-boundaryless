@@ -4,6 +4,25 @@
 
 ---
 
+## [0.3-alpha completion] — 2026-05-17
+
+### 덱빌딩과 로그라이트 깊이
+
+**추가:**
+- 덱 아키타입 데이터 `data/deck_archetypes.json`를 추가했다.
+- 시작 덱 데이터 `data/starter_decks.json`를 추가했다.
+- 현재 덱을 `신뢰 하네스`, `런칭 과열`, `자동화 운영`, `라이벌 카운터`, `연구 복리` 빌드로 평가하는 아키타입 요약을 추가했다.
+- 메타 해금에 따라 다음 런의 시작 덱을 선택할 수 있게 했다.
+- 덱 화면에 현재 빌드 패널과 다음 런 시작 덱 선택 영역을 추가했다.
+
+**검증:**
+- `npm test -- src/game/deckbuilding.test.ts` 통과, 16 tests
+- `npm run validate:data` 통과
+- `npm run build` 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=deck` 렌더링 확인
+
+---
+
 ## [0.15.3-playtest] — 2026-05-17
 
 ### 20인 페르소나 실제 실행 플레이테스트

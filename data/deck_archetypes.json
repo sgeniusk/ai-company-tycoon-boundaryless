@@ -1,0 +1,44 @@
+{
+  "deck_archetypes": [
+    {
+      "id": "trust_safety",
+      "title": "신뢰 하네스 빌드",
+      "description": "기업 고객, 안전성, 평가 하네스를 묶어 사고 없는 고품질 출시를 노립니다.",
+      "tags": ["trust", "safety", "enterprise", "quality"],
+      "recommended_next_tags": ["trust", "safety", "enterprise"],
+      "warning_missing_tags": ["growth"]
+    },
+    {
+      "id": "growth_launch",
+      "title": "런칭 과열 빌드",
+      "description": "화제성, 성장, 시장 포지셔닝을 밀어 초반 이용자 폭발을 노립니다.",
+      "tags": ["growth", "hype", "market", "product"],
+      "recommended_next_tags": ["growth", "hype", "market"],
+      "warning_missing_tags": ["trust"]
+    },
+    {
+      "id": "automation_ops",
+      "title": "자동화 운영 빌드",
+      "description": "에이전트와 자동화를 쌓아 월간 운영 효율과 장기 복리 성장을 노립니다.",
+      "tags": ["automation", "agent", "compute", "speed"],
+      "recommended_next_tags": ["automation", "compute", "agent"],
+      "warning_missing_tags": ["safety"]
+    },
+    {
+      "id": "rival_counter",
+      "title": "라이벌 카운터 빌드",
+      "description": "경쟁사 선점 제품을 추적하고 시장 메시지를 바꿔 상대 모멘텀을 깎습니다.",
+      "tags": ["counter", "market", "product", "data"],
+      "recommended_next_tags": ["counter", "market", "data"],
+      "warning_missing_tags": ["research"]
+    },
+    {
+      "id": "research_compound",
+      "title": "연구 복리 빌드",
+      "description": "데이터, 연구, 개발자 생태계를 키워 후반 고난도 제품을 빠르게 엽니다.",
+      "tags": ["research", "data", "developer", "compute"],
+      "recommended_next_tags": ["research", "data", "developer"],
+      "warning_missing_tags": ["growth"]
+    }
+  ]
+}

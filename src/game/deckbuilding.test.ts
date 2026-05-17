@@ -5,8 +5,10 @@ import {
   chooseCardReward,
   createReleaseCardReward,
   drawStrategyCards,
+  getAvailableStarterDecks,
   getCardRewardChoiceCheck,
   getDeckEditCheck,
+  getDeckArchetypeSummary,
   getAnnualDirectiveRewardBiasSummary,
   getAnnualDirectiveRewardBiasMatch,
   getStrategyCardEffects,
@@ -425,5 +427,61 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
     const played = playStrategyCard(sprintCard, upgraded);
 
     expect(played.productProjects[0].progress).toBeGreaterThan(state.productProjects[0].progress + baseEffects.project_progress);
+  });
+
+  it("summarizes the current deck into named build archetypes", () => {
+    const state = {
+      ...createInitialState(),
+      roguelite: {
+        ...createInitialState().roguelite,
+        deck: {
+          drawPile: ["interoperability_shield", "market_repositioning"],
+          hand: ["customer_interviews", "safety_review"],
+          discardPile: ["redteam_drill"],
+          playedThisTurn: [],
+        },
+        upgradedCardIds: ["safety_review"],
+      },
+    };
+
+    const summary = getDeckArchetypeSummary(state);
+
+    expect(summary.primary.id).toBe("trust_safety");
+    expect(summary.primary.title).toBe("신뢰 하네스 빌드");
+    expect(summary.primary.matchScore).toBeGreaterThan(summary.secondary[0].matchScore);
+    expect(summary.recommendedNextTags).toEqual(expect.arrayContaining(["trust", "safety"]));
+    expect(summary.warning).toContain("성장");
+  });
+
+  it("offers meta-gated starter decks for the next run", () => {
+    const finished = {
+      ...createInitialState(),
+      month: 12,
+      status: "success" as const,
+      activeProducts: ["ai_writing_assistant", "meeting_summary_bot"],
+      resources: {
+        ...createInitialState().resources,
+        users: 8000,
+        trust: 90,
+      },
+      roguelite: {
+        ...createInitialState().roguelite,
+        founderInsight: 10,
+        unlockedMetaIds: ["eval_harness", "launch_playbook"],
+      },
+    };
+
+    const options = getAvailableStarterDecks(finished);
+
+    expect(options.map((option) => option.id)).toEqual(
+      expect.arrayContaining(["balanced_founder", "trust_harness", "launch_playbook"]),
+    );
+    expect(options.find((option) => option.id === "automation_ops")?.lockedReason).toContain("자동화 기억");
+
+    const nextRun = resetRunWithMetaUnlocks(finished, [], "trust_harness");
+
+    expect(nextRun.roguelite.starterDeckId).toBe("trust_harness");
+    expect(nextRun.roguelite.deck.hand).toContain("redteam_drill");
+    expect(nextRun.timeline[0]).toContain("신뢰 하네스");
   });
 });

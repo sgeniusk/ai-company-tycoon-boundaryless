@@ -20,6 +20,8 @@ import annualReviewsJson from "../../data/annual_reviews.json";
 import annualDirectiveChoicesJson from "../../data/annual_directive_choices.json";
 import strategyCardsJson from "../../data/strategy_cards.json";
 import metaUnlocksJson from "../../data/meta_unlocks.json";
+import deckArchetypesJson from "../../data/deck_archetypes.json";
+import starterDecksJson from "../../data/starter_decks.json";
 import officeExpansionsJson from "../../data/office_expansions.json";
 import type {
   AchievementDefinition,
@@ -33,6 +35,7 @@ import type {
   CompanyLocationDefinition,
   CompanyStageDefinition,
   CompetitorDefinition,
+  DeckArchetypeDefinition,
   DomainDefinition,
   EventDefinition,
   GrowthPathDefinition,
@@ -42,6 +45,7 @@ import type {
   ResourceDefinition,
   RivalEventDefinition,
   StartingStateDefinition,
+  StarterDeckDefinition,
   StrategyCardDefinition,
   ItemDefinition,
   UpgradeDefinition,
@@ -69,4 +73,6 @@ export const annualReviews = annualReviewsJson.annual_reviews as unknown as Annu
 export const annualDirectiveChoices = annualDirectiveChoicesJson.annual_directive_choices as unknown as AnnualDirectiveChoiceDefinition[];
 export const strategyCards = strategyCardsJson.strategy_cards as unknown as StrategyCardDefinition[];
 export const metaUnlocks = metaUnlocksJson.meta_unlocks as unknown as MetaUnlockDefinition[];
+export const deckArchetypes = deckArchetypesJson.deck_archetypes as unknown as DeckArchetypeDefinition[];
+export const starterDecks = starterDecksJson.starter_decks as unknown as StarterDeckDefinition[];
 export const officeExpansions = officeExpansionsJson.office_expansions as unknown as OfficeExpansionDefinition[];

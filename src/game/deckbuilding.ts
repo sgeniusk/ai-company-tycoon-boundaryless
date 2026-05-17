@@ -1,9 +1,11 @@
-import { capabilities, competitors, metaUnlocks, resources, strategyCards } from "./data";
+import { capabilities, competitors, deckArchetypes, metaUnlocks, resources, starterDecks, strategyCards } from "./data";
 import { getRivalCounterTargetId } from "./rival-counters";
 import type {
   ActionCheck,
   ActiveDevelopmentPuzzleModifier,
   CardRewardChoice,
+  DeckArchetypeScore,
+  DeckArchetypeSummary,
   DevelopmentChallenge,
   GameState,
   PendingCardReward,
@@ -12,6 +14,7 @@ import type {
   ResourceMap,
   RunRecord,
   RogueliteState,
+  StarterDeckOption,
   StrategyCardDefinition,
   StrategyDeckState,
 } from "./types";
@@ -58,8 +61,15 @@ export interface AnnualDirectiveRewardBiasMatch {
   label: string;
 }
 
-export function createInitialStrategyDeck(unlockedMetaIds: string[] = []): StrategyDeckState {
-  const cardIds = getUnlockedStrategyCards(unlockedMetaIds).flatMap((card) => Array.from({ length: card.copies }, () => card.id));
+export function createInitialStrategyDeck(unlockedMetaIds: string[] = [], starterDeckId = "balanced_founder"): StrategyDeckState {
+  const starterDeck = getAvailableStarterDecksFromMetaIds(unlockedMetaIds).find((deck) => deck.id === starterDeckId && deck.available);
+  const baseCardIds = starterDeck
+    ? starterDeck.card_ids
+    : getUnlockedStrategyCards(unlockedMetaIds).flatMap((card) => Array.from({ length: card.copies }, () => card.id));
+  const extraUnlockedCardIds = getUnlockedStrategyCards(unlockedMetaIds)
+    .filter((card) => Boolean(card.unlock_meta_id) && !baseCardIds.includes(card.id))
+    .map((card) => card.id);
+  const cardIds = [...baseCardIds, ...extraUnlockedCardIds];
 
   return {
     hand: cardIds.slice(0, 4),
@@ -73,15 +83,22 @@ export function createInitialRogueliteState(options: {
   runNumber?: number;
   founderInsight?: number;
   unlockedMetaIds?: string[];
+  starterDeckId?: string;
   runHistory?: RunRecord[];
 } = {}): RogueliteState {
   const unlockedMetaIds = [...new Set(options.unlockedMetaIds ?? [])];
+  const starterDeckId = getAvailableStarterDecksFromMetaIds(unlockedMetaIds).some(
+    (deck) => deck.id === (options.starterDeckId ?? "balanced_founder") && deck.available,
+  )
+    ? options.starterDeckId ?? "balanced_founder"
+    : "balanced_founder";
 
   return {
     runNumber: options.runNumber ?? 1,
     founderInsight: options.founderInsight ?? 0,
     unlockedMetaIds,
-    deck: createInitialStrategyDeck(unlockedMetaIds),
+    starterDeckId,
+    deck: createInitialStrategyDeck(unlockedMetaIds, starterDeckId),
     deckEditTokens: 0,
     upgradedCardIds: [],
     rewardHistory: [],
@@ -122,6 +139,46 @@ export function getAnnualDirectiveRewardBiasMatch(
     matchedTagLabels,
     label: `지시 보너스: ${matchedTagLabels.join(", ")}`,
   };
+}
+
+export function getDeckArchetypeSummary(state: GameState): DeckArchetypeSummary {
+  const tagWeights = getDeckTagWeights(state);
+  const scores: DeckArchetypeScore[] = deckArchetypes
+    .map((archetype) => {
+      const matchedTags = archetype.tags.filter((tag) => (tagWeights.get(tag) ?? 0) > 0);
+      const matchScore = archetype.tags.reduce((score, tag) => score + (tagWeights.get(tag) ?? 0), 0);
+      return {
+        ...archetype,
+        matchScore,
+        matchedTags,
+      };
+    })
+    .sort((first, second) => second.matchScore - first.matchScore || first.id.localeCompare(second.id));
+
+  const primary = scores[0] ?? {
+    id: "unknown",
+    title: "미정 빌드",
+    description: "아직 덱 방향이 충분히 드러나지 않았습니다.",
+    tags: [],
+    recommended_next_tags: ["product"],
+    warning_missing_tags: ["growth"],
+    matchScore: 0,
+    matchedTags: [],
+  };
+  const missingWarningTags = primary.warning_missing_tags.filter((tag) => (tagWeights.get(tag) ?? 0) < 2);
+
+  return {
+    primary,
+    secondary: scores.slice(1, 4),
+    recommendedNextTags: primary.recommended_next_tags,
+    warning: missingWarningTags.length
+      ? `${missingWarningTags.map((tag) => cardTagLabels[tag] ?? tag).join(", ")} 카드가 부족해 한쪽으로 치우칠 수 있습니다.`
+      : "현재 덱은 핵심 약점을 보완하고 있습니다.",
+  };
+}
+
+export function getAvailableStarterDecks(state: GameState): StarterDeckOption[] {
+  return getAvailableStarterDecksFromMetaIds(state.roguelite.unlockedMetaIds);
 }
 
 export function getStrategyCardPlayCheck(card: StrategyCardDefinition, state: GameState): ActionCheck {
@@ -328,6 +385,42 @@ export function getDeckCardCounts(deck: StrategyDeckState): Array<{ cardId: stri
   return [...counts.entries()]
     .map(([cardId, count]) => ({ cardId, count }))
     .sort((a, b) => a.cardId.localeCompare(b.cardId));
+}
+
+function getDeckTagWeights(state: GameState): Map<string, number> {
+  const weights = new Map<string, number>();
+  const upgradedCardIds = new Set(state.roguelite.upgradedCardIds ?? []);
+  const rewardCardIds = new Set((state.roguelite.rewardHistory ?? []).map((reward) => reward.chosenCardId));
+
+  for (const cardId of getAllDeckCardIds(state.roguelite.deck)) {
+    const card = getStrategyCardById(cardId);
+    if (!card) continue;
+    const multiplier = 1 + (upgradedCardIds.has(card.id) ? 1 : 0) + (rewardCardIds.has(card.id) ? 0.5 : 0);
+    for (const tag of card.tags) {
+      weights.set(tag, (weights.get(tag) ?? 0) + multiplier);
+    }
+  }
+
+  return weights;
+}
+
+function getAllDeckCardIds(deck: StrategyDeckState): string[] {
+  return [...deck.hand, ...deck.drawPile, ...deck.discardPile, ...deck.playedThisTurn];
+}
+
+function getAvailableStarterDecksFromMetaIds(unlockedMetaIds: string[]): StarterDeckOption[] {
+  const unlockedMeta = new Set(unlockedMetaIds);
+
+  return starterDecks.map((deck) => {
+    const requiredMeta = deck.required_meta_id ? metaUnlocks.find((unlock) => unlock.id === deck.required_meta_id) : undefined;
+    const available = !deck.required_meta_id || unlockedMeta.has(deck.required_meta_id);
+
+    return {
+      ...deck,
+      available,
+      lockedReason: available ? undefined : `${requiredMeta?.title ?? deck.required_meta_id} 필요`,
+    };
+  });
 }
 
 export function drawStrategyCards(count: number, state: GameState): GameState {

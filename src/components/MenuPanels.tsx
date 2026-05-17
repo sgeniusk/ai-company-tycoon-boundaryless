@@ -36,7 +36,9 @@ import {
   chooseCardReward,
   getAnnualDirectiveRewardBiasSummary,
   getAnnualDirectiveRewardBiasMatch,
+  getAvailableStarterDecks,
   getCardRewardChoiceCheck,
+  getDeckArchetypeSummary,
   getDeckCardCounts,
   getDeckEditCheck,
   getStrategyCardById,
@@ -440,6 +442,8 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const selectionLimit = getDevelopmentPuzzleSelectionLimit(gameState, activeProject?.id);
   const resolveCheck = activeProject ? getDevelopmentPuzzleResolveCheck(activeProject.id, selectedPuzzleTileIds, gameState) : undefined;
   const topRivalCounter = getRivalCounterPlans(gameState, 1)[0];
+  const archetypeSummary = getDeckArchetypeSummary(gameState);
+  const starterDeckOptions = getAvailableStarterDecks(gameState);
 
   useEffect(() => {
     if (!puzzle) {
@@ -512,6 +516,23 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             <small>추천 제품 {formatProductNames(topRivalCounter.recommendedProductIds)}</small>
           </div>
         )}
+        <div className="deck-archetype-panel">
+          <div>
+            <p className="eyebrow">현재 빌드</p>
+            <strong>{archetypeSummary.primary.title}</strong>
+            <span>{archetypeSummary.primary.description}</span>
+          </div>
+          <div className="deck-archetype-score-grid">
+            {[archetypeSummary.primary, ...archetypeSummary.secondary].slice(0, 4).map((archetype) => (
+              <span key={archetype.id}>
+                {archetype.title} <b>{archetype.matchScore}</b>
+              </span>
+            ))}
+          </div>
+          <small>
+            다음 보상 추천: {archetypeSummary.recommendedNextTags.join(", ")} · {archetypeSummary.warning}
+          </small>
+        </div>
         {pendingReward && rewardBiasSummary && (
           <div className="reward-bias-strip">
             <strong>{rewardBiasSummary.title}</strong>
@@ -704,6 +725,26 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           </div>
         )}
         <div className="meta-unlock-list">
+          <div className="starter-deck-choice-list">
+            <h3>다음 런 시작 덱</h3>
+            {starterDeckOptions.map((option) => (
+              <article className={option.id === gameState.roguelite.starterDeckId ? "complete" : ""} key={option.id}>
+                <div>
+                  <p className="item-meta">{option.tags.join(" / ")}</p>
+                  <h3>{option.title}</h3>
+                  <p>{option.description}</p>
+                  {!option.available && <small>{option.lockedReason}</small>}
+                </div>
+                <button
+                  disabled={!option.available}
+                  onClick={() => setGameState((current) => resetRunWithMetaUnlocks(current, [], option.id))}
+                  type="button"
+                >
+                  이 덱으로 새 런
+                </button>
+              </article>
+            ))}
+          </div>
           {metaUnlocks.map((unlock) => {
             const check = getMetaUnlockCheck(unlock.id, gameState, projectedInsight);
             const unlocked = gameState.roguelite.unlockedMetaIds.includes(unlock.id);

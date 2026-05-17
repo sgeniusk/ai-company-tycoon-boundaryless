@@ -1,0 +1,35 @@
+{
+  "starter_decks": [
+    {
+      "id": "balanced_founder",
+      "title": "균형 창업자 덱",
+      "description": "제품, 연산, 고객, 안전을 한 장씩 들고 시작하는 기본 덱입니다.",
+      "card_ids": ["prompt_sprint", "gpu_burst", "customer_interviews", "safety_review", "open_source_push", "rival_benchmark_room"],
+      "tags": ["product", "compute", "trust", "starter"]
+    },
+    {
+      "id": "trust_harness",
+      "title": "신뢰 하네스 덱",
+      "description": "초반부터 평가와 안전을 챙겨 B2B 제품과 고품질 출시를 노립니다.",
+      "required_meta_id": "eval_harness",
+      "card_ids": ["customer_interviews", "safety_review", "redteam_drill", "interoperability_shield", "prompt_sprint", "gpu_burst"],
+      "tags": ["trust", "safety", "enterprise"]
+    },
+    {
+      "id": "launch_playbook",
+      "title": "런칭 플레이북 덱",
+      "description": "화제성과 제품 포지셔닝을 당겨 첫 제품의 사용자 폭발을 노립니다.",
+      "required_meta_id": "launch_playbook",
+      "card_ids": ["viral_teaser", "prompt_sprint", "customer_interviews", "market_repositioning", "gpu_burst", "safety_review"],
+      "tags": ["growth", "hype", "market"]
+    },
+    {
+      "id": "automation_ops",
+      "title": "자동화 운영 덱",
+      "description": "반복 업무를 빠르게 넘기고 장기 운영 효율을 쌓는 덱입니다.",
+      "required_meta_id": "automation_memory",
+      "card_ids": ["autonomy_macro", "gpu_burst", "open_source_push", "interoperability_shield", "prompt_sprint", "customer_interviews"],
+      "tags": ["automation", "agent", "compute"]
+    }
+  ]
+}

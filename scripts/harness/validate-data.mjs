@@ -75,6 +75,8 @@ const growthPathsData = readJson("growth_paths.json");
 const achievementsData = readJson("achievements.json");
 const strategyCardsData = readJson("strategy_cards.json");
 const metaUnlocksData = readJson("meta_unlocks.json");
+const deckArchetypesData = readJson("deck_archetypes.json");
+const starterDecksData = readJson("starter_decks.json");
 const officeExpansionsData = readJson("office_expansions.json");
 const annualReviewsData = readJson("annual_reviews.json");
 const annualDirectiveChoicesData = readJson("annual_directive_choices.json");
@@ -100,6 +102,8 @@ const growthPaths = growthPathsData?.growth_paths ?? [];
 const achievements = achievementsData?.achievements ?? [];
 const strategyCards = strategyCardsData?.strategy_cards ?? [];
 const metaUnlocks = metaUnlocksData?.meta_unlocks ?? [];
+const deckArchetypes = deckArchetypesData?.deck_archetypes ?? [];
+const starterDecks = starterDecksData?.starter_decks ?? [];
 const officeExpansions = officeExpansionsData?.office_expansions ?? [];
 const annualReviews = annualReviewsData?.annual_reviews ?? [];
 const annualDirectiveChoices = annualDirectiveChoicesData?.annual_directive_choices ?? [];
@@ -123,6 +127,8 @@ idsAreUnique("growth_paths", growthPaths);
 idsAreUnique("achievements", achievements);
 const strategyCardIds = idsAreUnique("strategy_cards", strategyCards);
 const metaUnlockIds = idsAreUnique("meta_unlocks", metaUnlocks);
+idsAreUnique("deck_archetypes", deckArchetypes);
+idsAreUnique("starter_decks", starterDecks);
 idsAreUnique("office_expansions", officeExpansions);
 idsAreUnique("annual_reviews", annualReviews);
 idsAreUnique("annual_directive_choices", annualDirectiveChoices);
@@ -516,6 +522,35 @@ for (const unlock of metaUnlocks) {
     if (!strategyCardIds.has(cardId)) errors.push(`meta_unlock "${unlock.id}": unknown card "${cardId}"`);
   }
   if (!Array.isArray(unlock.tags) || unlock.tags.length === 0) errors.push(`meta_unlock "${unlock.id}": tags must be a non-empty array`);
+}
+
+for (const archetype of deckArchetypes) {
+  for (const field of ["title", "description", "tags", "recommended_next_tags", "warning_missing_tags"]) {
+    if (!(field in archetype)) errors.push(`deck_archetype "${archetype.id}": missing ${field}`);
+  }
+  for (const arrayField of ["tags", "recommended_next_tags", "warning_missing_tags"]) {
+    if (!Array.isArray(archetype[arrayField]) || archetype[arrayField].length === 0) {
+      errors.push(`deck_archetype "${archetype.id}": ${arrayField} must be a non-empty array`);
+    }
+  }
+}
+
+for (const starterDeck of starterDecks) {
+  for (const field of ["title", "description", "card_ids", "tags"]) {
+    if (!(field in starterDeck)) errors.push(`starter_deck "${starterDeck.id}": missing ${field}`);
+  }
+  if (starterDeck.required_meta_id && !metaUnlockIds.has(starterDeck.required_meta_id)) {
+    errors.push(`starter_deck "${starterDeck.id}": unknown required_meta_id "${starterDeck.required_meta_id}"`);
+  }
+  if (!Array.isArray(starterDeck.card_ids) || starterDeck.card_ids.length < 4) {
+    errors.push(`starter_deck "${starterDeck.id}": card_ids needs at least 4 cards`);
+  }
+  for (const cardId of starterDeck.card_ids ?? []) {
+    if (!strategyCardIds.has(cardId)) errors.push(`starter_deck "${starterDeck.id}": unknown card "${cardId}"`);
+  }
+  if (!Array.isArray(starterDeck.tags) || starterDeck.tags.length === 0) {
+    errors.push(`starter_deck "${starterDeck.id}": tags must be a non-empty array`);
+  }
 }
 
 if (!assetManifestData) {

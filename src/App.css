@@ -2845,6 +2845,49 @@ p {
   margin-bottom: 12px;
 }
 
+.deck-archetype-panel {
+  background: #f8ffef;
+  border: 2px solid #93b771;
+  display: grid;
+  gap: 9px;
+  margin-bottom: 12px;
+  padding: 10px;
+}
+
+.deck-archetype-panel > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.deck-archetype-panel strong {
+  color: var(--green-dark);
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.deck-archetype-panel span,
+.deck-archetype-panel small {
+  color: #4f5d3d;
+  font-size: 0.74rem;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.deck-archetype-score-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.deck-archetype-score-grid span {
+  background: #fffdf7;
+  border: 2px solid #c5d69e;
+  display: flex;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 7px;
+}
+
 .card-hand {
   display: grid;
   gap: 10px;
@@ -3092,6 +3135,21 @@ p {
 .meta-unlock-list {
   display: grid;
   gap: 9px;
+}
+
+.starter-deck-choice-list {
+  background: #eef7ff;
+  border: 2px solid #9cb8d6;
+  display: grid;
+  gap: 8px;
+  margin-bottom: 2px;
+  padding: 10px;
+}
+
+.starter-deck-choice-list h3 {
+  color: #263f52;
+  font-size: 0.86rem;
+  margin-bottom: 0;
 }
 
 .run-record-list {

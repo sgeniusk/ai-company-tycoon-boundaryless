@@ -1422,6 +1422,7 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState): Roguel
     runNumber: Math.max(1, Math.round(sanitizeNumber(value.runNumber, fallback.runNumber))),
     founderInsight: Math.max(0, Math.round(sanitizeNumber(value.founderInsight, fallback.founderInsight))),
     unlockedMetaIds,
+    starterDeckId: typeof value.starterDeckId === "string" ? value.starterDeckId : fallback.starterDeckId,
     deck,
     deckEditTokens: Math.max(0, Math.round(sanitizeNumber(value.deckEditTokens, fallback.deckEditTokens))),
     upgradedCardIds: uniqueStrings(sanitizeStringArray(value.upgradedCardIds, cardIds)),

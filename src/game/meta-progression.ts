@@ -1,5 +1,5 @@
 import { competitors, metaUnlocks, products, resources, strategyCards } from "./data";
-import { createInitialRogueliteState, getMetaStartingResourceEffects } from "./deckbuilding";
+import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
 import type { ActionCheck, GameState, MetaUnlockDefinition, ResourceMap, RunRecord } from "./types";
 import { t } from "../i18n";
@@ -44,7 +44,11 @@ export function getMetaUnlockStatuses(state: GameState): MetaUnlockStatus[] {
   });
 }
 
-export function resetRunWithMetaUnlocks(state: GameState, requestedMetaUnlockIds: string[] = []): GameState {
+export function resetRunWithMetaUnlocks(
+  state: GameState,
+  requestedMetaUnlockIds: string[] = [],
+  starterDeckId = "balanced_founder",
+): GameState {
   const previousRoguelite = state.roguelite;
   const insightReward = getRunInsightReward(state);
   let availableInsight = previousRoguelite.founderInsight + insightReward;
@@ -60,6 +64,14 @@ export function resetRunWithMetaUnlocks(state: GameState, requestedMetaUnlockIds
   }
 
   const nextMetaIds = [...unlockedMetaIds];
+  const starterDeck = getAvailableStarterDecks({
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      unlockedMetaIds: nextMetaIds,
+    },
+  }).find((deck) => deck.id === starterDeckId && deck.available);
+  const nextStarterDeckId = starterDeck?.id ?? "balanced_founder";
   const nextState = createInitialState();
   const startingEffects = getMetaStartingResourceEffects(nextMetaIds);
 
@@ -70,10 +82,11 @@ export function resetRunWithMetaUnlocks(state: GameState, requestedMetaUnlockIds
       runNumber: previousRoguelite.runNumber + 1,
       founderInsight: availableInsight,
       unlockedMetaIds: nextMetaIds,
+      starterDeckId: nextStarterDeckId,
       runHistory: [createRunRecord(state, insightReward), ...(previousRoguelite.runHistory ?? [])].slice(0, 8),
     }),
     timeline: [
-      `새 런 시작: 창업 통찰 ${availableInsight} 보유${newlyUnlocked.length ? `, 해금 ${newlyUnlocked.join(", ")}` : ""}`,
+      `새 런 시작: ${starterDeck?.title ?? "균형 창업자 덱"} · 창업 통찰 ${availableInsight} 보유${newlyUnlocked.length ? `, 해금 ${newlyUnlocked.join(", ")}` : ""}`,
       ...nextState.timeline,
     ].slice(0, 8),
   };
