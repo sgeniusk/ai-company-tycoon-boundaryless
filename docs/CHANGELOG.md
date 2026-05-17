@@ -4,6 +4,26 @@
 
 ---
 
+## [0.34.4-alpha] — 2026-05-18
+
+### 직원 성장과 충성도 경고
+
+**추가:**
+- 고용 인력에 `경험치`, `충성도`, `근속 개월`을 추가했다.
+- 매월 배치된 인력은 프로젝트 경험치를 더 많이 얻고 에너지가 줄어든다.
+- 경험치가 기준치를 넘으면 레벨업하며, 레벨 보너스가 실제 유효 능력치에 반영된다.
+- 계약 압박, 현금 부족, 과로 상태에 따라 충성도가 흔들리고 이직 위험 경고가 표시된다.
+- 에이전트 카드에 경험치 바, 충성도, 성장 보너스, 유지비/계약 배지를 함께 표시한다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 28 tests
+- `npm test -- src/game/staff-career.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 57 tests
+- `npm run harness:gate` 통과, 38 files / 242 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome QA: `http://127.0.0.1:5191/`에서 고용 후 경험치 바 1개, 충성도 배지 1개, 콘솔 오류 0건 확인
+- 스크린샷: `/tmp/ai-company-v0344-staff-career-desktop.png`, `/tmp/ai-company-v0344-staff-career-mobile.png`
+
+---
+
 ## [0.34.3-alpha] — 2026-05-17
 
 ### 월간 채용 후보 풀

@@ -2125,6 +2125,33 @@ p {
   padding: 10px;
 }
 
+.retention-alert-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.retention-alert-list article {
+  background: #fff0d9;
+  border: 2px solid #c99c55;
+  display: grid;
+  gap: 4px;
+  padding: 8px;
+}
+
+.retention-alert-list article.retention-critical {
+  background: #ffe1d8;
+  border-color: var(--red);
+}
+
+.retention-alert-list strong,
+.retention-alert-list span {
+  color: #5f3520;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
 .season-brief-panel {
   background: #fff0d9;
   border-color: #c99c55;
@@ -3794,6 +3821,44 @@ p {
 .agent-quirk {
   font-weight: 900;
   margin-bottom: 0;
+}
+
+.career-panel {
+  display: grid;
+  gap: 6px;
+}
+
+.career-meter {
+  background: #e7d9b8;
+  border: 2px solid var(--line);
+  height: 14px;
+  padding: 2px;
+}
+
+.career-meter i {
+  background: var(--green);
+  display: block;
+  height: 100%;
+  max-width: 100%;
+}
+
+.contract-badge.retention-stable {
+  background: #edf8eb;
+  border-color: #99bf91;
+  color: var(--green-dark);
+}
+
+.contract-badge.retention-watch,
+.contract-badge.retention-warning {
+  background: #fff0d9;
+  border-color: #c99c55;
+  color: #6b431b;
+}
+
+.contract-badge.retention-critical {
+  background: #ffe1d8;
+  border-color: var(--red);
+  color: #7e2b1e;
 }
 
 .equip-row,

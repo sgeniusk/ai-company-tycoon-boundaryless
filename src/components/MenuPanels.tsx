@@ -65,6 +65,7 @@ import {
   buyItem,
   buyUpgrade,
   equipItem,
+  getAgentCareerStatus,
   formatResource,
   getAgentEffectiveStats,
   getAgentHireCheckForChannel,
@@ -97,6 +98,7 @@ import {
   getProductUpgradeCost,
   getRecruitmentCandidatePool,
   getRecruitmentOffer,
+  getAgentRetentionAlerts,
   getUpgradeCheck,
   getWorkforceSynergySummary,
   getRelocationCheck,
@@ -1291,6 +1293,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
   const recommendations = getFoundationRecommendations(gameState, 4);
   const phase = getCampaignContentPhase(gameState);
   const workforceSynergySummary = getWorkforceSynergySummary(gameState);
+  const retentionAlerts = getAgentRetentionAlerts(gameState);
   const selectedRecruitmentChannel = recruitmentChannels.find((channel) => channel.id === recruitmentChannelId) ?? recruitmentChannels[0];
   const candidatePool = getRecruitmentCandidatePool(gameState, recruitmentChannelId);
   const candidateAgentIds = new Set(candidatePool.candidateIds);
@@ -1313,6 +1316,16 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
           <span>AI 운용 {getAiAgentCount(gameState)}/{getAiOperationCapacity(gameState)}</span>
           <span>사람 직원이 늘면 AI 에이전트를 더 안정적으로 굴릴 수 있습니다.</span>
         </div>
+        {retentionAlerts.length > 0 && (
+          <div className="retention-alert-list">
+            {retentionAlerts.slice(0, 2).map((alert) => (
+              <article className={`retention-${alert.severity}`} key={alert.agentId}>
+                <strong>{alert.agentName} · 충성 {alert.loyalty}</strong>
+                <span>{alert.message}</span>
+              </article>
+            ))}
+          </div>
+        )}
         <div className="workforce-synergy-panel">
           <div>
             <p className="eyebrow">팀 조합</p>
@@ -1460,6 +1473,7 @@ function HiredAgentCard({
   const agentSprite = getAgentSprite(agentType?.id);
   const recruitmentChannel = recruitmentChannels.find((channel) => channel.id === agent.recruitmentChannelId);
   const contractUpkeep = agent.upkeep ?? agentType?.upkeep ?? {};
+  const careerStatus = getAgentCareerStatus(agent, gameState);
 
   return (
     <article className="hired-card">
@@ -1491,6 +1505,16 @@ function HiredAgentCard({
         <span>체력 {agent.energy}</span>
         <span>장착 {equippedItems.length}/2</span>
         <span>{recruitmentChannel?.label ?? "기본 계약"}</span>
+      </div>
+      <div className="career-panel">
+        <div className="career-meter" aria-label={`${agent.name} 성장 경험치 ${careerStatus.progressPercent}%`}>
+          <i style={{ width: `${careerStatus.progressPercent}%` }} />
+        </div>
+        <div className="contract-row">
+          <span className="contract-badge">경험 {careerStatus.experience}/{careerStatus.nextLevelExperience}</span>
+          <span className={`contract-badge retention-${careerStatus.retentionSeverity}`}>충성 {careerStatus.loyalty} · {careerStatus.retentionRiskLabel}</span>
+          <span className="contract-badge">능력 보너스 +{careerStatus.levelBonus}</span>
+        </div>
       </div>
       <div className="contract-row">
         <span className="contract-badge">월 유지 {formatCost(contractUpkeep)}</span>

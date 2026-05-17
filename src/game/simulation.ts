@@ -123,6 +123,26 @@ export interface RecruitmentCandidatePool {
   poolSize: number;
 }
 
+export interface AgentCareerStatus {
+  level: number;
+  experience: number;
+  nextLevelExperience: number;
+  progressPercent: number;
+  loyalty: number;
+  retentionSeverity: "stable" | "watch" | "warning" | "critical";
+  retentionRiskLabel: string;
+  monthlyGrowthLabel: string;
+  levelBonus: number;
+}
+
+export interface AgentRetentionAlert {
+  agentId: string;
+  agentName: string;
+  severity: "warning" | "critical";
+  loyalty: number;
+  message: string;
+}
+
 export const recruitmentChannels: RecruitmentChannelDefinition[] = [
   {
     id: "open_recruiting",
@@ -428,6 +448,42 @@ export function getTeamMonthlySalaryCost(state: GameState): number {
   const contractSalary = state.hiredAgents.reduce((total, agent) => total + (getHiredAgentMonthlyUpkeep(agent).cash ?? 0), 0);
 
   return floatingTalentSalary + contractSalary;
+}
+
+export function getAgentCareerStatus(agent: HiredAgent, _state: GameState): AgentCareerStatus {
+  const level = sanitizeAgentLevel(agent.level);
+  const experience = Math.max(0, Math.round(agent.experience ?? 0));
+  const nextLevelExperience = getAgentNextLevelExperience(level);
+  const loyalty = getAgentLoyalty(agent);
+  const retentionSeverity = getRetentionSeverity(loyalty);
+
+  return {
+    level,
+    experience,
+    nextLevelExperience,
+    progressPercent: Math.round(clamp((experience / nextLevelExperience) * 100, 0, 100)),
+    loyalty,
+    retentionSeverity,
+    retentionRiskLabel: getRetentionRiskLabel(retentionSeverity),
+    monthlyGrowthLabel: agent.assignment ? "프로젝트 경험 +2" : "운영 경험 +1",
+    levelBonus: getAgentLevelStatBonus(level),
+  };
+}
+
+export function getAgentRetentionAlerts(state: GameState): AgentRetentionAlert[] {
+  return state.hiredAgents
+    .map((agent) => ({ agent, status: getAgentCareerStatus(agent, state) }))
+    .filter(({ status }) => status.retentionSeverity === "warning" || status.retentionSeverity === "critical")
+    .map(({ agent, status }) => ({
+      agentId: agent.id,
+      agentName: agent.name,
+      severity: status.retentionSeverity === "critical" ? "critical" : "warning",
+      loyalty: status.loyalty,
+      message:
+        status.retentionSeverity === "critical"
+          ? `${agent.name} 이직 위험이 큽니다. 연봉 협상이나 휴식이 필요합니다.`
+          : `${agent.name} 충성도가 흔들립니다. 과로와 계약 압박을 확인하세요.`,
+    }));
 }
 
 export function getAiOperationCapacity(state: GameState): number {
@@ -898,6 +954,9 @@ export function hireAgentViaChannel(agent: AgentTypeDefinition, state: GameState
     name: agent.name,
     level: 1,
     energy: 100,
+    experience: 0,
+    loyalty: getInitialAgentLoyalty(channel.id),
+    monthsEmployed: 0,
     equippedItemIds: [],
     recruitmentChannelId: channel.id,
     salaryMultiplier: channel.upkeepMultiplier,
@@ -1205,8 +1264,9 @@ export function getAgentEffectiveStats(agent: HiredAgent, state: GameState): Age
   const baseStats = type?.stats ?? createEmptyStats();
   const equippedItems = items.filter((item) => agent.equippedItemIds.includes(item.id));
   const contractStats = addStats(baseStats, Object.fromEntries(statKeys.map((stat) => [stat, agent.statBonus ?? 0])));
+  const leveledStats = addStats(contractStats, getAgentLevelStatEffects(baseStats, agent.level));
 
-  return equippedItems.reduce((stats, item) => addStats(stats, item.effects), contractStats);
+  return equippedItems.reduce((stats, item) => addStats(stats, item.effects), leveledStats);
 }
 
 export function getCapabilityCheck(capability: CapabilityDefinition, state: GameState): ActionCheck {
@@ -1330,7 +1390,8 @@ export function advanceMonth(state: GameState): GameState {
     status: getNextStatus(nextResources, state.activeProducts.length, nextMonth),
     timeline: [],
   };
-  const progressedState = advanceProductProjects(nextStateWithoutEvent);
+  const careerState = advanceAgentCareers(nextStateWithoutEvent);
+  const progressedState = advanceProductProjects(careerState);
   const entrantState = addScheduledCompetitors(progressedState);
   const seasonAdjustedState = applySeasonChallengeOutcomes(entrantState);
   const competedState = advanceCompetitors(seasonAdjustedState);
@@ -2025,6 +2086,47 @@ function advanceProductProjects(state: GameState): GameState {
   };
 }
 
+function advanceAgentCareers(state: GameState): GameState {
+  if (state.hiredAgents.length === 0) return state;
+
+  const levelUpNames: string[] = [];
+  const nextAgents = state.hiredAgents.map((agent) => {
+    const assigned = Boolean(agent.assignment);
+    const experienceGain = assigned ? 2 : 1;
+    let level = sanitizeAgentLevel(agent.level);
+    let experience = Math.max(0, Math.round(agent.experience ?? 0)) + experienceGain;
+
+    while (level < 10 && experience >= getAgentNextLevelExperience(level)) {
+      experience -= getAgentNextLevelExperience(level);
+      level += 1;
+      levelUpNames.push(agent.name);
+    }
+
+    const nextEnergy = clamp(agent.energy + (assigned ? -6 : 8), 0, 100);
+    const loyalty = clamp(getAgentLoyalty(agent) + getMonthlyAgentLoyaltyDelta(agent, state, assigned, nextEnergy), 0, 100);
+
+    return {
+      ...agent,
+      level,
+      experience,
+      loyalty,
+      monthsEmployed: (agent.monthsEmployed ?? 0) + 1,
+      energy: nextEnergy,
+    };
+  });
+  const retentionAlerts = getAgentRetentionAlerts({ ...state, hiredAgents: nextAgents });
+  const careerTimeline = [
+    levelUpNames.length ? `직원 성장: ${levelUpNames.slice(0, 2).join(", ")} 레벨업` : "",
+    retentionAlerts[0] ? `인사 경고: ${retentionAlerts[0].message}` : "",
+  ].filter(Boolean);
+
+  return {
+    ...state,
+    hiredAgents: nextAgents,
+    timeline: [...careerTimeline, ...state.timeline].slice(0, 8),
+  };
+}
+
 function getProjectTeamStats(project: ProductProject, state: GameState): AgentStats {
   const projectAgents = state.hiredAgents.filter((agent) => project.assignedAgentIds.includes(agent.id));
   const agentStats = projectAgents.reduce((stats, agent) => addStats(stats, getAgentEffectiveStats(agent, state)), createEmptyStats());
@@ -2623,6 +2725,67 @@ function getRequirementReasons(requirements: Record<string, number>, state: Game
 
 function getAgentKind(agent: AgentTypeDefinition): NonNullable<AgentTypeDefinition["kind"]> {
   return agent.kind ?? "ai_agent";
+}
+
+function sanitizeAgentLevel(level: number | undefined): number {
+  return Math.round(clamp(level ?? 1, 1, 10));
+}
+
+function getAgentLevelStatBonus(level: number | undefined): number {
+  return Math.max(0, sanitizeAgentLevel(level) - 1);
+}
+
+function getAgentLevelStatEffects(baseStats: AgentStats, level: number | undefined): Partial<AgentStats> {
+  const bonus = getAgentLevelStatBonus(level);
+  if (bonus <= 0) return {};
+
+  return Object.fromEntries(
+    [...statKeys]
+      .sort((left, right) => baseStats[right] - baseStats[left])
+      .slice(0, 3)
+      .map((stat) => [stat, bonus]),
+  ) as Partial<AgentStats>;
+}
+
+function getAgentNextLevelExperience(level: number): number {
+  return Math.max(3, sanitizeAgentLevel(level) * 3);
+}
+
+function getInitialAgentLoyalty(channelId?: string): number {
+  if (channelId === "headhunter") return 66;
+  if (channelId === "career_recruiting") return 74;
+  return 82;
+}
+
+function getAgentLoyalty(agent: HiredAgent): number {
+  return Math.round(clamp(agent.loyalty ?? getInitialAgentLoyalty(agent.recruitmentChannelId), 0, 100));
+}
+
+function getMonthlyAgentLoyaltyDelta(agent: HiredAgent, state: GameState, assigned: boolean, nextEnergy: number): number {
+  let delta = agent.recruitmentChannelId === "open_recruiting" ? 1 : 0;
+
+  if ((agent.salaryMultiplier ?? 1) >= 1.7) delta -= 2;
+  else if ((agent.salaryMultiplier ?? 1) >= 1.3) delta -= 1;
+  if ((state.resources.cash ?? 0) < 0) delta -= 4;
+  if (assigned && nextEnergy < 35) delta -= 3;
+  if (!assigned && nextEnergy >= 80) delta += 1;
+  if ((state.resources.trust ?? 50) >= 70) delta += 1;
+
+  return delta;
+}
+
+function getRetentionSeverity(loyalty: number): AgentCareerStatus["retentionSeverity"] {
+  if (loyalty < 30) return "critical";
+  if (loyalty < 45) return "warning";
+  if (loyalty < 60) return "watch";
+  return "stable";
+}
+
+function getRetentionRiskLabel(severity: AgentCareerStatus["retentionSeverity"]): string {
+  if (severity === "critical") return "이직 위험";
+  if (severity === "warning") return "협상 필요";
+  if (severity === "watch") return "주의";
+  return "안정";
 }
 
 function getRecruitmentPoolSize(channelId: RecruitmentChannelId, state: GameState): number {
