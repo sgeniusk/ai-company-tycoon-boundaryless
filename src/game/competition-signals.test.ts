@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { agentTypes, products } from "./data";
 import { advanceMonth, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
-import { getGrowthPathCompetitionSignals } from "./competition-signals";
+import { getCompetitionSeasonBrief, getGrowthPathCompetitionSignals } from "./competition-signals";
 
 describe("alpha v0.9.7 growth path competition signals", () => {
   it("marks competitors that overlap the chosen growth path", () => {
@@ -43,5 +43,23 @@ describe("alpha v0.9.7 growth path competition signals", () => {
       label: "선점 충돌",
       claimedOverlapCount: 1,
     });
+  });
+
+  it("summarizes annual rival season pressure and scheduled challenger waves", () => {
+    let state = createInitialState();
+    while (state.month < 12) {
+      state = advanceMonth(state);
+    }
+
+    const brief = getCompetitionSeasonBrief(state);
+
+    expect(brief.title).toBe("1년차 경쟁 시즌");
+    expect(brief.recentEntrants.map((entry) => entry.id)).toEqual([
+      "competitor_autonova_motors",
+      "competitor_brewchain",
+    ]);
+    expect(brief.nextEntrants.map((entry) => entry.entryMonth)).toEqual([24, 24]);
+    expect(brief.topPressure?.competitorId).toBeTruthy();
+    expect(brief.summary).toContain("신규 경쟁사 2곳");
   });
 });

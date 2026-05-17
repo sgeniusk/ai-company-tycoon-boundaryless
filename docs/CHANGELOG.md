@@ -4,6 +4,24 @@
 
 ---
 
+## [0.15.5-alpha] — 2026-05-17
+
+### 경쟁사 시즌 브리프
+
+**추가:**
+- 현재 연차의 경쟁 상황을 요약하는 `getCompetitionSeasonBrief`를 추가했다.
+- 올해 등장한 신규 경쟁사, 다음 예정 경쟁사, 최대 압박 경쟁사를 계산한다.
+- 회사 현황 메뉴에 `시장 시즌` 패널을 추가했다.
+- 경쟁 메뉴 상단에 `경쟁 시즌` 요약과 최대 압박 경쟁사를 표시한다.
+
+**검증:**
+- `npm test -- src/game/competition-signals.test.ts` 통과, 3 tests
+- `npm test -- src/game/competition-signals.test.ts src/game/qa-scenarios.test.ts` 통과, 26 tests
+- `npm run build` 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=ten-year-sim&menu=competition` 렌더링 확인
+
+---
+
 ## [0.15.4-alpha] — 2026-05-17
 
 ### 회사 승급 트랙

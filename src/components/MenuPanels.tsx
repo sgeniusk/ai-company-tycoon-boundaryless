@@ -11,7 +11,7 @@ import {
 } from "../game/annual-review";
 import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
-import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
+import { getCompetitionSeasonBrief, getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
   getAgentContentRows,
   getCampaignContentPhase,
@@ -159,6 +159,7 @@ export function renderMenuContent(
     const annualDirective = getActiveAnnualDirective(gameState);
     const annualDirectiveChoices = getAnnualDirectiveChoiceRows(gameState);
     const annualStrategyAdvice = getAnnualStrategyAdvice(gameState);
+    const competitionSeason = getCompetitionSeasonBrief(gameState);
 
     return (
       <div className="panel-grid two-col">
@@ -329,6 +330,18 @@ export function renderMenuContent(
                   <span>최종 평가를 준비하세요.</span>
                 </article>
               )}
+            </div>
+          </div>
+          <div className="season-brief-panel">
+            <div>
+              <p className="eyebrow">시장 시즌</p>
+              <h3>{competitionSeason.title}</h3>
+              <span>{competitionSeason.summary}</span>
+            </div>
+            <div className="season-brief-grid">
+              <span>신규 진입 {competitionSeason.recentEntrants.length}곳</span>
+              <span>예고 {competitionSeason.nextEntrants.length}곳</span>
+              <span>{competitionSeason.topPressure ? `압박 ${competitionSeason.topPressure.competitorName}` : "압박 없음"}</span>
             </div>
           </div>
           <div className="foundation-panel">
@@ -1596,6 +1609,7 @@ function ItemCard({
 function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale: LocaleCode }) {
   const rankings = getMarketRankings(gameState);
   const strategySignals = getGrowthPathCompetitionSignals(gameState);
+  const seasonBrief = getCompetitionSeasonBrief(gameState);
   const rivalCounterPlans = getRivalCounterPlans(gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "competition");
   const orderedCompetitorStates = prioritizeAnnualStrategyFocus(gameState.competitorStates.map((competitor) => competitor.id), strategyFocus)
@@ -1613,6 +1627,17 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
         <div className="panel-heading">
           <h2>경쟁사 랭킹</h2>
           <p>{gameState.chosenGrowthPath ? `${gameState.chosenGrowthPath.title} 전략과 부딪히는 경쟁사를 확인합니다.` : "AI 시장 점유율과 경쟁사의 최근 움직임을 봅니다."}</p>
+        </div>
+        <div className="season-brief-panel compact">
+          <div>
+            <p className="eyebrow">{seasonBrief.title}</p>
+            <strong>{seasonBrief.summary}</strong>
+          </div>
+          {seasonBrief.topPressure && (
+            <span>
+              최대 압박: {seasonBrief.topPressure.competitorName} · 점유 {seasonBrief.topPressure.marketShare}% · {seasonBrief.topPressure.lastMove}
+            </span>
+          )}
         </div>
         <div className="ranking-list">
           {rankings.map((ranking, index) => {
@@ -1661,6 +1686,12 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
         )}
         {upcomingCompetitors.length > 0 && (
           <div className="rival-wave-list">
+            {seasonBrief.recentEntrants.length > 0 && (
+              <article className="recent-wave">
+                <strong>올해 등장</strong>
+                <span>{seasonBrief.recentEntrants.map((entrant) => `${entrant.name} (${entrant.entryMonth}개월차)`).join(" / ")}</span>
+              </article>
+            )}
             {upcomingCompetitors.map((competitor) => (
               <article key={competitor.id}>
                 <strong>{t(competitor.name_key, locale)}</strong>

@@ -1,5 +1,7 @@
 import { competitors, growthPaths, products } from "./data";
+import { getCampaignCalendar, MONTHS_PER_YEAR } from "./campaign";
 import type { GameState } from "./types";
+import { t } from "../i18n";
 
 export type CompetitionSignalSeverity = "contested" | "strategic" | "watch" | "low";
 
@@ -10,6 +12,30 @@ export interface GrowthPathCompetitionSignal {
   reason: string;
   overlappingDomains: string[];
   claimedOverlapCount: number;
+}
+
+export interface CompetitionSeasonEntrant {
+  id: string;
+  name: string;
+  entryMonth: number;
+  tier: string;
+  focusDomains: string[];
+}
+
+export interface CompetitionSeasonPressure {
+  competitorId: string;
+  competitorName: string;
+  marketShare: number;
+  score: number;
+  lastMove: string;
+}
+
+export interface CompetitionSeasonBrief {
+  title: string;
+  summary: string;
+  recentEntrants: CompetitionSeasonEntrant[];
+  nextEntrants: CompetitionSeasonEntrant[];
+  topPressure?: CompetitionSeasonPressure;
 }
 
 export function getGrowthPathCompetitionSignals(state: GameState): GrowthPathCompetitionSignal[] {
@@ -70,4 +96,65 @@ export function getGrowthPathCompetitionSignals(state: GameState): GrowthPathCom
       claimedOverlapCount,
     };
   });
+}
+
+export function getCompetitionSeasonBrief(state: GameState): CompetitionSeasonBrief {
+  const calendar = getCampaignCalendar(state);
+  const seasonStart = (calendar.year - 1) * MONTHS_PER_YEAR + 1;
+  const seasonEnd = calendar.year * MONTHS_PER_YEAR;
+  const activeCompetitorIds = new Set(state.competitorStates.map((competitor) => competitor.id));
+  const recentEntrants = competitors
+    .filter((competitor) => {
+      const entryMonth = getCompetitorEntryMonth(competitor);
+      return activeCompetitorIds.has(competitor.id) && entryMonth >= seasonStart && entryMonth <= state.month && entryMonth > 1;
+    })
+    .map(toSeasonEntrant)
+    .sort(sortEntrantsBySchedule);
+  const nextEntrants = competitors
+    .filter((competitor) => getCompetitorEntryMonth(competitor) > state.month)
+    .map(toSeasonEntrant)
+    .sort(sortEntrantsBySchedule)
+    .slice(0, 3);
+  const topPressure = [...state.competitorStates]
+    .sort((a, b) => b.marketShare - a.marketShare || b.score - a.score)
+    .map((competitorState) => {
+      const competitor = competitors.find((entry) => entry.id === competitorState.id);
+      return {
+        competitorId: competitorState.id,
+        competitorName: competitor ? t(competitor.name_key) : competitorState.id,
+        marketShare: competitorState.marketShare,
+        score: Math.round(competitorState.score),
+        lastMove: competitorState.lastMove,
+      };
+    })[0];
+  const comingThisYear = nextEntrants.filter((entrant) => entrant.entryMonth <= seasonEnd).length;
+  const recentSummary = recentEntrants.length ? `신규 경쟁사 ${recentEntrants.length}곳` : "신규 진입 없음";
+  const nextSummary = comingThisYear ? `올해 추가 진입 ${comingThisYear}곳 예고` : nextEntrants.length ? `${nextEntrants[0].entryMonth}개월차 다음 파동 예고` : "남은 예정 경쟁사 없음";
+  const pressureSummary = topPressure ? `최대 압박 ${topPressure.competitorName} 점유 ${topPressure.marketShare}%` : "시장 압박 없음";
+
+  return {
+    title: `${calendar.year}년차 경쟁 시즌`,
+    summary: `${recentSummary} · ${nextSummary} · ${pressureSummary}`,
+    recentEntrants,
+    nextEntrants,
+    topPressure,
+  };
+}
+
+function getCompetitorEntryMonth(competitor: { entry_month?: number }): number {
+  return competitor.entry_month ?? 1;
+}
+
+function toSeasonEntrant(competitor: (typeof competitors)[number]): CompetitionSeasonEntrant {
+  return {
+    id: competitor.id,
+    name: t(competitor.name_key),
+    entryMonth: getCompetitorEntryMonth(competitor),
+    tier: competitor.rival_tier ?? "initial",
+    focusDomains: competitor.focus_domains,
+  };
+}
+
+function sortEntrantsBySchedule(a: CompetitionSeasonEntrant, b: CompetitionSeasonEntrant): number {
+  return a.entryMonth - b.entryMonth || competitors.findIndex((competitor) => competitor.id === a.id) - competitors.findIndex((competitor) => competitor.id === b.id);
 }
