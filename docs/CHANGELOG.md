@@ -4,6 +4,25 @@
 
 ---
 
+## [0.21-alpha] — 2026-05-17
+
+### 20인 검증과 보조 패널 압축
+
+**추가:**
+- 20인 페르소나 데이터를 남성 10명, 여성 10명 구성으로 확장했다.
+- 각 페르소나에 벤치마크와 우려점을 추가했다.
+- `runPersonaPlaytestReview` 하네스를 추가해 평가 점수, 판정, 우선순위, 페르소나별 메모를 생성한다.
+- `?scenario=persona20` QA 시나리오를 추가했다.
+- 우측 보조 패널을 `목표 / 회사 / 월간 / 결과` 탭으로 압축했다.
+- Vite `manualChunks`로 `react-vendor`, `game-data` 청크 분리를 시작했다.
+
+**검증:**
+- `npm test -- src/game/content.test.ts src/game/persona-playtest.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts src/ui/build-config.test.ts` 통과, 5 files / 39 tests
+- `npm run harness:gate` 통과, 27 files / 178 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5179/?scenario=persona20` 렌더링 확인
+
+---
+
 ## [0.20-alpha] — 2026-05-17
 
 ### 플레이테스트 후보 슬라이스

@@ -34,6 +34,7 @@ Use the local app URL and append one of these query strings:
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 | Readiness | `?scenario=readiness` | v0.20 alpha readiness state from the integrated simulation harness |
+| Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
 
 Examples:
 
@@ -59,6 +60,21 @@ Examples:
 - `http://localhost:5173/?scenario=commercial`
 - `http://localhost:5173/?scenario=result`
 - `http://localhost:5173/?scenario=readiness`
+- `http://localhost:5173/?scenario=persona20`
+
+## v0.21 Persona 20 QA
+
+URL:
+
+- `?scenario=persona20`
+
+Expected:
+
+- The top QA pill says `v0.21 20인 페르소나 QA`.
+- The active menu is `회사 기록`.
+- The first timeline entry includes `v0.21 20인 페르소나`.
+- The timeline lists improvement priorities, including right-side panel compression.
+- The right-side stage area uses `목표 / 회사 / 월간 / 결과` tabs instead of always showing every support card.
 
 ## v0.20 Alpha Readiness QA
 

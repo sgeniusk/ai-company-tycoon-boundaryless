@@ -25,6 +25,7 @@ import starterDecksJson from "../../data/starter_decks.json";
 import officeExpansionsJson from "../../data/office_expansions.json";
 import officeSynergiesJson from "../../data/office_synergies.json";
 import workforceSynergiesJson from "../../data/workforce_synergies.json";
+import playtestPersonasJson from "../../data/playtest_personas.json";
 import type {
   AchievementDefinition,
   AnnualDirectiveChoiceDefinition,
@@ -44,6 +45,7 @@ import type {
   MetaUnlockDefinition,
   OfficeExpansionDefinition,
   OfficeSynergyDefinition,
+  PlaytestPersonaDefinition,
   ProductDefinition,
   ResourceDefinition,
   RivalEventDefinition,
@@ -82,3 +84,4 @@ export const starterDecks = starterDecksJson.starter_decks as unknown as Starter
 export const officeExpansions = officeExpansionsJson.office_expansions as unknown as OfficeExpansionDefinition[];
 export const officeSynergies = officeSynergiesJson.office_synergies as unknown as OfficeSynergyDefinition[];
 export const workforceSynergies = workforceSynergiesJson.workforce_synergies as unknown as WorkforceSynergyDefinition[];
+export const playtestPersonas = playtestPersonasJson.personas as unknown as PlaytestPersonaDefinition[];

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agentTypes, capabilities, competitors, growthPaths, items, products, rivalEvents, upgrades } from "./data";
+import { agentTypes, capabilities, competitors, growthPaths, items, playtestPersonas, products, rivalEvents, upgrades } from "./data";
 import { locales, t } from "../i18n";
 
 describe("alpha content data", () => {
@@ -100,6 +100,30 @@ describe("alpha content data", () => {
         expect(t(choice.description_key, "en")).not.toBe(choice.description_key);
       }
     }
+  });
+
+  it("defines a balanced 20-person playtest council with creative and player lenses", () => {
+    const genderCounts = playtestPersonas.reduce<Record<string, number>>((counts, persona) => {
+      counts[persona.gender_mix_slot] = (counts[persona.gender_mix_slot] ?? 0) + 1;
+      return counts;
+    }, {});
+    const personaIds = new Set(playtestPersonas.map((persona) => persona.id));
+
+    expect(playtestPersonas).toHaveLength(20);
+    expect(genderCounts).toMatchObject({ male: 10, female: 10 });
+    expect(Array.from(personaIds)).toEqual(
+      expect.arrayContaining([
+        "male_web_novel_strategist",
+        "female_literary_novelist_lens",
+        "male_comics_creator_lens",
+        "female_childrens_author_lens",
+        "min_max_player",
+        "accessibility_tester",
+        "solo_indie_dev",
+        "mobile_commuter",
+      ]),
+    );
+    expect(playtestPersonas.every((persona) => persona.benchmark && persona.concern)).toBe(true);
   });
 
   it("defines three post-release growth paths with actionable references", () => {

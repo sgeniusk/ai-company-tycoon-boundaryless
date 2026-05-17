@@ -1,4 +1,4 @@
-import { Fragment, type CSSProperties, type Dispatch, type SetStateAction } from "react";
+import { Fragment, useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import { agentTypes, assetManifest, domains, products, resources } from "../game/data";
 import {
   getFirstTenMinutePlan,
@@ -46,6 +46,15 @@ function getAgentSprite(agentTypeId?: string) {
   if (!agentTypeId) return undefined;
   return assetManifest.agent_sprites.find((sprite) => sprite.agent_type_id === agentTypeId);
 }
+
+type StageSideTabId = "guide" | "company" | "reports" | "results";
+
+const stageSideTabs: { id: StageSideTabId; label: string }[] = [
+  { id: "guide", label: "목표" },
+  { id: "company", label: "회사" },
+  { id: "reports", label: "월간" },
+  { id: "results", label: "결과" },
+];
 
 export function TopBar({
   gameState,
@@ -142,6 +151,19 @@ export function GameStage({
     ["growth-path-card", chosenGrowthPathId === pathId ? "selected" : "", chosenGrowthPathId && chosenGrowthPathId !== pathId ? "locked" : ""]
       .filter(Boolean)
       .join(" ");
+  const [activeStageTab, setActiveStageTab] = useState<StageSideTabId>("guide");
+  const hasResultPanel = finale.isFinal || Boolean(gameState.lastRelease) || runSummary.isFinal;
+
+  useEffect(() => {
+    if (hasResultPanel) setActiveStageTab("results");
+  }, [hasResultPanel, gameState.lastRelease?.month, gameState.lastRelease?.productId, runSummary.isFinal, finale.isFinal]);
+
+  const getStageTabHint = (tabId: StageSideTabId) => {
+    if (tabId === "guide") return `${firstTenMinuteProgress}%`;
+    if (tabId === "company") return `${getCompanyStarRating(gameState)}성`;
+    if (tabId === "reports") return gameState.lastMonthReport ? "보고 있음" : "대기";
+    return hasResultPanel ? "새 소식" : "대기";
+  };
 
   const handleGuidanceAction = () => {
     if (guidance.id === "advance_project") {
@@ -229,203 +251,236 @@ export function GameStage({
       </div>
 
       <div className="stage-side">
-        {finale.isFinal && (
-          <article className={`run-summary rank-${finale.rank}`}>
-            <p className="eyebrow">10년 엔딩</p>
-            <div className="run-rank">
-              <strong>{finale.rank}</strong>
-              <span>{finale.endingName} · {finale.score}점</span>
-            </div>
-            <h2>{finale.title}</h2>
-            <p>{finale.verdict}</p>
-          </article>
-        )}
-        <GuidancePanel
-          firstTenMinutePlan={firstTenMinutePlan}
-          firstTenMinuteProgress={firstTenMinuteProgress}
-          guidance={guidance}
-          objectives={openingObjectives}
-          onAction={handleGuidanceAction}
-        />
-        {gameState.lastRelease && (
-          <article className="release-spotlight">
-            <p className="eyebrow">출시 결과</p>
-            <div className="release-score">
-              <strong>{gameState.lastRelease.review.grade}</strong>
-              <span>{gameState.lastRelease.review.score}점</span>
-            </div>
-            <h2>{gameState.lastRelease.productName}</h2>
-            <p className="release-headline">{gameState.lastRelease.headline}</p>
-            <p>{gameState.lastRelease.review.quote}</p>
-            <p className="market-reaction">{gameState.lastRelease.marketReaction}</p>
-            <p className="expansion-hint">{gameState.lastRelease.expansionHint}</p>
-            {gameState.lastRelease.growthPaths?.length > 0 && (
-              <div className="growth-fork-list">
-                <p className="eyebrow">다음 성장 분기</p>
-                {gameState.lastRelease.growthPaths.map((path) => (
-                  <button
-                    aria-pressed={chosenGrowthPathId === path.id}
-                    className={growthPathCardClass(path.id)}
-                    key={path.id}
-                    onClick={() => handleGrowthPathClick(path)}
-                  >
-                    <strong>{path.title}</strong>
-                    <span>{path.description}</span>
-                    <small>{chosenGrowthPathId === path.id ? `선택됨: ${path.bonusDescription}` : path.bonusDescription}</small>
-                  </button>
-                ))}
-              </div>
-            )}
-            <small>{gameState.lastRelease.month}개월차 출시 완료</small>
-          </article>
-        )}
-        <article className="company-stage">
-          <p className="eyebrow">회사 단계</p>
-          <h2>{companyStage.name}</h2>
-          <p>{companyStage.description}</p>
-          {stageProgress.next ? (
-            <div className="stage-promotion-mini">
-              <strong>다음 승급: {stageProgress.next.name} · {stageProgress.progressPercent}%</strong>
-              {stageProgress.items.map((item) => (
-                <span className={item.complete ? "complete" : ""} key={item.requirement}>
-                  {item.label} {item.currentLabel}/{item.targetLabel}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <div className="stage-promotion-mini complete">
-              <strong>최종 회사 단계 도달</strong>
-              <span>이제 10년 엔딩 점수와 시장 지배력을 끌어올리면 됩니다.</span>
-            </div>
+        <div className="stage-side-tabs" role="tablist" aria-label="보조 정보">
+          {stageSideTabs.map((tab) => (
+            <button
+              aria-controls={`stage-side-panel-${tab.id}`}
+              aria-selected={activeStageTab === tab.id}
+              className={activeStageTab === tab.id ? "active" : ""}
+              key={tab.id}
+              onClick={() => setActiveStageTab(tab.id)}
+              role="tab"
+              type="button"
+            >
+              <strong>{tab.label}</strong>
+              <span>{getStageTabHint(tab.id)}</span>
+            </button>
+          ))}
+        </div>
+        <div className={`stage-side-panel tab-${activeStageTab}`} id={`stage-side-panel-${activeStageTab}`} role="tabpanel">
+          {activeStageTab === "guide" && (
+            <GuidancePanel
+              firstTenMinutePlan={firstTenMinutePlan}
+              firstTenMinuteProgress={firstTenMinuteProgress}
+              guidance={guidance}
+              objectives={openingObjectives}
+              onAction={handleGuidanceAction}
+            />
           )}
-          {gameState.chosenGrowthPath && <span className="growth-identity">전략: {gameState.chosenGrowthPath.title}</span>}
-          <span className="growth-identity">
-            10년 캠페인 {calendar.progressPercent}% · 남은 {calendar.remainingMonths}개월
-          </span>
-          <span className="growth-identity">
-            {phase.description}
-          </span>
-          <span className="growth-identity">
-            로그라이트 런 {gameState.roguelite.runNumber} · 손패 {gameState.roguelite.deck.hand.length} · 통찰 {gameState.roguelite.founderInsight}
-          </span>
-          <span className="growth-identity">
-            사무실 {officeExpansion.name} · 고용 {gameState.hiredAgents.length}/{officeHireCapacity} · 장식 {placedOfficeItems.length}/{officeDecorationSlots}
-          </span>
-          {gameState.lastDevelopmentPuzzle && (
-            <span>최근 퍼즐: {gameState.lastDevelopmentPuzzle.verdict} {gameState.lastDevelopmentPuzzle.score}점</span>
-          )}
-          <span>해금 분야: {unlockedDomainNames.join(", ")}</span>
-        </article>
-        <article className="monthly-report">
-          <p className="eyebrow">월간 보고</p>
-          {gameState.lastMonthReport ? (
-            <dl>
-              <div>
-                <dt>매출</dt>
-                <dd>{formatResource("cash", gameState.lastMonthReport.revenue)}</dd>
-              </div>
-              <div>
-                <dt>비용</dt>
-                <dd>{formatResource("cash", gameState.lastMonthReport.totalCost)}</dd>
-              </div>
-              <div>
-                <dt>신규 이용자</dt>
-                <dd>{formatResource("users", gameState.lastMonthReport.newUsers)}</dd>
-              </div>
-              <div>
-                <dt>연산 압박</dt>
-                <dd>-{formatResource("compute", gameState.lastMonthReport.computePressure)}</dd>
-              </div>
-              {gameState.lastMonthReport.strategyEffects && (
-                <div className="wide-report-row">
-                  <dt>전략 효과</dt>
-                  <dd>{formatEffects(gameState.lastMonthReport.strategyEffects)}</dd>
+          {activeStageTab === "company" && (
+            <article className="company-stage">
+              <p className="eyebrow">회사 단계</p>
+              <h2>{companyStage.name}</h2>
+              <p>{companyStage.description}</p>
+              {stageProgress.next ? (
+                <div className="stage-promotion-mini">
+                  <strong>다음 승급: {stageProgress.next.name} · {stageProgress.progressPercent}%</strong>
+                  {stageProgress.items.map((item) => (
+                    <span className={item.complete ? "complete" : ""} key={item.requirement}>
+                      {item.label} {item.currentLabel}/{item.targetLabel}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <div className="stage-promotion-mini complete">
+                  <strong>최종 회사 단계 도달</strong>
+                  <span>이제 10년 엔딩 점수와 시장 지배력을 끌어올리면 됩니다.</span>
                 </div>
               )}
-            </dl>
-          ) : (
-            <p>제품을 출시하고 다음 달로 넘기면 첫 성과 보고가 올라옵니다.</p>
+              {gameState.chosenGrowthPath && <span className="growth-identity">전략: {gameState.chosenGrowthPath.title}</span>}
+              <span className="growth-identity">
+                10년 캠페인 {calendar.progressPercent}% · 남은 {calendar.remainingMonths}개월
+              </span>
+              <span className="growth-identity">{phase.description}</span>
+              <span className="growth-identity">
+                로그라이트 런 {gameState.roguelite.runNumber} · 손패 {gameState.roguelite.deck.hand.length} · 통찰 {gameState.roguelite.founderInsight}
+              </span>
+              <span className="growth-identity">
+                사무실 {officeExpansion.name} · 고용 {gameState.hiredAgents.length}/{officeHireCapacity} · 장식 {placedOfficeItems.length}/{officeDecorationSlots}
+              </span>
+              {gameState.lastDevelopmentPuzzle && (
+                <span>최근 퍼즐: {gameState.lastDevelopmentPuzzle.verdict} {gameState.lastDevelopmentPuzzle.score}점</span>
+              )}
+              <span>해금 분야: {unlockedDomainNames.join(", ")}</span>
+            </article>
           )}
-        </article>
-        {runSummary.isFinal && (
-          <article className={`run-summary rank-${runSummary.rank}`}>
-            <p className="eyebrow">런 결과</p>
-            <div className="run-rank">
-              <strong>{runSummary.rank}</strong>
-              <span>{runSummary.score}점</span>
-            </div>
-            <h2>{runSummary.title}</h2>
-            <p>{runSummary.verdict}</p>
-            <ul>
-              {runSummary.strengths.slice(0, 4).map((strength) => (
-                <li key={strength}>{strength}</li>
-              ))}
-            </ul>
-            <div className="run-spotlight-grid">
-              <div>
-                <span>대표 제품</span>
-                <strong>{runSummary.spotlight.bestProduct?.name ?? "출시 제품 없음"}</strong>
-                <small>
-                  {runSummary.spotlight.bestProduct
-                    ? `${runSummary.spotlight.bestProduct.domainName} · ${runSummary.spotlight.bestProduct.grade} / ${runSummary.spotlight.bestProduct.score}점`
-                    : "첫 제품 출시가 다음 런의 최우선 목표"}
-                </small>
-              </div>
-              <div>
-                <span>대표 카드</span>
-                <strong>{runSummary.spotlight.representativeCard?.name ?? "대표 카드 없음"}</strong>
-                <small>{runSummary.spotlight.representativeCard?.reason ?? "출시 보상이나 강화 카드가 아직 없습니다."}</small>
-              </div>
-              <div>
-                <span>경쟁 압박</span>
-                <strong>{runSummary.spotlight.rivalPressure?.name ?? "관측 없음"}</strong>
-                <small>{runSummary.spotlight.rivalPressure?.pressure ?? "경쟁사 시장 압박이 아직 낮습니다."}</small>
-              </div>
-            </div>
-            <div className="run-insight-card">
-              <strong>창업 통찰 +{runSummary.spotlight.insightReward}</strong>
-              <span>{runSummary.spotlight.insightBreakdown.join(" · ")}</span>
-            </div>
-            {runSummary.spotlight.failureReasons.length > 0 && (
-              <div className="run-risk-list">
-                <strong>다음 런에서 조심할 것</strong>
-                <span>{runSummary.spotlight.failureReasons.slice(0, 3).join(" / ")}</span>
-              </div>
-            )}
-            <div className="next-run-preview">
-              <div>
-                <p className="eyebrow">다음 런 브리핑</p>
-                <strong>
-                  런 {runSummary.spotlight.nextRunPreview.projectedRunNumber} · 통찰 {runSummary.spotlight.nextRunPreview.projectedFounderInsight}
-                </strong>
-              </div>
-              <div className="next-run-preview-grid">
-                <section>
-                  <span>이어지는 것</span>
-                  {runSummary.spotlight.nextRunPreview.carryovers.slice(0, 3).map((carryover) => (
-                    <small key={carryover}>{carryover}</small>
-                  ))}
-                </section>
-                <section>
-                  <span>해금 후보</span>
-                  {runSummary.spotlight.nextRunPreview.unlockOptions.slice(0, 3).map((option) => (
-                    <small key={option}>{option}</small>
-                  ))}
-                </section>
-              </div>
-              <ol>
-                {runSummary.spotlight.nextRunPreview.openingMoves.map((move) => (
-                  <li key={move}>{move}</li>
-                ))}
-              </ol>
-            </div>
-            <p className="next-run-hook">{runSummary.spotlight.nextRunHook}</p>
-            <small>{runSummary.recommendation}</small>
-            <button className="primary-action" onClick={handleStartNextRun} type="button">
-              통찰 받고 새 런
-            </button>
-          </article>
-        )}
+          {activeStageTab === "reports" && (
+            <article className="monthly-report">
+              <p className="eyebrow">월간 보고</p>
+              {gameState.lastMonthReport ? (
+                <dl>
+                  <div>
+                    <dt>매출</dt>
+                    <dd>{formatResource("cash", gameState.lastMonthReport.revenue)}</dd>
+                  </div>
+                  <div>
+                    <dt>비용</dt>
+                    <dd>{formatResource("cash", gameState.lastMonthReport.totalCost)}</dd>
+                  </div>
+                  <div>
+                    <dt>신규 이용자</dt>
+                    <dd>{formatResource("users", gameState.lastMonthReport.newUsers)}</dd>
+                  </div>
+                  <div>
+                    <dt>연산 압박</dt>
+                    <dd>-{formatResource("compute", gameState.lastMonthReport.computePressure)}</dd>
+                  </div>
+                  {gameState.lastMonthReport.strategyEffects && (
+                    <div className="wide-report-row">
+                      <dt>전략 효과</dt>
+                      <dd>{formatEffects(gameState.lastMonthReport.strategyEffects)}</dd>
+                    </div>
+                  )}
+                </dl>
+              ) : (
+                <p>제품을 출시하고 다음 달로 넘기면 첫 성과 보고가 올라옵니다.</p>
+              )}
+            </article>
+          )}
+          {activeStageTab === "results" && (
+            <>
+              {finale.isFinal && (
+                <article className={`run-summary rank-${finale.rank}`}>
+                  <p className="eyebrow">10년 엔딩</p>
+                  <div className="run-rank">
+                    <strong>{finale.rank}</strong>
+                    <span>{finale.endingName} · {finale.score}점</span>
+                  </div>
+                  <h2>{finale.title}</h2>
+                  <p>{finale.verdict}</p>
+                </article>
+              )}
+              {gameState.lastRelease && (
+                <article className="release-spotlight">
+                  <p className="eyebrow">출시 결과</p>
+                  <div className="release-score">
+                    <strong>{gameState.lastRelease.review.grade}</strong>
+                    <span>{gameState.lastRelease.review.score}점</span>
+                  </div>
+                  <h2>{gameState.lastRelease.productName}</h2>
+                  <p className="release-headline">{gameState.lastRelease.headline}</p>
+                  <p>{gameState.lastRelease.review.quote}</p>
+                  <p className="market-reaction">{gameState.lastRelease.marketReaction}</p>
+                  <p className="expansion-hint">{gameState.lastRelease.expansionHint}</p>
+                  {gameState.lastRelease.growthPaths?.length > 0 && (
+                    <div className="growth-fork-list">
+                      <p className="eyebrow">다음 성장 분기</p>
+                      {gameState.lastRelease.growthPaths.map((path) => (
+                        <button
+                          aria-pressed={chosenGrowthPathId === path.id}
+                          className={growthPathCardClass(path.id)}
+                          key={path.id}
+                          onClick={() => handleGrowthPathClick(path)}
+                        >
+                          <strong>{path.title}</strong>
+                          <span>{path.description}</span>
+                          <small>{chosenGrowthPathId === path.id ? `선택됨: ${path.bonusDescription}` : path.bonusDescription}</small>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <small>{gameState.lastRelease.month}개월차 출시 완료</small>
+                </article>
+              )}
+              {runSummary.isFinal && (
+                <article className={`run-summary rank-${runSummary.rank}`}>
+                  <p className="eyebrow">런 결과</p>
+                  <div className="run-rank">
+                    <strong>{runSummary.rank}</strong>
+                    <span>{runSummary.score}점</span>
+                  </div>
+                  <h2>{runSummary.title}</h2>
+                  <p>{runSummary.verdict}</p>
+                  <ul>
+                    {runSummary.strengths.slice(0, 4).map((strength) => (
+                      <li key={strength}>{strength}</li>
+                    ))}
+                  </ul>
+                  <div className="run-spotlight-grid">
+                    <div>
+                      <span>대표 제품</span>
+                      <strong>{runSummary.spotlight.bestProduct?.name ?? "출시 제품 없음"}</strong>
+                      <small>
+                        {runSummary.spotlight.bestProduct
+                          ? `${runSummary.spotlight.bestProduct.domainName} · ${runSummary.spotlight.bestProduct.grade} / ${runSummary.spotlight.bestProduct.score}점`
+                          : "첫 제품 출시가 다음 런의 최우선 목표"}
+                      </small>
+                    </div>
+                    <div>
+                      <span>대표 카드</span>
+                      <strong>{runSummary.spotlight.representativeCard?.name ?? "대표 카드 없음"}</strong>
+                      <small>{runSummary.spotlight.representativeCard?.reason ?? "출시 보상이나 강화 카드가 아직 없습니다."}</small>
+                    </div>
+                    <div>
+                      <span>경쟁 압박</span>
+                      <strong>{runSummary.spotlight.rivalPressure?.name ?? "관측 없음"}</strong>
+                      <small>{runSummary.spotlight.rivalPressure?.pressure ?? "경쟁사 시장 압박이 아직 낮습니다."}</small>
+                    </div>
+                  </div>
+                  <div className="run-insight-card">
+                    <strong>창업 통찰 +{runSummary.spotlight.insightReward}</strong>
+                    <span>{runSummary.spotlight.insightBreakdown.join(" · ")}</span>
+                  </div>
+                  {runSummary.spotlight.failureReasons.length > 0 && (
+                    <div className="run-risk-list">
+                      <strong>다음 런에서 조심할 것</strong>
+                      <span>{runSummary.spotlight.failureReasons.slice(0, 3).join(" / ")}</span>
+                    </div>
+                  )}
+                  <div className="next-run-preview">
+                    <div>
+                      <p className="eyebrow">다음 런 브리핑</p>
+                      <strong>
+                        런 {runSummary.spotlight.nextRunPreview.projectedRunNumber} · 통찰 {runSummary.spotlight.nextRunPreview.projectedFounderInsight}
+                      </strong>
+                    </div>
+                    <div className="next-run-preview-grid">
+                      <section>
+                        <span>이어지는 것</span>
+                        {runSummary.spotlight.nextRunPreview.carryovers.slice(0, 3).map((carryover) => (
+                          <small key={carryover}>{carryover}</small>
+                        ))}
+                      </section>
+                      <section>
+                        <span>해금 후보</span>
+                        {runSummary.spotlight.nextRunPreview.unlockOptions.slice(0, 3).map((option) => (
+                          <small key={option}>{option}</small>
+                        ))}
+                      </section>
+                    </div>
+                    <ol>
+                      {runSummary.spotlight.nextRunPreview.openingMoves.map((move) => (
+                        <li key={move}>{move}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <p className="next-run-hook">{runSummary.spotlight.nextRunHook}</p>
+                  <small>{runSummary.recommendation}</small>
+                  <button className="primary-action" onClick={handleStartNextRun} type="button">
+                    통찰 받고 새 런
+                  </button>
+                </article>
+              )}
+              {!hasResultPanel && (
+                <article className="monthly-report">
+                  <p className="eyebrow">결과 대기</p>
+                  <h2>첫 출시를 기다리는 중</h2>
+                  <p>제품을 완성하면 출시 결과, 성장 분기, 런 결과가 이 탭에 모입니다.</p>
+                </article>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </section>
   );

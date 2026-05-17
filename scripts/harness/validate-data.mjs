@@ -726,8 +726,16 @@ if (!startingState) {
 
 const maleSlots = personas.filter((persona) => persona.gender_mix_slot === "male").length;
 const femaleSlots = personas.filter((persona) => persona.gender_mix_slot === "female").length;
-if (personas.length !== 12) errors.push(`playtest_personas: expected 12 personas, found ${personas.length}`);
-if (maleSlots !== 6 || femaleSlots !== 6) errors.push(`playtest_personas: expected 6 male and 6 female slots, found ${maleSlots}/${femaleSlots}`);
+if (personas.length !== 20) errors.push(`playtest_personas: expected 20 personas, found ${personas.length}`);
+if (maleSlots !== 10 || femaleSlots !== 10) errors.push(`playtest_personas: expected 10 male and 10 female slots, found ${maleSlots}/${femaleSlots}`);
+for (const persona of personas) {
+  for (const field of ["label", "lens", "gender_mix_slot", "benchmark", "concern"]) {
+    if (!persona[field]) errors.push(`playtest_persona "${persona.id}": missing ${field}`);
+  }
+  if (!["male", "female"].includes(persona.gender_mix_slot)) {
+    errors.push(`playtest_persona "${persona.id}": unknown gender_mix_slot "${persona.gender_mix_slot}"`);
+  }
+}
 
 if (errors.length) {
   console.error("Data validation failed:");

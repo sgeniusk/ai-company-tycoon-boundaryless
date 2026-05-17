@@ -4,73 +4,161 @@
       "id": "male_web_novel_strategist",
       "label": "Male web-novel strategist",
       "lens": "Compulsion, cliffhangers, growth fantasy, unlock pacing",
-      "gender_mix_slot": "male"
+      "gender_mix_slot": "male",
+      "benchmark": "Solo Leveling power curve, Game Dev Story unlock cadence",
+      "concern": "The next visible payoff must arrive before early menus feel like work."
     },
     {
       "id": "female_web_novel_strategist",
       "label": "Female web-novel strategist",
       "lens": "Emotional reward, readable stakes, session curiosity",
-      "gender_mix_slot": "female"
+      "gender_mix_slot": "female",
+      "benchmark": "Serialized romance/fantasy cliffhanger retention",
+      "concern": "Company identity and human stakes need warmer beats between metrics."
     },
     {
       "id": "male_literary_novelist_lens",
       "label": "Male literary novelist lens",
       "lens": "Theme, world coherence, meaning of AI expansion",
-      "gender_mix_slot": "male"
+      "gender_mix_slot": "male",
+      "benchmark": "The Circle, Silicon Valley satire",
+      "concern": "Boundaryless expansion should produce irony and consequences, not only more numbers."
     },
     {
       "id": "female_literary_novelist_lens",
       "label": "Female literary novelist lens",
       "lens": "Human cost, ethical tension, meaningful choice",
-      "gender_mix_slot": "female"
+      "gender_mix_slot": "female",
+      "benchmark": "Workplace ensemble fiction and ethical tech drama",
+      "concern": "Staff, agents, and robots should feel affected by company strategy."
     },
     {
       "id": "male_comics_creator_lens",
       "label": "Male commercial comics creator lens",
       "lens": "Visual readability, punchy beats, dashboard flow",
-      "gender_mix_slot": "male"
+      "gender_mix_slot": "male",
+      "benchmark": "Kairosoft pixel office readability, manga panel punchlines",
+      "concern": "The right-side UI must stop competing with the office scene."
     },
     {
       "id": "female_comics_creator_lens",
       "label": "Female commercial comics creator lens",
       "lens": "Company character, contrast, progression clarity",
-      "gender_mix_slot": "female"
+      "gender_mix_slot": "female",
+      "benchmark": "Kairosoft character silhouettes and tiny reaction moments",
+      "concern": "Employees and agents need clearer personality hooks before final art."
     },
     {
       "id": "male_childrens_author_lens",
       "label": "Male children's author lens",
       "lens": "Simplicity, onboarding, explanation without jargon",
-      "gender_mix_slot": "male"
+      "gender_mix_slot": "male",
+      "benchmark": "Friendly tycoon tutorials and simple quest strips",
+      "concern": "First-time players need one obvious next action at every step."
     },
     {
       "id": "female_childrens_author_lens",
       "label": "Female children's author lens",
       "lens": "Warmth, clarity, motivation, explainability",
-      "gender_mix_slot": "female"
+      "gender_mix_slot": "female",
+      "benchmark": "Cozy management games with gentle guidance",
+      "concern": "Warnings and setbacks should explain recovery without scolding the player."
     },
     {
       "id": "tycoon_fan",
       "label": "Tycoon fan",
       "lens": "Optimization, progression, replayability",
-      "gender_mix_slot": "male"
+      "gender_mix_slot": "male",
+      "benchmark": "Game Dev Story, Startup Company, Mad Games Tycoon",
+      "concern": "There must be a readable reason to choose one build over another."
     },
     {
       "id": "min_max_player",
       "label": "Min-max player",
       "lens": "Dominant strategies, exploits, dead ends",
-      "gender_mix_slot": "female"
+      "gender_mix_slot": "female",
+      "benchmark": "Slay the Spire route pressure and degenerate combo checks",
+      "concern": "Season rewards and deck loops should avoid one obvious infinite snowball."
     },
     {
       "id": "casual_steam_player",
       "label": "Casual Steam player",
       "lens": "First five minutes, wishlist appeal, friction",
-      "gender_mix_slot": "male"
+      "gender_mix_slot": "male",
+      "benchmark": "Steam demo hook, Vampire Survivors first-session reward tempo",
+      "concern": "The first five minutes need a louder reward moment and fewer text blocks."
     },
     {
       "id": "accessibility_tester",
       "label": "Accessibility tester",
       "lens": "Readability, controls, contrast, cognitive load",
-      "gender_mix_slot": "female"
+      "gender_mix_slot": "female",
+      "benchmark": "Readable management UI with low cognitive switching cost",
+      "concern": "Text density, button labels, and scroll areas need consistent hierarchy."
+    },
+    {
+      "id": "solo_indie_dev",
+      "label": "Solo indie developer",
+      "lens": "Scope control, asset burden, implementation risk",
+      "gender_mix_slot": "male",
+      "benchmark": "One-person Steam demos that fake breadth with data templates",
+      "concern": "Content breadth must come from data-driven templates, not bespoke scenes."
+    },
+    {
+      "id": "female_live_streamer",
+      "label": "Female live streamer",
+      "lens": "Screenshot moments, chat readability, surprising events",
+      "gender_mix_slot": "female",
+      "benchmark": "Stream-friendly management games with visible disasters",
+      "concern": "Major launches and rival moves need bigger observer-readable moments."
+    },
+    {
+      "id": "mobile_commuter",
+      "label": "Mobile commuter",
+      "lens": "Short sessions, thumb flow, resume clarity",
+      "gender_mix_slot": "male",
+      "benchmark": "Portrait-friendly idle and tycoon games",
+      "concern": "The game needs compressed panels and clear return-state summaries."
+    },
+    {
+      "id": "female_mobile_strategy_player",
+      "label": "Female mobile strategy player",
+      "lens": "Menu economy, upgrade clarity, daily return hook",
+      "gender_mix_slot": "female",
+      "benchmark": "Compact mobile 4X and incremental strategy loops",
+      "concern": "Long-term goals should be visible without digging through every menu."
+    },
+    {
+      "id": "simulation_balance_analyst",
+      "label": "Simulation balance analyst",
+      "lens": "Economy fairness, exploit prevention, recovery paths",
+      "gender_mix_slot": "male",
+      "benchmark": "RimWorld scenario pressure and management sim recovery curves",
+      "concern": "Bad choices should hurt, but recovery routes must remain legible."
+    },
+    {
+      "id": "female_ux_researcher",
+      "label": "Female UX researcher",
+      "lens": "First 30 seconds, comprehension, task switching",
+      "gender_mix_slot": "female",
+      "benchmark": "Usability-tested onboarding for dense builder games",
+      "concern": "Players should understand month advance, product work, and rewards in one glance."
+    },
+    {
+      "id": "hardcore_deckbuilder",
+      "label": "Hardcore deckbuilder",
+      "lens": "Card identity, build variety, run-to-run mastery",
+      "gender_mix_slot": "male",
+      "benchmark": "Slay the Spire, Monster Train, Balatro build legibility",
+      "concern": "Cards must visibly change product development, not just add quiet resources."
+    },
+    {
+      "id": "female_kairosoft_fan",
+      "label": "Female Kairosoft fan",
+      "lens": "Cozy office fantasy, small animated detail, upgrade joy",
+      "gender_mix_slot": "female",
+      "benchmark": "Game Dev Story iOS and Pocket Academy charm",
+      "concern": "Office growth should feel joyful even before final pixel art arrives."
     }
   ]
 }

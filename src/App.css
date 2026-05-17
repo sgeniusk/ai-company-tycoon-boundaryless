@@ -501,8 +501,9 @@ p {
 .stage-side {
   display: grid;
   gap: 10px;
+  grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
   padding-right: 2px;
 }
 
@@ -511,6 +512,62 @@ p {
   min-height: 0;
   overflow: auto;
   scrollbar-width: thin;
+}
+
+.stage-side-tabs {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.stage-side-tabs button {
+  background: #fff7df;
+  border: 2px solid #d8c49b;
+  box-shadow: none;
+  color: #5f5546;
+  display: grid;
+  gap: 2px;
+  min-height: 42px;
+  padding: 6px 4px;
+}
+
+.stage-side-tabs button.active {
+  background: var(--green);
+  border-color: var(--line);
+  color: #fffaf0;
+}
+
+.stage-side-tabs strong,
+.stage-side-tabs span {
+  display: block;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stage-side-tabs strong {
+  font-size: 0.72rem;
+}
+
+.stage-side-tabs span {
+  font-size: 0.58rem;
+  font-weight: 900;
+  opacity: 0.82;
+}
+
+.stage-side-panel {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.stage-side-panel > article {
+  max-height: none;
+  min-height: 0;
+  overflow: auto;
 }
 
 .company-stage,

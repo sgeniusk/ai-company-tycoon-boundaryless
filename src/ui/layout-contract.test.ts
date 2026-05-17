@@ -33,4 +33,10 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.stage-side\s*>\s*article\s*{[^}]*overflow:\s*auto/s);
     expect(appCss).toMatch(/\.stage-side\s*>\s*article\s*{[^}]*scrollbar-width:\s*thin/s);
   });
+
+  it("compresses the right-side stage information into a tabbed game panel", () => {
+    expect(appCss).toMatch(/\.stage-side-tabs\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.stage-side-panel\s*{[^}]*overflow:\s*auto/s);
+    expect(appCss).toMatch(/\.stage-side-panel\s*>\s*article/s);
+  });
 });

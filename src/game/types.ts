@@ -195,6 +195,15 @@ export interface AssetManifestDefinition {
   item_icons: ItemIconDefinition[];
 }
 
+export interface PlaytestPersonaDefinition {
+  id: string;
+  label: string;
+  lens: string;
+  gender_mix_slot: "male" | "female";
+  benchmark: string;
+  concern: string;
+}
+
 export interface MarketRanking {
   id: string;
   score: number;

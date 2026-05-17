@@ -2,6 +2,7 @@ import { agentTypes, items, officeExpansions, products } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
 import { createReleaseCardReward } from "./deckbuilding";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
+import { runPersonaPlaytestReview } from "./persona-playtest";
 import { evaluateAlphaReadiness, runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
 import { advanceMonth, buyItem, buyOfficeExpansion, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
 import type { GameState } from "./types";
@@ -32,6 +33,7 @@ export const qaScenarioIds = [
   "commercial",
   "result",
   "readiness",
+  "persona20",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -283,6 +285,25 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
         ].slice(0, 8),
       },
       activeMenu: "company",
+    };
+  }
+
+  if (id === "persona20") {
+    const report = runPersonaPlaytestReview();
+    const campaign = runTenYearCampaignSimulation("productivity_line");
+    return {
+      id,
+      label: "v0.21 20인 페르소나 QA",
+      state: {
+        ...campaign.finalState,
+        timeline: [
+          `v0.21 20인 페르소나: ${report.verdict} / ${report.score}점 / ${report.personaCount}명`,
+          ...report.topPriorities.slice(0, 4).map((priority) => `개선 우선순위: ${priority}`),
+          ...report.personaNotes.slice(0, 2).map((note) => `${note.label}: ${note.request}`),
+          ...campaign.finalState.timeline,
+        ].slice(0, 8),
+      },
+      activeMenu: "log",
     };
   }
 

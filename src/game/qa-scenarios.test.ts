@@ -32,6 +32,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "commercial",
       "result",
       "readiness",
+      "persona20",
     ]);
   });
 
@@ -186,6 +187,15 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.status).not.toBe("playing");
   });
 
+  it("creates a v0.21 20-person persona playtest scenario", () => {
+    const scenario = createQaScenario("persona20");
+
+    expect(scenario.activeMenu).toBe("log");
+    expect(scenario.label).toContain("20인");
+    expect(scenario.state.timeline[0]).toContain("20인 페르소나");
+    expect(scenario.state.timeline.some((entry) => entry.includes("우측 보조 패널"))).toBe(true);
+  });
+
   it("creates a 10-year finale scenario for ending QA", () => {
     const scenario = createQaScenario("finale");
 
@@ -276,6 +286,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=foundation")?.id).toBe("foundation");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
     expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");
+    expect(createQaScenarioFromSearch("?scenario=persona20")?.id).toBe("persona20");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
