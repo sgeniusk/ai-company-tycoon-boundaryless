@@ -71,6 +71,7 @@ import {
   getOfficeExpansion,
   getOfficeExpansionCheck,
   getOfficeHireCapacity,
+  getOfficeSynergySummary,
   getPlacedOfficeItems,
   getPlaceOfficeItemCheck,
   getProductLevel,
@@ -1273,6 +1274,7 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const placedOfficeItemIds = new Set(placedOfficeItems.map((item) => item.id));
   const officeItems = ownedItems.filter((item) => item.target !== "agent");
   const storedOfficeItems = officeItems.filter((item) => !placedOfficeItemIds.has(item.id));
+  const officeSynergySummary = getOfficeSynergySummary(gameState);
 
   return (
     <div className="panel-grid two-col">
@@ -1280,6 +1282,12 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
         <div className="panel-heading">
           <h2>아이템 상점</h2>
           <p>장비와 사무실 물건은 에이전트 특색과 회사 분위기를 만듭니다.</p>
+        </div>
+        <div className="shop-office-brief">
+          <strong>{officeExpansion.name}</strong>
+          <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
+          <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
+          <span>{officeSynergySummary.active.length ? `시너지 ${officeSynergySummary.active.length}개` : "시너지 준비 중"}</span>
         </div>
         <div className="foundation-panel compact">
           <div>
@@ -1322,6 +1330,27 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             <strong>{officeExpansion.name}</strong>
             <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
             <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
+          </div>
+          <div className="office-synergy-panel">
+            <div>
+              <p className="eyebrow">장식 조합</p>
+              <strong>{officeSynergySummary.active.length ? `${officeSynergySummary.active.length}개 시너지 가동` : "시너지 준비 중"}</strong>
+              <span>
+                월간 효과 {Object.keys(officeSynergySummary.totalMonthlyEffects).length ? formatEffects(officeSynergySummary.totalMonthlyEffects) : "없음"}
+              </span>
+            </div>
+            {officeSynergySummary.active.slice(0, 2).map((synergy) => (
+              <article className="active" key={synergy.id}>
+                <strong>{synergy.title}</strong>
+                <span>{formatEffects(synergy.monthly_effects)}</span>
+              </article>
+            ))}
+            {officeSynergySummary.active.length === 0 && officeSynergySummary.nextCandidate && (
+              <article>
+                <strong>다음 후보: {officeSynergySummary.nextCandidate.title}</strong>
+                <span>{officeSynergySummary.nextCandidate.progressLabel}</span>
+              </article>
+            )}
           </div>
           {nextOfficeExpansion ? (
             <article className="office-expansion-card">

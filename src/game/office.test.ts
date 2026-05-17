@@ -12,11 +12,13 @@ import {
   getOfficeExpansion,
   getOfficeExpansionCheck,
   getOfficeHireCapacity,
+  getOfficeSynergySummary,
   getPlacedOfficeItems,
   getPlaceOfficeItemCheck,
   hireAgent,
   placeOfficeItem,
   unplaceOfficeItem,
+  advanceMonth,
 } from "./simulation";
 import type { GameState } from "./types";
 
@@ -109,6 +111,49 @@ describe("v0.12.7 office expansion and decoration", () => {
       "growth_floor",
       "campus_lab",
     ]);
+  });
+
+  it("activates office decoration synergies from placed item categories", () => {
+    const gpuRack = items.find((item) => item.id === "gpu_rack_mini");
+    const coolingWall = items.find((item) => item.id === "cooling_fan_wall");
+    const dataDesk = items.find((item) => item.id === "data_labeler_desk");
+    if (!gpuRack || !coolingWall || !dataDesk) throw new Error("Missing office synergy fixtures");
+
+    const decorated = [gpuRack, coolingWall, dataDesk].reduce((state, item) => buyItem(item, state), createRichInitialState());
+    const summary = getOfficeSynergySummary(decorated);
+
+    expect(summary.active.map((synergy) => synergy.id)).toContain("garage_compute_cluster");
+    expect(summary.totalMonthlyEffects).toMatchObject({
+      compute: 6,
+      data: 3,
+    });
+    expect(summary.nextCandidate?.id).toBe("launch_corner");
+  });
+
+  it("applies active office synergy effects during monthly operations", () => {
+    const gpuRack = items.find((item) => item.id === "gpu_rack_mini");
+    const coolingWall = items.find((item) => item.id === "cooling_fan_wall");
+    const dataDesk = items.find((item) => item.id === "data_labeler_desk");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!gpuRack || !coolingWall || !dataDesk || !writingProduct) throw new Error("Missing monthly synergy fixtures");
+
+    const base = {
+      ...[gpuRack, coolingWall, dataDesk].reduce((state, item) => buyItem(item, state), createRichInitialState()),
+      activeProducts: [writingProduct.id],
+      productLevels: { [writingProduct.id]: 1 },
+      resources: {
+        ...createRichInitialState().resources,
+        compute: 100,
+        data: 50,
+      },
+    };
+    const advanced = advanceMonth(base);
+
+    expect(advanced.lastMonthReport?.strategyEffects).toMatchObject({
+      compute: 6,
+      data: 3,
+    });
+    expect(advanced.timeline.some((entry) => entry.includes("사무실 시너지"))).toBe(true);
   });
 });
 

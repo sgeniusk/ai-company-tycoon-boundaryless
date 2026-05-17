@@ -78,6 +78,7 @@ const metaUnlocksData = readJson("meta_unlocks.json");
 const deckArchetypesData = readJson("deck_archetypes.json");
 const starterDecksData = readJson("starter_decks.json");
 const officeExpansionsData = readJson("office_expansions.json");
+const officeSynergiesData = readJson("office_synergies.json");
 const annualReviewsData = readJson("annual_reviews.json");
 const annualDirectiveChoicesData = readJson("annual_directive_choices.json");
 const koLocaleData = readJson("locales/ko.json");
@@ -105,6 +106,7 @@ const metaUnlocks = metaUnlocksData?.meta_unlocks ?? [];
 const deckArchetypes = deckArchetypesData?.deck_archetypes ?? [];
 const starterDecks = starterDecksData?.starter_decks ?? [];
 const officeExpansions = officeExpansionsData?.office_expansions ?? [];
+const officeSynergies = officeSynergiesData?.office_synergies ?? [];
 const annualReviews = annualReviewsData?.annual_reviews ?? [];
 const annualDirectiveChoices = annualDirectiveChoicesData?.annual_directive_choices ?? [];
 const localeKeys = new Set([...Object.keys(koLocaleData ?? {}), ...Object.keys(enLocaleData ?? {})]);
@@ -130,6 +132,7 @@ const metaUnlockIds = idsAreUnique("meta_unlocks", metaUnlocks);
 idsAreUnique("deck_archetypes", deckArchetypes);
 idsAreUnique("starter_decks", starterDecks);
 idsAreUnique("office_expansions", officeExpansions);
+idsAreUnique("office_synergies", officeSynergies);
 idsAreUnique("annual_reviews", annualReviews);
 idsAreUnique("annual_directive_choices", annualDirectiveChoices);
 
@@ -243,6 +246,24 @@ for (const expansion of officeExpansions) {
       errors.push(`office_expansion "${expansion.id}": unknown unlock requirement "${requirement}"`);
     }
     if (typeof value !== "number") errors.push(`office_expansion "${expansion.id}": unlock requirement "${requirement}" must be numeric`);
+  }
+}
+
+for (const synergy of officeSynergies) {
+  for (const field of ["title", "description", "required_categories", "required_effects", "monthly_effects", "tags"]) {
+    if (!(field in synergy)) errors.push(`office_synergy "${synergy.id}": missing ${field}`);
+  }
+  for (const [category, value] of Object.entries(synergy.required_categories ?? {})) {
+    if (typeof category !== "string" || !category) errors.push(`office_synergy "${synergy.id}": invalid required category`);
+    if (typeof value !== "number" || value < 1) errors.push(`office_synergy "${synergy.id}": required category "${category}" must be positive`);
+  }
+  for (const [effectKey, value] of Object.entries(synergy.required_effects ?? {})) {
+    if (![...resourceIds, ...allowedAgentStats].includes(effectKey)) errors.push(`office_synergy "${synergy.id}": unknown required effect "${effectKey}"`);
+    if (typeof value !== "number" || value < 1) errors.push(`office_synergy "${synergy.id}": required effect "${effectKey}" must be positive`);
+  }
+  validateResourceMap(`office_synergy "${synergy.id}" monthly_effects`, synergy.monthly_effects, resourceIds);
+  if (!Array.isArray(synergy.tags) || synergy.tags.length === 0) {
+    errors.push(`office_synergy "${synergy.id}": tags must be a non-empty array`);
   }
 }
 

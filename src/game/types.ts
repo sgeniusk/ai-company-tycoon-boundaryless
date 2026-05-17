@@ -524,6 +524,28 @@ export interface OfficeExpansionDefinition {
   unlock_requirements: Record<string, number>;
 }
 
+export interface OfficeSynergyDefinition {
+  id: string;
+  title: string;
+  description: string;
+  required_categories: Record<string, number>;
+  required_effects: Record<string, number>;
+  monthly_effects: ResourceMap;
+  tags: string[];
+}
+
+export interface OfficeSynergyStatus extends OfficeSynergyDefinition {
+  active: boolean;
+  progressLabel: string;
+}
+
+export interface OfficeSynergySummary {
+  active: OfficeSynergyStatus[];
+  locked: OfficeSynergyStatus[];
+  nextCandidate?: OfficeSynergyStatus;
+  totalMonthlyEffects: ResourceMap;
+}
+
 export interface OfficeState {
   expansionId: string;
   placedItemIds: string[];

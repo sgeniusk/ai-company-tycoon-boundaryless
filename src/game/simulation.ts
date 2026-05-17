@@ -12,6 +12,7 @@ import {
   events,
   items,
   officeExpansions,
+  officeSynergies,
   products,
   resources,
   rivalEvents,
@@ -48,6 +49,8 @@ import type {
   MarketRanking,
   MonthlyEconomy,
   OfficeExpansionDefinition,
+  OfficeSynergyStatus,
+  OfficeSynergySummary,
   OfficeState,
   CardRewardChoice,
   PendingCardReward,
@@ -351,6 +354,64 @@ export function getPlacedOfficeItems(state: GameState): ItemDefinition[] {
     .filter((itemId) => ownedDecorIds.has(itemId))
     .map((itemId) => items.find((item) => item.id === itemId))
     .filter((item): item is ItemDefinition => Boolean(item));
+}
+
+export function getOfficeSynergySummary(state: GameState): OfficeSynergySummary {
+  const placedItems = getPlacedOfficeItems(state);
+  const categoryCounts = countPlacedItemCategories(placedItems);
+  const effectTotals = sumPlacedItemEffects(placedItems);
+  const statuses = officeSynergies.map((synergy) => {
+    const categoryProgress = getRequirementProgress(synergy.required_categories, categoryCounts);
+    const effectProgress = getRequirementProgress(synergy.required_effects, effectTotals);
+    const active = categoryProgress.complete && effectProgress.complete;
+
+    return {
+      ...synergy,
+      active,
+      progressLabel: [...categoryProgress.labels, ...effectProgress.labels].join(" · "),
+    };
+  });
+  const active = statuses.filter((status) => status.active);
+  const locked = statuses.filter((status) => !status.active);
+
+  return {
+    active,
+    locked,
+    nextCandidate: locked[0],
+    totalMonthlyEffects: active.reduce<ResourceMap>(
+      (total, synergy) => mergeResourceDelta(total, synergy.monthly_effects),
+      {},
+    ),
+  };
+}
+
+function countPlacedItemCategories(placedItems: ItemDefinition[]): Record<string, number> {
+  return placedItems.reduce<Record<string, number>>((counts, item) => {
+    counts[item.category] = (counts[item.category] ?? 0) + 1;
+    return counts;
+  }, {});
+}
+
+function sumPlacedItemEffects(placedItems: ItemDefinition[]): Record<string, number> {
+  return placedItems.reduce<Record<string, number>>((totals, item) => {
+    for (const [effectId, amount] of Object.entries(item.effects ?? {})) {
+      totals[effectId] = (totals[effectId] ?? 0) + amount;
+    }
+    return totals;
+  }, {});
+}
+
+function getRequirementProgress(
+  requirements: Record<string, number>,
+  currentValues: Record<string, number>,
+): { complete: boolean; labels: string[] } {
+  const labels = Object.entries(requirements).map(([id, needed]) => {
+    const current = currentValues[id] ?? 0;
+    return `${id} ${Math.min(current, needed)}/${needed}`;
+  });
+  const complete = Object.entries(requirements).every(([id, needed]) => (currentValues[id] ?? 0) >= needed);
+
+  return { complete, labels };
 }
 
 export function getPlaceOfficeItemCheck(item: ItemDefinition, state: GameState): ActionCheck {
@@ -706,6 +767,7 @@ export function advanceMonth(state: GameState): GameState {
       nextRivalEvent ? `경쟁사 이슈: ${nextRivalEvent.id}` : "",
       nextEvent ? `이슈 발생: ${nextEvent.name}` : "",
       ...competedState.timeline,
+      getOfficeSynergyTimelineEntry(state) ?? "",
       monthlyEconomy.strategyEffects ? `전략 효과: ${formatResourceDelta(monthlyEconomy.strategyEffects)}` : "",
       nextMonth >= CAMPAIGN_FINAL_MONTH ? `10년차 최종 평가: ${nextStatus === "success" ? "성공 엔딩" : "재도전 엔딩"}` : "",
       summary,
@@ -1347,13 +1409,22 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   const annualDirective = getActiveAnnualDirective(state);
   const effects: ResourceMap[] = [];
   const growthPathEffects = getChosenGrowthPathMonthlyEffects(state);
+  const officeSynergyEffects = getOfficeSynergySummary(state).totalMonthlyEffects;
   if (growthPathEffects && Object.keys(growthPathEffects).length > 0) effects.push(growthPathEffects);
   if (annualDirective?.monthlyEffects && Object.keys(annualDirective.monthlyEffects).length > 0) {
     effects.push(annualDirective.monthlyEffects);
   }
+  if (Object.keys(officeSynergyEffects).length > 0) effects.push(officeSynergyEffects);
 
   if (effects.length === 0) return undefined;
   return effects.reduce<ResourceMap>((combined, effect) => mergeResourceDelta(combined, effect), {});
+}
+
+function getOfficeSynergyTimelineEntry(state: GameState): string | undefined {
+  const activeSynergies = getOfficeSynergySummary(state).active;
+  if (activeSynergies.length === 0) return undefined;
+
+  return `사무실 시너지: ${activeSynergies.map((synergy) => synergy.title).join(", ")}`;
 }
 
 function formatResourceDelta(delta: ResourceMap): string {

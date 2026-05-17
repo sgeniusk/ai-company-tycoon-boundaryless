@@ -4,6 +4,25 @@
 
 ---
 
+## [0.4.0-alpha] — 2026-05-17
+
+### 사무실 장식 조합 시너지
+
+**추가:**
+- 사무실 시너지 데이터 `data/office_synergies.json`를 추가했다.
+- 배치된 장식 기준으로 활성 시너지와 다음 후보를 계산하는 `getOfficeSynergySummary`를 추가했다.
+- 활성 사무실 시너지의 월간 효과가 운영 진행에 반영된다.
+- 상점 상단과 인벤토리/투자 패널에 사무실 시너지 상태를 표시했다.
+
+**검증:**
+- `npm test -- src/game/office.test.ts` 통과, 7 tests
+- `npm test -- src/game/office.test.ts src/game/qa-scenarios.test.ts` 통과, 30 tests
+- `npm run validate:data` 통과
+- `npm run build` 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=office` 렌더링 확인
+
+---
+
 ## [0.3-alpha completion] — 2026-05-17
 
 ### 덱빌딩과 로그라이트 깊이

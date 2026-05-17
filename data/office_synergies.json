@@ -1,0 +1,40 @@
+{
+  "office_synergies": [
+    {
+      "id": "garage_compute_cluster",
+      "title": "차고 연산 클러스터",
+      "description": "GPU 랙, 냉각, 데이터 작업대를 한곳에 몰아 초반 AI 회사다운 생산 리듬을 만듭니다.",
+      "required_categories": {"office": 2, "research": 1},
+      "required_effects": {"compute": 20, "operations": 2, "data": 5},
+      "monthly_effects": {"compute": 6, "data": 3},
+      "tags": ["compute", "data", "garage"]
+    },
+    {
+      "id": "launch_corner",
+      "title": "런칭 중계 코너",
+      "description": "출시 장식과 촬영 장비를 묶어 작은 회사도 제품 공개 순간을 크게 보이게 합니다.",
+      "required_categories": {"marketing": 1, "office": 1},
+      "required_effects": {"hype": 6, "creativity": 1},
+      "monthly_effects": {"hype": 2, "users": 80},
+      "tags": ["growth", "hype", "launch"]
+    },
+    {
+      "id": "trust_ops_wall",
+      "title": "신뢰 운영 벽",
+      "description": "정책, 레드팀, 고객 피드백 장식을 묶어 제품 사고를 줄이는 운영 문화를 만듭니다.",
+      "required_categories": {"safety": 1, "office": 1},
+      "required_effects": {"trust": 6, "safety": 2},
+      "monthly_effects": {"trust": 2, "data": 2},
+      "tags": ["trust", "safety", "enterprise"]
+    },
+    {
+      "id": "agent_orchestra_room",
+      "title": "에이전트 오케스트라 룸",
+      "description": "에이전트 지휘대와 자동화 장식을 묶어 사람이 지시하지 않아도 운영이 굴러가는 방을 만듭니다.",
+      "required_categories": {"office": 2},
+      "required_effects": {"automation": 12, "autonomy": 2, "operations": 2},
+      "monthly_effects": {"automation": 2, "compute": 3},
+      "tags": ["automation", "agent", "ops"]
+    }
+  ]
+}
