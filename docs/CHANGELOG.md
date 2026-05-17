@@ -4,6 +4,26 @@
 
 ---
 
+## [0.34.1-alpha] — 2026-05-17
+
+### 게임 화면 조작 레이어
+
+**추가:**
+- 우측 메뉴 레일을 핵심 4개 메뉴와 보조 4개 메뉴로 나눠 시각 위계를 강화했다.
+- 모바일에서는 `회사`, `제품`, `덱`, `에이전트`, `더보기` 5탭 구조로 전환한다.
+- 사무실 플레이필드 안에 `고용`, `개발`, `전략`, `꾸미기` 액션 슬롯을 추가했다.
+- 경쟁사 모멘텀이나 현재 경쟁 이벤트를 사무실 안 `경쟁 속보` 배너로 표시한다.
+- 레이아웃 계약 테스트에 v0.34.1 UI 조작 레이어 게이트를 추가했다.
+
+**검증:**
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 24 tests
+- `npm run harness:gate` 통과, 36 files / 231 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser CDP QA: `http://127.0.0.1:5188/?scenario=campaign-shock&menu=company`에서 데스크톱 핵심/보조 메뉴 4+4, 사무실 액션 슬롯 4개, 경쟁 속보 배너 확인
+- 모바일 QA: 5탭, 더보기 보조 메뉴 4개, 액션 슬롯 4개, 목표/경쟁/자원/명령 겹침 없음, 가로 오버플로 없음 확인
+- Headless Chrome screenshot QA: 데스크톱 `/tmp/ai-company-v0341-navigation-desktop.png`, 모바일 `/tmp/ai-company-v0341-navigation-mobile.png`
+
+---
+
 ## [0.34-alpha] — 2026-05-17
 
 ### 그래픽 전 UI 셸 전환 1차

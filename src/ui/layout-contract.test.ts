@@ -41,6 +41,28 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.resource-tile\.critical\s*{/s);
   });
 
+  it("adds the v0.34.1 game navigation layer from the design review backlog", () => {
+    expect(gameChrome).toContain("primaryMenuIds");
+    expect(gameChrome).toContain("secondaryMenuIds");
+    expect(gameChrome).toContain("primary-menu-cluster");
+    expect(gameChrome).toContain("secondary-menu-cluster");
+    expect(gameChrome).toContain("mobile-tab-bar");
+    expect(gameChrome).toContain("mobile-more-menu");
+    expect(appCss).toMatch(/\.mobile-tab-bar\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/\.primary-menu-cluster\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.mobile-tab-bar\s*{[^}]*display:\s*grid/s);
+  });
+
+  it("turns the office playfield into a clickable game surface", () => {
+    expect(gameChrome).toContain("OfficeActionSlots");
+    expect(gameChrome).toContain("RivalIncidentBanner");
+    expect(gameChrome).toContain("office-action-slot-grid");
+    expect(gameChrome).toContain("rival-incident-banner");
+    expect(appCss).toMatch(/\.office-action-slot-grid\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.office-action-slot\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.rival-incident-banner\s*{[^}]*position:\s*absolute/s);
+  });
+
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);

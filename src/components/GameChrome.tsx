@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import { agentTypes, assetManifest, competitors, domains, resources } from "../game/data";
 import { getStrategyCardById } from "../game/deckbuilding";
 import {
@@ -33,7 +33,7 @@ import {
 import type { GameState, ReleaseGrowthPath } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatEffects, statusLabel } from "../ui/formatters";
-import { menuGroupLabels, menus, orderedResourceIds, type MenuId } from "../ui/menu";
+import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
   if (!palette?.length) return {};
@@ -60,6 +60,13 @@ const stageSideTabs: { id: StageSideTabId; label: string }[] = [
 ];
 
 const priorityResourceIds = new Set(["cash", "users", "trust", "compute"]);
+const primaryMenuIds: MenuId[] = ["company", "products", "deck", "agents"];
+const secondaryMenuIds: MenuId[] = ["research", "shop", "competition", "log"];
+const mobileTabMenuIds: MenuId[] = ["company", "products", "deck", "agents"];
+
+function getMenuById(menuId: MenuId) {
+  return menus.find((menu) => menu.id === menuId);
+}
 
 function getMonthlyResourceDelta(gameState: GameState, resourceId: string) {
   const report = gameState.lastMonthReport;
@@ -306,6 +313,13 @@ export function GameStage({
               <small>{officeHudProjectMeta}</small>
             </span>
           </div>
+          <OfficeActionSlots
+            activeProject={Boolean(activeProject)}
+            hasDecorationRoom={placedOfficeItems.length < officeDecorationSlots}
+            hasHireRoom={gameState.hiredAgents.length < officeHireCapacity}
+            onOpenMenu={setActiveMenu}
+          />
+          <RivalIncidentBanner gameState={gameState} />
           {gameState.hiredAgents.length
             ? gameState.hiredAgents.slice(0, Math.min(12, officeHireCapacity)).map((agent, index) => {
                 const agentType = agentTypes.find((type) => type.id === agent.typeId);
@@ -591,6 +605,60 @@ export function GameStage({
   );
 }
 
+function OfficeActionSlots({
+  activeProject,
+  hasDecorationRoom,
+  hasHireRoom,
+  onOpenMenu,
+}: {
+  activeProject: boolean;
+  hasDecorationRoom: boolean;
+  hasHireRoom: boolean;
+  onOpenMenu: Dispatch<SetStateAction<MenuId>>;
+}) {
+  const slots: Array<{ id: string; label: string; detail: string; menu: MenuId; tone: string }> = [
+    { id: "hire", label: "고용", detail: hasHireRoom ? "빈 자리" : "정원", menu: "agents", tone: hasHireRoom ? "ready" : "locked" },
+    { id: "build", label: "개발", detail: activeProject ? "진행 중" : "제품", menu: "products", tone: activeProject ? "working" : "ready" },
+    { id: "deck", label: "전략", detail: "카드", menu: "deck", tone: "deck" },
+    { id: "decor", label: "꾸미기", detail: hasDecorationRoom ? "슬롯" : "효과", menu: "shop", tone: hasDecorationRoom ? "ready" : "locked" },
+  ];
+
+  return (
+    <div className="office-action-slot-grid" aria-label="사무실 액션 슬롯">
+      {slots.map((slot) => (
+        <button className={`office-action-slot slot-${slot.id} tone-${slot.tone}`} key={slot.id} onClick={() => onOpenMenu(slot.menu)} type="button">
+          <strong>{slot.label}</strong>
+          <span>{slot.detail}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function RivalIncidentBanner({ gameState }: { gameState: GameState }) {
+  const eventCompetitorId = gameState.currentRivalEvent?.competitor_id;
+  const topCompetitorState = [...gameState.competitorStates].sort((a, b) => b.momentum - a.momentum || b.marketShare - a.marketShare)[0];
+  const targetState = gameState.competitorStates.find((competitor) => competitor.id === eventCompetitorId) ?? topCompetitorState;
+  const definition = competitors.find((competitor) => competitor.id === targetState?.id);
+
+  if (!targetState || !definition) return null;
+
+  const headline = gameState.currentRivalEvent
+    ? t(gameState.currentRivalEvent.name_key)
+    : `${t(definition.name_key)} ${targetState.marketShare}%`;
+  const detail = gameState.currentRivalEvent
+    ? t(gameState.currentRivalEvent.description_key)
+    : `모멘텀 ${targetState.momentum} · 최근 움직임 ${targetState.lastMove}`;
+
+  return (
+    <div className="rival-incident-banner" style={{ "--rival-color": definition.color } as CSSProperties} aria-live="polite">
+      <span>경쟁 속보</span>
+      <strong>{headline}</strong>
+      <small>{detail}</small>
+    </div>
+  );
+}
+
 function TurnGoalStrip({ guidance, onAction }: { guidance: GuidanceStep; onAction: () => void }) {
   return (
     <div className={`turn-goal-strip goal-${guidance.tone}`} aria-live="polite">
@@ -806,22 +874,54 @@ export function MainMenu({
   activeMenu: MenuId;
   setActiveMenu: Dispatch<SetStateAction<MenuId>>;
 }) {
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
+  const isMoreActive = secondaryMenuIds.includes(activeMenu);
+  const handleMenuClick = (menuId: MenuId) => {
+    setActiveMenu(menuId);
+    setMobileMoreOpen(false);
+  };
+  const renderMenuButton = (menuId: MenuId, className = "") => {
+    const menu = getMenuById(menuId);
+    if (!menu) return null;
+
+    return (
+      <button
+        className={[activeMenu === menu.id ? "active" : "", `menu-group-${menu.group}`, className].filter(Boolean).join(" ")}
+        key={menu.id}
+        onClick={() => handleMenuClick(menu.id)}
+        type="button"
+      >
+        <strong>{menu.label}</strong>
+        <span>{menu.hint}</span>
+      </button>
+    );
+  };
+
   return (
     <nav className="main-menu">
-      {menus.map((menu, index) => (
-        <Fragment key={menu.id}>
-          {(index === 0 || menus[index - 1].group !== menu.group) && (
-            <span className="menu-group-label">{menuGroupLabels[menu.group]}</span>
-          )}
-          <button
-            className={[activeMenu === menu.id ? "active" : "", `menu-group-${menu.group}`].filter(Boolean).join(" ")}
-            onClick={() => setActiveMenu(menu.id)}
-          >
-            <strong>{menu.label}</strong>
-            <span>{menu.hint}</span>
-          </button>
-        </Fragment>
-      ))}
+      <div className="mobile-tab-bar" aria-label="핵심 메뉴">
+        {mobileTabMenuIds.map((menuId) => renderMenuButton(menuId, "mobile-tab-button"))}
+        <button
+          aria-expanded={mobileMoreOpen}
+          className={[isMoreActive ? "active" : "", "mobile-tab-button", "more-tab"].filter(Boolean).join(" ")}
+          onClick={() => setMobileMoreOpen((current) => !current)}
+          type="button"
+        >
+          <strong>더보기</strong>
+          <span>보조</span>
+        </button>
+      </div>
+      <div className={`mobile-more-menu ${mobileMoreOpen ? "open" : ""}`} aria-label="보조 메뉴">
+        {secondaryMenuIds.map((menuId) => renderMenuButton(menuId, "mobile-more-button"))}
+      </div>
+      <div className="menu-priority-cluster primary-menu-cluster" aria-label="핵심 메뉴">
+        <span className="menu-group-label">핵심</span>
+        {primaryMenuIds.map((menuId) => renderMenuButton(menuId))}
+      </div>
+      <div className="menu-priority-cluster secondary-menu-cluster" aria-label="보조 메뉴">
+        <span className="menu-group-label">보조</span>
+        {secondaryMenuIds.map((menuId) => renderMenuButton(menuId))}
+      </div>
     </nav>
   );
 }
