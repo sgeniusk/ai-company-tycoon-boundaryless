@@ -25,6 +25,7 @@ export const qaScenarioIds = [
   "flow",
   "alpha",
   "next-run",
+  "restart-setup",
   "finale",
   "review",
   "reward-bias",
@@ -198,6 +199,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "새 런 진입 QA",
       state: createNextRunState(),
+      activeMenu: "deck",
+    };
+  }
+
+  if (id === "restart-setup") {
+    return {
+      id,
+      label: "v0.32 재시작 설계 QA",
+      state: createRestartSetupState(),
       activeMenu: "deck",
     };
   }
@@ -635,6 +645,28 @@ function createNextRunState(): GameState {
   return {
     ...nextRunState,
     timeline: ["새 런 진입 QA: 덱 메뉴에서 최근 런 기록과 메타 해금 후보 확인", ...nextRunState.timeline].slice(0, 8),
+  };
+}
+
+function createRestartSetupState(): GameState {
+  const alphaState = runTenMinuteAlphaSimulation("productivity_line").finalState;
+
+  return {
+    ...alphaState,
+    seenTutorials: [
+      ...new Set([
+        ...(alphaState.seenTutorials ?? []),
+        "welcome_garage",
+        "agent_hired",
+        "product_ideas",
+        "development_project",
+        "card_reward",
+        "next_run_setup",
+        "office_growth",
+        "competition_pressure",
+      ]),
+    ],
+    timeline: ["v0.32 재시작 설계 QA: 다음 런 설계실에서 빠른 시작, 추천 해금, 시작 덱을 비교", ...alphaState.timeline].slice(0, 8),
   };
 }
 

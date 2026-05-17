@@ -58,4 +58,18 @@ describe("v0.30 helper character tutorial guide", () => {
     expect(nextRun.seenTutorials).toContain("welcome_garage");
     expect(getTutorialGuide(nextRun, "company")?.id).not.toBe("welcome_garage");
   });
+
+  it("introduces the next-run setup room when a run reaches its restart window", () => {
+    const restartReady = {
+      ...createInitialState(),
+      month: 10,
+      activeProducts: ["ai_writing_assistant"],
+      seenTutorials: ["welcome_garage"],
+    };
+
+    expect(getTutorialGuide(restartReady, "deck")).toMatchObject({
+      id: "next_run_setup",
+      targetMenu: "deck",
+    });
+  });
 });

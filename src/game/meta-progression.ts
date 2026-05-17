@@ -2,13 +2,54 @@ import { competitors, metaUnlocks, products, resources, strategyCards } from "./
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
-import type { ActionCheck, GameState, MetaUnlockDefinition, ResourceMap, RunRecord } from "./types";
+import type { ActionCheck, GameState, MetaUnlockDefinition, ResourceMap, RunRecord, StarterDeckOption } from "./types";
 import { t } from "../i18n";
 
 export interface MetaUnlockStatus extends MetaUnlockDefinition {
   unlocked: boolean;
   affordable: boolean;
   reasons: string[];
+}
+
+export interface NextRunRecommendedUnlock extends MetaUnlockStatus {
+  categoryLabel: string;
+  reason: string;
+  score: number;
+  unlockedCardNames: string[];
+}
+
+export interface NextRunStarterDeckPlan extends StarterDeckOption {
+  fitScore: number;
+  reason: string;
+  recommended: boolean;
+}
+
+export interface NextRunQuickStart {
+  id: "safe_restart" | "recommended_unlock" | "current_deck";
+  label: string;
+  description: string;
+  unlockIds: string[];
+  starterDeckId: string;
+  affordable: boolean;
+  reasons: string[];
+  projectedInsightAfterStart: number;
+}
+
+export interface NextRunSetupPlan {
+  currentRunNumber: number;
+  projectedRunNumber: number;
+  currentFounderInsight: number;
+  insightReward: number;
+  projectedFounderInsight: number;
+  focusTitle: string;
+  focusSummary: string;
+  recoveryWarnings: string[];
+  bestProductName?: string;
+  representativeCardName?: string;
+  strongestRivalName?: string;
+  recommendedUnlocks: NextRunRecommendedUnlock[];
+  starterDeckPlans: NextRunStarterDeckPlan[];
+  quickStarts: NextRunQuickStart[];
 }
 
 export function getRunInsightReward(state: GameState): number {
@@ -43,6 +84,36 @@ export function getMetaUnlockStatuses(state: GameState): MetaUnlockStatus[] {
       reasons: check.reasons,
     };
   });
+}
+
+export function getNextRunSetupPlan(state: GameState): NextRunSetupPlan {
+  const currentFounderInsight = state.roguelite.founderInsight;
+  const insightReward = getRunInsightReward(state);
+  const projectedFounderInsight = currentFounderInsight + insightReward;
+  const recoveryWarnings = getRestartWarnings(state);
+  const bestProduct = getBestReviewedProduct(state);
+  const representativeCard = getRepresentativeCard(state);
+  const strongestRival = getStrongestRival(state);
+  const recommendedUnlocks = getRecommendedUnlocks(state, projectedFounderInsight);
+  const starterDeckPlans = getStarterDeckPlans(state);
+  const quickStarts = getNextRunQuickStarts(state, projectedFounderInsight, recommendedUnlocks, starterDeckPlans);
+
+  return {
+    currentRunNumber: state.roguelite.runNumber,
+    projectedRunNumber: state.roguelite.runNumber + 1,
+    currentFounderInsight,
+    insightReward,
+    projectedFounderInsight,
+    focusTitle: getNextRunFocusTitle(state, recoveryWarnings),
+    focusSummary: createNextRunFocusSummary(state, bestProduct?.name, representativeCard?.name, strongestRival?.name),
+    recoveryWarnings,
+    bestProductName: bestProduct?.name,
+    representativeCardName: representativeCard?.name,
+    strongestRivalName: strongestRival?.name,
+    recommendedUnlocks,
+    starterDeckPlans,
+    quickStarts,
+  };
 }
 
 export function resetRunWithMetaUnlocks(
@@ -92,6 +163,225 @@ export function resetRunWithMetaUnlocks(
       ...nextState.timeline,
     ].slice(0, 8),
   };
+}
+
+function getRecommendedUnlocks(state: GameState, projectedFounderInsight: number): NextRunRecommendedUnlock[] {
+  return metaUnlocks
+    .filter((unlock) => !state.roguelite.unlockedMetaIds.includes(unlock.id))
+    .map((unlock) => {
+      const check = getMetaUnlockCheck(unlock.id, state, projectedFounderInsight);
+      const score = scoreMetaUnlock(unlock, state, projectedFounderInsight);
+      const unlockedCardNames = strategyCards
+        .filter((card) => unlock.unlock_card_ids.includes(card.id))
+        .map((card) => card.name);
+
+      return {
+        ...unlock,
+        unlocked: false,
+        affordable: check.ok,
+        reasons: check.reasons,
+        categoryLabel: getMetaUnlockCategoryLabel(unlock),
+        reason: getMetaUnlockRecommendationReason(unlock, state),
+        score,
+        unlockedCardNames,
+      };
+    })
+    .sort((first, second) => second.score - first.score || first.cost - second.cost);
+}
+
+function getStarterDeckPlans(state: GameState): NextRunStarterDeckPlan[] {
+  return getAvailableStarterDecks(state)
+    .map((deck) => {
+      const fitScore = scoreStarterDeck(deck, state);
+
+      return {
+        ...deck,
+        fitScore,
+        reason: getStarterDeckReason(deck, state),
+        recommended: false,
+      };
+    })
+    .sort((first, second) => Number(second.available) - Number(first.available) || second.fitScore - first.fitScore)
+    .map((deck, index) => ({ ...deck, recommended: index === 0 && deck.available }));
+}
+
+function getNextRunQuickStarts(
+  state: GameState,
+  projectedFounderInsight: number,
+  recommendedUnlocks: NextRunRecommendedUnlock[],
+  starterDeckPlans: NextRunStarterDeckPlan[],
+): NextRunQuickStart[] {
+  const recommendedUnlock = recommendedUnlocks.find((unlock) => unlock.affordable) ?? recommendedUnlocks[0];
+  const currentStarterDeckId = starterDeckPlans.find((deck) => deck.id === state.roguelite.starterDeckId && deck.available)?.id ?? "balanced_founder";
+  const recommendedStarterDeckId = recommendedUnlock
+    ? getStarterDeckIdAfterUnlock(state, recommendedUnlock.id)
+    : starterDeckPlans.find((deck) => deck.recommended)?.id ?? "balanced_founder";
+  const recommendedUnlockCost = recommendedUnlock?.affordable ? recommendedUnlock.cost : 0;
+
+  return [
+    {
+      id: "safe_restart",
+      label: "안전 재시작",
+      description: "통찰을 아끼고 균형 창업자 덱으로 초반 제품, 고객, 안전을 고르게 챙깁니다.",
+      unlockIds: [],
+      starterDeckId: "balanced_founder",
+      affordable: true,
+      reasons: ["현재 통찰을 보존", "기본 덱으로 실패 복구 안정화"],
+      projectedInsightAfterStart: projectedFounderInsight,
+    },
+    {
+      id: "recommended_unlock",
+      label: recommendedUnlock ? `${recommendedUnlock.title} 해금` : "추천 해금 없음",
+      description: recommendedUnlock
+        ? `${recommendedUnlock.categoryLabel} 축을 다음 런의 첫 전략으로 고정합니다.`
+        : "남은 해금이 없으므로 현재 덱을 유지합니다.",
+      unlockIds: recommendedUnlock?.affordable ? [recommendedUnlock.id] : [],
+      starterDeckId: recommendedStarterDeckId,
+      affordable: recommendedUnlock ? recommendedUnlock.affordable : true,
+      reasons: recommendedUnlock ? [recommendedUnlock.reason, ...recommendedUnlock.reasons] : ["모든 메타 해금을 이미 확보했습니다."],
+      projectedInsightAfterStart: Math.max(0, projectedFounderInsight - recommendedUnlockCost),
+    },
+    {
+      id: "current_deck",
+      label: "현재 덱 유지",
+      description: "이번 런에서 익숙해진 카드 흐름을 유지해 다음 제품 출시 루틴을 빠르게 반복합니다.",
+      unlockIds: [],
+      starterDeckId: currentStarterDeckId,
+      affordable: true,
+      reasons: ["현재 스타터 덱 유지", "새 조작 학습 부담 최소화"],
+      projectedInsightAfterStart: projectedFounderInsight,
+    },
+  ];
+}
+
+function getRestartWarnings(state: GameState): string[] {
+  const warnings: string[] = [];
+
+  if ((state.resources.cash ?? 0) <= 0) warnings.push("현금 흐름 붕괴");
+  if ((state.resources.trust ?? 0) < 25) warnings.push("신뢰도 위험");
+  if ((state.resources.automation ?? 0) < 5 && state.month >= 8) warnings.push("자동화 부족");
+  if (state.activeProducts.length === 0 && state.month >= 4) warnings.push("첫 출시 지연");
+  if (state.competitorStates.some((competitor) => competitor.momentum >= 8)) warnings.push("경쟁사 모멘텀 과열");
+
+  return warnings;
+}
+
+function getNextRunFocusTitle(state: GameState, recoveryWarnings: string[]): string {
+  if (state.status === "failure" || recoveryWarnings.includes("현금 흐름 붕괴") || recoveryWarnings.includes("신뢰도 위험")) {
+    return "복구 런 설계";
+  }
+
+  if (state.status === "success" || state.month >= CAMPAIGN_FINAL_MONTH) return "확장 런 설계";
+  if (state.activeProducts.length >= 3) return "스케일업 런 설계";
+  return "다음 런 설계";
+}
+
+function createNextRunFocusSummary(state: GameState, bestProductName?: string, cardName?: string, rivalName?: string): string {
+  if (state.status === "failure") {
+    return `${bestProductName ?? "첫 제품"} 경험을 살려 현금과 신뢰를 먼저 복구하는 재시작이 좋습니다.`;
+  }
+
+  if (state.status === "success") {
+    return `${bestProductName ?? "대표 제품"} 성과를 다음 런의 더 큰 산업 확장으로 연결할 차례입니다.`;
+  }
+
+  if (rivalName) return `${rivalName} 압박을 기억하고 ${cardName ?? "핵심 카드"} 중심의 대응 빌드를 준비합니다.`;
+  return `${bestProductName ?? "첫 출시"}와 ${cardName ?? "기본 카드"} 흐름을 바탕으로 다음 런의 실험 방향을 고릅니다.`;
+}
+
+function scoreMetaUnlock(unlock: MetaUnlockDefinition, state: GameState, projectedFounderInsight: number): number {
+  const tags = new Set(unlock.tags);
+  let score = projectedFounderInsight >= unlock.cost ? 35 : -25;
+
+  if ((state.resources.cash ?? 0) <= 0 && (tags.has("automation") || tags.has("ops") || tags.has("growth"))) score += 35;
+  if ((state.resources.trust ?? 0) < 25 && (tags.has("safety") || tags.has("quality"))) score += 95;
+  if ((state.resources.automation ?? 0) < 6 && (tags.has("automation") || tags.has("ops"))) score += 42;
+  if ((state.resources.users ?? 0) < 3000 && (tags.has("growth") || tags.has("retention"))) score += 26;
+  if (state.activeProducts.length >= 3 && (tags.has("boundaryless") || tags.has("odd"))) score += 36;
+  if (state.month >= 24 && (tags.has("hardware") || tags.has("compute") || tags.has("research"))) score += 28;
+  if (unlock.id === "eval_harness" && ((state.resources.trust ?? 0) < 35 || state.status === "failure")) score += 28;
+  if (unlock.id === "launch_playbook" && state.status === "success") score += 24;
+  if (state.competitorStates.some((competitor) => competitor.momentum >= 8) && (tags.has("counter") || tags.has("enterprise"))) score += 32;
+
+  return score - unlock.cost;
+}
+
+function scoreStarterDeck(deck: StarterDeckOption, state: GameState): number {
+  const tags = new Set(deck.tags);
+  let score = deck.available ? 20 : -60;
+
+  if (deck.id === "balanced_founder") score += state.roguelite.unlockedMetaIds.length === 0 ? 30 : 8;
+  if ((state.resources.trust ?? 0) < 35 && (tags.has("trust") || tags.has("safety"))) score += 32;
+  if ((state.resources.cash ?? 0) <= 0 && (tags.has("automation") || tags.has("growth") || tags.has("compute"))) score += 18;
+  if ((state.resources.users ?? 0) >= 4000 && (tags.has("growth") || tags.has("market"))) score += 24;
+  if (state.month >= 18 && (tags.has("hardware") || tags.has("robotics"))) score += 22;
+  if (state.activeProducts.length >= 3 && (tags.has("boundaryless") || tags.has("odd"))) score += 18;
+
+  return score;
+}
+
+function getMetaUnlockCategoryLabel(unlock: MetaUnlockDefinition): string {
+  const tags = new Set(unlock.tags);
+
+  if (tags.has("safety") || tags.has("quality") || tags.has("ux")) return "품질/신뢰";
+  if (tags.has("growth") || tags.has("retention")) return "성장/리텐션";
+  if (tags.has("automation") || tags.has("ops")) return "운영 자동화";
+  if (tags.has("counter") || tags.has("enterprise")) return "경쟁/기업";
+  if (tags.has("robotics") || tags.has("hardware") || tags.has("compute") || tags.has("research")) return "하드웨어/연구";
+  if (tags.has("boundaryless") || tags.has("odd")) return "경계 확장";
+  return "메타";
+}
+
+function getMetaUnlockRecommendationReason(unlock: MetaUnlockDefinition, state: GameState): string {
+  const tags = new Set(unlock.tags);
+
+  if ((state.resources.trust ?? 0) < 25 && (tags.has("safety") || tags.has("quality"))) {
+    return "낮은 신뢰를 복구하고 안전 카드로 다음 출시 사고를 줄입니다.";
+  }
+
+  if ((state.resources.cash ?? 0) <= 0 && (tags.has("automation") || tags.has("ops"))) {
+    return "무너진 현금 흐름을 자동화와 운영 효율로 회복합니다.";
+  }
+
+  if (state.status === "success" && (tags.has("growth") || tags.has("retention"))) {
+    return "성공 런의 화제성을 다음 런 첫 출시 성장으로 이어갑니다.";
+  }
+
+  if (state.month >= 24 && (tags.has("hardware") || tags.has("compute") || tags.has("research"))) {
+    return "중후반 산업 확장을 위한 연산, 반도체, 로봇 기반을 앞당깁니다.";
+  }
+
+  if (tags.has("boundaryless") || tags.has("odd")) {
+    return "AI 회사가 엉뚱한 산업으로 튀는 밈과 공유 장면을 만듭니다.";
+  }
+
+  return `${unlock.title} 카드와 시작 보너스로 다음 런의 전략 축을 넓힙니다.`;
+}
+
+function getStarterDeckReason(deck: StarterDeckOption, state: GameState): string {
+  const tags = new Set(deck.tags);
+
+  if (!deck.available) return deck.lockedReason ?? "메타 해금이 더 필요합니다.";
+  if (deck.id === "balanced_founder") return "초반 비용, 고객, 안전을 모두 다루는 가장 안정적인 선택입니다.";
+  if ((state.resources.trust ?? 0) < 35 && (tags.has("trust") || tags.has("safety"))) return "신뢰 복구와 기업형 출시를 빠르게 준비합니다.";
+  if (tags.has("growth") || tags.has("market")) return "첫 제품의 사용자 폭발과 출시 장면을 키웁니다.";
+  if (tags.has("automation") || tags.has("agent")) return "사람과 에이전트 운용 한계를 자동화로 완화합니다.";
+  if (tags.has("hardware") || tags.has("robotics")) return "반도체, 로봇, 자동차 같은 물리 산업으로 빨리 넘어갑니다.";
+  if (tags.has("boundaryless") || tags.has("odd")) return "커피 프랜차이즈 같은 이상한 확장으로 공유성을 노립니다.";
+  return "현재 해금 상태에서 다음 런의 카드 방향을 바꿉니다.";
+}
+
+function getStarterDeckIdAfterUnlock(state: GameState, unlockId: string): string {
+  const stateAfterUnlock: GameState = {
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      unlockedMetaIds: [...new Set([...state.roguelite.unlockedMetaIds, unlockId])],
+    },
+  };
+  const unlockedDeck = getAvailableStarterDecks(stateAfterUnlock).find((deck) => deck.required_meta_id === unlockId && deck.available);
+
+  return unlockedDeck?.id ?? "balanced_founder";
 }
 
 function createRunRecord(state: GameState, insightReward: number): RunRecord {

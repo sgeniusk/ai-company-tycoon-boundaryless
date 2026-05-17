@@ -54,6 +54,15 @@ const tutorialGuideRules: TutorialGuideRule[] = [
     visible: (state) => Boolean(state.roguelite.pendingCardReward),
   },
   {
+    id: "next_run_setup",
+    helperName,
+    title: "다음 런 설계실이 열렸어요",
+    message: "10개월 이후에는 이번 회사의 실수와 성과를 다음 창업의 해금, 시작 덱, 빠른 시작 선택으로 바꿀 수 있습니다.",
+    targetMenu: "deck",
+    actionLabel: "설계실 보기",
+    visible: (state, activeMenu) => activeMenu === "deck" && state.month >= 10 && state.roguelite.runNumber === 1,
+  },
+  {
     id: "office_growth",
     helperName,
     title: "사무실 성장 플래너가 켜졌어요",

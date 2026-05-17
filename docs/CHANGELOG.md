@@ -4,6 +4,28 @@
 
 ---
 
+## [0.32-alpha] — 2026-05-17
+
+### 로그라이트 재시작 설계실
+
+**추가:**
+- `getNextRunSetupPlan()`을 추가해 종료 직전 런을 다음 런 추천 해금, 시작 덱, 빠른 시작 선택으로 변환한다.
+- 현금 흐름 붕괴, 신뢰도 위험, 자동화 부족, 첫 출시 지연, 경쟁사 모멘텀 과열을 재시작 경고로 표시한다.
+- 메타 해금 후보를 `품질/신뢰`, `성장/리텐션`, `운영 자동화`, `경쟁/기업`, `하드웨어/연구`, `경계 확장` 카테고리로 정리한다.
+- 덱 메뉴 상단에 `다음 런 설계실`을 추가해 안전 재시작, 추천 해금, 현재 덱 유지 중 하나를 바로 선택할 수 있게 했다.
+- `restart-setup` QA 시나리오를 추가해 새 런을 수락하기 전의 재시작 설계 화면을 바로 열 수 있다.
+- 도우미 캐릭터 `미나`가 10개월 이후 처음 덱 메뉴에 들어오면 다음 런 설계실을 안내한다.
+
+**검증:**
+- `npm test -- src/game/meta-progression.test.ts src/game/qa-scenarios.test.ts src/game/tutorial-guide.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 53 tests
+- `npm run validate:data` 통과
+- `npm run build` 통과
+- `npm run harness:gate` 통과, 35 files / 221 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser DOM QA: `http://127.0.0.1:5184/?scenario=restart-setup&menu=deck`에서 다음 런 설계실, 빠른 시작, 추천 해금, 콘솔 오류 0건 확인
+- Headless Chrome screenshot QA: 데스크톱 `/tmp/ai-company-v032-restart-setup-desktop.png`, 모바일 `/tmp/ai-company-v032-restart-setup-mobile.png`
+
+---
+
 ## [0.31-alpha] — 2026-05-17
 
 ### 덱 시너지와 빌드 보너스

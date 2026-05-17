@@ -4,6 +4,7 @@ import { getAnnualDirectiveChoiceRows } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
 import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
+import { getNextRunSetupPlan } from "./meta-progression";
 import { runTenYearCampaignSimulation } from "./run-simulator";
 
 describe("alpha v0.9.3 QA scenarios", () => {
@@ -25,6 +26,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "flow",
       "alpha",
       "next-run",
+      "restart-setup",
       "finale",
       "review",
       "reward-bias",
@@ -179,6 +181,17 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.timeline[0]).toContain("덱");
   });
 
+  it("creates a restart setup scenario before accepting the next run", () => {
+    const scenario = createQaScenario("restart-setup");
+    const plan = getNextRunSetupPlan(scenario.state);
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("재시작");
+    expect(scenario.state.roguelite.runNumber).toBe(1);
+    expect(plan.quickStarts.length).toBeGreaterThanOrEqual(3);
+    expect(plan.recommendedUnlocks.length).toBeGreaterThan(0);
+  });
+
   it("creates a result scenario that focuses the final run recap", () => {
     const scenario = createQaScenario("result");
 
@@ -301,6 +314,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=flow")?.id).toBe("flow");
     expect(createQaScenarioFromSearch("?scenario=alpha")?.id).toBe("alpha");
     expect(createQaScenarioFromSearch("?scenario=next-run")?.id).toBe("next-run");
+    expect(createQaScenarioFromSearch("?scenario=restart-setup")?.id).toBe("restart-setup");
     expect(createQaScenarioFromSearch("?scenario=finale")?.id).toBe("finale");
     expect(createQaScenarioFromSearch("?scenario=review")?.id).toBe("review");
     expect(createQaScenarioFromSearch("?scenario=reward-bias")?.id).toBe("reward-bias");

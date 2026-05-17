@@ -59,7 +59,7 @@ import {
   removeStrategyCardFromDeck,
   upgradeStrategyCard,
 } from "../game/deckbuilding";
-import { getMetaUnlockCheck, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
+import { getMetaUnlockCheck, getNextRunSetupPlan, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
 import {
   buyAutomationUpgrade,
   buyItem,
@@ -524,6 +524,9 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const archetypeSummary = getDeckArchetypeSummary(gameState);
   const deckSynergySummary = getDeckSynergySummary(gameState);
   const starterDeckOptions = getAvailableStarterDecks(gameState);
+  const nextRunSetupPlan = getNextRunSetupPlan(gameState);
+  const shouldShowNextRunSetup =
+    gameState.month >= 10 || gameState.status !== "playing" || gameState.roguelite.runHistory.length > 0;
 
   useEffect(() => {
     if (!puzzle) {
@@ -569,6 +572,64 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <span>편집 토큰 {gameState.roguelite.deckEditTokens}</span>
           <span>{pendingReward ? "보상 선택 대기" : "보상 없음"}</span>
         </div>
+        {shouldShowNextRunSetup && (
+          <div className="next-run-command-panel">
+            <div className="next-run-command-header">
+              <div>
+                <p className="eyebrow">다음 런 설계실</p>
+                <h3>{nextRunSetupPlan.focusTitle}</h3>
+                <span>{nextRunSetupPlan.focusSummary}</span>
+              </div>
+              <strong>
+                런 {nextRunSetupPlan.currentRunNumber} → {nextRunSetupPlan.projectedRunNumber}
+              </strong>
+            </div>
+            <div className="next-run-command-stats">
+              <span>현재 통찰 {nextRunSetupPlan.currentFounderInsight}</span>
+              <span>예상 보상 +{nextRunSetupPlan.insightReward}</span>
+              <span>시작 가능 {nextRunSetupPlan.projectedFounderInsight}</span>
+            </div>
+            {nextRunSetupPlan.recoveryWarnings.length > 0 && (
+              <div className="restart-warning-row">
+                {nextRunSetupPlan.recoveryWarnings.map((warning) => (
+                  <span key={warning}>{warning}</span>
+                ))}
+              </div>
+            )}
+            <div className="next-run-quick-start-grid">
+              {nextRunSetupPlan.quickStarts.map((quickStart) => {
+                const starterDeckTitle = starterDeckOptions.find((deckOption) => deckOption.id === quickStart.starterDeckId)?.title ?? quickStart.starterDeckId;
+
+                return (
+                  <button
+                    disabled={!quickStart.affordable}
+                    key={quickStart.id}
+                    onClick={() => setGameState((current) => resetRunWithMetaUnlocks(current, quickStart.unlockIds, quickStart.starterDeckId))}
+                    type="button"
+                  >
+                    <strong>{quickStart.label}</strong>
+                    <span>{quickStart.description}</span>
+                    <small>
+                      {starterDeckTitle} · 남은 통찰 {quickStart.projectedInsightAfterStart}
+                    </small>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="next-run-recommendation-grid">
+              {nextRunSetupPlan.recommendedUnlocks.slice(0, 3).map((unlock) => (
+                <article key={unlock.id}>
+                  <span className="meta-category-badge">{unlock.categoryLabel}</span>
+                  <strong>{unlock.title}</strong>
+                  <small>
+                    비용 {unlock.cost} · {unlock.affordable ? "이번 보상으로 가능" : unlock.reasons[0] ?? "통찰 부족"}
+                  </small>
+                  <p>{unlock.reason}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
         {latestRunRecord && (
           <div className="next-run-onboarding">
             <div>
