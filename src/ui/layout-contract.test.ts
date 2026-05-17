@@ -225,6 +225,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("getRecruitmentCandidatePool");
     expect(menuPanels).toContain("getRecruitmentOffer");
     expect(menuPanels).toContain("getAgentCareerStatus");
+    expect(menuPanels).toContain("getAgentDevelopmentProfile");
     expect(menuPanels).toContain("getAgentRetentionAlerts");
     expect(menuPanels).toContain("getAgentRestCheck");
     expect(menuPanels).toContain("getAgentSalaryNegotiationCheck");
@@ -232,6 +233,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("negotiateAgentSalary");
     expect(menuPanels).toContain("career-meter");
     expect(menuPanels).toContain("care-actions");
+    expect(menuPanels).toContain("personality-strip");
+    expect(menuPanels).toContain("preference-row");
     expect(menuPanels).toContain("retention-alert-list");
     expect(menuPanels).toContain("hireAgentViaChannel");
     expect(menuPanels).toContain("getAgentHireCheckForChannel");
@@ -240,6 +243,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.candidate-pool-strip\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.career-meter\s*{[^}]*height:/s);
     expect(appCss).toMatch(/\.care-actions\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.personality-strip\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.preference-row\s*{[^}]*display:\s*flex/s);
     expect(appCss).toMatch(/\.retention-alert-list\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.contract-badge\s*{[^}]*font-weight:\s*900/s);
     expect(appCss).toMatch(/\.agent-grid\s*{[^}]*grid-template-columns:\s*1fr/s);

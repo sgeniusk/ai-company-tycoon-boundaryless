@@ -143,6 +143,19 @@ export interface AgentRetentionAlert {
   message: string;
 }
 
+export interface AgentDevelopmentProfile {
+  traitLabel: string;
+  traitDescription: string;
+  growthFocusStats: Array<keyof AgentStats>;
+  growthFocusLabel: string;
+  preferredItemIds: string[];
+  preferredItemNames: string[];
+  matchedPreferredItemIds: string[];
+  matchedPreferredItemNames: string[];
+  preferredItemBonus: Partial<AgentStats>;
+  loyaltyBonus: number;
+}
+
 export const recruitmentChannels: RecruitmentChannelDefinition[] = [
   {
     id: "open_recruiting",
@@ -484,6 +497,29 @@ export function getAgentRetentionAlerts(state: GameState): AgentRetentionAlert[]
           ? `${agent.name} 이직 위험이 큽니다. 연봉 협상이나 휴식이 필요합니다.`
           : `${agent.name} 충성도가 흔들립니다. 과로와 계약 압박을 확인하세요.`,
     }));
+}
+
+export function getAgentDevelopmentProfile(agent: HiredAgent, _state: GameState): AgentDevelopmentProfile {
+  const agentType = getHiredAgentType(agent);
+  const preferredItemIds = agentType?.preferred_items ?? [];
+  const preferredItems = preferredItemIds
+    .map((itemId) => items.find((item) => item.id === itemId))
+    .filter((item): item is ItemDefinition => Boolean(item));
+  const matchedPreferredItems = preferredItems.filter((item) => agent.equippedItemIds.includes(item.id));
+  const growthFocusStats = getAgentGrowthFocusStats(agentType);
+
+  return {
+    traitLabel: getAgentTraitLabel(agentType),
+    traitDescription: agentType?.quirk ?? "현재 회사에서 역할을 만들어 가는 인력입니다.",
+    growthFocusStats,
+    growthFocusLabel: `${growthFocusStats.map(getStatKoreanLabel).join("·")} 집중`,
+    preferredItemIds,
+    preferredItemNames: preferredItems.map((item) => item.name),
+    matchedPreferredItemIds: matchedPreferredItems.map((item) => item.id),
+    matchedPreferredItemNames: matchedPreferredItems.map((item) => item.name),
+    preferredItemBonus: getPreferredItemStatBonus(agent, agentType),
+    loyaltyBonus: getPreferredItemLoyaltyBonus(agent, agentType),
+  };
 }
 
 export function getAgentRestCost(agent: HiredAgent): ResourceMap {
@@ -1365,8 +1401,9 @@ export function getAgentEffectiveStats(agent: HiredAgent, state: GameState): Age
   const equippedItems = items.filter((item) => agent.equippedItemIds.includes(item.id));
   const contractStats = addStats(baseStats, Object.fromEntries(statKeys.map((stat) => [stat, agent.statBonus ?? 0])));
   const leveledStats = addStats(contractStats, getAgentLevelStatEffects(baseStats, agent.level));
+  const preferredStats = addStats(leveledStats, getPreferredItemStatBonus(agent, type));
 
-  return equippedItems.reduce((stats, item) => addStats(stats, item.effects), leveledStats);
+  return equippedItems.reduce((stats, item) => addStats(stats, item.effects), preferredStats);
 }
 
 export function getCapabilityCheck(capability: CapabilityDefinition, state: GameState): ActionCheck {
@@ -2846,6 +2883,59 @@ function getAgentKind(agent: AgentTypeDefinition): NonNullable<AgentTypeDefiniti
   return agent.kind ?? "ai_agent";
 }
 
+function getHiredAgentType(agent: HiredAgent): AgentTypeDefinition | undefined {
+  return agentTypes.find((agentType) => agentType.id === agent.typeId);
+}
+
+function getAgentTraitLabel(agentType: AgentTypeDefinition | undefined): string {
+  if (!agentType) return "성장 대기 인력";
+  const topStat = getAgentGrowthFocusStats(agentType)[0];
+  const kind = getAgentKind(agentType);
+  const kindLabel = kind === "human" ? "사람" : kind === "robot" ? "로봇" : "AI";
+  const focusLabel = getStatKoreanLabel(topStat);
+
+  return `${focusLabel}형 ${kindLabel}`;
+}
+
+function getAgentGrowthFocusStats(agentType: AgentTypeDefinition | undefined): Array<keyof AgentStats> {
+  const baseStats = agentType?.stats ?? createEmptyStats();
+
+  return [...statKeys]
+    .sort((left, right) => baseStats[right] - baseStats[left] || statKeys.indexOf(left) - statKeys.indexOf(right))
+    .slice(0, 2);
+}
+
+function getPreferredItemStatBonus(agent: HiredAgent, agentType: AgentTypeDefinition | undefined): Partial<AgentStats> {
+  const matchCount = getMatchedPreferredItemCount(agent, agentType);
+  if (matchCount <= 0) return {};
+
+  return Object.fromEntries(getAgentGrowthFocusStats(agentType).map((stat) => [stat, matchCount])) as Partial<AgentStats>;
+}
+
+function getPreferredItemLoyaltyBonus(agent: HiredAgent, agentType: AgentTypeDefinition | undefined): number {
+  return Math.min(2, getMatchedPreferredItemCount(agent, agentType));
+}
+
+function getMatchedPreferredItemCount(agent: HiredAgent, agentType: AgentTypeDefinition | undefined): number {
+  const preferredItemIds = new Set(agentType?.preferred_items ?? []);
+  return agent.equippedItemIds.filter((itemId) => preferredItemIds.has(itemId)).length;
+}
+
+function getStatKoreanLabel(stat: keyof AgentStats): string {
+  const labels: Record<keyof AgentStats, string> = {
+    research: "연구",
+    engineering: "개발",
+    product: "제품",
+    growth: "성장",
+    safety: "안전",
+    operations: "운영",
+    creativity: "창의",
+    autonomy: "자율",
+  };
+
+  return labels[stat];
+}
+
 function sanitizeAgentLevel(level: number | undefined): number {
   return Math.round(clamp(level ?? 1, 1, 10));
 }
@@ -2889,6 +2979,7 @@ function getMonthlyAgentLoyaltyDelta(agent: HiredAgent, state: GameState, assign
   if (assigned && nextEnergy < 35) delta -= 3;
   if (!assigned && nextEnergy >= 80) delta += 1;
   if ((state.resources.trust ?? 50) >= 70) delta += 1;
+  delta += getPreferredItemLoyaltyBonus(agent, getHiredAgentType(agent));
 
   return delta;
 }

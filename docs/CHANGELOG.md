@@ -4,6 +4,25 @@
 
 ---
 
+## [0.34.6-alpha] — 2026-05-18
+
+### 직원 성격과 선호 장비 보너스
+
+**추가:**
+- 에이전트 카드에 성격 특성, 성장 방향, 선호 장비 목록을 표시했다.
+- 기존 `preferred_items` 데이터를 실제 규칙으로 연결해 선호 장비를 장착하면 주 성장 능력치 2개에 보너스가 붙는다.
+- 선호 장비를 쓰는 직원은 월간 충성도도 소폭 더 안정된다.
+- 선호 장비 매칭 여부를 카드 안에서 녹색 배지로 표시해 어떤 장비를 누구에게 줘야 하는지 읽기 쉽게 했다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 36 tests
+- `npm test -- src/game/staff-career.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 65 tests
+- `npm run harness:gate` 통과, 38 files / 250 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome QA: `http://127.0.0.1:5193/?scenario=staffing&menu=agents`에서 성격/선호 장비 패널 2개씩, 콘솔 오류 0건, 모바일 가로 오버플로 없음 확인
+- 스크린샷: `/tmp/ai-company-v0346-staff-personality-desktop.png`, `/tmp/ai-company-v0346-staff-personality-mobile.png`
+
+---
+
 ## [0.34.5-alpha] — 2026-05-18
 
 ### 직원 케어 액션과 실제 퇴사 리스크

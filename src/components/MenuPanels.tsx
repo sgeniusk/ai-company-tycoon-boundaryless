@@ -66,6 +66,7 @@ import {
   buyUpgrade,
   equipItem,
   getAgentCareerStatus,
+  getAgentDevelopmentProfile,
   formatResource,
   getAgentEffectiveStats,
   getAgentHireCheckForChannel,
@@ -1480,6 +1481,7 @@ function HiredAgentCard({
   const recruitmentChannel = recruitmentChannels.find((channel) => channel.id === agent.recruitmentChannelId);
   const contractUpkeep = agent.upkeep ?? agentType?.upkeep ?? {};
   const careerStatus = getAgentCareerStatus(agent, gameState);
+  const developmentProfile = getAgentDevelopmentProfile(agent, gameState);
   const restCost = getAgentRestCost(agent);
   const salaryNegotiationCost = getAgentSalaryNegotiationCost(agent);
   const restCheck = getAgentRestCheck(agent.id, gameState);
@@ -1508,6 +1510,20 @@ function HiredAgentCard({
           <h3>{agent.name}</h3>
           <p>{assignedProduct ? `${assignedProduct.name} 개발 중` : "대기 중"}</p>
         </div>
+      </div>
+      <div className="personality-strip">
+        <span>{developmentProfile.traitLabel}</span>
+        <span>{developmentProfile.growthFocusLabel}</span>
+        <small>{developmentProfile.traitDescription}</small>
+      </div>
+      <div className="preference-row">
+        <strong>선호 장비</strong>
+        {developmentProfile.preferredItemNames.slice(0, 3).map((itemName) => (
+          <span className={developmentProfile.matchedPreferredItemNames.includes(itemName) ? "matched" : ""} key={itemName}>
+            {itemName}
+          </span>
+        ))}
+        {developmentProfile.preferredItemNames.length === 0 && <span>없음</span>}
       </div>
       <div className="stat-grid">
         {Object.entries(stats).map(([stat, value]) => (

@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { agentTypes, products } from "./data";
+import { agentTypes, items, products } from "./data";
 import {
   advanceMonth,
+  buyItem,
   createInitialState,
+  equipItem,
+  getAgentDevelopmentProfile,
   getAgentCareerStatus,
   getAgentEffectiveStats,
   getAgentRestCheck,
@@ -156,5 +159,52 @@ describe("v0.34.5 staff care actions and resignation risk", () => {
 
     expect(advanced.hiredAgents).toHaveLength(0);
     expect(advanced.timeline.join(" ")).toContain("퇴사");
+  });
+});
+
+describe("v0.34.6 staff personality and preferred equipment", () => {
+  it("summarizes each agent's trait, growth focus, and preferred equipment matches", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "open_recruiting");
+    const notebook = items.find((item) => item.id === "prompt_notebook");
+    if (!notebook) throw new Error("Missing prompt notebook");
+
+    const equipped = equipItem(hired.hiredAgents[0].id, notebook, buyItem(notebook, hired));
+    const profile = getAgentDevelopmentProfile(equipped.hiredAgents[0], equipped);
+
+    expect(profile.traitLabel).toContain("AI");
+    expect(profile.growthFocusLabel).toContain("제품");
+    expect(profile.preferredItemIds).toContain("prompt_notebook");
+    expect(profile.matchedPreferredItemNames).toContain("프롬프트 노트");
+  });
+
+  it("adds a focused stat bonus when a preferred item is equipped", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "open_recruiting");
+    const notebook = items.find((item) => item.id === "prompt_notebook");
+    if (!notebook) throw new Error("Missing prompt notebook");
+
+    const equipped = equipItem(hired.hiredAgents[0].id, notebook, buyItem(notebook, hired));
+    const stats = getAgentEffectiveStats(equipped.hiredAgents[0], equipped);
+
+    expect(stats.product).toBeGreaterThan(architect().stats.product + (notebook.effects.product ?? 0));
+    expect(stats.creativity).toBeGreaterThan(architect().stats.creativity + (notebook.effects.creativity ?? 0));
+  });
+
+  it("raises monthly loyalty slightly for agents using preferred gear", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "open_recruiting");
+    const notebook = items.find((item) => item.id === "prompt_notebook");
+    if (!notebook) throw new Error("Missing prompt notebook");
+    const baseline = {
+      ...hired,
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, loyalty: 60 })),
+    };
+    const equipped = {
+      ...equipItem(baseline.hiredAgents[0].id, notebook, buyItem(notebook, baseline)),
+      hiredAgents: baseline.hiredAgents.map((agent) => ({ ...agent, equippedItemIds: ["prompt_notebook"], loyalty: 60 })),
+    };
+
+    const withoutPreference = advanceMonth(baseline).hiredAgents[0].loyalty ?? 0;
+    const withPreference = advanceMonth(equipped).hiredAgents[0].loyalty ?? 0;
+
+    expect(withPreference).toBeGreaterThan(withoutPreference);
   });
 });

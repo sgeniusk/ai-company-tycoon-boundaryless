@@ -3823,6 +3823,57 @@ p {
   margin-bottom: 0;
 }
 
+.personality-strip {
+  background: #eef7ff;
+  border: 2px solid #9cb8d6;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 7px;
+}
+
+.personality-strip span,
+.personality-strip small {
+  color: #263f52;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.personality-strip small {
+  grid-column: 1 / -1;
+  opacity: 0.82;
+}
+
+.preference-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.preference-row strong,
+.preference-row span {
+  background: #fffdf7;
+  border: 1px solid #cbb98f;
+  color: #3f3524;
+  font-size: 0.64rem;
+  font-weight: 900;
+  line-height: 1.2;
+  padding: 5px 6px;
+}
+
+.preference-row strong {
+  background: #20342d;
+  border-color: #20342d;
+  color: #fff7df;
+}
+
+.preference-row span.matched {
+  background: #edf8eb;
+  border-color: #99bf91;
+  color: var(--green-dark);
+}
+
 .career-panel {
   display: grid;
   gap: 6px;
