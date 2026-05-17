@@ -2099,6 +2099,32 @@ p {
   color: #6b431b;
 }
 
+.candidate-pool-strip {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.candidate-pool-strip span {
+  background: #fffdf7;
+  border: 1px solid #c5d69e;
+  color: #4f5d3d;
+  font-size: 0.66rem;
+  min-height: 30px;
+  padding: 6px;
+}
+
+.candidate-pool-empty {
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  color: #6a5a3f;
+  font-size: 0.76rem;
+  font-weight: 900;
+  line-height: 1.35;
+  margin: 0;
+  padding: 10px;
+}
+
 .season-brief-panel {
   background: #fff0d9;
   border-color: #c99c55;

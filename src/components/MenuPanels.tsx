@@ -95,6 +95,7 @@ import {
   getProductRenewalProjectCheck,
   getProductUpgradeCheck,
   getProductUpgradeCost,
+  getRecruitmentCandidatePool,
   getRecruitmentOffer,
   getUpgradeCheck,
   getWorkforceSynergySummary,
@@ -1289,9 +1290,11 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
   const agentRows = getAgentContentRows(gameState);
   const recommendations = getFoundationRecommendations(gameState, 4);
   const phase = getCampaignContentPhase(gameState);
-  const filteredAgentRows = agentRows.filter((row) => kindFilter === "all" || row.kind === kindFilter);
   const workforceSynergySummary = getWorkforceSynergySummary(gameState);
   const selectedRecruitmentChannel = recruitmentChannels.find((channel) => channel.id === recruitmentChannelId) ?? recruitmentChannels[0];
+  const candidatePool = getRecruitmentCandidatePool(gameState, recruitmentChannelId);
+  const candidateAgentIds = new Set(candidatePool.candidateIds);
+  const filteredAgentRows = agentRows.filter((row) => candidateAgentIds.has(row.agent.id) && (kindFilter === "all" || row.kind === kindFilter));
   const ownedAgentItems = items.filter(
     (item) =>
       item.target === "agent" &&
@@ -1384,6 +1387,11 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
             <span className="contract-badge">능력 +{selectedRecruitmentChannel.statBonus}</span>
             <span className="contract-badge risk">{selectedRecruitmentChannel.riskLabel}</span>
           </div>
+          <div className="candidate-pool-strip">
+            <span>{candidatePool.summary}</span>
+            <span>{candidatePool.locationLabel}</span>
+            <span>{candidatePool.refreshLabel}</span>
+          </div>
         </div>
         <div className="content-filter" role="tablist" aria-label="고용 후보 필터">
           {[
@@ -1403,25 +1411,29 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
             </button>
           ))}
         </div>
-        <div className="agent-grid">
-          {filteredAgentRows.map((row) => {
-            const check = getAgentHireCheckForChannel(row.agent, gameState, recruitmentChannelId);
-            const offer = getRecruitmentOffer(row.agent, gameState, recruitmentChannelId);
-            const isHired = gameState.hiredAgents.some((hiredAgent) => hiredAgent.typeId === row.agent.id);
+        {filteredAgentRows.length ? (
+          <div className="agent-grid">
+            {filteredAgentRows.map((row) => {
+              const check = getAgentHireCheckForChannel(row.agent, gameState, recruitmentChannelId);
+              const offer = getRecruitmentOffer(row.agent, gameState, recruitmentChannelId);
+              const isHired = gameState.hiredAgents.some((hiredAgent) => hiredAgent.typeId === row.agent.id);
 
-            return (
-              <AgentCard
-                agent={row.agent}
-                check={check}
-                contentRow={row}
-                offer={offer}
-                isHired={isHired}
-                key={row.agent.id}
-                onHire={() => setGameState((current) => hireAgentViaChannel(row.agent, current, recruitmentChannelId))}
-              />
-            );
-          })}
-        </div>
+              return (
+                <AgentCard
+                  agent={row.agent}
+                  check={check}
+                  contentRow={row}
+                  offer={offer}
+                  isHired={isHired}
+                  key={row.agent.id}
+                  onHire={() => setGameState((current) => hireAgentViaChannel(row.agent, current, recruitmentChannelId))}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <p className="candidate-pool-empty">이번 달 조건에 맞는 후보가 없습니다. 필터를 바꾸거나 다음 달 후보 갱신을 기다리세요.</p>
+        )}
       </section>
     </div>
   );

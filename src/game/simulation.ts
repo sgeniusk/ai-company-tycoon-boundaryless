@@ -114,6 +114,15 @@ export interface RecruitmentOffer {
   recommendationReason: string;
 }
 
+export interface RecruitmentCandidatePool {
+  channel: RecruitmentChannelDefinition;
+  candidateIds: string[];
+  summary: string;
+  refreshLabel: string;
+  locationLabel: string;
+  poolSize: number;
+}
+
 export const recruitmentChannels: RecruitmentChannelDefinition[] = [
   {
     id: "open_recruiting",
@@ -301,6 +310,32 @@ export function launchProduct(product: ProductDefinition, state: GameState): Gam
 
 export function getRecruitmentChannel(channelId: RecruitmentChannelId): RecruitmentChannelDefinition {
   return recruitmentChannels.find((channel) => channel.id === channelId) ?? recruitmentChannels[0];
+}
+
+export function getRecruitmentCandidatePool(state: GameState, channelId: RecruitmentChannelId): RecruitmentCandidatePool {
+  const channel = getRecruitmentChannel(channelId);
+  const location = getCurrentLocation(state);
+  const hiredTypeIds = new Set(state.hiredAgents.map((agent) => agent.typeId));
+  const poolSize = getRecruitmentPoolSize(channel.id, state);
+  const candidates = agentTypes
+    .filter((agent) => !hiredTypeIds.has(agent.id))
+    .filter((agent) => getRequirementReasons(agent.unlock_requirements, state).length === 0)
+    .filter((agent) => isRecruitmentPoolCompatible(agent, channel.id, state))
+    .map((agent) => ({
+      agent,
+      score: getRecruitmentCandidateScore(agent, channel.id, state) * 10 + getRecruitmentRotationScore(agent, channel.id, state),
+    }))
+    .sort((left, right) => right.score - left.score || left.agent.id.localeCompare(right.agent.id));
+  const candidateIds = candidates.slice(0, poolSize).map(({ agent }) => agent.id);
+
+  return {
+    channel,
+    candidateIds,
+    summary: `${location.name} · ${channel.label} 후보 ${candidateIds.length}/${poolSize}명`,
+    refreshLabel: `다음 후보 갱신 ${state.month + 1}개월차`,
+    locationLabel: `${location.region} · ${location.talent_pool}`,
+    poolSize,
+  };
 }
 
 export function getAgentHireCheck(agent: AgentTypeDefinition, state: GameState): ActionCheck {
@@ -2590,6 +2625,63 @@ function getAgentKind(agent: AgentTypeDefinition): NonNullable<AgentTypeDefiniti
   return agent.kind ?? "ai_agent";
 }
 
+function getRecruitmentPoolSize(channelId: RecruitmentChannelId, state: GameState): number {
+  const starBonus = Math.max(0, getCompanyStarRating(state) - 1);
+
+  if (channelId === "headhunter") return Math.min(5, 3 + Math.floor(starBonus / 2));
+  if (channelId === "career_recruiting") return Math.min(6, 4 + Math.floor(starBonus / 2));
+  return Math.min(7, 5 + Math.floor(starBonus / 2));
+}
+
+function isRecruitmentPoolCompatible(agent: AgentTypeDefinition, channelId: RecruitmentChannelId, state: GameState): boolean {
+  const kind = getAgentKind(agent);
+  const star = getCompanyStarRating(state);
+
+  if (channelId === "headhunter" && star < 2 && kind !== "human") return false;
+  if (channelId === "open_recruiting" && star <= 1 && kind === "robot") return false;
+  return true;
+}
+
+function getRecruitmentCandidateScore(agent: AgentTypeDefinition, channelId: RecruitmentChannelId, state: GameState): number {
+  const kind = getAgentKind(agent);
+  const location = getCurrentLocation(state);
+  const statTotal = statKeys.reduce((total, stat) => total + agent.stats[stat], 0);
+  const rarityScore = getAgentRarityScore(agent.rarity);
+  const star = getCompanyStarRating(state);
+  let score = statTotal + rarityScore + star * 2;
+
+  if (channelId === "open_recruiting") {
+    score += kind === "human" ? 26 : 8;
+    score += agent.rarity === "common" ? 14 : -rarityScore;
+    score += kind === "human" && location.human_hire_discount > 0 ? 8 : 0;
+  }
+
+  if (channelId === "career_recruiting") {
+    score += kind === "human" ? 14 : 16;
+    score += agent.rarity === "rare" ? 10 : agent.rarity === "epic" ? 8 : 2;
+    score += location.ai_operation_bonus > 0 && kind === "ai_agent" ? location.ai_operation_bonus * 3 : 0;
+  }
+
+  if (channelId === "headhunter") {
+    score += rarityScore * 2;
+    score += kind === "robot" ? 14 : kind === "ai_agent" ? 12 : 8;
+    score += location.monthly_cost_modifier > 1 ? 8 : 0;
+  }
+
+  return score;
+}
+
+function getAgentRarityScore(rarity: string): number {
+  if (rarity === "legendary") return 36;
+  if (rarity === "epic") return 24;
+  if (rarity === "rare") return 14;
+  return 4;
+}
+
+function getRecruitmentRotationScore(agent: AgentTypeDefinition, channelId: RecruitmentChannelId, state: GameState): number {
+  return hashString(`${state.month}:${state.locationId}:${channelId}:${agent.id}`) % 1000;
+}
+
 function applyHumanLocationHireModifier(cost: ResourceMap, state: GameState): ResourceMap {
   const location = getCurrentLocation(state);
   const multiplier = Math.max(0.5, 1 - location.human_hire_discount);
@@ -2602,6 +2694,16 @@ function scaleResourceMap(resourcesToScale: ResourceMap = {}, multiplier: number
   return Object.fromEntries(
     Object.entries(resourcesToScale).map(([resourceId, amount]) => [resourceId, Math.max(0, Math.round(amount * multiplier))]),
   );
+}
+
+function hashString(value: string): number {
+  let hash = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
+  }
+
+  return hash;
 }
 
 function appendCostReasons(reasons: string[], cost: ResourceMap = {}, state: GameState): void {

@@ -4,6 +4,25 @@
 
 ---
 
+## [0.34.3-alpha] — 2026-05-17
+
+### 월간 채용 후보 풀
+
+**추가:**
+- 채용 방식별로 이번 달 후보 풀이 제한되어 보이도록 했다.
+- 후보 풀은 월, 지역, 회사 등급, 채용 방식, 에이전트 종류/희귀도/능력치/해금 조건을 바탕으로 결정된다.
+- 공채는 지역 사람 직원과 초반 인재를, 경력 채용은 실무형 후보를, 헤드헌터는 고급 후보를 우선한다.
+- 이미 고용한 인력은 다음 후보 풀에서 제외된다.
+- 에이전트 콘솔에 `후보 수`, `지역 인재풀`, `다음 후보 갱신 월`을 표시한다.
+
+**검증:**
+- `npm test -- src/game/recruitment.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 32 tests
+- `npm run harness:gate` 통과, 37 files / 239 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome QA: `http://127.0.0.1:5190/`에서 공채 5명, 경력 채용 4명, 헤드헌터 3명 후보 풀 표시, 콘솔 오류 0건 확인
+- 스크린샷: `/tmp/ai-company-v0343-candidate-pool-desktop.png`, `/tmp/ai-company-v0343-candidate-pool-mobile.png`
+
+---
+
 ## [0.34.2-alpha] — 2026-05-17
 
 ### 채용 방식과 연봉 계약
