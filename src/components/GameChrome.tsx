@@ -149,6 +149,18 @@ export function GameStage({
   const stageProgress = getCompanyStageProgress(gameState);
   const phase = getDayPhase(gameState);
   const location = getCurrentLocation(gameState);
+  const officeHudProjectLabel = activeProject && activeProjectProduct ? activeProjectProduct.name : "개발 대기";
+  const officeHudProjectMeta = activeProject
+    ? `진행 ${Math.round(activeProject.progress)}% · 완성도 ${Math.round(activeProject.quality)}`
+    : gameState.currentEvent
+      ? "긴급 이슈 우선 처리"
+      : "제품/인력 선택 필요";
+  const officeAlertTitle = gameState.currentEvent ? "긴급 이슈" : activeProject ? "개발 중" : "운영 대기";
+  const officeAlertText = gameState.currentEvent
+    ? gameState.currentEvent.name
+    : activeProject && activeProjectProduct
+      ? `${activeProjectProduct.name} 출시까지 ${Math.max(0, 100 - Math.round(activeProject.progress))}%`
+      : guidance.actionLabel;
   const growthPathCardClass = (pathId: string) =>
     ["growth-path-card", chosenGrowthPathId === pathId ? "selected" : "", chosenGrowthPathId && chosenGrowthPathId !== pathId ? "locked" : ""]
       .filter(Boolean)
@@ -209,6 +221,22 @@ export function GameStage({
               />
             ))}
           </div>
+          <div className="office-hud" aria-label="사무실 빠른 상태">
+            <span>
+              <strong>{calendar.year}년 {calendar.monthOfYear}월</strong>
+              <small>{phase.label}</small>
+            </span>
+            <span>
+              <strong>{officeExpansion.name}</strong>
+              <small>
+                고용 {gameState.hiredAgents.length}/{officeHireCapacity} · 장식 {placedOfficeItems.length}/{officeDecorationSlots}
+              </small>
+            </span>
+            <span>
+              <strong>{officeHudProjectLabel}</strong>
+              <small>{officeHudProjectMeta}</small>
+            </span>
+          </div>
           {gameState.hiredAgents.length
             ? gameState.hiredAgents.slice(0, Math.min(12, officeHireCapacity)).map((agent, index) => {
                 const agentType = agentTypes.find((type) => type.id === agent.typeId);
@@ -249,6 +277,10 @@ export function GameStage({
               </small>
             </div>
           )}
+          <div className="office-alert-strip" aria-live="polite">
+            <strong>{officeAlertTitle}</strong>
+            <span>{officeAlertText}</span>
+          </div>
         </div>
       </div>
 

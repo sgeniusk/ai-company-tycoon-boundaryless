@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { menus } from "./menu";
 
 const appCss = readFileSync(new URL("../App.css", import.meta.url), "utf8");
+const gameChrome = readFileSync(new URL("../components/GameChrome.tsx", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
@@ -34,7 +35,7 @@ describe("v0.13.3 compact game shell layout", () => {
   });
 
   it("prevents narrow screens from creating horizontal page overflow", () => {
-    expect(appCss).toMatch(/\.app-shell\s*{[^}]*width:\s*min\(100%,\s*1440px\)/s);
+    expect(appCss).toMatch(/\.app-shell\s*{[^}]*width:\s*min\(100%,\s*1366px\)/s);
     expect(appCss).toMatch(/\.game-stage,\s*\.menu-layout,\s*\.resource-strip,\s*\.command-row\s*{[^}]*min-width:\s*0/s);
     expect(appCss).toMatch(/\.resource-tile,\s*\.office-scene,\s*\.stage-side,\s*\.menu-panel,\s*\.panel\s*{[^}]*min-width:\s*0/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)\s*{[\s\S]*\.app-shell\s*{[^}]*width:\s*100vw/s);
@@ -77,5 +78,33 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.highlight-moment-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.highlight-moment-card\s*{[^}]*min-height:/s);
     expect(appCss).toMatch(/\.highlight-moment-card\.tone-positive/s);
+  });
+
+  it("frames the right management surface as an in-game console", () => {
+    expect(appCss).toMatch(/\.menu-layout\s*{[^}]*background:\s*#20342d/s);
+    expect(appCss).toMatch(/\.menu-layout\s*{[^}]*border:\s*3px solid var\(--line\)/s);
+    expect(appCss).toMatch(/\.menu-panel\s*{[^}]*background:\s*#fff7df/s);
+    expect(appCss).toMatch(/\.menu-panel\s*{[^}]*border:\s*2px solid var\(--line\)/s);
+    expect(appCss).toMatch(/\.main-menu button span\s*{[^}]*display:\s*none/s);
+  });
+
+  it("puts quick state overlays inside the office playfield", () => {
+    expect(gameChrome).toContain('className="office-hud"');
+    expect(gameChrome).toContain('className="office-alert-strip"');
+    expect(appCss).toMatch(/\.office-hud\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.office-hud\s*{[^}]*z-index:\s*5/s);
+    expect(appCss).toMatch(/\.office-alert-strip\s*{[^}]*position:\s*absolute/s);
+  });
+
+  it("protects the playfield by narrowing the persistent console column", () => {
+    expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*0\.94fr\)\s+minmax\(0,\s*1fr\)\s+clamp\(330px,\s*28vw,\s*390px\)/s);
+    expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);
+  });
+
+  it("keeps mobile chrome compact enough for the office scene to remain visible", () => {
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.top-bar\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.status-cluster\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.status-cluster \.status-pill:nth-of-type\(n \+ 5\)\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.office-wall\s*{[^}]*min-height:\s*0/s);
   });
 });
