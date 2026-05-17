@@ -69,6 +69,8 @@ import {
   formatResource,
   getAgentEffectiveStats,
   getAgentHireCheckForChannel,
+  getAgentRestCheck,
+  getAgentRestCost,
   getAiAgentCount,
   getAiOperationCapacity,
   getAutomationUpgradeCheck,
@@ -99,13 +101,17 @@ import {
   getRecruitmentCandidatePool,
   getRecruitmentOffer,
   getAgentRetentionAlerts,
+  getAgentSalaryNegotiationCheck,
+  getAgentSalaryNegotiationCost,
   getUpgradeCheck,
   getWorkforceSynergySummary,
   getRelocationCheck,
   hireAgentViaChannel,
+  negotiateAgentSalary,
   buyOfficeExpansion,
   placeOfficeItem,
   recruitmentChannels,
+  restAgent,
   relocateCompany,
   startProductConceptProject,
   startProductProject,
@@ -1474,6 +1480,16 @@ function HiredAgentCard({
   const recruitmentChannel = recruitmentChannels.find((channel) => channel.id === agent.recruitmentChannelId);
   const contractUpkeep = agent.upkeep ?? agentType?.upkeep ?? {};
   const careerStatus = getAgentCareerStatus(agent, gameState);
+  const restCost = getAgentRestCost(agent);
+  const salaryNegotiationCost = getAgentSalaryNegotiationCost(agent);
+  const restCheck = getAgentRestCheck(agent.id, gameState);
+  const salaryNegotiationCheck = getAgentSalaryNegotiationCheck(agent.id, gameState);
+  const careHint =
+    !restCheck.ok && !salaryNegotiationCheck.ok
+      ? [...new Set([...restCheck.reasons, ...salaryNegotiationCheck.reasons])][0]
+      : careerStatus.retentionSeverity === "critical"
+        ? "퇴사 위험: 휴식 또는 연봉 협상 권장"
+        : undefined;
 
   return (
     <article className="hired-card">
@@ -1515,6 +1531,27 @@ function HiredAgentCard({
           <span className={`contract-badge retention-${careerStatus.retentionSeverity}`}>충성 {careerStatus.loyalty} · {careerStatus.retentionRiskLabel}</span>
           <span className="contract-badge">능력 보너스 +{careerStatus.levelBonus}</span>
         </div>
+      </div>
+      <div className="care-actions">
+        <button
+          disabled={!restCheck.ok || gameState.status !== "playing"}
+          onClick={() => setGameState((current) => restAgent(agent.id, current))}
+          title={restCheck.ok ? `비용 ${formatCost(restCost)}` : restCheck.reasons.join(" / ")}
+          type="button"
+        >
+          <strong>휴식</strong>
+          <span>{formatCost(restCost)}</span>
+        </button>
+        <button
+          disabled={!salaryNegotiationCheck.ok || gameState.status !== "playing"}
+          onClick={() => setGameState((current) => negotiateAgentSalary(agent.id, current))}
+          title={salaryNegotiationCheck.ok ? `비용 ${formatCost(salaryNegotiationCost)}` : salaryNegotiationCheck.reasons.join(" / ")}
+          type="button"
+        >
+          <strong>연봉 협상</strong>
+          <span>{formatCost(salaryNegotiationCost)}</span>
+        </button>
+        {careHint && <small>{careHint}</small>}
       </div>
       <div className="contract-row">
         <span className="contract-badge">월 유지 {formatCost(contractUpkeep)}</span>

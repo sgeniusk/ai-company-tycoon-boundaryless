@@ -486,6 +486,106 @@ export function getAgentRetentionAlerts(state: GameState): AgentRetentionAlert[]
     }));
 }
 
+export function getAgentRestCost(agent: HiredAgent): ResourceMap {
+  const monthlyCash = getHiredAgentMonthlyUpkeep(agent).cash ?? 180;
+  return { cash: Math.max(150, Math.round(monthlyCash * 0.5)) };
+}
+
+export function getAgentRestCheck(agentId: string, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+  const agent = state.hiredAgents.find((entry) => entry.id === agentId);
+
+  if (!agent) {
+    reasons.push("대상 직원을 찾을 수 없습니다.");
+    return { ok: false, reasons };
+  }
+
+  if (agent.assignment) {
+    reasons.push(`${agent.name}은 프로젝트 투입 중입니다.`);
+  }
+
+  if (agent.energy >= 95 && getAgentLoyalty(agent) >= 95) {
+    reasons.push("이미 충분히 회복된 상태입니다.");
+  }
+
+  appendCostReasons(reasons, getAgentRestCost(agent), state);
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function restAgent(agentId: string, state: GameState): GameState {
+  const agent = state.hiredAgents.find((entry) => entry.id === agentId);
+  if (!agent || !getAgentRestCheck(agentId, state).ok || state.status !== "playing") return state;
+
+  const cost = getAgentRestCost(agent);
+  const nextAgents = state.hiredAgents.map((entry) =>
+    entry.id === agentId
+      ? {
+          ...entry,
+          energy: clamp(entry.energy + 32, 0, 100),
+          loyalty: clamp(getAgentLoyalty(entry) + 10, 0, 100),
+        }
+      : entry,
+  );
+
+  return {
+    ...state,
+    resources: applyResourceDelta(state.resources, negateCosts(cost)),
+    hiredAgents: nextAgents,
+    timeline: [`유급 휴식: ${agent.name} 컨디션 회복`, ...state.timeline].slice(0, 8),
+  };
+}
+
+export function getAgentSalaryNegotiationCost(agent: HiredAgent): ResourceMap {
+  const monthlyCash = getHiredAgentMonthlyUpkeep(agent).cash ?? 300;
+  return { cash: Math.max(500, Math.round(monthlyCash * 2)) };
+}
+
+export function getAgentSalaryNegotiationCheck(agentId: string, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+  const agent = state.hiredAgents.find((entry) => entry.id === agentId);
+
+  if (!agent) {
+    reasons.push("대상 직원을 찾을 수 없습니다.");
+    return { ok: false, reasons };
+  }
+
+  if (getAgentLoyalty(agent) >= 90) {
+    reasons.push("이미 만족도가 높은 계약입니다.");
+  }
+
+  if ((agent.salaryMultiplier ?? 1) >= 2.5) {
+    reasons.push("현재 회사 단계에서 더 올리기 어려운 연봉입니다.");
+  }
+
+  appendCostReasons(reasons, getAgentSalaryNegotiationCost(agent), state);
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function negotiateAgentSalary(agentId: string, state: GameState): GameState {
+  const agent = state.hiredAgents.find((entry) => entry.id === agentId);
+  if (!agent || !getAgentSalaryNegotiationCheck(agentId, state).ok || state.status !== "playing") return state;
+
+  const cost = getAgentSalaryNegotiationCost(agent);
+  const nextAgents = state.hiredAgents.map((entry) => {
+    if (entry.id !== agentId) return entry;
+
+    return {
+      ...entry,
+      energy: clamp(entry.energy + 4, 0, 100),
+      loyalty: clamp(getAgentLoyalty(entry) + 22, 0, 100),
+      salaryMultiplier: Number(((entry.salaryMultiplier ?? 1) + 0.12).toFixed(2)),
+      upkeep: scaleResourceMap(getHiredAgentMonthlyUpkeep(entry), 1.12),
+    };
+  });
+
+  return {
+    ...state,
+    resources: applyResourceDelta(state.resources, negateCosts(cost)),
+    hiredAgents: nextAgents,
+    timeline: [`연봉 협상: ${agent.name} 충성도 회복, 월 유지비 상승`, ...state.timeline].slice(0, 8),
+  };
+}
+
 export function getAiOperationCapacity(state: GameState): number {
   const humanOperators = state.hiredAgents.filter((agent) => {
     const type = agentTypes.find((entry) => entry.id === agent.typeId);
@@ -1399,6 +1499,8 @@ export function advanceMonth(state: GameState): GameState {
   const nextStateForEvent = { ...competedState, status: nextStatus };
   const nextEvent = state.currentEvent ? state.currentEvent : findNextEligibleEvent(nextStateForEvent);
   const nextRivalEvent = state.currentRivalEvent ? state.currentRivalEvent : findNextEligibleRivalEvent(nextStateForEvent);
+  const staffTimelineHighlights = getPriorityStaffTimelineEntries(competedState.timeline);
+  const nonPriorityTimeline = competedState.timeline.filter((entry) => !staffTimelineHighlights.includes(entry));
   const summary = active.length
     ? `${nextMonth}개월차: 매출 ${formatMoney(monthlyEconomy.revenue)}, 비용 ${formatMoney(monthlyEconomy.totalCost)}, 이용자 +${monthlyEconomy.newUsers.toLocaleString("ko-KR")}, 데이터 +${monthlyEconomy.generatedData}`
     : `${nextMonth}개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.`;
@@ -1414,7 +1516,8 @@ export function advanceMonth(state: GameState): GameState {
       getOfficeMonthlyTimelineEntry(state) ?? "",
       getOfficeSynergyTimelineEntry(state) ?? "",
       monthlyEconomy.strategyEffects ? `전략 효과: ${formatResourceDelta(monthlyEconomy.strategyEffects)}` : "",
-      ...competedState.timeline,
+      ...staffTimelineHighlights,
+      ...nonPriorityTimeline,
       nextMonth >= CAMPAIGN_FINAL_MONTH ? `10년차 최종 평가: ${nextStatus === "success" ? "성공 엔딩" : "재도전 엔딩"}` : "",
       summary,
       ...state.timeline,
@@ -1428,6 +1531,10 @@ export function advanceMonth(state: GameState): GameState {
   const finalStatus = getNextStatus(shockedState.resources, shockedState.activeProducts.length, nextMonth);
 
   return refreshStrategyDeckForNewMonth({ ...shockedState, status: finalStatus });
+}
+
+function getPriorityStaffTimelineEntries(timeline: string[]): string[] {
+  return timeline.filter((entry) => entry.startsWith("퇴사 발생") || entry.startsWith("인사 경고") || entry.startsWith("직원 성장"));
 }
 
 export function getUpgradeCheck(upgrade: UpgradeDefinition, state: GameState): ActionCheck {
@@ -2082,7 +2189,7 @@ function advanceProductProjects(state: GameState): GameState {
   return {
     ...nextState,
     productProjects: continuingProjects,
-    timeline: releaseTimeline,
+    timeline: [...releaseTimeline, ...state.timeline].slice(0, 8),
   };
 }
 
@@ -2090,6 +2197,7 @@ function advanceAgentCareers(state: GameState): GameState {
   if (state.hiredAgents.length === 0) return state;
 
   const levelUpNames: string[] = [];
+  const initialZeroLoyaltyIds = new Set(state.hiredAgents.filter((agent) => getAgentLoyalty(agent) <= 0).map((agent) => agent.id));
   const nextAgents = state.hiredAgents.map((agent) => {
     const assigned = Boolean(agent.assignment);
     const experienceGain = assigned ? 2 : 1;
@@ -2114,15 +2222,26 @@ function advanceAgentCareers(state: GameState): GameState {
       energy: nextEnergy,
     };
   });
-  const retentionAlerts = getAgentRetentionAlerts({ ...state, hiredAgents: nextAgents });
+  const departingAgents = nextAgents.filter((agent) => initialZeroLoyaltyIds.has(agent.id) || getAgentLoyalty(agent) <= 0);
+  const departingIds = new Set(departingAgents.map((agent) => agent.id));
+  const retainedAgents = nextAgents.filter((agent) => !departingIds.has(agent.id));
+  const retentionAlerts = getAgentRetentionAlerts({ ...state, hiredAgents: retainedAgents });
   const careerTimeline = [
     levelUpNames.length ? `직원 성장: ${levelUpNames.slice(0, 2).join(", ")} 레벨업` : "",
+    departingAgents.length ? `퇴사 발생: ${departingAgents.map((agent) => agent.name).join(", ")} 이직` : "",
     retentionAlerts[0] ? `인사 경고: ${retentionAlerts[0].message}` : "",
   ].filter(Boolean);
 
   return {
     ...state,
-    hiredAgents: nextAgents,
+    resources: departingAgents.length ? applyResourceDelta(state.resources, { talent: -departingAgents.length }) : state.resources,
+    hiredAgents: retainedAgents,
+    productProjects: departingAgents.length
+      ? state.productProjects.map((project) => ({
+          ...project,
+          assignedAgentIds: project.assignedAgentIds.filter((agentId) => !departingIds.has(agentId)),
+        }))
+      : state.productProjects,
     timeline: [...careerTimeline, ...state.timeline].slice(0, 8),
   };
 }

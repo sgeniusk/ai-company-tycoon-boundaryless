@@ -4,6 +4,28 @@
 
 ---
 
+## [0.34.5-alpha] — 2026-05-18
+
+### 직원 케어 액션과 실제 퇴사 리스크
+
+**추가:**
+- 직원 카드에 `휴식`, `연봉 협상` 액션을 추가했다.
+- 휴식은 즉시 비용을 쓰고 에너지와 충성도를 회복한다. 단, 프로젝트 투입 중인 직원은 쉴 수 없다.
+- 연봉 협상은 큰 비용을 쓰고 충성도를 회복하지만, 다음 달부터 월 유지비와 연봉 배율이 오른다.
+- 충성도가 0까지 떨어진 직원은 월 넘김 때 실제로 퇴사하며, 프로젝트 배치에서도 자동 제거된다.
+- 월말 제품 개발 로그가 인사 사건을 덮어쓰던 문제를 고쳐 퇴사/인사 경고가 타임라인에 남도록 했다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts` 통과, 1 file / 8 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 25 tests
+- `npm test -- src/game/staff-career.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 33 tests
+- `npm test -- src/game/staff-career.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 62 tests
+- `npm run harness:gate` 통과, 38 files / 247 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome QA: `http://127.0.0.1:5192/?scenario=staffing&menu=agents`에서 케어 액션 2세트, 경험치 바 2개, 충성도 배지 2개, 콘솔 오류 0건 확인
+- 스크린샷: `/tmp/ai-company-v0345-staff-care-desktop.png`, `/tmp/ai-company-v0345-staff-care-mobile.png`
+
+---
+
 ## [0.34.4-alpha] — 2026-05-18
 
 ### 직원 성장과 충성도 경고
