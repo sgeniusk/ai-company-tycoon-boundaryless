@@ -830,6 +830,40 @@ p {
   padding: 6px 8px;
 }
 
+.stage-promotion-mini {
+  background: #fff7df;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 7px;
+}
+
+.stage-promotion-mini.complete {
+  background: #e0f1dc;
+  border-color: var(--green);
+}
+
+.stage-promotion-mini strong {
+  color: #315d42;
+  font-size: 0.76rem;
+  line-height: 1.25;
+}
+
+.stage-promotion-mini span {
+  background: #fffdf7;
+  border: 1px solid #d8c49b;
+  color: #705a38;
+  font-size: 0.68rem;
+  padding: 4px 5px;
+}
+
+.stage-promotion-mini span.complete {
+  background: #e8f5dc;
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+
 .monthly-report dl {
   display: grid;
   gap: 7px;
@@ -1294,6 +1328,7 @@ p {
 }
 
 .campaign-panel,
+.promotion-panel,
 .annual-review-panel,
 .foundation-panel,
 .location-panel,
@@ -1308,6 +1343,7 @@ p {
 }
 
 .campaign-panel h3,
+.promotion-panel h3,
 .annual-review-panel h3,
 .foundation-panel h3,
 .location-panel h3 {
@@ -1316,6 +1352,7 @@ p {
 }
 
 .campaign-panel span,
+.promotion-panel span,
 .annual-review-panel span,
 .foundation-panel span,
 .location-card span,
@@ -1367,18 +1404,21 @@ p {
 }
 
 .annual-review-header,
+.promotion-header,
 .annual-review-meta,
 .annual-goal-list {
   display: grid;
   gap: 6px;
 }
 
-.annual-review-header {
+.annual-review-header,
+.promotion-header {
   align-items: start;
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
-.annual-review-header strong {
+.annual-review-header strong,
+.promotion-header strong {
   background: #315d42;
   color: #fffaf0;
   font-size: 0.86rem;

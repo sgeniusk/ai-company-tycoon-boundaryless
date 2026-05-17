@@ -30,6 +30,25 @@ export interface CampaignFinale {
   verdict: string;
 }
 
+export interface CompanyStageProgressItem {
+  requirement: string;
+  label: string;
+  current: number;
+  target: number;
+  currentLabel: string;
+  targetLabel: string;
+  complete: boolean;
+}
+
+export interface CompanyStageProgress {
+  current: CompanyStageDefinition;
+  next?: CompanyStageDefinition;
+  items: CompanyStageProgressItem[];
+  completed: number;
+  total: number;
+  progressPercent: number;
+}
+
 export function getCampaignCalendar(state: GameState): CampaignCalendar {
   const currentMonth = Math.max(1, Math.min(CAMPAIGN_FINAL_MONTH, state.month));
   return {
@@ -65,6 +84,35 @@ export function getCompanyStarRating(state: GameState): number {
 export function getCampaignCompanyStage(state: GameState): CompanyStageDefinition {
   const orderedStages = [...companyStages].sort((a, b) => b.order - a.order);
   return orderedStages.find((stage) => requirementsMet(stage.requirements, state)) ?? orderedStages[orderedStages.length - 1];
+}
+
+export function getCompanyStageProgress(state: GameState): CompanyStageProgress {
+  const orderedStages = [...companyStages].sort((a, b) => a.order - b.order);
+  const current = getCampaignCompanyStage(state);
+  const next = orderedStages.find((stage) => stage.order === current.order + 1);
+  const items = Object.entries(next?.requirements ?? {}).map(([requirement, target]) => {
+    const currentValue = getRequirementValue(requirement, state);
+
+    return {
+      requirement,
+      label: requirementLabel(requirement),
+      current: currentValue,
+      target,
+      currentLabel: formatRequirementValue(requirement, currentValue),
+      targetLabel: formatRequirementValue(requirement, target),
+      complete: currentValue >= target,
+    };
+  });
+  const completed = items.filter((item) => item.complete).length;
+
+  return {
+    current,
+    next,
+    items,
+    completed,
+    total: items.length,
+    progressPercent: items.length ? Math.round((completed / items.length) * 100) : 100,
+  };
 }
 
 export function getCurrentLocation(state: GameState): CompanyLocationDefinition {
@@ -143,13 +191,36 @@ function getEndingName(rank: CampaignFinale["rank"]): string {
 
 function requirementsMet(requirements: Record<string, number>, state: GameState): boolean {
   return Object.entries(requirements ?? {}).every(([requirement, needed]) => {
-    if (requirement === "min_products") return state.activeProducts.length >= needed;
-    if (requirement === "min_domains") return state.unlockedDomains.length >= needed;
-    if (requirement === "min_users") return (state.resources.users ?? 0) >= needed;
-    if (requirement === "min_hype") return (state.resources.hype ?? 0) >= needed;
-    if (requirement === "min_trust") return (state.resources.trust ?? 0) >= needed;
-    if (requirement === "min_cash") return (state.resources.cash ?? 0) >= needed;
-    if (requirement === "min_automation") return (state.resources.automation ?? 0) >= needed;
-    return false;
+    return getRequirementValue(requirement, state) >= needed;
   });
+}
+
+function getRequirementValue(requirement: string, state: GameState): number {
+  if (requirement === "min_products") return state.activeProducts.length;
+  if (requirement === "min_domains") return state.unlockedDomains.length;
+  if (requirement === "min_users") return state.resources.users ?? 0;
+  if (requirement === "min_hype") return state.resources.hype ?? 0;
+  if (requirement === "min_trust") return state.resources.trust ?? 0;
+  if (requirement === "min_cash") return state.resources.cash ?? 0;
+  if (requirement === "min_automation") return state.resources.automation ?? 0;
+  return 0;
+}
+
+function requirementLabel(requirement: string): string {
+  if (requirement === "min_products") return "출시 제품";
+  if (requirement === "min_domains") return "해금 분야";
+  if (requirement === "min_users") return "이용자";
+  if (requirement === "min_hype") return "화제성";
+  if (requirement === "min_trust") return "신뢰";
+  if (requirement === "min_cash") return "자금";
+  if (requirement === "min_automation") return "자동화";
+  return requirement;
+}
+
+function formatRequirementValue(requirement: string, value: number): string {
+  const rounded = Math.round(value);
+  if (requirement === "min_products" || requirement === "min_domains") return `${rounded.toLocaleString("ko-KR")}개`;
+  if (requirement === "min_users") return `${rounded.toLocaleString("ko-KR")}명`;
+  if (requirement === "min_cash") return rounded.toLocaleString("ko-KR");
+  return rounded.toLocaleString("ko-KR");
 }

@@ -3,6 +3,7 @@ import { products } from "./data";
 import {
   getCampaignCalendar,
   getCampaignFinale,
+  getCompanyStageProgress,
   getCompanyStarRating,
   getCurrentLocation,
   getDayPhase,
@@ -82,5 +83,36 @@ describe("v0.14 ten-year campaign structure", () => {
     expect(getCurrentLocation(relocated).id).toBe("pangyo_shared_office");
     expect(relocated.resources.cash).toBeLessThan(grownState.resources.cash);
     expect(relocated.timeline[0]).toContain("판교");
+  });
+
+  it("summarizes the next company promotion requirements with readable progress", () => {
+    const state = {
+      ...createInitialState(),
+      activeProducts: [products[0].id],
+      resources: {
+        ...createInitialState().resources,
+        users: 60,
+      },
+    };
+
+    const progress = getCompanyStageProgress(state);
+
+    expect(progress.current.id).toBe("garage_prototype");
+    expect(progress.next?.id).toBe("seed_startup");
+    expect(progress.progressPercent).toBe(50);
+    expect(progress.items).toEqual([
+      expect.objectContaining({
+        requirement: "min_products",
+        complete: true,
+        currentLabel: "1개",
+        targetLabel: "1개",
+      }),
+      expect.objectContaining({
+        requirement: "min_users",
+        complete: false,
+        currentLabel: "60명",
+        targetLabel: "100명",
+      }),
+    ]);
   });
 });

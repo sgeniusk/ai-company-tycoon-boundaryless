@@ -4,6 +4,25 @@
 
 ---
 
+## [0.15.4-alpha] — 2026-05-17
+
+### 회사 승급 트랙
+
+**추가:**
+- 현재 회사 단계와 다음 단계 조건을 계산하는 `getCompanyStageProgress`를 추가했다.
+- 메인 사무실 옆 회사 단계 카드에 `다음 승급` 미니 체크리스트를 표시한다.
+- 회사 현황 메뉴에 `회사 승급 트랙` 패널을 추가했다.
+- 다음 별 등급까지 필요한 출시 제품, 이용자, 신뢰, 자동화, 해금 분야 등을 읽기 쉬운 값으로 표시한다.
+
+**검증:**
+- `npm test -- src/game/campaign.test.ts` 통과, 5 tests
+- `npm test -- src/game/campaign.test.ts src/ui/layout-contract.test.ts` 통과, 7 tests
+- `npm run validate:data` 통과
+- `npm run build` 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=growth` 렌더링 확인
+
+---
+
 ## [0.4.2-alpha] — 2026-05-17
 
 ### 사무실 확장 월간 효과

@@ -11,7 +11,7 @@ import {
 } from "../game/guidance";
 import { resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { getRunSummary } from "../game/run-summary";
-import { getCampaignCalendar, getCampaignFinale, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
+import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
   advanceMonth,
   chooseGrowthPath,
@@ -135,6 +135,7 @@ export function GameStage({
   const runSummary = getRunSummary(gameState);
   const calendar = getCampaignCalendar(gameState);
   const finale = getCampaignFinale(gameState);
+  const stageProgress = getCompanyStageProgress(gameState);
   const phase = getDayPhase(gameState);
   const location = getCurrentLocation(gameState);
   const growthPathCardClass = (pathId: string) =>
@@ -282,6 +283,21 @@ export function GameStage({
           <p className="eyebrow">회사 단계</p>
           <h2>{companyStage.name}</h2>
           <p>{companyStage.description}</p>
+          {stageProgress.next ? (
+            <div className="stage-promotion-mini">
+              <strong>다음 승급: {stageProgress.next.name} · {stageProgress.progressPercent}%</strong>
+              {stageProgress.items.map((item) => (
+                <span className={item.complete ? "complete" : ""} key={item.requirement}>
+                  {item.label} {item.currentLabel}/{item.targetLabel}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <div className="stage-promotion-mini complete">
+              <strong>최종 회사 단계 도달</strong>
+              <span>이제 10년 엔딩 점수와 시장 지배력을 끌어올리면 됩니다.</span>
+            </div>
+          )}
           {gameState.chosenGrowthPath && <span className="growth-identity">전략: {gameState.chosenGrowthPath.title}</span>}
           <span className="growth-identity">
             10년 캠페인 {calendar.progressPercent}% · 남은 {calendar.remainingMonths}개월

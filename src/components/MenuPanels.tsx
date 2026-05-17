@@ -10,7 +10,7 @@ import {
   getCurrentAnnualReview,
 } from "../game/annual-review";
 import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
-import { getCampaignCalendar, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
+import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
   getAgentContentRows,
@@ -149,6 +149,7 @@ export function renderMenuContent(
     const placedOfficeItems = getPlacedOfficeItems(gameState);
     const calendar = getCampaignCalendar(gameState);
     const finale = getCampaignFinale(gameState);
+    const stageProgress = getCompanyStageProgress(gameState);
     const currentLocation = getCurrentLocation(gameState);
     const foundationSnapshot = getFoundationSnapshot(gameState);
     const annualReview = getCurrentAnnualReview(gameState);
@@ -293,6 +294,42 @@ export function renderMenuContent(
                 전략 {gameState.chosenGrowthPath.title} · 월간 {formatEffects(gameState.chosenGrowthPath.monthlyEffects)}
               </span>
             )}
+          </div>
+          <div className="promotion-panel">
+            <div className="promotion-header">
+              <div>
+                <p className="eyebrow">회사 승급 트랙</p>
+                <h3>{stageProgress.next ? `${stageProgress.next.name}까지` : "최종 단계 도달"}</h3>
+                <span>
+                  {stageProgress.next
+                    ? `${stageProgress.current.name}에서 ${stageProgress.next.name}으로 올라가면 더 좋은 지역과 후반 산업 확장이 열립니다.`
+                    : "남은 목표는 10년 엔딩 점수, 시장 점유율, 런 기록 갱신입니다."}
+                </span>
+              </div>
+              <strong>{stageProgress.progressPercent}%</strong>
+            </div>
+            <div className="arc-meter">
+              <i style={{ width: `${stageProgress.progressPercent}%` }} />
+            </div>
+            <div className="annual-review-meta">
+              <span>현재 {"★".repeat(getCompanyStarRating(gameState))} {stageProgress.current.name}</span>
+              <span>조건 {stageProgress.completed}/{stageProgress.total || 1}</span>
+              <span>{stageProgress.next ? "다음 지역 해금 준비" : "엔딩 점수 집중"}</span>
+            </div>
+            <div className="annual-goal-list">
+              {stageProgress.items.map((item) => (
+                <article className={item.complete ? "complete" : ""} key={item.requirement}>
+                  <strong>{item.label}</strong>
+                  <span>{item.currentLabel} / {item.targetLabel}</span>
+                </article>
+              ))}
+              {stageProgress.items.length === 0 && (
+                <article className="complete">
+                  <strong>모든 승급 완료</strong>
+                  <span>최종 평가를 준비하세요.</span>
+                </article>
+              )}
+            </div>
           </div>
           <div className="foundation-panel">
             <div>
