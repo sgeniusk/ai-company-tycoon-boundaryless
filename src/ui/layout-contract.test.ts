@@ -121,4 +121,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.idea-result-card\s*{[^}]*background:/s);
     expect(appCss).toMatch(/\.renewal-option-grid\s*{[^}]*grid-template-columns:/s);
   });
+
+  it("surfaces a compact office growth planner inside the shop console", () => {
+    expect(menuPanels).toContain("getOfficeGrowthPlan");
+    expect(menuPanels).toContain("office-growth-planner");
+    expect(menuPanels).toContain("office-choice-grid");
+    expect(menuPanels).toContain("office-recommendation-list");
+    expect(appCss).toMatch(/\.office-growth-planner\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.office-choice-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.office-recommendation-list\s*{[^}]*display:\s*grid/s);
+  });
 });

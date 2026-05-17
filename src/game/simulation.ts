@@ -52,6 +52,8 @@ import type {
   MarketRanking,
   MonthlyEconomy,
   OfficeExpansionDefinition,
+  OfficeGrowthDecorRecommendation,
+  OfficeGrowthPlan,
   OfficeSynergyStatus,
   OfficeSynergySummary,
   OfficeState,
@@ -436,6 +438,218 @@ export function getOfficeSynergySummary(state: GameState): OfficeSynergySummary 
       {},
     ),
   };
+}
+
+export function getOfficeGrowthPlan(state: GameState): OfficeGrowthPlan {
+  const expansion = getOfficeExpansion(state);
+  const placedItems = getPlacedOfficeItems(state);
+  const nextExpansion = getNextOfficeExpansion(state);
+  const nextExpansionCheck = nextExpansion ? getOfficeExpansionCheck(nextExpansion, state) : undefined;
+  const currentLocation = getCurrentLocation(state);
+  const nextLocation = getNextCompanyLocation(state);
+  const nextLocationCheck = nextLocation ? getRelocationCheck(nextLocation.id, state) : undefined;
+  const synergySummary = getOfficeSynergySummary(state);
+  const nextSynergy = synergySummary.nextCandidate
+    ? {
+        ...synergySummary.nextCandidate,
+        recommendedItems: getOfficeDecorRecommendationsForSynergy(synergySummary.nextCandidate, state),
+      }
+    : undefined;
+  const current = {
+    expansionId: expansion.id,
+    expansionName: expansion.name,
+    level: expansion.level,
+    hireSlotsUsed: state.hiredAgents.length,
+    hireSlotsTotal: getOfficeHireCapacity(state),
+    decorationSlotsUsed: placedItems.length,
+    decorationSlotsTotal: getOfficeDecorationSlots(state),
+    openDecorationSlots: Math.max(0, getOfficeDecorationSlots(state) - placedItems.length),
+    monthlyEffects: getOfficeMonthlyEffects(state),
+  };
+  const nextExpansionChoice = nextExpansion
+    ? {
+        id: nextExpansion.id,
+        name: nextExpansion.name,
+        description: nextExpansion.description,
+        available: Boolean(nextExpansionCheck?.ok),
+        reasons: nextExpansionCheck?.reasons ?? [],
+        cost: nextExpansion.cost,
+        hireCapacityGain: nextExpansion.hire_capacity - expansion.hire_capacity,
+        decorationSlotGain: nextExpansion.decoration_slots - expansion.decoration_slots,
+        monthlyEffects: nextExpansion.monthly_effects,
+      }
+    : undefined;
+  const nextRelocationChoice = nextLocation
+    ? {
+        id: nextLocation.id,
+        name: nextLocation.name,
+        region: nextLocation.region,
+        description: nextLocation.description,
+        available: Boolean(nextLocationCheck?.ok),
+        reasons: nextLocationCheck?.reasons ?? [],
+        cost: nextLocation.cost,
+        monthlyCostModifierDelta: Number((nextLocation.monthly_cost_modifier - currentLocation.monthly_cost_modifier).toFixed(2)),
+        aiOperationGain: nextLocation.ai_operation_bonus - currentLocation.ai_operation_bonus,
+        humanHireDiscountDelta: Number((nextLocation.human_hire_discount - currentLocation.human_hire_discount).toFixed(2)),
+      }
+    : undefined;
+
+  return {
+    current,
+    nextExpansion: nextExpansionChoice,
+    nextRelocation: nextRelocationChoice,
+    activeSynergies: synergySummary.active,
+    nextSynergy,
+    placedDecorRows: placedItems.map((item) => ({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      effects: item.effects,
+      linkedSynergyTitles: synergySummary.active.filter((synergy) => itemContributesToSynergy(item, synergy)).map((synergy) => synergy.title),
+    })),
+    primaryAction: chooseOfficeGrowthPrimaryAction(current, nextExpansionChoice, nextRelocationChoice, nextSynergy),
+  };
+}
+
+function getOfficeDecorRecommendationsForSynergy(synergy: OfficeSynergyStatus, state: GameState): OfficeGrowthDecorRecommendation[] {
+  const placedItems = getPlacedOfficeItems(state);
+  const placedItemIds = new Set(placedItems.map((item) => item.id));
+  const categoryCounts = countPlacedItemCategories(placedItems);
+  const effectTotals = sumPlacedItemEffects(placedItems);
+
+  return items
+    .filter((item) => isOfficeDecorationItem(item) && !placedItemIds.has(item.id))
+    .map((item) => {
+      const itemCheck = getItemCheck(item, state);
+      const placeCheck = state.ownedItems.includes(item.id) ? getPlaceOfficeItemCheck(item, state) : undefined;
+      const score = getOfficeDecorRecommendationScore(item, synergy, categoryCounts, effectTotals);
+
+      return {
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        available: state.ownedItems.includes(item.id) ? Boolean(placeCheck?.ok) : itemCheck.ok,
+        owned: state.ownedItems.includes(item.id),
+        placeable: Boolean(placeCheck?.ok),
+        score,
+        effects: item.effects,
+        cost: item.cost,
+        recommendationReason: getOfficeDecorRecommendationReason(item, synergy, categoryCounts, effectTotals),
+      };
+    })
+    .filter((item) => item.score > 0 && (item.available || item.owned))
+    .sort((a, b) => b.score - a.score || getCostWeight(a.cost) - getCostWeight(b.cost) || a.name.localeCompare(b.name, "ko"))
+    .slice(0, 3);
+}
+
+function getOfficeDecorRecommendationScore(
+  item: ItemDefinition,
+  synergy: OfficeSynergyStatus,
+  categoryCounts: Record<string, number>,
+  effectTotals: Record<string, number>,
+): number {
+  let score = 0;
+
+  for (const [category, needed] of Object.entries(synergy.required_categories)) {
+    const missing = Math.max(0, needed - (categoryCounts[category] ?? 0));
+    if (missing > 0 && item.category === category) score += 48 + missing * 8;
+  }
+
+  for (const [effectId, needed] of Object.entries(synergy.required_effects)) {
+    const missing = Math.max(0, needed - (effectTotals[effectId] ?? 0));
+    const amount = item.effects[effectId] ?? 0;
+    if (missing > 0 && amount > 0) score += Math.min(amount, missing) * 6 + Math.max(0, amount - missing);
+  }
+
+  return score;
+}
+
+function getOfficeDecorRecommendationReason(
+  item: ItemDefinition,
+  synergy: OfficeSynergyStatus,
+  categoryCounts: Record<string, number>,
+  effectTotals: Record<string, number>,
+): string {
+  const matches: string[] = [];
+
+  for (const [category, needed] of Object.entries(synergy.required_categories)) {
+    if ((categoryCounts[category] ?? 0) < needed && item.category === category) matches.push(`${category} 분류`);
+  }
+
+  for (const [effectId, needed] of Object.entries(synergy.required_effects)) {
+    if ((effectTotals[effectId] ?? 0) < needed && (item.effects[effectId] ?? 0) > 0) matches.push(`${effectId} +${item.effects[effectId]}`);
+  }
+
+  return matches.length
+    ? `${synergy.title}에 필요한 ${matches.slice(0, 2).join(", ")} 보강`
+    : `${synergy.title} 후보를 넓히는 장식`;
+}
+
+function chooseOfficeGrowthPrimaryAction(
+  current: OfficeGrowthPlan["current"],
+  nextExpansion: OfficeGrowthPlan["nextExpansion"],
+  nextRelocation: OfficeGrowthPlan["nextRelocation"],
+  nextSynergy: OfficeGrowthPlan["nextSynergy"],
+): OfficeGrowthPlan["primaryAction"] {
+  const teamCrowded = current.hireSlotsUsed >= current.hireSlotsTotal;
+  const decorCrowded = current.openDecorationSlots === 0;
+
+  if (nextExpansion?.available && (teamCrowded || decorCrowded)) {
+    return {
+      kind: "expand_office",
+      label: "사무실 확장",
+      reason: teamCrowded ? "팀 수용 인원이 가득 찼습니다." : "장식 슬롯이 가득 찼습니다.",
+      targetId: nextExpansion.id,
+    };
+  }
+
+  const recommendedDecor = nextSynergy?.recommendedItems[0];
+  if (recommendedDecor && current.openDecorationSlots > 0) {
+    return {
+      kind: recommendedDecor.owned ? "place_decor" : "buy_decor",
+      label: recommendedDecor.owned ? "추천 장식 배치" : "추천 장식 구매",
+      reason: recommendedDecor.recommendationReason,
+      targetId: recommendedDecor.id,
+    };
+  }
+
+  if (nextExpansion?.available) {
+    return {
+      kind: "expand_office",
+      label: "사무실 확장",
+      reason: `${nextExpansion.name}으로 고용과 장식 여유를 늘릴 수 있습니다.`,
+      targetId: nextExpansion.id,
+    };
+  }
+
+  if (nextRelocation?.available) {
+    return {
+      kind: "relocate",
+      label: "지역 이전",
+      reason: `${nextRelocation.name}으로 AI 운용과 인재 접근성을 바꿀 수 있습니다.`,
+      targetId: nextRelocation.id,
+    };
+  }
+
+  return {
+    kind: "maintain",
+    label: "운영 유지",
+    reason: nextExpansion?.reasons[0] ?? nextRelocation?.reasons[0] ?? "현재 사무실을 더 활용하세요.",
+  };
+}
+
+function getNextCompanyLocation(state: GameState): CompanyLocationDefinition | undefined {
+  const currentIndex = companyLocations.findIndex((location) => location.id === state.locationId);
+  return companyLocations[Math.max(0, currentIndex) + 1];
+}
+
+function itemContributesToSynergy(item: ItemDefinition, synergy: OfficeSynergyStatus): boolean {
+  if (synergy.required_categories[item.category]) return true;
+  return Object.keys(item.effects).some((effectId) => Boolean(synergy.required_effects[effectId]));
+}
+
+function getCostWeight(cost: ResourceMap): number {
+  return Object.entries(cost).reduce((sum, [resourceId, amount]) => sum + (resourceId === "cash" ? amount : amount * 120), 0);
 }
 
 function countPlacedItemCategories(placedItems: ItemDefinition[]): Record<string, number> {

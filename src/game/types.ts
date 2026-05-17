@@ -636,6 +636,87 @@ export interface OfficeSynergySummary {
   totalMonthlyEffects: ResourceMap;
 }
 
+export interface OfficeGrowthCurrent {
+  expansionId: string;
+  expansionName: string;
+  level: number;
+  hireSlotsUsed: number;
+  hireSlotsTotal: number;
+  decorationSlotsUsed: number;
+  decorationSlotsTotal: number;
+  openDecorationSlots: number;
+  monthlyEffects: ResourceMap;
+}
+
+export interface OfficeGrowthExpansionChoice {
+  id: string;
+  name: string;
+  description: string;
+  available: boolean;
+  reasons: string[];
+  cost: ResourceMap;
+  hireCapacityGain: number;
+  decorationSlotGain: number;
+  monthlyEffects: ResourceMap;
+}
+
+export interface OfficeGrowthRelocationChoice {
+  id: string;
+  name: string;
+  region: string;
+  description: string;
+  available: boolean;
+  reasons: string[];
+  cost: ResourceMap;
+  monthlyCostModifierDelta: number;
+  aiOperationGain: number;
+  humanHireDiscountDelta: number;
+}
+
+export interface OfficeGrowthDecorRecommendation {
+  id: string;
+  name: string;
+  category: string;
+  available: boolean;
+  owned: boolean;
+  placeable: boolean;
+  score: number;
+  effects: Record<string, number>;
+  cost: ResourceMap;
+  recommendationReason: string;
+}
+
+export interface OfficeGrowthSynergyPlan extends OfficeSynergyStatus {
+  recommendedItems: OfficeGrowthDecorRecommendation[];
+}
+
+export interface OfficeGrowthDecorRow {
+  id: string;
+  name: string;
+  category: string;
+  effects: Record<string, number>;
+  linkedSynergyTitles: string[];
+}
+
+export type OfficeGrowthActionKind = "expand_office" | "relocate" | "buy_decor" | "place_decor" | "maintain";
+
+export interface OfficeGrowthPrimaryAction {
+  kind: OfficeGrowthActionKind;
+  label: string;
+  reason: string;
+  targetId?: string;
+}
+
+export interface OfficeGrowthPlan {
+  current: OfficeGrowthCurrent;
+  nextExpansion?: OfficeGrowthExpansionChoice;
+  nextRelocation?: OfficeGrowthRelocationChoice;
+  activeSynergies: OfficeSynergyStatus[];
+  nextSynergy?: OfficeGrowthSynergyPlan;
+  placedDecorRows: OfficeGrowthDecorRow[];
+  primaryAction: OfficeGrowthPrimaryAction;
+}
+
 export interface OfficeState {
   expansionId: string;
   placedItemIds: string[];

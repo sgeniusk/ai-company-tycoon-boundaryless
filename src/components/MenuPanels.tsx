@@ -81,6 +81,7 @@ import {
   getOfficeDecorationSlots,
   getOfficeExpansion,
   getOfficeExpansionCheck,
+  getOfficeGrowthPlan,
   getOfficeHireCapacity,
   getOfficeMonthlyEffects,
   getOfficeSynergySummary,
@@ -1511,6 +1512,7 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const officeItems = ownedItems.filter((item) => item.target !== "agent");
   const storedOfficeItems = officeItems.filter((item) => !placedOfficeItemIds.has(item.id));
   const officeSynergySummary = getOfficeSynergySummary(gameState);
+  const officeGrowthPlan = getOfficeGrowthPlan(gameState);
 
   return (
     <div className="panel-grid two-col">
@@ -1524,6 +1526,29 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
           <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
           <span>{officeSynergySummary.active.length ? `시너지 ${officeSynergySummary.active.length}개` : "시너지 준비 중"}</span>
+        </div>
+        <div className="office-growth-planner compact-planner">
+          <div className="office-growth-header">
+            <p className="eyebrow">사무실 성장</p>
+            <strong>{officeGrowthPlan.primaryAction.label}</strong>
+            <span>{officeGrowthPlan.primaryAction.reason}</span>
+          </div>
+          <div className="office-choice-grid">
+            {officeGrowthPlan.nextExpansion && (
+              <article className={officeGrowthPlan.nextExpansion.available ? "" : "locked"}>
+                <p className="item-meta">확장</p>
+                <strong>{officeGrowthPlan.nextExpansion.name}</strong>
+                <span>고용 +{officeGrowthPlan.nextExpansion.hireCapacityGain} · 장식 +{officeGrowthPlan.nextExpansion.decorationSlotGain}</span>
+              </article>
+            )}
+            {officeGrowthPlan.nextSynergy && (
+              <article>
+                <p className="item-meta">다음 조합</p>
+                <strong>{officeGrowthPlan.nextSynergy.title}</strong>
+                <span>{officeGrowthPlan.nextSynergy.recommendedItems[0]?.name ?? officeGrowthPlan.nextSynergy.progressLabel}</span>
+              </article>
+            )}
+          </div>
         </div>
         <div className="foundation-panel compact">
           <div>
@@ -1562,6 +1587,69 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <p>보유 아이템, 사무실 확장, 장식 배치, 자동화 투자를 함께 봅니다.</p>
         </div>
         <div className="office-upgrade-panel">
+          <div className="office-growth-planner">
+            <div className="office-growth-header">
+              <p className="eyebrow">사무실 성장 플래너</p>
+              <strong>{officeGrowthPlan.primaryAction.label}</strong>
+              <span>{officeGrowthPlan.primaryAction.reason}</span>
+            </div>
+            <div className="office-choice-grid">
+              {officeGrowthPlan.nextExpansion && (
+                <article className={officeGrowthPlan.nextExpansion.available ? "" : "locked"}>
+                  <p className="item-meta">다음 사무실</p>
+                  <strong>{officeGrowthPlan.nextExpansion.name}</strong>
+                  <span>
+                    고용 +{officeGrowthPlan.nextExpansion.hireCapacityGain} · 장식 +{officeGrowthPlan.nextExpansion.decorationSlotGain}
+                  </span>
+                  <small>
+                    월간 {Object.keys(officeGrowthPlan.nextExpansion.monthlyEffects).length ? formatEffects(officeGrowthPlan.nextExpansion.monthlyEffects) : "없음"} · 비용 {formatCost(officeGrowthPlan.nextExpansion.cost)}
+                  </small>
+                </article>
+              )}
+              {officeGrowthPlan.nextRelocation && (
+                <article className={officeGrowthPlan.nextRelocation.available ? "" : "locked"}>
+                  <p className="item-meta">다음 지역</p>
+                  <strong>{officeGrowthPlan.nextRelocation.name}</strong>
+                  <span>
+                    AI 운용 {officeGrowthPlan.nextRelocation.aiOperationGain >= 0 ? "+" : ""}{officeGrowthPlan.nextRelocation.aiOperationGain} · 월비 {Math.round(officeGrowthPlan.nextRelocation.monthlyCostModifierDelta * 100)}%
+                  </span>
+                  <small>
+                    {officeGrowthPlan.nextRelocation.region} · 비용 {formatCost(officeGrowthPlan.nextRelocation.cost)}
+                  </small>
+                </article>
+              )}
+            </div>
+            {officeGrowthPlan.nextSynergy && (
+              <div className="office-recommendation-list">
+                <div>
+                  <strong>다음 조합: {officeGrowthPlan.nextSynergy.title}</strong>
+                  <span>{officeGrowthPlan.nextSynergy.progressLabel}</span>
+                </div>
+                {officeGrowthPlan.nextSynergy.recommendedItems.map((recommendation) => {
+                  const item = items.find((entry) => entry.id === recommendation.id);
+
+                  return (
+                    <article key={recommendation.id}>
+                      <div>
+                        <strong>{recommendation.name}</strong>
+                        <span>{recommendation.recommendationReason}</span>
+                        <small>{formatEffects(recommendation.effects)} · {recommendation.owned ? "보유" : formatCost(recommendation.cost)}</small>
+                      </div>
+                      {item && (
+                        <button
+                          disabled={!recommendation.available || gameState.status !== "playing"}
+                          onClick={() => setGameState((current) => recommendation.owned ? placeOfficeItem(item, current) : buyItem(item, current))}
+                          type="button"
+                        >
+                          {recommendation.owned ? "배치" : "구매"}
+                        </button>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <div className="office-summary-card">
             <strong>{officeExpansion.name}</strong>
             <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
