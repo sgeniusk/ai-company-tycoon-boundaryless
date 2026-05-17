@@ -8,11 +8,38 @@ describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
     expect(appCss).toContain("grid-template-areas:");
     expect(appCss).toContain("\"top top top\"");
-    expect(appCss).toContain("\"resources stage menu\"");
-    expect(appCss).toContain("\"commands stage menu\"");
-    expect(appCss).toContain("height: 100vh");
+    expect(appCss).toContain("\"stage stage menu\"");
+    expect(appCss).toContain("\"resources commands menu\"");
+    expect(appCss).toContain("height: 100dvh");
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*overflow:\s*hidden/s);
     expect(appCss).toMatch(/\.menu-panel\s*{[^}]*overflow:\s*auto/s);
+  });
+
+  it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
+    expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);
+    expect(appCss).toMatch(/\.resource-tile\s*{[^}]*min-height:\s*42px/s);
+  });
+
+  it("treats the command row as a fixed bottom control strip", () => {
+    expect(appCss).toMatch(/\.command-row\s*{[^}]*grid-area:\s*commands/s);
+    expect(appCss).toMatch(/\.command-row\s*{[^}]*overflow:\s*hidden/s);
+    expect(appCss).toMatch(/\.command-row\s+p\s*{[^}]*white-space:\s*nowrap/s);
+  });
+
+  it("keeps tablet and mobile layouts in a fixed game viewport with internal scrolling", () => {
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)\s*{[\s\S]*body\s*{[^}]*overflow:\s*hidden/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)\s*{[\s\S]*\.app-shell\s*{[^}]*height:\s*100dvh/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)\s*{[\s\S]*\.menu-panel\s*{[^}]*overflow:\s*auto/s);
+  });
+
+  it("prevents narrow screens from creating horizontal page overflow", () => {
+    expect(appCss).toMatch(/\.app-shell\s*{[^}]*width:\s*min\(100%,\s*1440px\)/s);
+    expect(appCss).toMatch(/\.game-stage,\s*\.menu-layout,\s*\.resource-strip,\s*\.command-row\s*{[^}]*min-width:\s*0/s);
+    expect(appCss).toMatch(/\.resource-tile,\s*\.office-scene,\s*\.stage-side,\s*\.menu-panel,\s*\.panel\s*{[^}]*min-width:\s*0/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)\s*{[\s\S]*\.app-shell\s*{[^}]*width:\s*100vw/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.app-shell\s*{[^}]*width:\s*min\(100vw,\s*390px\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.app-shell\s*{[^}]*margin:\s*0/s);
   });
 
   it("groups menu buttons into compact rail sections", () => {
