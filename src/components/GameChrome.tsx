@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
-import { agentTypes, assetManifest, domains, resources } from "../game/data";
+import { agentTypes, assetManifest, competitors, domains, resources } from "../game/data";
+import { getStrategyCardById } from "../game/deckbuilding";
 import {
   getFirstTenMinutePlan,
   getFirstTenMinuteProgress,
@@ -58,6 +59,30 @@ const stageSideTabs: { id: StageSideTabId; label: string }[] = [
   { id: "results", label: "결과" },
 ];
 
+const priorityResourceIds = new Set(["cash", "users", "trust", "compute"]);
+
+function getMonthlyResourceDelta(gameState: GameState, resourceId: string) {
+  const report = gameState.lastMonthReport;
+  if (!report) return 0;
+
+  const baseDelta: Record<string, number> = {
+    cash: report.revenue - report.totalCost,
+    users: report.newUsers,
+    data: report.generatedData,
+    compute: -report.computePressure,
+  };
+
+  return (baseDelta[resourceId] ?? 0) + (report.strategyEffects?.[resourceId] ?? 0);
+}
+
+function isResourceCritical(gameState: GameState, resourceId: string) {
+  const value = gameState.resources[resourceId] ?? 0;
+  if (resourceId === "cash") return value <= 0;
+  if (resourceId === "trust") return value < 30;
+  if (resourceId === "compute") return value < 10;
+  return false;
+}
+
 export function TopBar({
   gameState,
   launchableCount,
@@ -81,21 +106,24 @@ export function TopBar({
         <p className="eyebrow">AI 컴퍼니 타이쿤 알파</p>
         <h1>경계 없는 회사</h1>
       </div>
-      <div className="status-cluster">
-        <span className="status-pill">{calendar.year}년 {calendar.monthOfYear}월</span>
-        <span className="status-pill">{getCompanyStarRating(gameState)}성</span>
-        <span className="status-pill">{phase.label}</span>
-        <span className="status-pill">{location.region}</span>
-        <span className={`status-pill ${gameState.status}`}>{statusLabel(gameState.status)}</span>
-        <span className="status-pill">출시 가능 {launchableCount}</span>
-        <span className="status-pill">개발 중 {gameState.productProjects.length}</span>
-        <span className="status-pill">런 {gameState.roguelite.runNumber}</span>
-        <span className="status-pill">통찰 {gameState.roguelite.founderInsight}</span>
-        <span className="status-pill">점유 {getPlayerMarketShare(gameState)}%</span>
-        {qaScenarioLabel && <span className="status-pill qa-pill">{qaScenarioLabel}</span>}
-        <button className="locale-toggle" onClick={onToggleLocale}>
-          {locale.toUpperCase()}
-        </button>
+      <div className="top-status-area">
+        <div className="status-cluster">
+          <span className="status-pill">{calendar.year}년 {calendar.monthOfYear}월</span>
+          <span className="status-pill">{getCompanyStarRating(gameState)}성</span>
+          <span className="status-pill">{phase.label}</span>
+          <span className="status-pill">{location.region}</span>
+          <span className={`status-pill ${gameState.status}`}>{statusLabel(gameState.status)}</span>
+          <span className="status-pill">출시 가능 {launchableCount}</span>
+          <span className="status-pill">개발 중 {gameState.productProjects.length}</span>
+          <span className="status-pill">런 {gameState.roguelite.runNumber}</span>
+          <span className="status-pill">통찰 {gameState.roguelite.founderInsight}</span>
+          <span className="status-pill">점유 {getPlayerMarketShare(gameState)}%</span>
+          {qaScenarioLabel && <span className="status-pill qa-pill">{qaScenarioLabel}</span>}
+          <button className="locale-toggle" onClick={onToggleLocale}>
+            {locale.toUpperCase()}
+          </button>
+        </div>
+        <CompetitorHudStrip gameState={gameState} locale={locale} />
       </div>
     </section>
   );
@@ -104,13 +132,52 @@ export function TopBar({
 export function ResourceStrip({ gameState }: { gameState: GameState }) {
   return (
     <section className="resource-strip" aria-label="자원">
-      {orderedResourceIds.map((resourceId) => (
-        <article className="resource-tile" key={resourceId}>
-          <span>{resources[resourceId].name}</span>
-          <strong>{formatResource(resourceId, gameState.resources[resourceId] ?? 0)}</strong>
-        </article>
-      ))}
+      {orderedResourceIds.map((resourceId) => {
+        const delta = getMonthlyResourceDelta(gameState, resourceId);
+        const deltaTone = delta > 0 ? "positive" : delta < 0 ? "negative" : "neutral";
+        const tileClass = [
+          "resource-tile",
+          priorityResourceIds.has(resourceId) ? "priority" : "",
+          isResourceCritical(gameState, resourceId) ? "critical" : "",
+        ]
+          .filter(Boolean)
+          .join(" ");
+
+        return (
+          <article className={tileClass} key={resourceId}>
+            <span>{resources[resourceId].name}</span>
+            <strong>{formatResource(resourceId, gameState.resources[resourceId] ?? 0)}</strong>
+            <small className={`resource-delta ${deltaTone}`}>
+              {delta === 0 ? "변동 없음" : `${delta > 0 ? "+" : ""}${formatResource(resourceId, delta)}`}
+            </small>
+          </article>
+        );
+      })}
     </section>
+  );
+}
+
+function CompetitorHudStrip({ gameState, locale }: { gameState: GameState; locale: LocaleCode }) {
+  const topCompetitors = [...gameState.competitorStates]
+    .sort((a, b) => b.marketShare - a.marketShare || b.momentum - a.momentum)
+    .slice(0, 3)
+    .map((state) => ({
+      state,
+      definition: competitors.find((competitor) => competitor.id === state.id),
+    }))
+    .filter((entry) => entry.definition);
+
+  if (topCompetitors.length === 0) return null;
+
+  return (
+    <div className="competitor-hud-strip" aria-label="경쟁사 TOP3">
+      <strong>라이벌</strong>
+      {topCompetitors.map(({ state, definition }) => (
+        <span key={state.id} style={{ "--rival-color": definition?.color } as CSSProperties}>
+          {t(definition?.name_key ?? state.id, locale)} {state.marketShare}%
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -279,6 +346,7 @@ export function GameStage({
               </small>
             </div>
           )}
+          <TurnGoalStrip guidance={guidance} onAction={handleGuidanceAction} />
           <div className="office-alert-strip" aria-live="polite">
             <strong>{officeAlertTitle}</strong>
             <span>{officeAlertText}</span>
@@ -523,6 +591,18 @@ export function GameStage({
   );
 }
 
+function TurnGoalStrip({ guidance, onAction }: { guidance: GuidanceStep; onAction: () => void }) {
+  return (
+    <div className={`turn-goal-strip goal-${guidance.tone}`} aria-live="polite">
+      <span>이번 달 목표</span>
+      <strong>{guidance.title}</strong>
+      <button onClick={onAction} type="button">
+        {guidance.actionLabel}
+      </button>
+    </div>
+  );
+}
+
 function LaunchImpactPanel({ summary }: { summary: ReleaseImpactSummary }) {
   return (
     <div className="launch-impact-panel">
@@ -673,6 +753,7 @@ export function CommandRow({
       <button className="primary-action" onClick={() => setGameState((current) => advanceMonth(current))}>
         다음 달
       </button>
+      <StrategyHand gameState={gameState} />
       <button className="secondary-action" onClick={() => setGameState(createInitialState())}>
         새 게임
       </button>
@@ -684,6 +765,37 @@ export function CommandRow({
       </button>
       <p>활성 제품: {activeProducts.length ? activeProducts.map((product) => product.name).join(", ") : "없음"}.</p>
     </section>
+  );
+}
+
+function StrategyHand({ gameState }: { gameState: GameState }) {
+  const hand = gameState.roguelite.deck.hand.slice(0, 5);
+
+  return (
+    <div className="strategy-hand" aria-label="전략 손패">
+      <span className="hand-count">
+        손패 {gameState.roguelite.deck.hand.length} · 덱 {gameState.roguelite.deck.drawPile.length} · 버림{" "}
+        {gameState.roguelite.deck.discardPile.length}
+      </span>
+      {hand.length ? (
+        hand.map((cardId) => {
+          const card = getStrategyCardById(cardId);
+          const primaryCost = Object.entries(card?.cost ?? {})[0];
+
+          return (
+            <span className={`strategy-hand-card rarity-${card?.rarity ?? "starter"}`} key={cardId} title={card?.description ?? cardId}>
+              <strong>{card?.name ?? cardId}</strong>
+              <small>{primaryCost ? `${resources[primaryCost[0]]?.name ?? primaryCost[0]} ${primaryCost[1]}` : "비용 없음"}</small>
+            </span>
+          );
+        })
+      ) : (
+        <span className="strategy-hand-card empty">
+          <strong>전략 대기</strong>
+          <small>다음 달에 손패 갱신</small>
+        </span>
+      )}
+    </div>
   );
 }
 

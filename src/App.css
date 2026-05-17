@@ -11,6 +11,10 @@
   --red: #b84c38;
   --mint: #dff1df;
   --shadow: 0 4px 0 #2f2a22;
+  --shell-width: 1366px;
+  --shell-height: 768px;
+  --mobile-shell-width: 390px;
+  --mobile-shell-height: 844px;
   color: var(--ink);
   background:
     linear-gradient(0deg, rgba(40, 36, 28, 0.04) 1px, transparent 1px),
@@ -27,10 +31,12 @@
 }
 
 body {
+  display: grid;
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
   overflow: hidden;
+  place-items: center;
 }
 
 button {
@@ -66,6 +72,8 @@ button:disabled {
   height: 100dvh;
   margin: 0 auto;
   max-width: 1366px;
+  max-width: var(--shell-width);
+  max-height: var(--shell-height);
   min-height: 0;
   overflow: hidden;
   padding: 8px;
@@ -161,6 +169,13 @@ p {
   max-width: min(980px, 72vw);
 }
 
+.top-status-area {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+  min-width: 0;
+}
+
 .status-pill {
   background: var(--mint);
   border: 2px solid var(--line);
@@ -187,6 +202,38 @@ p {
   color: #6c3d12;
 }
 
+.competitor-hud-strip {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+  justify-content: flex-end;
+  max-width: min(760px, 70vw);
+  overflow: hidden;
+}
+
+.competitor-hud-strip strong,
+.competitor-hud-strip span {
+  border: 2px solid var(--line);
+  color: #fff7df;
+  font-size: 0.58rem;
+  font-weight: 900;
+  line-height: 1;
+  min-height: 20px;
+  overflow: hidden;
+  padding: 4px 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.competitor-hud-strip strong {
+  background: #13261f;
+}
+
+.competitor-hud-strip span {
+  background: var(--rival-color, #547ad8);
+  max-width: 132px;
+}
+
 .resource-strip {
   display: grid;
   align-content: stretch;
@@ -200,6 +247,17 @@ p {
 .resource-tile {
   min-height: 42px;
   padding: 5px 6px;
+}
+
+.resource-tile.priority {
+  background: #fff7df;
+  border-color: #244f3b;
+}
+
+.resource-tile.critical {
+  background: #ffe1d8;
+  border-color: var(--red);
+  box-shadow: 0 4px 0 #743020;
 }
 
 .resource-tile span {
@@ -218,6 +276,28 @@ p {
   display: block;
   font-size: 0.88rem;
   overflow-wrap: anywhere;
+}
+
+.resource-delta {
+  display: block;
+  font-size: 0.56rem;
+  font-weight: 900;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resource-delta.positive {
+  color: var(--green-dark);
+}
+
+.resource-delta.negative {
+  color: var(--red);
+}
+
+.resource-delta.neutral {
+  color: #8a7654;
 }
 
 .game-stage {
@@ -584,6 +664,58 @@ p {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.turn-goal-strip {
+  align-items: center;
+  background: rgba(19, 38, 31, 0.92);
+  border: 3px solid #f2cf7f;
+  bottom: 58px;
+  box-shadow: 0 4px 0 rgba(61, 51, 35, 0.35);
+  color: #fff7df;
+  display: flex;
+  gap: 8px;
+  left: 50%;
+  max-width: min(640px, calc(100% - 28px));
+  min-height: 42px;
+  overflow: hidden;
+  padding: 6px 8px;
+  position: absolute;
+  transform: translateX(-50%);
+  width: max-content;
+  z-index: 6;
+}
+
+.turn-goal-strip span {
+  background: #f2cf7f;
+  border: 2px solid var(--line);
+  color: #2f2518;
+  flex: 0 0 auto;
+  font-size: 0.66rem;
+  font-weight: 900;
+  padding: 4px 6px;
+}
+
+.turn-goal-strip strong {
+  font-size: 0.76rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.turn-goal-strip button {
+  background: #fff7df;
+  box-shadow: none;
+  color: var(--green-dark);
+  flex: 0 0 auto;
+  font-size: 0.68rem;
+  min-height: 28px;
+  padding: 0 8px;
+}
+
+.turn-goal-strip.goal-warning {
+  border-color: #ffd1c4;
 }
 
 .project-stack strong {
@@ -1348,7 +1480,7 @@ p {
   display: grid;
   gap: 6px;
   grid-area: commands;
-  grid-template-columns: minmax(112px, 0.9fr) repeat(3, minmax(70px, 0.52fr)) minmax(140px, 1.6fr);
+  grid-template-columns: minmax(108px, 0.7fr) minmax(0, 2.45fr) repeat(3, minmax(58px, 0.34fr)) minmax(0, 0.18fr);
   min-height: 54px;
   overflow: hidden;
   padding: 7px;
@@ -1369,6 +1501,76 @@ p {
 .command-row .primary-action {
   grid-column: auto;
   min-height: 40px;
+}
+
+.strategy-hand {
+  align-items: stretch;
+  display: flex;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.hand-count,
+.strategy-hand-card {
+  border: 2px solid var(--line);
+  display: grid;
+  gap: 1px;
+  justify-content: center;
+  min-height: 38px;
+  min-width: 0;
+  padding: 4px 6px;
+}
+
+.hand-count {
+  background: #20342d;
+  color: #fff7df;
+  flex: 0 0 74px;
+  font-size: 0.58rem;
+  font-weight: 900;
+  overflow: hidden;
+  place-items: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.strategy-hand-card {
+  background: #fff3c7;
+  color: #3d3323;
+  flex: 1 1 52px;
+  min-width: 52px;
+}
+
+.strategy-hand-card strong,
+.strategy-hand-card small {
+  display: block;
+  line-height: 1.05;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.strategy-hand-card strong {
+  color: var(--green-dark);
+  font-size: 0.62rem;
+}
+
+.strategy-hand-card small {
+  color: #735d38;
+  font-size: 0.54rem;
+  font-weight: 900;
+}
+
+.strategy-hand-card.rarity-uncommon,
+.strategy-hand-card.rarity-rare,
+.strategy-hand-card.rarity-epic {
+  background: #e8f0ff;
+  border-color: var(--blue);
+}
+
+.strategy-hand-card.empty {
+  background: #e8dcc2;
+  color: #6a5b42;
 }
 
 .command-row .secondary-action {
@@ -4408,6 +4610,7 @@ p {
     grid-template-rows: auto minmax(0, 1fr) auto auto minmax(180px, 34dvh);
     height: 100dvh;
     max-width: none;
+    max-height: none;
     min-height: 0;
     overflow: hidden;
     width: 100vw;
@@ -4467,6 +4670,8 @@ p {
   .app-shell {
     grid-template-rows: minmax(78px, auto) minmax(170px, 1fr) auto minmax(74px, auto) minmax(180px, 30dvh);
     margin: 0;
+    max-height: var(--mobile-shell-height);
+    max-width: var(--mobile-shell-width);
     padding: 8px;
     width: min(100vw, 390px);
   }
@@ -4524,6 +4729,14 @@ p {
     max-width: none;
   }
 
+  .top-status-area {
+    justify-items: stretch;
+  }
+
+  .competitor-hud-strip {
+    display: none;
+  }
+
   .status-pill {
     font-size: 0.58rem;
     padding: 3px 4px;
@@ -4555,6 +4768,20 @@ p {
 
   .command-row .primary-action {
     grid-column: 1 / -1;
+  }
+
+  .strategy-hand {
+    grid-column: 1 / -1;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .strategy-hand-card {
+    min-width: 96px;
+  }
+
+  .hand-count {
+    min-width: 112px;
   }
 
   .resource-strip {
@@ -4593,6 +4820,22 @@ p {
   }
 
   .office-hud span:nth-child(n + 2) {
+    display: none;
+  }
+
+  .turn-goal-strip {
+    bottom: 52px;
+    left: 8px;
+    right: 8px;
+    transform: none;
+    width: auto;
+  }
+
+  .turn-goal-strip strong {
+    font-size: 0.68rem;
+  }
+
+  .turn-goal-strip button {
     display: none;
   }
 

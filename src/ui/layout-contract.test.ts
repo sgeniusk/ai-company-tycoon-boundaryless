@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { menus } from "./menu";
 
 const appCss = readFileSync(new URL("../App.css", import.meta.url), "utf8");
+const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
 const gameChrome = readFileSync(new URL("../components/GameChrome.tsx", import.meta.url), "utf8");
 const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.meta.url), "utf8");
 const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPanel.tsx", import.meta.url), "utf8");
@@ -16,6 +17,28 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toContain("height: 100dvh");
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*overflow:\s*hidden/s);
     expect(appCss).toMatch(/\.menu-panel\s*{[^}]*overflow:\s*auto/s);
+  });
+
+  it("adopts the v0.34 external UX review as a fixed game-shell contract", () => {
+    expect(appCss).toContain("--shell-width: 1366px");
+    expect(appCss).toContain("--shell-height: 768px");
+    expect(appCss).toContain("--mobile-shell-width: 390px");
+    expect(appCss).toContain("--mobile-shell-height: 844px");
+    expect(appSource).toContain("v034-game-shell");
+    expect(appCss).toMatch(/\.app-shell\s*{[^}]*max-height:\s*var\(--shell-height\)/s);
+    expect(appCss).toMatch(/\.app-shell\s*{[^}]*max-width:\s*var\(--shell-width\)/s);
+  });
+
+  it("surfaces the v0.34 first-screen priorities in the playable chrome", () => {
+    expect(gameChrome).toContain("TurnGoalStrip");
+    expect(gameChrome).toContain("CompetitorHudStrip");
+    expect(gameChrome).toContain("StrategyHand");
+    expect(gameChrome).toContain("resource-delta");
+    expect(appCss).toMatch(/\.turn-goal-strip\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.competitor-hud-strip\s*{[^}]*display:\s*flex/s);
+    expect(appCss).toMatch(/\.strategy-hand\s*{[^}]*display:\s*flex/s);
+    expect(appCss).toMatch(/\.resource-tile\.priority\s*{/s);
+    expect(appCss).toMatch(/\.resource-tile\.critical\s*{/s);
   });
 
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {

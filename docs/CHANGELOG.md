@@ -4,6 +4,27 @@
 
 ---
 
+## [0.34-alpha] — 2026-05-17
+
+### 그래픽 전 UI 셸 전환 1차
+
+**추가:**
+- Claude 디자인 외주 분석 결과를 v0.34 UI 게이트로 반영했다.
+- `1366×768` 데스크톱 셸과 `390×844` 모바일 셸 기준 변수를 추가했다.
+- 상단 상태바 아래에 TOP3 경쟁사 HUD를 추가해 시장 압박을 첫 화면에서 볼 수 있게 했다.
+- 사무실 안에 `이번 달 목표` 스트립을 추가해 다음 행동을 게임 화면 내부에 고정했다.
+- 하단 명령줄에 전략 손패, 덱/버림 수, 카드 비용을 항상 표시한다.
+- 자원 HUD에 전월 변화량과 위험 자원 강조를 추가했다.
+- 브라우저 기본 파비콘 404를 없애기 위해 데이터 URI 파비콘을 추가했다.
+
+**검증:**
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 22 tests
+- `npm run harness:gate` 통과, 36 files / 229 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser CDP QA: `http://127.0.0.1:5187/?scenario=campaign-shock&menu=company`에서 v0.34 셸, 목표 스트립, 하단 손패, 경쟁사 HUD, 자원 변화량, 데스크톱/모바일 가로 오버플로 없음 확인
+- Headless Chrome screenshot QA: 데스크톱 `/tmp/ai-company-v034-ui-shell-desktop.png`, 모바일 `/tmp/ai-company-v034-ui-shell-mobile.png`
+
+---
+
 ## [0.33-alpha] — 2026-05-17
 
 ### 10년 캠페인 시장 충격
