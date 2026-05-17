@@ -500,6 +500,33 @@ export interface AgentTypeDefinition {
   quirk: string;
 }
 
+export interface WorkforceSynergyDefinition {
+  id: string;
+  title: string;
+  description: string;
+  required_kinds: Partial<Record<NonNullable<AgentTypeDefinition["kind"]>, number>>;
+  stat_effects: Record<string, number>;
+  project_effects: {
+    quality: number;
+    progress: number;
+  };
+  tags: string[];
+}
+
+export interface WorkforceSynergyStatus extends WorkforceSynergyDefinition {
+  active: boolean;
+  progressLabel: string;
+}
+
+export interface WorkforceSynergySummary {
+  active: WorkforceSynergyStatus[];
+  locked: WorkforceSynergyStatus[];
+  nextCandidate?: WorkforceSynergyStatus;
+  totalStats: Record<string, number>;
+  projectQualityBonus: number;
+  projectProgressBonus: number;
+}
+
 export interface ItemDefinition {
   id: string;
   name: string;

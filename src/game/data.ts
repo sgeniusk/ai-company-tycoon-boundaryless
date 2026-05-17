@@ -24,6 +24,7 @@ import deckArchetypesJson from "../../data/deck_archetypes.json";
 import starterDecksJson from "../../data/starter_decks.json";
 import officeExpansionsJson from "../../data/office_expansions.json";
 import officeSynergiesJson from "../../data/office_synergies.json";
+import workforceSynergiesJson from "../../data/workforce_synergies.json";
 import type {
   AchievementDefinition,
   AnnualDirectiveChoiceDefinition,
@@ -51,6 +52,7 @@ import type {
   StrategyCardDefinition,
   ItemDefinition,
   UpgradeDefinition,
+  WorkforceSynergyDefinition,
 } from "./types";
 
 export const resources = resourcesJson.resources as Record<string, ResourceDefinition>;
@@ -79,3 +81,4 @@ export const deckArchetypes = deckArchetypesJson.deck_archetypes as unknown as D
 export const starterDecks = starterDecksJson.starter_decks as unknown as StarterDeckDefinition[];
 export const officeExpansions = officeExpansionsJson.office_expansions as unknown as OfficeExpansionDefinition[];
 export const officeSynergies = officeSynergiesJson.office_synergies as unknown as OfficeSynergyDefinition[];
+export const workforceSynergies = workforceSynergiesJson.workforce_synergies as unknown as WorkforceSynergyDefinition[];

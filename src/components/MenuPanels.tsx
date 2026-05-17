@@ -80,6 +80,7 @@ import {
   getProductUpgradeCheck,
   getProductUpgradeCost,
   getUpgradeCheck,
+  getWorkforceSynergySummary,
   getRelocationCheck,
   hireAgent,
   buyOfficeExpansion,
@@ -989,6 +990,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
   const recommendations = getFoundationRecommendations(gameState, 4);
   const phase = getCampaignContentPhase(gameState);
   const filteredAgentRows = agentRows.filter((row) => kindFilter === "all" || row.kind === kindFilter);
+  const workforceSynergySummary = getWorkforceSynergySummary(gameState);
   const ownedAgentItems = items.filter(
     (item) =>
       item.target === "agent" &&
@@ -1006,6 +1008,27 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
         <div className="team-ops-summary">
           <span>AI 운용 {getAiAgentCount(gameState)}/{getAiOperationCapacity(gameState)}</span>
           <span>사람 직원이 늘면 AI 에이전트를 더 안정적으로 굴릴 수 있습니다.</span>
+        </div>
+        <div className="workforce-synergy-panel">
+          <div>
+            <p className="eyebrow">팀 조합</p>
+            <strong>{workforceSynergySummary.active.length ? `${workforceSynergySummary.active.length}개 조합 가동` : "조합 준비 중"}</strong>
+            <span>
+              프로젝트 보너스 진행 +{workforceSynergySummary.projectProgressBonus} · 완성도 +{workforceSynergySummary.projectQualityBonus}
+            </span>
+          </div>
+          {workforceSynergySummary.active.slice(0, 2).map((synergy) => (
+            <article className="active" key={synergy.id}>
+              <strong>{synergy.title}</strong>
+              <span>{synergy.description}</span>
+            </article>
+          ))}
+          {workforceSynergySummary.active.length === 0 && workforceSynergySummary.nextCandidate && (
+            <article>
+              <strong>다음 후보: {workforceSynergySummary.nextCandidate.title}</strong>
+              <span>{workforceSynergySummary.nextCandidate.progressLabel}</span>
+            </article>
+          )}
         </div>
         <div className="foundation-panel compact">
           <div>

@@ -4,6 +4,25 @@
 
 ---
 
+## [0.4.1-alpha] — 2026-05-17
+
+### 사람/AI/로봇 인력 조합 시너지
+
+**추가:**
+- 인력 조합 시너지 데이터 `data/workforce_synergies.json`를 추가했다.
+- 사람 직원, AI 에이전트, 로봇 인력 조합에 따라 프로젝트 진행/완성도 보너스를 계산한다.
+- 제품 개발 예측과 실제 월간 개발 진행에 인력 조합 보너스를 반영했다.
+- 에이전트 화면에 `팀 조합` 패널과 다음 후보를 표시했다.
+
+**검증:**
+- `npm test -- src/game/simulation.test.ts` 통과, 28 tests
+- `npm test -- src/game/simulation.test.ts src/game/content-foundation.test.ts src/game/qa-scenarios.test.ts` 통과, 56 tests
+- `npm run validate:data` 통과
+- `npm run build` 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5178/?scenario=staffing&menu=agents` 렌더링 확인
+
+---
+
 ## [0.4.0-alpha] — 2026-05-17
 
 ### 사무실 장식 조합 시너지

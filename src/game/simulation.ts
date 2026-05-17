@@ -19,6 +19,7 @@ import {
   startingState,
   strategyCards,
   upgrades,
+  workforceSynergies,
   growthPaths,
 } from "./data";
 import { applyAchievementUnlocks } from "./achievements";
@@ -66,6 +67,8 @@ import type {
   ProductProjectForecast,
   StrategyDeckState,
   UpgradeDefinition,
+  WorkforceSynergyStatus,
+  WorkforceSynergySummary,
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
@@ -267,6 +270,41 @@ export function getAiAgentCount(state: GameState): number {
     const type = agentTypes.find((entry) => entry.id === agent.typeId);
     return !type || getAgentKind(type) === "ai_agent";
   }).length;
+}
+
+export function getWorkforceSynergySummary(state: GameState, assignedAgentIds?: string[]): WorkforceSynergySummary {
+  const selectedAgents = assignedAgentIds
+    ? state.hiredAgents.filter((agent) => assignedAgentIds.includes(agent.id))
+    : state.hiredAgents;
+  const kindCounts = selectedAgents.reduce<Record<string, number>>((counts, agent) => {
+    const agentType = agentTypes.find((entry) => entry.id === agent.typeId);
+    const kind = agentType ? getAgentKind(agentType) : "ai_agent";
+    counts[kind] = (counts[kind] ?? 0) + 1;
+    return counts;
+  }, {});
+  const statuses = workforceSynergies.map((synergy) => {
+    const progress = getRequirementProgress(synergy.required_kinds, kindCounts);
+
+    return {
+      ...synergy,
+      active: progress.complete,
+      progressLabel: progress.labels.join(" · "),
+    };
+  });
+  const active = statuses.filter((synergy) => synergy.active);
+  const locked = statuses.filter((synergy) => !synergy.active);
+
+  return {
+    active,
+    locked,
+    nextCandidate: locked[0],
+    totalStats: active.reduce<Record<string, number>>(
+      (total, synergy) => mergeResourceDelta(total, synergy.stat_effects),
+      {},
+    ),
+    projectQualityBonus: active.reduce((sum, synergy) => sum + synergy.project_effects.quality, 0),
+    projectProgressBonus: active.reduce((sum, synergy) => sum + synergy.project_effects.progress, 0),
+  };
 }
 
 export function getOfficeExpansion(state: GameState): OfficeExpansionDefinition {
@@ -598,10 +636,15 @@ export function getProductProjectForecast(
   assignedAgentIds?: string[],
 ): ProductProjectForecast {
   const selectedAgents = getSelectedProjectAgents(state, assignedAgentIds);
-  const stats = selectedAgents.reduce((total, agent) => addStats(total, getAgentEffectiveStats(agent, state)), getGlobalItemStats(state));
+  const assignedIds = selectedAgents.map((agent) => agent.id);
+  const workforceSynergy = getWorkforceSynergySummary(state, assignedIds);
+  const stats = addStats(
+    selectedAgents.reduce((total, agent) => addStats(total, getAgentEffectiveStats(agent, state)), getGlobalItemStats(state)),
+    workforceSynergy.totalStats,
+  );
   const startingQuality = getStartingProjectQuality(selectedAgents, state);
-  const monthlyProgressGain = getProjectProgressGain(stats);
-  const monthlyQualityGain = getProjectQualityGain(stats);
+  const monthlyProgressGain = getProjectProgressGain(stats) + workforceSynergy.projectProgressBonus;
+  const monthlyQualityGain = getProjectQualityGain(stats) + workforceSynergy.projectQualityBonus;
   const estimatedMonths = Math.max(1, Math.ceil(100 / monthlyProgressGain));
   const expectedQuality = Math.round(clamp(startingQuality + monthlyQualityGain * estimatedMonths, 0, 100));
   const expectedReview = createReleaseReview(product, state, expectedQuality);
@@ -1282,8 +1325,8 @@ function advanceProductProjects(state: GameState): GameState {
     if (!product) continue;
 
     const teamStats = getProjectTeamStats(project, state);
-    const progressGain = getProjectProgressGain(teamStats);
-    const qualityGain = getProjectQualityGain(teamStats);
+    const progressGain = getProjectProgressGain(teamStats, project, state);
+    const qualityGain = getProjectQualityGain(teamStats, project, state);
     const progressedProject: ProductProject = {
       ...project,
       progress: clamp(project.progress + progressGain, 0, 100),
@@ -1336,20 +1379,28 @@ function advanceProductProjects(state: GameState): GameState {
 function getProjectTeamStats(project: ProductProject, state: GameState): AgentStats {
   const projectAgents = state.hiredAgents.filter((agent) => project.assignedAgentIds.includes(agent.id));
   const agentStats = projectAgents.reduce((stats, agent) => addStats(stats, getAgentEffectiveStats(agent, state)), createEmptyStats());
-  return addStats(agentStats, getGlobalItemStats(state));
+  const workforceSynergy = getWorkforceSynergySummary(state, project.assignedAgentIds);
+  return addStats(addStats(agentStats, getGlobalItemStats(state)), workforceSynergy.totalStats);
 }
 
-function getProjectProgressGain(_stats: AgentStats): number {
-  return 50;
+function getProjectProgressGain(_stats: AgentStats, project?: ProductProject, state?: GameState): number {
+  const workforceSynergy = project && state ? getWorkforceSynergySummary(state, project.assignedAgentIds) : undefined;
+  return 50 + (workforceSynergy?.projectProgressBonus ?? 0);
 }
 
-function getProjectQualityGain(stats: AgentStats): number {
-  return Math.round(clamp(5 + stats.product * 0.65 + stats.creativity * 0.55 + stats.safety * 0.35 + stats.research * 0.25, 7, 24));
+function getProjectQualityGain(stats: AgentStats, project?: ProductProject, state?: GameState): number {
+  const workforceSynergy = project && state ? getWorkforceSynergySummary(state, project.assignedAgentIds) : undefined;
+  return Math.round(clamp(5 + stats.product * 0.65 + stats.creativity * 0.55 + stats.safety * 0.35 + stats.research * 0.25, 7, 24)) + (workforceSynergy?.projectQualityBonus ?? 0);
 }
 
 function getStartingProjectQuality(assignedAgents: HiredAgent[], state: GameState): number {
-  const stats = assignedAgents.reduce((total, agent) => addStats(total, getAgentEffectiveStats(agent, state)), getGlobalItemStats(state));
-  return Math.round(clamp(35 + stats.product * 0.7 + stats.creativity * 0.5 + stats.safety * 0.25, 35, 72));
+  const assignedIds = assignedAgents.map((agent) => agent.id);
+  const workforceSynergy = getWorkforceSynergySummary(state, assignedIds);
+  const stats = addStats(
+    assignedAgents.reduce((total, agent) => addStats(total, getAgentEffectiveStats(agent, state)), getGlobalItemStats(state)),
+    workforceSynergy.totalStats,
+  );
+  return Math.round(clamp(35 + stats.product * 0.7 + stats.creativity * 0.5 + stats.safety * 0.25 + workforceSynergy.projectQualityBonus, 35, 78));
 }
 
 function getNextStatus(nextResources: ResourceMap, activeProductCount: number, month: number): GameState["status"] {

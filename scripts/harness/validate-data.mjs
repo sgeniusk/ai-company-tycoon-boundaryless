@@ -79,6 +79,7 @@ const deckArchetypesData = readJson("deck_archetypes.json");
 const starterDecksData = readJson("starter_decks.json");
 const officeExpansionsData = readJson("office_expansions.json");
 const officeSynergiesData = readJson("office_synergies.json");
+const workforceSynergiesData = readJson("workforce_synergies.json");
 const annualReviewsData = readJson("annual_reviews.json");
 const annualDirectiveChoicesData = readJson("annual_directive_choices.json");
 const koLocaleData = readJson("locales/ko.json");
@@ -107,6 +108,7 @@ const deckArchetypes = deckArchetypesData?.deck_archetypes ?? [];
 const starterDecks = starterDecksData?.starter_decks ?? [];
 const officeExpansions = officeExpansionsData?.office_expansions ?? [];
 const officeSynergies = officeSynergiesData?.office_synergies ?? [];
+const workforceSynergies = workforceSynergiesData?.workforce_synergies ?? [];
 const annualReviews = annualReviewsData?.annual_reviews ?? [];
 const annualDirectiveChoices = annualDirectiveChoicesData?.annual_directive_choices ?? [];
 const localeKeys = new Set([...Object.keys(koLocaleData ?? {}), ...Object.keys(enLocaleData ?? {})]);
@@ -133,6 +135,7 @@ idsAreUnique("deck_archetypes", deckArchetypes);
 idsAreUnique("starter_decks", starterDecks);
 idsAreUnique("office_expansions", officeExpansions);
 idsAreUnique("office_synergies", officeSynergies);
+idsAreUnique("workforce_synergies", workforceSynergies);
 idsAreUnique("annual_reviews", annualReviews);
 idsAreUnique("annual_directive_choices", annualDirectiveChoices);
 
@@ -264,6 +267,27 @@ for (const synergy of officeSynergies) {
   validateResourceMap(`office_synergy "${synergy.id}" monthly_effects`, synergy.monthly_effects, resourceIds);
   if (!Array.isArray(synergy.tags) || synergy.tags.length === 0) {
     errors.push(`office_synergy "${synergy.id}": tags must be a non-empty array`);
+  }
+}
+
+for (const synergy of workforceSynergies) {
+  for (const field of ["title", "description", "required_kinds", "stat_effects", "project_effects", "tags"]) {
+    if (!(field in synergy)) errors.push(`workforce_synergy "${synergy.id}": missing ${field}`);
+  }
+  for (const [kind, value] of Object.entries(synergy.required_kinds ?? {})) {
+    if (!["human", "ai_agent", "robot"].includes(kind)) errors.push(`workforce_synergy "${synergy.id}": unknown kind "${kind}"`);
+    if (typeof value !== "number" || value < 1) errors.push(`workforce_synergy "${synergy.id}": kind "${kind}" must be positive`);
+  }
+  for (const [effectKey, value] of Object.entries(synergy.stat_effects ?? {})) {
+    if (![...resourceIds, ...allowedAgentStats].includes(effectKey)) errors.push(`workforce_synergy "${synergy.id}": unknown stat effect "${effectKey}"`);
+    if (typeof value !== "number") errors.push(`workforce_synergy "${synergy.id}": stat effect "${effectKey}" must be numeric`);
+  }
+  for (const [effectKey, value] of Object.entries(synergy.project_effects ?? {})) {
+    if (!["quality", "progress"].includes(effectKey)) errors.push(`workforce_synergy "${synergy.id}": unknown project effect "${effectKey}"`);
+    if (typeof value !== "number") errors.push(`workforce_synergy "${synergy.id}": project effect "${effectKey}" must be numeric`);
+  }
+  if (!Array.isArray(synergy.tags) || synergy.tags.length === 0) {
+    errors.push(`workforce_synergy "${synergy.id}": tags must be a non-empty array`);
   }
 }
 

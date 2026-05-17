@@ -14,6 +14,8 @@ import {
   getMarketRankings,
   getPlayerMarketShare,
   getProductProjectCheck,
+  getProductProjectForecast,
+  getWorkforceSynergySummary,
   hydrateGameState,
   hireAgent,
   launchProduct,
@@ -196,6 +198,43 @@ describe("alpha production systems", () => {
     expect(started.productProjects[0].assignedAgentIds).toEqual([selectedCuratorId]);
     expect(started.hiredAgents.find((agent) => agent.typeId === "prompt_architect")?.assignment).toBeUndefined();
     expect(started.hiredAgents.find((agent) => agent.typeId === "data_curator")?.assignment).toBe(started.productProjects[0].id);
+  });
+
+  it("summarizes workforce kind synergies and applies them to project forecasts", () => {
+    const human = agentTypes.find((agent) => agent.id === "garage_pm_intern");
+    const ai = agentTypes.find((agent) => agent.id === "data_curator");
+    const robot = agentTypes.find((agent) => agent.id === "factory_robot_unit");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!human || !ai || !robot || !writingProduct) throw new Error("Missing workforce synergy fixtures");
+
+    const roboticsReady = {
+      ...createInitialState(),
+      resources: {
+        ...createInitialState().resources,
+        cash: 100000,
+        compute: 1000,
+        data: 1000,
+      },
+      capabilities: {
+        ...createInitialState().capabilities,
+        robotics: 1,
+      },
+    };
+    const humanAi = hireAgent(ai, hireAgent(human, roboticsReady));
+    const fullCell = hireAgent(robot, humanAi);
+    const summary = getWorkforceSynergySummary(fullCell);
+
+    expect(summary.active.map((synergy) => synergy.id)).toEqual(
+      expect.arrayContaining(["human_ai_supervision", "human_robot_floor", "ai_robot_pipeline", "full_stack_company_cell"]),
+    );
+    expect(summary.projectQualityBonus).toBeGreaterThan(0);
+    expect(summary.projectProgressBonus).toBeGreaterThan(0);
+
+    const humanAiForecast = getProductProjectForecast(writingProduct, humanAi, humanAi.hiredAgents.map((agent) => agent.id));
+    const fullCellForecast = getProductProjectForecast(writingProduct, fullCell, fullCell.hiredAgents.map((agent) => agent.id));
+
+    expect(fullCellForecast.monthlyProgressGain).toBeGreaterThan(humanAiForecast.monthlyProgressGain);
+    expect(fullCellForecast.expectedQuality).toBeGreaterThan(humanAiForecast.expectedQuality);
   });
 
   it("keeps project duration stable while team composition changes launch quality", () => {

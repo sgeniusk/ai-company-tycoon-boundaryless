@@ -1,0 +1,40 @@
+{
+  "workforce_synergies": [
+    {
+      "id": "human_ai_supervision",
+      "title": "사람-AI 감독 루프",
+      "description": "사람 직원이 방향을 잡고 AI 에이전트가 반복 작업을 밀어붙입니다.",
+      "required_kinds": {"human": 1, "ai_agent": 1},
+      "stat_effects": {"product": 2, "safety": 1, "operations": 1},
+      "project_effects": {"quality": 3, "progress": 4},
+      "tags": ["human", "ai", "supervision"]
+    },
+    {
+      "id": "human_robot_floor",
+      "title": "사람-로봇 현장 운영",
+      "description": "사람 PM이 물리 업무를 정리하고 로봇 인력이 제조와 테스트를 반복합니다.",
+      "required_kinds": {"human": 1, "robot": 1},
+      "stat_effects": {"operations": 3, "safety": 1},
+      "project_effects": {"quality": 2, "progress": 5},
+      "tags": ["human", "robot", "manufacturing"]
+    },
+    {
+      "id": "ai_robot_pipeline",
+      "title": "AI-로봇 자동화 파이프라인",
+      "description": "AI 에이전트가 계획하고 로봇 인력이 물리 실험을 돌려 자동화 복리를 만듭니다.",
+      "required_kinds": {"ai_agent": 1, "robot": 1},
+      "stat_effects": {"automation": 3, "engineering": 1},
+      "project_effects": {"quality": 1, "progress": 6},
+      "tags": ["ai", "robot", "automation"]
+    },
+    {
+      "id": "full_stack_company_cell",
+      "title": "풀스택 회사 셀",
+      "description": "사람, AI, 로봇이 모두 있는 작은 독립 팀입니다. 후반 산업 확장에 강합니다.",
+      "required_kinds": {"human": 1, "ai_agent": 1, "robot": 1},
+      "stat_effects": {"automation": 2, "operations": 2, "product": 1},
+      "project_effects": {"quality": 4, "progress": 4},
+      "tags": ["company_cell", "boundaryless"]
+    }
+  ]
+}
