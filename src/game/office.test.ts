@@ -142,6 +142,8 @@ describe("v0.12.7 office expansion and decoration", () => {
       "startup_suite",
       "growth_floor",
       "campus_lab",
+      "regional_hq",
+      "boundaryless_campus",
     ]);
   });
 

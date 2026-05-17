@@ -4,6 +4,26 @@
 
 ---
 
+## [0.25-alpha] — 2026-05-17
+
+### 콘텐츠 가속과 엔딩 커버리지
+
+**추가:**
+- `evaluateEndToEndCampaignCoverage()`를 추가해 10년 엔딩, 카드 보상 선택, 사무실 성장 커버리지를 함께 검증한다.
+- 전략 카드 풀을 19장으로 확장했다.
+- 로그라이트 메타 해금을 8개로 확장했다.
+- 시작 덱을 7개로 확장했다.
+- 사무실 확장 단계를 6단계로 확장했다.
+- 사무실 장식 시너지를 8개로 확장했다.
+- 아이템 풀을 45개로 확장했다.
+
+**검증:**
+- `npm test -- src/game/run-simulator.test.ts src/game/content-expansion.test.ts` 통과, 2 files / 9 tests
+- `npm run validate:data` 통과
+- `npm run harness:gate` 통과, 30 files / 193 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+
+---
+
 ## [0.24-alpha] — 2026-05-17
 
 ### 게임 화면형 레이아웃 압축

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { growthPaths } from "./data";
 import {
+  evaluateEndToEndCampaignCoverage,
   evaluateAlphaReadiness,
   evaluateSeasonChallengeBalance,
   runAllCommercialSimulations,
@@ -73,5 +74,18 @@ describe("v0.11 commercial balance simulation harness", () => {
     expect(report.completedReward.trust).toBeLessThanOrEqual(3);
     expect(report.unresolvedMomentumPerCompetitor).toBeLessThanOrEqual(2);
     expect(report.recommendations[0]).toContain("보상");
+  });
+
+  it("checks v0.25 end-to-end coverage across finale, deck, and office growth", () => {
+    const report = evaluateEndToEndCampaignCoverage();
+
+    expect(report.versionTarget).toBe("v0.25-alpha");
+    expect(report.pass).toBe(true);
+    expect(report.finalMonth).toBeGreaterThanOrEqual(120);
+    expect(report.finalStatus).not.toBe("playing");
+    expect(report.annualReviewCount).toBeGreaterThanOrEqual(10);
+    expect(report.productCount).toBeGreaterThanOrEqual(3);
+    expect(report.officeLevel).toBeGreaterThanOrEqual(4);
+    expect(report.rewardPickCount).toBeGreaterThanOrEqual(2);
   });
 });

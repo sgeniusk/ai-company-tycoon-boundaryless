@@ -30,6 +30,30 @@
       "required_meta_id": "automation_memory",
       "card_ids": ["autonomy_macro", "gpu_burst", "open_source_push", "interoperability_shield", "prompt_sprint", "customer_interviews"],
       "tags": ["automation", "agent", "compute"]
+    },
+    {
+      "id": "synthetic_lab",
+      "title": "합성 실험실 덱",
+      "description": "가상 사용자 실험과 프롬프트 정리로 제품 품질을 빠르게 안정화합니다.",
+      "required_meta_id": "synthetic_lab_memory",
+      "card_ids": ["synthetic_user_swarm", "system_prompt_refactor", "customer_interviews", "safety_review", "prompt_sprint", "open_source_push"],
+      "tags": ["ux", "data", "quality"]
+    },
+    {
+      "id": "hardware_seed",
+      "title": "하드웨어 씨앗 덱",
+      "description": "로봇공학과 연산 공급을 앞세워 반도체, 로봇, 자동차 확장의 발판을 만듭니다.",
+      "required_meta_id": "robotics_seed_memory",
+      "card_ids": ["robot_lab_shift", "compute_arbitrage", "chip_supply_bet", "gpu_burst", "open_source_push", "safety_review"],
+      "tags": ["robotics", "hardware", "compute"]
+    },
+    {
+      "id": "boundaryless_brand",
+      "title": "경계 없는 브랜드 덱",
+      "description": "AI 카페 같은 엉뚱한 확장으로 화제성과 이용자를 폭발시키는 고위험 덱입니다.",
+      "required_meta_id": "boundaryless_brand_memory",
+      "card_ids": ["coffee_pop_up_launch", "viral_teaser", "market_repositioning", "customer_interviews", "founder_all_nighter", "safety_review"],
+      "tags": ["growth", "odd", "boundaryless"]
     }
   ]
 }

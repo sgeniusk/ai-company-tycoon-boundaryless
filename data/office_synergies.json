@@ -35,6 +35,42 @@
       "required_effects": {"automation": 12, "autonomy": 2, "operations": 2},
       "monthly_effects": {"automation": 2, "compute": 3},
       "tags": ["automation", "agent", "ops"]
+    },
+    {
+      "id": "playtest_cinema",
+      "title": "플레이테스트 시네마",
+      "description": "거울방, 벤치마크판, 고객 스토리 벽을 묶어 제품 반응을 관찰하는 작은 극장을 만듭니다.",
+      "required_categories": {"research": 2, "marketing": 1},
+      "required_effects": {"product": 5, "research": 4, "trust": 2},
+      "monthly_effects": {"users": 120, "trust": 2, "data": 3},
+      "tags": ["ux", "quality", "retention"]
+    },
+    {
+      "id": "robotics_garage_line",
+      "title": "로봇 차고 라인",
+      "description": "충전 매트, 부품 선반, 안전 장치를 묶어 소형 로봇이 실제 일을 거드는 공간을 만듭니다.",
+      "required_categories": {"hardware": 1, "manufacturing": 1, "safety": 1},
+      "required_effects": {"automation": 4, "operations": 4, "engineering": 3},
+      "monthly_effects": {"automation": 3, "cash": 180},
+      "tags": ["robotics", "hardware", "ops"]
+    },
+    {
+      "id": "chip_lab_corner",
+      "title": "칩 랩 코너",
+      "description": "칩 프로브와 연산 장비를 모아 반도체 확장의 첫 실험실을 만듭니다.",
+      "required_categories": {"hardware": 1, "research": 1},
+      "required_effects": {"compute": 24, "research": 4, "engineering": 3},
+      "monthly_effects": {"compute": 8, "data": 4},
+      "tags": ["hardware", "compute", "research"]
+    },
+    {
+      "id": "boundaryless_showroom",
+      "title": "경계 없는 쇼룸",
+      "description": "카페 목업, 장난감 설계, 데모 무대를 묶어 말도 안 되는 산업 확장을 한눈에 보이게 합니다.",
+      "required_categories": {"marketing": 2, "manufacturing": 1},
+      "required_effects": {"hype": 6, "creativity": 5, "growth": 4},
+      "monthly_effects": {"hype": 3, "users": 180, "cash": 120},
+      "tags": ["boundaryless", "odd", "shareable"]
     }
   ]
 }

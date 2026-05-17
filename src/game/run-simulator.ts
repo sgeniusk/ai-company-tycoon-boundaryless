@@ -15,6 +15,12 @@ import {
   buyUpgrade,
   chooseGrowthPath,
   createInitialState,
+  getItemCheck,
+  getNextOfficeExpansion,
+  getOfficeDecorationSlots,
+  getOfficeExpansion,
+  getOfficeExpansionCheck,
+  getPlacedOfficeItems,
   getUpgradeCheck,
   getCapabilityCheck,
   getProductProjectCheck,
@@ -96,6 +102,19 @@ export interface SeasonChallengeBalanceReport {
   unresolvedMomentumPerCompetitor: number;
   completedReward: ResourceMap;
   pass: boolean;
+  recommendations: string[];
+}
+
+export interface EndToEndCampaignCoverageReport {
+  versionTarget: "v0.25-alpha";
+  pass: boolean;
+  finalMonth: number;
+  finalStatus: GameState["status"];
+  annualReviewCount: number;
+  productCount: number;
+  officeLevel: number;
+  rewardPickCount: number;
+  finaleRank: string;
   recommendations: string[];
 }
 
@@ -187,6 +206,37 @@ export function evaluateSeasonChallengeBalance(): SeasonChallengeBalanceReport {
       "보상은 신뢰/데이터 중심으로 유지하고 이용자 보상은 과도하게 키우지 않는다.",
       "미대응 압박은 경쟁 모멘텀 +2를 넘기지 않아 초보자 회복 여지를 남긴다.",
       "다음 플레이테스트에서는 시즌 과제 완료율과 다음 해 생존율을 함께 본다.",
+    ],
+  };
+}
+
+export function evaluateEndToEndCampaignCoverage(strategyId = "productivity_line"): EndToEndCampaignCoverageReport {
+  const result = runTenYearCampaignSimulation(strategyId);
+  const officeLevel = getOfficeExpansion(result.finalState).level;
+  const rewardPickCount = result.finalState.roguelite.rewardHistory.length;
+  const pass =
+    result.finalState.month >= CAMPAIGN_FINAL_MONTH &&
+    result.finalState.status !== "playing" &&
+    result.annualReviewCount >= 10 &&
+    result.finalState.activeProducts.length >= 3 &&
+    officeLevel >= 4 &&
+    rewardPickCount >= 2 &&
+    result.integrity.ok;
+
+  return {
+    versionTarget: "v0.25-alpha",
+    pass,
+    finalMonth: result.finalState.month,
+    finalStatus: result.finalState.status,
+    annualReviewCount: result.annualReviewCount,
+    productCount: result.finalState.activeProducts.length,
+    officeLevel,
+    rewardPickCount,
+    finaleRank: result.finale.rank,
+    recommendations: [
+      "한판은 120개월 엔딩까지 자동 압축 검증한다.",
+      "덱 보상 선택 수와 사무실 단계가 함께 오르는지 계속 게이트에 포함한다.",
+      "다음 단계에서는 플레이어가 사무실 성장 선택을 더 명확히 체감하도록 메뉴를 압축한다.",
     ],
   };
 }
@@ -579,7 +629,52 @@ function applyStrategyPolicy(strategyId: string, state: GameState): GameState {
     if (product) nextState = startProductProject(product, nextState);
   }
 
+  return applyOfficeGrowthPolicy(nextState);
+}
+
+function applyOfficeGrowthPolicy(state: GameState): GameState {
+  let nextState = state;
+  const nextExpansion = getNextOfficeExpansion(nextState);
+
+  if (nextExpansion && getOfficeExpansionCheck(nextExpansion, nextState).ok) {
+    nextState = buyOfficeExpansion(nextExpansion, nextState);
+  }
+
+  const openSlots = getOfficeDecorationSlots(nextState) - getPlacedOfficeItems(nextState).length;
+  if (openSlots <= 0) return nextState;
+
+  const officeCandidates = items
+    .filter((item) => item.target !== "agent" && !nextState.ownedItems.includes(item.id))
+    .sort((a, b) => getOfficeItemPriority(b) - getOfficeItemPriority(a) || a.name.localeCompare(b.name, "ko"));
+
+  for (const item of officeCandidates) {
+    if (getPlacedOfficeItems(nextState).length >= getOfficeDecorationSlots(nextState)) break;
+    if (getItemCheck(item, nextState).ok) {
+      nextState = buyItem(item, nextState);
+    }
+  }
+
   return nextState;
+}
+
+function getOfficeItemPriority(item: (typeof items)[number]): number {
+  const categoryPriority: Record<string, number> = {
+    office: 12,
+    research: 11,
+    safety: 10,
+    hardware: 9,
+    manufacturing: 8,
+    marketing: 7,
+    comfort: 6,
+  };
+
+  return (
+    (categoryPriority[item.category] ?? 0) +
+    Object.entries(item.effects ?? {}).reduce((score, [effectId, value]) => {
+      if (["automation", "compute", "data", "trust", "users"].includes(effectId)) return score + Math.max(0, value) * 1.4;
+      return score + Math.max(0, value);
+    }, 0)
+  );
 }
 
 function findRecommendedProduct(productIds: string[], state: GameState) {

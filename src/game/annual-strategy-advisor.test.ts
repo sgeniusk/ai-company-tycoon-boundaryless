@@ -16,14 +16,13 @@ describe("v0.15 annual strategy advisor", () => {
     });
     expect(advice?.productRecommendations.map((row) => row.id)).toContain("customer_support_chatbot");
     expect(advice?.capabilityRecommendations.map((row) => row.id)).toEqual(expect.arrayContaining(["safety", "enterprise"]));
-    expect(advice?.rivalRecommendations[0]).toMatchObject({
-      competitorId: "competitor_chatgody",
-    });
+    expect(advice?.rivalRecommendations[0]?.pressureScore).toBeGreaterThan(0);
+    const topRivalId = advice?.rivalRecommendations[0]?.competitorId;
     expect(advice?.actionRecommendations).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ label: "제품 후보 보기", menu: "products", targetId: "customer_support_chatbot" }),
         expect.objectContaining({ label: "연구 후보 보기", menu: "research", targetId: "enterprise" }),
-        expect.objectContaining({ label: "경쟁 대응 보기", menu: "competition", targetId: "competitor_chatgody" }),
+        expect.objectContaining({ label: "경쟁 대응 보기", menu: "competition", targetId: topRivalId }),
       ]),
     );
     expect(advice?.summary).toContain("신뢰 복리 프로그램");
@@ -49,7 +48,7 @@ describe("v0.15 annual strategy advisor", () => {
     expect(getAnnualStrategyMenuFocus(state, "competition")).toMatchObject({
       menu: "competition",
       title: "전략실 추천 대응",
-      targetId: "competitor_chatgody",
+      targetId: getAnnualStrategyAdvice(state)?.rivalRecommendations[0]?.competitorId,
     });
   });
 

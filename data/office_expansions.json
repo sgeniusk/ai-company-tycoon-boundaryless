@@ -43,6 +43,28 @@
       "monthly_effects": {"cash": 520, "data": 8, "automation": 1},
       "cost": {"cash": 18000, "compute": 40},
       "unlock_requirements": {"min_month": 12, "min_trust": 55}
+    },
+    {
+      "id": "regional_hq",
+      "level": 5,
+      "name": "지역 총괄 본부",
+      "description": "제품, 영업, 로봇 실험, 경쟁 대응실이 한 건물 안에서 돌아가는 본부입니다.",
+      "hire_capacity": 16,
+      "decoration_slots": 13,
+      "monthly_effects": {"cash": 960, "users": 420, "data": 12, "automation": 2},
+      "cost": {"cash": 42000, "data": 60, "compute": 80},
+      "unlock_requirements": {"min_month": 30, "min_users": 12000, "min_automation": 20}
+    },
+    {
+      "id": "boundaryless_campus",
+      "level": 6,
+      "name": "바운더리리스 캠퍼스",
+      "description": "소프트웨어, 반도체, 로봇, 커피 프랜차이즈, 장난감 실험이 한 지도에 공존하는 이상한 캠퍼스입니다.",
+      "hire_capacity": 22,
+      "decoration_slots": 16,
+      "monthly_effects": {"cash": 1600, "users": 900, "data": 20, "automation": 4, "compute": 18},
+      "cost": {"cash": 90000, "data": 140, "compute": 180},
+      "unlock_requirements": {"min_month": 54, "min_users": 35000, "min_trust": 70, "min_automation": 35}
     }
   ]
 }

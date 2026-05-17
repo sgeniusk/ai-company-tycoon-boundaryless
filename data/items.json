@@ -443,6 +443,102 @@
       "rarity": "uncommon",
       "unlock_requirements": {"min_month": 10},
       "flavor": "가끔은 장난감이 미래 제품의 씨앗이 됩니다."
+    },
+    {
+      "id": "legal_review_table",
+      "name": "법무 리뷰 테이블",
+      "category": "safety",
+      "description": "출시 전 약관, 개인정보, 모델 정책을 한 번 더 보는 회의 테이블입니다.",
+      "cost": {"cash": 2300, "data": 6},
+      "effects": {"safety": 3, "trust": 3},
+      "target": "office",
+      "rarity": "uncommon",
+      "unlock_requirements": {"min_trust": 40},
+      "flavor": "느리지만 오래 가는 회사의 냄새가 납니다."
+    },
+    {
+      "id": "creator_demo_stage",
+      "name": "크리에이터 데모 무대",
+      "category": "marketing",
+      "description": "영상, 이미지, 음성 제품을 짧은 쇼케이스로 보여주는 작은 무대입니다.",
+      "cost": {"cash": 2600, "compute": 6},
+      "effects": {"growth": 3, "creativity": 3, "hype": 3},
+      "target": "office",
+      "rarity": "rare",
+      "unlock_requirements": {"min_products": 2},
+      "flavor": "구경거리가 생기면 제품 설명이 반으로 줄어듭니다."
+    },
+    {
+      "id": "chip_sample_case",
+      "name": "칩 샘플 케이스",
+      "category": "hardware",
+      "description": "엣지 AI 보드와 칩 샘플을 전시하고 비교하는 투명 케이스입니다.",
+      "cost": {"cash": 3900, "data": 10},
+      "effects": {"compute": 10, "research": 2, "engineering": 2},
+      "target": "office",
+      "rarity": "rare",
+      "unlock_requirements": {"min_month": 18},
+      "flavor": "작은 칩 하나가 회사 방향을 하드웨어 쪽으로 틀어버립니다."
+    },
+    {
+      "id": "robot_parts_shelf",
+      "name": "로봇 부품 선반",
+      "category": "hardware",
+      "description": "서보 모터, 바퀴, 센서 부품을 정리해 둔 실험 선반입니다.",
+      "cost": {"cash": 2200, "compute": 4},
+      "effects": {"automation": 3, "engineering": 2, "operations": 1},
+      "target": "office",
+      "rarity": "uncommon",
+      "unlock_requirements": {"min_capability_robotics": 1},
+      "flavor": "선반이 차면 회의실보다 작업장이 먼저 보입니다."
+    },
+    {
+      "id": "coffee_robot_counter",
+      "name": "커피 로봇 카운터",
+      "category": "marketing",
+      "description": "AI 카페 프랜차이즈를 진지하게 상상하게 만드는 반자동 커피 카운터입니다.",
+      "cost": {"cash": 3400, "compute": 6},
+      "effects": {"operations": 2, "growth": 2, "hype": 3},
+      "target": "office",
+      "rarity": "rare",
+      "unlock_requirements": {"min_products": 3},
+      "flavor": "이쯤 되면 투자자도 웃다가 계산기를 켭니다."
+    },
+    {
+      "id": "toy_test_track",
+      "name": "장난감 테스트 트랙",
+      "category": "manufacturing",
+      "description": "작은 로봇 장난감과 센서 장비를 굴려보는 미니 테스트 트랙입니다.",
+      "cost": {"cash": 2800, "data": 6},
+      "effects": {"creativity": 3, "product": 2, "engineering": 1},
+      "target": "office",
+      "rarity": "uncommon",
+      "unlock_requirements": {"min_month": 12},
+      "flavor": "진지한 사업 계획과 장난감 놀이 사이의 선이 흐려집니다."
+    },
+    {
+      "id": "retention_calendar_wall",
+      "name": "리텐션 캘린더 벽",
+      "category": "marketing",
+      "description": "출시, 업데이트, 복귀 이벤트를 달력처럼 붙여 놓은 운영 벽입니다.",
+      "cost": {"cash": 1700},
+      "effects": {"users": 260, "growth": 2, "operations": 1},
+      "target": "office",
+      "rarity": "uncommon",
+      "unlock_requirements": {"min_users": 800},
+      "flavor": "사람들이 돌아오는 이유를 숫자와 스티커로 붙잡습니다."
+    },
+    {
+      "id": "founder_memory_wall",
+      "name": "창업 기억 벽",
+      "category": "office",
+      "description": "이전 런의 실패, 대박 제품, 이상한 선택을 사진처럼 붙여 둔 벽입니다.",
+      "cost": {"cash": 2100},
+      "effects": {"trust": 2, "hype": 2, "creativity": 2},
+      "target": "office",
+      "rarity": "rare",
+      "unlock_requirements": {"min_month": 8},
+      "flavor": "망한 선택도 다음 런의 농담이자 전략이 됩니다."
     }
   ]
 }

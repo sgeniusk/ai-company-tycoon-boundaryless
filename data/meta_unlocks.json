@@ -26,6 +26,51 @@
       "starting_resource_effects": {"automation": 2, "compute": 4},
       "unlock_card_ids": ["autonomy_macro"],
       "tags": ["automation", "ops"]
+    },
+    {
+      "id": "synthetic_lab_memory",
+      "title": "합성 사용자 실험실",
+      "description": "이전 런의 테스트 시나리오를 보관해 다음 회사도 빠르게 사용성 실험을 시작합니다.",
+      "cost": 5,
+      "starting_resource_effects": {"data": 6, "trust": 1},
+      "unlock_card_ids": ["synthetic_user_swarm", "system_prompt_refactor"],
+      "tags": ["ux", "data", "quality"]
+    },
+    {
+      "id": "rival_war_memory",
+      "title": "라이벌 전쟁실 기억",
+      "description": "경쟁사 대응 표와 규제 질의서를 다음 창업에도 가져갑니다.",
+      "cost": 6,
+      "starting_resource_effects": {"trust": 2, "hype": 2},
+      "unlock_card_ids": ["regulatory_prebrief"],
+      "tags": ["counter", "enterprise", "safety"]
+    },
+    {
+      "id": "robotics_seed_memory",
+      "title": "로봇공학 씨앗",
+      "description": "작은 로봇 운용 노하우를 보존해 물리 산업 진입을 앞당깁니다.",
+      "cost": 7,
+      "starting_resource_effects": {"automation": 3, "compute": 6},
+      "unlock_card_ids": ["robot_lab_shift"],
+      "tags": ["robotics", "hardware", "automation"]
+    },
+    {
+      "id": "compute_supply_notes",
+      "title": "연산 공급 노트",
+      "description": "칩 공급, 클라우드 크레딧, 엣지 장비 거래 기록을 다음 런에도 활용합니다.",
+      "cost": 7,
+      "starting_resource_effects": {"compute": 12, "data": 3},
+      "unlock_card_ids": ["chip_supply_bet", "compute_arbitrage"],
+      "tags": ["compute", "hardware", "research"]
+    },
+    {
+      "id": "boundaryless_brand_memory",
+      "title": "경계 없는 브랜드 기억",
+      "description": "이상한 산업 확장이 사람들에게 남긴 밈과 브랜드 자산을 보존합니다.",
+      "cost": 8,
+      "starting_resource_effects": {"hype": 6, "users": 400},
+      "unlock_card_ids": ["coffee_pop_up_launch"],
+      "tags": ["boundaryless", "growth", "odd"]
     }
   ]
 }

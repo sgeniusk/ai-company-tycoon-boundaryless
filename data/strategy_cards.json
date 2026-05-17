@@ -134,6 +134,107 @@
       "copies": 1,
       "unlock_meta_id": "automation_memory",
       "unlock_requirements": {"min_capability_agent": 1}
+    },
+    {
+      "id": "system_prompt_refactor",
+      "name": "시스템 프롬프트 리팩터",
+      "category": "build",
+      "rarity": "uncommon",
+      "description": "제품의 말투, 거절 기준, 작업 흐름을 다시 정리해 완성도와 데이터 효율을 올립니다.",
+      "cost": {"data": 5},
+      "effects": {"project_progress": 10, "project_quality": 8, "data": 4, "puzzle_score_bonus": 5},
+      "tags": ["language", "quality", "product", "data"],
+      "copies": 1,
+      "unlock_requirements": {"min_products": 1}
+    },
+    {
+      "id": "synthetic_user_swarm",
+      "name": "합성 사용자 군집",
+      "category": "product",
+      "rarity": "rare",
+      "description": "가상의 사용자 수천 명을 돌려 제품 흐름을 빠르게 검증합니다.",
+      "cost": {"compute": 10, "data": 8},
+      "effects": {"project_quality": 9, "users": 260, "trust": 2, "puzzle_difficulty_delta": -2},
+      "tags": ["ux", "data", "quality", "automation"],
+      "copies": 1,
+      "unlock_meta_id": "synthetic_lab_memory",
+      "unlock_requirements": {"min_products": 2}
+    },
+    {
+      "id": "compute_arbitrage",
+      "name": "연산 차익 거래",
+      "category": "ops",
+      "rarity": "uncommon",
+      "description": "남는 GPU 시간과 외부 크레딧을 엮어 짧은 기간 연산 여유를 만듭니다.",
+      "cost": {"cash": 700},
+      "effects": {"compute": 24, "project_progress": 8, "puzzle_tile_limit": 1},
+      "tags": ["compute", "ops", "speed"],
+      "copies": 1,
+      "unlock_requirements": {"min_month": 3}
+    },
+    {
+      "id": "founder_all_nighter",
+      "name": "창업자 밤샘",
+      "category": "ops",
+      "rarity": "common",
+      "description": "위험하지만 강력한 밤샘 집중으로 개발을 밀어붙입니다.",
+      "cost": {"trust": 1},
+      "effects": {"project_progress": 20, "hype": 2, "puzzle_score_bonus": 2},
+      "tags": ["speed", "risk", "product"],
+      "copies": 1,
+      "unlock_requirements": {}
+    },
+    {
+      "id": "regulatory_prebrief",
+      "name": "규제 사전 브리핑",
+      "category": "safety",
+      "rarity": "rare",
+      "description": "규제와 기업 보안팀이 물어볼 질문을 미리 정리해 신뢰와 방어력을 챙깁니다.",
+      "cost": {"cash": 900, "data": 6},
+      "effects": {"project_quality": 5, "trust": 6, "rival_momentum_delta": -2, "puzzle_difficulty_delta": -1},
+      "tags": ["safety", "trust", "enterprise", "counter"],
+      "copies": 1,
+      "unlock_meta_id": "rival_war_memory",
+      "unlock_requirements": {"min_trust": 45}
+    },
+    {
+      "id": "robot_lab_shift",
+      "name": "로봇 랩 야간조",
+      "category": "automation",
+      "rarity": "rare",
+      "description": "소형 로봇에게 야간 실험과 정리 업무를 맡겨 프로젝트 진행과 자동화를 함께 얻습니다.",
+      "cost": {"compute": 9, "cash": 600},
+      "effects": {"project_progress": 14, "project_quality": 3, "automation": 3, "puzzle_tile_limit": 1},
+      "tags": ["robotics", "automation", "hardware", "ops"],
+      "copies": 1,
+      "unlock_meta_id": "robotics_seed_memory",
+      "unlock_requirements": {"min_capability_robotics": 1}
+    },
+    {
+      "id": "chip_supply_bet",
+      "name": "칩 공급 베팅",
+      "category": "research",
+      "rarity": "epic",
+      "description": "엣지 AI 칩과 장비 공급선을 선점해 후반 연산 병목을 크게 줄입니다.",
+      "cost": {"cash": 2200, "data": 10},
+      "effects": {"compute": 34, "project_progress": 10, "rival_score_delta": -5, "puzzle_score_bonus": 4},
+      "tags": ["hardware", "research", "compute", "counter"],
+      "copies": 1,
+      "unlock_meta_id": "compute_supply_notes",
+      "unlock_requirements": {"min_month": 12}
+    },
+    {
+      "id": "coffee_pop_up_launch",
+      "name": "AI 카페 팝업",
+      "category": "growth",
+      "rarity": "uncommon",
+      "description": "뜬금없는 팝업 매장을 열어 브랜드와 제품 데모를 동시에 각인시킵니다.",
+      "cost": {"cash": 1200},
+      "effects": {"hype": 7, "users": 500, "project_quality": -2, "puzzle_score_bonus": 2},
+      "tags": ["odd", "growth", "market", "boundaryless"],
+      "copies": 1,
+      "unlock_meta_id": "boundaryless_brand_memory",
+      "unlock_requirements": {"min_products": 3}
     }
   ]
 }
