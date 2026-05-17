@@ -12,7 +12,6 @@ import {
 import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
 import { getBoundarylessExpansionGoals } from "../game/boundaryless-expansion";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
-import { getCampaignShockForecast } from "../game/campaign-shocks";
 import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import {
   getAgentContentRows,
@@ -124,6 +123,7 @@ import type {
 import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, itemCategoryLabel, itemTargetLabel, statLabel } from "../ui/formatters";
 import { menus, type MenuId } from "../ui/menu";
+import { CampaignShockPanel } from "./CampaignShockPanel";
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
   if (!palette?.length) return {};
@@ -180,8 +180,6 @@ export function renderMenuContent(
     const annualStrategyAdvice = getAnnualStrategyAdvice(gameState);
     const competitionSeason = getCompetitionSeasonBrief(gameState);
     const competitionChallenges = getCompetitionSeasonChallenges(gameState);
-    const shockForecast = getCampaignShockForecast(gameState);
-    const shockPanel = shockForecast.current ?? shockForecast.next;
 
     return (
       <div className="panel-grid two-col">
@@ -190,37 +188,7 @@ export function renderMenuContent(
             <h2>회사 개요</h2>
             <p>성장 단계, 해금 분야, 활성 제품을 한눈에 봅니다.</p>
           </div>
-          {shockPanel && (
-            <div className={shockPanel.applied ? "campaign-shock-panel applied" : "campaign-shock-panel"}>
-              <div className="campaign-shock-header">
-                <div>
-                  <p className="eyebrow">시장 충격 예보</p>
-                  <h3>{shockPanel.title}</h3>
-                  <span>{shockPanel.applied ? "적용 완료" : shockPanel.monthsUntil === 0 ? "이번 달 발생" : `${shockPanel.monthsUntil}개월 후 발생`}</span>
-                </div>
-                <strong>{shockForecast.completedCount}/{shockForecast.totalCount}</strong>
-              </div>
-              <p>{shockPanel.description}</p>
-              <div className="campaign-shock-effect-row">
-                <span>{formatEffects(shockPanel.resource_effects)}</span>
-                <span>경쟁 모멘텀 +{shockPanel.rival_momentum_delta}</span>
-              </div>
-              <div className="campaign-shock-action-grid">
-                <button onClick={() => setActiveMenu?.("products")} type="button">
-                  <strong>제품 대응</strong>
-                  <span>{formatProductNames(shockPanel.recommended_product_ids, 2)}</span>
-                </button>
-                <button onClick={() => setActiveMenu?.("research")} type="button">
-                  <strong>연구 대응</strong>
-                  <span>{formatCapabilityNames(shockPanel.recommended_capability_ids, 2)}</span>
-                </button>
-                <button onClick={() => setActiveMenu?.("competition")} type="button">
-                  <strong>경쟁 대응</strong>
-                  <span>{shockPanel.affectedDomainNames.slice(0, 2).join(", ")}</span>
-                </button>
-              </div>
-            </div>
-          )}
+          <CampaignShockPanel gameState={gameState} setActiveMenu={setActiveMenu} />
           <div className="annual-review-panel">
             <div className="annual-review-header">
               <div>

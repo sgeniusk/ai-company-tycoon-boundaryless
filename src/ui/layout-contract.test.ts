@@ -5,6 +5,7 @@ import { menus } from "./menu";
 const appCss = readFileSync(new URL("../App.css", import.meta.url), "utf8");
 const gameChrome = readFileSync(new URL("../components/GameChrome.tsx", import.meta.url), "utf8");
 const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.meta.url), "utf8");
+const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPanel.tsx", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
@@ -163,9 +164,10 @@ describe("v0.13.3 compact game shell layout", () => {
   });
 
   it("surfaces campaign shock pacing inside the company console", () => {
-    expect(menuPanels).toContain("getCampaignShockForecast");
-    expect(menuPanels).toContain("campaign-shock-panel");
-    expect(menuPanels).toContain("campaign-shock-action-grid");
+    expect(menuPanels).toContain("<CampaignShockPanel");
+    expect(campaignShockPanel).toContain("getCampaignShockForecast");
+    expect(campaignShockPanel).toContain("campaign-shock-panel");
+    expect(campaignShockPanel).toContain("campaign-shock-action-grid");
     expect(appCss).toMatch(/\.campaign-shock-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.campaign-shock-action-grid\s*{[^}]*grid-template-columns:/s);
   });
