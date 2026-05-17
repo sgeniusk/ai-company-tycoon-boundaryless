@@ -1,0 +1,54 @@
+{
+  "deck_synergies": [
+    {
+      "id": "launch_machine",
+      "title": "런칭 머신",
+      "description": "성장, 시장, 제품 카드를 한 덩어리로 묶어 출시 전후 화제성과 초기 유입을 끌어올립니다.",
+      "required_tags": {"growth": 2, "market": 1, "product": 2},
+      "monthly_effects": {"hype": 2, "users": 80},
+      "play_effect_tags": ["growth", "market", "product", "hype"],
+      "play_effect_multiplier": 1.1,
+      "risk_label": "신뢰 카드가 부족하면 과열 출시가 사고로 이어질 수 있습니다."
+    },
+    {
+      "id": "trust_harness",
+      "title": "신뢰 하네스",
+      "description": "안전, 신뢰, 품질 카드를 쌓아 기업 고객과 규제 리스크에 강한 제품 라인을 만듭니다.",
+      "required_tags": {"trust": 2, "safety": 1, "quality": 1},
+      "monthly_effects": {"trust": 2, "data": 2},
+      "play_effect_tags": ["trust", "safety", "quality", "enterprise"],
+      "play_effect_multiplier": 1.12,
+      "risk_label": "성장 카드가 부족하면 이용자 증가 속도가 느릴 수 있습니다."
+    },
+    {
+      "id": "automation_compound",
+      "title": "자동화 복리",
+      "description": "자동화, 에이전트, 연산 카드를 묶어 적은 인력으로 장기 운영 효율을 높입니다.",
+      "required_tags": {"automation": 2, "compute": 1, "speed": 1},
+      "monthly_effects": {"automation": 1, "compute": 4},
+      "play_effect_tags": ["automation", "agent", "compute", "speed"],
+      "play_effect_multiplier": 1.1,
+      "risk_label": "안전 카드가 부족하면 자동화 고점이 신뢰 리스크를 만들 수 있습니다."
+    },
+    {
+      "id": "research_flywheel",
+      "title": "연구 플라이휠",
+      "description": "데이터, 연구, 개발자 생태계 카드를 묶어 후반 산업 확장에 필요한 기반을 빠르게 모읍니다.",
+      "required_tags": {"data": 2, "research": 1, "developer": 1},
+      "monthly_effects": {"data": 5, "compute": 2},
+      "play_effect_tags": ["data", "research", "developer", "compute"],
+      "play_effect_multiplier": 1.08,
+      "risk_label": "시장 카드가 부족하면 좋은 기술이 늦게 알려질 수 있습니다."
+    },
+    {
+      "id": "rival_counter_cell",
+      "title": "라이벌 대응 셀",
+      "description": "경쟁 대응, 시장, 데이터 카드를 묶어 선점당한 시장을 빠르게 추적하고 상대 모멘텀을 깎습니다.",
+      "required_tags": {"counter": 2, "market": 1, "data": 1},
+      "monthly_effects": {"hype": 1, "trust": 1},
+      "play_effect_tags": ["counter", "market", "data"],
+      "play_effect_multiplier": 1.12,
+      "risk_label": "제품 카드가 부족하면 대응만 하다 자기 색을 잃을 수 있습니다."
+    }
+  ]
+}

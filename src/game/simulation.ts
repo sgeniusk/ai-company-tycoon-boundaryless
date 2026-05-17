@@ -26,7 +26,7 @@ import { applyAchievementUnlocks } from "./achievements";
 import { applyDueAnnualReview, getActiveAnnualDirective } from "./annual-review";
 import { CAMPAIGN_FINAL_MONTH, getCompanyStarRating, getCurrentLocation, getLocationRequirementReasons } from "./campaign";
 import { getCompetitionSeasonChallenges } from "./competition-signals";
-import { createInitialRogueliteState, createReleaseCardReward, refreshStrategyDeckForNewMonth } from "./deckbuilding";
+import { createInitialRogueliteState, createReleaseCardReward, getDeckSynergyMonthlyEffects, refreshStrategyDeckForNewMonth } from "./deckbuilding";
 import { createReleaseGrowthPaths } from "./growth-paths";
 import { getRenewalReleaseOptions, type ProductConcept } from "./product-ideas";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
@@ -1934,12 +1934,14 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   const growthPathEffects = getChosenGrowthPathMonthlyEffects(state);
   const officeMonthlyEffects = getOfficeMonthlyEffects(state);
   const officeSynergyEffects = getOfficeSynergySummary(state).totalMonthlyEffects;
+  const deckSynergyEffects = getDeckSynergyMonthlyEffects(state);
   if (growthPathEffects && Object.keys(growthPathEffects).length > 0) effects.push(growthPathEffects);
   if (annualDirective?.monthlyEffects && Object.keys(annualDirective.monthlyEffects).length > 0) {
     effects.push(annualDirective.monthlyEffects);
   }
   if (Object.keys(officeMonthlyEffects).length > 0) effects.push(officeMonthlyEffects);
   if (Object.keys(officeSynergyEffects).length > 0) effects.push(officeSynergyEffects);
+  if (Object.keys(deckSynergyEffects).length > 0) effects.push(deckSynergyEffects);
 
   if (effects.length === 0) return undefined;
   return effects.reduce<ResourceMap>((combined, effect) => mergeResourceDelta(combined, effect), {});

@@ -51,6 +51,7 @@ import {
   getDeckArchetypeSummary,
   getDeckCardCounts,
   getDeckEditCheck,
+  getDeckSynergySummary,
   getStrategyCardById,
   getStrategyCardEffects,
   getStrategyCardPlayCheck,
@@ -521,6 +522,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const resolveCheck = activeProject ? getDevelopmentPuzzleResolveCheck(activeProject.id, selectedPuzzleTileIds, gameState) : undefined;
   const topRivalCounter = getRivalCounterPlans(gameState, 1)[0];
   const archetypeSummary = getDeckArchetypeSummary(gameState);
+  const deckSynergySummary = getDeckSynergySummary(gameState);
   const starterDeckOptions = getAvailableStarterDecks(gameState);
 
   useEffect(() => {
@@ -610,6 +612,26 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <small>
             다음 보상 추천: {archetypeSummary.recommendedNextTags.join(", ")} · {archetypeSummary.warning}
           </small>
+        </div>
+        <div className="deck-synergy-panel">
+          <div>
+            <p className="eyebrow">덱 시너지</p>
+            <strong>{deckSynergySummary.active.length ? `${deckSynergySummary.active.length}개 활성` : "다음 시너지 준비 중"}</strong>
+            <span>
+              {deckSynergySummary.active.length
+                ? `월간 ${formatEffects(deckSynergySummary.totalMonthlyEffects)} · 카드 보너스 x${deckSynergySummary.bestPlayEffectMultiplier.toFixed(2)}`
+                : deckSynergySummary.warning ?? "태그를 모으면 빌드 보너스가 열립니다."}
+            </span>
+          </div>
+          <div className="deck-synergy-grid">
+            {[...deckSynergySummary.active, ...deckSynergySummary.nextCandidates].slice(0, 4).map((synergy) => (
+              <article className={synergy.active ? "active" : ""} key={synergy.id}>
+                <strong>{synergy.title}</strong>
+                <span>{synergy.active ? formatEffects(synergy.monthlyEffects) : `${Math.round(synergy.progress * 100)}%`}</span>
+                <small>{synergy.active ? synergy.risk_label : synergy.missingTags.slice(0, 2).join(" / ")}</small>
+              </article>
+            ))}
+          </div>
         </div>
         {pendingReward && rewardBiasSummary && (
           <div className="reward-bias-strip">

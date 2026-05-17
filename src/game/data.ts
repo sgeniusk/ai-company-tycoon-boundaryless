@@ -22,6 +22,7 @@ import annualDirectiveChoicesJson from "../../data/annual_directive_choices.json
 import strategyCardsJson from "../../data/strategy_cards.json";
 import metaUnlocksJson from "../../data/meta_unlocks.json";
 import deckArchetypesJson from "../../data/deck_archetypes.json";
+import deckSynergiesJson from "../../data/deck_synergies.json";
 import starterDecksJson from "../../data/starter_decks.json";
 import officeExpansionsJson from "../../data/office_expansions.json";
 import officeSynergiesJson from "../../data/office_synergies.json";
@@ -40,6 +41,7 @@ import type {
   CompanyStageDefinition,
   CompetitorDefinition,
   DeckArchetypeDefinition,
+  DeckSynergyDefinition,
   DomainDefinition,
   EventDefinition,
   GrowthPathDefinition,
@@ -83,6 +85,7 @@ export const annualDirectiveChoices = annualDirectiveChoicesJson.annual_directiv
 export const strategyCards = strategyCardsJson.strategy_cards as unknown as StrategyCardDefinition[];
 export const metaUnlocks = metaUnlocksJson.meta_unlocks as unknown as MetaUnlockDefinition[];
 export const deckArchetypes = deckArchetypesJson.deck_archetypes as unknown as DeckArchetypeDefinition[];
+export const deckSynergies = deckSynergiesJson.deck_synergies as unknown as DeckSynergyDefinition[];
 export const starterDecks = starterDecksJson.starter_decks as unknown as StarterDeckDefinition[];
 export const officeExpansions = officeExpansionsJson.office_expansions as unknown as OfficeExpansionDefinition[];
 export const officeSynergies = officeSynergiesJson.office_synergies as unknown as OfficeSynergyDefinition[];

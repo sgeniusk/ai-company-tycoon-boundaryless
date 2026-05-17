@@ -3,6 +3,7 @@ import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./q
 import { getAnnualDirectiveChoiceRows } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
 import { getFoundationSnapshot } from "./content-foundation";
+import { getDeckSynergySummary } from "./deckbuilding";
 import { runTenYearCampaignSimulation } from "./run-simulator";
 
 describe("alpha v0.9.3 QA scenarios", () => {
@@ -16,6 +17,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "shop",
       "office",
       "deck",
+      "deck-synergy",
       "strategy",
       "counter",
       "rivals",
@@ -106,6 +108,15 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.activeMenu).toBe("deck");
     expect(scenario.state.productProjects).toHaveLength(1);
     expect(scenario.state.roguelite.deck.hand.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("creates an active deck synergy scenario for v0.31 deck QA", () => {
+    const scenario = createQaScenario("deck-synergy");
+    const summary = getDeckSynergySummary(scenario.state);
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("덱 시너지");
+    expect(summary.active.map((synergy) => synergy.id)).toContain("launch_machine");
   });
 
   it("creates strategy and arc scenarios for post-release QA", () => {
@@ -286,6 +297,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=counter")?.id).toBe("counter");
     expect(createQaScenarioFromSearch("?scenario=rivals")?.id).toBe("rivals");
     expect(createQaScenarioFromSearch("?scenario=deck")?.id).toBe("deck");
+    expect(createQaScenarioFromSearch("?scenario=deck-synergy")?.id).toBe("deck-synergy");
     expect(createQaScenarioFromSearch("?scenario=flow")?.id).toBe("flow");
     expect(createQaScenarioFromSearch("?scenario=alpha")?.id).toBe("alpha");
     expect(createQaScenarioFromSearch("?scenario=next-run")?.id).toBe("next-run");

@@ -9,6 +9,7 @@ import {
   getCardRewardChoiceCheck,
   getDeckEditCheck,
   getDeckArchetypeSummary,
+  getDeckSynergySummary,
   getAnnualDirectiveRewardBiasSummary,
   getAnnualDirectiveRewardBiasMatch,
   getStrategyCardEffects,
@@ -24,7 +25,7 @@ import {
   resolveDevelopmentPuzzle,
 } from "./development-puzzle";
 import { getMetaUnlockCheck, getRunInsightReward, resetRunWithMetaUnlocks } from "./meta-progression";
-import { advanceMonth, createInitialState, hireAgent, startProductProject } from "./simulation";
+import { advanceMonth, calculateMonthlyEconomy, createInitialState, hireAgent, startProductProject } from "./simulation";
 
 describe("v0.12 roguelite deckbuilding foundation", () => {
   it("starts each run with a deterministic starter deck and opening hand", () => {
@@ -451,6 +452,62 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
     expect(summary.primary.matchScore).toBeGreaterThan(summary.secondary[0].matchScore);
     expect(summary.recommendedNextTags).toEqual(expect.arrayContaining(["trust", "safety"]));
     expect(summary.warning).toContain("성장");
+  });
+
+  it("activates deck synergies from concentrated card tags and applies monthly strategy effects", () => {
+    const state = {
+      ...createInitialState(),
+      roguelite: {
+        ...createInitialState().roguelite,
+        deck: {
+          drawPile: ["rival_benchmark_room"],
+          hand: ["viral_teaser", "market_repositioning", "prompt_sprint"],
+          discardPile: ["customer_interviews"],
+          playedThisTurn: [],
+        },
+      },
+    };
+
+    const summary = getDeckSynergySummary(state);
+    const monthlyEffects = Object.assign({}, ...summary.active.map((synergy) => synergy.monthlyEffects));
+    const economy = calculateMonthlyEconomy(state);
+
+    expect(summary.active.map((synergy) => synergy.id)).toContain("launch_machine");
+    expect(monthlyEffects.hype).toBeGreaterThan(0);
+    expect(economy.strategyEffects?.hype).toBeGreaterThanOrEqual(monthlyEffects.hype);
+    expect(summary.nextCandidates[0].progress).toBeLessThanOrEqual(1);
+  });
+
+  it("boosts matching card effects when an active deck synergy supports its tags", () => {
+    const viralCard = strategyCards.find((card) => card.id === "viral_teaser");
+    if (!viralCard) throw new Error("Missing deck synergy fixture");
+
+    const baseState = {
+      ...createInitialState(),
+      roguelite: {
+        ...createInitialState().roguelite,
+        deck: {
+          drawPile: [],
+          hand: ["viral_teaser"],
+          discardPile: [],
+          playedThisTurn: [],
+        },
+      },
+    };
+    const launchState = {
+      ...baseState,
+      roguelite: {
+        ...baseState.roguelite,
+        deck: {
+          drawPile: ["rival_benchmark_room"],
+          hand: ["viral_teaser", "market_repositioning", "prompt_sprint"],
+          discardPile: ["customer_interviews"],
+          playedThisTurn: [],
+        },
+      },
+    };
+
+    expect(getStrategyCardEffects(viralCard, launchState).hype).toBeGreaterThan(getStrategyCardEffects(viralCard, baseState).hype);
   });
 
   it("offers meta-gated starter decks for the next run", () => {

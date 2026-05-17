@@ -3690,6 +3690,54 @@ p {
   padding: 7px;
 }
 
+.deck-synergy-panel {
+  background: #edf4ff;
+  border: 2px solid #8eb0ce;
+  display: grid;
+  gap: 9px;
+  margin-bottom: 12px;
+  padding: 10px;
+}
+
+.deck-synergy-panel > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.deck-synergy-panel strong {
+  color: #244764;
+  font-size: 0.92rem;
+  line-height: 1.2;
+}
+
+.deck-synergy-panel span,
+.deck-synergy-panel small {
+  color: #334b5e;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.32;
+}
+
+.deck-synergy-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.deck-synergy-grid article {
+  background: #fffdf7;
+  border: 2px solid #b4c9dc;
+  display: grid;
+  gap: 4px;
+  min-height: 70px;
+  padding: 7px;
+}
+
+.deck-synergy-grid article.active {
+  background: #e8f5dc;
+  border-color: var(--green);
+}
+
 .card-hand {
   display: grid;
   gap: 10px;

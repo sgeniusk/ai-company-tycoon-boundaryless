@@ -413,6 +413,35 @@ export interface DeckArchetypeSummary {
   warning: string;
 }
 
+export interface DeckSynergyDefinition {
+  id: string;
+  title: string;
+  description: string;
+  required_tags: Record<string, number>;
+  monthly_effects: ResourceMap;
+  play_effect_tags: string[];
+  play_effect_multiplier: number;
+  risk_label: string;
+}
+
+export interface DeckSynergyStatus extends DeckSynergyDefinition {
+  active: boolean;
+  progress: number;
+  fulfilledTags: string[];
+  missingTags: string[];
+  monthlyEffects: ResourceMap;
+  playEffectMultiplier: number;
+}
+
+export interface DeckSynergySummary {
+  active: DeckSynergyStatus[];
+  nextCandidates: DeckSynergyStatus[];
+  totalMonthlyEffects: ResourceMap;
+  bestPlayEffectMultiplier: number;
+  activeTagLabels: string[];
+  warning?: string;
+}
+
 export interface StarterDeckDefinition {
   id: string;
   title: string;

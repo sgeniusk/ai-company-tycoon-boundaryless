@@ -144,4 +144,12 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.helper-actions\s*{[^}]*display:\s*flex/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.helper-tutorial\s*{[^}]*bottom:\s*72px/s);
   });
+
+  it("surfaces active deck synergies as a compact build panel", () => {
+    expect(menuPanels).toContain("getDeckSynergySummary");
+    expect(menuPanels).toContain("deck-synergy-panel");
+    expect(menuPanels).toContain("deck-synergy-grid");
+    expect(appCss).toMatch(/\.deck-synergy-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.deck-synergy-grid\s*{[^}]*grid-template-columns:/s);
+  });
 });

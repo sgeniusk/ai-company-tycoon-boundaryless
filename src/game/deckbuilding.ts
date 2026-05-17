@@ -1,4 +1,4 @@
-import { capabilities, competitors, deckArchetypes, metaUnlocks, resources, starterDecks, strategyCards } from "./data";
+import { capabilities, competitors, deckArchetypes, deckSynergies, metaUnlocks, resources, starterDecks, strategyCards } from "./data";
 import { getRivalCounterTargetId } from "./rival-counters";
 import type {
   ActionCheck,
@@ -6,6 +6,8 @@ import type {
   CardRewardChoice,
   DeckArchetypeScore,
   DeckArchetypeSummary,
+  DeckSynergyStatus,
+  DeckSynergySummary,
   DevelopmentChallenge,
   GameState,
   PendingCardReward,
@@ -33,19 +35,29 @@ const cardEffectLabels: Record<string, string> = {
 };
 
 const cardTagLabels: Record<string, string> = {
+  agent: "에이전트",
   automation: "자동화",
+  boundaryless: "경계 확장",
   compute: "연산",
   counter: "경쟁 대응",
   data: "데이터",
   developer: "개발자",
   enterprise: "기업",
   growth: "성장",
+  hardware: "하드웨어",
   hype: "화제성",
+  language: "언어",
   market: "시장",
+  odd: "기묘한 확장",
+  ops: "운영",
   product: "제품",
+  quality: "품질",
   research: "연구",
+  risk: "위험",
+  robotics: "로봇",
   safety: "안전",
   speed: "속도",
+  starter: "기본",
   trust: "신뢰",
   ux: "UX",
 };
@@ -175,6 +187,54 @@ export function getDeckArchetypeSummary(state: GameState): DeckArchetypeSummary 
       ? `${missingWarningTags.map((tag) => cardTagLabels[tag] ?? tag).join(", ")} 카드가 부족해 한쪽으로 치우칠 수 있습니다.`
       : "현재 덱은 핵심 약점을 보완하고 있습니다.",
   };
+}
+
+export function getDeckSynergySummary(state: GameState): DeckSynergySummary {
+  const tagWeights = getDeckTagWeights(state);
+  const statuses = deckSynergies
+    .map((synergy): DeckSynergyStatus => {
+      const requiredEntries = Object.entries(synergy.required_tags);
+      const fulfilledTags = requiredEntries
+        .filter(([tag, needed]) => (tagWeights.get(tag) ?? 0) >= needed)
+        .map(([tag]) => tag);
+      const missingTags = requiredEntries
+        .filter(([tag, needed]) => (tagWeights.get(tag) ?? 0) < needed)
+        .map(([tag, needed]) => `${cardTagLabels[tag] ?? tag} ${(tagWeights.get(tag) ?? 0).toFixed(1)}/${needed}`);
+      const progress = requiredEntries.length
+        ? requiredEntries.reduce((sum, [tag, needed]) => sum + Math.min(1, (tagWeights.get(tag) ?? 0) / needed), 0) / requiredEntries.length
+        : 0;
+      const active = requiredEntries.length > 0 && fulfilledTags.length === requiredEntries.length;
+
+      return {
+        ...synergy,
+        active,
+        progress,
+        fulfilledTags,
+        missingTags,
+        monthlyEffects: active ? synergy.monthly_effects : {},
+        playEffectMultiplier: active ? synergy.play_effect_multiplier : 1,
+      };
+    })
+    .sort((first, second) => Number(second.active) - Number(first.active) || second.progress - first.progress || first.id.localeCompare(second.id));
+  const active = statuses.filter((status) => status.active);
+  const nextCandidates = statuses.filter((status) => !status.active).slice(0, 3);
+  const totalMonthlyEffects = active.reduce<ResourceMap>((combined, status) => mergeResourceDelta(combined, status.monthlyEffects), {});
+  const bestPlayEffectMultiplier = active.reduce((best, status) => Math.max(best, status.playEffectMultiplier), 1);
+  const activeTagLabels = [...new Set(active.flatMap((status) => status.fulfilledTags))].map((tag) => cardTagLabels[tag] ?? tag);
+  const warning = active[0]?.risk_label ?? nextCandidates[0]?.missingTags.join(", ");
+
+  return {
+    active,
+    nextCandidates,
+    totalMonthlyEffects,
+    bestPlayEffectMultiplier,
+    activeTagLabels,
+    warning,
+  };
+}
+
+export function getDeckSynergyMonthlyEffects(state: GameState): ResourceMap {
+  return getDeckSynergySummary(state).totalMonthlyEffects;
 }
 
 export function getAvailableStarterDecks(state: GameState): StarterDeckOption[] {
@@ -365,12 +425,15 @@ export function upgradeStrategyCard(cardId: string, state: GameState): GameState
 }
 
 export function getStrategyCardEffects(card: StrategyCardDefinition, state: GameState): Record<string, number> {
-  if (!(state.roguelite.upgradedCardIds ?? []).includes(card.id)) return card.effects;
+  const upgradedMultiplier = (state.roguelite.upgradedCardIds ?? []).includes(card.id) ? cardUpgradeMultiplier : 1;
+  const synergyMultiplier = getMatchingDeckSynergyMultiplier(card, state);
+  const multiplier = upgradedMultiplier * synergyMultiplier;
+  if (multiplier <= 1) return card.effects;
 
   return Object.fromEntries(
     Object.entries(card.effects).map(([effectId, amount]) => [
       effectId,
-      amount > 0 ? Math.ceil(amount * cardUpgradeMultiplier) : amount,
+      amount > 0 ? Math.ceil(amount * multiplier) : amount,
     ]),
   );
 }
@@ -406,6 +469,14 @@ function getDeckTagWeights(state: GameState): Map<string, number> {
 
 function getAllDeckCardIds(deck: StrategyDeckState): string[] {
   return [...deck.hand, ...deck.drawPile, ...deck.discardPile, ...deck.playedThisTurn];
+}
+
+function getMatchingDeckSynergyMultiplier(card: StrategyCardDefinition, state: GameState): number {
+  const cardTags = new Set(card.tags);
+  return getDeckSynergySummary(state).active.reduce((multiplier, synergy) => {
+    const matches = synergy.play_effect_tags.some((tag) => cardTags.has(tag));
+    return matches ? Math.max(multiplier, synergy.playEffectMultiplier) : multiplier;
+  }, 1);
 }
 
 function getAvailableStarterDecksFromMetaIds(unlockedMetaIds: string[]): StarterDeckOption[] {
@@ -609,6 +680,16 @@ function applyResourceDelta(current: ResourceMap, delta: ResourceMap): ResourceM
 
 function pickResourceEffects(effects: Record<string, number>): ResourceMap {
   return Object.fromEntries(Object.entries(effects).filter(([resourceId]) => Boolean(resources[resourceId])));
+}
+
+function mergeResourceDelta(base: ResourceMap, extra: ResourceMap): ResourceMap {
+  const next = { ...base };
+
+  for (const [resourceId, amount] of Object.entries(extra)) {
+    next[resourceId] = (next[resourceId] ?? 0) + amount;
+  }
+
+  return next;
 }
 
 function negateCosts(costs: ResourceMap): ResourceMap {

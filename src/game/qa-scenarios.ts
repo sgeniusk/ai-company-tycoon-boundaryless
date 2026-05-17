@@ -17,6 +17,7 @@ export const qaScenarioIds = [
   "shop",
   "office",
   "deck",
+  "deck-synergy",
   "strategy",
   "counter",
   "rivals",
@@ -110,6 +111,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "덱 퍼즐 QA",
       state: projectState,
+      activeMenu: "deck",
+    };
+  }
+
+  if (id === "deck-synergy") {
+    return {
+      id,
+      label: "v0.31 덱 시너지 QA",
+      state: createDeckSynergyScenarioState(projectState),
       activeMenu: "deck",
     };
   }
@@ -342,6 +352,48 @@ function createLaunchImpactScenarioState(): GameState {
   return {
     ...state,
     timeline: ["출시 체감 QA: 카드가 첫 제품 성과와 보상 패널에 반영됨", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createDeckSynergyScenarioState(projectState: GameState): GameState {
+  return {
+    ...projectState,
+    month: Math.max(projectState.month, 5),
+    resources: {
+      ...projectState.resources,
+      cash: Math.max(projectState.resources.cash ?? 0, 14000),
+      data: Math.max(projectState.resources.data ?? 0, 70),
+      compute: Math.max(projectState.resources.compute ?? 0, 90),
+      hype: Math.max(projectState.resources.hype ?? 0, 20),
+      trust: Math.max(projectState.resources.trust ?? 0, 55),
+    },
+    roguelite: {
+      ...projectState.roguelite,
+      deck: {
+        drawPile: ["rival_benchmark_room", "open_source_push", "safety_review"],
+        hand: ["viral_teaser", "market_repositioning", "prompt_sprint", "customer_interviews"],
+        discardPile: [],
+        playedThisTurn: [],
+      },
+      rewardHistory: [
+        {
+          rewardId: "qa_deck_synergy_reward",
+          productId: "ai_writing_assistant",
+          chosenCardId: "viral_teaser",
+          month: 4,
+        },
+      ],
+    },
+    seenTutorials: [
+      "welcome_garage",
+      "agent_hired",
+      "product_ideas",
+      "development_project",
+      "card_reward",
+      "office_growth",
+      "competition_pressure",
+    ],
+    timeline: ["v0.31 덱 시너지 QA: 런칭 머신 빌드가 활성화된 덱 화면", ...projectState.timeline].slice(0, 8),
   };
 }
 

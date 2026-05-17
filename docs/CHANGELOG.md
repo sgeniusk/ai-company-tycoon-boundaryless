@@ -4,6 +4,24 @@
 
 ---
 
+## [0.31-alpha] — 2026-05-17
+
+### 덱 시너지와 빌드 보너스
+
+**추가:**
+- `data/deck_synergies.json`을 추가해 덱 시너지 5종을 데이터화했다.
+- 카드 태그가 조건을 채우면 `런칭 머신`, `신뢰 하네스`, `자동화 복리`, `연구 플라이휠`, `라이벌 대응 셀`이 활성화된다.
+- 활성 덱 시너지는 월간 전략 효과에 합산되고, 관련 태그 카드의 긍정 효과를 소폭 강화한다.
+- 덱 메뉴에 활성 시너지, 월간 효과, 카드 보너스 배율, 다음 후보 진행률, 부족 태그를 표시한다.
+- `deck-synergy` QA 시나리오를 추가해 브라우저에서 활성 빌드 상태를 바로 열 수 있게 했다.
+
+**검증:**
+- `npm test -- src/game/qa-scenarios.test.ts src/game/deckbuilding.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 63 tests
+- `npm run harness:gate` 통과, 34 files / 216 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome screenshot QA: `http://127.0.0.1:5183/?scenario=deck-synergy&menu=deck` 데스크톱/모바일 렌더링 확인
+
+---
+
 ## [0.30-alpha] — 2026-05-17
 
 ### 도우미 캐릭터 튜토리얼

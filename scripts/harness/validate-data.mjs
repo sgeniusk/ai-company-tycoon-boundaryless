@@ -77,6 +77,7 @@ const achievementsData = readJson("achievements.json");
 const strategyCardsData = readJson("strategy_cards.json");
 const metaUnlocksData = readJson("meta_unlocks.json");
 const deckArchetypesData = readJson("deck_archetypes.json");
+const deckSynergiesData = readJson("deck_synergies.json");
 const starterDecksData = readJson("starter_decks.json");
 const officeExpansionsData = readJson("office_expansions.json");
 const officeSynergiesData = readJson("office_synergies.json");
@@ -110,6 +111,7 @@ const achievements = achievementsData?.achievements ?? [];
 const strategyCards = strategyCardsData?.strategy_cards ?? [];
 const metaUnlocks = metaUnlocksData?.meta_unlocks ?? [];
 const deckArchetypes = deckArchetypesData?.deck_archetypes ?? [];
+const deckSynergies = deckSynergiesData?.deck_synergies ?? [];
 const starterDecks = starterDecksData?.starter_decks ?? [];
 const officeExpansions = officeExpansionsData?.office_expansions ?? [];
 const officeSynergies = officeSynergiesData?.office_synergies ?? [];
@@ -141,6 +143,7 @@ idsAreUnique("achievements", achievements);
 const strategyCardIds = idsAreUnique("strategy_cards", strategyCards);
 const metaUnlockIds = idsAreUnique("meta_unlocks", metaUnlocks);
 idsAreUnique("deck_archetypes", deckArchetypes);
+idsAreUnique("deck_synergies", deckSynergies);
 idsAreUnique("starter_decks", starterDecks);
 idsAreUnique("office_expansions", officeExpansions);
 idsAreUnique("office_synergies", officeSynergies);
@@ -621,6 +624,26 @@ for (const archetype of deckArchetypes) {
     if (!Array.isArray(archetype[arrayField]) || archetype[arrayField].length === 0) {
       errors.push(`deck_archetype "${archetype.id}": ${arrayField} must be a non-empty array`);
     }
+  }
+}
+
+for (const synergy of deckSynergies) {
+  for (const field of ["title", "description", "required_tags", "monthly_effects", "play_effect_tags", "play_effect_multiplier", "risk_label"]) {
+    if (!(field in synergy)) errors.push(`deck_synergy "${synergy.id}": missing ${field}`);
+  }
+  if (!synergy.required_tags || Object.keys(synergy.required_tags).length < 2) {
+    errors.push(`deck_synergy "${synergy.id}": required_tags needs at least 2 entries`);
+  }
+  for (const [tag, value] of Object.entries(synergy.required_tags ?? {})) {
+    if (typeof tag !== "string" || !tag) errors.push(`deck_synergy "${synergy.id}": invalid required tag`);
+    if (typeof value !== "number" || value <= 0) errors.push(`deck_synergy "${synergy.id}": required tag "${tag}" must be positive`);
+  }
+  validateResourceMap(`deck_synergy "${synergy.id}" monthly_effects`, synergy.monthly_effects, resourceIds);
+  if (!Array.isArray(synergy.play_effect_tags) || synergy.play_effect_tags.length === 0) {
+    errors.push(`deck_synergy "${synergy.id}": play_effect_tags must be a non-empty array`);
+  }
+  if (typeof synergy.play_effect_multiplier !== "number" || synergy.play_effect_multiplier < 1 || synergy.play_effect_multiplier > 1.25) {
+    errors.push(`deck_synergy "${synergy.id}": play_effect_multiplier must be between 1 and 1.25`);
   }
 }
 
