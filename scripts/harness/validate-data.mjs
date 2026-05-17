@@ -67,6 +67,7 @@ const startingState = readJson("starting_state.json");
 const personasData = readJson("playtest_personas.json");
 const companyStagesData = readJson("company_stages.json");
 const companyLocationsData = readJson("company_locations.json");
+const campaignShocksData = readJson("campaign_shocks.json");
 const agentTypesData = readJson("agent_types.json");
 const itemsData = readJson("items.json");
 const competitorsData = readJson("competitors.json");
@@ -101,6 +102,7 @@ const automationUpgrades = automationData?.automation_upgrades ?? [];
 const personas = personasData?.personas ?? [];
 const companyStages = companyStagesData?.company_stages ?? [];
 const companyLocations = companyLocationsData?.company_locations ?? [];
+const campaignShocks = campaignShocksData?.campaign_shocks ?? [];
 const agentTypes = agentTypesData?.agent_types ?? [];
 const items = itemsData?.items ?? [];
 const competitors = competitorsData?.competitors ?? [];
@@ -134,6 +136,7 @@ idsAreUnique("automation_upgrades", automationUpgrades);
 idsAreUnique("playtest_personas", personas);
 idsAreUnique("company_stages", companyStages);
 idsAreUnique("company_locations", companyLocations);
+idsAreUnique("campaign_shocks", campaignShocks);
 const agentTypeIds = idsAreUnique("agent_types", agentTypes);
 const itemIds = idsAreUnique("items", items);
 const competitorIds = idsAreUnique("competitors", competitors);
@@ -251,6 +254,50 @@ for (const location of companyLocations) {
     }
     if (typeof value !== "number") errors.push(`company_location "${location.id}": unlock requirement "${requirement}" must be numeric`);
   }
+}
+
+for (const shock of campaignShocks) {
+  for (const field of [
+    "month",
+    "year",
+    "title",
+    "description",
+    "pressure_summary",
+    "milestone_label",
+    "shareable_hook",
+    "resource_effects",
+    "rival_momentum_delta",
+    "rival_focus_domains",
+    "recommended_product_ids",
+    "recommended_capability_ids",
+    "unlock_domain_ids",
+  ]) {
+    if (!(field in shock)) errors.push(`campaign_shock "${shock.id}": missing ${field}`);
+  }
+  if (typeof shock.month !== "number" || shock.month < 1 || shock.month > 120) {
+    errors.push(`campaign_shock "${shock.id}": month must be 1-120`);
+  }
+  if (typeof shock.year !== "number") errors.push(`campaign_shock "${shock.id}": year must be numeric`);
+  if (typeof shock.rival_momentum_delta !== "number") {
+    errors.push(`campaign_shock "${shock.id}": rival_momentum_delta must be numeric`);
+  }
+  validateResourceMap(`campaign_shock "${shock.id}" resource_effects`, shock.resource_effects, resourceIds);
+  for (const domainId of shock.rival_focus_domains ?? []) {
+    if (!domainIds.has(domainId)) errors.push(`campaign_shock "${shock.id}": unknown rival focus domain "${domainId}"`);
+  }
+  for (const productId of shock.recommended_product_ids ?? []) {
+    if (!productIds.has(productId)) errors.push(`campaign_shock "${shock.id}": unknown recommended product "${productId}"`);
+  }
+  for (const capabilityId of shock.recommended_capability_ids ?? []) {
+    if (!capabilityIds.has(capabilityId)) errors.push(`campaign_shock "${shock.id}": unknown recommended capability "${capabilityId}"`);
+  }
+  for (const domainId of shock.unlock_domain_ids ?? []) {
+    if (!domainIds.has(domainId)) errors.push(`campaign_shock "${shock.id}": unknown unlock domain "${domainId}"`);
+  }
+}
+
+if (campaignShocks.length < 3) {
+  errors.push("campaign_shocks: expected at least three 10-year pacing shocks");
 }
 
 const allowedAgentStats = new Set(["research", "engineering", "product", "growth", "safety", "operations", "creativity", "autonomy"]);

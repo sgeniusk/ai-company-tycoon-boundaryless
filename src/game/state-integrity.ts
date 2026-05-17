@@ -1,4 +1,4 @@
-import { annualDirectiveChoices, annualReviews, companyLocations, competitors, products, resources, strategyCards } from "./data";
+import { annualDirectiveChoices, annualReviews, campaignShocks, companyLocations, competitors, products, resources, strategyCards } from "./data";
 import type { GameState } from "./types";
 
 export interface StateIntegrityReport {
@@ -17,6 +17,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const cardIds = new Set(strategyCards.map((card) => card.id));
   const annualReviewIds = new Set(annualReviews.map((review) => review.id));
   const annualDirectiveChoiceIds = new Set(annualDirectiveChoices.map((choice) => choice.id));
+  const campaignShockIds = new Set(campaignShocks.map((shock) => shock.id));
 
   for (const resourceId of Object.keys(resources)) {
     const value = state.resources[resourceId];
@@ -79,6 +80,14 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
       if (!Number.isFinite(entry.month) || !Number.isFinite(entry.score)) {
         issues.push(`annual review "${entry.reviewId}" has invalid month or score`);
       }
+    }
+  }
+
+  if (!Array.isArray(state.campaignShockHistory)) {
+    issues.push("campaignShockHistory must be an array");
+  } else {
+    for (const shockId of state.campaignShockHistory) {
+      if (!campaignShockIds.has(shockId)) issues.push(`campaign shock "${shockId}" is unknown`);
     }
   }
 

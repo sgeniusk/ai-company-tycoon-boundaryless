@@ -4,6 +4,7 @@ import {
   annualReviews,
   automationUpgrades,
   balance,
+  campaignShocks,
   capabilities,
   companyLocations,
   companyStages,
@@ -24,6 +25,7 @@ import {
 } from "./data";
 import { applyAchievementUnlocks } from "./achievements";
 import { applyDueAnnualReview, getActiveAnnualDirective } from "./annual-review";
+import { applyDueCampaignShocks } from "./campaign-shocks";
 import { CAMPAIGN_FINAL_MONTH, getCompanyStarRating, getCurrentLocation, getLocationRequirementReasons } from "./campaign";
 import { getCompetitionSeasonChallenges } from "./competition-signals";
 import { createInitialRogueliteState, createReleaseCardReward, getDeckSynergyMonthlyEffects, refreshStrategyDeckForNewMonth } from "./deckbuilding";
@@ -76,7 +78,7 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-const SAVE_VERSION = 9;
+const SAVE_VERSION = 10;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -121,6 +123,7 @@ export function createInitialState(): GameState {
     activeDevelopmentPuzzleModifiers: [],
     unlockedAchievements: [],
     annualReviewHistory: [],
+    campaignShockHistory: [],
     eventHistory: [],
     rivalEventHistory: [],
     seenTutorials: [],
@@ -1190,7 +1193,11 @@ export function advanceMonth(state: GameState): GameState {
       .slice(0, 8),
   });
 
-  return refreshStrategyDeckForNewMonth(applyDueAnnualReview(advancedState));
+  const reviewedState = applyDueAnnualReview(advancedState);
+  const shockedState = applyDueCampaignShocks(reviewedState);
+  const finalStatus = getNextStatus(shockedState.resources, shockedState.activeProducts.length, nextMonth);
+
+  return refreshStrategyDeckForNewMonth({ ...shockedState, status: finalStatus });
 }
 
 export function getUpgradeCheck(upgrade: UpgradeDefinition, state: GameState): ActionCheck {
@@ -1449,6 +1456,7 @@ export function hydrateGameState(serialized: string): GameState {
     annualReviewHistory: hydrateAnnualReviewHistory(rawState.annualReviewHistory),
     annualDirective: hydrateAnnualDirective(rawState.annualDirective),
     pendingAnnualDirectiveChoices: hydratePendingAnnualDirectiveChoices(rawState.pendingAnnualDirectiveChoices),
+    campaignShockHistory: sanitizeStringArray(rawState.campaignShockHistory, campaignShocks.map((shock) => shock.id)),
     eventHistory: sanitizeStringArray(rawState.eventHistory),
     rivalEventHistory: sanitizeStringArray(rawState.rivalEventHistory),
     seenTutorials: sanitizeStringArray(rawState.seenTutorials),

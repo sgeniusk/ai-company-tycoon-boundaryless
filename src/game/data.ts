@@ -7,6 +7,7 @@ import balanceJson from "../../data/balance.json";
 import startingStateJson from "../../data/starting_state.json";
 import companyStagesJson from "../../data/company_stages.json";
 import companyLocationsJson from "../../data/company_locations.json";
+import campaignShocksJson from "../../data/campaign_shocks.json";
 import eventsJson from "../../data/events.json";
 import upgradesJson from "../../data/upgrades.json";
 import automationUpgradesJson from "../../data/automation_upgrades.json";
@@ -36,6 +37,7 @@ import type {
   AssetManifestDefinition,
   AutomationUpgradeDefinition,
   BalanceDefinition,
+  CampaignShockDefinition,
   CapabilityDefinition,
   CompanyLocationDefinition,
   CompanyStageDefinition,
@@ -70,6 +72,7 @@ export const balance = balanceJson.balance as BalanceDefinition;
 export const startingState = startingStateJson as StartingStateDefinition;
 export const companyStages = companyStagesJson.company_stages as unknown as CompanyStageDefinition[];
 export const companyLocations = companyLocationsJson.company_locations as unknown as CompanyLocationDefinition[];
+export const campaignShocks = campaignShocksJson.campaign_shocks as unknown as CampaignShockDefinition[];
 export const events = eventsJson.events as unknown as EventDefinition[];
 export const upgrades = upgradesJson.upgrades as unknown as UpgradeDefinition[];
 export const automationUpgrades = automationUpgradesJson.automation_upgrades as unknown as AutomationUpgradeDefinition[];

@@ -50,6 +50,10 @@ describe("v0.11 commercial balance simulation harness", () => {
     expect(result.yearlySnapshots[9]).toMatchObject({ year: 10, month: 120 });
     expect(result.milestones.some((milestone) => milestone.type === "stage")).toBe(true);
     expect(result.milestones.some((milestone) => milestone.type === "product")).toBe(true);
+    expect(result.milestones.filter((milestone) => milestone.type === "shock").map((milestone) => milestone.month)).toEqual([36, 72, 108]);
+    expect(result.finalState.campaignShockHistory).toEqual(
+      expect.arrayContaining(["year3_foundation_model_war", "year6_compute_supply_crunch", "year9_boundaryless_boom"]),
+    );
     expect(result.integrity.ok).toBe(true);
   });
 

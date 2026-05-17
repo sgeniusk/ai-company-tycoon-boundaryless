@@ -122,6 +122,23 @@ export interface CompanyLocationDefinition {
   unlock_requirements: Record<string, number>;
 }
 
+export interface CampaignShockDefinition {
+  id: string;
+  month: number;
+  year: number;
+  title: string;
+  description: string;
+  pressure_summary: string;
+  milestone_label: string;
+  shareable_hook: string;
+  resource_effects: ResourceMap;
+  rival_momentum_delta: number;
+  rival_focus_domains: string[];
+  recommended_product_ids: string[];
+  recommended_capability_ids: string[];
+  unlock_domain_ids: string[];
+}
+
 export interface EventChoiceDefinition {
   id: string;
   text: string;
@@ -945,6 +962,7 @@ export interface GameState {
   annualReviewHistory: AnnualReviewHistoryEntry[];
   annualDirective?: AnnualDirectiveState;
   pendingAnnualDirectiveChoices?: PendingAnnualDirectiveChoices;
+  campaignShockHistory: string[];
   eventHistory: string[];
   rivalEventHistory: string[];
   seenTutorials: string[];

@@ -1,6 +1,7 @@
 import { agentTypes, capabilities, growthPaths, items, officeExpansions, products, upgrades } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "./campaign";
+import { getCampaignShockById } from "./campaign-shocks";
 import { getCompetitionSeasonChallenges } from "./competition-signals";
 import { chooseCardReward, getStrategyCardById, getStrategyCardPlayCheck, playStrategyCard } from "./deckbuilding";
 import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
@@ -47,7 +48,7 @@ export interface AnnualDirectiveSimulationResult extends CommercialSimulationRes
   directiveChoicesMade: number;
 }
 
-export type TenYearCampaignMilestoneType = "review" | "stage" | "location" | "domain" | "product" | "ending";
+export type TenYearCampaignMilestoneType = "review" | "stage" | "location" | "domain" | "product" | "shock" | "ending";
 
 export interface TenYearCampaignSnapshot {
   year: number;
@@ -353,6 +354,7 @@ export function runTenYearCampaignSimulation(strategyId = "productivity_line"): 
   let lastDomainCount = state.unlockedDomains.length;
   let lastProductCount = state.activeProducts.length;
   let lastAnnualReviewCount = state.annualReviewHistory.length;
+  const seenShockIds = new Set(state.campaignShockHistory);
 
   state = chooseGrowthPath(strategyId, resolveOpenIssues(state));
 
@@ -376,6 +378,18 @@ export function runTenYearCampaignSimulation(strategyId = "productivity_line"): 
         detail: latestReview.summary,
       });
       lastAnnualReviewCount = state.annualReviewHistory.length;
+    }
+
+    const newlyAppliedShockIds = state.campaignShockHistory.filter((shockId) => !seenShockIds.has(shockId));
+    for (const shockId of newlyAppliedShockIds) {
+      const shock = getCampaignShockById(shockId);
+      milestones.push({
+        type: "shock",
+        month: state.month,
+        label: shock ? `시장 충격: ${shock.title}` : "시장 충격",
+        detail: shock?.pressure_summary ?? shockId,
+      });
+      seenShockIds.add(shockId);
     }
 
     const starRating = getCompanyStarRating(state);

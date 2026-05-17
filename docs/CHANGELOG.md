@@ -4,6 +4,26 @@
 
 ---
 
+## [0.33-alpha] — 2026-05-17
+
+### 10년 캠페인 시장 충격
+
+**추가:**
+- `data/campaign_shocks.json`을 추가해 3년차, 6년차, 9년차 시장 충격을 데이터화했다.
+- `applyDueCampaignShocks()`와 `getCampaignShockForecast()`를 추가해 캠페인 진행 중 충격 적용, 예보, 완료 이력을 계산한다.
+- 3년차 `파운데이션 모델 전쟁`, 6년차 `연산 공급 대란`, 9년차 `경계 없는 산업 붐`이 자원, 신뢰, 경쟁사 모멘텀, 추천 제품/연구 방향에 영향을 준다.
+- 회사 메뉴 상단에 `시장 충격 예보` 패널을 추가해 다음 충격, 적용 완료 여부, 대응 제품/연구/경쟁 메뉴 이동을 보여준다.
+- 10년 시뮬레이션 하네스가 시장 충격 마일스톤 3개를 기록하고, 세이브 복구/상태 무결성/데이터 검증도 충격 이력을 검사한다.
+- `campaign-shock` QA 시나리오를 추가해 3년차 충격 적용 직후 화면을 바로 열 수 있다.
+
+**검증:**
+- `npm test -- src/game/campaign-shocks.test.ts src/game/run-simulator.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 60 tests
+- `npm run harness:gate` 통과, 36 files / 227 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser DOM QA: `http://127.0.0.1:5185/?scenario=campaign-shock&menu=company`에서 시장 충격 패널, 적용 완료 상태, 추천 대응, 콘솔 오류 0건 확인
+- Headless Chrome screenshot QA: 데스크톱 `/tmp/ai-company-v033-campaign-shock-desktop.png`, 모바일 `/tmp/ai-company-v033-campaign-shock-mobile.png`
+
+---
+
 ## [0.32-alpha] — 2026-05-17
 
 ### 로그라이트 재시작 설계실

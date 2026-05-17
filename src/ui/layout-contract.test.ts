@@ -161,4 +161,12 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.next-run-command-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.next-run-quick-start-grid\s*{[^}]*grid-template-columns:/s);
   });
+
+  it("surfaces campaign shock pacing inside the company console", () => {
+    expect(menuPanels).toContain("getCampaignShockForecast");
+    expect(menuPanels).toContain("campaign-shock-panel");
+    expect(menuPanels).toContain("campaign-shock-action-grid");
+    expect(appCss).toMatch(/\.campaign-shock-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.campaign-shock-action-grid\s*{[^}]*grid-template-columns:/s);
+  });
 });

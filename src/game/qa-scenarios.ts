@@ -1,5 +1,6 @@
 import { agentTypes, items, officeExpansions, products } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
+import { applyDueCampaignShocks } from "./campaign-shocks";
 import { createReleaseCardReward, getStrategyCardById, playStrategyCard } from "./deckbuilding";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { runPersonaPlaytestReview } from "./persona-playtest";
@@ -31,6 +32,7 @@ export const qaScenarioIds = [
   "reward-bias",
   "annual-strategy",
   "ten-year-sim",
+  "campaign-shock",
   "foundation",
   "commercial",
   "result",
@@ -260,6 +262,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
           ...result.finalState.timeline,
         ].slice(0, 8),
       },
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "campaign-shock") {
+    return {
+      id,
+      label: "v0.33 시장 충격 QA",
+      state: createCampaignShockScenarioState(),
       activeMenu: "company",
     };
   }
@@ -545,6 +556,41 @@ function createFoundationScenarioState(): GameState {
     },
     timeline: ["콘텐츠 기반 QA: 기업 단계에서 추천 고용과 추천 아이템을 확인", ...createInitialState().timeline].slice(0, 8),
   };
+}
+
+function createCampaignShockScenarioState(): GameState {
+  const shockReady = {
+    ...createInitialState(),
+    month: 36,
+    activeProducts: ["foundation_model_v0", "ai_writing_assistant"],
+    productLevels: {
+      foundation_model_v0: 1,
+      ai_writing_assistant: 1,
+    },
+    resources: {
+      ...createInitialState().resources,
+      cash: 60000,
+      compute: 600,
+      data: 420,
+      users: 9000,
+      trust: 64,
+      automation: 20,
+    },
+    campaignShockHistory: [],
+    seenTutorials: [
+      "welcome_garage",
+      "agent_hired",
+      "product_ideas",
+      "development_project",
+      "card_reward",
+      "next_run_setup",
+      "office_growth",
+      "competition_pressure",
+    ],
+    timeline: ["v0.33 시장 충격 QA: 3년차 충격 직전 상태", ...createInitialState().timeline].slice(0, 8),
+  };
+
+  return applyDueCampaignShocks(shockReady);
 }
 
 export function getQaScenarioId(value: string | null): QaScenarioId | undefined {

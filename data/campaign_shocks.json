@@ -1,0 +1,68 @@
+{
+  "campaign_shocks": [
+    {
+      "id": "year3_foundation_model_war",
+      "month": 36,
+      "year": 3,
+      "title": "파운데이션 모델 전쟁",
+      "description": "대형 모델 공개 경쟁이 시작되며 연산 비용과 신뢰 기준이 동시에 올라갑니다.",
+      "pressure_summary": "프론티어 모델, 안전 평가, 개발자 도구 중 하나를 선명하게 밀어야 합니다.",
+      "milestone_label": "3년차 모델 전쟁",
+      "shareable_hook": "AI 업계가 갑자기 거대 모델 경쟁으로 재편됐습니다.",
+      "resource_effects": {
+        "cash": -12000,
+        "compute": -80,
+        "data": 25,
+        "hype": 8,
+        "trust": -3
+      },
+      "rival_momentum_delta": 4,
+      "rival_focus_domains": ["foundation_models", "developer_tools"],
+      "recommended_product_ids": ["foundation_model_v0", "ai_coding_assistant", "frontier_reasoning_model"],
+      "recommended_capability_ids": ["safety", "optimization", "code"],
+      "unlock_domain_ids": []
+    },
+    {
+      "id": "year6_compute_supply_crunch",
+      "month": 72,
+      "year": 6,
+      "title": "연산 공급 대란",
+      "description": "칩 공급과 클라우드 가격이 흔들리며 소프트웨어 회사도 인프라 전략을 요구받습니다.",
+      "pressure_summary": "반도체, 자동화, 로봇 생산 기반을 확보하지 못하면 후반 성장이 둔화됩니다.",
+      "milestone_label": "6년차 연산 공급 대란",
+      "shareable_hook": "모델은 잘 팔리는데 GPU 청구서가 회사를 흔듭니다.",
+      "resource_effects": {
+        "cash": -26000,
+        "compute": -180,
+        "automation": -3,
+        "hype": 6
+      },
+      "rival_momentum_delta": 5,
+      "rival_focus_domains": ["semiconductors", "robotics", "mobility"],
+      "recommended_product_ids": ["ai_training_chip", "warehouse_robot_fleet", "autonomous_vehicle_stack"],
+      "recommended_capability_ids": ["optimization", "robotics", "enterprise"],
+      "unlock_domain_ids": []
+    },
+    {
+      "id": "year9_boundaryless_boom",
+      "month": 108,
+      "year": 9,
+      "title": "경계 없는 산업 붐",
+      "description": "AI 회사들이 커피, 장난감, 자동차, 교육까지 이상한 속도로 확장하기 시작합니다.",
+      "pressure_summary": "브랜드, 물리 산업, IP 확장을 결합해 최종 엔딩 점수를 끌어올릴 기회입니다.",
+      "milestone_label": "9년차 경계 확장 붐",
+      "shareable_hook": "AI 회사가 앱 회사를 넘어 생활 산업 밈이 됐습니다.",
+      "resource_effects": {
+        "cash": 18000,
+        "users": 3500,
+        "hype": 14,
+        "trust": -4
+      },
+      "rival_momentum_delta": 3,
+      "rival_focus_domains": ["odd_industries", "toys", "mobility", "creator_tools"],
+      "recommended_product_ids": ["barista_robot_cafe_chain", "toy_imagination_engine", "autonomous_vehicle_stack"],
+      "recommended_capability_ids": ["robotics", "vision", "safety"],
+      "unlock_domain_ids": []
+    }
+  ]
+}
