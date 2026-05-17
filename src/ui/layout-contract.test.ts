@@ -131,4 +131,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.office-choice-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.office-recommendation-list\s*{[^}]*display:\s*grid/s);
   });
+
+  it("anchors the helper character tutorial inside the fixed game viewport", () => {
+    const app = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
+
+    expect(app).toContain("getTutorialGuide");
+    expect(app).toContain("dismissTutorialGuide");
+    expect(app).toContain("helper-tutorial");
+    expect(app).toContain("helper-portrait");
+    expect(appCss).toMatch(/\.helper-tutorial\s*{[^}]*position:\s*fixed/s);
+    expect(appCss).toMatch(/\.helper-tutorial\s*{[^}]*z-index:\s*30/s);
+    expect(appCss).toMatch(/\.helper-actions\s*{[^}]*display:\s*flex/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.helper-tutorial\s*{[^}]*bottom:\s*72px/s);
+  });
 });

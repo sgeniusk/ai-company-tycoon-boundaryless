@@ -1450,6 +1450,78 @@ p {
   color: var(--green-dark);
 }
 
+.helper-tutorial {
+  align-items: stretch;
+  background: #fff7df;
+  border: 3px solid var(--line);
+  bottom: 78px;
+  box-shadow: 0 5px 0 var(--line), 0 14px 22px rgba(32, 35, 31, 0.22);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 82px minmax(0, 1fr);
+  left: max(14px, calc((100vw - 1366px) / 2 + 14px));
+  max-width: calc(100vw - 28px);
+  padding: 10px;
+  position: fixed;
+  width: min(470px, calc(100vw - 28px));
+  z-index: 30;
+}
+
+.helper-portrait {
+  align-items: end;
+  background:
+    linear-gradient(180deg, #f4d78e 0 18%, transparent 18%),
+    linear-gradient(90deg, transparent 0 18%, #335f7a 18% 82%, transparent 82%),
+    linear-gradient(180deg, #ffd9a8 0 52%, #2d6b4f 52% 100%);
+  border: 3px solid var(--line);
+  display: grid;
+  image-rendering: pixelated;
+  justify-items: center;
+  min-height: 88px;
+  padding: 6px;
+}
+
+.helper-portrait span {
+  background: #20342d;
+  border: 2px solid var(--line);
+  color: #fff7df;
+  font-size: 0.68rem;
+  font-weight: 900;
+  padding: 2px 5px;
+}
+
+.helper-copy {
+  min-width: 0;
+}
+
+.helper-copy h2,
+.helper-copy p {
+  margin-bottom: 6px;
+}
+
+.helper-copy h2 {
+  color: var(--green-dark);
+  font-size: 1rem;
+}
+
+.helper-copy p:last-of-type {
+  color: #4d4639;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.helper-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.helper-actions button {
+  font-size: 0.78rem;
+  min-height: 34px;
+}
+
 .menu-layout {
   background: #20342d;
   border: 3px solid var(--line);
@@ -4120,6 +4192,29 @@ p {
     margin: 0;
     padding: 8px;
     width: min(100vw, 390px);
+  }
+
+  .helper-tutorial {
+    bottom: 72px;
+    grid-template-columns: 60px minmax(0, 1fr);
+    left: 8px;
+    padding: 8px;
+    right: 8px;
+    width: auto;
+  }
+
+  .helper-portrait {
+    min-height: 72px;
+    padding: 4px;
+  }
+
+  .helper-copy h2 {
+    font-size: 0.9rem;
+  }
+
+  .helper-copy p:last-of-type,
+  .helper-actions button {
+    font-size: 0.72rem;
   }
 
   .command-row,

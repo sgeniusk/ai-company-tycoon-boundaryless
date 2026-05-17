@@ -76,7 +76,7 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-const SAVE_VERSION = 8;
+const SAVE_VERSION = 9;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -123,6 +123,7 @@ export function createInitialState(): GameState {
     annualReviewHistory: [],
     eventHistory: [],
     rivalEventHistory: [],
+    seenTutorials: [],
     timeline: ["회사는 작은 AI 생산성 도구 팀으로 시작했습니다."],
     status: "playing",
   };
@@ -1369,6 +1370,16 @@ export function resolveRivalEventChoice(choice: RivalEventChoiceDefinition, stat
   });
 }
 
+export function dismissTutorialGuide(tutorialId: string, state: GameState): GameState {
+  const seenTutorials = state.seenTutorials ?? [];
+  if (!tutorialId || seenTutorials.includes(tutorialId)) return state;
+
+  return {
+    ...state,
+    seenTutorials: [...seenTutorials, tutorialId],
+  };
+}
+
 export function getCompanyStage(state: GameState): CompanyStageDefinition {
   const orderedStages = [...companyStages].sort((a, b) => b.order - a.order);
   return orderedStages.find((stage) => stageRequirementsMet(stage, state)) ?? orderedStages[orderedStages.length - 1];
@@ -1440,6 +1451,7 @@ export function hydrateGameState(serialized: string): GameState {
     pendingAnnualDirectiveChoices: hydratePendingAnnualDirectiveChoices(rawState.pendingAnnualDirectiveChoices),
     eventHistory: sanitizeStringArray(rawState.eventHistory),
     rivalEventHistory: sanitizeStringArray(rawState.rivalEventHistory),
+    seenTutorials: sanitizeStringArray(rawState.seenTutorials),
     timeline: sanitizeStringArray(rawState.timeline),
     status: rawState.status === "success" || rawState.status === "failure" || rawState.status === "playing" ? rawState.status : "playing",
   };

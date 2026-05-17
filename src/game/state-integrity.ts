@@ -67,6 +67,10 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     issues.push(`status "${state.status}" is invalid`);
   }
 
+  if (!Array.isArray(state.seenTutorials)) {
+    issues.push("seenTutorials must be an array");
+  }
+
   if (!Array.isArray(state.annualReviewHistory)) {
     issues.push("annualReviewHistory must be an array");
   } else {

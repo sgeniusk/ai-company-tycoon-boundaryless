@@ -79,6 +79,7 @@ export function resetRunWithMetaUnlocks(
   return {
     ...nextState,
     resources: applyResourceDelta(nextState.resources, startingEffects),
+    seenTutorials: [...(state.seenTutorials ?? [])],
     roguelite: createInitialRogueliteState({
       runNumber: previousRoguelite.runNumber + 1,
       founderInsight: availableInsight,

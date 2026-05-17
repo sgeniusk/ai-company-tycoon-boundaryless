@@ -4,7 +4,15 @@ import { renderMenuContent } from "./components/MenuPanels";
 import { products } from "./game/data";
 import { applyOfflineSettlement, calculateOfflineSettlement, type OfflineSettlement } from "./game/offline";
 import { createQaScenarioFromSearch } from "./game/qa-scenarios";
-import { createInitialState, formatResource, getProductProjectCheck, hydrateSavedGame, serializeGameState } from "./game/simulation";
+import {
+  createInitialState,
+  dismissTutorialGuide,
+  formatResource,
+  getProductProjectCheck,
+  hydrateSavedGame,
+  serializeGameState,
+} from "./game/simulation";
+import { getTutorialGuide } from "./game/tutorial-guide";
 import type { GameState } from "./game/types";
 import type { LocaleCode } from "./i18n";
 import type { MenuId } from "./ui/menu";
@@ -60,6 +68,13 @@ function App() {
     () => products.filter((product) => getProductProjectCheck(product, gameState).ok).length,
     [gameState],
   );
+  const tutorialGuide = useMemo(() => getTutorialGuide(gameState, activeMenu), [gameState, activeMenu]);
+
+  const handleTutorialAction = () => {
+    if (!tutorialGuide) return;
+    setActiveMenu(tutorialGuide.targetMenu);
+    setGameState((current) => dismissTutorialGuide(tutorialGuide.id, current));
+  };
 
   const handleSave = () => {
     window.localStorage.setItem(saveKey, serializeGameState(gameState, new Date()));
@@ -130,6 +145,24 @@ function App() {
         <MainMenu activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
         <div className="menu-panel">{renderMenuContent(activeMenu, gameState, setGameState, locale, setActiveMenu)}</div>
       </section>
+      {tutorialGuide && !offlineSettlement && (
+        <section className="helper-tutorial" role="dialog" aria-live="polite" aria-label="도우미 튜토리얼">
+          <div className="helper-portrait" aria-hidden="true">
+            <span>{tutorialGuide.helperName}</span>
+          </div>
+          <div className="helper-copy">
+            <p className="eyebrow">{tutorialGuide.helperName}의 안내</p>
+            <h2>{tutorialGuide.title}</h2>
+            <p>{tutorialGuide.message}</p>
+            <div className="helper-actions">
+              <button className="primary-action" onClick={handleTutorialAction}>
+                {tutorialGuide.actionLabel}
+              </button>
+              <button onClick={() => setGameState((current) => dismissTutorialGuide(tutorialGuide.id, current))}>알겠어</button>
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

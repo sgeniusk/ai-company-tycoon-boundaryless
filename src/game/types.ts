@@ -793,6 +793,15 @@ export interface ChosenGrowthPath {
   monthlyEffects: ResourceMap;
 }
 
+export interface TutorialGuide {
+  id: string;
+  helperName: string;
+  title: string;
+  message: string;
+  targetMenu: GrowthPathMenuId;
+  actionLabel: string;
+}
+
 export interface ReleaseMoment {
   productId: string;
   productName: string;
@@ -909,6 +918,7 @@ export interface GameState {
   pendingAnnualDirectiveChoices?: PendingAnnualDirectiveChoices;
   eventHistory: string[];
   rivalEventHistory: string[];
+  seenTutorials: string[];
   timeline: string[];
   lastMonthReport?: MonthlyReport;
   currentEvent?: EventDefinition;
