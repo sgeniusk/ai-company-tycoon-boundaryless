@@ -64,6 +64,7 @@ import {
   buyAutomationUpgrade,
   buyItem,
   buyUpgrade,
+  chooseAgentSpecialization,
   equipItem,
   getAgentCareerStatus,
   getAgentDevelopmentProfile,
@@ -72,6 +73,7 @@ import {
   getAgentHireCheckForChannel,
   getAgentRestCheck,
   getAgentRestCost,
+  getAgentSpecializationOptions,
   getAiAgentCount,
   getAiOperationCapacity,
   getAutomationUpgradeCheck,
@@ -1486,6 +1488,8 @@ function HiredAgentCard({
   const salaryNegotiationCost = getAgentSalaryNegotiationCost(agent);
   const restCheck = getAgentRestCheck(agent.id, gameState);
   const salaryNegotiationCheck = getAgentSalaryNegotiationCheck(agent.id, gameState);
+  const specializationOptions = getAgentSpecializationOptions(agent, gameState);
+  const selectedSpecialization = specializationOptions.find((option) => option.selected);
   const careHint =
     !restCheck.ok && !salaryNegotiationCheck.ok
       ? [...new Set([...restCheck.reasons, ...salaryNegotiationCheck.reasons])][0]
@@ -1524,6 +1528,27 @@ function HiredAgentCard({
           </span>
         ))}
         {developmentProfile.preferredItemNames.length === 0 && <span>없음</span>}
+      </div>
+      <div className="specialization-panel">
+        <div>
+          <strong>{selectedSpecialization ? selectedSpecialization.label : "전문화 분기"}</strong>
+          <span>{selectedSpecialization ? selectedSpecialization.description : "Lv.3부터 성장 방향을 하나 고릅니다."}</span>
+        </div>
+        {!selectedSpecialization && (
+          <div className="specialization-actions">
+            {specializationOptions.map((option) => (
+              <button
+                disabled={!option.unlocked || gameState.status !== "playing"}
+                key={option.id}
+                onClick={() => setGameState((current) => chooseAgentSpecialization(agent.id, option.stat, current))}
+                title={option.unlocked ? option.description : option.reasons.join(" / ")}
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       <div className="stat-grid">
         {Object.entries(stats).map(([stat, value]) => (

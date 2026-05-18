@@ -869,6 +869,8 @@ export interface HiredAgent {
   loyalty?: number;
   monthsEmployed?: number;
   equippedItemIds: string[];
+  specializationStat?: keyof AgentStats;
+  specializationChosenMonth?: number;
   recruitmentChannelId?: string;
   salaryMultiplier?: number;
   statBonus?: number;

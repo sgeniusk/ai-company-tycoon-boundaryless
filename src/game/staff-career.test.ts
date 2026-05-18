@@ -11,7 +11,10 @@ import {
   getAgentRestCheck,
   getAgentRetentionAlerts,
   getAgentSalaryNegotiationCheck,
+  getAgentSpecializationCheck,
+  getAgentSpecializationOptions,
   hireAgentViaChannel,
+  chooseAgentSpecialization,
   negotiateAgentSalary,
   restAgent,
   startProductProject,
@@ -206,5 +209,51 @@ describe("v0.34.6 staff personality and preferred equipment", () => {
     const withPreference = advanceMonth(equipped).hiredAgents[0].loyalty ?? 0;
 
     expect(withPreference).toBeGreaterThan(withoutPreference);
+  });
+});
+
+describe("v0.34.7 staff specialization branches", () => {
+  it("locks specialization choices until an agent reaches level 3", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "open_recruiting");
+    const options = getAgentSpecializationOptions(hired.hiredAgents[0], hired);
+    const check = getAgentSpecializationCheck(hired.hiredAgents[0].id, "product", hired);
+
+    expect(options).toHaveLength(2);
+    expect(options.every((option) => !option.unlocked)).toBe(true);
+    expect(check.ok).toBe(false);
+    expect(check.reasons.join(" ")).toContain("Lv.3");
+  });
+
+  it("lets a level 3 agent choose one specialization and gain a focused stat bonus", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "open_recruiting");
+    const levelThree = {
+      ...hired,
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 3, experience: 0 })),
+    };
+    const beforeProduct = getAgentEffectiveStats(levelThree.hiredAgents[0], levelThree).product;
+
+    const specialized = chooseAgentSpecialization(levelThree.hiredAgents[0].id, "product", levelThree);
+    const agent = specialized.hiredAgents[0];
+    const stats = getAgentEffectiveStats(agent, specialized);
+
+    expect(agent.specializationStat).toBe("product");
+    expect(agent.specializationChosenMonth).toBe(levelThree.month);
+    expect(stats.product).toBeGreaterThan(beforeProduct);
+    expect(specialized.timeline[0]).toContain("전문화");
+  });
+
+  it("prevents changing specialization after a branch has been chosen", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "open_recruiting");
+    const levelThree = {
+      ...hired,
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 3, specializationStat: "product" as const })),
+    };
+
+    const check = getAgentSpecializationCheck(levelThree.hiredAgents[0].id, "creativity", levelThree);
+    const unchanged = chooseAgentSpecialization(levelThree.hiredAgents[0].id, "creativity", levelThree);
+
+    expect(check.ok).toBe(false);
+    expect(check.reasons.join(" ")).toContain("이미");
+    expect(unchanged.hiredAgents[0].specializationStat).toBe("product");
   });
 });

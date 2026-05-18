@@ -4,6 +4,26 @@
 
 ---
 
+## [0.34.7-alpha] — 2026-05-18
+
+### 직원 장기 성장 전문화
+
+**추가:**
+- Lv.3부터 직원이 성장 방향 2개 중 하나를 전문화로 선택할 수 있다.
+- 전문화 후보는 각 직원의 기본 능력치 상위 2개에서 자동 생성된다.
+- 전문화를 선택하면 해당 능력치에 집중 보너스가 붙고, 선택한 달과 전문화 방향이 직원 데이터에 저장된다.
+- 이미 선택한 전문화는 바꿀 수 없도록 막아 장기 육성 선택의 무게를 만들었다.
+- 에이전트 카드에 전문화 패널과 선택 버튼을 추가했다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 39 tests
+- `npm test -- src/game/staff-career.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 68 tests
+- `npm run harness:gate` 통과, 38 files / 253 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome QA: `http://127.0.0.1:5194/?scenario=staffing&menu=agents`에서 전문화 패널 2개, 콘솔 오류 0건, 모바일 가로 오버플로 없음 확인
+- 스크린샷: `/tmp/ai-company-v0347-staff-specialization-desktop.png`, `/tmp/ai-company-v0347-staff-specialization-mobile.png`
+
+---
+
 ## [0.34.6-alpha] — 2026-05-18
 
 ### 직원 성격과 선호 장비 보너스

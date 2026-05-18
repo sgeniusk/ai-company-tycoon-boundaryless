@@ -156,6 +156,17 @@ export interface AgentDevelopmentProfile {
   loyaltyBonus: number;
 }
 
+export interface AgentSpecializationOption {
+  id: string;
+  stat: keyof AgentStats;
+  label: string;
+  description: string;
+  effect: Partial<AgentStats>;
+  unlocked: boolean;
+  selected: boolean;
+  reasons: string[];
+}
+
 export const recruitmentChannels: RecruitmentChannelDefinition[] = [
   {
     id: "open_recruiting",
@@ -519,6 +530,76 @@ export function getAgentDevelopmentProfile(agent: HiredAgent, _state: GameState)
     matchedPreferredItemNames: matchedPreferredItems.map((item) => item.name),
     preferredItemBonus: getPreferredItemStatBonus(agent, agentType),
     loyaltyBonus: getPreferredItemLoyaltyBonus(agent, agentType),
+  };
+}
+
+export function getAgentSpecializationOptions(agent: HiredAgent, _state: GameState): AgentSpecializationOption[] {
+  const selectedStat = getAgentSpecializationStat(agent);
+  const level = sanitizeAgentLevel(agent.level);
+
+  return getAgentGrowthFocusStats(getHiredAgentType(agent)).map((stat) => {
+    const reasons: string[] = [];
+    if (level < 3) reasons.push("Lv.3부터 전문화할 수 있습니다.");
+    if (selectedStat && selectedStat !== stat) reasons.push("이미 다른 전문화를 선택했습니다.");
+
+    return {
+      id: stat,
+      stat,
+      label: `${getStatKoreanLabel(stat)} 스페셜리스트`,
+      description: `${agent.name}의 ${getStatKoreanLabel(stat)} 역량을 장기 성장축으로 고정합니다.`,
+      effect: { [stat]: getAgentSpecializationStatBonus(agent) } as Partial<AgentStats>,
+      unlocked: reasons.length === 0,
+      selected: selectedStat === stat,
+      reasons,
+    };
+  });
+}
+
+export function getAgentSpecializationCheck(agentId: string, specializationStat: keyof AgentStats, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+  const agent = state.hiredAgents.find((entry) => entry.id === agentId);
+
+  if (!agent) {
+    reasons.push("대상 직원을 찾을 수 없습니다.");
+    return { ok: false, reasons };
+  }
+
+  const selectedStat = getAgentSpecializationStat(agent);
+  if (selectedStat) {
+    reasons.push("이미 전문화를 선택했습니다.");
+  }
+
+  const option = getAgentSpecializationOptions(agent, state).find((entry) => entry.stat === specializationStat);
+  if (!option) {
+    reasons.push("선택할 수 없는 전문화입니다.");
+  } else {
+    reasons.push(...option.reasons.filter((reason) => !reason.includes("이미 다른 전문화")));
+  }
+
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function chooseAgentSpecialization(agentId: string, specializationStat: keyof AgentStats, state: GameState): GameState {
+  const check = getAgentSpecializationCheck(agentId, specializationStat, state);
+  if (!check.ok || state.status !== "playing") return state;
+
+  const agent = state.hiredAgents.find((entry) => entry.id === agentId);
+  if (!agent) return state;
+  const label = `${getStatKoreanLabel(specializationStat)} 스페셜리스트`;
+
+  return {
+    ...state,
+    hiredAgents: state.hiredAgents.map((entry) =>
+      entry.id === agentId
+        ? {
+            ...entry,
+            specializationStat,
+            specializationChosenMonth: state.month,
+            loyalty: clamp(getAgentLoyalty(entry) + 5, 0, 100),
+          }
+        : entry,
+    ),
+    timeline: [`전문화 선택: ${agent.name} · ${label}`, ...state.timeline].slice(0, 8),
   };
 }
 
@@ -1402,8 +1483,9 @@ export function getAgentEffectiveStats(agent: HiredAgent, state: GameState): Age
   const contractStats = addStats(baseStats, Object.fromEntries(statKeys.map((stat) => [stat, agent.statBonus ?? 0])));
   const leveledStats = addStats(contractStats, getAgentLevelStatEffects(baseStats, agent.level));
   const preferredStats = addStats(leveledStats, getPreferredItemStatBonus(agent, type));
+  const specializedStats = addStats(preferredStats, getSpecializationStatEffect(agent));
 
-  return equippedItems.reduce((stats, item) => addStats(stats, item.effects), preferredStats);
+  return equippedItems.reduce((stats, item) => addStats(stats, item.effects), specializedStats);
 }
 
 export function getCapabilityCheck(capability: CapabilityDefinition, state: GameState): ActionCheck {
@@ -2914,6 +2996,23 @@ function getPreferredItemStatBonus(agent: HiredAgent, agentType: AgentTypeDefini
 
 function getPreferredItemLoyaltyBonus(agent: HiredAgent, agentType: AgentTypeDefinition | undefined): number {
   return Math.min(2, getMatchedPreferredItemCount(agent, agentType));
+}
+
+function getSpecializationStatEffect(agent: HiredAgent): Partial<AgentStats> {
+  const stat = getAgentSpecializationStat(agent);
+  if (!stat) return {};
+
+  return { [stat]: getAgentSpecializationStatBonus(agent) } as Partial<AgentStats>;
+}
+
+function getAgentSpecializationStatBonus(agent: HiredAgent): number {
+  return sanitizeAgentLevel(agent.level) >= 6 ? 3 : 2;
+}
+
+function getAgentSpecializationStat(agent: HiredAgent): keyof AgentStats | undefined {
+  return statKeys.includes(agent.specializationStat as keyof AgentStats)
+    ? (agent.specializationStat as keyof AgentStats)
+    : undefined;
 }
 
 function getMatchedPreferredItemCount(agent: HiredAgent, agentType: AgentTypeDefinition | undefined): number {
