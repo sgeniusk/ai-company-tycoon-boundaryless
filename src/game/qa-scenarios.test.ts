@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./qa-scenarios";
 import { getAnnualDirectiveChoiceRows } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
+import { assetManifest } from "./data";
 import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
@@ -286,12 +287,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
   it("creates a v0.41 office visual scenario for animated office browser QA", () => {
     const scenario = createQaScenario("office-visuals");
     const plan = getOfficeScenePlan(scenario.state);
+    const linkedDecorIds = new Set(assetManifest.office_objects.flatMap((object) => object.linked_item_id ? [object.linked_item_id] : []));
 
     expect(scenario.activeMenu).toBe("company");
     expect(scenario.label).toContain("사무실 액터");
     expect(plan.objects.length).toBeGreaterThanOrEqual(8);
     expect(plan.actors.some((actor) => actor.kind === "robot")).toBe(true);
     expect(plan.activityTicker.join(" ")).toContain("구획");
+    expect(scenario.state.office.placedItemIds.length).toBeGreaterThanOrEqual(8);
+    expect(scenario.state.office.placedItemIds.every((itemId) => linkedDecorIds.has(itemId))).toBe(true);
+    expect(scenario.state.ownedItems).toEqual(expect.arrayContaining(scenario.state.office.placedItemIds));
   });
 
   it("creates a 10-year finale scenario for ending QA", () => {

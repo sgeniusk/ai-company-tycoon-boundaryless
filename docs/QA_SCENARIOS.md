@@ -37,7 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.41 animated office scene with zone objects, human/AI/robot actors, and care states |
+| Office Visuals | `?scenario=office-visuals` | v0.43 graphic asset game screen with zone objects, human/AI/robot actors, care states, decor props, and asset wall |
 
 Examples:
 
@@ -67,6 +67,22 @@ Examples:
 - `http://localhost:5173/?scenario=launch-impact`
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
+
+## v0.43 Graphic Asset Game Screen QA
+
+URL:
+
+- `?scenario=office-visuals`
+
+Expected:
+
+- The QA pill says `v0.43 그래픽 자산/사무실 액터 QA`.
+- The office playfield shows the graphic asset wall sourced from `asset_manifest.json`.
+- The asset wall includes agent, competitor, item, and office object miniatures.
+- Placed office items render as visible pixel decor props in the office.
+- The top rival HUD includes competitor logo miniatures, not only text labels.
+- The screen still shows human, AI, and robot actors plus the actor focus panel.
+- Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
 
 ## v0.42 Office Actor Interaction QA
 

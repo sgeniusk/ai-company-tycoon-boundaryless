@@ -402,7 +402,7 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "office-visuals") {
     return {
       id,
-      label: "v0.42 사무실 액터 QA",
+      label: "v0.43 그래픽 자산/사무실 액터 QA",
       state: createOfficeVisualScenarioState(),
       activeMenu: "company",
     };
@@ -485,6 +485,18 @@ function createOfficeVisualScenarioState(): GameState {
   const baseState = createOperationsScenarioState();
   const robotType = agentTypes.find((agent) => agent.kind === "robot");
   const alreadyHasRobot = baseState.hiredAgents.some((agent) => agentTypes.find((type) => type.id === agent.typeId)?.kind === "robot");
+  const visualDecorItemIds = [
+    "gpu_rack_mini",
+    "tensor_whiteboard",
+    "cooling_fan_wall",
+    "ux_sticky_wall",
+    "feedback_inbox",
+    "instant_noodle_corner",
+    "hiring_banner",
+    "nap_pod",
+    "benchmark_dashboard",
+    "robot_charging_mat",
+  ];
   const visualAgents = baseState.hiredAgents.map((agent, index) => {
     if (index === 0) return { ...agent, energy: 78, loyalty: 72 };
     if (index === 1) return { ...agent, energy: 74, loyalty: 38 };
@@ -508,6 +520,11 @@ function createOfficeVisualScenarioState(): GameState {
   return {
     ...baseState,
     hiredAgents,
+    ownedItems: [...new Set([...baseState.ownedItems, ...visualDecorItemIds])],
+    office: {
+      ...baseState.office,
+      placedItemIds: visualDecorItemIds,
+    },
     timeline: ["v0.41 사무실 픽셀 시뮬레이션 QA: 구획, 사람, AI, 로봇 액터를 한 화면에서 확인", ...baseState.timeline].slice(0, 8),
   };
 }

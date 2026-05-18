@@ -4,6 +4,23 @@
 
 ---
 
+## [0.43-alpha] — 2026-05-19
+
+### 그래픽 자산 포함 게임 화면
+
+**추가:**
+- `asset_manifest.json`의 에이전트 스프라이트, 경쟁사 로고, 아이템 아이콘, 사무실 오브젝트를 첫 화면 사무실 안 `OfficeGraphicAssetWall`로 렌더링한다.
+- 사무실에 배치된 아이템을 `OfficeDecorAssetLayer`의 픽셀 프롭으로 표시한다.
+- 상단 라이벌 HUD에 경쟁사 로고 미니어처를 추가했다.
+- `office-visuals` QA 시나리오가 그래픽 장식 10개를 보유/배치한 상태로 열린다.
+
+**검증:**
+- `npm test -- src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts` 통과, 2 files / 60 tests
+- `npm test -- src/game/office-scene.test.ts src/game/asset-manifest.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 68 tests
+- `npm run build` 통과
+- `npm run harness:gate` 통과, 40 files / 286 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser QA: `http://127.0.0.1:5201/?scenario=office-visuals`에서 그래픽 자산 벽 1개, 자산 타일 56개, 배치 장식 10개, 경쟁사 로고 3개, 액터 6개, 포커스 패널 1개, 가로 오버플로 없음 확인
+
 ## [0.42-alpha] — 2026-05-19
 
 ### 사무실 액터 클릭과 직원 포커스 패널

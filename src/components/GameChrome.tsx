@@ -33,7 +33,7 @@ import {
   resolveEventChoice,
   resolveRivalEventChoice,
 } from "../game/simulation";
-import type { GameState, OfficeSceneActorStatus, OperationsCommandPlan, ReleaseGrowthPath } from "../game/types";
+import type { GameState, ItemDefinition, OfficeSceneActorStatus, OperationsCommandPlan, ReleaseGrowthPath } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatEffects, statusLabel } from "../ui/formatters";
 import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
@@ -51,6 +51,19 @@ function assetPaletteVars(palette?: string[]): CSSProperties {
 function getAgentSprite(agentTypeId?: string) {
   if (!agentTypeId) return undefined;
   return assetManifest.agent_sprites.find((sprite) => sprite.agent_type_id === agentTypeId);
+}
+
+function getCompetitorIdentity(competitorId?: string) {
+  if (!competitorId) return undefined;
+  return assetManifest.competitor_identities.find((identity) => identity.competitor_id === competitorId);
+}
+
+function getItemIcon(itemId: string) {
+  return assetManifest.item_icons.find((icon) => icon.item_id === itemId);
+}
+
+function getOfficeObjectAsset(itemId: string) {
+  return assetManifest.office_objects.find((object) => object.linked_item_id === itemId);
 }
 
 type StageSideTabId = "guide" | "company" | "reports" | "results";
@@ -182,11 +195,22 @@ function CompetitorHudStrip({ gameState, locale }: { gameState: GameState; local
   return (
     <div className="competitor-hud-strip" aria-label="경쟁사 TOP3">
       <strong>라이벌</strong>
-      {topCompetitors.map(({ state, definition }) => (
-        <span key={state.id} style={{ "--rival-color": definition?.color } as CSSProperties}>
-          {t(definition?.name_key ?? state.id, locale)} {state.marketShare}%
-        </span>
-      ))}
+      {topCompetitors.map(({ state, definition }) => {
+        const identity = getCompetitorIdentity(state.id);
+
+        return (
+          <span
+            className="competitor-hud-entry"
+            key={state.id}
+            style={{ ...assetPaletteVars(identity?.palette), "--rival-color": definition?.color } as CSSProperties}
+          >
+            <i className={`competitor-hud-logo ${identity?.logo_class ?? ""}`} aria-hidden="true">
+              <b />
+            </i>
+            <small>{t(definition?.name_key ?? state.id, locale)} {state.marketShare}%</small>
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -330,6 +354,8 @@ export function GameStage({
               </span>
             ))}
           </div>
+          <OfficeDecorAssetLayer placedOfficeItems={placedOfficeItems} />
+          <OfficeGraphicAssetWall />
           <div className="office-hud" aria-label="사무실 빠른 상태">
             <span>
               <strong>{calendar.year}년 {calendar.monthOfYear}월</strong>
@@ -652,6 +678,136 @@ export function GameStage({
         </div>
       </div>
     </section>
+  );
+}
+
+const decorAssetSlots = [
+  { x: 17, y: 84 },
+  { x: 30, y: 84 },
+  { x: 43, y: 86 },
+  { x: 58, y: 84 },
+  { x: 72, y: 84 },
+  { x: 84, y: 83 },
+  { x: 24, y: 36 },
+  { x: 45, y: 33 },
+  { x: 64, y: 34 },
+  { x: 82, y: 35 },
+];
+
+function OfficeDecorAssetLayer({ placedOfficeItems }: { placedOfficeItems: ItemDefinition[] }) {
+  const decorAssets = placedOfficeItems
+    .map((item, index) => {
+      const asset = getOfficeObjectAsset(item.id);
+      if (!asset) return undefined;
+      const slot = decorAssetSlots[index % decorAssetSlots.length];
+
+      return {
+        asset,
+        icon: getItemIcon(item.id),
+        item,
+        slot,
+      };
+    })
+    .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+    .slice(0, decorAssetSlots.length);
+
+  if (decorAssets.length === 0) return null;
+
+  return (
+    <div className="office-decor-asset-layer" aria-label="배치된 그래픽 장식">
+      {decorAssets.map(({ asset, icon, item, slot }) => (
+        <span
+          aria-label={`${item.name} · ${asset.readable_shape}`}
+          className={`decor-asset-prop decor-object-${asset.object_id} ${icon?.icon_class ?? ""}`}
+          key={item.id}
+          role="img"
+          style={
+            {
+              ...assetPaletteVars(asset.palette),
+              "--decor-x": `${slot.x}%`,
+              "--decor-y": `${slot.y}%`,
+              "--decor-w": `${Math.max(20, asset.footprint[0] * 18)}px`,
+              "--decor-h": `${Math.max(18, asset.footprint[1] * 14)}px`,
+            } as CSSProperties
+          }
+          title={`${item.name} · ${asset.readable_shape}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+type OfficeGraphicAssetTile = {
+  className: string;
+  key: string;
+  label: string;
+  palette?: string[];
+  title: string;
+};
+
+function OfficeGraphicAssetWall() {
+  const rows: Array<{ id: string; tiles: OfficeGraphicAssetTile[] }> = [
+    {
+      id: "agents",
+      tiles: assetManifest.agent_sprites.map((sprite) => ({
+        className: `asset-agent ${sprite.body_class}`,
+        key: sprite.agent_type_id,
+        label: sprite.agent_type_id,
+        palette: sprite.palette,
+        title: sprite.portrait_hint,
+      })),
+    },
+    {
+      id: "competitors",
+      tiles: assetManifest.competitor_identities.map((identity) => ({
+        className: `asset-competitor ${identity.logo_class}`,
+        key: identity.competitor_id,
+        label: identity.competitor_id,
+        palette: identity.palette,
+        title: identity.mascot_hint,
+      })),
+    },
+    {
+      id: "items",
+      tiles: assetManifest.item_icons.map((icon) => ({
+        className: `asset-item ${icon.icon_class}`,
+        key: icon.item_id,
+        label: icon.item_id,
+        palette: icon.palette,
+        title: icon.readable_shape,
+      })),
+    },
+    {
+      id: "office",
+      tiles: assetManifest.office_objects.map((object) => ({
+        className: `asset-office-object asset-office-${object.object_id}`,
+        key: object.object_id,
+        label: object.object_id,
+        palette: object.palette,
+        title: object.readable_shape,
+      })),
+    },
+  ];
+
+  return (
+    <div className="office-graphic-asset-wall" aria-label="그래픽 자산 벽">
+      {rows.map((row) => (
+        <div className={`office-asset-row asset-row-${row.id}`} key={row.id}>
+          {row.tiles.map((tile) => (
+            <span
+              aria-label={tile.title}
+              className={`office-asset-mini ${tile.className}`}
+              key={tile.key}
+              role="img"
+              style={assetPaletteVars(tile.palette)}
+              title={`${tile.label} · ${tile.title}`}
+            >
+              <i />
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
   );
 }
 

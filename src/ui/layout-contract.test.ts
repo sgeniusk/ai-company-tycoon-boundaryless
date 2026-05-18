@@ -143,6 +143,23 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.office-alert-strip\s*{[^}]*position:\s*absolute/s);
   });
 
+  it("loads the full graphic asset manifest into the first-screen game surface", () => {
+    expect(gameChrome).toContain("OfficeGraphicAssetWall");
+    expect(gameChrome).toContain("OfficeDecorAssetLayer");
+    expect(gameChrome).toContain("getCompetitorIdentity");
+    expect(gameChrome).toContain("getItemIcon");
+    expect(gameChrome).toContain("assetManifest.office_objects");
+    expect(gameChrome).toContain("assetManifest.item_icons");
+    expect(gameChrome).toContain("assetManifest.competitor_identities");
+    expect(gameChrome).toContain("assetManifest.agent_sprites");
+    expect(gameChrome).toContain("competitor-hud-logo");
+    expect(appCss).toMatch(/\.office-graphic-asset-wall\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.office-asset-row\s*{[^}]*display:\s*flex/s);
+    expect(appCss).toMatch(/\.office-asset-mini\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.decor-asset-prop\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.competitor-hud-logo\s*{[^}]*image-rendering:\s*pixelated/s);
+  });
+
   it("protects the playfield by narrowing the persistent console column", () => {
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*0\.94fr\)\s+minmax\(0,\s*1fr\)\s+clamp\(330px,\s*28vw,\s*390px\)/s);
     expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);
