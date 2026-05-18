@@ -32,6 +32,7 @@ import { createInitialRogueliteState, createReleaseCardReward, getDeckSynergyMon
 import { createReleaseGrowthPaths } from "./growth-paths";
 import { getRenewalReleaseOptions, type ProductConcept } from "./product-ideas";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
+import { t } from "../i18n";
 import type {
   AgentStats,
   AgentTypeDefinition,
@@ -151,6 +152,22 @@ export interface AgentRetentionAlert {
   severity: "warning" | "critical";
   loyalty: number;
   message: string;
+}
+
+export type StaffIncidentType = "burnout" | "poaching" | "discontent";
+export type StaffIncidentAction = "rest" | "salary";
+
+export interface StaffIncidentBrief {
+  id: string;
+  agentId: string;
+  agentName: string;
+  type: StaffIncidentType;
+  severity: "warning" | "critical";
+  title: string;
+  description: string;
+  triggerLabel: string;
+  recommendedAction: StaffIncidentAction;
+  actionLabel: string;
 }
 
 export interface AgentDevelopmentProfile {
@@ -563,6 +580,68 @@ export function getAgentRetentionAlerts(state: GameState): AgentRetentionAlert[]
           ? `${agent.name} 이직 위험이 큽니다. 연봉 협상이나 휴식이 필요합니다.`
           : `${agent.name} 충성도가 흔들립니다. 과로와 계약 압박을 확인하세요.`,
     }));
+}
+
+export function getStaffIncidentBriefs(state: GameState): StaffIncidentBrief[] {
+  const rivalName = getStrongestCompetitorName(state);
+  const incidents = state.hiredAgents.flatMap((agent) => {
+    const career = getAgentCareerStatus(agent, state);
+    const loyalty = career.loyalty;
+    const energy = Math.round(agent.energy);
+    const level = career.level;
+    const agentIncidents: StaffIncidentBrief[] = [];
+
+    if (energy <= 35) {
+      agentIncidents.push({
+        id: `${agent.id}-burnout`,
+        agentId: agent.id,
+        agentName: agent.name,
+        type: "burnout",
+        severity: energy <= 20 ? "critical" : "warning",
+        title: `${agent.name} 번아웃 위험`,
+        description: `체력 ${energy}입니다. 프로젝트 성과보다 퇴사 리스크가 먼저 커질 수 있습니다.`,
+        triggerLabel: `체력 ${energy}`,
+        recommendedAction: "rest",
+        actionLabel: "휴식 검토",
+      });
+    }
+
+    if (level >= 3 && loyalty <= 55) {
+      agentIncidents.push({
+        id: `${agent.id}-poaching`,
+        agentId: agent.id,
+        agentName: agent.name,
+        type: "poaching",
+        severity: loyalty < 45 ? "critical" : "warning",
+        title: `${agent.name} 스카우트 제안`,
+        description: `${rivalName} 같은 경쟁사가 Lv.${level} 핵심 인재를 노릴 만한 상태입니다. 경쟁사 제안이 오기 전에 계약 만족도를 올리세요.`,
+        triggerLabel: `Lv.${level} · 충성 ${loyalty}`,
+        recommendedAction: "salary",
+        actionLabel: "연봉 협상",
+      });
+    }
+
+    if (loyalty <= 50 && (agent.recruitmentChannelId === "headhunter" || (agent.salaryMultiplier ?? 1) >= 1.3)) {
+      agentIncidents.push({
+        id: `${agent.id}-discontent`,
+        agentId: agent.id,
+        agentName: agent.name,
+        type: "discontent",
+        severity: loyalty < 35 ? "critical" : "warning",
+        title: `${agent.name} 계약 불만`,
+        description: `계약 기대치와 실제 회사 상태 사이의 간극이 커졌습니다. 방치하면 충성도가 더 빨리 흔들립니다.`,
+        triggerLabel: `충성 ${loyalty} · 연봉 x${agent.salaryMultiplier ?? 1}`,
+        recommendedAction: "salary",
+        actionLabel: "조건 조정",
+      });
+    }
+
+    return agentIncidents;
+  });
+
+  return incidents
+    .sort((left, right) => getStaffIncidentSeverityScore(right) - getStaffIncidentSeverityScore(left) || left.agentName.localeCompare(right.agentName, "ko"))
+    .slice(0, 4);
 }
 
 export function getAgentDevelopmentProfile(agent: HiredAgent, _state: GameState): AgentDevelopmentProfile {
@@ -3150,6 +3229,17 @@ function getRetentionRiskLabel(severity: AgentCareerStatus["retentionSeverity"])
   if (severity === "warning") return "협상 필요";
   if (severity === "watch") return "주의";
   return "안정";
+}
+
+function getStaffIncidentSeverityScore(incident: StaffIncidentBrief): number {
+  const typeWeight = incident.type === "poaching" ? 3 : incident.type === "burnout" ? 2 : 1;
+  return (incident.severity === "critical" ? 100 : 50) + typeWeight;
+}
+
+function getStrongestCompetitorName(state: GameState): string {
+  const strongest = [...state.competitorStates].sort((left, right) => right.marketShare - left.marketShare || right.score - left.score)[0];
+  const definition = strongest ? competitors.find((competitor) => competitor.id === strongest.id) : competitors[0];
+  return definition ? t(definition.name_key, "ko") : "경쟁사";
 }
 
 function getRecruitmentPoolSize(channelId: RecruitmentChannelId, state: GameState): number {

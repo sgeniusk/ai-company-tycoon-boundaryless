@@ -38,6 +38,7 @@ export const qaScenarioIds = [
   "result",
   "readiness",
   "persona20",
+  "staff-incidents",
   "launch-impact",
 ] as const;
 
@@ -68,6 +69,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "직원 배치 QA",
       state: createStaffingState(),
       activeMenu: "products",
+    };
+  }
+
+  if (id === "staff-incidents") {
+    return {
+      id,
+      label: "인사 사건 QA",
+      state: createStaffIncidentState(),
+      activeMenu: "agents",
     };
   }
 
@@ -619,6 +629,40 @@ function createStaffingState(): GameState {
   if (!architect || !curator) return createInitialState();
 
   return hireAgent(curator, hireAgent(architect, createInitialState()));
+}
+
+function createStaffIncidentState(): GameState {
+  const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+  const curator = agentTypes.find((agent) => agent.id === "data_curator");
+  const junior = agentTypes.find((agent) => agent.id === "garage_junior_dev");
+  const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+
+  if (!architect || !curator || !junior || !writingProduct) return createInitialState();
+
+  const staffed = hireAgent(junior, hireAgent(curator, hireAgent(architect, createInitialState())));
+  const projectState = startProductProject(writingProduct, staffed, [staffed.hiredAgents[0].id]);
+
+  return {
+    ...projectState,
+    hiredAgents: projectState.hiredAgents.map((agent) => {
+      if (agent.typeId === "prompt_architect") {
+        return { ...agent, level: 4, energy: 18, loyalty: 38 };
+      }
+      if (agent.typeId === "data_curator") {
+        return {
+          ...agent,
+          level: 1,
+          energy: 76,
+          loyalty: 42,
+          recruitmentChannelId: "headhunter",
+          salaryMultiplier: 1.75,
+          riskLabel: "계약 불만",
+        };
+      }
+      return { ...agent, energy: 72, loyalty: 68 };
+    }),
+    timeline: ["인사 사건 QA: 번아웃, 스카우트, 계약 불만을 동시에 확인", ...projectState.timeline].slice(0, 8),
+  };
 }
 
 function createStarterProjectState(): GameState {

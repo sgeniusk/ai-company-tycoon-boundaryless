@@ -2175,6 +2175,55 @@ p {
   padding: 10px;
 }
 
+.staff-incident-panel {
+  background: #fff6e9;
+  border: 2px solid #d2a25f;
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 9px;
+}
+
+.staff-incident-panel strong,
+.staff-incident-panel span,
+.staff-incident-panel small {
+  color: #5b4022;
+  display: block;
+  font-weight: 900;
+  line-height: 1.28;
+}
+
+.staff-incident-card {
+  background: #fffdf7;
+  border: 1px solid #caa66f;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 8px;
+}
+
+.staff-incident-card.severity-critical {
+  background: #fff0e7;
+  border-color: #c56d43;
+}
+
+.staff-incident-card button {
+  align-self: center;
+  background: #2f6f4d;
+  border: 2px solid #214632;
+  color: #fffaf0;
+  font-size: 0.68rem;
+  font-weight: 900;
+  min-height: 34px;
+  padding: 6px 8px;
+}
+
+.staff-incident-card button:disabled {
+  background: #d8cdb6;
+  border-color: #9c8f78;
+  color: #6a5a3f;
+}
+
 .retention-alert-list {
   display: grid;
   gap: 7px;

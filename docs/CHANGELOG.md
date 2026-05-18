@@ -4,6 +4,28 @@
 
 ---
 
+## [0.34.9-alpha] — 2026-05-18
+
+### 직원 사건 드라마
+
+**추가:**
+- 직원 상태에서 번아웃, 경쟁사 스카우트 제안, 계약 불만 사건 후보를 계산하는 `getStaffIncidentBriefs()`를 추가했다.
+- 체력, 레벨, 충성도, 계약 방식, 연봉 배율을 바탕으로 사건 심각도와 권장 액션을 만든다.
+- 에이전트 콘솔 상단에 `인사 사건` 패널을 추가해 위험 직원, 이유, 추천 조치를 바로 볼 수 있게 했다.
+- 사건 카드에서 가능한 경우 `휴식` 또는 `연봉 협상`을 바로 실행할 수 있다.
+- 브라우저 QA용 `staff-incidents` 시나리오를 추가했다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts` 통과, 1 file / 17 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 25 tests
+- `npm test -- src/game/qa-scenarios.test.ts` 통과, 1 file / 30 tests
+- `npm test -- src/game/staff-career.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 72 tests
+- `npm run harness:gate` 통과, 38 files / 259 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome QA: `http://127.0.0.1:5196/?scenario=staff-incidents&menu=agents`에서 인사 사건 패널 1개, 사건 카드 3개, 콘솔 오류 0건, 모바일 가로 오버플로 없음 확인
+- 스크린샷: `/tmp/ai-company-v0349-staff-incidents-desktop.png`, `/tmp/ai-company-v0349-staff-incidents-mobile.png`
+
+---
+
 ## [0.34.8-alpha] — 2026-05-18
 
 ### 채용 브랜드와 사무실 인재풀 연결

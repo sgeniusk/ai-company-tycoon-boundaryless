@@ -6,6 +6,7 @@ import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
 import { runTenYearCampaignSimulation } from "./run-simulator";
+import { getStaffIncidentBriefs } from "./simulation";
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
@@ -38,6 +39,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "result",
       "readiness",
       "persona20",
+      "staff-incidents",
       "launch-impact",
     ]);
   });
@@ -67,6 +69,15 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.hiredAgents.length).toBeGreaterThanOrEqual(2);
     expect(scenario.state.productProjects).toHaveLength(0);
     expect(scenario.state.activeProducts).toHaveLength(0);
+  });
+
+  it("creates a staff incident scenario for HR drama browser QA", () => {
+    const scenario = createQaScenario("staff-incidents");
+    const incidents = getStaffIncidentBriefs(scenario.state);
+
+    expect(scenario.activeMenu).toBe("agents");
+    expect(scenario.label).toContain("인사 사건");
+    expect(incidents.map((incident) => incident.type)).toEqual(expect.arrayContaining(["burnout", "poaching", "discontent"]));
   });
 
   it("creates a release spotlight scenario", () => {
@@ -336,6 +347,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");
     expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");
     expect(createQaScenarioFromSearch("?scenario=persona20")?.id).toBe("persona20");
+    expect(createQaScenarioFromSearch("?scenario=staff-incidents")?.id).toBe("staff-incidents");
     expect(createQaScenarioFromSearch("?scenario=launch-impact")?.id).toBe("launch-impact");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();

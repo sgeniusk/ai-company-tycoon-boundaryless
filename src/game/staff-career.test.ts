@@ -13,6 +13,7 @@ import {
   getAgentSalaryNegotiationCheck,
   getAgentSpecializationCheck,
   getAgentSpecializationOptions,
+  getStaffIncidentBriefs,
   hireAgentViaChannel,
   chooseAgentSpecialization,
   negotiateAgentSalary,
@@ -255,5 +256,64 @@ describe("v0.34.7 staff specialization branches", () => {
     expect(check.ok).toBe(false);
     expect(check.reasons.join(" ")).toContain("이미");
     expect(unchanged.hiredAgents[0].specializationStat).toBe("product");
+  });
+});
+
+describe("v0.34.9 staff incident drama", () => {
+  it("surfaces burnout incidents for exhausted assigned agents", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const started = startProductProject(writingProduct(), hired, [hired.hiredAgents[0].id]);
+    const exhausted = {
+      ...started,
+      hiredAgents: started.hiredAgents.map((agent) => ({ ...agent, energy: 18, loyalty: 66 })),
+    };
+
+    const incidents = getStaffIncidentBriefs(exhausted);
+    const burnout = incidents.find((incident) => incident.type === "burnout");
+
+    expect(burnout).toMatchObject({
+      agentId: exhausted.hiredAgents[0].id,
+      severity: "critical",
+      recommendedAction: "rest",
+    });
+    expect(burnout?.title).toContain("번아웃");
+    expect(burnout?.description).toContain("체력");
+  });
+
+  it("surfaces poaching incidents for valuable low-loyalty specialists", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const specialist = {
+      ...hired,
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
+    };
+
+    const incidents = getStaffIncidentBriefs(specialist);
+    const poaching = incidents.find((incident) => incident.type === "poaching");
+
+    expect(poaching).toMatchObject({
+      agentId: specialist.hiredAgents[0].id,
+      severity: "critical",
+      recommendedAction: "salary",
+    });
+    expect(poaching?.title).toContain("스카우트");
+    expect(poaching?.description).toContain("경쟁사");
+  });
+
+  it("surfaces contract discontent before it becomes a resignation", () => {
+    const hired = hireAgentViaChannel(junior(), createInitialState(), "headhunter");
+    const unhappy = {
+      ...hired,
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 1, loyalty: 42, energy: 76 })),
+    };
+
+    const incidents = getStaffIncidentBriefs(unhappy);
+    const discontent = incidents.find((incident) => incident.type === "discontent");
+
+    expect(discontent).toMatchObject({
+      agentId: unhappy.hiredAgents[0].id,
+      severity: "warning",
+      recommendedAction: "salary",
+    });
+    expect(discontent?.description).toContain("계약");
   });
 });

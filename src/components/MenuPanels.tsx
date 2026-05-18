@@ -107,6 +107,7 @@ import {
   getAgentRetentionAlerts,
   getAgentSalaryNegotiationCheck,
   getAgentSalaryNegotiationCost,
+  getStaffIncidentBriefs,
   getUpgradeCheck,
   getWorkforceSynergySummary,
   getRelocationCheck,
@@ -1304,6 +1305,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
   const phase = getCampaignContentPhase(gameState);
   const workforceSynergySummary = getWorkforceSynergySummary(gameState);
   const retentionAlerts = getAgentRetentionAlerts(gameState);
+  const staffIncidents = getStaffIncidentBriefs(gameState);
   const selectedRecruitmentChannel = recruitmentChannels.find((channel) => channel.id === recruitmentChannelId) ?? recruitmentChannels[0];
   const candidatePool = getRecruitmentCandidatePool(gameState, recruitmentChannelId);
   const recruitmentBrand = getRecruitmentBrandProfile(gameState);
@@ -1327,6 +1329,44 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
           <span>AI 운용 {getAiAgentCount(gameState)}/{getAiOperationCapacity(gameState)}</span>
           <span>사람 직원이 늘면 AI 에이전트를 더 안정적으로 굴릴 수 있습니다.</span>
         </div>
+        {staffIncidents.length > 0 && (
+          <div className="staff-incident-panel">
+            <div>
+              <p className="eyebrow">인사 사건</p>
+              <strong>{staffIncidents.length}건 감지</strong>
+              <span>번아웃, 스카우트, 계약 불만을 먼저 잡아 핵심 인재 이탈을 막습니다.</span>
+            </div>
+            {staffIncidents.map((incident) => {
+              const actionCheck =
+                incident.recommendedAction === "rest"
+                  ? getAgentRestCheck(incident.agentId, gameState)
+                  : getAgentSalaryNegotiationCheck(incident.agentId, gameState);
+              return (
+                <article className={`staff-incident-card incident-${incident.type} severity-${incident.severity}`} key={incident.id}>
+                  <div>
+                    <strong>{incident.title}</strong>
+                    <span>{incident.description}</span>
+                    <small>{incident.triggerLabel}</small>
+                  </div>
+                  <button
+                    disabled={!actionCheck.ok || gameState.status !== "playing"}
+                    onClick={() =>
+                      setGameState((current) =>
+                        incident.recommendedAction === "rest"
+                          ? restAgent(incident.agentId, current)
+                          : negotiateAgentSalary(incident.agentId, current),
+                      )
+                    }
+                    title={actionCheck.ok ? incident.actionLabel : actionCheck.reasons.join(" / ")}
+                    type="button"
+                  >
+                    {incident.actionLabel}
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        )}
         {retentionAlerts.length > 0 && (
           <div className="retention-alert-list">
             {retentionAlerts.slice(0, 2).map((alert) => (
