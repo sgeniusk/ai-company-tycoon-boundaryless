@@ -169,6 +169,10 @@ export interface StaffIncidentBrief {
   triggerLabel: string;
   recommendedAction: StaffIncidentAction;
   actionLabel: string;
+  sourceCompetitorId?: string;
+  sourceCompetitorName?: string;
+  offerLabel?: string;
+  stakesLabel?: string;
 }
 
 export type StaffIncidentResolutionId =
@@ -604,7 +608,6 @@ export function getAgentRetentionAlerts(state: GameState): AgentRetentionAlert[]
 }
 
 export function getStaffIncidentBriefs(state: GameState): StaffIncidentBrief[] {
-  const rivalName = getStrongestCompetitorName(state);
   const incidents = state.hiredAgents.flatMap((agent) => {
     const career = getAgentCareerStatus(agent, state);
     const loyalty = career.loyalty;
@@ -628,6 +631,7 @@ export function getStaffIncidentBriefs(state: GameState): StaffIncidentBrief[] {
     }
 
     if (level >= 3 && loyalty <= 55) {
+      const poachingOffer = getStaffPoachingOffer(state, agent, level);
       agentIncidents.push({
         id: `${agent.id}-poaching`,
         agentId: agent.id,
@@ -635,10 +639,11 @@ export function getStaffIncidentBriefs(state: GameState): StaffIncidentBrief[] {
         type: "poaching",
         severity: loyalty < 45 ? "critical" : "warning",
         title: `${agent.name} 스카우트 제안`,
-        description: `${rivalName} 같은 경쟁사가 Lv.${level} 핵심 인재를 노릴 만한 상태입니다. 경쟁사 제안이 오기 전에 계약 만족도를 올리세요.`,
-        triggerLabel: `Lv.${level} · 충성 ${loyalty}`,
+        description: `${poachingOffer.sourceCompetitorName} 같은 경쟁사가 Lv.${level} 핵심 인재를 노립니다. ${poachingOffer.offerLabel} 조건이 돌기 전에 계약 만족도를 올리세요.`,
+        triggerLabel: `Lv.${level} · 충성 ${loyalty} · ${poachingOffer.sourceCompetitorName} 제안`,
         recommendedAction: "salary",
         actionLabel: "연봉 협상",
+        ...poachingOffer,
       });
     }
 
@@ -2242,6 +2247,10 @@ function hydrateStaffIncidentResolutionLog(value: unknown): StaffIncidentResolut
         resolutionLabel: typeof entry.resolutionLabel === "string" ? entry.resolutionLabel : "대응 완료",
         summary: typeof entry.summary === "string" ? entry.summary : "인사 사건 대응 기록을 복구했습니다.",
         effectLabel: typeof entry.effectLabel === "string" ? entry.effectLabel : "효과 기록 없음",
+        sourceCompetitorId: typeof entry.sourceCompetitorId === "string" ? entry.sourceCompetitorId : undefined,
+        sourceCompetitorName: typeof entry.sourceCompetitorName === "string" ? entry.sourceCompetitorName : undefined,
+        offerLabel: typeof entry.offerLabel === "string" ? entry.offerLabel : undefined,
+        stakesLabel: typeof entry.stakesLabel === "string" ? entry.stakesLabel : undefined,
       };
     })
     .slice(0, 6);
@@ -3381,6 +3390,10 @@ function createStaffIncidentResolutionRecord(
     resolutionLabel: option.label,
     summary: getStaffIncidentResolutionSummary(agent, incident, option, resolutionId),
     effectLabel: option.effectLabel,
+    sourceCompetitorId: incident.sourceCompetitorId,
+    sourceCompetitorName: incident.sourceCompetitorName,
+    offerLabel: incident.offerLabel,
+    stakesLabel: incident.stakesLabel,
   };
 }
 
@@ -3399,10 +3412,16 @@ function getStaffIncidentResolutionSummary(
   }
 
   if (resolutionId === "retention_bonus") {
+    if (incident.sourceCompetitorName) {
+      return `${agent.name}에게 ${option.label}를 지급해 ${incident.sourceCompetitorName}의 스카우트 제안을 막았습니다. ${incident.stakesLabel ?? "경쟁 압박"} 대응으로 장기 연봉 압박이 커졌습니다.`;
+    }
     return `${agent.name}에게 ${option.label}를 지급해 스카우트 제안을 막았지만 장기 연봉 압박이 커졌습니다.`;
   }
 
   if (resolutionId === "mission_pitch") {
+    if (incident.sourceCompetitorName) {
+      return `${agent.name}에게 창업 미션을 다시 설명해 ${incident.sourceCompetitorName}의 제안을 비용 없이 흔들었습니다. ${incident.stakesLabel ?? "경쟁 압박"}은 계속 감시해야 합니다.`;
+    }
     return `${agent.name}에게 창업 미션을 다시 설명해 비용 없이 이탈 위험을 낮췄습니다.`;
   }
 
@@ -3537,10 +3556,39 @@ function getStaffIncidentResolutionResourceDelta(resolutionId: StaffIncidentReso
   return {};
 }
 
-function getStrongestCompetitorName(state: GameState): string {
+function getStaffPoachingOffer(state: GameState, agent: HiredAgent, level: number): Pick<StaffIncidentBrief, "sourceCompetitorId" | "sourceCompetitorName" | "offerLabel" | "stakesLabel"> {
+  const pressure = getStrongestCompetitorPressure(state);
+  const monthlyUpkeep = getHiredAgentMonthlyUpkeep(agent).cash ?? 180;
+  const offerMultiplier = Number((1.15 + Math.min(0.7, pressure.marketShare / 100 + pressure.aggression * 0.04 + level * 0.03)).toFixed(2));
+  const signingBonus = Math.max(600, Math.round(monthlyUpkeep * offerMultiplier * 2));
+  const momentumLabel = pressure.momentum >= 0 ? `+${pressure.momentum}` : `${pressure.momentum}`;
+
+  return {
+    sourceCompetitorId: pressure.id,
+    sourceCompetitorName: pressure.name,
+    offerLabel: `제안 조건: 연봉 x${offerMultiplier} · 사이닝 ${formatMoney(signingBonus)}`,
+    stakesLabel: `${pressure.name} 점유 ${pressure.marketShare}% · 모멘텀 ${momentumLabel}`,
+  };
+}
+
+function getStrongestCompetitorPressure(state: GameState): {
+  id: string;
+  name: string;
+  marketShare: number;
+  score: number;
+  momentum: number;
+  aggression: number;
+} {
   const strongest = [...state.competitorStates].sort((left, right) => right.marketShare - left.marketShare || right.score - left.score)[0];
   const definition = strongest ? competitors.find((competitor) => competitor.id === strongest.id) : competitors[0];
-  return definition ? t(definition.name_key, "ko") : "경쟁사";
+  return {
+    id: strongest?.id ?? definition?.id ?? "unknown_competitor",
+    name: definition ? t(definition.name_key, "ko") : "경쟁사",
+    marketShare: strongest?.marketShare ?? definition?.starting_market_share ?? 0,
+    score: strongest?.score ?? definition?.starting_score ?? 0,
+    momentum: strongest?.momentum ?? 0,
+    aggression: definition?.aggression ?? 2,
+  };
 }
 
 function getRecruitmentPoolSize(channelId: RecruitmentChannelId, state: GameState): number {

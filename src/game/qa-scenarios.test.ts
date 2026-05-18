@@ -79,6 +79,8 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.activeMenu).toBe("agents");
     expect(scenario.label).toContain("인사 사건");
     expect(incidents.map((incident) => incident.type)).toEqual(expect.arrayContaining(["burnout", "poaching", "discontent"]));
+    expect(incidents.find((incident) => incident.type === "poaching")?.sourceCompetitorName).toBeTruthy();
+    expect(incidents.find((incident) => incident.type === "poaching")?.offerLabel).toContain("연봉");
   });
 
   it("creates a resolved staff incident scenario for result-card browser QA", () => {

@@ -4,6 +4,27 @@
 
 ---
 
+## [0.34.12-alpha] — 2026-05-18
+
+### 경쟁사 스카우트 상세 조건
+
+**추가:**
+- 스카우트 인사 사건이 이제 가장 위협적인 경쟁사의 이름, 점유율, 모멘텀, 제안 조건을 표시한다.
+- 스카우트 제안 조건은 직원 레벨, 현재 유지비, 경쟁사 점유율/공격성에 따라 연봉 배율과 사이닝 보너스로 계산된다.
+- 에이전트 콘솔의 인사 사건 카드에 `staff-incident-source` 블록을 추가해 경쟁사와 제안 조건을 따로 읽을 수 있게 했다.
+- 리텐션 보너스나 창업 미션 설득 결과 기록에도 경쟁사 이름과 시장 압박을 남긴다.
+- 회사 기록의 인사 사건 하이라이트 카드가 스카우트 방어 시 경쟁사 이름과 점유율을 제목/본문에 포함한다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts src/game/shareable-moments.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 84 tests
+- `npm run harness:gate` 통과, 38 files / 269 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser QA: `http://127.0.0.1:5199/?scenario=staff-incidents&menu=agents`에서 인사 사건 패널 1개, 스카우트 출처 블록 1개, 대응 버튼 6개, 콘솔 오류 0건 확인
+- 해결 QA: 리텐션 보너스 클릭 후 최근 인사 대응 패널 1개, 결과 카드 1개, 경쟁사 이름/점유율 문구 유지, 결과 카드 줄바꿈 깨짐 없음 확인
+- 모바일 QA: 390×844에서 스카우트 출처 블록 1개, 하단 탭 표시, 가로 오버플로 없음 확인
+- 스크린샷: `/tmp/ai-company-v03412-poaching-offer-desktop.png`, `/tmp/ai-company-v03412-poaching-resolution-desktop.png`, `/tmp/ai-company-v03412-poaching-mobile.png`
+
+---
+
 ## [0.34.11-alpha] — 2026-05-18
 
 ### 인사 대응 결과 카드

@@ -2213,6 +2213,20 @@ p {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.staff-incident-source {
+  background: #f2f7ff;
+  border: 1px solid #9eb7d8;
+  display: grid;
+  gap: 3px;
+  padding: 6px;
+}
+
+.staff-incident-source strong,
+.staff-incident-source span,
+.staff-incident-source small {
+  color: #253f66;
+}
+
 .staff-incident-card button {
   align-self: center;
   background: #2f6f4d;
@@ -2257,6 +2271,7 @@ p {
   display: block;
   font-weight: 900;
   line-height: 1.28;
+  overflow-wrap: anywhere;
 }
 
 .staff-resolution-result-card {
@@ -2264,7 +2279,7 @@ p {
   border: 1px solid #a9c797;
   display: grid;
   gap: 5px;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   padding: 7px;
 }
 

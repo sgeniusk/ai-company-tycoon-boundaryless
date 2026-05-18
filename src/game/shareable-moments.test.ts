@@ -79,4 +79,26 @@ describe("v0.23 shareable moment harness", () => {
     });
     expect(moments[0].detail).toContain("프로젝트 배치 해제");
   });
+
+  it("mentions the rival behind a staff poaching moment", () => {
+    const architect = agentTypes.find((entry) => entry.id === "prompt_architect");
+    if (!architect) throw new Error("Missing staff incident fixture data");
+    const hired = hireAgentViaChannel(architect, createInitialState(), "career_recruiting");
+    const targeted = {
+      ...hired,
+      resources: { ...hired.resources, cash: 12000 },
+      competitorStates: hired.competitorStates.map((competitor) =>
+        competitor.id === "competitor_jemiinni" ? { ...competitor, marketShare: 44, score: 190, momentum: 8 } : competitor,
+      ),
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
+    };
+    const poaching = getStaffIncidentBriefs(targeted).find((incident) => incident.type === "poaching");
+    if (!poaching) throw new Error("Missing poaching incident");
+
+    const resolved = resolveStaffIncident(poaching.id, "retention_bonus", targeted);
+    const staffMoment = getShareableMoments(resolved).find((moment) => moment.type === "staff");
+
+    expect(staffMoment?.title).toContain("제미있니");
+    expect(staffMoment?.detail).toContain("점유 44%");
+  });
 });

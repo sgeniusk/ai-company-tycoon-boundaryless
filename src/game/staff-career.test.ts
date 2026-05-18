@@ -381,6 +381,54 @@ describe("v0.34.9 staff incident drama", () => {
     expect(resolved.timeline[0]).toContain("스카우트");
   });
 
+  it("links poaching incidents to a concrete competitor offer", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const targeted = {
+      ...hired,
+      competitorStates: hired.competitorStates.map((competitor) =>
+        competitor.id === "competitor_jemiinni"
+          ? { ...competitor, marketShare: 44, score: 190, momentum: 8, lastMove: "개발자 도구 시장 핵심 인재 영입전" }
+          : competitor,
+      ),
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
+    };
+
+    const poaching = getStaffIncidentBriefs(targeted).find((incident) => incident.type === "poaching") as
+      | (ReturnType<typeof getStaffIncidentBriefs>[number] & {
+          sourceCompetitorName?: string;
+          offerLabel?: string;
+          stakesLabel?: string;
+        })
+      | undefined;
+
+    expect(poaching?.sourceCompetitorName).toContain("제미있니");
+    expect(poaching?.description).toContain("제미있니");
+    expect(poaching?.offerLabel).toContain("연봉");
+    expect(poaching?.stakesLabel).toContain("점유 44%");
+    expect(poaching?.triggerLabel).toContain("제안");
+  });
+
+  it("keeps the poaching competitor in the resolution record", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const targeted = {
+      ...hired,
+      resources: { ...hired.resources, cash: 12000 },
+      competitorStates: hired.competitorStates.map((competitor) =>
+        competitor.id === "competitor_jemiinni" ? { ...competitor, marketShare: 44, score: 190, momentum: 8 } : competitor,
+      ),
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
+    };
+    const poaching = getStaffIncidentBriefs(targeted).find((incident) => incident.type === "poaching");
+    if (!poaching) throw new Error("Missing poaching incident");
+
+    const resolved = resolveStaffIncident(poaching.id, "retention_bonus", targeted);
+    const log = getRecentStaffIncidentResolutionLog(resolved);
+
+    expect(log[0].sourceCompetitorName).toContain("제미있니");
+    expect(log[0].summary).toContain("제미있니");
+    expect(log[0].stakesLabel).toContain("점유 44%");
+  });
+
   it("records the latest staff incident resolution as a visible result card", () => {
     const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
     const started = startProductProject(writingProduct(), hired, [hired.hiredAgents[0].id]);

@@ -42,8 +42,12 @@ export function getShareableMoments(state: GameState): ShareableMoment[] {
   if (latestStaffResolution) {
     moments.push({
       type: "staff",
-      title: `${latestStaffResolution.agentName} · ${latestStaffResolution.resolutionLabel}`,
-      detail: latestStaffResolution.summary,
+      title: latestStaffResolution.sourceCompetitorName
+        ? `${latestStaffResolution.sourceCompetitorName} 스카우트 방어 · ${latestStaffResolution.resolutionLabel}`
+        : `${latestStaffResolution.agentName} · ${latestStaffResolution.resolutionLabel}`,
+      detail: latestStaffResolution.stakesLabel
+        ? `${latestStaffResolution.summary} · ${latestStaffResolution.stakesLabel}`
+        : latestStaffResolution.summary,
       badge: "인사 사건",
       tone: latestStaffResolution.severity === "critical" ? "warning" : "neutral",
     });

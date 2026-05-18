@@ -1349,6 +1349,13 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
                     <span>{incident.description}</span>
                     <small>{incident.triggerLabel}</small>
                   </div>
+                  {incident.sourceCompetitorName && (
+                    <div className="staff-incident-source">
+                      <strong>{incident.sourceCompetitorName}</strong>
+                      <span>{incident.offerLabel}</span>
+                      <small>{incident.stakesLabel}</small>
+                    </div>
+                  )}
                   <div className="staff-incident-actions">
                     {resolutionOptions.map((option) => (
                       <button
@@ -1380,9 +1387,9 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
               <article className={`staff-resolution-result-card severity-${record.severity}`} key={record.id}>
                 <div>
                   <strong>{record.incidentTitle}</strong>
-                  <span>{record.effectLabel}</span>
+                  <span>{record.sourceCompetitorName ? `${record.sourceCompetitorName} · ${record.effectLabel}` : record.effectLabel}</span>
                 </div>
-                <small>{record.month}개월차 · {record.resolutionLabel}</small>
+                <small>{record.month}개월차 · {record.resolutionLabel}{record.stakesLabel ? ` · ${record.stakesLabel}` : ""}</small>
               </article>
             ))}
           </div>

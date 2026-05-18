@@ -959,6 +959,10 @@ export interface StaffIncidentResolutionLogEntry {
   resolutionLabel: string;
   summary: string;
   effectLabel: string;
+  sourceCompetitorId?: string;
+  sourceCompetitorName?: string;
+  offerLabel?: string;
+  stakesLabel?: string;
 }
 
 export interface GameState {
