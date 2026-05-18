@@ -402,7 +402,7 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "office-visuals") {
     return {
       id,
-      label: "v0.41 사무실 픽셀 시뮬레이션 QA",
+      label: "v0.42 사무실 액터 QA",
       state: createOfficeVisualScenarioState(),
       activeMenu: "company",
     };

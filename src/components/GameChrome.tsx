@@ -33,7 +33,7 @@ import {
   resolveEventChoice,
   resolveRivalEventChoice,
 } from "../game/simulation";
-import type { GameState, OperationsCommandPlan, ReleaseGrowthPath } from "../game/types";
+import type { GameState, OfficeSceneActorStatus, OperationsCommandPlan, ReleaseGrowthPath } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatEffects, statusLabel } from "../ui/formatters";
 import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
@@ -215,6 +215,12 @@ export function GameStage({
   const officeDecorationSlots = getOfficeDecorationSlots(gameState);
   const officeZonePlan = getOfficeZonePlan(gameState);
   const officeScenePlan = getOfficeScenePlan(gameState);
+  const visibleOfficeActors = officeScenePlan.actors.slice(0, Math.min(12, officeHireCapacity));
+  const visibleOfficeActorIds = visibleOfficeActors.map((actor) => actor.id).join("|");
+  const defaultFocusedOfficeActor =
+    visibleOfficeActors.find((actor) => actor.state === "warning" || actor.state === "resting")
+    ?? visibleOfficeActors.find((actor) => actor.state === "working")
+    ?? visibleOfficeActors[0];
   const operationsPlan = getOperationsCommandPlan(gameState);
   const unlockedDomainNames = domains
     .filter((domain) => gameState.unlockedDomains.includes(domain.id))
@@ -247,11 +253,19 @@ export function GameStage({
       .filter(Boolean)
       .join(" ");
   const [activeStageTab, setActiveStageTab] = useState<StageSideTabId>("guide");
+  const [selectedOfficeActorId, setSelectedOfficeActorId] = useState<string>();
+  const focusedOfficeActor = visibleOfficeActors.find((actor) => actor.id === selectedOfficeActorId) ?? defaultFocusedOfficeActor;
   const hasResultPanel = finale.isFinal || Boolean(gameState.lastRelease) || runSummary.isFinal;
 
   useEffect(() => {
     if (hasResultPanel) setActiveStageTab("results");
   }, [hasResultPanel, gameState.lastRelease?.month, gameState.lastRelease?.productId, runSummary.isFinal, finale.isFinal]);
+
+  useEffect(() => {
+    if (selectedOfficeActorId && !visibleOfficeActors.some((actor) => actor.id === selectedOfficeActorId)) {
+      setSelectedOfficeActorId(undefined);
+    }
+  }, [selectedOfficeActorId, visibleOfficeActorIds, visibleOfficeActors]);
 
   const getStageTabHint = (tabId: StageSideTabId) => {
     if (tabId === "guide") return `${firstTenMinuteProgress}%`;
@@ -341,16 +355,18 @@ export function GameStage({
           <RivalIncidentBanner gameState={gameState} />
           <OperationCommandPanel plan={operationsPlan} onOpenMenu={setActiveMenu} />
           <div className="office-actor-layer" aria-label="사무실 액터">
-            {officeScenePlan.actors.slice(0, Math.min(12, officeHireCapacity)).map((actor, index) => {
+            {visibleOfficeActors.map((actor, index) => {
               const agentType = actor.agentTypeId ? agentTypes.find((type) => type.id === actor.agentTypeId) : undefined;
               const agentSprite = getAgentSprite(actor.agentTypeId);
+              const isSelected = focusedOfficeActor?.id === actor.id;
 
               return (
-                <span
+                <button
                   aria-label={`${actor.name} · ${agentType?.role ?? "창업자"} · ${actor.assignmentLabel}`}
-                  className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${actor.state === "working" ? "working" : "idle"} ${agentSprite?.body_class ?? ""}`}
+                  aria-pressed={isSelected}
+                  className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${isSelected ? "selected" : ""} ${actor.state === "working" ? "working" : "idle"} ${agentSprite?.body_class ?? ""}`}
                   key={actor.id}
-                  role="img"
+                  onClick={() => setSelectedOfficeActorId(actor.id)}
                   style={
                     {
                       ...assetPaletteVars(agentSprite?.palette),
@@ -359,13 +375,15 @@ export function GameStage({
                     } as CSSProperties
                   }
                   title={`${actor.name} · ${agentType?.role ?? "창업자"} · ${actor.activity}`}
+                  type="button"
                 >
                   <b>{actor.name.slice(0, 3)}</b>
                   <small className="actor-thought">{actor.assignmentLabel}</small>
-                </span>
+                </button>
               );
             })}
           </div>
+          {focusedOfficeActor && <OfficeActorFocusPanel actor={focusedOfficeActor} onOpenMenu={setActiveMenu} />}
           <div className="server-rack">
             <i />
             <i />
@@ -660,6 +678,39 @@ function OperationCommandPanel({
         ))}
       </div>
       <small className="operation-command-safeguard">{plan.activeSafeguards[0] ?? plan.nextMilestone}</small>
+    </div>
+  );
+}
+
+function OfficeActorFocusPanel({
+  actor,
+  onOpenMenu,
+}: {
+  actor: OfficeSceneActorStatus;
+  onOpenMenu: Dispatch<SetStateAction<MenuId>>;
+}) {
+  const kindLabel = actor.kind === "human" ? "사람" : actor.kind === "robot" ? "로봇" : "AI";
+  const energyTone = actor.energy <= 30 ? "danger" : actor.energy <= 55 ? "watch" : "safe";
+  const loyaltyTone = actor.loyalty <= 45 ? "danger" : actor.loyalty <= 65 ? "watch" : "safe";
+
+  return (
+    <div className={`office-actor-focus-panel actor-focus-${actor.state}`} aria-live="polite">
+      <div>
+        <span>{actor.focusLabel} · {kindLabel}</span>
+        <strong>{actor.name}</strong>
+        <small>{actor.assignmentLabel}</small>
+      </div>
+      <div className="actor-focus-meters">
+        <span className={`meter-${energyTone}`}>
+          체력 <i style={{ "--meter-value": `${actor.energy}%` } as CSSProperties} />
+        </span>
+        <span className={`meter-${loyaltyTone}`}>
+          충성 <i style={{ "--meter-value": `${actor.loyalty}%` } as CSSProperties} />
+        </span>
+      </div>
+      <button onClick={() => onOpenMenu(actor.targetMenu)} type="button">
+        {actor.actionLabel}
+      </button>
     </div>
   );
 }

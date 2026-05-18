@@ -6,6 +6,19 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.42: Office Actor Interaction
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Office actors are keyboard/click selectable controls | **Passed** |
+| 2 | Selected actor opens a compact focus panel inside the game viewport | **Passed** |
+| 3 | Focus panel shows actor state, assignment, energy, and loyalty | **Passed** |
+| 4 | Working actors route to product management | **Passed** |
+| 5 | Resting, warning, and idle actors route to agent management | **Passed** |
+| 6 | Mobile layout keeps the focus panel compact without horizontal overflow | **Passed** |
+
+---
+
 ## Alpha v0.41: Office Pixel Simulation
 
 | # | Criterion | Status |

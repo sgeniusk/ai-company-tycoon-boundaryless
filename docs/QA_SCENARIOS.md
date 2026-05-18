@@ -68,7 +68,7 @@ Examples:
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
 
-## v0.41 Office Visual Simulation QA
+## v0.42 Office Actor Interaction QA
 
 URL:
 
@@ -77,10 +77,12 @@ URL:
 
 Expected:
 
-- The QA pill says `v0.41 사무실 픽셀 시뮬레이션 QA`.
+- The QA pill says `v0.42 사무실 액터 QA`.
 - The office playfield shows data-driven zone objects such as compute bay, launch stage, robot bay, and chip lab.
 - Human, AI, and robot actors are visible as distinct pixel actors.
 - Actor bubbles show project assignment, recovery, warning, or idle state.
+- Clicking an actor selects it and opens the compact actor focus panel.
+- The focus panel shows energy/loyalty meters and routes working actors to Products or care-risk actors to Agents.
 - The office alert strip includes the active zone/activity ticker.
 - Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
 

@@ -70,7 +70,11 @@ describe("v0.41 office visual simulation plan", () => {
 
     expect(working?.state).toBe("working");
     expect(working?.assignmentLabel).toContain("AI 코딩");
+    expect(working?.targetMenu).toBe("products");
+    expect(working?.actionLabel).toContain("프로젝트");
     expect(warning?.state).toBe("warning");
+    expect(warning?.targetMenu).toBe("agents");
+    expect(warning?.actionLabel).toContain("케어");
     expect(plan.workingActorCount).toBe(1);
     expect(plan.activityTicker.join(" ")).toContain("개발");
   });

@@ -734,6 +734,7 @@ export interface OfficeSceneObjectStatus extends OfficeSceneObjectDefinition {
 
 export type OfficeSceneActorKind = "human" | "ai_agent" | "robot";
 export type OfficeSceneActorState = "working" | "resting" | "warning" | "idle";
+export type OfficeSceneActorActionTarget = "agents" | "products";
 
 export interface OfficeSceneActorStatus {
   id: string;
@@ -748,6 +749,9 @@ export interface OfficeSceneActorStatus {
   loyalty: number;
   activity: string;
   assignmentLabel: string;
+  focusLabel: string;
+  actionLabel: string;
+  targetMenu: OfficeSceneActorActionTarget;
 }
 
 export interface OfficeScenePlan {

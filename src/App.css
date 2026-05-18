@@ -842,6 +842,7 @@ p {
   left: 24px;
   max-width: 230px;
   padding: 9px;
+  pointer-events: none;
   position: absolute;
   z-index: 3;
 }
@@ -1066,10 +1067,22 @@ p {
 .staff-sprite.pixel-actor {
   animation: pixel-actor-idle 1450ms steps(2) infinite;
   bottom: auto;
+  box-shadow: 0 2px 0 rgba(61, 51, 35, 0.5);
+  cursor: pointer;
   image-rendering: pixelated;
   left: var(--actor-x, 18%);
+  min-height: 28px;
+  padding: 0;
+  pointer-events: auto;
   top: var(--actor-y, 64%);
   transform: translate(-50%, -50%);
+}
+
+.staff-sprite.pixel-actor:hover,
+.staff-sprite.pixel-actor:focus-visible,
+.staff-sprite.pixel-actor.selected {
+  box-shadow: 0 0 0 3px #f2cf7f, 0 4px 0 rgba(61, 51, 35, 0.45);
+  outline: none;
 }
 
 .staff-sprite.pixel-actor.actor-state-working {
@@ -1134,6 +1147,103 @@ p {
 .staff-sprite.pixel-actor.actor-state-warning .actor-thought {
   background: #ffe1d8;
   color: #842d1f;
+}
+
+.office-actor-focus-panel {
+  background: rgba(255, 247, 223, 0.97);
+  border: 3px solid var(--line);
+  box-shadow: 0 4px 0 rgba(61, 51, 35, 0.35);
+  display: grid;
+  gap: 7px;
+  padding: 8px;
+  position: absolute;
+  right: 22px;
+  bottom: 100px;
+  width: 218px;
+  z-index: 5;
+}
+
+.office-actor-focus-panel.actor-focus-warning,
+.office-actor-focus-panel.actor-focus-resting {
+  border-color: var(--red);
+}
+
+.office-actor-focus-panel div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.office-actor-focus-panel span,
+.office-actor-focus-panel strong,
+.office-actor-focus-panel small {
+  display: block;
+  line-height: 1.12;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.office-actor-focus-panel div:first-child span {
+  color: #765a2b;
+  font-size: 0.56rem;
+  font-weight: 900;
+}
+
+.office-actor-focus-panel strong {
+  color: var(--green-dark);
+  font-size: 0.8rem;
+}
+
+.office-actor-focus-panel small {
+  color: #5f5546;
+  font-size: 0.62rem;
+  font-weight: 900;
+}
+
+.actor-focus-meters {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.actor-focus-meters span {
+  background: #fffdf5;
+  border: 2px solid #d8c49b;
+  color: #433625;
+  display: grid;
+  font-size: 0.56rem;
+  font-weight: 900;
+  gap: 3px;
+  padding: 4px;
+}
+
+.actor-focus-meters i {
+  background: linear-gradient(90deg, var(--meter-color, var(--green)) var(--meter-value, 0%), #e7d8b8 var(--meter-value, 0%));
+  border: 1px solid rgba(61, 51, 35, 0.45);
+  display: block;
+  height: 6px;
+}
+
+.actor-focus-meters .meter-safe {
+  --meter-color: var(--green);
+}
+
+.actor-focus-meters .meter-watch {
+  --meter-color: var(--amber);
+}
+
+.actor-focus-meters .meter-danger {
+  --meter-color: var(--red);
+}
+
+.office-actor-focus-panel button {
+  background: var(--green);
+  box-shadow: none;
+  color: #fffaf0;
+  font-size: 0.66rem;
+  font-weight: 900;
+  min-height: 30px;
+  padding: 0 8px;
 }
 
 @keyframes pixel-actor-idle {
@@ -6062,6 +6172,29 @@ p {
 
   .staff-sprite.pixel-actor .actor-thought {
     display: none;
+  }
+
+  .office-actor-focus-panel {
+    bottom: 50px;
+    gap: 4px;
+    left: 130px;
+    padding: 5px;
+    right: 10px;
+    width: auto;
+  }
+
+  .office-actor-focus-panel strong {
+    font-size: 0.62rem;
+  }
+
+  .office-actor-focus-panel small,
+  .actor-focus-meters {
+    display: none;
+  }
+
+  .office-actor-focus-panel button {
+    font-size: 0.56rem;
+    min-height: 24px;
   }
 
   .monthly-report dl,

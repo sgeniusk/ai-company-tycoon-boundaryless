@@ -256,6 +256,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("officeScenePlan");
     expect(gameChrome).toContain("pixel-office-object");
     expect(gameChrome).toContain("pixel-actor");
+    expect(gameChrome).toContain("OfficeActorFocusPanel");
+    expect(gameChrome).toContain("setSelectedOfficeActorId");
     expect(gameChrome).toContain("getOperationsCommandPlan");
     expect(gameChrome).toContain("OperationCommandPanel");
     expect(gameChrome).toContain("operation-command-panel");
@@ -265,6 +267,10 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.pixel-office-grid\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.office-object\.pixel-office-object\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\s*{[^}]*animation:/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\s*{[^}]*pointer-events:\s*auto/s);
+    expect(appCss).toMatch(/\.office-actor-focus-panel\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.project-stack\s*{[^}]*pointer-events:\s*none/s);
+    expect(appCss).toMatch(/\.actor-focus-meters\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/@keyframes\s+pixel-actor-work/s);
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*{[\s\S]*\.staff-sprite\.pixel-actor\s*{[^}]*animation:\s*none/s);
     expect(appCss).toMatch(/\.operation-command-panel\s*{[^}]*position:\s*absolute/s);

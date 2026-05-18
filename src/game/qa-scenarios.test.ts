@@ -288,7 +288,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     const plan = getOfficeScenePlan(scenario.state);
 
     expect(scenario.activeMenu).toBe("company");
-    expect(scenario.label).toContain("사무실 픽셀");
+    expect(scenario.label).toContain("사무실 액터");
     expect(plan.objects.length).toBeGreaterThanOrEqual(8);
     expect(plan.actors.some((actor) => actor.kind === "robot")).toBe(true);
     expect(plan.activityTicker.join(" ")).toContain("구획");

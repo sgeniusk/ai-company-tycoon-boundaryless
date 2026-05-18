@@ -1240,6 +1240,7 @@ function createOfficeSceneActor(agent: HiredAgent, index: number, state: GameSta
         : kind === "robot"
           ? "충전 대기"
           : "운영 대기";
+  const focus = getOfficeSceneActorFocus(stateLabel);
 
   return {
     id: agent.id,
@@ -1254,6 +1255,7 @@ function createOfficeSceneActor(agent: HiredAgent, index: number, state: GameSta
     loyalty,
     activity: getOfficeSceneActorActivity(stateLabel, kind, assignedProduct?.name),
     assignmentLabel,
+    ...focus,
   };
 }
 
@@ -1270,6 +1272,39 @@ function createFounderPlaceholderActor(): OfficeSceneActorStatus {
     loyalty: 100,
     activity: "첫 채용 준비",
     assignmentLabel: "차고 운영",
+    focusLabel: "창업 준비",
+    actionLabel: "첫 채용",
+    targetMenu: "agents",
+  };
+}
+
+function getOfficeSceneActorFocus(actorState: OfficeSceneActorStatus["state"]): Pick<OfficeSceneActorStatus, "focusLabel" | "actionLabel" | "targetMenu"> {
+  if (actorState === "working") {
+    return {
+      focusLabel: "작업 중",
+      actionLabel: "프로젝트 보기",
+      targetMenu: "products",
+    };
+  }
+  if (actorState === "resting") {
+    return {
+      focusLabel: "회복 필요",
+      actionLabel: "휴식 관리",
+      targetMenu: "agents",
+    };
+  }
+  if (actorState === "warning") {
+    return {
+      focusLabel: "케어 경고",
+      actionLabel: "케어 보기",
+      targetMenu: "agents",
+    };
+  }
+
+  return {
+    focusLabel: "대기 중",
+    actionLabel: "배치 보기",
+    targetMenu: "agents",
   };
 }
 
