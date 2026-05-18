@@ -959,6 +959,7 @@ export interface StaffIncidentResolutionLogEntry {
   resolutionLabel: string;
   summary: string;
   effectLabel: string;
+  isAftermath?: boolean;
   sourceCompetitorId?: string;
   sourceCompetitorName?: string;
   offerLabel?: string;

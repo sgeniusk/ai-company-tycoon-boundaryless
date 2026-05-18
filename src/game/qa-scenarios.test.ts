@@ -6,7 +6,7 @@ import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
 import { runTenYearCampaignSimulation } from "./run-simulator";
-import { getRecentStaffIncidentResolutionLog, getStaffIncidentBriefs } from "./simulation";
+import { getRecentStaffIncidentAftermathLog, getRecentStaffIncidentResolutionLog, getStaffIncidentBriefs } from "./simulation";
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
@@ -41,6 +41,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "persona20",
       "staff-incidents",
       "staff-resolution",
+      "staff-aftermath",
       "launch-impact",
     ]);
   });
@@ -91,6 +92,17 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.label).toContain("인사 대응");
     expect(resolutions).toHaveLength(1);
     expect(resolutions[0].resolutionLabel).toContain("회복일");
+  });
+
+  it("creates an unresolved staff aftermath scenario for monthly pressure browser QA", () => {
+    const scenario = createQaScenario("staff-aftermath");
+    const aftermaths = getRecentStaffIncidentAftermathLog(scenario.state);
+
+    expect(scenario.activeMenu).toBe("agents");
+    expect(scenario.label).toContain("후폭풍");
+    expect(aftermaths.length).toBeGreaterThanOrEqual(1);
+    expect(aftermaths[0].resolutionLabel).toContain("후폭풍");
+    expect(scenario.state.timeline.join(" ")).toContain("인사 후폭풍");
   });
 
   it("creates a release spotlight scenario", () => {

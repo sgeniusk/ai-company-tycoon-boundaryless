@@ -4,6 +4,28 @@
 
 ---
 
+## [0.34.13-alpha] — 2026-05-18
+
+### 인사 사건 미대응 후폭풍
+
+**추가:**
+- 인사 사건을 해결하지 않고 다음 달로 넘기면 `미대응 후폭풍` 기록이 남는다.
+- 번아웃 방치는 체력/충성도 손실, 스카우트 방치는 충성도 손실과 경쟁사 모멘텀 상승, 계약 불만 방치는 현금/신뢰/충성도 손실로 이어진다.
+- 인사 사건 카드에 `방치 시` 후폭풍 미리보기를 추가했다.
+- 에이전트 콘솔에 `최근 인사 후폭풍` 패널을 추가해 방치 결과를 대응 기록과 분리해서 보여준다.
+- 회사 기록의 공유 순간 카드가 후폭풍을 `스카우트 방어`가 아니라 `스카우트 후폭풍`으로 표시한다.
+- 브라우저 QA용 `staff-aftermath` 시나리오를 추가했다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts src/game/qa-scenarios.test.ts src/game/shareable-moments.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 89 tests
+- `npm run harness:gate` 통과, 38 files / 274 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser QA: `http://127.0.0.1:5200/?scenario=staff-aftermath&menu=agents`에서 후폭풍 패널 1개, 후폭풍 카드 2개, 방치 경고 3개, 콘솔 오류 0건 확인
+- 데스크톱 QA: 후폭풍 패널이 첫 확인 영역에 보이고, 가로 오버플로 없음 확인
+- 모바일 QA: 390×844에서 후폭풍 패널/카드 DOM 유지, 하단 탭 표시, 가로 오버플로 없음 확인
+- 스크린샷: `/tmp/ai-company-v03413-staff-aftermath-desktop.png`, `/tmp/ai-company-v03413-staff-aftermath-mobile.png`
+
+---
+
 ## [0.34.12-alpha] — 2026-05-18
 
 ### 경쟁사 스카우트 상세 조건

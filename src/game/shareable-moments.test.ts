@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { products } from "./data";
 import { getShareableMoments } from "./shareable-moments";
-import { createInitialState, getStaffIncidentBriefs, hireAgentViaChannel, launchProduct, resolveStaffIncident, startProductProject } from "./simulation";
+import { advanceMonth, createInitialState, getStaffIncidentBriefs, hireAgentViaChannel, launchProduct, resolveStaffIncident, startProductProject } from "./simulation";
 import { agentTypes } from "./data";
 
 describe("v0.23 shareable moment harness", () => {
@@ -100,5 +100,25 @@ describe("v0.23 shareable moment harness", () => {
 
     expect(staffMoment?.title).toContain("제미있니");
     expect(staffMoment?.detail).toContain("점유 44%");
+  });
+
+  it("labels unresolved staff aftermaths without calling them a defense", () => {
+    const architect = agentTypes.find((entry) => entry.id === "prompt_architect");
+    if (!architect) throw new Error("Missing staff incident fixture data");
+    const hired = hireAgentViaChannel(architect, createInitialState(), "career_recruiting");
+    const targeted = {
+      ...hired,
+      competitorStates: hired.competitorStates.map((competitor) =>
+        competitor.id === "competitor_jemiinni" ? { ...competitor, marketShare: 44, score: 190, momentum: 0 } : competitor,
+      ),
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
+    };
+
+    const advanced = advanceMonth(targeted);
+    const staffMoment = getShareableMoments(advanced).find((moment) => moment.type === "staff");
+
+    expect(staffMoment?.title).toContain("후폭풍");
+    expect(staffMoment?.title).not.toContain("방어");
+    expect(staffMoment?.detail).toContain("제미있니");
   });
 });

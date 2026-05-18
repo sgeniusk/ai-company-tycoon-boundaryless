@@ -2227,6 +2227,17 @@ p {
   color: #253f66;
 }
 
+.staff-incident-aftermath-warning {
+  background: #fff4d8;
+  border: 1px solid #d8ae5d;
+  color: #7a4b17;
+  display: block;
+  font-size: 0.64rem;
+  font-weight: 900;
+  line-height: 1.25;
+  padding: 5px 6px;
+}
+
 .staff-incident-card button {
   align-self: center;
   background: #2f6f4d;
@@ -2286,6 +2297,38 @@ p {
 .staff-resolution-result-card.severity-critical {
   background: #fff4ed;
   border-color: #d8895b;
+}
+
+.staff-aftermath-panel {
+  background: #fff2e8;
+  border: 2px solid #d78352;
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 9px;
+}
+
+.staff-aftermath-panel strong,
+.staff-aftermath-panel span,
+.staff-aftermath-panel small {
+  color: #70391f;
+  display: block;
+  font-weight: 900;
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+}
+
+.staff-aftermath-card {
+  background: #fffaf3;
+  border: 1px solid #d9a06e;
+  display: grid;
+  gap: 5px;
+  padding: 7px;
+}
+
+.staff-aftermath-card.severity-critical {
+  background: #ffe8de;
+  border-color: #c8663d;
 }
 
 .retention-alert-list {

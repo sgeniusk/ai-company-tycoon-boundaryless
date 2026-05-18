@@ -13,6 +13,7 @@ import {
   getAgentSalaryNegotiationCheck,
   getAgentSpecializationCheck,
   getAgentSpecializationOptions,
+  getRecentStaffIncidentAftermathLog,
   getRecentStaffIncidentResolutionLog,
   getStaffIncidentResolutionOptions,
   getStaffIncidentBriefs,
@@ -414,7 +415,7 @@ describe("v0.34.9 staff incident drama", () => {
       ...hired,
       resources: { ...hired.resources, cash: 12000 },
       competitorStates: hired.competitorStates.map((competitor) =>
-        competitor.id === "competitor_jemiinni" ? { ...competitor, marketShare: 44, score: 190, momentum: 8 } : competitor,
+        competitor.id === "competitor_jemiinni" ? { ...competitor, marketShare: 44, score: 190, momentum: 0 } : competitor,
       ),
       hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
     };
@@ -427,6 +428,61 @@ describe("v0.34.9 staff incident drama", () => {
     expect(log[0].sourceCompetitorName).toContain("제미있니");
     expect(log[0].summary).toContain("제미있니");
     expect(log[0].stakesLabel).toContain("점유 44%");
+  });
+
+  it("previews the consequence of ignoring a staff incident", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const targeted = {
+      ...hired,
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
+    };
+
+    const poaching = getStaffIncidentBriefs(targeted).find((incident) => incident.type === "poaching");
+
+    expect(poaching?.aftermathLabel).toContain("방치");
+    expect(poaching?.aftermathLabel).toContain("충성");
+  });
+
+  it("applies unresolved staff incident aftermaths on the next month", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const targeted = {
+      ...hired,
+      competitorStates: hired.competitorStates.map((competitor) =>
+        competitor.id === "competitor_jemiinni" ? { ...competitor, marketShare: 44, score: 190, momentum: 0 } : competitor,
+      ),
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
+    };
+    const beforeAgent = targeted.hiredAgents[0];
+    const beforeRivalMomentum = targeted.competitorStates.find((competitor) => competitor.id === "competitor_jemiinni")?.momentum ?? 0;
+
+    const advanced = advanceMonth(targeted);
+    const agent = advanced.hiredAgents.find((entry) => entry.id === beforeAgent.id);
+    const afterRivalMomentum = advanced.competitorStates.find((competitor) => competitor.id === "competitor_jemiinni")?.momentum ?? 0;
+    const aftermathLog = getRecentStaffIncidentAftermathLog(advanced);
+
+    expect(agent?.loyalty).toBeLessThan(beforeAgent.loyalty ?? 0);
+    expect(afterRivalMomentum).toBeGreaterThan(beforeRivalMomentum);
+    expect(aftermathLog).toHaveLength(1);
+    expect(aftermathLog[0].resolutionLabel).toContain("후폭풍");
+    expect(aftermathLog[0].summary).toContain("제미있니");
+    expect(advanced.timeline.join(" ")).toContain("인사 후폭풍");
+  });
+
+  it("does not apply a staff aftermath after the player resolves the incident", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const targeted = {
+      ...hired,
+      resources: { ...hired.resources, cash: 12000 },
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
+    };
+    const poaching = getStaffIncidentBriefs(targeted).find((incident) => incident.type === "poaching");
+    if (!poaching) throw new Error("Missing poaching incident");
+
+    const resolved = resolveStaffIncident(poaching.id, "retention_bonus", targeted);
+    const advanced = advanceMonth(resolved);
+
+    expect(getRecentStaffIncidentAftermathLog(advanced)).toHaveLength(0);
+    expect(advanced.timeline.join(" ")).not.toContain("인사 후폭풍");
   });
 
   it("records the latest staff incident resolution as a visible result card", () => {

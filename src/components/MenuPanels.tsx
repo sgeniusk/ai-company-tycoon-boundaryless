@@ -104,6 +104,7 @@ import {
   getRecruitmentBrandProfile,
   getRecruitmentCandidatePool,
   getRecruitmentOffer,
+  getRecentStaffIncidentAftermathLog,
   getRecentStaffIncidentResolutionLog,
   getAgentRetentionAlerts,
   getAgentSalaryNegotiationCheck,
@@ -1309,6 +1310,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
   const workforceSynergySummary = getWorkforceSynergySummary(gameState);
   const retentionAlerts = getAgentRetentionAlerts(gameState);
   const staffIncidents = getStaffIncidentBriefs(gameState);
+  const recentStaffAftermaths = getRecentStaffIncidentAftermathLog(gameState);
   const recentStaffResolutions = getRecentStaffIncidentResolutionLog(gameState);
   const selectedRecruitmentChannel = recruitmentChannels.find((channel) => channel.id === recruitmentChannelId) ?? recruitmentChannels[0];
   const candidatePool = getRecruitmentCandidatePool(gameState, recruitmentChannelId);
@@ -1333,6 +1335,22 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
           <span>AI 운용 {getAiAgentCount(gameState)}/{getAiOperationCapacity(gameState)}</span>
           <span>사람 직원이 늘면 AI 에이전트를 더 안정적으로 굴릴 수 있습니다.</span>
         </div>
+        {recentStaffAftermaths.length > 0 && (
+          <div className="staff-aftermath-panel" aria-live="polite">
+            <div>
+              <p className="eyebrow">최근 인사 후폭풍</p>
+              <strong>{recentStaffAftermaths[0].agentName} · {recentStaffAftermaths[0].resolutionLabel}</strong>
+              <span>{recentStaffAftermaths[0].summary}</span>
+            </div>
+            {recentStaffAftermaths.slice(0, 2).map((record) => (
+              <article className={`staff-aftermath-card severity-${record.severity}`} key={record.id}>
+                <strong>{record.incidentTitle}</strong>
+                <span>{record.sourceCompetitorName ? `${record.sourceCompetitorName} · ${record.effectLabel}` : record.effectLabel}</span>
+                <small>{record.month}개월차 · {record.stakesLabel ?? "월간 방치 압박"}</small>
+              </article>
+            ))}
+          </div>
+        )}
         {staffIncidents.length > 0 && (
           <div className="staff-incident-panel">
             <div>
@@ -1356,6 +1374,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
                       <small>{incident.stakesLabel}</small>
                     </div>
                   )}
+                  {incident.aftermathLabel && <small className="staff-incident-aftermath-warning">{incident.aftermathLabel}</small>}
                   <div className="staff-incident-actions">
                     {resolutionOptions.map((option) => (
                       <button

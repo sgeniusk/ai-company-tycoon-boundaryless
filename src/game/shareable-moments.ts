@@ -42,9 +42,7 @@ export function getShareableMoments(state: GameState): ShareableMoment[] {
   if (latestStaffResolution) {
     moments.push({
       type: "staff",
-      title: latestStaffResolution.sourceCompetitorName
-        ? `${latestStaffResolution.sourceCompetitorName} 스카우트 방어 · ${latestStaffResolution.resolutionLabel}`
-        : `${latestStaffResolution.agentName} · ${latestStaffResolution.resolutionLabel}`,
+      title: getStaffMomentTitle(latestStaffResolution),
       detail: latestStaffResolution.stakesLabel
         ? `${latestStaffResolution.summary} · ${latestStaffResolution.stakesLabel}`
         : latestStaffResolution.summary,
@@ -67,6 +65,18 @@ export function getShareableMoments(state: GameState): ShareableMoment[] {
   }
 
   return moments.slice(0, 4);
+}
+
+function getStaffMomentTitle(staffResolution: NonNullable<GameState["recentStaffIncidentResolutions"][number]>): string {
+  if (staffResolution.isAftermath || staffResolution.resolutionId === "unresolved_aftermath") {
+    return staffResolution.sourceCompetitorName
+      ? `${staffResolution.sourceCompetitorName} 스카우트 후폭풍 · ${staffResolution.agentName}`
+      : `${staffResolution.agentName} · 인사 후폭풍`;
+  }
+
+  return staffResolution.sourceCompetitorName
+    ? `${staffResolution.sourceCompetitorName} 스카우트 방어 · ${staffResolution.resolutionLabel}`
+    : `${staffResolution.agentName} · ${staffResolution.resolutionLabel}`;
 }
 
 function getTopRivalMoment(state: GameState): ShareableMoment | undefined {

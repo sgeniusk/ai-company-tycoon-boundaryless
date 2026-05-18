@@ -169,6 +169,7 @@ export interface StaffIncidentBrief {
   triggerLabel: string;
   recommendedAction: StaffIncidentAction;
   actionLabel: string;
+  aftermathLabel?: string;
   sourceCompetitorId?: string;
   sourceCompetitorName?: string;
   offerLabel?: string;
@@ -627,6 +628,7 @@ export function getStaffIncidentBriefs(state: GameState): StaffIncidentBrief[] {
         triggerLabel: `체력 ${energy}`,
         recommendedAction: "rest",
         actionLabel: "휴식 검토",
+        aftermathLabel: "방치 시 체력 -14 · 충성 -4",
       });
     }
 
@@ -643,6 +645,7 @@ export function getStaffIncidentBriefs(state: GameState): StaffIncidentBrief[] {
         triggerLabel: `Lv.${level} · 충성 ${loyalty} · ${poachingOffer.sourceCompetitorName} 제안`,
         recommendedAction: "salary",
         actionLabel: "연봉 협상",
+        aftermathLabel: "방치 시 충성 -12 · 경쟁사 모멘텀 +8",
         ...poachingOffer,
       });
     }
@@ -659,6 +662,7 @@ export function getStaffIncidentBriefs(state: GameState): StaffIncidentBrief[] {
         triggerLabel: `충성 ${loyalty} · 연봉 x${agent.salaryMultiplier ?? 1}`,
         recommendedAction: "salary",
         actionLabel: "조건 조정",
+        aftermathLabel: "방치 시 충성 -8 · 현금/신뢰 손실",
       });
     }
 
@@ -711,6 +715,14 @@ export function getStaffIncidentResolutionCheck(incidentId: string, resolutionId
 
 export function getRecentStaffIncidentResolutionLog(state: GameState, limit = 3): StaffIncidentResolutionLogEntry[] {
   return [...(state.recentStaffIncidentResolutions ?? [])]
+    .filter((entry) => !(entry.isAftermath || entry.resolutionId === "unresolved_aftermath"))
+    .sort((left, right) => right.month - left.month)
+    .slice(0, limit);
+}
+
+export function getRecentStaffIncidentAftermathLog(state: GameState, limit = 3): StaffIncidentResolutionLogEntry[] {
+  return [...(state.recentStaffIncidentResolutions ?? [])]
+    .filter((entry) => entry.isAftermath || entry.resolutionId === "unresolved_aftermath")
     .sort((left, right) => right.month - left.month)
     .slice(0, limit);
 }
@@ -1846,7 +1858,8 @@ export function advanceMonth(state: GameState): GameState {
     status: getNextStatus(nextResources, state.activeProducts.length, nextMonth),
     timeline: [],
   };
-  const careerState = advanceAgentCareers(nextStateWithoutEvent);
+  const staffAftermathState = applyUnresolvedStaffIncidentAftermaths(nextStateWithoutEvent, state, nextMonth);
+  const careerState = advanceAgentCareers(staffAftermathState);
   const progressedState = advanceProductProjects(careerState);
   const entrantState = addScheduledCompetitors(progressedState);
   const seasonAdjustedState = applySeasonChallengeOutcomes(entrantState);
@@ -1890,7 +1903,7 @@ export function advanceMonth(state: GameState): GameState {
 }
 
 function getPriorityStaffTimelineEntries(timeline: string[]): string[] {
-  return timeline.filter((entry) => entry.startsWith("퇴사 발생") || entry.startsWith("인사 경고") || entry.startsWith("직원 성장"));
+  return timeline.filter((entry) => entry.startsWith("퇴사 발생") || entry.startsWith("인사 경고") || entry.startsWith("직원 성장") || entry.startsWith("인사 후폭풍"));
 }
 
 export function getUpgradeCheck(upgrade: UpgradeDefinition, state: GameState): ActionCheck {
@@ -2247,6 +2260,7 @@ function hydrateStaffIncidentResolutionLog(value: unknown): StaffIncidentResolut
         resolutionLabel: typeof entry.resolutionLabel === "string" ? entry.resolutionLabel : "대응 완료",
         summary: typeof entry.summary === "string" ? entry.summary : "인사 사건 대응 기록을 복구했습니다.",
         effectLabel: typeof entry.effectLabel === "string" ? entry.effectLabel : "효과 기록 없음",
+        isAftermath: typeof entry.isAftermath === "boolean" ? entry.isAftermath : entry.resolutionId === "unresolved_aftermath",
         sourceCompetitorId: typeof entry.sourceCompetitorId === "string" ? entry.sourceCompetitorId : undefined,
         sourceCompetitorName: typeof entry.sourceCompetitorName === "string" ? entry.sourceCompetitorName : undefined,
         offerLabel: typeof entry.offerLabel === "string" ? entry.offerLabel : undefined,
@@ -3369,6 +3383,137 @@ function getRetentionRiskLabel(severity: AgentCareerStatus["retentionSeverity"])
 function getStaffIncidentSeverityScore(incident: StaffIncidentBrief): number {
   const typeWeight = incident.type === "poaching" ? 3 : incident.type === "burnout" ? 2 : 1;
   return (incident.severity === "critical" ? 100 : 50) + typeWeight;
+}
+
+interface StaffIncidentAftermathEffect {
+  incident: StaffIncidentBrief;
+  resourceDelta: ResourceMap;
+  energyDelta: number;
+  loyaltyDelta: number;
+  competitorMomentumDelta: number;
+  effectLabel: string;
+  summary: string;
+}
+
+function applyUnresolvedStaffIncidentAftermaths(targetState: GameState, sourceState: GameState, appliedMonth: number): GameState {
+  const effects = getStaffIncidentAftermathEffects(sourceState);
+  if (!effects.length) return targetState;
+
+  const agentDeltas = new Map<string, { energy: number; loyalty: number }>();
+  let resourcesAftermath = targetState.resources;
+  let competitorStatesAftermath = targetState.competitorStates;
+
+  for (const effect of effects) {
+    resourcesAftermath = applyResourceDelta(resourcesAftermath, effect.resourceDelta);
+    const currentDelta = agentDeltas.get(effect.incident.agentId) ?? { energy: 0, loyalty: 0 };
+    agentDeltas.set(effect.incident.agentId, {
+      energy: currentDelta.energy + effect.energyDelta,
+      loyalty: currentDelta.loyalty + effect.loyaltyDelta,
+    });
+
+    if (effect.competitorMomentumDelta !== 0 && effect.incident.sourceCompetitorId) {
+      competitorStatesAftermath = competitorStatesAftermath.map((competitor) =>
+        competitor.id === effect.incident.sourceCompetitorId
+          ? { ...competitor, momentum: competitor.momentum + effect.competitorMomentumDelta, lastMove: `${effect.incident.agentName} 스카우트 압박 강화` }
+          : competitor,
+      );
+    }
+  }
+
+  const nextAgents = targetState.hiredAgents.map((agent) => {
+    const delta = agentDeltas.get(agent.id);
+    if (!delta) return agent;
+
+    return {
+      ...agent,
+      energy: clamp(Math.round(agent.energy) + delta.energy, 0, 100),
+      loyalty: clamp(getAgentLoyalty(agent) + delta.loyalty, 0, 100),
+    };
+  });
+  const aftermathRecords = effects.map((effect, index): StaffIncidentResolutionLogEntry => ({
+    id: `staff-aftermath-${appliedMonth}-${effect.incident.agentId}-${index + 1}`,
+    month: appliedMonth,
+    agentId: effect.incident.agentId,
+    agentName: effect.incident.agentName,
+    incidentType: effect.incident.type,
+    incidentTitle: effect.incident.title,
+    severity: effect.incident.severity,
+    resolutionId: "unresolved_aftermath",
+    resolutionLabel: "미대응 후폭풍",
+    summary: effect.summary,
+    effectLabel: effect.effectLabel,
+    isAftermath: true,
+    sourceCompetitorId: effect.incident.sourceCompetitorId,
+    sourceCompetitorName: effect.incident.sourceCompetitorName,
+    offerLabel: effect.incident.offerLabel,
+    stakesLabel: effect.incident.stakesLabel,
+  }));
+  const timelineEntries = effects.map((effect) => `인사 후폭풍: ${effect.incident.agentName} · ${effect.effectLabel}`);
+
+  return {
+    ...targetState,
+    resources: resourcesAftermath,
+    competitorStates: competitorStatesAftermath,
+    hiredAgents: nextAgents,
+    recentStaffIncidentResolutions: [...aftermathRecords, ...(targetState.recentStaffIncidentResolutions ?? [])].slice(0, 6),
+    timeline: [...timelineEntries, ...targetState.timeline].slice(0, 8),
+  };
+}
+
+function getStaffIncidentAftermathEffects(state: GameState, limit = 2): StaffIncidentAftermathEffect[] {
+  const selectedIncidents: StaffIncidentBrief[] = [];
+  const affectedAgentIds = new Set<string>();
+
+  for (const incident of getStaffIncidentBriefs(state)) {
+    if (affectedAgentIds.has(incident.agentId)) continue;
+    selectedIncidents.push(incident);
+    affectedAgentIds.add(incident.agentId);
+    if (selectedIncidents.length >= limit) break;
+  }
+
+  return selectedIncidents
+    .map((incident) => {
+      const agent = state.hiredAgents.find((entry) => entry.id === incident.agentId);
+      return agent ? createStaffIncidentAftermathEffect(incident, agent) : undefined;
+    })
+    .filter((effect): effect is StaffIncidentAftermathEffect => Boolean(effect));
+}
+
+function createStaffIncidentAftermathEffect(incident: StaffIncidentBrief, agent: HiredAgent): StaffIncidentAftermathEffect {
+  if (incident.type === "burnout") {
+    return {
+      incident,
+      resourceDelta: {},
+      energyDelta: -14,
+      loyaltyDelta: -4,
+      competitorMomentumDelta: 0,
+      effectLabel: "체력 -14 · 충성 -4",
+      summary: `${agent.name}의 번아웃 위험을 넘겨 체력과 충성도가 동시에 흔들렸습니다. 다음 달 개발 배치 전 회복이 필요합니다.`,
+    };
+  }
+
+  if (incident.type === "poaching") {
+    return {
+      incident,
+      resourceDelta: { hype: -1 },
+      energyDelta: 0,
+      loyaltyDelta: -12,
+      competitorMomentumDelta: 8,
+      effectLabel: `충성 -12 · ${incident.sourceCompetitorName ?? "경쟁사"} 모멘텀 +8`,
+      summary: `${incident.sourceCompetitorName ?? "경쟁사"}의 스카우트 제안을 방치해 ${agent.name}의 충성도가 떨어지고 경쟁사 모멘텀이 올랐습니다.`,
+    };
+  }
+
+  const frictionCost = Math.max(120, Math.round((getHiredAgentMonthlyUpkeep(agent).cash ?? 200) * 0.35));
+  return {
+    incident,
+    resourceDelta: { cash: -frictionCost, trust: -1 },
+    energyDelta: 0,
+    loyaltyDelta: -8,
+    competitorMomentumDelta: 0,
+    effectLabel: `충성 -8 · 현금 ${formatMoney(-frictionCost)} · 신뢰 -1`,
+    summary: `${agent.name}의 계약 불만을 넘겨 보상성 비용과 신뢰 손실이 발생했습니다. 다음 불만은 더 빨리 커질 수 있습니다.`,
+  };
 }
 
 function createStaffIncidentResolutionRecord(

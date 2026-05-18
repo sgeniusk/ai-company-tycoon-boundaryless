@@ -50,6 +50,7 @@ export const qaScenarioIds = [
   "persona20",
   "staff-incidents",
   "staff-resolution",
+  "staff-aftermath",
   "launch-impact",
 ] as const;
 
@@ -97,6 +98,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "인사 대응 결과 QA",
       state: createStaffResolutionState(),
+      activeMenu: "agents",
+    };
+  }
+
+  if (id === "staff-aftermath") {
+    return {
+      id,
+      label: "인사 후폭풍 QA",
+      state: createStaffAftermathState(),
       activeMenu: "agents",
     };
   }
@@ -694,6 +704,16 @@ function createStaffResolutionState(): GameState {
   return {
     ...resolved,
     timeline: ["인사 대응 결과 QA: 회복일 지정 결과 카드 확인", ...resolved.timeline].slice(0, 8),
+  };
+}
+
+function createStaffAftermathState(): GameState {
+  const incidentState = createStaffIncidentState();
+  const afterMonth = advanceMonth(incidentState);
+
+  return {
+    ...afterMonth,
+    timeline: ["인사 후폭풍 QA: 미대응 사건이 월간 압박으로 반영됨", ...afterMonth.timeline].slice(0, 8),
   };
 }
 
