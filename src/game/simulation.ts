@@ -71,6 +71,7 @@ import type {
   RogueliteState,
   RunRecord,
   ResourceMap,
+  StaffIncidentResolutionLogEntry,
   ProductProjectForecast,
   StrategyDeckState,
   UpgradeDefinition,
@@ -79,7 +80,7 @@ import type {
 } from "./types";
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-const SAVE_VERSION = 10;
+const SAVE_VERSION = 11;
 const statKeys: Array<keyof AgentStats> = [
   "research",
   "engineering",
@@ -283,6 +284,7 @@ export function createInitialState(): GameState {
     eventHistory: [],
     rivalEventHistory: [],
     seenTutorials: [],
+    recentStaffIncidentResolutions: [],
     timeline: ["회사는 작은 AI 생산성 도구 팀으로 시작했습니다."],
     status: "playing",
   };
@@ -702,6 +704,12 @@ export function getStaffIncidentResolutionCheck(incidentId: string, resolutionId
   return { ok: reasons.length === 0, reasons };
 }
 
+export function getRecentStaffIncidentResolutionLog(state: GameState, limit = 3): StaffIncidentResolutionLogEntry[] {
+  return [...(state.recentStaffIncidentResolutions ?? [])]
+    .sort((left, right) => right.month - left.month)
+    .slice(0, limit);
+}
+
 export function resolveStaffIncident(incidentId: string, resolutionId: StaffIncidentResolutionId, state: GameState): GameState {
   const check = getStaffIncidentResolutionCheck(incidentId, resolutionId, state);
   if (!check.ok) return state;
@@ -717,6 +725,7 @@ export function resolveStaffIncident(incidentId: string, resolutionId: StaffInci
     return applyStaffIncidentResolutionToAgent(entry, resolutionId);
   });
   const shouldClearAssignment = resolutionId === "recovery_day";
+  const resolutionRecord = createStaffIncidentResolutionRecord(state, incident, agent, option, resolutionId);
 
   return {
     ...state,
@@ -728,6 +737,7 @@ export function resolveStaffIncident(incidentId: string, resolutionId: StaffInci
           assignedAgentIds: project.assignedAgentIds.filter((agentId) => agentId !== incident.agentId),
         }))
       : state.productProjects,
+    recentStaffIncidentResolutions: [resolutionRecord, ...(state.recentStaffIncidentResolutions ?? [])].slice(0, 6),
     timeline: [`인사 사건 대응: ${agent.name} · ${option.label} (${incident.title})`, ...state.timeline].slice(0, 8),
   };
 }
@@ -2138,6 +2148,7 @@ export function hydrateGameState(serialized: string): GameState {
     eventHistory: sanitizeStringArray(rawState.eventHistory),
     rivalEventHistory: sanitizeStringArray(rawState.rivalEventHistory),
     seenTutorials: sanitizeStringArray(rawState.seenTutorials),
+    recentStaffIncidentResolutions: hydrateStaffIncidentResolutionLog(rawState.recentStaffIncidentResolutions),
     timeline: sanitizeStringArray(rawState.timeline),
     status: rawState.status === "success" || rawState.status === "failure" || rawState.status === "playing" ? rawState.status : "playing",
   };
@@ -2207,6 +2218,33 @@ function sanitizeStringArray(value: unknown, allowedValues?: string[], fallback:
 
   const allowed = allowedValues ? new Set(allowedValues) : undefined;
   return value.filter((entry): entry is string => typeof entry === "string" && (!allowed || allowed.has(entry)));
+}
+
+function hydrateStaffIncidentResolutionLog(value: unknown): StaffIncidentResolutionLogEntry[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter((entry): entry is Record<string, unknown> => isRecord(entry))
+    .map((entry, index): StaffIncidentResolutionLogEntry => {
+      const incidentType: StaffIncidentResolutionLogEntry["incidentType"] =
+        entry.incidentType === "poaching" || entry.incidentType === "discontent" ? entry.incidentType : "burnout";
+      const severity: StaffIncidentResolutionLogEntry["severity"] = entry.severity === "critical" ? "critical" : "warning";
+
+      return {
+        id: typeof entry.id === "string" ? entry.id : `legacy-staff-resolution-${index}`,
+        month: Math.max(1, Math.round(sanitizeNumber(entry.month, 1))),
+        agentId: typeof entry.agentId === "string" ? entry.agentId : "unknown-agent",
+        agentName: typeof entry.agentName === "string" ? entry.agentName : "알 수 없는 직원",
+        incidentType,
+        incidentTitle: typeof entry.incidentTitle === "string" ? entry.incidentTitle : "인사 사건",
+        severity,
+        resolutionId: typeof entry.resolutionId === "string" ? entry.resolutionId : "unknown",
+        resolutionLabel: typeof entry.resolutionLabel === "string" ? entry.resolutionLabel : "대응 완료",
+        summary: typeof entry.summary === "string" ? entry.summary : "인사 사건 대응 기록을 복구했습니다.",
+        effectLabel: typeof entry.effectLabel === "string" ? entry.effectLabel : "효과 기록 없음",
+      };
+    })
+    .slice(0, 6);
 }
 
 function sanitizeLocationId(value: unknown, fallback: string): string {
@@ -3322,6 +3360,57 @@ function getRetentionRiskLabel(severity: AgentCareerStatus["retentionSeverity"])
 function getStaffIncidentSeverityScore(incident: StaffIncidentBrief): number {
   const typeWeight = incident.type === "poaching" ? 3 : incident.type === "burnout" ? 2 : 1;
   return (incident.severity === "critical" ? 100 : 50) + typeWeight;
+}
+
+function createStaffIncidentResolutionRecord(
+  state: GameState,
+  incident: StaffIncidentBrief,
+  agent: HiredAgent,
+  option: Omit<StaffIncidentResolutionOption, "available" | "reasons">,
+  resolutionId: StaffIncidentResolutionId,
+): StaffIncidentResolutionLogEntry {
+  return {
+    id: `staff-resolution-${state.month}-${incident.agentId}-${resolutionId}-${(state.recentStaffIncidentResolutions ?? []).length + 1}`,
+    month: state.month,
+    agentId: incident.agentId,
+    agentName: agent.name,
+    incidentType: incident.type,
+    incidentTitle: incident.title,
+    severity: incident.severity,
+    resolutionId,
+    resolutionLabel: option.label,
+    summary: getStaffIncidentResolutionSummary(agent, incident, option, resolutionId),
+    effectLabel: option.effectLabel,
+  };
+}
+
+function getStaffIncidentResolutionSummary(
+  agent: HiredAgent,
+  incident: StaffIncidentBrief,
+  option: Omit<StaffIncidentResolutionOption, "available" | "reasons">,
+  resolutionId: StaffIncidentResolutionId,
+): string {
+  if (resolutionId === "recovery_day") {
+    return `${agent.name}에게 ${option.label}을 실행해 프로젝트 배치 해제와 컨디션 회복을 처리했습니다.`;
+  }
+
+  if (resolutionId === "backup_shift") {
+    return `${agent.name}에게 ${option.label}를 붙여 ${incident.title}을 완화하고 현재 개발 배치를 유지했습니다.`;
+  }
+
+  if (resolutionId === "retention_bonus") {
+    return `${agent.name}에게 ${option.label}를 지급해 스카우트 제안을 막았지만 장기 연봉 압박이 커졌습니다.`;
+  }
+
+  if (resolutionId === "mission_pitch") {
+    return `${agent.name}에게 창업 미션을 다시 설명해 비용 없이 이탈 위험을 낮췄습니다.`;
+  }
+
+  if (resolutionId === "contract_review") {
+    return `${agent.name}의 조건을 재조정해 계약 불만을 줄였지만 월 유지비가 소폭 올랐습니다.`;
+  }
+
+  return `${agent.name}와 1:1 면담을 진행해 계약 불만을 듣고 단기 신뢰를 회복했습니다.`;
 }
 
 function getStaffIncidentBaseResolutionOptions(incident: StaffIncidentBrief, agent: HiredAgent): Array<Omit<StaffIncidentResolutionOption, "available" | "reasons">> {

@@ -13,6 +13,7 @@ import {
   getAgentSalaryNegotiationCheck,
   getAgentSpecializationCheck,
   getAgentSpecializationOptions,
+  getRecentStaffIncidentResolutionLog,
   getStaffIncidentResolutionOptions,
   getStaffIncidentBriefs,
   hireAgentViaChannel,
@@ -22,6 +23,7 @@ import {
   restAgent,
   startProductProject,
 } from "./simulation";
+import type { GameState } from "./types";
 
 const architect = () => {
   const agent = agentTypes.find((entry) => entry.id === "prompt_architect");
@@ -377,5 +379,48 @@ describe("v0.34.9 staff incident drama", () => {
     expect(agent.salaryMultiplier).toBeGreaterThan(beforeAgent.salaryMultiplier ?? 1);
     expect(agent.upkeep?.cash).toBeGreaterThan(beforeAgent.upkeep?.cash ?? 0);
     expect(resolved.timeline[0]).toContain("스카우트");
+  });
+
+  it("records the latest staff incident resolution as a visible result card", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const started = startProductProject(writingProduct(), hired, [hired.hiredAgents[0].id]);
+    const exhausted = {
+      ...started,
+      resources: { ...started.resources, cash: 12000 },
+      hiredAgents: started.hiredAgents.map((agent) => ({ ...agent, energy: 18, loyalty: 66 })),
+    };
+    const burnout = getStaffIncidentBriefs(exhausted).find((incident) => incident.type === "burnout");
+    if (!burnout) throw new Error("Missing burnout incident");
+
+    const resolved = resolveStaffIncident(burnout.id, "recovery_day", exhausted);
+    const log = getRecentStaffIncidentResolutionLog(resolved);
+
+    expect(log).toHaveLength(1);
+    expect(log[0]).toMatchObject({
+      agentName: exhausted.hiredAgents[0].name,
+      incidentType: "burnout",
+      incidentTitle: expect.stringContaining("번아웃"),
+      resolutionLabel: "회복일 지정",
+      severity: "critical",
+    });
+    expect(log[0].summary).toContain("프로젝트 배치 해제");
+    expect(log[0].effectLabel).toContain("체력");
+  });
+
+  it("keeps only the three latest staff incident resolution records", () => {
+    const baseAgent = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting").hiredAgents[0];
+    const logged = {
+      ...createInitialState(),
+      recentStaffIncidentResolutions: [
+        { id: "old", month: 1, agentId: "old", agentName: "오래된 기록", incidentType: "burnout", incidentTitle: "오래된 사건", severity: "warning", resolutionId: "one_on_one", resolutionLabel: "1:1 면담", summary: "낡은 기록", effectLabel: "효과 없음" },
+        { id: "mid", month: 2, agentId: "mid", agentName: "중간 기록", incidentType: "discontent", incidentTitle: "중간 사건", severity: "warning", resolutionId: "one_on_one", resolutionLabel: "1:1 면담", summary: "중간 기록", effectLabel: "효과 없음" },
+        { id: "new", month: 3, agentId: "new", agentName: "최신 기록", incidentType: "poaching", incidentTitle: "최신 사건", severity: "critical", resolutionId: "retention_bonus", resolutionLabel: "리텐션 보너스", summary: "최신 기록", effectLabel: "충성 +24" },
+      ],
+      hiredAgents: [{ ...baseAgent, energy: 18, loyalty: 66 }],
+    } satisfies GameState;
+
+    const log = getRecentStaffIncidentResolutionLog(logged, 2);
+
+    expect(log.map((entry) => entry.id)).toEqual(["new", "mid"]);
   });
 });

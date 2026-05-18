@@ -4,6 +4,28 @@
 
 ---
 
+## [0.34.11-alpha] — 2026-05-18
+
+### 인사 대응 결과 카드
+
+**추가:**
+- 인사 사건 대응 결과를 `recentStaffIncidentResolutions`에 저장한다.
+- `getRecentStaffIncidentResolutionLog()`를 추가해 최근 대응 기록을 최신순으로 가져온다.
+- 에이전트 콘솔에 `최근 인사 대응` 결과 패널을 추가해 선택 결과와 효과를 바로 보여준다.
+- 회사 기록의 공유 가능한 순간 카드에 `staff` 타입을 추가해 인사 사건도 스크린샷감 회사 드라마로 남는다.
+- 브라우저 QA용 `staff-resolution` 시나리오를 추가했다.
+- 세이브 버전을 11로 올리고, 오래된 저장 데이터는 대응 기록이 없어도 안전하게 복구되도록 했다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts src/game/shareable-moments.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 81 tests
+- `npm run harness:gate` 통과, 38 files / 266 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser QA: `http://127.0.0.1:5198/?scenario=staff-resolution&menu=agents`에서 최근 인사 대응 패널 1개, 결과 카드 1개, 사건 패널 1개, 콘솔 오류 0건 확인
+- 회사 기록 QA: `?scenario=staff-resolution&menu=log`에서 하이라이트 카드 2개와 인사 사건 공유 카드 문구 확인
+- 모바일 QA: 390×844에서 결과 카드 1개, 하단 탭 표시, 가로 오버플로 없음 확인
+- 스크린샷: `/tmp/ai-company-v03411-staff-resolution-desktop.png`, `/tmp/ai-company-v03411-staff-resolution-log-desktop.png`, `/tmp/ai-company-v03411-staff-resolution-mobile.png`
+
+---
+
 ## [0.34.10-alpha] — 2026-05-18
 
 ### 인사 사건 선택형 대응

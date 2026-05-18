@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { products } from "./data";
 import { getShareableMoments } from "./shareable-moments";
-import { createInitialState, launchProduct } from "./simulation";
+import { createInitialState, getStaffIncidentBriefs, hireAgentViaChannel, launchProduct, resolveStaffIncident, startProductProject } from "./simulation";
+import { agentTypes } from "./data";
 
 describe("v0.23 shareable moment harness", () => {
   it("captures a release as a screenshot-worthy moment", () => {
@@ -51,5 +52,31 @@ describe("v0.23 shareable moment harness", () => {
     expect(moments.map((moment) => moment.type)).toEqual(expect.arrayContaining(["ending", "rival"]));
     expect(moments.find((moment) => moment.type === "ending")?.badge).toMatch(/[SABCD]랭크/);
     expect(moments.find((moment) => moment.type === "rival")?.detail).toContain("고객지원");
+  });
+
+  it("captures staff incident resolutions as shareable company drama", () => {
+    const architect = agentTypes.find((entry) => entry.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing staff incident fixture data");
+    const hired = hireAgentViaChannel(architect, createInitialState(), "career_recruiting");
+    const started = startProductProject(writingProduct, hired, [hired.hiredAgents[0].id]);
+    const exhausted = {
+      ...started,
+      resources: { ...started.resources, cash: 12000 },
+      hiredAgents: started.hiredAgents.map((agent) => ({ ...agent, energy: 18, loyalty: 66 })),
+    };
+    const burnout = getStaffIncidentBriefs(exhausted).find((incident) => incident.type === "burnout");
+    if (!burnout) throw new Error("Missing burnout incident");
+
+    const resolved = resolveStaffIncident(burnout.id, "recovery_day", exhausted);
+    const moments = getShareableMoments(resolved);
+
+    expect(moments[0]).toMatchObject({
+      type: "staff",
+      title: expect.stringContaining("회복일 지정"),
+      badge: "인사 사건",
+      tone: "warning",
+    });
+    expect(moments[0].detail).toContain("프로젝트 배치 해제");
   });
 });

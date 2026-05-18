@@ -6,7 +6,7 @@ import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
 import { runTenYearCampaignSimulation } from "./run-simulator";
-import { getStaffIncidentBriefs } from "./simulation";
+import { getRecentStaffIncidentResolutionLog, getStaffIncidentBriefs } from "./simulation";
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
@@ -40,6 +40,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "readiness",
       "persona20",
       "staff-incidents",
+      "staff-resolution",
       "launch-impact",
     ]);
   });
@@ -78,6 +79,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.activeMenu).toBe("agents");
     expect(scenario.label).toContain("인사 사건");
     expect(incidents.map((incident) => incident.type)).toEqual(expect.arrayContaining(["burnout", "poaching", "discontent"]));
+  });
+
+  it("creates a resolved staff incident scenario for result-card browser QA", () => {
+    const scenario = createQaScenario("staff-resolution");
+    const resolutions = getRecentStaffIncidentResolutionLog(scenario.state);
+
+    expect(scenario.activeMenu).toBe("agents");
+    expect(scenario.label).toContain("인사 대응");
+    expect(resolutions).toHaveLength(1);
+    expect(resolutions[0].resolutionLabel).toContain("회복일");
   });
 
   it("creates a release spotlight scenario", () => {
@@ -348,6 +359,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=result")?.id).toBe("result");
     expect(createQaScenarioFromSearch("?scenario=persona20")?.id).toBe("persona20");
     expect(createQaScenarioFromSearch("?scenario=staff-incidents")?.id).toBe("staff-incidents");
+    expect(createQaScenarioFromSearch("?scenario=staff-resolution")?.id).toBe("staff-resolution");
     expect(createQaScenarioFromSearch("?scenario=launch-impact")?.id).toBe("launch-impact");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();

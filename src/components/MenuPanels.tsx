@@ -104,6 +104,7 @@ import {
   getRecruitmentBrandProfile,
   getRecruitmentCandidatePool,
   getRecruitmentOffer,
+  getRecentStaffIncidentResolutionLog,
   getAgentRetentionAlerts,
   getAgentSalaryNegotiationCheck,
   getAgentSalaryNegotiationCost,
@@ -1308,6 +1309,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
   const workforceSynergySummary = getWorkforceSynergySummary(gameState);
   const retentionAlerts = getAgentRetentionAlerts(gameState);
   const staffIncidents = getStaffIncidentBriefs(gameState);
+  const recentStaffResolutions = getRecentStaffIncidentResolutionLog(gameState);
   const selectedRecruitmentChannel = recruitmentChannels.find((channel) => channel.id === recruitmentChannelId) ?? recruitmentChannels[0];
   const candidatePool = getRecruitmentCandidatePool(gameState, recruitmentChannelId);
   const recruitmentBrand = getRecruitmentBrandProfile(gameState);
@@ -1365,6 +1367,24 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
                 </article>
               );
             })}
+          </div>
+        )}
+        {recentStaffResolutions.length > 0 && (
+          <div className="staff-resolution-result-panel" aria-live="polite">
+            <div>
+              <p className="eyebrow">최근 인사 대응</p>
+              <strong>{recentStaffResolutions[0].agentName} · {recentStaffResolutions[0].resolutionLabel}</strong>
+              <span>{recentStaffResolutions[0].summary}</span>
+            </div>
+            {recentStaffResolutions.slice(0, 3).map((record) => (
+              <article className={`staff-resolution-result-card severity-${record.severity}`} key={record.id}>
+                <div>
+                  <strong>{record.incidentTitle}</strong>
+                  <span>{record.effectLabel}</span>
+                </div>
+                <small>{record.month}개월차 · {record.resolutionLabel}</small>
+              </article>
+            ))}
           </div>
         )}
         {retentionAlerts.length > 0 && (

@@ -947,6 +947,20 @@ export interface MonthlyEconomy extends MonthlyReport {
   resourceDelta: ResourceMap;
 }
 
+export interface StaffIncidentResolutionLogEntry {
+  id: string;
+  month: number;
+  agentId: string;
+  agentName: string;
+  incidentType: "burnout" | "poaching" | "discontent";
+  incidentTitle: string;
+  severity: "warning" | "critical";
+  resolutionId: string;
+  resolutionLabel: string;
+  summary: string;
+  effectLabel: string;
+}
+
 export interface GameState {
   month: number;
   locationId: string;
@@ -977,6 +991,7 @@ export interface GameState {
   eventHistory: string[];
   rivalEventHistory: string[];
   seenTutorials: string[];
+  recentStaffIncidentResolutions: StaffIncidentResolutionLogEntry[];
   timeline: string[];
   lastMonthReport?: MonthlyReport;
   currentEvent?: EventDefinition;

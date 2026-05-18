@@ -2241,6 +2241,38 @@ p {
   color: #6a5a3f;
 }
 
+.staff-resolution-result-panel {
+  background: #edf6f1;
+  border: 2px solid #75a585;
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+  padding: 9px;
+}
+
+.staff-resolution-result-panel strong,
+.staff-resolution-result-panel span,
+.staff-resolution-result-panel small {
+  color: #284733;
+  display: block;
+  font-weight: 900;
+  line-height: 1.28;
+}
+
+.staff-resolution-result-card {
+  background: #fbfff7;
+  border: 1px solid #a9c797;
+  display: grid;
+  gap: 5px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 7px;
+}
+
+.staff-resolution-result-card.severity-critical {
+  background: #fff4ed;
+  border-color: #d8895b;
+}
+
 .retention-alert-list {
   display: grid;
   gap: 7px;

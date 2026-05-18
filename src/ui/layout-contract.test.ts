@@ -230,6 +230,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("getRecruitmentBrandProfile");
     expect(menuPanels).toContain("getStaffIncidentBriefs");
     expect(menuPanels).toContain("getStaffIncidentResolutionOptions");
+    expect(menuPanels).toContain("getRecentStaffIncidentResolutionLog");
     expect(menuPanels).toContain("resolveStaffIncident");
     expect(menuPanels).toContain("getAgentRestCheck");
     expect(menuPanels).toContain("getAgentSalaryNegotiationCheck");
@@ -246,6 +247,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("staff-incident-panel");
     expect(menuPanels).toContain("staff-incident-card");
     expect(menuPanels).toContain("staff-incident-actions");
+    expect(menuPanels).toContain("staff-resolution-result-panel");
+    expect(menuPanels).toContain("staff-resolution-result-card");
     expect(menuPanels).toContain("recruitment-brand-panel");
     expect(menuPanels).toContain("brand-driver-list");
     expect(menuPanels).toContain("hireAgentViaChannel");
@@ -258,6 +261,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.staff-incident-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.staff-incident-card\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.staff-incident-actions\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.staff-resolution-result-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.staff-resolution-result-card\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.career-meter\s*{[^}]*height:/s);
     expect(appCss).toMatch(/\.care-actions\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.specialization-panel\s*{[^}]*display:\s*grid/s);

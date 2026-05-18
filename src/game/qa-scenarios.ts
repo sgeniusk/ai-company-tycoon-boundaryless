@@ -5,7 +5,17 @@ import { createReleaseCardReward, getStrategyCardById, playStrategyCard } from "
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { runPersonaPlaytestReview } from "./persona-playtest";
 import { evaluateAlphaReadiness, runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
-import { advanceMonth, buyItem, buyOfficeExpansion, chooseGrowthPath, createInitialState, hireAgent, startProductProject } from "./simulation";
+import {
+  advanceMonth,
+  buyItem,
+  buyOfficeExpansion,
+  chooseGrowthPath,
+  createInitialState,
+  getStaffIncidentBriefs,
+  hireAgent,
+  resolveStaffIncident,
+  startProductProject,
+} from "./simulation";
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
 
@@ -39,6 +49,7 @@ export const qaScenarioIds = [
   "readiness",
   "persona20",
   "staff-incidents",
+  "staff-resolution",
   "launch-impact",
 ] as const;
 
@@ -77,6 +88,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "인사 사건 QA",
       state: createStaffIncidentState(),
+      activeMenu: "agents",
+    };
+  }
+
+  if (id === "staff-resolution") {
+    return {
+      id,
+      label: "인사 대응 결과 QA",
+      state: createStaffResolutionState(),
       activeMenu: "agents",
     };
   }
@@ -662,6 +682,18 @@ function createStaffIncidentState(): GameState {
       return { ...agent, energy: 72, loyalty: 68 };
     }),
     timeline: ["인사 사건 QA: 번아웃, 스카우트, 계약 불만을 동시에 확인", ...projectState.timeline].slice(0, 8),
+  };
+}
+
+function createStaffResolutionState(): GameState {
+  const incidentState = createStaffIncidentState();
+  const burnout = getStaffIncidentBriefs(incidentState).find((incident) => incident.type === "burnout");
+  if (!burnout) return incidentState;
+  const resolved = resolveStaffIncident(burnout.id, "recovery_day", incidentState);
+
+  return {
+    ...resolved,
+    timeline: ["인사 대응 결과 QA: 회복일 지정 결과 카드 확인", ...resolved.timeline].slice(0, 8),
   };
 }
 

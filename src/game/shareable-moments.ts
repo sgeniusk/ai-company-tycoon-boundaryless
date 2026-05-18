@@ -3,7 +3,7 @@ import { getCampaignFinale } from "./campaign";
 import type { GameState } from "./types";
 import { t } from "../i18n";
 
-export type ShareableMomentType = "launch" | "rival" | "ending" | "deck";
+export type ShareableMomentType = "launch" | "rival" | "ending" | "deck" | "staff";
 export type ShareableMomentTone = "positive" | "warning" | "neutral";
 
 export interface ShareableMoment {
@@ -35,6 +35,17 @@ export function getShareableMoments(state: GameState): ShareableMoment[] {
       detail: state.lastRelease.headline,
       badge: `${state.lastRelease.review.grade} · ${state.lastRelease.review.score}점`,
       tone: state.lastRelease.review.score >= 75 ? "positive" : "neutral",
+    });
+  }
+
+  const latestStaffResolution = state.recentStaffIncidentResolutions[0];
+  if (latestStaffResolution) {
+    moments.push({
+      type: "staff",
+      title: `${latestStaffResolution.agentName} · ${latestStaffResolution.resolutionLabel}`,
+      detail: latestStaffResolution.summary,
+      badge: "인사 사건",
+      tone: latestStaffResolution.severity === "critical" ? "warning" : "neutral",
     });
   }
 
