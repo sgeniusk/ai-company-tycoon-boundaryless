@@ -2114,6 +2114,56 @@ p {
   padding: 6px;
 }
 
+.recruitment-brand-panel {
+  background: #fffdf7;
+  border: 1px solid #b8cc83;
+  display: grid;
+  gap: 7px;
+  padding: 8px;
+}
+
+.recruitment-brand-panel strong,
+.recruitment-brand-panel span {
+  color: #3d5130;
+  display: block;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.brand-meter {
+  background: #dbe8bf;
+  border: 1px solid #96ad64;
+  height: 9px;
+  overflow: hidden;
+}
+
+.brand-meter i {
+  background: linear-gradient(90deg, #6f9f3f, #e3b847);
+  display: block;
+  height: 100%;
+}
+
+.brand-driver-list {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.brand-driver-list span {
+  background: #eff7dd;
+  border: 1px solid #c5d69e;
+  color: #4f5d3d;
+  font-size: 0.64rem;
+  min-height: 28px;
+  padding: 5px;
+}
+
+.brand-driver-list .warning {
+  background: #fff0d9;
+  border-color: #c99c55;
+  color: #6b431b;
+}
+
 .candidate-pool-empty {
   background: #fffdf7;
   border: 2px solid #d8c49b;

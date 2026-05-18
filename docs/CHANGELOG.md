@@ -4,6 +4,26 @@
 
 ---
 
+## [0.34.8-alpha] — 2026-05-18
+
+### 채용 브랜드와 사무실 인재풀 연결
+
+**추가:**
+- 사무실 단계, 지역, 장식 배치, 사무실 시너지, 신뢰/이용자 규모, 빈 고용 슬롯을 합쳐 `채용 브랜드` 점수를 계산한다.
+- 채용 브랜드가 높으면 공채/경력/헤드헌터 후보 풀 크기와 후보 정렬 점수에 보너스를 준다.
+- 사무실 정원이 가득 차면 후보 풀 보너스가 막히고, 에이전트 콘솔에 정원 압박 경고가 표시된다.
+- 에이전트 도감 상단에 채용 브랜드 점수, 빈자리, 후보 풀 보너스, 주요 상승 요인/경고를 표시했다.
+
+**검증:**
+- `npm test -- src/game/recruitment.test.ts` 통과, 1 file / 9 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 25 tests
+- `npm test -- src/game/recruitment.test.ts src/game/office.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 71 tests
+- `npm run harness:gate` 통과, 38 files / 255 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Headless Chrome QA: `http://127.0.0.1:5195/?scenario=staffing&menu=agents`에서 채용 브랜드 패널 1개, 콘솔 오류 0건, 모바일 가로 오버플로 없음 확인
+- 스크린샷: `/tmp/ai-company-v0348-recruitment-brand-desktop.png`, `/tmp/ai-company-v0348-recruitment-brand-mobile.png`
+
+---
+
 ## [0.34.7-alpha] — 2026-05-18
 
 ### 직원 장기 성장 전문화

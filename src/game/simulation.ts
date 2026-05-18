@@ -123,6 +123,16 @@ export interface RecruitmentCandidatePool {
   poolSize: number;
 }
 
+export interface RecruitmentBrandProfile {
+  score: number;
+  gradeLabel: string;
+  hiringSlotsOpen: number;
+  capacityLabel: string;
+  candidatePoolBonus: number;
+  drivers: string[];
+  warnings: string[];
+}
+
 export interface AgentCareerStatus {
   level: number;
   experience: number;
@@ -356,9 +366,54 @@ export function getRecruitmentChannel(channelId: RecruitmentChannelId): Recruitm
   return recruitmentChannels.find((channel) => channel.id === channelId) ?? recruitmentChannels[0];
 }
 
+export function getRecruitmentBrandProfile(state: GameState): RecruitmentBrandProfile {
+  const office = getOfficeExpansion(state);
+  const location = getCurrentLocation(state);
+  const placedItems = getPlacedOfficeItems(state);
+  const activeSynergies = getOfficeSynergySummary(state).active;
+  const hiringSlotsOpen = Math.max(0, getOfficeHireCapacity(state) - state.hiredAgents.length);
+  const star = getCompanyStarRating(state);
+  const trust = state.resources.trust ?? 0;
+  const hype = state.resources.hype ?? 0;
+  const userScaleScore = Math.min(10, Math.floor((state.resources.users ?? 0) / 10000));
+  const officeScore = office.level * 9;
+  const locationScore = location.ai_operation_bonus * 5 + (location.human_hire_discount < 0 ? Math.round(Math.abs(location.human_hire_discount) * 40) : 0);
+  const marketScore = Math.min(14, state.activeProducts.length * 3) + (trust >= 70 ? 10 : trust >= 45 ? 5 : 0) + (hype >= 35 ? 5 : 0) + userScaleScore;
+  const decorScore = placedItems.length * 3 + activeSynergies.length * 6;
+  const capacityScore = hiringSlotsOpen >= 3 ? 6 : hiringSlotsOpen >= 1 ? 2 : -16;
+  const score = Math.round(clamp(officeScore + locationScore + marketScore + decorScore + star * 6 + capacityScore, 0, 100));
+  const candidatePoolBonus = hiringSlotsOpen <= 0 ? 0 : score >= 82 ? 2 : score >= 62 ? 1 : 0;
+  const drivers = [
+    `${office.name} 고용 슬롯 ${state.hiredAgents.length}/${getOfficeHireCapacity(state)}`,
+    `${location.region} · ${location.talent_pool}`,
+    `${star}성 회사 평판`,
+  ];
+  const warnings: string[] = [];
+
+  if (placedItems.length > 0) drivers.push(`장식 ${placedItems.length}개 배치`);
+  if (activeSynergies.length > 0) drivers.push(`사무실 시너지 ${activeSynergies.length}개`);
+  if (trust >= 60) drivers.push(`신뢰 ${Math.round(trust)}로 후보 설득`);
+  if ((state.resources.users ?? 0) >= 10000) drivers.push(`이용자 ${(state.resources.users ?? 0).toLocaleString("ko-KR")}명`);
+  if (hiringSlotsOpen <= 0) warnings.push("사무실 정원이 가득 차 후보 보너스가 막혔습니다.");
+  if (hiringSlotsOpen === 1) warnings.push("남은 자리가 1명이라 채용 결정 압박이 큽니다.");
+  if (location.monthly_cost_modifier >= 1.4) warnings.push("도시 거점 유지비가 높아 연봉 부담이 커집니다.");
+  if (trust < 35) warnings.push("신뢰가 낮아 좋은 후보 설득력이 약합니다.");
+
+  return {
+    score,
+    gradeLabel: getRecruitmentBrandGradeLabel(score),
+    hiringSlotsOpen,
+    capacityLabel: hiringSlotsOpen > 0 ? `빈 자리 ${hiringSlotsOpen}명` : "정원 가득 참",
+    candidatePoolBonus,
+    drivers,
+    warnings,
+  };
+}
+
 export function getRecruitmentCandidatePool(state: GameState, channelId: RecruitmentChannelId): RecruitmentCandidatePool {
   const channel = getRecruitmentChannel(channelId);
   const location = getCurrentLocation(state);
+  const brandProfile = getRecruitmentBrandProfile(state);
   const hiredTypeIds = new Set(state.hiredAgents.map((agent) => agent.typeId));
   const poolSize = getRecruitmentPoolSize(channel.id, state);
   const candidates = agentTypes
@@ -375,7 +430,7 @@ export function getRecruitmentCandidatePool(state: GameState, channelId: Recruit
   return {
     channel,
     candidateIds,
-    summary: `${location.name} · ${channel.label} 후보 ${candidateIds.length}/${poolSize}명`,
+    summary: `${location.name} · ${channel.label} 후보 ${candidateIds.length}/${poolSize}명 · ${brandProfile.gradeLabel}`,
     refreshLabel: `다음 후보 갱신 ${state.month + 1}개월차`,
     locationLabel: `${location.region} · ${location.talent_pool}`,
     poolSize,
@@ -3099,10 +3154,11 @@ function getRetentionRiskLabel(severity: AgentCareerStatus["retentionSeverity"])
 
 function getRecruitmentPoolSize(channelId: RecruitmentChannelId, state: GameState): number {
   const starBonus = Math.max(0, getCompanyStarRating(state) - 1);
+  const brandBonus = getRecruitmentBrandProfile(state).candidatePoolBonus;
 
-  if (channelId === "headhunter") return Math.min(5, 3 + Math.floor(starBonus / 2));
-  if (channelId === "career_recruiting") return Math.min(6, 4 + Math.floor(starBonus / 2));
-  return Math.min(7, 5 + Math.floor(starBonus / 2));
+  if (channelId === "headhunter") return Math.min(6, 3 + Math.floor(starBonus / 2) + brandBonus);
+  if (channelId === "career_recruiting") return Math.min(7, 4 + Math.floor(starBonus / 2) + brandBonus);
+  return Math.min(8, 5 + Math.floor(starBonus / 2) + Math.min(1, brandBonus));
 }
 
 function isRecruitmentPoolCompatible(agent: AgentTypeDefinition, channelId: RecruitmentChannelId, state: GameState): boolean {
@@ -3117,10 +3173,11 @@ function isRecruitmentPoolCompatible(agent: AgentTypeDefinition, channelId: Recr
 function getRecruitmentCandidateScore(agent: AgentTypeDefinition, channelId: RecruitmentChannelId, state: GameState): number {
   const kind = getAgentKind(agent);
   const location = getCurrentLocation(state);
+  const brandProfile = getRecruitmentBrandProfile(state);
   const statTotal = statKeys.reduce((total, stat) => total + agent.stats[stat], 0);
   const rarityScore = getAgentRarityScore(agent.rarity);
   const star = getCompanyStarRating(state);
-  let score = statTotal + rarityScore + star * 2;
+  let score = statTotal + rarityScore + star * 2 + Math.floor(brandProfile.score / 12);
 
   if (channelId === "open_recruiting") {
     score += kind === "human" ? 26 : 8;
@@ -3141,6 +3198,13 @@ function getRecruitmentCandidateScore(agent: AgentTypeDefinition, channelId: Rec
   }
 
   return score;
+}
+
+function getRecruitmentBrandGradeLabel(score: number): string {
+  if (score >= 86) return `세계급 채용 브랜드 ${score}`;
+  if (score >= 70) return `강한 채용 브랜드 ${score}`;
+  if (score >= 50) return `성장 채용 브랜드 ${score}`;
+  return `지역 채용 브랜드 ${score}`;
 }
 
 function getAgentRarityScore(rarity: string): number {

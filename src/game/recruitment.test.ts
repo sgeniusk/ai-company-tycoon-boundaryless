@@ -5,6 +5,7 @@ import {
   createInitialState,
   getAgentEffectiveStats,
   getAgentHireCostForChannel,
+  getRecruitmentBrandProfile,
   getRecruitmentCandidatePool,
   getRecruitmentOffer,
   getTeamMonthlySalaryCost,
@@ -114,5 +115,61 @@ describe("v0.34.2 recruitment channels and salary contracts", () => {
     const openPool = getRecruitmentCandidatePool(hired, "open_recruiting");
 
     expect(openPool.candidateIds).not.toContain("garage_junior_dev");
+  });
+
+  it("turns office growth, location, and decor into a visible hiring brand profile", () => {
+    const base = createInitialState();
+    const branded: GameState = {
+      ...richRecruitingState(),
+      office: {
+        expansionId: "campus_lab",
+        placedItemIds: ["ux_sticky_wall", "viral_camera", "redteam_toolkit"],
+      },
+      ownedItems: ["ux_sticky_wall", "viral_camera", "redteam_toolkit"],
+    };
+
+    const baseProfile = getRecruitmentBrandProfile(base);
+    const brandedProfile = getRecruitmentBrandProfile(branded);
+
+    expect(brandedProfile.score).toBeGreaterThan(baseProfile.score);
+    expect(brandedProfile.candidatePoolBonus).toBeGreaterThanOrEqual(1);
+    expect(brandedProfile.gradeLabel).toContain("채용 브랜드");
+    expect(brandedProfile.capacityLabel).toContain("빈 자리");
+    expect(brandedProfile.drivers.join(" / ")).toContain("캠퍼스 연구동");
+    expect(brandedProfile.drivers.join(" / ")).toContain("서울");
+    expect(brandedProfile.drivers.join(" / ")).toContain("장식");
+  });
+
+  it("uses recruiting brand to widen candidate pools without ignoring full-office pressure", () => {
+    const base = createInitialState();
+    const branded: GameState = {
+      ...richRecruitingState(),
+      office: {
+        expansionId: "campus_lab",
+        placedItemIds: ["ux_sticky_wall", "viral_camera", "redteam_toolkit"],
+      },
+      ownedItems: ["ux_sticky_wall", "viral_camera", "redteam_toolkit"],
+    };
+    const fullOffice: GameState = {
+      ...branded,
+      hiredAgents: Array.from({ length: 12 }, (_, index) => ({
+        id: `filled-seat-${index}`,
+        typeId: junior().id,
+        name: `만석 직원 ${index + 1}`,
+        level: 1,
+        energy: 80,
+        equippedItemIds: [],
+      })),
+    };
+
+    const basePool = getRecruitmentCandidatePool(base, "career_recruiting");
+    const brandedPool = getRecruitmentCandidatePool(branded, "career_recruiting");
+    const fullOfficeProfile = getRecruitmentBrandProfile(fullOffice);
+
+    expect(brandedPool.poolSize).toBeGreaterThan(basePool.poolSize);
+    expect(brandedPool.summary).toContain("채용 브랜드");
+    expect(fullOfficeProfile.hiringSlotsOpen).toBe(0);
+    expect(fullOfficeProfile.candidatePoolBonus).toBe(0);
+    expect(fullOfficeProfile.warnings.join(" / ")).toContain("정원");
   });
 });

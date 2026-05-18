@@ -101,6 +101,7 @@ import {
   getProductRenewalProjectCheck,
   getProductUpgradeCheck,
   getProductUpgradeCost,
+  getRecruitmentBrandProfile,
   getRecruitmentCandidatePool,
   getRecruitmentOffer,
   getAgentRetentionAlerts,
@@ -1305,6 +1306,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
   const retentionAlerts = getAgentRetentionAlerts(gameState);
   const selectedRecruitmentChannel = recruitmentChannels.find((channel) => channel.id === recruitmentChannelId) ?? recruitmentChannels[0];
   const candidatePool = getRecruitmentCandidatePool(gameState, recruitmentChannelId);
+  const recruitmentBrand = getRecruitmentBrandProfile(gameState);
   const candidateAgentIds = new Set(candidatePool.candidateIds);
   const filteredAgentRows = agentRows.filter((row) => candidateAgentIds.has(row.agent.id) && (kindFilter === "all" || row.kind === kindFilter));
   const ownedAgentItems = items.filter(
@@ -1413,6 +1415,23 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
             <span>{candidatePool.summary}</span>
             <span>{candidatePool.locationLabel}</span>
             <span>{candidatePool.refreshLabel}</span>
+          </div>
+          <div className="recruitment-brand-panel">
+            <div>
+              <strong>{recruitmentBrand.gradeLabel}</strong>
+              <span>{recruitmentBrand.capacityLabel} · 후보 풀 +{recruitmentBrand.candidatePoolBonus}</span>
+            </div>
+            <div className="brand-meter" aria-label={`채용 브랜드 ${recruitmentBrand.score}점`}>
+              <i style={{ width: `${recruitmentBrand.score}%` }} />
+            </div>
+            <div className="brand-driver-list">
+              {recruitmentBrand.drivers.slice(0, 4).map((driver) => (
+                <span key={driver}>{driver}</span>
+              ))}
+              {recruitmentBrand.warnings.slice(0, 2).map((warning) => (
+                <span className="warning" key={warning}>{warning}</span>
+              ))}
+            </div>
           </div>
         </div>
         <div className="content-filter" role="tablist" aria-label="고용 후보 필터">
