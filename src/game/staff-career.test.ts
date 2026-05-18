@@ -528,3 +528,35 @@ describe("v0.34.9 staff incident drama", () => {
     expect(log.map((entry) => entry.id)).toEqual(["new", "mid"]);
   });
 });
+
+describe("v0.34.14 staff aftermath production impact", () => {
+  it("turns unresolved staff incidents into project damage and a monthly operations warning", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const started = startProductProject(writingProduct(), hired, [hired.hiredAgents[0].id]);
+    const primedProject = { ...started.productProjects[0], progress: 36, quality: 62 };
+    const healthy = {
+      ...started,
+      productProjects: [primedProject],
+      hiredAgents: started.hiredAgents.map((agent) => ({ ...agent, energy: 84, loyalty: 82 })),
+    };
+    const troubled = {
+      ...healthy,
+      hiredAgents: healthy.hiredAgents.map((agent) => ({ ...agent, energy: 18, loyalty: 66 })),
+    };
+
+    expect(getStaffIncidentBriefs(troubled).map((incident) => incident.type)).toContain("burnout");
+
+    const healthyAdvanced = advanceMonth(healthy);
+    const troubledAdvanced = advanceMonth(troubled);
+    const healthyProject = healthyAdvanced.productProjects[0];
+    const troubledProject = troubledAdvanced.productProjects[0];
+    const aftermathLog = getRecentStaffIncidentAftermathLog(troubledAdvanced);
+
+    expect(troubledProject.progress).toBeLessThan(healthyProject.progress);
+    expect(troubledProject.quality).toBeLessThan(healthyProject.quality);
+    expect(aftermathLog[0].effectLabel).toContain("완성도");
+    expect(aftermathLog[0].projectImpactLabel).toContain("프로젝트");
+    expect(troubledAdvanced.lastMonthReport?.staffAftermathCount).toBeGreaterThanOrEqual(1);
+    expect(troubledAdvanced.lastMonthReport?.staffAftermathSummary).toContain("프로젝트");
+  });
+});

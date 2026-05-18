@@ -248,6 +248,10 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("staff-incident-card");
     expect(menuPanels).toContain("staff-incident-actions");
     expect(menuPanels).toContain("staff-incident-source");
+    expect(menuPanels).toContain("projectImpactLabel");
+    expect(gameChrome).toContain("staffAftermathSummary");
+    expect(gameChrome).toContain("monthly-staff-aftermath-row");
+    expect(appCss).toMatch(/\.monthly-staff-aftermath-row\s*{/s);
     expect(menuPanels).toContain("staff-incident-aftermath-warning");
     expect(menuPanels).toContain("staff-aftermath-panel");
     expect(menuPanels).toContain("staff-resolution-result-panel");

@@ -2260,6 +2260,7 @@ function hydrateStaffIncidentResolutionLog(value: unknown): StaffIncidentResolut
         resolutionLabel: typeof entry.resolutionLabel === "string" ? entry.resolutionLabel : "대응 완료",
         summary: typeof entry.summary === "string" ? entry.summary : "인사 사건 대응 기록을 복구했습니다.",
         effectLabel: typeof entry.effectLabel === "string" ? entry.effectLabel : "효과 기록 없음",
+        projectImpactLabel: typeof entry.projectImpactLabel === "string" ? entry.projectImpactLabel : undefined,
         isAftermath: typeof entry.isAftermath === "boolean" ? entry.isAftermath : entry.resolutionId === "unresolved_aftermath",
         sourceCompetitorId: typeof entry.sourceCompetitorId === "string" ? entry.sourceCompetitorId : undefined,
         sourceCompetitorName: typeof entry.sourceCompetitorName === "string" ? entry.sourceCompetitorName : undefined,
@@ -3391,6 +3392,8 @@ interface StaffIncidentAftermathEffect {
   energyDelta: number;
   loyaltyDelta: number;
   competitorMomentumDelta: number;
+  projectProgressPenalty: number;
+  projectQualityPenalty: number;
   effectLabel: string;
   summary: string;
 }
@@ -3400,8 +3403,12 @@ function applyUnresolvedStaffIncidentAftermaths(targetState: GameState, sourceSt
   if (!effects.length) return targetState;
 
   const agentDeltas = new Map<string, { energy: number; loyalty: number }>();
+  const projectImpactLabels = new Map<string, string>();
+  const projectImpactSummaries: string[] = [];
+  const staffAftermathResourceDelta = effects.reduce((total, effect) => mergeResourceDelta(total, effect.resourceDelta), {} as ResourceMap);
   let resourcesAftermath = targetState.resources;
   let competitorStatesAftermath = targetState.competitorStates;
+  let productProjectsAftermath = targetState.productProjects;
 
   for (const effect of effects) {
     resourcesAftermath = applyResourceDelta(resourcesAftermath, effect.resourceDelta);
@@ -3418,6 +3425,24 @@ function applyUnresolvedStaffIncidentAftermaths(targetState: GameState, sourceSt
           : competitor,
       );
     }
+
+    const assignedProject = productProjectsAftermath.find((project) => project.assignedAgentIds.includes(effect.incident.agentId));
+    if (assignedProject && (effect.projectProgressPenalty > 0 || effect.projectQualityPenalty > 0)) {
+      const product = getProductDefinition(assignedProject.productId, targetState);
+      const projectName = product?.name ?? "개발 프로젝트";
+      const impactLabel = `${projectName} 프로젝트 진행 -${effect.projectProgressPenalty} · 완성도 -${effect.projectQualityPenalty}`;
+      projectImpactLabels.set(effect.incident.agentId, impactLabel);
+      projectImpactSummaries.push(`${effect.incident.agentName}: ${projectName} 완성도 -${effect.projectQualityPenalty}`);
+      productProjectsAftermath = productProjectsAftermath.map((project) =>
+        project.id === assignedProject.id
+          ? {
+              ...project,
+              progress: clamp(project.progress - effect.projectProgressPenalty, 0, 100),
+              quality: clamp(project.quality - effect.projectQualityPenalty, 0, 100),
+            }
+          : project,
+      );
+    }
   }
 
   const nextAgents = targetState.hiredAgents.map((agent) => {
@@ -3430,34 +3455,57 @@ function applyUnresolvedStaffIncidentAftermaths(targetState: GameState, sourceSt
       loyalty: clamp(getAgentLoyalty(agent) + delta.loyalty, 0, 100),
     };
   });
-  const aftermathRecords = effects.map((effect, index): StaffIncidentResolutionLogEntry => ({
-    id: `staff-aftermath-${appliedMonth}-${effect.incident.agentId}-${index + 1}`,
-    month: appliedMonth,
-    agentId: effect.incident.agentId,
-    agentName: effect.incident.agentName,
-    incidentType: effect.incident.type,
-    incidentTitle: effect.incident.title,
-    severity: effect.incident.severity,
-    resolutionId: "unresolved_aftermath",
-    resolutionLabel: "미대응 후폭풍",
-    summary: effect.summary,
-    effectLabel: effect.effectLabel,
-    isAftermath: true,
-    sourceCompetitorId: effect.incident.sourceCompetitorId,
-    sourceCompetitorName: effect.incident.sourceCompetitorName,
-    offerLabel: effect.incident.offerLabel,
-    stakesLabel: effect.incident.stakesLabel,
-  }));
-  const timelineEntries = effects.map((effect) => `인사 후폭풍: ${effect.incident.agentName} · ${effect.effectLabel}`);
+  const aftermathRecords = effects.map((effect, index): StaffIncidentResolutionLogEntry => {
+    const projectImpactLabel = projectImpactLabels.get(effect.incident.agentId);
+    return {
+      id: `staff-aftermath-${appliedMonth}-${effect.incident.agentId}-${index + 1}`,
+      month: appliedMonth,
+      agentId: effect.incident.agentId,
+      agentName: effect.incident.agentName,
+      incidentType: effect.incident.type,
+      incidentTitle: effect.incident.title,
+      severity: effect.incident.severity,
+      resolutionId: "unresolved_aftermath",
+      resolutionLabel: "미대응 후폭풍",
+      summary: projectImpactLabel ? `${effect.summary} ${projectImpactLabel} 손실이 개발 일정에 반영됐습니다.` : effect.summary,
+      effectLabel: [effect.effectLabel, projectImpactLabel].filter(Boolean).join(" · "),
+      projectImpactLabel,
+      isAftermath: true,
+      sourceCompetitorId: effect.incident.sourceCompetitorId,
+      sourceCompetitorName: effect.incident.sourceCompetitorName,
+      offerLabel: effect.incident.offerLabel,
+      stakesLabel: effect.incident.stakesLabel,
+    };
+  });
+  const timelineEntries = aftermathRecords.map((record) => `인사 후폭풍: ${record.agentName} · ${record.effectLabel}`);
+  const staffAftermathSummary = createStaffAftermathMonthlySummary(effects.length, projectImpactSummaries, staffAftermathResourceDelta);
 
   return {
     ...targetState,
     resources: resourcesAftermath,
     competitorStates: competitorStatesAftermath,
+    productProjects: productProjectsAftermath,
     hiredAgents: nextAgents,
+    lastMonthReport: targetState.lastMonthReport
+      ? {
+          ...targetState.lastMonthReport,
+          staffAftermathCount: effects.length,
+          staffAftermathSummary,
+          staffAftermathResourceDelta,
+          staffAftermathProjectImpact: projectImpactSummaries.length ? projectImpactSummaries.slice(0, 2).join(" / ") : undefined,
+        }
+      : targetState.lastMonthReport,
     recentStaffIncidentResolutions: [...aftermathRecords, ...(targetState.recentStaffIncidentResolutions ?? [])].slice(0, 6),
     timeline: [...timelineEntries, ...targetState.timeline].slice(0, 8),
   };
+}
+
+function createStaffAftermathMonthlySummary(effectCount: number, projectImpactSummaries: string[], resourceDelta: ResourceMap): string {
+  const impactText = projectImpactSummaries.length
+    ? `프로젝트 손실 ${projectImpactSummaries.slice(0, 2).join(" / ")}`
+    : "직원 컨디션/충성도 손실";
+  const resourceText = Object.keys(resourceDelta).length ? ` · 자원 ${formatResourceDelta(resourceDelta)}` : "";
+  return `${effectCount}건 후폭풍 · ${impactText}${resourceText}`;
 }
 
 function getStaffIncidentAftermathEffects(state: GameState, limit = 2): StaffIncidentAftermathEffect[] {
@@ -3487,6 +3535,8 @@ function createStaffIncidentAftermathEffect(incident: StaffIncidentBrief, agent:
       energyDelta: -14,
       loyaltyDelta: -4,
       competitorMomentumDelta: 0,
+      projectProgressPenalty: balance.staff_aftermath_burnout_project_progress_penalty,
+      projectQualityPenalty: balance.staff_aftermath_burnout_project_quality_penalty,
       effectLabel: "체력 -14 · 충성 -4",
       summary: `${agent.name}의 번아웃 위험을 넘겨 체력과 충성도가 동시에 흔들렸습니다. 다음 달 개발 배치 전 회복이 필요합니다.`,
     };
@@ -3499,6 +3549,8 @@ function createStaffIncidentAftermathEffect(incident: StaffIncidentBrief, agent:
       energyDelta: 0,
       loyaltyDelta: -12,
       competitorMomentumDelta: 8,
+      projectProgressPenalty: balance.staff_aftermath_poaching_project_progress_penalty,
+      projectQualityPenalty: balance.staff_aftermath_poaching_project_quality_penalty,
       effectLabel: `충성 -12 · ${incident.sourceCompetitorName ?? "경쟁사"} 모멘텀 +8`,
       summary: `${incident.sourceCompetitorName ?? "경쟁사"}의 스카우트 제안을 방치해 ${agent.name}의 충성도가 떨어지고 경쟁사 모멘텀이 올랐습니다.`,
     };
@@ -3511,6 +3563,8 @@ function createStaffIncidentAftermathEffect(incident: StaffIncidentBrief, agent:
     energyDelta: 0,
     loyaltyDelta: -8,
     competitorMomentumDelta: 0,
+    projectProgressPenalty: balance.staff_aftermath_discontent_project_progress_penalty,
+    projectQualityPenalty: balance.staff_aftermath_discontent_project_quality_penalty,
     effectLabel: `충성 -8 · 현금 ${formatMoney(-frictionCost)} · 신뢰 -1`,
     summary: `${agent.name}의 계약 불만을 넘겨 보상성 비용과 신뢰 손실이 발생했습니다. 다음 불만은 더 빨리 커질 수 있습니다.`,
   };

@@ -102,6 +102,9 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.label).toContain("후폭풍");
     expect(aftermaths.length).toBeGreaterThanOrEqual(1);
     expect(aftermaths[0].resolutionLabel).toContain("후폭풍");
+    expect(aftermaths[0].projectImpactLabel).toContain("프로젝트");
+    expect(scenario.state.lastMonthReport?.staffAftermathCount).toBeGreaterThanOrEqual(1);
+    expect(scenario.state.lastMonthReport?.staffAftermathSummary).toContain("프로젝트");
     expect(scenario.state.timeline.join(" ")).toContain("인사 후폭풍");
   });
 

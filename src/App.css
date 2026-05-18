@@ -1373,6 +1373,17 @@ p {
   grid-column: 1 / -1;
 }
 
+.monthly-staff-aftermath-row {
+  background: #fff0e6;
+  border-color: #d78352;
+}
+
+.monthly-staff-aftermath-row dd {
+  color: #70391f;
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
 .run-summary {
   background: #eef7ff;
   border-color: var(--blue);

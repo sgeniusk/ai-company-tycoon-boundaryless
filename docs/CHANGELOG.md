@@ -4,6 +4,25 @@
 
 ---
 
+## [0.34.14-alpha] — 2026-05-18
+
+### 인사 후폭풍 제품 개발 영향
+
+**추가:**
+- 미해결 인사 사건 후폭풍이 이제 현재 배치된 제품 프로젝트의 진행도와 완성도를 직접 깎는다.
+- 후폭풍별 프로젝트 손실 수치를 `data/balance.json`으로 분리해 밸런스 하네스에서 조정하기 쉽게 만들었다.
+- 월간 보고에 `인사 후폭풍` 행을 추가해 몇 건의 방치가 어떤 프로젝트 손실/자원 손실로 이어졌는지 보여준다.
+- 사무실 중앙 경보가 최근 월간 후폭풍 요약을 우선 노출해, 다음 달 버튼을 누른 직후 손실 원인을 놓치지 않게 했다.
+- 에이전트 콘솔의 후폭풍 카드에 프로젝트 영향 라벨을 추가했다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 85 tests
+- `npm run harness:gate` 통과, 38 files / 275 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser QA: `http://127.0.0.1:5201/?scenario=staff-aftermath&menu=agents`에서 후폭풍 패널 1개, 후폭풍 카드 2개, 프로젝트 영향 라벨, 월간 후폭풍 행, 사무실 운영 경보, 콘솔 오류 0건 확인
+- 가로 오버플로 없음 확인, 스크린샷 `/tmp/ai-company-v03414-staff-aftermath-desktop.png`
+
+---
+
 ## [0.34.13-alpha] — 2026-05-18
 
 ### 인사 사건 미대응 후폭풍

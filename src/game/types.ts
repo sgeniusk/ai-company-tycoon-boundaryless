@@ -917,6 +917,12 @@ export interface BalanceDefinition {
   trust_enterprise_bonus: number;
   trust_low_penalty: number;
   automation_cost_reduction_per_point: number;
+  staff_aftermath_burnout_project_progress_penalty: number;
+  staff_aftermath_burnout_project_quality_penalty: number;
+  staff_aftermath_poaching_project_progress_penalty: number;
+  staff_aftermath_poaching_project_quality_penalty: number;
+  staff_aftermath_discontent_project_progress_penalty: number;
+  staff_aftermath_discontent_project_quality_penalty: number;
   game_over_cash_threshold: number;
   game_over_trust_threshold: number;
   success_users_threshold: number;
@@ -941,6 +947,10 @@ export interface MonthlyReport {
   generatedData: number;
   computePressure: number;
   strategyEffects?: ResourceMap;
+  staffAftermathCount?: number;
+  staffAftermathSummary?: string;
+  staffAftermathResourceDelta?: ResourceMap;
+  staffAftermathProjectImpact?: string;
 }
 
 export interface MonthlyEconomy extends MonthlyReport {
@@ -959,6 +969,7 @@ export interface StaffIncidentResolutionLogEntry {
   resolutionLabel: string;
   summary: string;
   effectLabel: string;
+  projectImpactLabel?: string;
   isAftermath?: boolean;
   sourceCompetitorId?: string;
   sourceCompetitorName?: string;

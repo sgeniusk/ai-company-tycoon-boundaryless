@@ -79,7 +79,7 @@ function getMonthlyResourceDelta(gameState: GameState, resourceId: string) {
     compute: -report.computePressure,
   };
 
-  return (baseDelta[resourceId] ?? 0) + (report.strategyEffects?.[resourceId] ?? 0);
+  return (baseDelta[resourceId] ?? 0) + (report.strategyEffects?.[resourceId] ?? 0) + (report.staffAftermathResourceDelta?.[resourceId] ?? 0);
 }
 
 function isResourceCritical(gameState: GameState, resourceId: string) {
@@ -225,18 +225,21 @@ export function GameStage({
   const stageProgress = getCompanyStageProgress(gameState);
   const phase = getDayPhase(gameState);
   const location = getCurrentLocation(gameState);
+  const staffAftermathSummary = gameState.lastMonthReport?.staffAftermathSummary;
   const officeHudProjectLabel = activeProject && activeProjectProduct ? activeProjectProduct.name : "개발 대기";
   const officeHudProjectMeta = activeProject
     ? `진행 ${Math.round(activeProject.progress)}% · 완성도 ${Math.round(activeProject.quality)}`
     : gameState.currentEvent
       ? "긴급 이슈 우선 처리"
       : "제품/인력 선택 필요";
-  const officeAlertTitle = gameState.currentEvent ? "긴급 이슈" : activeProject ? "개발 중" : "운영 대기";
-  const officeAlertText = gameState.currentEvent
-    ? gameState.currentEvent.name
-    : activeProject && activeProjectProduct
-      ? `${activeProjectProduct.name} 출시까지 ${Math.max(0, 100 - Math.round(activeProject.progress))}%`
-      : guidance.actionLabel;
+  const officeAlertTitle = staffAftermathSummary ? "운영 경보" : gameState.currentEvent ? "긴급 이슈" : activeProject ? "개발 중" : "운영 대기";
+  const officeAlertText = staffAftermathSummary
+    ? staffAftermathSummary
+    : gameState.currentEvent
+      ? gameState.currentEvent.name
+      : activeProject && activeProjectProduct
+        ? `${activeProjectProduct.name} 출시까지 ${Math.max(0, 100 - Math.round(activeProject.progress))}%`
+        : guidance.actionLabel;
   const growthPathCardClass = (pathId: string) =>
     ["growth-path-card", chosenGrowthPathId === pathId ? "selected" : "", chosenGrowthPathId && chosenGrowthPathId !== pathId ? "locked" : ""]
       .filter(Boolean)
@@ -251,7 +254,7 @@ export function GameStage({
   const getStageTabHint = (tabId: StageSideTabId) => {
     if (tabId === "guide") return `${firstTenMinuteProgress}%`;
     if (tabId === "company") return `${getCompanyStarRating(gameState)}성`;
-    if (tabId === "reports") return gameState.lastMonthReport ? "보고 있음" : "대기";
+    if (tabId === "reports") return gameState.lastMonthReport?.staffAftermathCount ? "후폭풍" : gameState.lastMonthReport ? "보고 있음" : "대기";
     return hasResultPanel ? "새 소식" : "대기";
   };
 
@@ -457,6 +460,12 @@ export function GameStage({
                     <div className="wide-report-row">
                       <dt>전략 효과</dt>
                       <dd>{formatEffects(gameState.lastMonthReport.strategyEffects)}</dd>
+                    </div>
+                  )}
+                  {gameState.lastMonthReport.staffAftermathSummary && (
+                    <div className="wide-report-row monthly-staff-aftermath-row">
+                      <dt>인사 후폭풍</dt>
+                      <dd>{gameState.lastMonthReport.staffAftermathSummary}</dd>
                     </div>
                   )}
                 </dl>

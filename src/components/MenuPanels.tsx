@@ -1346,6 +1346,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
               <article className={`staff-aftermath-card severity-${record.severity}`} key={record.id}>
                 <strong>{record.incidentTitle}</strong>
                 <span>{record.sourceCompetitorName ? `${record.sourceCompetitorName} · ${record.effectLabel}` : record.effectLabel}</span>
+                {record.projectImpactLabel && <small>{record.projectImpactLabel}</small>}
                 <small>{record.month}개월차 · {record.stakesLabel ?? "월간 방치 압박"}</small>
               </article>
             ))}
