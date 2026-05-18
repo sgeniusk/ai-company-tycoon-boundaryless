@@ -4,6 +4,28 @@
 
 ---
 
+## [0.34.10-alpha] — 2026-05-18
+
+### 인사 사건 선택형 대응
+
+**추가:**
+- 인사 사건마다 2개의 대응 선택지를 계산하는 `getStaffIncidentResolutionOptions()`를 추가했다.
+- `resolveStaffIncident()`가 선택지에 따라 비용, 체력, 충성도, 연봉 압박, 자원 보상, 프로젝트 배치, 타임라인을 실제로 갱신한다.
+- 번아웃은 `회복일 지정`과 `백업 교대`, 스카우트 제안은 `리텐션 보너스`와 `창업 미션 설득`, 계약 불만은 `조건 재조정`과 `1:1 면담`으로 갈라진다.
+- 에이전트 콘솔의 인사 사건 카드가 단일 처리 버튼 대신 2버튼 선택 UI를 표시한다.
+- 회복일 지정은 배치 중인 직원을 프로젝트에서 빼고, 리텐션 보너스는 충성도를 올리는 대신 장기 연봉 압박을 키운다.
+
+**검증:**
+- `npm test -- src/game/staff-career.test.ts` 통과, 1 file / 20 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 25 tests
+- `npm test -- src/game/staff-career.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 75 tests
+- `npm run harness:gate` 통과, 38 files / 262 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser QA: `http://127.0.0.1:5197/?scenario=staff-incidents&menu=agents`에서 인사 사건 패널 1개, 사건 카드 3개, 선택 버튼 6개, 콘솔 오류 0건 확인
+- 모바일 QA: 390×844에서 선택 버튼 6개, 하단 탭 표시, 가로 오버플로 없음 확인
+- 스크린샷: `/tmp/ai-company-v03410-staff-incident-resolutions-desktop.png`, `/tmp/ai-company-v03410-staff-incident-resolutions-mobile.png`
+
+---
+
 ## [0.34.9-alpha] — 2026-05-18
 
 ### 직원 사건 드라마

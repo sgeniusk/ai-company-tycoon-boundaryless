@@ -13,10 +13,12 @@ import {
   getAgentSalaryNegotiationCheck,
   getAgentSpecializationCheck,
   getAgentSpecializationOptions,
+  getStaffIncidentResolutionOptions,
   getStaffIncidentBriefs,
   hireAgentViaChannel,
   chooseAgentSpecialization,
   negotiateAgentSalary,
+  resolveStaffIncident,
   restAgent,
   startProductProject,
 } from "./simulation";
@@ -315,5 +317,65 @@ describe("v0.34.9 staff incident drama", () => {
       recommendedAction: "salary",
     });
     expect(discontent?.description).toContain("계약");
+  });
+
+  it("offers two resolution choices for each staff incident type", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const started = startProductProject(writingProduct(), hired, [hired.hiredAgents[0].id]);
+    const incidentState = {
+      ...started,
+      hiredAgents: started.hiredAgents.map((agent) => ({ ...agent, level: 4, energy: 18, loyalty: 38 })),
+    };
+    const incidents = getStaffIncidentBriefs(incidentState);
+
+    for (const incident of incidents) {
+      const options = getStaffIncidentResolutionOptions(incident.id, incidentState);
+
+      expect(options).toHaveLength(2);
+      expect(options[0].label.length).toBeGreaterThan(0);
+      expect(options[0].effectLabel.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("resolves burnout with a recovery day that clears project assignment and logs the outcome", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const started = startProductProject(writingProduct(), hired, [hired.hiredAgents[0].id]);
+    const exhausted = {
+      ...started,
+      resources: { ...started.resources, cash: 12000 },
+      hiredAgents: started.hiredAgents.map((agent) => ({ ...agent, energy: 18, loyalty: 66 })),
+    };
+    const burnout = getStaffIncidentBriefs(exhausted).find((incident) => incident.type === "burnout");
+    if (!burnout) throw new Error("Missing burnout incident");
+
+    const resolved = resolveStaffIncident(burnout.id, "recovery_day", exhausted);
+    const agent = resolved.hiredAgents[0];
+
+    expect(agent.energy).toBeGreaterThan(18);
+    expect(agent.loyalty).toBeGreaterThan(66);
+    expect(agent.assignment).toBeUndefined();
+    expect(resolved.productProjects[0].assignedAgentIds).not.toContain(agent.id);
+    expect(resolved.resources.cash).toBeLessThan(exhausted.resources.cash ?? 0);
+    expect(resolved.timeline[0]).toContain("인사 사건 대응");
+  });
+
+  it("resolves a poaching incident with a retention bonus that raises salary pressure", () => {
+    const hired = hireAgentViaChannel(architect(), createInitialState(), "career_recruiting");
+    const specialist = {
+      ...hired,
+      resources: { ...hired.resources, cash: 12000 },
+      hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
+    };
+    const poaching = getStaffIncidentBriefs(specialist).find((incident) => incident.type === "poaching");
+    if (!poaching) throw new Error("Missing poaching incident");
+    const beforeAgent = specialist.hiredAgents[0];
+
+    const resolved = resolveStaffIncident(poaching.id, "retention_bonus", specialist);
+    const agent = resolved.hiredAgents[0];
+
+    expect(agent.loyalty).toBeGreaterThan(beforeAgent.loyalty ?? 0);
+    expect(agent.salaryMultiplier).toBeGreaterThan(beforeAgent.salaryMultiplier ?? 1);
+    expect(agent.upkeep?.cash).toBeGreaterThan(beforeAgent.upkeep?.cash ?? 0);
+    expect(resolved.timeline[0]).toContain("스카우트");
   });
 });

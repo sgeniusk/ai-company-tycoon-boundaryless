@@ -2198,13 +2198,19 @@ p {
   border: 1px solid #caa66f;
   display: grid;
   gap: 8px;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   padding: 8px;
 }
 
 .staff-incident-card.severity-critical {
   background: #fff0e7;
   border-color: #c56d43;
+}
+
+.staff-incident-actions {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .staff-incident-card button {
@@ -2216,6 +2222,17 @@ p {
   font-weight: 900;
   min-height: 34px;
   padding: 6px 8px;
+  text-align: left;
+}
+
+.staff-incident-card button.recommended {
+  background: #1f5d3f;
+}
+
+.staff-incident-card button span {
+  color: inherit;
+  font-size: 0.58rem;
+  margin-top: 3px;
 }
 
 .staff-incident-card button:disabled {

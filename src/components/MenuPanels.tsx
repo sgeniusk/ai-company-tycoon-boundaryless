@@ -108,6 +108,7 @@ import {
   getAgentSalaryNegotiationCheck,
   getAgentSalaryNegotiationCost,
   getStaffIncidentBriefs,
+  getStaffIncidentResolutionOptions,
   getUpgradeCheck,
   getWorkforceSynergySummary,
   getRelocationCheck,
@@ -117,6 +118,7 @@ import {
   placeOfficeItem,
   recruitmentChannels,
   restAgent,
+  resolveStaffIncident,
   relocateCompany,
   startProductConceptProject,
   startProductProject,
@@ -1337,10 +1339,7 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
               <span>번아웃, 스카우트, 계약 불만을 먼저 잡아 핵심 인재 이탈을 막습니다.</span>
             </div>
             {staffIncidents.map((incident) => {
-              const actionCheck =
-                incident.recommendedAction === "rest"
-                  ? getAgentRestCheck(incident.agentId, gameState)
-                  : getAgentSalaryNegotiationCheck(incident.agentId, gameState);
+              const resolutionOptions = getStaffIncidentResolutionOptions(incident.id, gameState);
               return (
                 <article className={`staff-incident-card incident-${incident.type} severity-${incident.severity}`} key={incident.id}>
                   <div>
@@ -1348,20 +1347,21 @@ function AgentsPanel({ gameState, setGameState }: { gameState: GameState; setGam
                     <span>{incident.description}</span>
                     <small>{incident.triggerLabel}</small>
                   </div>
-                  <button
-                    disabled={!actionCheck.ok || gameState.status !== "playing"}
-                    onClick={() =>
-                      setGameState((current) =>
-                        incident.recommendedAction === "rest"
-                          ? restAgent(incident.agentId, current)
-                          : negotiateAgentSalary(incident.agentId, current),
-                      )
-                    }
-                    title={actionCheck.ok ? incident.actionLabel : actionCheck.reasons.join(" / ")}
-                    type="button"
-                  >
-                    {incident.actionLabel}
-                  </button>
+                  <div className="staff-incident-actions">
+                    {resolutionOptions.map((option) => (
+                      <button
+                        className={option.recommended ? "recommended" : ""}
+                        disabled={!option.available || gameState.status !== "playing"}
+                        key={option.id}
+                        onClick={() => setGameState((current) => resolveStaffIncident(incident.id, option.id, current))}
+                        title={option.available ? `${option.description} · ${option.effectLabel}` : option.reasons.join(" / ")}
+                        type="button"
+                      >
+                        <strong>{option.label}</strong>
+                        <span>{option.effectLabel}</span>
+                      </button>
+                    ))}
+                  </div>
                 </article>
               );
             })}

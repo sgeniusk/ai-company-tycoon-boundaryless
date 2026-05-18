@@ -170,6 +170,25 @@ export interface StaffIncidentBrief {
   actionLabel: string;
 }
 
+export type StaffIncidentResolutionId =
+  | "recovery_day"
+  | "backup_shift"
+  | "retention_bonus"
+  | "mission_pitch"
+  | "contract_review"
+  | "one_on_one";
+
+export interface StaffIncidentResolutionOption {
+  id: StaffIncidentResolutionId;
+  label: string;
+  description: string;
+  cost: ResourceMap;
+  effectLabel: string;
+  recommended: boolean;
+  available: boolean;
+  reasons: string[];
+}
+
 export interface AgentDevelopmentProfile {
   traitLabel: string;
   traitDescription: string;
@@ -642,6 +661,75 @@ export function getStaffIncidentBriefs(state: GameState): StaffIncidentBrief[] {
   return incidents
     .sort((left, right) => getStaffIncidentSeverityScore(right) - getStaffIncidentSeverityScore(left) || left.agentName.localeCompare(right.agentName, "ko"))
     .slice(0, 4);
+}
+
+export function getStaffIncidentResolutionOptions(incidentId: string, state: GameState): StaffIncidentResolutionOption[] {
+  const incident = getStaffIncidentBriefs(state).find((entry) => entry.id === incidentId);
+  const agent = incident ? state.hiredAgents.find((entry) => entry.id === incident.agentId) : undefined;
+  if (!incident || !agent) return [];
+
+  return getStaffIncidentBaseResolutionOptions(incident, agent).map((option) => {
+    const check = getStaffIncidentResolutionCheck(incidentId, option.id, state);
+    return {
+      ...option,
+      available: check.ok,
+      reasons: check.reasons,
+    };
+  });
+}
+
+export function getStaffIncidentResolutionCheck(incidentId: string, resolutionId: StaffIncidentResolutionId, state: GameState): ActionCheck {
+  const reasons: string[] = [];
+  const incident = getStaffIncidentBriefs(state).find((entry) => entry.id === incidentId);
+  const agent = incident ? state.hiredAgents.find((entry) => entry.id === incident.agentId) : undefined;
+
+  if (!incident || !agent) {
+    reasons.push("대상 인사 사건을 찾을 수 없습니다.");
+    return { ok: false, reasons };
+  }
+
+  const option = getStaffIncidentBaseResolutionOptions(incident, agent).find((entry) => entry.id === resolutionId);
+  if (!option) {
+    reasons.push("선택할 수 없는 대응입니다.");
+    return { ok: false, reasons };
+  }
+
+  if (state.status !== "playing") {
+    reasons.push("진행 중인 런에서만 대응할 수 있습니다.");
+  }
+
+  appendCostReasons(reasons, option.cost, state);
+  return { ok: reasons.length === 0, reasons };
+}
+
+export function resolveStaffIncident(incidentId: string, resolutionId: StaffIncidentResolutionId, state: GameState): GameState {
+  const check = getStaffIncidentResolutionCheck(incidentId, resolutionId, state);
+  if (!check.ok) return state;
+
+  const incident = getStaffIncidentBriefs(state).find((entry) => entry.id === incidentId);
+  const agent = incident ? state.hiredAgents.find((entry) => entry.id === incident.agentId) : undefined;
+  if (!incident || !agent) return state;
+  const option = getStaffIncidentBaseResolutionOptions(incident, agent).find((entry) => entry.id === resolutionId);
+  if (!option) return state;
+
+  const nextAgents = state.hiredAgents.map((entry) => {
+    if (entry.id !== incident.agentId) return entry;
+    return applyStaffIncidentResolutionToAgent(entry, resolutionId);
+  });
+  const shouldClearAssignment = resolutionId === "recovery_day";
+
+  return {
+    ...state,
+    resources: applyResourceDelta(applyResourceDelta(state.resources, negateCosts(option.cost)), getStaffIncidentResolutionResourceDelta(resolutionId)),
+    hiredAgents: nextAgents,
+    productProjects: shouldClearAssignment
+      ? state.productProjects.map((project) => ({
+          ...project,
+          assignedAgentIds: project.assignedAgentIds.filter((agentId) => agentId !== incident.agentId),
+        }))
+      : state.productProjects,
+    timeline: [`인사 사건 대응: ${agent.name} · ${option.label} (${incident.title})`, ...state.timeline].slice(0, 8),
+  };
 }
 
 export function getAgentDevelopmentProfile(agent: HiredAgent, _state: GameState): AgentDevelopmentProfile {
@@ -3234,6 +3322,130 @@ function getRetentionRiskLabel(severity: AgentCareerStatus["retentionSeverity"])
 function getStaffIncidentSeverityScore(incident: StaffIncidentBrief): number {
   const typeWeight = incident.type === "poaching" ? 3 : incident.type === "burnout" ? 2 : 1;
   return (incident.severity === "critical" ? 100 : 50) + typeWeight;
+}
+
+function getStaffIncidentBaseResolutionOptions(incident: StaffIncidentBrief, agent: HiredAgent): Array<Omit<StaffIncidentResolutionOption, "available" | "reasons">> {
+  const restCost = getAgentRestCost(agent);
+  const negotiationCost = getAgentSalaryNegotiationCost(agent);
+  const lightContractCost = { cash: Math.max(250, Math.round((negotiationCost.cash ?? 500) * 0.45)) };
+  const backupCost = { cash: Math.max(120, Math.round((getHiredAgentMonthlyUpkeep(agent).cash ?? 180) * 0.35)), compute: 4 };
+
+  if (incident.type === "burnout") {
+    return [
+      {
+        id: "recovery_day",
+        label: "회복일 지정",
+        description: "일정을 잠시 비우고 유급 회복 시간을 줍니다. 배치 중이면 프로젝트에서 빠집니다.",
+        cost: restCost,
+        effectLabel: "체력 +32 · 충성 +10 · 배치 해제",
+        recommended: true,
+      },
+      {
+        id: "backup_shift",
+        label: "백업 교대",
+        description: "외부 백업과 자동화를 붙여 당장 무너지지 않게 합니다. 배치는 유지됩니다.",
+        cost: backupCost,
+        effectLabel: "체력 +18 · 충성 +6 · 배치 유지",
+        recommended: false,
+      },
+    ];
+  }
+
+  if (incident.type === "poaching") {
+    return [
+      {
+        id: "retention_bonus",
+        label: "리텐션 보너스",
+        description: "보너스와 조건 조정으로 경쟁사 제안을 눌러 앉힙니다.",
+        cost: negotiationCost,
+        effectLabel: "충성 +24 · 연봉 상승",
+        recommended: true,
+      },
+      {
+        id: "mission_pitch",
+        label: "창업 미션 설득",
+        description: "돈보다 비전으로 붙잡습니다. 비용은 낮지만 효과도 작습니다.",
+        cost: {},
+        effectLabel: "충성 +12 · 화제성 +2",
+        recommended: false,
+      },
+    ];
+  }
+
+  return [
+    {
+      id: "contract_review",
+      label: "조건 재조정",
+      description: "계약 조건을 일부 조정해 불만이 더 커지기 전에 막습니다.",
+      cost: lightContractCost,
+      effectLabel: "충성 +16 · 연봉 소폭 상승",
+      recommended: true,
+    },
+    {
+      id: "one_on_one",
+      label: "1:1 면담",
+      description: "시간을 써서 불만의 원인을 듣고 단기 신뢰를 회복합니다.",
+      cost: {},
+      effectLabel: "충성 +8 · 체력 +4 · 신뢰 +1",
+      recommended: false,
+    },
+  ];
+}
+
+function applyStaffIncidentResolutionToAgent(agent: HiredAgent, resolutionId: StaffIncidentResolutionId): HiredAgent {
+  if (resolutionId === "recovery_day") {
+    return {
+      ...agent,
+      assignment: undefined,
+      energy: clamp(agent.energy + 32, 0, 100),
+      loyalty: clamp(getAgentLoyalty(agent) + 10, 0, 100),
+    };
+  }
+
+  if (resolutionId === "backup_shift") {
+    return {
+      ...agent,
+      energy: clamp(agent.energy + 18, 0, 100),
+      loyalty: clamp(getAgentLoyalty(agent) + 6, 0, 100),
+    };
+  }
+
+  if (resolutionId === "retention_bonus") {
+    return applyAgentSalaryAdjustment(agent, 0.1, 24);
+  }
+
+  if (resolutionId === "mission_pitch") {
+    return {
+      ...agent,
+      energy: clamp(agent.energy + 2, 0, 100),
+      loyalty: clamp(getAgentLoyalty(agent) + 12, 0, 100),
+    };
+  }
+
+  if (resolutionId === "contract_review") {
+    return applyAgentSalaryAdjustment(agent, 0.05, 16);
+  }
+
+  return {
+    ...agent,
+    energy: clamp(agent.energy + 4, 0, 100),
+    loyalty: clamp(getAgentLoyalty(agent) + 8, 0, 100),
+  };
+}
+
+function applyAgentSalaryAdjustment(agent: HiredAgent, salaryDelta: number, loyaltyDelta: number): HiredAgent {
+  return {
+    ...agent,
+    loyalty: clamp(getAgentLoyalty(agent) + loyaltyDelta, 0, 100),
+    salaryMultiplier: Number(((agent.salaryMultiplier ?? 1) + salaryDelta).toFixed(2)),
+    upkeep: scaleResourceMap(getHiredAgentMonthlyUpkeep(agent), 1 + salaryDelta),
+  };
+}
+
+function getStaffIncidentResolutionResourceDelta(resolutionId: StaffIncidentResolutionId): ResourceMap {
+  if (resolutionId === "mission_pitch") return { hype: 2 };
+  if (resolutionId === "one_on_one") return { trust: 1 };
+  return {};
 }
 
 function getStrongestCompetitorName(state: GameState): string {
