@@ -559,4 +559,65 @@ describe("v0.34.14 staff aftermath production impact", () => {
     expect(troubledAdvanced.lastMonthReport?.staffAftermathCount).toBeGreaterThanOrEqual(1);
     expect(troubledAdvanced.lastMonthReport?.staffAftermathSummary).toContain("프로젝트");
   });
+
+  it("lets the retention lounge soften unresolved aftermath damage without erasing the risk", () => {
+    const hired = hireAgentViaChannel(architect(), {
+      ...createInitialState(),
+      resources: {
+        ...createInitialState().resources,
+        cash: 60000,
+        compute: 300,
+        data: 300,
+        trust: 52,
+      },
+      activeProducts: ["foundation_model_v0"],
+      productLevels: { foundation_model_v0: 1 },
+    }, "career_recruiting");
+    const staffed = {
+      ...hired,
+      hiredAgents: [
+        ...hired.hiredAgents,
+        ...agentTypes
+          .filter((agent) => agent.id !== architect().id)
+          .slice(0, 3)
+          .map((agent, index) => ({
+            id: `lounge-extra-${index + 1}`,
+            typeId: agent.id,
+            name: agent.name,
+            level: 1,
+            energy: 82,
+            loyalty: 76,
+            equippedItemIds: [],
+          })),
+      ],
+    };
+    const started = startProductProject(writingProduct(), staffed, [staffed.hiredAgents[0].id]);
+    const troubled = {
+      ...started,
+      productProjects: [{ ...started.productProjects[0], progress: 28, quality: 62 }],
+      hiredAgents: started.hiredAgents.map((agent, index) =>
+        index === 0 ? { ...agent, energy: 18, loyalty: 66 } : agent,
+      ),
+    };
+    const noLounge = advanceMonth({
+      ...troubled,
+      office: { expansionId: "startup_suite", placedItemIds: [] },
+    });
+    const withLounge = advanceMonth({
+      ...troubled,
+      office: { expansionId: "growth_floor", placedItemIds: [] },
+    });
+
+    expect(getRecentStaffIncidentAftermathLog(withLounge)).toHaveLength(1);
+    expect(withLounge.productProjects[0].quality).toBeGreaterThan(noLounge.productProjects[0].quality);
+    expect(withLounge.productProjects[0].quality).toBeLessThan(advanceMonth({
+      ...troubled,
+      hiredAgents: troubled.hiredAgents.map((agent, index) =>
+        index === 0 ? { ...agent, energy: 82, loyalty: 76 } : agent,
+      ),
+      office: { expansionId: "growth_floor", placedItemIds: [] },
+    }).productProjects[0].quality);
+    expect(withLounge.lastMonthReport?.staffAftermathSummary).toContain("복지 라운지");
+    expect(getRecentStaffIncidentAftermathLog(withLounge)[0].effectLabel).toContain("복지 라운지");
+  });
 });

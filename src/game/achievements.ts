@@ -39,7 +39,7 @@ export function applyAchievementUnlocks(state: GameState): GameState {
         (achievement) => `업적 달성: ${achievement.title} - 보상 ${formatReward(achievement.reward)}`,
       ),
       ...state.timeline,
-    ].slice(0, 8),
+    ].slice(0, 10),
   };
 }
 

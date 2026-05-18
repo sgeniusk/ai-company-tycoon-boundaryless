@@ -682,6 +682,35 @@ export interface OfficeSynergySummary {
   totalMonthlyEffects: ResourceMap;
 }
 
+export interface OfficeZoneDefinition {
+  id: string;
+  title: string;
+  description: string;
+  min_office_level: number;
+  required_resources: ResourceMap;
+  required_capabilities: Record<string, number>;
+  required_domains: string[];
+  required_active_products: number;
+  required_hired_agents: number;
+  monthly_effects: ResourceMap;
+  tags: string[];
+}
+
+export interface OfficeZoneStatus extends OfficeZoneDefinition {
+  unlocked: boolean;
+  active: boolean;
+  blockedReasons: string[];
+  progressLabel: string;
+}
+
+export interface OfficeZonePlan {
+  active: OfficeZoneStatus[];
+  locked: OfficeZoneStatus[];
+  nextZone?: OfficeZoneStatus;
+  totalMonthlyEffects: ResourceMap;
+  operationLabel: string;
+}
+
 export interface OfficeGrowthCurrent {
   expansionId: string;
   expansionName: string;
@@ -691,6 +720,8 @@ export interface OfficeGrowthCurrent {
   decorationSlotsUsed: number;
   decorationSlotsTotal: number;
   openDecorationSlots: number;
+  activeZoneCount: number;
+  nextZoneTitle?: string;
   monthlyEffects: ResourceMap;
 }
 
@@ -759,8 +790,30 @@ export interface OfficeGrowthPlan {
   nextRelocation?: OfficeGrowthRelocationChoice;
   activeSynergies: OfficeSynergyStatus[];
   nextSynergy?: OfficeGrowthSynergyPlan;
+  zonePlan: OfficeZonePlan;
   placedDecorRows: OfficeGrowthDecorRow[];
   primaryAction: OfficeGrowthPrimaryAction;
+}
+
+export type OperationsCommandRiskLevel = "stable" | "watch" | "urgent";
+export type OperationsCommandSeverity = "stable" | "opportunity" | "watch" | "urgent";
+
+export interface OperationsCommandFocus {
+  id: string;
+  title: string;
+  description: string;
+  severity: OperationsCommandSeverity;
+  targetMenu: GrowthPathMenuId;
+  actionLabel: string;
+}
+
+export interface OperationsCommandPlan {
+  headline: string;
+  summary: string;
+  riskLevel: OperationsCommandRiskLevel;
+  focusCards: OperationsCommandFocus[];
+  activeSafeguards: string[];
+  nextMilestone: string;
 }
 
 export interface OfficeState {

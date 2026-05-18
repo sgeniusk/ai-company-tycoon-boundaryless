@@ -1,0 +1,108 @@
+{
+  "office_zones": [
+    {
+      "id": "founder_command_desk",
+      "title": "창업자 지휘 데스크",
+      "description": "차고 한쪽에 놓인 지휘 데스크입니다. 제품 우선순위, 채용, 카드 운용을 한눈에 잡습니다.",
+      "min_office_level": 1,
+      "required_resources": {},
+      "required_capabilities": {},
+      "required_domains": [],
+      "required_active_products": 0,
+      "required_hired_agents": 0,
+      "monthly_effects": {"cash": 60, "data": 1},
+      "tags": ["garage", "planning", "founder"]
+    },
+    {
+      "id": "compute_bay",
+      "title": "차고 연산 베이",
+      "description": "GPU 랙과 냉각 장비를 모아 초반 모델 실험을 계속 굴리는 구역입니다.",
+      "min_office_level": 1,
+      "required_resources": {"compute": 100},
+      "required_capabilities": {},
+      "required_domains": [],
+      "required_active_products": 0,
+      "required_hired_agents": 0,
+      "monthly_effects": {"data": 1, "compute": 2},
+      "tags": ["compute", "model", "garage"]
+    },
+    {
+      "id": "hiring_corner",
+      "title": "채용 면접 코너",
+      "description": "작은 회의실과 화이트보드가 생겨 공채와 경력 채용을 더 꾸준히 돌릴 수 있습니다.",
+      "min_office_level": 2,
+      "required_resources": {},
+      "required_capabilities": {},
+      "required_domains": [],
+      "required_active_products": 0,
+      "required_hired_agents": 2,
+      "monthly_effects": {"cash": 60},
+      "tags": ["recruiting", "people", "growth"]
+    },
+    {
+      "id": "launch_stage",
+      "title": "제품 런칭 무대",
+      "description": "작지만 카메라가 있는 발표 무대입니다. 출시 제품을 계속 보여주며 사용자 유입을 만든다.",
+      "min_office_level": 2,
+      "required_resources": {},
+      "required_capabilities": {},
+      "required_domains": [],
+      "required_active_products": 1,
+      "required_hired_agents": 0,
+      "monthly_effects": {"users": 120},
+      "tags": ["launch", "shareable", "users"]
+    },
+    {
+      "id": "retention_lounge",
+      "title": "복지 라운지",
+      "description": "커피, 수면 소파, 회복 공간을 묶어 번아웃과 이탈 위험을 줄이는 운영 구역입니다.",
+      "min_office_level": 3,
+      "required_resources": {"trust": 45},
+      "required_capabilities": {},
+      "required_domains": [],
+      "required_active_products": 1,
+      "required_hired_agents": 4,
+      "monthly_effects": {"trust": 1, "hype": 1},
+      "tags": ["retention", "staff", "care"]
+    },
+    {
+      "id": "robotics_bay",
+      "title": "로봇 고용 베이",
+      "description": "소형 로봇을 충전하고 테스트하는 구역입니다. 로봇 인력이 개발에 합류할 준비를 합니다.",
+      "min_office_level": 4,
+      "required_resources": {"automation": 10},
+      "required_capabilities": {"robotics": 1},
+      "required_domains": ["robotics"],
+      "required_active_products": 2,
+      "required_hired_agents": 5,
+      "monthly_effects": {"automation": 2, "cash": 180},
+      "tags": ["robotics", "automation", "hardware"]
+    },
+    {
+      "id": "chip_lab",
+      "title": "칩 실험 랩",
+      "description": "모델 회사가 직접 반도체 실험을 시작하는 작은 랩입니다. 연산 압박을 장기적으로 완화합니다.",
+      "min_office_level": 4,
+      "required_resources": {"compute": 260, "data": 80},
+      "required_capabilities": {"code": 2},
+      "required_domains": ["semiconductors"],
+      "required_active_products": 2,
+      "required_hired_agents": 5,
+      "monthly_effects": {"compute": 10, "data": 5},
+      "tags": ["chip", "compute", "hardware"]
+    },
+    {
+      "id": "boundaryless_showroom_zone",
+      "title": "경계 없는 쇼룸",
+      "description": "자동차, 커피, 장난감 같은 이상한 산업 확장을 투자자와 유저에게 보여주는 전시장입니다.",
+      "min_office_level": 5,
+      "required_resources": {"hype": 35, "trust": 55},
+      "required_capabilities": {},
+      "required_domains": ["odd_industries"],
+      "required_active_products": 4,
+      "required_hired_agents": 8,
+      "monthly_effects": {"hype": 2, "users": 280, "cash": 260},
+      "tags": ["boundaryless", "odd", "shareable"]
+    }
+  ]
+}

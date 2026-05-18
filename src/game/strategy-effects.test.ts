@@ -32,16 +32,20 @@ describe("v0.11 growth path monthly strategy effects", () => {
     expect(advanced.lastMonthReport?.strategyEffects).toEqual({
       users: 120,
       hype: 1,
-      data: 2,
+      data: 3,
+      cash: 60,
     });
     expect(advanced.resources.users).toBeGreaterThan(chosen.resources.users);
     expect(advanced.timeline.some((entry) => entry.includes("전략 효과"))).toBe(true);
   });
 
-  it("leaves the monthly report strategy slot empty before committing to a path", () => {
+  it("still reports office zone effects before committing to a path", () => {
     const released = releaseStarterProduct();
     const advanced = advanceMonth(released);
 
-    expect(advanced.lastMonthReport?.strategyEffects).toBeUndefined();
+    expect(advanced.lastMonthReport?.strategyEffects).toEqual({
+      cash: 60,
+      data: 1,
+    });
   });
 });

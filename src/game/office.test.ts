@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agentTypes, items, officeExpansions, products } from "./data";
+import { agentTypes, items, officeExpansions, officeZones, products } from "./data";
 import {
   buyItem,
   buyOfficeExpansion,
@@ -11,9 +11,11 @@ import {
   getOfficeDecorationSlots,
   getOfficeExpansion,
   getOfficeExpansionCheck,
+  getOfficeGrowthPlan,
   getOfficeHireCapacity,
   getOfficeSynergySummary,
   getOfficeMonthlyEffects,
+  getOfficeZonePlan,
   getPlacedOfficeItems,
   getPlaceOfficeItemCheck,
   hireAgent,
@@ -87,8 +89,9 @@ describe("v0.12.7 office expansion and decoration", () => {
     const advanced = advanceMonth(expanded);
 
     expect(advanced.lastMonthReport?.strategyEffects).toMatchObject({
-      cash: 120,
-      users: 40,
+      cash: 180,
+      users: 160,
+      data: 1,
     });
     expect(advanced.timeline.some((entry) => entry.includes("사무실 효과"))).toBe(true);
   });
@@ -147,6 +150,42 @@ describe("v0.12.7 office expansion and decoration", () => {
     ]);
   });
 
+  it("unlocks office zones by expansion level and applies their monthly operations", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const curator = agentTypes.find((agent) => agent.id === "data_curator");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    const startupSuite = officeExpansions.find((expansion) => expansion.id === "startup_suite");
+    if (!architect || !curator || !writingProduct || !startupSuite) throw new Error("Missing office zone fixtures");
+
+    const staffed = hireAgent(curator, hireAgent(architect, createRichInitialState()));
+    const expanded = buyOfficeExpansion(startupSuite, {
+      ...staffed,
+      activeProducts: [writingProduct.id],
+      productLevels: { [writingProduct.id]: 1 },
+    });
+    const zonePlan = getOfficeZonePlan(expanded);
+
+    expect(officeZones.length).toBeGreaterThanOrEqual(8);
+    expect(zonePlan.active.map((zone) => zone.id)).toEqual(
+      expect.arrayContaining(["founder_command_desk", "compute_bay", "hiring_corner", "launch_stage"]),
+    );
+    expect(zonePlan.totalMonthlyEffects).toMatchObject({
+      cash: 120,
+      users: 120,
+      data: 2,
+    });
+    expect(getOfficeGrowthPlan(expanded).current.activeZoneCount).toBe(zonePlan.active.length);
+
+    const advanced = advanceMonth(expanded);
+
+    expect(advanced.lastMonthReport?.strategyEffects).toMatchObject({
+      cash: 240,
+      users: 160,
+      data: 2,
+    });
+    expect(advanced.timeline.some((entry) => entry.includes("사무실 구획"))).toBe(true);
+  });
+
   it("activates office decoration synergies from placed item categories", () => {
     const gpuRack = items.find((item) => item.id === "gpu_rack_mini");
     const coolingWall = items.find((item) => item.id === "cooling_fan_wall");
@@ -184,8 +223,9 @@ describe("v0.12.7 office expansion and decoration", () => {
     const advanced = advanceMonth(base);
 
     expect(advanced.lastMonthReport?.strategyEffects).toMatchObject({
-      compute: 6,
-      data: 3,
+      compute: 8,
+      data: 5,
+      cash: 60,
     });
     expect(advanced.timeline.some((entry) => entry.includes("사무실 시너지"))).toBe(true);
   });

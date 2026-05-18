@@ -52,6 +52,7 @@ export const qaScenarioIds = [
   "staff-resolution",
   "staff-aftermath",
   "launch-impact",
+  "operations",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -388,11 +389,85 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "operations") {
+    return {
+      id,
+      label: "v0.40 운영 의제 QA",
+      state: createOperationsScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
   return {
     id,
     label: "출시 스포트라이트 QA",
     state: releaseState,
     activeMenu: "company",
+  };
+}
+
+function createOperationsScenarioState(): GameState {
+  const initial = createInitialState();
+  const projectProduct = products.find((product) => product.id === "ai_coding_assistant");
+  const hiredAgents = agentTypes.slice(0, 5).map((agent, index) => ({
+    id: `operations-agent-${index + 1}`,
+    typeId: agent.id,
+    name: agent.name,
+    level: index === 0 ? 4 : 2,
+    energy: index === 0 ? 18 : 78,
+    loyalty: index === 0 ? 38 : 74,
+    equippedItemIds: [],
+  }));
+  const baseState: GameState = {
+    ...initial,
+    month: 18,
+    activeProducts: ["foundation_model_v0", "ai_writing_assistant"],
+    productLevels: { foundation_model_v0: 1, ai_writing_assistant: 2 },
+    hiredAgents,
+    resources: {
+      ...initial.resources,
+      cash: 90000,
+      compute: 520,
+      data: 520,
+      users: 12000,
+      trust: 68,
+      hype: 32,
+      automation: 20,
+      talent: 8,
+    },
+    capabilities: {
+      ...initial.capabilities,
+      language: 3,
+      code: 3,
+      vision: 2,
+      agent: 2,
+      robotics: 1,
+      optimization: 2,
+    },
+    unlockedDomains: [
+      ...new Set([...initial.unlockedDomains, "developer_tools", "creator_tools", "robotics", "semiconductors"]),
+    ],
+    office: {
+      expansionId: "campus_lab",
+      placedItemIds: [],
+    },
+    seenTutorials: [
+      "welcome_garage",
+      "agent_hired",
+      "product_ideas",
+      "development_project",
+      "card_reward",
+      "office_growth",
+      "competition_pressure",
+    ],
+    timeline: ["v0.40 운영 의제 QA: 직원, 구획, 제품 개발, 경쟁 압박을 한 화면에서 점검", ...initial.timeline].slice(0, 8),
+  };
+
+  if (!projectProduct) return baseState;
+
+  return {
+    ...startProductProject(projectProduct, baseState, [hiredAgents[0].id]),
+    timeline: ["v0.40 운영 의제 QA: 운영 커맨드 패널과 구획 완충 효과 확인", ...baseState.timeline].slice(0, 8),
   };
 }
 

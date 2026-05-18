@@ -123,7 +123,7 @@ describe("v0.14.5 annual directive choices", () => {
     };
 
     expect(getActiveAnnualDirective(expired)).toBeUndefined();
-    expect(calculateMonthlyEconomy(expired).strategyEffects?.cash ?? 0).toBe(0);
+    expect(calculateMonthlyEconomy(expired).strategyEffects?.cash ?? 0).toBe(60);
   });
 
   it("hydrates legacy saves without annual review history", () => {

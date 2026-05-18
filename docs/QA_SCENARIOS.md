@@ -36,6 +36,7 @@ Use the local app URL and append one of these query strings:
 | Readiness | `?scenario=readiness` | v0.20 alpha readiness state from the integrated simulation harness |
 | Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
+| Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
 
 Examples:
 
@@ -63,6 +64,25 @@ Examples:
 - `http://localhost:5173/?scenario=readiness`
 - `http://localhost:5173/?scenario=persona20`
 - `http://localhost:5173/?scenario=launch-impact`
+- `http://localhost:5173/?scenario=operations`
+
+## v0.40 Operations Command QA
+
+URL:
+
+- `?scenario=operations`
+- `?scenario=operations&menu=agents`
+- `?scenario=operations&menu=shop`
+
+Expected:
+
+- The QA pill says `v0.40 운영 의제 QA`.
+- The office playfield shows an `운영 의제` panel without covering the bottom turn goal.
+- The command panel lists three immediate priorities such as staff care, product development, and office zone growth.
+- The company side tab mentions active office zones and operating safeguards.
+- Agents menu still shows the staff incident panel for the exhausted key worker.
+- Shop menu shows active office zones, including robotics or chip-related next goals when conditions are near completion.
+- Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
 
 ## v0.22 Launch Impact QA
 

@@ -249,8 +249,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("staff-incident-actions");
     expect(menuPanels).toContain("staff-incident-source");
     expect(menuPanels).toContain("projectImpactLabel");
+    expect(menuPanels).toContain("office-zone-panel");
+    expect(menuPanels).toContain("getOfficeZonePlan");
+    expect(gameChrome).toContain("officeZonePlan");
+    expect(gameChrome).toContain("getOperationsCommandPlan");
+    expect(gameChrome).toContain("OperationCommandPanel");
+    expect(gameChrome).toContain("operation-command-panel");
     expect(gameChrome).toContain("staffAftermathSummary");
     expect(gameChrome).toContain("monthly-staff-aftermath-row");
+    expect(appCss).toMatch(/\.office-zone-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.operation-command-panel\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.operation-command-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.monthly-staff-aftermath-row\s*{/s);
     expect(menuPanels).toContain("staff-incident-aftermath-warning");
     expect(menuPanels).toContain("staff-aftermath-panel");

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { items, metaUnlocks, officeExpansions, officeSynergies, starterDecks, strategyCards } from "./data";
+import { items, metaUnlocks, officeExpansions, officeSynergies, officeZones, starterDecks, strategyCards } from "./data";
 
 describe("v0.25 accelerated content expansion", () => {
   it("thickens deckbuilding, roguelite meta, and office growth content pools", () => {
@@ -8,6 +8,7 @@ describe("v0.25 accelerated content expansion", () => {
     expect(starterDecks.length).toBeGreaterThanOrEqual(7);
     expect(officeExpansions.length).toBeGreaterThanOrEqual(6);
     expect(officeSynergies.length).toBeGreaterThanOrEqual(8);
+    expect(officeZones.length).toBeGreaterThanOrEqual(8);
     expect(items.length).toBeGreaterThanOrEqual(45);
   });
 

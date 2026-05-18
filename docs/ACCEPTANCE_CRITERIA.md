@@ -727,3 +727,17 @@ Legacy Godot result retained for reference. The active web restart criteria are 
 | 6 | Game has visible success/failure trajectory | Pending |
 | 7 | Monthly report shows meaningful data | Pending |
 | 8 | Balance report confirms no dominant strategy | Pending |
+
+---
+
+## Alpha v0.40: Company Operations Command
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Monthly operations plan calculates priorities from cash, staff risk, product projects, office zones, and rivals | **Passed** |
+| 2 | Critical staff incidents are prioritized before growth recommendations | **Passed** |
+| 3 | Retention lounge softens unresolved staff aftermath without removing the penalty | **Passed** |
+| 4 | Robotics bay improves advanced robot recruiting visibility | **Passed** |
+| 5 | `?scenario=operations` opens a stable v0.40 browser QA state | **Passed** |
+| 6 | Office playfield includes a compact operations command panel | **Passed** |
+| 7 | Focused v0.40 tests pass | **Passed** |

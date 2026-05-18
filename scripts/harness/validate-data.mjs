@@ -82,6 +82,7 @@ const deckSynergiesData = readJson("deck_synergies.json");
 const starterDecksData = readJson("starter_decks.json");
 const officeExpansionsData = readJson("office_expansions.json");
 const officeSynergiesData = readJson("office_synergies.json");
+const officeZonesData = readJson("office_zones.json");
 const workforceSynergiesData = readJson("workforce_synergies.json");
 const annualReviewsData = readJson("annual_reviews.json");
 const annualDirectiveChoicesData = readJson("annual_directive_choices.json");
@@ -117,6 +118,7 @@ const deckSynergies = deckSynergiesData?.deck_synergies ?? [];
 const starterDecks = starterDecksData?.starter_decks ?? [];
 const officeExpansions = officeExpansionsData?.office_expansions ?? [];
 const officeSynergies = officeSynergiesData?.office_synergies ?? [];
+const officeZones = officeZonesData?.office_zones ?? [];
 const workforceSynergies = workforceSynergiesData?.workforce_synergies ?? [];
 const annualReviews = annualReviewsData?.annual_reviews ?? [];
 const annualDirectiveChoices = annualDirectiveChoicesData?.annual_directive_choices ?? [];
@@ -150,6 +152,7 @@ idsAreUnique("deck_synergies", deckSynergies);
 idsAreUnique("starter_decks", starterDecks);
 idsAreUnique("office_expansions", officeExpansions);
 idsAreUnique("office_synergies", officeSynergies);
+idsAreUnique("office_zones", officeZones);
 idsAreUnique("workforce_synergies", workforceSynergies);
 idsAreUnique("annual_reviews", annualReviews);
 idsAreUnique("annual_directive_choices", annualDirectiveChoices);
@@ -361,6 +364,30 @@ for (const synergy of officeSynergies) {
   validateResourceMap(`office_synergy "${synergy.id}" monthly_effects`, synergy.monthly_effects, resourceIds);
   if (!Array.isArray(synergy.tags) || synergy.tags.length === 0) {
     errors.push(`office_synergy "${synergy.id}": tags must be a non-empty array`);
+  }
+}
+
+for (const zone of officeZones) {
+  for (const field of ["title", "description", "min_office_level", "required_resources", "required_capabilities", "required_domains", "required_active_products", "required_hired_agents", "monthly_effects", "tags"]) {
+    if (!(field in zone)) errors.push(`office_zone "${zone.id}": missing ${field}`);
+  }
+  if (typeof zone.min_office_level !== "number" || zone.min_office_level < 1) {
+    errors.push(`office_zone "${zone.id}": min_office_level must be a positive number`);
+  }
+  validateResourceMap(`office_zone "${zone.id}" required_resources`, zone.required_resources, resourceIds);
+  validateResourceMap(`office_zone "${zone.id}" monthly_effects`, zone.monthly_effects, resourceIds);
+  for (const [capabilityId, value] of Object.entries(zone.required_capabilities ?? {})) {
+    if (!capabilityIds.has(capabilityId)) errors.push(`office_zone "${zone.id}": unknown capability "${capabilityId}"`);
+    if (typeof value !== "number" || value < 1) errors.push(`office_zone "${zone.id}": required capability "${capabilityId}" must be positive`);
+  }
+  for (const domainId of zone.required_domains ?? []) {
+    if (!domainIds.has(domainId)) errors.push(`office_zone "${zone.id}": unknown domain "${domainId}"`);
+  }
+  for (const field of ["required_active_products", "required_hired_agents"]) {
+    if (typeof zone[field] !== "number" || zone[field] < 0) errors.push(`office_zone "${zone.id}": ${field} must be a non-negative number`);
+  }
+  if (!Array.isArray(zone.tags) || zone.tags.length === 0) {
+    errors.push(`office_zone "${zone.id}": tags must be a non-empty array`);
   }
 }
 

@@ -91,6 +91,7 @@ import {
   getOfficeHireCapacity,
   getOfficeMonthlyEffects,
   getOfficeSynergySummary,
+  getOfficeZonePlan,
   getPlacedOfficeItems,
   getPlaceOfficeItemCheck,
   getProductLevel,
@@ -187,6 +188,7 @@ export function renderMenuContent(
     const unlockedAchievementCount = achievementStatuses.filter((achievement) => achievement.unlocked).length;
     const officeExpansion = getOfficeExpansion(gameState);
     const placedOfficeItems = getPlacedOfficeItems(gameState);
+    const officeZonePlan = getOfficeZonePlan(gameState);
     const calendar = getCampaignCalendar(gameState);
     const finale = getCampaignFinale(gameState);
     const stageProgress = getCompanyStageProgress(gameState);
@@ -325,6 +327,7 @@ export function renderMenuContent(
             <span>보유 아이템 {gameState.ownedItems.length}개</span>
             <span>지역 {currentLocation.region}</span>
             <span>사무실 {officeExpansion.name}</span>
+            <span>가동 구획 {officeZonePlan.active.length}개</span>
             <span>고용 한도 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
             <span>AI 운용 {getAiAgentCount(gameState)}/{getAiOperationCapacity(gameState)}</span>
             <span>장식 효과 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
@@ -337,6 +340,29 @@ export function renderMenuContent(
                 전략 {gameState.chosenGrowthPath.title} · 월간 {formatEffects(gameState.chosenGrowthPath.monthlyEffects)}
               </span>
             )}
+          </div>
+          <div className="office-zone-panel">
+            <div>
+              <p className="eyebrow">사무실 구획</p>
+              <strong>{officeZonePlan.operationLabel}</strong>
+              <span>확장 단계와 회사 상태에 따라 실제 월간 운영 효과가 달라집니다.</span>
+            </div>
+            <div className="office-zone-grid">
+              {officeZonePlan.active.slice(0, 4).map((zone) => (
+                <article className="active" key={zone.id}>
+                  <strong>{zone.title}</strong>
+                  <span>{formatEffects(zone.monthly_effects)}</span>
+                  <small>{zone.description}</small>
+                </article>
+              ))}
+              {officeZonePlan.nextZone && (
+                <article className="locked">
+                  <strong>다음 구획: {officeZonePlan.nextZone.title}</strong>
+                  <span>{officeZonePlan.nextZone.progressLabel}</span>
+                  <small>{officeZonePlan.nextZone.description}</small>
+                </article>
+              )}
+            </div>
           </div>
           <div className="promotion-panel">
             <div className="promotion-header">
@@ -1864,6 +1890,7 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const storedOfficeItems = officeItems.filter((item) => !placedOfficeItemIds.has(item.id));
   const officeSynergySummary = getOfficeSynergySummary(gameState);
   const officeGrowthPlan = getOfficeGrowthPlan(gameState);
+  const officeZonePlan = officeGrowthPlan.zonePlan;
 
   return (
     <div className="panel-grid two-col">
@@ -1876,6 +1903,7 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <strong>{officeExpansion.name}</strong>
           <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
           <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
+          <span>구획 {officeZonePlan.active.length}개</span>
           <span>{officeSynergySummary.active.length ? `시너지 ${officeSynergySummary.active.length}개` : "시너지 준비 중"}</span>
         </div>
         <div className="office-growth-planner compact-planner">
@@ -2005,7 +2033,29 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             <strong>{officeExpansion.name}</strong>
             <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
             <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
+            <span>구획 {officeZonePlan.active.length}</span>
             <span>월간 {Object.keys(officeMonthlyEffects).length ? formatEffects(officeMonthlyEffects) : "없음"}</span>
+          </div>
+          <div className="office-zone-panel compact">
+            <div>
+              <p className="eyebrow">운영 구획</p>
+              <strong>{officeZonePlan.operationLabel}</strong>
+              <span>다음 확장과 채용이 열어주는 실제 사무실 기능입니다.</span>
+            </div>
+            <div className="office-zone-grid">
+              {officeZonePlan.active.slice(0, 3).map((zone) => (
+                <article className="active" key={zone.id}>
+                  <strong>{zone.title}</strong>
+                  <span>{formatEffects(zone.monthly_effects)}</span>
+                </article>
+              ))}
+              {officeZonePlan.nextZone && (
+                <article className="locked">
+                  <strong>{officeZonePlan.nextZone.title}</strong>
+                  <span>{officeZonePlan.nextZone.progressLabel}</span>
+                </article>
+              )}
+            </div>
           </div>
           <div className="office-synergy-panel">
             <div>

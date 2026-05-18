@@ -4,6 +4,41 @@
 
 ---
 
+## [0.40-alpha] — 2026-05-19
+
+### 회사 운영 완성축: 월간 운영 의제와 구획 효과 연결
+
+**추가:**
+- `getOperationsCommandPlan()`을 추가해 현금 흐름, 인사 사건, 개발 프로젝트, 다음 사무실 구획, 경쟁사 압박을 월간 운영 의제로 묶었다.
+- 사무실 화면 안에 `운영 의제` 패널을 추가했다. 이제 게임 화면에서 바로 이번 달 우선순위 3개와 이동 메뉴를 볼 수 있다.
+- `operations` QA 시나리오를 추가해 v0.40 운영 화면을 바로 열 수 있게 했다.
+- 복지 라운지가 가동 중이면 미해결 인사 후폭풍의 체력/충성도/프로젝트 손실을 완화한다.
+- 로봇 고용 베이가 가동 중이면 경력 채용/헤드헌터 후보 풀에서 로봇 후보가 더 잘 노출된다.
+
+**검증:**
+- `npm test -- src/game/operations-command.test.ts src/game/staff-career.test.ts src/game/recruitment.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 5 files / 99 tests
+- `npm run harness:gate` 통과, 39 files / 281 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser QA: `http://127.0.0.1:5201/?scenario=operations`에서 운영 의제 패널 1개, 의제 카드 3개, 모바일 폭 510px 기준 표시 카드 2개, 콘솔 오류 0건, 가로 오버플로 없음 확인
+
+---
+
+## [0.35-alpha] — 2026-05-19
+
+### v0.4 회사 운영/공간 성장 구획 시스템
+
+**추가:**
+- `data/office_zones.json`을 추가해 사무실 구획을 데이터 기반으로 관리한다.
+- 차고형 연구실부터 창업자 지휘 데스크, 연산 베이, 채용 코너, 런칭 무대, 복지 라운지, 로봇 고용 베이, 칩 실험 랩, 경계 없는 쇼룸까지 8개 구획을 준비했다.
+- 사무실 단계, 활성 제품 수, 고용 인력, 연구 레벨, 해금 산업, 보유 자원에 따라 구획이 가동되거나 잠긴다.
+- 가동 중인 구획의 월간 효과가 실제 월간 경제에 합산된다.
+- 회사 화면과 상점/인벤토리 화면에 `사무실 구획` 패널을 추가해 현재 가동 구획과 다음 구획 조건을 보여준다.
+- 상단 사무실 HUD에도 가동 구획 수를 노출한다.
+
+**검증:**
+- `npm test -- src/game/office.test.ts src/game/content-expansion.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 36 tests
+
+---
+
 ## [0.34.14-alpha] — 2026-05-18
 
 ### 인사 후폭풍 제품 개발 영향

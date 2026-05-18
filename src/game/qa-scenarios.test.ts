@@ -6,7 +6,7 @@ import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
 import { runTenYearCampaignSimulation } from "./run-simulator";
-import { getRecentStaffIncidentAftermathLog, getRecentStaffIncidentResolutionLog, getStaffIncidentBriefs } from "./simulation";
+import { getOperationsCommandPlan, getRecentStaffIncidentAftermathLog, getRecentStaffIncidentResolutionLog, getStaffIncidentBriefs } from "./simulation";
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
@@ -43,6 +43,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "staff-resolution",
       "staff-aftermath",
       "launch-impact",
+      "operations",
     ]);
   });
 
@@ -271,6 +272,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.roguelite.deck.discardPile).toEqual(expect.arrayContaining(["prompt_sprint", "customer_interviews"]));
   });
 
+  it("creates a v0.40 operations command scenario for first-screen browser QA", () => {
+    const scenario = createQaScenario("operations");
+    const plan = getOperationsCommandPlan(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("운영");
+    expect(plan.focusCards.length).toBeGreaterThanOrEqual(3);
+    expect(plan.activeSafeguards.join(" ")).toContain("구획");
+  });
+
   it("creates a 10-year finale scenario for ending QA", () => {
     const scenario = createQaScenario("finale");
 
@@ -378,6 +389,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=staff-incidents")?.id).toBe("staff-incidents");
     expect(createQaScenarioFromSearch("?scenario=staff-resolution")?.id).toBe("staff-resolution");
     expect(createQaScenarioFromSearch("?scenario=launch-impact")?.id).toBe("launch-impact");
+    expect(createQaScenarioFromSearch("?scenario=operations")?.id).toBe("operations");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });

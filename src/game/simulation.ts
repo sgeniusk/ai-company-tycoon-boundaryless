@@ -14,6 +14,7 @@ import {
   items,
   officeExpansions,
   officeSynergies,
+  officeZones,
   products,
   resources,
   rivalEvents,
@@ -59,6 +60,10 @@ import type {
   OfficeGrowthPlan,
   OfficeSynergyStatus,
   OfficeSynergySummary,
+  OfficeZonePlan,
+  OfficeZoneStatus,
+  OperationsCommandFocus,
+  OperationsCommandPlan,
   OfficeState,
   CardRewardChoice,
   PendingCardReward,
@@ -459,6 +464,7 @@ export function getRecruitmentCandidatePool(state: GameState, channelId: Recruit
   const brandProfile = getRecruitmentBrandProfile(state);
   const hiredTypeIds = new Set(state.hiredAgents.map((agent) => agent.typeId));
   const poolSize = getRecruitmentPoolSize(channel.id, state);
+  const roboticsBayActive = isOfficeZoneActive(state, "robotics_bay");
   const candidates = agentTypes
     .filter((agent) => !hiredTypeIds.has(agent.id))
     .filter((agent) => getRequirementReasons(agent.unlock_requirements, state).length === 0)
@@ -473,7 +479,7 @@ export function getRecruitmentCandidatePool(state: GameState, channelId: Recruit
   return {
     channel,
     candidateIds,
-    summary: `${location.name} · ${channel.label} 후보 ${candidateIds.length}/${poolSize}명 · ${brandProfile.gradeLabel}`,
+    summary: `${location.name} · ${channel.label} 후보 ${candidateIds.length}/${poolSize}명 · ${brandProfile.gradeLabel}${roboticsBayActive ? " · 로봇 고용 베이" : ""}`,
     refreshLabel: `다음 후보 갱신 ${state.month + 1}개월차`,
     locationLabel: `${location.region} · ${location.talent_pool}`,
     poolSize,
@@ -1122,6 +1128,76 @@ export function getOfficeSynergySummary(state: GameState): OfficeSynergySummary 
   };
 }
 
+export function getOfficeZonePlan(state: GameState): OfficeZonePlan {
+  const officeLevel = getOfficeExpansion(state).level;
+  const statuses = officeZones.map((zone): OfficeZoneStatus => {
+    const blockedReasons = getOfficeZoneBlockedReasons(zone, state, officeLevel);
+    const unlocked = officeLevel >= zone.min_office_level;
+    const active = unlocked && blockedReasons.length === 0;
+
+    return {
+      ...zone,
+      unlocked,
+      active,
+      blockedReasons,
+      progressLabel: active
+        ? `가동 중 · 월간 ${formatResourceDelta(zone.monthly_effects)}`
+        : blockedReasons.slice(0, 2).join(" / "),
+    };
+  });
+  const active = statuses.filter((zone) => zone.active);
+  const locked = statuses.filter((zone) => !zone.active);
+  const totalMonthlyEffects = active.reduce<ResourceMap>((total, zone) => mergeResourceDelta(total, zone.monthly_effects), {});
+
+  return {
+    active,
+    locked,
+    nextZone: locked[0],
+    totalMonthlyEffects,
+    operationLabel: active.length
+      ? `${active.length}개 구획 가동 · ${formatResourceDelta(totalMonthlyEffects)}`
+      : "가동 중인 사무실 구획 없음",
+  };
+}
+
+export function isOfficeZoneActive(state: GameState, zoneId: string): boolean {
+  return getOfficeZonePlan(state).active.some((zone) => zone.id === zoneId);
+}
+
+function getOfficeZoneBlockedReasons(zone: (typeof officeZones)[number], state: GameState, officeLevel: number): string[] {
+  const reasons: string[] = [];
+
+  if (officeLevel < zone.min_office_level) {
+    reasons.push(`${zone.min_office_level}단계 사무실 필요`);
+  }
+  for (const [resourceId, needed] of Object.entries(zone.required_resources ?? {})) {
+    if ((state.resources[resourceId] ?? 0) < needed) {
+      const resourceName = resources[resourceId]?.name ?? resourceId;
+      reasons.push(`${resourceName} ${needed.toLocaleString("ko-KR")} 필요`);
+    }
+  }
+  for (const [capabilityId, needed] of Object.entries(zone.required_capabilities ?? {})) {
+    if ((state.capabilities[capabilityId] ?? 0) < needed) {
+      const capabilityName = capabilities.find((capability) => capability.id === capabilityId)?.name ?? capabilityId;
+      reasons.push(`${capabilityName} Lv.${needed} 필요`);
+    }
+  }
+  for (const domainId of zone.required_domains ?? []) {
+    if (!state.unlockedDomains.includes(domainId)) {
+      const domainName = domains.find((domain) => domain.id === domainId)?.name ?? domainId;
+      reasons.push(`${domainName} 분야 필요`);
+    }
+  }
+  if (state.activeProducts.length < (zone.required_active_products ?? 0)) {
+    reasons.push(`활성 제품 ${zone.required_active_products}개 필요`);
+  }
+  if (state.hiredAgents.length < (zone.required_hired_agents ?? 0)) {
+    reasons.push(`고용 인력 ${zone.required_hired_agents}명 필요`);
+  }
+
+  return reasons;
+}
+
 export function getOfficeGrowthPlan(state: GameState): OfficeGrowthPlan {
   const expansion = getOfficeExpansion(state);
   const placedItems = getPlacedOfficeItems(state);
@@ -1131,6 +1207,7 @@ export function getOfficeGrowthPlan(state: GameState): OfficeGrowthPlan {
   const nextLocation = getNextCompanyLocation(state);
   const nextLocationCheck = nextLocation ? getRelocationCheck(nextLocation.id, state) : undefined;
   const synergySummary = getOfficeSynergySummary(state);
+  const zonePlan = getOfficeZonePlan(state);
   const nextSynergy = synergySummary.nextCandidate
     ? {
         ...synergySummary.nextCandidate,
@@ -1146,6 +1223,8 @@ export function getOfficeGrowthPlan(state: GameState): OfficeGrowthPlan {
     decorationSlotsUsed: placedItems.length,
     decorationSlotsTotal: getOfficeDecorationSlots(state),
     openDecorationSlots: Math.max(0, getOfficeDecorationSlots(state) - placedItems.length),
+    activeZoneCount: zonePlan.active.length,
+    nextZoneTitle: zonePlan.nextZone?.title,
     monthlyEffects: getOfficeMonthlyEffects(state),
   };
   const nextExpansionChoice = nextExpansion
@@ -1182,6 +1261,7 @@ export function getOfficeGrowthPlan(state: GameState): OfficeGrowthPlan {
     nextRelocation: nextRelocationChoice,
     activeSynergies: synergySummary.active,
     nextSynergy,
+    zonePlan,
     placedDecorRows: placedItems.map((item) => ({
       id: item.id,
       name: item.name,
@@ -1191,6 +1271,157 @@ export function getOfficeGrowthPlan(state: GameState): OfficeGrowthPlan {
     })),
     primaryAction: chooseOfficeGrowthPrimaryAction(current, nextExpansionChoice, nextRelocationChoice, nextSynergy),
   };
+}
+
+export function getOperationsCommandPlan(state: GameState): OperationsCommandPlan {
+  const economy = calculateMonthlyEconomy(state);
+  const officePlan = getOfficeGrowthPlan(state);
+  const zonePlan = officePlan.zonePlan;
+  const staffIncidents = getStaffIncidentBriefs(state);
+  const criticalIncidentCount = staffIncidents.filter((incident) => incident.severity === "critical").length;
+  const focusCards: OperationsCommandFocus[] = [];
+  const activeProject = state.productProjects[0];
+  const activeProjectProduct = activeProject ? getProductDefinition(activeProject.productId, state) : undefined;
+  const activeProducts = getAvailableProductDefinitions(state).filter((product) => state.activeProducts.includes(product.id));
+  const renewalCandidate = activeProducts.find((product) => getProductLevel(product.id, state) < product.max_level);
+  const openHireSlots = Math.max(0, getOfficeHireCapacity(state) - state.hiredAgents.length);
+  const cashDelta = economy.resourceDelta.cash ?? 0;
+  const cash = state.resources.cash ?? 0;
+  const trust = state.resources.trust ?? 0;
+  const rivalPressure = getStrongestCompetitorPressure(state);
+  const playerMarketShare = getPlayerMarketShare(state);
+
+  if (staffIncidents.length > 0) {
+    focusCards.push({
+      id: "staff_incidents",
+      title: criticalIncidentCount > 0 ? "긴급 인사 케어" : "직원 리스크 점검",
+      description: `${staffIncidents.length}건의 인사 사건이 있습니다. 방치하면 후폭풍이 개발 완성도와 경쟁사 모멘텀에 번집니다.`,
+      severity: criticalIncidentCount > 0 ? "urgent" : "watch",
+      targetMenu: "agents",
+      actionLabel: "에이전트 콘솔",
+    });
+  } else if (openHireSlots > 0) {
+    focusCards.push({
+      id: "hire_capacity",
+      title: "채용 여력 사용",
+      description: `현재 빈 자리 ${openHireSlots}명입니다. 제품/운영을 동시에 굴리려면 사람, AI, 로봇 조합을 늘리세요.`,
+      severity: state.hiredAgents.length < 2 ? "watch" : "opportunity",
+      targetMenu: "agents",
+      actionLabel: "후보 보기",
+    });
+  }
+
+  if (activeProject && activeProjectProduct) {
+    focusCards.push({
+      id: "active_project",
+      title: `${activeProjectProduct.name} 완주`,
+      description: `진행 ${Math.round(activeProject.progress)}%, 완성도 ${Math.round(activeProject.quality)}입니다. 카드와 개발 이슈 대응으로 출시 점수를 끌어올리세요.`,
+      severity: activeProject.quality < 45 ? "watch" : "opportunity",
+      targetMenu: "products",
+      actionLabel: "제품 개발",
+    });
+  } else if (state.activeProducts.length === 0) {
+    focusCards.push({
+      id: "first_product",
+      title: "첫 제품 출시",
+      description: "출시 제품이 아직 없습니다. AI 모델이나 생산성 제품을 빠르게 만들어 첫 매출과 카드 보상을 열어야 합니다.",
+      severity: "urgent",
+      targetMenu: "products",
+      actionLabel: "제품 선택",
+    });
+  } else if (renewalCandidate) {
+    focusCards.push({
+      id: "renewal",
+      title: "대표 제품 리뉴얼",
+      description: `${renewalCandidate.name}은 Lv.${getProductLevel(renewalCandidate.id, state)}입니다. 새 제품만 늘리기보다 업데이트/리뉴얼로 유지율을 챙길 수 있습니다.`,
+      severity: "opportunity",
+      targetMenu: "products",
+      actionLabel: "리뉴얼 후보",
+    });
+  }
+
+  if (cash < 0 || cashDelta < 0 || trust < 35) {
+    focusCards.push({
+      id: "runway",
+      title: cash < 0 ? "현금 위기" : cashDelta < 0 ? "손익 방어" : "신뢰 회복",
+      description:
+        cash < 0
+          ? "현금이 0 아래로 내려갔습니다. 비용을 줄이고 즉시 매출 제품이나 운영 자동화를 봐야 합니다."
+          : cashDelta < 0
+            ? `이번 달 현금 흐름이 ${formatMoney(cashDelta)}입니다. 자동화, 제품 리뉴얼, 구획 보너스로 고정비를 눌러야 합니다.`
+            : `신뢰 ${Math.round(trust)}입니다. 기업/안전 제품과 지시 보너스로 낮은 신뢰 페널티를 피하세요.`,
+      severity: cash < 0 || trust < 25 ? "urgent" : "watch",
+      targetMenu: cashDelta < 0 ? "shop" : "research",
+      actionLabel: cashDelta < 0 ? "운영 개선" : "연구 보기",
+    });
+  }
+
+  if (zonePlan.nextZone) {
+    focusCards.push({
+      id: "next_office_zone",
+      title: `다음 구획: ${zonePlan.nextZone.title}`,
+      description: zonePlan.nextZone.blockedReasons.length
+        ? zonePlan.nextZone.blockedReasons.slice(0, 2).join(" / ")
+        : `${zonePlan.nextZone.title}을 가동해 월간 운영 효과를 늘릴 수 있습니다.`,
+      severity: zonePlan.active.length < 2 ? "watch" : "opportunity",
+      targetMenu: "shop",
+      actionLabel: "공간 성장",
+    });
+  }
+
+  if (rivalPressure.marketShare > playerMarketShare || state.currentRivalEvent) {
+    focusCards.push({
+      id: "rival_pressure",
+      title: `${rivalPressure.name} 압박`,
+      description: `경쟁사 점유 ${rivalPressure.marketShare}% 대 우리 ${playerMarketShare}%입니다. 대응 카드와 카운터 제품을 검토하세요.`,
+      severity: rivalPressure.marketShare - playerMarketShare >= 20 ? "watch" : "opportunity",
+      targetMenu: "competition",
+      actionLabel: "경쟁 대응",
+    });
+  }
+
+  const sortedFocusCards = focusCards
+    .sort((left, right) => getOperationsSeverityScore(right.severity) - getOperationsSeverityScore(left.severity))
+    .slice(0, 4);
+  const riskLevel: OperationsCommandPlan["riskLevel"] = sortedFocusCards.some((card) => card.severity === "urgent")
+    ? "urgent"
+    : sortedFocusCards.some((card) => card.severity === "watch")
+      ? "watch"
+      : "stable";
+  const activeSafeguards = getOperationsActiveSafeguards(state, zonePlan);
+
+  return {
+    headline: riskLevel === "urgent" ? "긴급 운영 회의" : riskLevel === "watch" ? "월간 운영 점검" : "운영 성장 의제",
+    summary: `손익 ${formatMoney(cashDelta)} · 구획 ${zonePlan.active.length}개 · 인사 사건 ${staffIncidents.length}건 · 점유 ${playerMarketShare}%`,
+    riskLevel,
+    focusCards: sortedFocusCards,
+    activeSafeguards,
+    nextMilestone: getOperationsNextMilestone(state, officePlan),
+  };
+}
+
+function getOperationsSeverityScore(severity: OperationsCommandFocus["severity"]): number {
+  if (severity === "urgent") return 4;
+  if (severity === "watch") return 3;
+  if (severity === "opportunity") return 2;
+  return 1;
+}
+
+function getOperationsActiveSafeguards(state: GameState, zonePlan: OfficeZonePlan): string[] {
+  const safeguards = [`가동 구획 ${zonePlan.active.length}개`];
+  if (isOfficeZoneActive(state, "retention_lounge")) safeguards.push("복지 라운지: 인사 후폭풍 완화");
+  if (isOfficeZoneActive(state, "robotics_bay")) safeguards.push("로봇 고용 베이: 로봇 후보 우선 노출");
+  if (isOfficeZoneActive(state, "chip_lab")) safeguards.push("칩 실험 랩: 연산 압박 완화");
+  if (isOfficeZoneActive(state, "boundaryless_showroom_zone")) safeguards.push("경계 없는 쇼룸: 확장 스크린샷감 강화");
+  return safeguards.slice(0, 4);
+}
+
+function getOperationsNextMilestone(state: GameState, officePlan: OfficeGrowthPlan): string {
+  if (state.activeProducts.length === 0) return "첫 제품 출시로 매출, 카드 보상, 성장 분기를 여세요.";
+  if (officePlan.nextExpansion?.available) return `${officePlan.nextExpansion.name} 확장으로 고용/장식 한도를 늘릴 수 있습니다.`;
+  if (officePlan.zonePlan.nextZone) return `${officePlan.zonePlan.nextZone.title} 구획 조건을 채우면 월간 운영 효과가 늘어납니다.`;
+  if (getCompanyStarRating(state) < 5) return "다음 별 등급 조건을 채워 더 좋은 지역과 후보 풀을 여세요.";
+  return "10년 최종 평가를 위해 시장 점유율과 경계 확장 제품을 밀어붙이세요.";
 }
 
 function getOfficeDecorRecommendationsForSynergy(synergy: OfficeSynergyStatus, state: GameState): OfficeGrowthDecorRecommendation[] {
@@ -1882,17 +2113,18 @@ export function advanceMonth(state: GameState): GameState {
     timeline: [
       nextRivalEvent ? `경쟁사 이슈: ${nextRivalEvent.id}` : "",
       nextEvent ? `이슈 발생: ${nextEvent.name}` : "",
-      getOfficeMonthlyTimelineEntry(state) ?? "",
-      getOfficeSynergyTimelineEntry(state) ?? "",
-      monthlyEconomy.strategyEffects ? `전략 효과: ${formatResourceDelta(monthlyEconomy.strategyEffects)}` : "",
       ...staffTimelineHighlights,
       ...nonPriorityTimeline,
+      getOfficeMonthlyTimelineEntry(state) ?? "",
+      getOfficeSynergyTimelineEntry(state) ?? "",
+      getOfficeZoneTimelineEntry(state) ?? "",
+      monthlyEconomy.strategyEffects ? `전략 효과: ${formatResourceDelta(monthlyEconomy.strategyEffects)}` : "",
       nextMonth >= CAMPAIGN_FINAL_MONTH ? `10년차 최종 평가: ${nextStatus === "success" ? "성공 엔딩" : "재도전 엔딩"}` : "",
       summary,
       ...state.timeline,
     ]
       .filter(Boolean)
-      .slice(0, 8),
+      .slice(0, 10),
   });
 
   const reviewedState = applyDueAnnualReview(advancedState);
@@ -2735,6 +2967,7 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   const growthPathEffects = getChosenGrowthPathMonthlyEffects(state);
   const officeMonthlyEffects = getOfficeMonthlyEffects(state);
   const officeSynergyEffects = getOfficeSynergySummary(state).totalMonthlyEffects;
+  const officeZoneEffects = getOfficeZonePlan(state).totalMonthlyEffects;
   const deckSynergyEffects = getDeckSynergyMonthlyEffects(state);
   if (growthPathEffects && Object.keys(growthPathEffects).length > 0) effects.push(growthPathEffects);
   if (annualDirective?.monthlyEffects && Object.keys(annualDirective.monthlyEffects).length > 0) {
@@ -2742,6 +2975,7 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   }
   if (Object.keys(officeMonthlyEffects).length > 0) effects.push(officeMonthlyEffects);
   if (Object.keys(officeSynergyEffects).length > 0) effects.push(officeSynergyEffects);
+  if (Object.keys(officeZoneEffects).length > 0) effects.push(officeZoneEffects);
   if (Object.keys(deckSynergyEffects).length > 0) effects.push(deckSynergyEffects);
 
   if (effects.length === 0) return undefined;
@@ -2753,6 +2987,13 @@ function getOfficeSynergyTimelineEntry(state: GameState): string | undefined {
   if (activeSynergies.length === 0) return undefined;
 
   return `사무실 시너지: ${activeSynergies.map((synergy) => synergy.title).join(", ")}`;
+}
+
+function getOfficeZoneTimelineEntry(state: GameState): string | undefined {
+  const zonePlan = getOfficeZonePlan(state);
+  if (zonePlan.active.length === 0) return undefined;
+
+  return `사무실 구획: ${zonePlan.active.slice(0, 3).map((zone) => zone.title).join(", ")} 가동`;
 }
 
 function getOfficeMonthlyTimelineEntry(state: GameState): string | undefined {
@@ -3396,6 +3637,7 @@ interface StaffIncidentAftermathEffect {
   projectQualityPenalty: number;
   effectLabel: string;
   summary: string;
+  mitigationLabel?: string;
 }
 
 function applyUnresolvedStaffIncidentAftermaths(targetState: GameState, sourceState: GameState, appliedMonth: number): GameState {
@@ -3468,7 +3710,7 @@ function applyUnresolvedStaffIncidentAftermaths(targetState: GameState, sourceSt
       resolutionId: "unresolved_aftermath",
       resolutionLabel: "미대응 후폭풍",
       summary: projectImpactLabel ? `${effect.summary} ${projectImpactLabel} 손실이 개발 일정에 반영됐습니다.` : effect.summary,
-      effectLabel: [effect.effectLabel, projectImpactLabel].filter(Boolean).join(" · "),
+      effectLabel: [effect.effectLabel, effect.mitigationLabel, projectImpactLabel].filter(Boolean).join(" · "),
       projectImpactLabel,
       isAftermath: true,
       sourceCompetitorId: effect.incident.sourceCompetitorId,
@@ -3478,7 +3720,12 @@ function applyUnresolvedStaffIncidentAftermaths(targetState: GameState, sourceSt
     };
   });
   const timelineEntries = aftermathRecords.map((record) => `인사 후폭풍: ${record.agentName} · ${record.effectLabel}`);
-  const staffAftermathSummary = createStaffAftermathMonthlySummary(effects.length, projectImpactSummaries, staffAftermathResourceDelta);
+  const staffAftermathSummary = createStaffAftermathMonthlySummary(
+    effects.length,
+    projectImpactSummaries,
+    staffAftermathResourceDelta,
+    effects.map((effect) => effect.mitigationLabel).filter((label): label is string => Boolean(label)),
+  );
 
   return {
     ...targetState,
@@ -3500,12 +3747,18 @@ function applyUnresolvedStaffIncidentAftermaths(targetState: GameState, sourceSt
   };
 }
 
-function createStaffAftermathMonthlySummary(effectCount: number, projectImpactSummaries: string[], resourceDelta: ResourceMap): string {
+function createStaffAftermathMonthlySummary(
+  effectCount: number,
+  projectImpactSummaries: string[],
+  resourceDelta: ResourceMap,
+  mitigationLabels: string[] = [],
+): string {
   const impactText = projectImpactSummaries.length
     ? `프로젝트 손실 ${projectImpactSummaries.slice(0, 2).join(" / ")}`
     : "직원 컨디션/충성도 손실";
   const resourceText = Object.keys(resourceDelta).length ? ` · 자원 ${formatResourceDelta(resourceDelta)}` : "";
-  return `${effectCount}건 후폭풍 · ${impactText}${resourceText}`;
+  const mitigationText = mitigationLabels.length ? ` · ${[...new Set(mitigationLabels)].join(" / ")}` : "";
+  return `${effectCount}건 후폭풍 · ${impactText}${resourceText}${mitigationText}`;
 }
 
 function getStaffIncidentAftermathEffects(state: GameState, limit = 2): StaffIncidentAftermathEffect[] {
@@ -3522,14 +3775,14 @@ function getStaffIncidentAftermathEffects(state: GameState, limit = 2): StaffInc
   return selectedIncidents
     .map((incident) => {
       const agent = state.hiredAgents.find((entry) => entry.id === incident.agentId);
-      return agent ? createStaffIncidentAftermathEffect(incident, agent) : undefined;
+      return agent ? createStaffIncidentAftermathEffect(incident, agent, state) : undefined;
     })
     .filter((effect): effect is StaffIncidentAftermathEffect => Boolean(effect));
 }
 
-function createStaffIncidentAftermathEffect(incident: StaffIncidentBrief, agent: HiredAgent): StaffIncidentAftermathEffect {
+function createStaffIncidentAftermathEffect(incident: StaffIncidentBrief, agent: HiredAgent, state: GameState): StaffIncidentAftermathEffect {
   if (incident.type === "burnout") {
-    return {
+    return applyStaffAftermathMitigation({
       incident,
       resourceDelta: {},
       energyDelta: -14,
@@ -3539,11 +3792,11 @@ function createStaffIncidentAftermathEffect(incident: StaffIncidentBrief, agent:
       projectQualityPenalty: balance.staff_aftermath_burnout_project_quality_penalty,
       effectLabel: "체력 -14 · 충성 -4",
       summary: `${agent.name}의 번아웃 위험을 넘겨 체력과 충성도가 동시에 흔들렸습니다. 다음 달 개발 배치 전 회복이 필요합니다.`,
-    };
+    }, state);
   }
 
   if (incident.type === "poaching") {
-    return {
+    return applyStaffAftermathMitigation({
       incident,
       resourceDelta: { hype: -1 },
       energyDelta: 0,
@@ -3553,11 +3806,11 @@ function createStaffIncidentAftermathEffect(incident: StaffIncidentBrief, agent:
       projectQualityPenalty: balance.staff_aftermath_poaching_project_quality_penalty,
       effectLabel: `충성 -12 · ${incident.sourceCompetitorName ?? "경쟁사"} 모멘텀 +8`,
       summary: `${incident.sourceCompetitorName ?? "경쟁사"}의 스카우트 제안을 방치해 ${agent.name}의 충성도가 떨어지고 경쟁사 모멘텀이 올랐습니다.`,
-    };
+    }, state);
   }
 
   const frictionCost = Math.max(120, Math.round((getHiredAgentMonthlyUpkeep(agent).cash ?? 200) * 0.35));
-  return {
+  return applyStaffAftermathMitigation({
     incident,
     resourceDelta: { cash: -frictionCost, trust: -1 },
     energyDelta: 0,
@@ -3567,6 +3820,29 @@ function createStaffIncidentAftermathEffect(incident: StaffIncidentBrief, agent:
     projectQualityPenalty: balance.staff_aftermath_discontent_project_quality_penalty,
     effectLabel: `충성 -8 · 현금 ${formatMoney(-frictionCost)} · 신뢰 -1`,
     summary: `${agent.name}의 계약 불만을 넘겨 보상성 비용과 신뢰 손실이 발생했습니다. 다음 불만은 더 빨리 커질 수 있습니다.`,
+  }, state);
+}
+
+function applyStaffAftermathMitigation(effect: StaffIncidentAftermathEffect, state: GameState): StaffIncidentAftermathEffect {
+  if (!isOfficeZoneActive(state, "retention_lounge")) return effect;
+
+  const softenNegative = (value: number) => (value < 0 ? -Math.max(1, Math.ceil(Math.abs(value) * 0.55)) : value);
+  const softenPenalty = (value: number) => Math.max(0, Math.floor(value * 0.55));
+  const resourceDelta = Object.fromEntries(
+    Object.entries(effect.resourceDelta).map(([resourceId, amount]) => [resourceId, softenNegative(amount)]),
+  );
+
+  return {
+    ...effect,
+    resourceDelta,
+    energyDelta: softenNegative(effect.energyDelta),
+    loyaltyDelta: softenNegative(effect.loyaltyDelta),
+    competitorMomentumDelta: effect.competitorMomentumDelta > 0 ? Math.max(1, Math.floor(effect.competitorMomentumDelta * 0.65)) : effect.competitorMomentumDelta,
+    projectProgressPenalty: softenPenalty(effect.projectProgressPenalty),
+    projectQualityPenalty: softenPenalty(effect.projectQualityPenalty),
+    effectLabel: `${effect.effectLabel} 완충`,
+    summary: `${effect.summary} 복지 라운지가 후폭풍 일부를 흡수했습니다.`,
+    mitigationLabel: "복지 라운지 완충",
   };
 }
 
@@ -3793,9 +4069,10 @@ function getStrongestCompetitorPressure(state: GameState): {
 function getRecruitmentPoolSize(channelId: RecruitmentChannelId, state: GameState): number {
   const starBonus = Math.max(0, getCompanyStarRating(state) - 1);
   const brandBonus = getRecruitmentBrandProfile(state).candidatePoolBonus;
+  const roboticsBonus = isOfficeZoneActive(state, "robotics_bay") && channelId !== "open_recruiting" ? 1 : 0;
 
-  if (channelId === "headhunter") return Math.min(6, 3 + Math.floor(starBonus / 2) + brandBonus);
-  if (channelId === "career_recruiting") return Math.min(7, 4 + Math.floor(starBonus / 2) + brandBonus);
+  if (channelId === "headhunter") return Math.min(7, 3 + Math.floor(starBonus / 2) + brandBonus + roboticsBonus);
+  if (channelId === "career_recruiting") return Math.min(8, 4 + Math.floor(starBonus / 2) + brandBonus + roboticsBonus);
   return Math.min(8, 5 + Math.floor(starBonus / 2) + Math.min(1, brandBonus));
 }
 
@@ -3827,12 +4104,14 @@ function getRecruitmentCandidateScore(agent: AgentTypeDefinition, channelId: Rec
     score += kind === "human" ? 14 : 16;
     score += agent.rarity === "rare" ? 10 : agent.rarity === "epic" ? 8 : 2;
     score += location.ai_operation_bonus > 0 && kind === "ai_agent" ? location.ai_operation_bonus * 3 : 0;
+    score += isOfficeZoneActive(state, "robotics_bay") && kind === "robot" ? 90 : 0;
   }
 
   if (channelId === "headhunter") {
     score += rarityScore * 2;
     score += kind === "robot" ? 14 : kind === "ai_agent" ? 12 : 8;
     score += location.monthly_cost_modifier > 1 ? 8 : 0;
+    score += isOfficeZoneActive(state, "robotics_bay") && kind === "robot" ? 72 : 0;
   }
 
   return score;

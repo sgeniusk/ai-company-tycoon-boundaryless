@@ -25,12 +25,14 @@ import {
   getOfficeDecorationSlots,
   getOfficeExpansion,
   getOfficeHireCapacity,
+  getOfficeZonePlan,
+  getOperationsCommandPlan,
   getPlacedOfficeItems,
   getPlayerMarketShare,
   resolveEventChoice,
   resolveRivalEventChoice,
 } from "../game/simulation";
-import type { GameState, ReleaseGrowthPath } from "../game/types";
+import type { GameState, OperationsCommandPlan, ReleaseGrowthPath } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatEffects, statusLabel } from "../ui/formatters";
 import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
@@ -211,6 +213,8 @@ export function GameStage({
   const placedOfficeItemIds = new Set(placedOfficeItems.map((item) => item.id));
   const officeHireCapacity = getOfficeHireCapacity(gameState);
   const officeDecorationSlots = getOfficeDecorationSlots(gameState);
+  const officeZonePlan = getOfficeZonePlan(gameState);
+  const operationsPlan = getOperationsCommandPlan(gameState);
   const unlockedDomainNames = domains
     .filter((domain) => gameState.unlockedDomains.includes(domain.id))
     .map((domain) => domain.name);
@@ -308,7 +312,7 @@ export function GameStage({
             <span>
               <strong>{officeExpansion.name}</strong>
               <small>
-                고용 {gameState.hiredAgents.length}/{officeHireCapacity} · 장식 {placedOfficeItems.length}/{officeDecorationSlots}
+                고용 {gameState.hiredAgents.length}/{officeHireCapacity} · 장식 {placedOfficeItems.length}/{officeDecorationSlots} · 구획 {officeZonePlan.active.length}
               </small>
             </span>
             <span>
@@ -323,6 +327,7 @@ export function GameStage({
             onOpenMenu={setActiveMenu}
           />
           <RivalIncidentBanner gameState={gameState} />
+          <OperationCommandPanel plan={operationsPlan} onOpenMenu={setActiveMenu} />
           {gameState.hiredAgents.length
             ? gameState.hiredAgents.slice(0, Math.min(12, officeHireCapacity)).map((agent, index) => {
                 const agentType = agentTypes.find((type) => type.id === agent.typeId);
@@ -427,8 +432,9 @@ export function GameStage({
                 로그라이트 런 {gameState.roguelite.runNumber} · 손패 {gameState.roguelite.deck.hand.length} · 통찰 {gameState.roguelite.founderInsight}
               </span>
               <span className="growth-identity">
-                사무실 {officeExpansion.name} · 고용 {gameState.hiredAgents.length}/{officeHireCapacity} · 장식 {placedOfficeItems.length}/{officeDecorationSlots}
+                사무실 {officeExpansion.name} · 구획 {officeZonePlan.active.length} · 장식 {placedOfficeItems.length}/{officeDecorationSlots}
               </span>
+              <span className="growth-identity">{officeZonePlan.operationLabel}</span>
               {gameState.lastDevelopmentPuzzle && (
                 <span>최근 퍼즐: {gameState.lastDevelopmentPuzzle.verdict} {gameState.lastDevelopmentPuzzle.score}점</span>
               )}
@@ -611,6 +617,33 @@ export function GameStage({
         </div>
       </div>
     </section>
+  );
+}
+
+function OperationCommandPanel({
+  plan,
+  onOpenMenu,
+}: {
+  plan: OperationsCommandPlan;
+  onOpenMenu: Dispatch<SetStateAction<MenuId>>;
+}) {
+  return (
+    <div className={`operation-command-panel risk-${plan.riskLevel}`} aria-label="월간 운영 의제">
+      <div className="operation-command-header">
+        <span>운영 의제</span>
+        <strong>{plan.headline}</strong>
+        <small>{plan.summary}</small>
+      </div>
+      <div className="operation-command-grid">
+        {plan.focusCards.slice(0, 3).map((card) => (
+          <button className={`operation-command-card severity-${card.severity}`} key={card.id} onClick={() => onOpenMenu(card.targetMenu)} type="button">
+            <strong>{card.title}</strong>
+            <span>{card.actionLabel}</span>
+          </button>
+        ))}
+      </div>
+      <small className="operation-command-safeguard">{plan.activeSafeguards[0] ?? plan.nextMilestone}</small>
+    </div>
   );
 }
 

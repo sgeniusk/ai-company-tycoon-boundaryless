@@ -27,6 +27,7 @@ import deckSynergiesJson from "../../data/deck_synergies.json";
 import starterDecksJson from "../../data/starter_decks.json";
 import officeExpansionsJson from "../../data/office_expansions.json";
 import officeSynergiesJson from "../../data/office_synergies.json";
+import officeZonesJson from "../../data/office_zones.json";
 import workforceSynergiesJson from "../../data/workforce_synergies.json";
 import playtestPersonasJson from "../../data/playtest_personas.json";
 import type {
@@ -50,6 +51,7 @@ import type {
   MetaUnlockDefinition,
   OfficeExpansionDefinition,
   OfficeSynergyDefinition,
+  OfficeZoneDefinition,
   PlaytestPersonaDefinition,
   ProductDefinition,
   ProductIdeaDatabaseDefinition,
@@ -92,5 +94,6 @@ export const deckSynergies = deckSynergiesJson.deck_synergies as unknown as Deck
 export const starterDecks = starterDecksJson.starter_decks as unknown as StarterDeckDefinition[];
 export const officeExpansions = officeExpansionsJson.office_expansions as unknown as OfficeExpansionDefinition[];
 export const officeSynergies = officeSynergiesJson.office_synergies as unknown as OfficeSynergyDefinition[];
+export const officeZones = officeZonesJson.office_zones as unknown as OfficeZoneDefinition[];
 export const workforceSynergies = workforceSynergiesJson.workforce_synergies as unknown as WorkforceSynergyDefinition[];
 export const playtestPersonas = playtestPersonasJson.personas as unknown as PlaytestPersonaDefinition[];

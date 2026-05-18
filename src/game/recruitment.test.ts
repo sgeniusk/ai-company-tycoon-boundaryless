@@ -172,4 +172,40 @@ describe("v0.34.2 recruitment channels and salary contracts", () => {
     expect(fullOfficeProfile.candidatePoolBonus).toBe(0);
     expect(fullOfficeProfile.warnings.join(" / ")).toContain("정원");
   });
+
+  it("uses an active robotics bay to surface robot candidates in advanced recruiting", () => {
+    const base: GameState = {
+      ...richRecruitingState(),
+      office: {
+        expansionId: "campus_lab",
+        placedItemIds: [],
+      },
+      hiredAgents: agentTypes.slice(0, 5).map((agent, index) => ({
+        id: `robotics-bay-seat-${index + 1}`,
+        typeId: agent.id,
+        name: agent.name,
+        level: 2,
+        energy: 82,
+        loyalty: 78,
+        equippedItemIds: [],
+      })),
+      activeProducts: ["foundation_model_v0", "ai_writing_assistant"],
+      unlockedDomains: [
+        ...new Set([...richRecruitingState().unlockedDomains, "robotics"]),
+      ],
+      resources: {
+        ...richRecruitingState().resources,
+        automation: 20,
+      },
+      capabilities: {
+        ...richRecruitingState().capabilities,
+        robotics: 1,
+      },
+    };
+
+    const pool = getRecruitmentCandidatePool(base, "career_recruiting");
+
+    expect(pool.summary).toContain("로봇 고용 베이");
+    expect(pool.candidateIds.slice(0, 2)).toEqual(expect.arrayContaining(["factory_robot_unit"]));
+  });
 });
