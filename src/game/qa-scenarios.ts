@@ -53,6 +53,7 @@ export const qaScenarioIds = [
   "staff-aftermath",
   "launch-impact",
   "operations",
+  "office-visuals",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -398,6 +399,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "office-visuals") {
+    return {
+      id,
+      label: "v0.41 사무실 픽셀 시뮬레이션 QA",
+      state: createOfficeVisualScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
   return {
     id,
     label: "출시 스포트라이트 QA",
@@ -468,6 +478,37 @@ function createOperationsScenarioState(): GameState {
   return {
     ...startProductProject(projectProduct, baseState, [hiredAgents[0].id]),
     timeline: ["v0.40 운영 의제 QA: 운영 커맨드 패널과 구획 완충 효과 확인", ...baseState.timeline].slice(0, 8),
+  };
+}
+
+function createOfficeVisualScenarioState(): GameState {
+  const baseState = createOperationsScenarioState();
+  const robotType = agentTypes.find((agent) => agent.kind === "robot");
+  const alreadyHasRobot = baseState.hiredAgents.some((agent) => agentTypes.find((type) => type.id === agent.typeId)?.kind === "robot");
+  const visualAgents = baseState.hiredAgents.map((agent, index) => {
+    if (index === 0) return { ...agent, energy: 78, loyalty: 72 };
+    if (index === 1) return { ...agent, energy: 74, loyalty: 38 };
+    return agent;
+  });
+  const hiredAgents = robotType && !alreadyHasRobot
+    ? [
+        ...visualAgents,
+        {
+          id: "office-visual-robot-1",
+          typeId: robotType.id,
+          name: robotType.name,
+          level: 1,
+          energy: 92,
+          loyalty: 82,
+          equippedItemIds: [],
+        },
+      ]
+    : visualAgents;
+
+  return {
+    ...baseState,
+    hiredAgents,
+    timeline: ["v0.41 사무실 픽셀 시뮬레이션 QA: 구획, 사람, AI, 로봇 액터를 한 화면에서 확인", ...baseState.timeline].slice(0, 8),
   };
 }
 

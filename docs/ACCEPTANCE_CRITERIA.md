@@ -6,6 +6,19 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.41: Office Pixel Simulation
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Office scene objects are data-driven and validated | **Passed** |
+| 2 | Active office zones are translated into visible scene objects | **Passed** |
+| 3 | Human, AI, and robot actors can appear in the office scene | **Passed** |
+| 4 | Actor states distinguish working, resting, warning, and idle | **Passed** |
+| 5 | Browser QA supports `?scenario=office-visuals` | **Passed** |
+| 6 | Fixed game-shell layout contract includes reduced-motion support for scene animation | **Passed** |
+
+---
+
 ## Alpha v0.15.0: Annual Strategy Room
 
 | # | Criterion | Status |

@@ -25,6 +25,7 @@ import {
   getOfficeDecorationSlots,
   getOfficeExpansion,
   getOfficeHireCapacity,
+  getOfficeScenePlan,
   getOfficeZonePlan,
   getOperationsCommandPlan,
   getPlacedOfficeItems,
@@ -210,17 +211,14 @@ export function GameStage({
   const activeProjectProduct = activeProject ? availableProducts.find((product) => product.id === activeProject.productId) : undefined;
   const officeExpansion = getOfficeExpansion(gameState);
   const placedOfficeItems = getPlacedOfficeItems(gameState);
-  const placedOfficeItemIds = new Set(placedOfficeItems.map((item) => item.id));
   const officeHireCapacity = getOfficeHireCapacity(gameState);
   const officeDecorationSlots = getOfficeDecorationSlots(gameState);
   const officeZonePlan = getOfficeZonePlan(gameState);
+  const officeScenePlan = getOfficeScenePlan(gameState);
   const operationsPlan = getOperationsCommandPlan(gameState);
   const unlockedDomainNames = domains
     .filter((domain) => gameState.unlockedDomains.includes(domain.id))
     .map((domain) => domain.name);
-  const officeObjects = assetManifest.office_objects
-    .filter((object) => !object.linked_item_id || placedOfficeItemIds.has(object.linked_item_id))
-    .slice(0, Math.min(7, officeDecorationSlots + 3));
   const chosenGrowthPathId = gameState.chosenGrowthPath?.id;
   const runSummary = getRunSummary(gameState);
   const releaseImpact = getReleaseImpactSummary(gameState);
@@ -295,13 +293,27 @@ export function GameStage({
           <span>AI OPS {getAiOperationCapacity(gameState)}</span>
         </div>
         <div className="office-floor">
-          <div className="office-object-layer" aria-hidden="true">
-            {officeObjects.map((object, index) => (
+          <div className="pixel-office-grid" aria-hidden="true" />
+          <div className="office-object-layer pixel-office-object-layer" aria-label="사무실 구획 시각화">
+            {officeScenePlan.objects.map((object, index) => (
               <span
-                className={`office-object office-object-${index} object-${object.object_id}`}
-                style={assetPaletteVars(object.palette)}
-                key={object.object_id}
-              />
+                aria-label={`${object.label} · ${object.active ? object.activity : object.blockedReason}`}
+                className={`office-object pixel-office-object office-object-${index} object-kind-${object.kind} ${object.active ? "active" : "locked"}`}
+                key={object.id}
+                role="img"
+                style={
+                  {
+                    ...assetPaletteVars(object.palette),
+                    "--object-x": `${object.x}%`,
+                    "--object-y": `${object.y}%`,
+                    "--object-w": `${object.w}%`,
+                    "--object-h": `${object.h}%`,
+                  } as CSSProperties
+                }
+                title={`${object.label} · ${object.active ? object.activity : object.blockedReason}`}
+              >
+                <small>{object.label}</small>
+              </span>
             ))}
           </div>
           <div className="office-hud" aria-label="사무실 빠른 상태">
@@ -312,7 +324,7 @@ export function GameStage({
             <span>
               <strong>{officeExpansion.name}</strong>
               <small>
-                고용 {gameState.hiredAgents.length}/{officeHireCapacity} · 장식 {placedOfficeItems.length}/{officeDecorationSlots} · 구획 {officeZonePlan.active.length}
+                고용 {gameState.hiredAgents.length}/{officeHireCapacity} · 장식 {placedOfficeItems.length}/{officeDecorationSlots} · 구획 {officeScenePlan.activeObjectCount}
               </small>
             </span>
             <span>
@@ -328,27 +340,32 @@ export function GameStage({
           />
           <RivalIncidentBanner gameState={gameState} />
           <OperationCommandPanel plan={operationsPlan} onOpenMenu={setActiveMenu} />
-          {gameState.hiredAgents.length
-            ? gameState.hiredAgents.slice(0, Math.min(12, officeHireCapacity)).map((agent, index) => {
-                const agentType = agentTypes.find((type) => type.id === agent.typeId);
-                const agentSprite = getAgentSprite(agent.typeId);
+          <div className="office-actor-layer" aria-label="사무실 액터">
+            {officeScenePlan.actors.slice(0, Math.min(12, officeHireCapacity)).map((actor, index) => {
+              const agentType = actor.agentTypeId ? agentTypes.find((type) => type.id === actor.agentTypeId) : undefined;
+              const agentSprite = getAgentSprite(actor.agentTypeId);
 
-                return (
-                  <span
-                    className={`staff-sprite staff-${index} ${agent.assignment ? "working" : "idle"} ${agentSprite?.body_class ?? ""}`}
-                    key={agent.id}
-                    style={assetPaletteVars(agentSprite?.palette)}
-                    title={`${agent.name} · ${agentType?.role ?? "에이전트"} · ${agent.assignment ? "제품 개발 중" : "대기 중"}`}
-                  >
-                    <b>{agent.name.slice(0, 3)}</b>
-                  </span>
-                );
-              })
-            : Array.from({ length: Math.min(3, Math.max(1, gameState.resources.talent || 1)) }).map((_, index) => (
-                <span className={`staff-sprite staff-${index} idle`} key={index}>
-                  <b>대기</b>
+              return (
+                <span
+                  aria-label={`${actor.name} · ${agentType?.role ?? "창업자"} · ${actor.assignmentLabel}`}
+                  className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${actor.state === "working" ? "working" : "idle"} ${agentSprite?.body_class ?? ""}`}
+                  key={actor.id}
+                  role="img"
+                  style={
+                    {
+                      ...assetPaletteVars(agentSprite?.palette),
+                      "--actor-x": `${actor.x}%`,
+                      "--actor-y": `${actor.y}%`,
+                    } as CSSProperties
+                  }
+                  title={`${actor.name} · ${agentType?.role ?? "창업자"} · ${actor.activity}`}
+                >
+                  <b>{actor.name.slice(0, 3)}</b>
+                  <small className="actor-thought">{actor.assignmentLabel}</small>
                 </span>
-              ))}
+              );
+            })}
+          </div>
           <div className="server-rack">
             <i />
             <i />
@@ -371,7 +388,7 @@ export function GameStage({
           <TurnGoalStrip guidance={guidance} onAction={handleGuidanceAction} />
           <div className="office-alert-strip" aria-live="polite">
             <strong>{officeAlertTitle}</strong>
-            <span>{officeAlertText}</span>
+            <span>{officeAlertText} · {officeScenePlan.activityTicker[0]}</span>
           </div>
         </div>
       </div>

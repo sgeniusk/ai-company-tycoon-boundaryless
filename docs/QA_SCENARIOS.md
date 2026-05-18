@@ -37,6 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
+| Office Visuals | `?scenario=office-visuals` | v0.41 animated office scene with zone objects, human/AI/robot actors, and care states |
 
 Examples:
 
@@ -65,6 +66,23 @@ Examples:
 - `http://localhost:5173/?scenario=persona20`
 - `http://localhost:5173/?scenario=launch-impact`
 - `http://localhost:5173/?scenario=operations`
+- `http://localhost:5173/?scenario=office-visuals`
+
+## v0.41 Office Visual Simulation QA
+
+URL:
+
+- `?scenario=office-visuals`
+- `?scenario=office-visuals&menu=agents`
+
+Expected:
+
+- The QA pill says `v0.41 사무실 픽셀 시뮬레이션 QA`.
+- The office playfield shows data-driven zone objects such as compute bay, launch stage, robot bay, and chip lab.
+- Human, AI, and robot actors are visible as distinct pixel actors.
+- Actor bubbles show project assignment, recovery, warning, or idle state.
+- The office alert strip includes the active zone/activity ticker.
+- Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
 
 ## v0.40 Operations Command QA
 

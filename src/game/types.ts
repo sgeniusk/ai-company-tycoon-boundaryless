@@ -711,6 +711,56 @@ export interface OfficeZonePlan {
   operationLabel: string;
 }
 
+export interface OfficeSceneObjectDefinition {
+  id: string;
+  label: string;
+  kind: string;
+  min_office_level: number;
+  required_zone_id?: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  palette: string[];
+  activity: string;
+  tags: string[];
+}
+
+export interface OfficeSceneObjectStatus extends OfficeSceneObjectDefinition {
+  active: boolean;
+  blockedReason?: string;
+  zoneTitle?: string;
+}
+
+export type OfficeSceneActorKind = "human" | "ai_agent" | "robot";
+export type OfficeSceneActorState = "working" | "resting" | "warning" | "idle";
+
+export interface OfficeSceneActorStatus {
+  id: string;
+  name: string;
+  kind: OfficeSceneActorKind;
+  state: OfficeSceneActorState;
+  agentTypeId?: string;
+  x: number;
+  y: number;
+  level: number;
+  energy: number;
+  loyalty: number;
+  activity: string;
+  assignmentLabel: string;
+}
+
+export interface OfficeScenePlan {
+  expansionLabel: string;
+  activeObjectCount: number;
+  visibleObjectCount: number;
+  activeActorCount: number;
+  workingActorCount: number;
+  objects: OfficeSceneObjectStatus[];
+  actors: OfficeSceneActorStatus[];
+  activityTicker: string[];
+}
+
 export interface OfficeGrowthCurrent {
   expansionId: string;
   expansionName: string;

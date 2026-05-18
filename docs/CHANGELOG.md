@@ -4,6 +4,23 @@
 
 ---
 
+## [0.41-alpha] — 2026-05-19
+
+### 사무실 픽셀 시뮬레이션 1차
+
+**추가:**
+- `data/office_scene.json`을 추가해 사무실 배경 오브젝트를 데이터 기반으로 관리한다.
+- `getOfficeScenePlan()`을 추가해 현재 사무실 단계, 활성 구획, 프로젝트 배치, 직원 상태를 한 화면용 시각 계획으로 변환한다.
+- 사무실 플레이필드에 픽셀 그리드, 구획 오브젝트, 사람/AI/로봇 액터, 작업/휴식/경고 말풍선을 표시한다.
+- `office-visuals` QA 시나리오를 추가해 구획, 사람, AI, 로봇이 함께 보이는 상태를 바로 열 수 있게 했다.
+
+**검증:**
+- `npm test -- src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/game/content-expansion.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 64 tests
+- `npm run harness:gate` 통과, 40 files / 285 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser QA: `http://127.0.0.1:5201/?scenario=office-visuals`에서 구획 오브젝트 10개, 표시 액터 6명/기, 로봇 1기, 작업 상태 1명, 경고 상태 1명, 운영 의제 카드 3개, 가로 오버플로 없음, 콘솔 오류 0건 확인
+
+---
+
 ## [0.40-alpha] — 2026-05-19
 
 ### 회사 운영 완성축: 월간 운영 의제와 구획 효과 연결

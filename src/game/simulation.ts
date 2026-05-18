@@ -13,6 +13,7 @@ import {
   events,
   items,
   officeExpansions,
+  officeSceneObjects,
   officeSynergies,
   officeZones,
   products,
@@ -58,6 +59,9 @@ import type {
   OfficeExpansionDefinition,
   OfficeGrowthDecorRecommendation,
   OfficeGrowthPlan,
+  OfficeSceneActorStatus,
+  OfficeSceneObjectStatus,
+  OfficeScenePlan,
   OfficeSynergyStatus,
   OfficeSynergySummary,
   OfficeZonePlan,
@@ -1162,6 +1166,150 @@ export function getOfficeZonePlan(state: GameState): OfficeZonePlan {
 
 export function isOfficeZoneActive(state: GameState, zoneId: string): boolean {
   return getOfficeZonePlan(state).active.some((zone) => zone.id === zoneId);
+}
+
+const officeActorSlots = [
+  { x: 18, y: 65 },
+  { x: 30, y: 54 },
+  { x: 43, y: 68 },
+  { x: 55, y: 52 },
+  { x: 68, y: 66 },
+  { x: 80, y: 48 },
+  { x: 25, y: 78 },
+  { x: 50, y: 79 },
+  { x: 74, y: 78 },
+  { x: 38, y: 42 },
+  { x: 62, y: 39 },
+  { x: 84, y: 65 },
+];
+
+export function getOfficeScenePlan(state: GameState): OfficeScenePlan {
+  const expansion = getOfficeExpansion(state);
+  const zonePlan = getOfficeZonePlan(state);
+  const activeZoneIds = new Set(zonePlan.active.map((zone) => zone.id));
+  const zoneTitles = new Map([...zonePlan.active, ...zonePlan.locked].map((zone) => [zone.id, zone.title]));
+  const objectStatuses = officeSceneObjects.map((object): OfficeSceneObjectStatus => {
+    const levelBlocked = expansion.level < object.min_office_level;
+    const zoneBlocked = Boolean(object.required_zone_id && !activeZoneIds.has(object.required_zone_id));
+    const blockedReason = levelBlocked
+      ? `${object.min_office_level}단계 사무실 필요`
+      : zoneBlocked && object.required_zone_id
+        ? `${zoneTitles.get(object.required_zone_id) ?? "연결 구획"} 잠금`
+        : undefined;
+
+    return {
+      ...object,
+      active: !blockedReason,
+      blockedReason,
+      zoneTitle: object.required_zone_id ? zoneTitles.get(object.required_zone_id) : undefined,
+    };
+  });
+  const visibleObjects = objectStatuses.filter((object) => object.active || object.min_office_level <= expansion.level + 1);
+  const actors = state.hiredAgents.length
+    ? state.hiredAgents.slice(0, officeActorSlots.length).map((agent, index) => createOfficeSceneActor(agent, index, state))
+    : [createFounderPlaceholderActor()];
+  const workingActorCount = actors.filter((actor) => actor.state === "working").length;
+
+  return {
+    expansionLabel: expansion.name,
+    activeObjectCount: objectStatuses.filter((object) => object.active).length,
+    visibleObjectCount: visibleObjects.length,
+    activeActorCount: state.hiredAgents.length,
+    workingActorCount,
+    objects: visibleObjects,
+    actors,
+    activityTicker: createOfficeSceneActivityTicker(state, expansion.name, zonePlan.active.length, workingActorCount),
+  };
+}
+
+function createOfficeSceneActor(agent: HiredAgent, index: number, state: GameState): OfficeSceneActorStatus {
+  const agentType = getHiredAgentType(agent);
+  const slot = officeActorSlots[index % officeActorSlots.length];
+  const assignment = agent.assignment ? state.productProjects.find((project) => project.id === agent.assignment) : undefined;
+  const assignedProduct = assignment ? getProductDefinition(assignment.productId, state) : undefined;
+  const energy = agent.energy ?? 100;
+  const loyalty = agent.loyalty ?? 70;
+  const kind = agentType ? getAgentKind(agentType) : "ai_agent";
+  const stateLabel = energy <= 30 ? "resting" : loyalty <= 45 ? "warning" : assignment ? "working" : "idle";
+  const assignmentLabel = assignedProduct && assignment
+    ? `${assignedProduct.name} ${Math.round(assignment.progress)}%`
+    : stateLabel === "resting"
+      ? "회복 필요"
+      : stateLabel === "warning"
+        ? "케어 필요"
+        : kind === "robot"
+          ? "충전 대기"
+          : "운영 대기";
+
+  return {
+    id: agent.id,
+    name: agent.name,
+    kind,
+    state: stateLabel,
+    agentTypeId: agent.typeId,
+    x: slot.x,
+    y: slot.y + (index % 2 === 0 ? 0 : 2),
+    level: agent.level,
+    energy,
+    loyalty,
+    activity: getOfficeSceneActorActivity(stateLabel, kind, assignedProduct?.name),
+    assignmentLabel,
+  };
+}
+
+function createFounderPlaceholderActor(): OfficeSceneActorStatus {
+  return {
+    id: "founder-placeholder",
+    name: "창업자",
+    kind: "human",
+    state: "idle",
+    x: 18,
+    y: 68,
+    level: 1,
+    energy: 100,
+    loyalty: 100,
+    activity: "첫 채용 준비",
+    assignmentLabel: "차고 운영",
+  };
+}
+
+function getOfficeSceneActorActivity(
+  actorState: OfficeSceneActorStatus["state"],
+  kind: OfficeSceneActorStatus["kind"],
+  productName?: string,
+): string {
+  if (actorState === "working" && productName) return `${productName} 개발`;
+  if (actorState === "resting") return "번아웃 회복";
+  if (actorState === "warning") return "리텐션 경보";
+  if (kind === "robot") return "충전 대기";
+  if (kind === "ai_agent") return "프롬프트 대기";
+  return "운영 대기";
+}
+
+function createOfficeSceneActivityTicker(
+  state: GameState,
+  expansionLabel: string,
+  activeZoneCount: number,
+  workingActorCount: number,
+): string[] {
+  const activeProject = state.productProjects[0];
+  const activeProduct = activeProject ? getProductDefinition(activeProject.productId, state) : undefined;
+  const entries = [
+    `${expansionLabel} · 구획 ${activeZoneCount}개 가동`,
+    activeProject && activeProduct
+      ? `${activeProduct.name} 개발 ${Math.round(activeProject.progress)}%`
+      : "제품 개발 대기",
+    workingActorCount > 0
+      ? `${workingActorCount}명/기 작업 중`
+      : state.hiredAgents.length > 0
+        ? "배치 가능한 인력 대기"
+        : "첫 직원 또는 AI 에이전트 채용 필요",
+  ];
+
+  if (state.lastMonthReport?.staffAftermathSummary) entries.push("인사 후폭풍 표시 중");
+  if (state.currentEvent) entries.push(`긴급 이슈: ${state.currentEvent.name}`);
+
+  return entries;
 }
 
 function getOfficeZoneBlockedReasons(zone: (typeof officeZones)[number], state: GameState, officeLevel: number): string[] {

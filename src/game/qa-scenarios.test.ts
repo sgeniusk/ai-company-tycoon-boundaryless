@@ -6,7 +6,7 @@ import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
 import { runTenYearCampaignSimulation } from "./run-simulator";
-import { getOperationsCommandPlan, getRecentStaffIncidentAftermathLog, getRecentStaffIncidentResolutionLog, getStaffIncidentBriefs } from "./simulation";
+import { getOfficeScenePlan, getOperationsCommandPlan, getRecentStaffIncidentAftermathLog, getRecentStaffIncidentResolutionLog, getStaffIncidentBriefs } from "./simulation";
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
@@ -44,6 +44,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "staff-aftermath",
       "launch-impact",
       "operations",
+      "office-visuals",
     ]);
   });
 
@@ -282,6 +283,17 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(plan.activeSafeguards.join(" ")).toContain("구획");
   });
 
+  it("creates a v0.41 office visual scenario for animated office browser QA", () => {
+    const scenario = createQaScenario("office-visuals");
+    const plan = getOfficeScenePlan(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("사무실 픽셀");
+    expect(plan.objects.length).toBeGreaterThanOrEqual(8);
+    expect(plan.actors.some((actor) => actor.kind === "robot")).toBe(true);
+    expect(plan.activityTicker.join(" ")).toContain("구획");
+  });
+
   it("creates a 10-year finale scenario for ending QA", () => {
     const scenario = createQaScenario("finale");
 
@@ -390,6 +402,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=staff-resolution")?.id).toBe("staff-resolution");
     expect(createQaScenarioFromSearch("?scenario=launch-impact")?.id).toBe("launch-impact");
     expect(createQaScenarioFromSearch("?scenario=operations")?.id).toBe("operations");
+    expect(createQaScenarioFromSearch("?scenario=office-visuals")?.id).toBe("office-visuals");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
