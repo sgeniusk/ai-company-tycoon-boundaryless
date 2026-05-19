@@ -1,5 +1,5 @@
 {
-  "version": "0.45-alpha",
+  "version": "0.46-alpha",
   "sprite_grid": {
     "tile_size": 16,
     "character_frame_size": 32,
@@ -29,7 +29,7 @@
       },
       "portrait_hint": "둥근 안경, 민트 앞머리, 후드형 체크 조끼",
       "prop_hint": "말풍선 태블릿",
-      "sheet_id": "agents_v045_isometric"
+      "sheet_id": "agents_v046_hires_isometric"
     },
     {
       "agent_type_id": "code_smith",
@@ -52,7 +52,7 @@
       },
       "portrait_hint": "검은 단발, 각진 작업복, 작은 로봇팔",
       "prop_hint": "빛나는 기계식 키보드",
-      "sheet_id": "agents_v045_isometric"
+      "sheet_id": "agents_v046_hires_isometric"
     },
     {
       "agent_type_id": "data_curator",
@@ -75,7 +75,7 @@
       },
       "portrait_hint": "보라색 묶음 머리, 라벨 스티커 코트",
       "prop_hint": "색상별 데이터 카드 케이스",
-      "sheet_id": "agents_v045_isometric"
+      "sheet_id": "agents_v046_hires_isometric"
     },
     {
       "agent_type_id": "infra_operator",
@@ -98,7 +98,7 @@
       },
       "portrait_hint": "짧은 회색 머리, 서버실 방열 조끼, 툴벨트",
       "prop_hint": "작은 GPU 카트",
-      "sheet_id": "agents_v045_isometric"
+      "sheet_id": "agents_v046_hires_isometric"
     },
     {
       "agent_type_id": "growth_hacker",
@@ -121,7 +121,7 @@
       },
       "portrait_hint": "주황색 포니테일, 스티커 재킷, 스니커즈",
       "prop_hint": "실시간 바이럴 그래프 폰",
-      "sheet_id": "agents_v045_isometric"
+      "sheet_id": "agents_v046_hires_isometric"
     }
   ],
   "competitor_identities": [
@@ -285,7 +285,7 @@
         "#f0d28b",
         "#26342d"
       ],
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 0
     },
     {
@@ -303,7 +303,7 @@
         "#1d2a33"
       ],
       "linked_item_id": "gpu_rack_mini",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 1
     },
     {
@@ -320,7 +320,7 @@
         "#d8922b",
         "#2d6b4f"
       ],
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 2
     },
     {
@@ -338,7 +338,7 @@
         "#26342d"
       ],
       "linked_item_id": "tensor_whiteboard",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 3
     },
     {
@@ -355,7 +355,7 @@
         "#d8c49b",
         "#b84c38"
       ],
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 4
     },
     {
@@ -372,7 +372,7 @@
         "#fff0c8",
         "#3d3323"
       ],
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 5
     },
     {
@@ -390,7 +390,7 @@
         "#56d6e9"
       ],
       "linked_item_id": "cooling_fan_wall",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 6
     },
     {
@@ -408,7 +408,7 @@
         "#d8922b"
       ],
       "linked_item_id": "ux_sticky_wall",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 7
     },
     {
@@ -426,7 +426,7 @@
         "#547ad8"
       ],
       "linked_item_id": "feedback_inbox",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 8
     },
     {
@@ -444,7 +444,7 @@
         "#3d3323"
       ],
       "linked_item_id": "instant_noodle_corner",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 9
     },
     {
@@ -462,7 +462,7 @@
         "#d8dde4"
       ],
       "linked_item_id": "pager_phone",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 10
     },
     {
@@ -480,7 +480,7 @@
         "#f28a32"
       ],
       "linked_item_id": "customer_story_wall",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 11
     },
     {
@@ -498,7 +498,7 @@
         "#d6a640"
       ],
       "linked_item_id": "hiring_banner",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 12
     },
     {
@@ -516,7 +516,7 @@
         "#26342d"
       ],
       "linked_item_id": "nap_pod",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 13
     },
     {
@@ -534,7 +534,7 @@
         "#f09a38"
       ],
       "linked_item_id": "benchmark_dashboard",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 14
     },
     {
@@ -552,7 +552,7 @@
         "#5fc6a6"
       ],
       "linked_item_id": "playtest_mirror_room",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 15
     },
     {
@@ -570,7 +570,7 @@
         "#b84c38"
       ],
       "linked_item_id": "simulation_sandbox",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 16
     },
     {
@@ -588,7 +588,7 @@
         "#fffaf0"
       ],
       "linked_item_id": "prototype_printer",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 17
     },
     {
@@ -606,7 +606,7 @@
         "#20292d"
       ],
       "linked_item_id": "robot_charging_mat",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 18
     },
     {
@@ -624,7 +624,7 @@
         "#d8c49b"
       ],
       "linked_item_id": "inventory_beacon",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 19
     },
     {
@@ -642,7 +642,7 @@
         "#20231f"
       ],
       "linked_item_id": "lab_safety_cage",
-      "sheet_id": "office_objects_v045_isometric",
+      "sheet_id": "office_objects_v046_hires_isometric",
       "sheet_index": 20
     }
   ],
@@ -865,21 +865,21 @@
     }
   ],
   "sprite_sheets": {
-    "agents_v045_isometric": {
-      "path": "/assets/sprites/v045-agents.png",
+    "agents_v046_hires_isometric": {
+      "path": "/assets/sprites/v046-agents-hires.png",
       "source_status": "draft",
-      "frame_width": 96,
-      "frame_height": 96,
+      "frame_width": 192,
+      "frame_height": 192,
       "columns": 3,
       "rows": 10,
       "frame_count": 30,
       "slice_mode": "row-major animation rows: idle then work per agent"
     },
-    "office_objects_v045_isometric": {
-      "path": "/assets/sprites/v045-office-objects.png",
+    "office_objects_v046_hires_isometric": {
+      "path": "/assets/sprites/v046-office-objects-hires.png",
       "source_status": "draft",
-      "frame_width": 128,
-      "frame_height": 96,
+      "frame_width": 256,
+      "frame_height": 192,
       "columns": 5,
       "rows": 5,
       "frame_count": 21,
@@ -887,12 +887,12 @@
     }
   },
   "scene_backdrops": {
-    "office_isometric_v045": {
-      "path": "/assets/backgrounds/v045-isometric-office.png",
+    "office_isometric_v046_hires": {
+      "path": "/assets/backgrounds/v046-isometric-office-hires.png",
       "source_status": "draft",
-      "width": 1280,
-      "height": 720,
-      "prompt_summary": "high-resolution isometric pixel-art AI startup office backdrop"
+      "width": 2560,
+      "height": 1440,
+      "prompt_summary": "2x-density isometric pixel-art AI startup office backdrop"
     }
   }
 }

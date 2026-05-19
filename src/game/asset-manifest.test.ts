@@ -7,7 +7,7 @@ describe("alpha v0.9 pixel asset manifest", () => {
   const knownItemIds = new Set(items.map((item) => item.id));
 
   it("defines a stable pixel grid for first-pass sprite replacement", () => {
-    expect(assetManifest.version).toBe("0.45-alpha");
+    expect(assetManifest.version).toBe("0.46-alpha");
     expect(assetManifest.sprite_grid.tile_size).toBe(16);
     expect(assetManifest.sprite_grid.character_frame_size).toBe(32);
     expect(assetManifest.sprite_grid.portrait_size).toBe(48);
@@ -15,13 +15,17 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(assetManifest.sprite_grid.competitor_logo_size).toBe(32);
   });
 
-  it("defines v0.45 high-resolution sheet slicing contracts for generated pixel art", () => {
-    expect(assetManifest.sprite_sheets.agents_v045_isometric.path).toBe("/assets/sprites/v045-agents.png");
-    expect(assetManifest.sprite_sheets.agents_v045_isometric.frame_width).toBe(96);
-    expect(assetManifest.sprite_sheets.agents_v045_isometric.frame_height).toBe(96);
-    expect(assetManifest.sprite_sheets.agents_v045_isometric.columns).toBe(3);
-    expect(assetManifest.sprite_sheets.office_objects_v045_isometric.path).toBe("/assets/sprites/v045-office-objects.png");
-    expect(assetManifest.scene_backdrops.office_isometric_v045.path).toBe("/assets/backgrounds/v045-isometric-office.png");
+  it("defines v0.46 high-density sheet slicing contracts for generated pixel art", () => {
+    expect(assetManifest.sprite_sheets.agents_v046_hires_isometric.path).toBe("/assets/sprites/v046-agents-hires.png");
+    expect(assetManifest.sprite_sheets.agents_v046_hires_isometric.frame_width).toBe(192);
+    expect(assetManifest.sprite_sheets.agents_v046_hires_isometric.frame_height).toBe(192);
+    expect(assetManifest.sprite_sheets.agents_v046_hires_isometric.columns).toBe(3);
+    expect(assetManifest.sprite_sheets.office_objects_v046_hires_isometric.path).toBe("/assets/sprites/v046-office-objects-hires.png");
+    expect(assetManifest.sprite_sheets.office_objects_v046_hires_isometric.frame_width).toBe(256);
+    expect(assetManifest.sprite_sheets.office_objects_v046_hires_isometric.frame_height).toBe(192);
+    expect(assetManifest.scene_backdrops.office_isometric_v046_hires.path).toBe("/assets/backgrounds/v046-isometric-office-hires.png");
+    expect(assetManifest.scene_backdrops.office_isometric_v046_hires.width).toBe(2560);
+    expect(assetManifest.scene_backdrops.office_isometric_v046_hires.height).toBe(1440);
   });
 
   it("covers priority agent sprites with placeholder-safe animation hooks", () => {
@@ -44,10 +48,10 @@ describe("alpha v0.9 pixel asset manifest", () => {
     }
   });
 
-  it("attaches priority agents to the v0.45 generated character sheet", () => {
+  it("attaches priority agents to the v0.46 generated high-density character sheet", () => {
     for (const sprite of assetManifest.agent_sprites) {
       expect(sprite.source_status).toBe("draft");
-      expect(sprite.sheet_id).toBe("agents_v045_isometric");
+      expect(sprite.sheet_id).toBe("agents_v046_hires_isometric");
       expect(sprite.animations.work.row).toBe(sprite.animations.idle.row + 1);
     }
   });
@@ -92,8 +96,8 @@ describe("alpha v0.9 pixel asset manifest", () => {
     }
   });
 
-  it("links first-screen office objects to a generated object sheet", () => {
-    const generatedObjects = assetManifest.office_objects.filter((object) => object.sheet_id === "office_objects_v045_isometric");
+  it("links first-screen office objects to a generated high-density object sheet", () => {
+    const generatedObjects = assetManifest.office_objects.filter((object) => object.sheet_id === "office_objects_v046_hires_isometric");
 
     expect(generatedObjects.length).toBeGreaterThanOrEqual(10);
     for (const object of generatedObjects) {

@@ -63,9 +63,9 @@ function assetPaletteVars(palette?: string[]): CSSProperties {
   } as CSSProperties;
 }
 
-const agentSheetId = "agents_v045_isometric";
-const officeObjectSheetId = "office_objects_v045_isometric";
-const officeBackdropId = "office_isometric_v045";
+const agentSheetId = "agents_v046_hires_isometric";
+const officeObjectSheetId = "office_objects_v046_hires_isometric";
+const officeBackdropId = "office_isometric_v046_hires";
 
 function getAssetSheet(sheetId?: string): SpriteSheetDefinition | undefined {
   if (!sheetId) return undefined;
@@ -105,7 +105,7 @@ function getAgentSpriteFrameStyle(
   const frame = actorState === "working" ? 1 : actorState === "resting" ? 2 : 0;
   const frameIndex = animation.row * sheet.columns + Math.min(frame, animation.frames - 1);
 
-  return getSpriteSheetFrameStyle(sheet, frameIndex, 58, 58);
+  return getSpriteSheetFrameStyle(sheet, frameIndex, 76, 76);
 }
 
 function getCompetitorIdentity(competitorId?: string) {
@@ -124,8 +124,8 @@ function getOfficeObjectAsset(itemId: string) {
 function getOfficeObjectSpriteFrameStyle(asset: OfficeObjectAssetDefinition): CSSProperties | undefined {
   const sheet = getAssetSheet(asset.sheet_id ?? officeObjectSheetId);
   if (!asset.sheet_id || typeof asset.sheet_index !== "number" || !sheet) return undefined;
-  const displayWidth = Math.max(56, Math.min(92, asset.footprint[0] * 34 + 22));
-  const displayHeight = Math.max(48, Math.min(72, asset.footprint[1] * 24 + 30));
+  const displayWidth = Math.max(72, Math.min(116, asset.footprint[0] * 42 + 28));
+  const displayHeight = Math.max(60, Math.min(92, asset.footprint[1] * 30 + 36));
 
   return getSpriteSheetFrameStyle(sheet, asset.sheet_index, displayWidth, displayHeight);
 }

@@ -37,7 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.45 high-resolution isometric office backdrop, generated sprite-sheet actors, decor props, and direct actor care actions |
+| Office Visuals | `?scenario=office-visuals` | v0.46 high-density isometric office backdrop, generated sprite-sheet actors, decor props, and direct actor care actions |
 
 Examples:
 
@@ -68,7 +68,7 @@ Examples:
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
 
-## v0.45 Isometric Sprite Sheet QA
+## v0.46 High-Density Isometric Sprite Sheet QA
 
 URL:
 
@@ -76,10 +76,10 @@ URL:
 
 Expected:
 
-- The QA pill says `v0.45 고해상도 시트/사무실 액터 QA`.
-- The office playfield shows the `v045-isometric-office.png` pixel-art backdrop.
-- Human/AI priority actors render with `v045-agents.png` sprite-sheet frames rather than CSS-only body blocks.
-- Placed office items render with `v045-office-objects.png` sprite-sheet frames.
+- The QA pill says `v0.46 고밀도 픽셀 시트/사무실 액터 QA`.
+- The office playfield shows the `v046-isometric-office-hires.png` pixel-art backdrop.
+- Human/AI priority actors render with `v046-agents-hires.png` sprite-sheet frames rather than CSS-only body blocks.
+- Placed office items render with `v046-office-objects-hires.png` sprite-sheet frames.
 - The actor focus panel and direct care actions from v0.44 still work.
 - Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
 

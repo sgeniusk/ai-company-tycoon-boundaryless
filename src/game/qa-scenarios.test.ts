@@ -307,7 +307,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.ownedItems).toEqual(expect.arrayContaining(scenario.state.office.placedItemIds));
   });
 
-  it("creates a v0.45 office focus scenario with direct rest and salary care candidates", () => {
+  it("creates a v0.46 office focus scenario with direct rest and salary care candidates", () => {
     const scenario = createQaScenario("office-visuals");
     const plan = getOfficeScenePlan(scenario.state);
     const restingActor = plan.actors.find((actor) => actor.state === "resting");

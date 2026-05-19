@@ -4,23 +4,22 @@
 
 ---
 
-## [0.45-alpha] — 2026-05-19
+## [0.46-alpha] — 2026-05-19
 
-### 고해상도 픽셀 시트 기반 아이소메트릭 사무실
+### 고밀도 픽셀 시트 기반 아이소메트릭 사무실
 
 **추가:**
-- `scripts/assets/generate-v045-isometric-sheets.mjs`를 추가해 에이전트 캐릭터 시트, 사무실 오브젝트 시트, 아이소메트릭 사무실 배경 PNG를 생성한다.
-- `asset_manifest.json`에 `sprite_sheets`와 `scene_backdrops` 계약을 추가했다. 실제 AI 생성 시트도 같은 규격으로 교체할 수 있다.
-- `OfficeIsometricBackdrop`을 추가해 사무실 플레이필드에 1280×720 픽셀아트 배경을 깔았다.
-- 액터와 배치 장식은 CSS 도형 대신 `v045-agents.png`, `v045-office-objects.png`를 잘라 쓰는 `sprite-sheet-frame` 렌더링 경로를 탄다.
-- `npm run assets:v045`로 현재 샘플 시트를 재생성할 수 있게 했다.
+- `scripts/assets/generate-v046-hires-pixel-sheets.mjs`를 추가해 2x 밀도 에이전트 시트, 사무실 오브젝트 시트, 아이소메트릭 사무실 배경 PNG를 생성한다.
+- `asset_manifest.json`의 현재 시트 계약을 `agents_v046_hires_isometric`, `office_objects_v046_hires_isometric`, `office_isometric_v046_hires`로 올렸다.
+- 에이전트 원본 슬롯은 192×192, 오브젝트 원본 슬롯은 256×192, 배경은 2560×1440으로 올렸다.
+- 게임 화면 표시 크기도 액터 76px, 오브젝트 최대 116×92px로 키워 레퍼런스에 가까운 고밀도 픽셀감을 낸다.
+- `npm run assets:v046`으로 현재 고밀도 샘플 시트를 재생성할 수 있게 했다.
 
 **검증:**
-- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 34 tests
-- `npm run validate:data` 통과
-- `npm run build` 통과
+- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 69 tests
+- `sips -g pixelWidth -g pixelHeight` 확인: 에이전트 576×1920, 오브젝트 1280×960, 배경 2560×1440
 - `npm run harness:gate` 통과, 40 files / 290 tests, 데이터 검증 통과, 프로덕션 빌드 통과
-- Browser QA 시도: Playwright 런치가 로컬 런타임에서 120초 타임아웃되어 DOM 스크린샷 검증은 보류. 대신 정적 PNG 산출물, 서버 응답, 데이터/빌드 검증을 완료했다.
+- Browser QA 시도: 현재 Node REPL 런타임에 `playwright` 모듈이 없어 DOM 스크린샷 검증은 보류. 대신 정적 PNG 산출물, 서버 응답, 데이터/빌드 검증을 완료했다.
 
 ## [0.44-alpha] — 2026-05-19
 

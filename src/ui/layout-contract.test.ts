@@ -156,9 +156,10 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("assetManifest.item_icons");
     expect(gameChrome).toContain("assetManifest.competitor_identities");
     expect(gameChrome).toContain("assetManifest.agent_sprites");
-    expect(gameChrome).toContain("agents_v045_isometric");
-    expect(gameChrome).toContain("office_objects_v045_isometric");
-    expect(gameChrome).toContain("office_isometric_v045");
+    expect(gameChrome).toContain("agents_v046_hires_isometric");
+    expect(gameChrome).toContain("office_objects_v046_hires_isometric");
+    expect(gameChrome).toContain("office_isometric_v046_hires");
+    expect(gameChrome).toContain("getSpriteSheetFrameStyle(sheet, frameIndex, 76, 76)");
     expect(gameChrome).toContain("competitor-hud-logo");
     expect(appCss).toMatch(/\.office-graphic-asset-wall\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.office-asset-row\s*{[^}]*display:\s*flex/s);
