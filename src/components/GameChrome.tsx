@@ -90,6 +90,15 @@ function getSpriteSheetFrameStyle(
   };
 }
 
+function getSpriteSheetPreviewFrames(sheet: SpriteSheetDefinition | undefined) {
+  if (!sheet) return [];
+  return (sheet.preview_frames?.length ? sheet.preview_frames : [0, 1, 2, 3]).filter((frameIndex) => frameIndex >= 0 && frameIndex < sheet.frame_count);
+}
+
+function getDepthStyle(depthPercent: number, base = 1): CSSProperties {
+  return { zIndex: base + Math.round(depthPercent) };
+}
+
 function getAgentSprite(agentTypeId?: string) {
   if (!agentTypeId) return undefined;
   return assetManifest.agent_sprites.find((sprite) => sprite.agent_type_id === agentTypeId);
@@ -281,10 +290,12 @@ function CompetitorHudStrip({ gameState, locale }: { gameState: GameState; local
 
 export function GameStage({
   gameState,
+  qaScenarioLabel,
   setGameState,
   setActiveMenu,
 }: {
   gameState: GameState;
+  qaScenarioLabel?: string;
   setGameState: Dispatch<SetStateAction<GameState>>;
   setActiveMenu: Dispatch<SetStateAction<MenuId>>;
 }) {
@@ -411,6 +422,7 @@ export function GameStage({
                     "--object-y": `${object.y}%`,
                     "--object-w": `${object.w}%`,
                     "--object-h": `${object.h}%`,
+                    ...getDepthStyle(object.y, 10),
                   } as CSSProperties
                 }
                 title={`${object.label} · ${object.active ? object.activity : object.blockedReason}`}
@@ -421,6 +433,7 @@ export function GameStage({
           </div>
           <OfficeDecorAssetLayer placedOfficeItems={placedOfficeItems} />
           <OfficeGraphicAssetWall />
+          {qaScenarioLabel && <OfficeSpriteSheetInspector />}
           <div className="office-hud" aria-label="사무실 빠른 상태">
             <span>
               <strong>{calendar.year}년 {calendar.monthOfYear}월</strong>
@@ -465,6 +478,7 @@ export function GameStage({
                       ...agentSpriteFrameStyle,
                       "--actor-x": `${actor.x}%`,
                       "--actor-y": `${actor.y}%`,
+                      ...getDepthStyle(actor.y, 80),
                     } as CSSProperties
                   }
                   title={`${actor.name} · ${agentType?.role ?? "창업자"} · ${actor.activity}`}
@@ -821,11 +835,51 @@ function OfficeDecorAssetLayer({ placedOfficeItems }: { placedOfficeItems: ItemD
                 "--decor-y": `${slot.y}%`,
                 "--decor-w": `${Math.max(20, asset.footprint[0] * 18)}px`,
                 "--decor-h": `${Math.max(18, asset.footprint[1] * 14)}px`,
+                ...getDepthStyle(slot.y, 40),
                 ...objectSpriteFrameStyle,
               } as CSSProperties
             }
             title={`${item.name} · ${asset.readable_shape}`}
           />
+        );
+      })}
+    </div>
+  );
+}
+
+function OfficeSpriteSheetInspector() {
+  const agentSheet = getAssetSheet(agentSheetId);
+  const objectSheet = getAssetSheet(officeObjectSheetId);
+  const previewGroups = [
+    { id: "agents", label: "캐릭터", sheet: agentSheet, frameWidth: 38, frameHeight: 38 },
+    { id: "objects", label: "오브젝트", sheet: objectSheet, frameWidth: 44, frameHeight: 34 },
+  ];
+
+  return (
+    <div className="sprite-sheet-inspector" aria-label="시트 프리뷰">
+      {previewGroups.map((group) => {
+        if (!group.sheet) return null;
+        const sheet = group.sheet;
+        const frames = getSpriteSheetPreviewFrames(sheet).slice(0, 6);
+
+        return (
+          <div className={`sprite-sheet-preview-group preview-${group.id}`} key={group.id}>
+            <span>
+              <strong>{group.label}</strong>
+              <small>{sheet.frame_width}×{sheet.frame_height}</small>
+            </span>
+            <div>
+              {frames.map((frameIndex) => (
+                <i
+                  aria-label={`${group.label} ${frameIndex}`}
+                  className="sprite-sheet-preview-frame"
+                  key={`${group.id}-${frameIndex}`}
+                  role="img"
+                  style={getSpriteSheetFrameStyle(sheet, frameIndex, group.frameWidth, group.frameHeight)}
+                />
+              ))}
+            </div>
+          </div>
         );
       })}
     </div>

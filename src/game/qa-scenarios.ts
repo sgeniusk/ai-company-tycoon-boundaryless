@@ -402,7 +402,7 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "office-visuals") {
     return {
       id,
-      label: "v0.46 고밀도 픽셀 시트/사무실 액터 QA",
+      label: "v0.47 사무실 액터 시트 프리뷰/깊이 정렬 QA",
       state: createOfficeVisualScenarioState(),
       activeMenu: "company",
     };
@@ -526,7 +526,7 @@ function createOfficeVisualScenarioState(): GameState {
       ...baseState.office,
       placedItemIds: visualDecorItemIds,
     },
-    timeline: ["v0.46 고밀도 시트 기반 아이소메트릭 오피스 QA: 더 큰 픽셀 시트 액터와 장식을 한 화면에서 확인", ...baseState.timeline].slice(0, 8),
+    timeline: ["v0.47 시트 프리뷰 QA: 고밀도 액터/오브젝트 프레임과 아이소메트릭 깊이 정렬을 한 화면에서 확인", ...baseState.timeline].slice(0, 8),
   };
 }
 

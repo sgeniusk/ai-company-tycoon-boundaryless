@@ -4,6 +4,23 @@
 
 ---
 
+## [0.47-alpha] — 2026-05-19
+
+### 게임 내 시트 프리뷰와 아이소메트릭 깊이 정렬
+
+**추가:**
+- `asset_manifest.json` 버전을 `0.47-alpha`로 올리고, 고밀도 시트에 `density`와 `preview_frames` 메타데이터를 추가했다.
+- `GameStage`가 QA 시나리오 라벨을 받아 `office-visuals` 같은 QA 진입점에서만 `OfficeSpriteSheetInspector`를 표시한다.
+- `OfficeSpriteSheetInspector`는 현재 캐릭터/오브젝트 시트에서 대표 프레임을 잘라 보여줘, 다음 AI 생성 시트 교체 때 게임 화면에서 바로 검수할 수 있다.
+- 사무실 구획, 장식 프롭, 액터에 y좌표 기반 `zIndex`를 부여해 아이소메트릭 바닥 위 앞뒤 관계가 더 안정적으로 보이게 했다.
+- 모바일에서는 시트 프리뷰가 작게 접혀 사무실 조작 UI를 덮지 않게 했다.
+
+**검증:**
+- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts` 통과, 3 files / 70 tests
+- `npm run harness:gate` 통과, 40 files / 291 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- `curl -I http://127.0.0.1:5201/?scenario=office-visuals` 통과, 200 OK
+- `curl -I`로 캐릭터/오브젝트 고밀도 PNG 응답 확인, 200 OK
+
 ## [0.46-alpha] — 2026-05-19
 
 ### 고밀도 픽셀 시트 기반 아이소메트릭 사무실

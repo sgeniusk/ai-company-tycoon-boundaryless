@@ -259,11 +259,13 @@ export interface ItemIconDefinition {
 export interface SpriteSheetDefinition {
   path: string;
   source_status: "placeholder" | "draft" | "final";
+  density?: number;
   frame_width: number;
   frame_height: number;
   columns: number;
   rows: number;
   frame_count: number;
+  preview_frames?: number[];
   slice_mode: string;
 }
 

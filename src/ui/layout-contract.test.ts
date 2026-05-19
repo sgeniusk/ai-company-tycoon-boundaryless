@@ -138,6 +138,7 @@ describe("v0.13.3 compact game shell layout", () => {
   it("puts quick state overlays inside the office playfield", () => {
     expect(gameChrome).toContain('className="office-hud"');
     expect(gameChrome).toContain('className="office-alert-strip"');
+    expect(gameChrome).toContain("qaScenarioLabel && <OfficeSpriteSheetInspector");
     expect(appCss).toMatch(/\.office-hud\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.office-hud\s*{[^}]*z-index:\s*5/s);
     expect(appCss).toMatch(/\.office-alert-strip\s*{[^}]*position:\s*absolute/s);
@@ -147,9 +148,12 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("OfficeGraphicAssetWall");
     expect(gameChrome).toContain("OfficeDecorAssetLayer");
     expect(gameChrome).toContain("OfficeIsometricBackdrop");
+    expect(gameChrome).toContain("OfficeSpriteSheetInspector");
     expect(gameChrome).toContain("getAssetSheet");
+    expect(gameChrome).toContain("getDepthStyle");
     expect(gameChrome).toContain("getAgentSpriteFrameStyle");
     expect(gameChrome).toContain("getOfficeObjectSpriteFrameStyle");
+    expect(gameChrome).toContain("getSpriteSheetPreviewFrames");
     expect(gameChrome).toContain("getCompetitorIdentity");
     expect(gameChrome).toContain("getItemIcon");
     expect(gameChrome).toContain("assetManifest.office_objects");
@@ -166,6 +170,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.office-asset-mini\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.decor-asset-prop\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.office-isometric-backdrop\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.sprite-sheet-inspector\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.sprite-sheet-preview-frame\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.sprite-sheet-frame\s*{[^}]*background-repeat:\s*no-repeat/s);
     expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.sprite-sheet-frame\s*{[^}]*border:\s*0/s);
     expect(appCss).toMatch(/\.competitor-hud-logo\s*{[^}]*image-rendering:\s*pixelated/s);

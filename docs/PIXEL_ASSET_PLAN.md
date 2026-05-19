@@ -123,3 +123,18 @@ Still pending:
 - Replace the deterministic draft sheets with approved AI-generated or hand-polished production sheets.
 - Add walking, emotion, and event rows after the idle/work rows stabilize.
 - Add a small preview sheet QA page so every slot can be checked outside the main game screen.
+
+## v0.47 In-Game Sheet Preview
+
+Implemented:
+
+- `asset_manifest.json` now stores `density` and `preview_frames` on each active high-density sprite sheet.
+- `OfficeSpriteSheetInspector` appears in QA scenarios and cuts representative frames from the current atlas in the live office scene.
+- The inspector uses the same `getSpriteSheetFrameStyle` slicing path as actors and decor props, so it catches path, row, column, and frame-size mistakes early.
+- Office objects, decor props, and actors now receive y-position depth values to reduce confusing overlaps on the isometric floor.
+
+Next asset handoff:
+
+- When replacing `v046-agents-hires.png` with an AI-generated character sheet, first check the preview frames `[0, 1, 3, 4, 8, 9]` in `?scenario=office-visuals`.
+- When replacing `v046-office-objects-hires.png`, first check object preview frames `[0, 1, 3, 8, 13, 18]`.
+- If the preview strip drifts, fix the atlas slot size or row order before tuning the in-game actor positions.

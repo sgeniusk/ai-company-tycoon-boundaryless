@@ -136,7 +136,7 @@ function App() {
         onToggleLocale={() => setLocale((current) => (current === "ko" ? "en" : "ko"))}
       />
       <ResourceStrip gameState={gameState} />
-      <GameStage gameState={gameState} setGameState={setGameState} setActiveMenu={setActiveMenu} />
+      <GameStage gameState={gameState} qaScenarioLabel={qaScenarioLabel} setGameState={setGameState} setActiveMenu={setActiveMenu} />
       <div className="event-stack">
         <EventPanels gameState={gameState} setGameState={setGameState} locale={locale} />
       </div>
