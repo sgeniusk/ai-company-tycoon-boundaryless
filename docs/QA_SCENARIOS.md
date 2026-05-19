@@ -37,7 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.43 graphic asset game screen with zone objects, human/AI/robot actors, care states, decor props, and asset wall |
+| Office Visuals | `?scenario=office-visuals` | v0.44 office actor focus with direct care actions, zone objects, human/AI/robot actors, decor props, and asset wall |
 
 Examples:
 
@@ -68,6 +68,21 @@ Examples:
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
 
+## v0.44 Office Actor Care QA
+
+URL:
+
+- `?scenario=office-visuals`
+
+Expected:
+
+- The QA pill says `v0.44 액터 케어/사무실 액터 QA`.
+- The default focus panel selects a care-risk actor.
+- The focus panel can show `즉시 휴식` and `연봉 협상` direct action buttons with costs.
+- Clicking `연봉 협상` immediately updates the timeline with an `연봉 협상` entry and keeps the player on the office screen.
+- Clicking `즉시 휴식` immediately updates the timeline with a `유급 휴식` entry and keeps the player on the office screen.
+- Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
+
 ## v0.43 Graphic Asset Game Screen QA
 
 URL:
@@ -76,7 +91,7 @@ URL:
 
 Expected:
 
-- The QA pill says `v0.43 그래픽 자산/사무실 액터 QA`.
+- The QA pill says `v0.44 액터 케어/사무실 액터 QA`.
 - The office playfield shows the graphic asset wall sourced from `asset_manifest.json`.
 - The asset wall includes agent, competitor, item, and office object miniatures.
 - Placed office items render as visible pixel decor props in the office.

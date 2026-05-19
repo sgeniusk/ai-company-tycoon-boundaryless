@@ -402,7 +402,7 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "office-visuals") {
     return {
       id,
-      label: "v0.43 그래픽 자산/사무실 액터 QA",
+      label: "v0.44 액터 케어/사무실 액터 QA",
       state: createOfficeVisualScenarioState(),
       activeMenu: "company",
     };
@@ -500,6 +500,7 @@ function createOfficeVisualScenarioState(): GameState {
   const visualAgents = baseState.hiredAgents.map((agent, index) => {
     if (index === 0) return { ...agent, energy: 78, loyalty: 72 };
     if (index === 1) return { ...agent, energy: 74, loyalty: 38 };
+    if (index === 2) return { ...agent, energy: 24, loyalty: 76 };
     return agent;
   });
   const hiredAgents = robotType && !alreadyHasRobot

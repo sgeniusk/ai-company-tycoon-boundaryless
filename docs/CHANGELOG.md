@@ -4,6 +4,23 @@
 
 ---
 
+## [0.44-alpha] — 2026-05-19
+
+### 사무실 액터 포커스 직접 케어 액션
+
+**추가:**
+- `OfficeActorFocusPanel`에서 선택한 액터의 `즉시 휴식`과 `연봉 협상`을 바로 실행할 수 있게 했다.
+- 포커스 패널은 기존 `restAgent`, `negotiateAgentSalary` 체크/비용/상태 갱신 로직을 그대로 사용한다.
+- `office-visuals` QA 시나리오에 휴식 가능한 저체력 액터와 연봉 협상 가능한 저충성도 액터를 함께 배치했다.
+- 모바일에서는 직접 케어 버튼을 압축해 가로 오버플로를 만들지 않도록 유지했다.
+
+**검증:**
+- `npm test -- src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts` 통과, 2 files / 61 tests
+- `npm test -- src/game/staff-career.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 93 tests
+- `npm run build` 통과
+- `npm run harness:gate` 통과, 40 files / 287 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser QA: `http://127.0.0.1:5201/?scenario=office-visuals`에서 포커스 패널 직접 케어 버튼 2개 확인, `연봉 협상` 클릭 후 타임라인 갱신, `즉시 휴식` 클릭 후 타임라인 갱신, 가로 오버플로 없음 확인
+
 ## [0.43-alpha] — 2026-05-19
 
 ### 그래픽 자산 포함 게임 화면

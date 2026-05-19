@@ -21,6 +21,10 @@ import {
   formatResource,
   getCompanyStage,
   getAiOperationCapacity,
+  getAgentRestCheck,
+  getAgentRestCost,
+  getAgentSalaryNegotiationCheck,
+  getAgentSalaryNegotiationCost,
   getAvailableProductDefinitions,
   getOfficeDecorationSlots,
   getOfficeExpansion,
@@ -30,12 +34,14 @@ import {
   getOperationsCommandPlan,
   getPlacedOfficeItems,
   getPlayerMarketShare,
+  negotiateAgentSalary,
   resolveEventChoice,
   resolveRivalEventChoice,
+  restAgent,
 } from "../game/simulation";
 import type { GameState, ItemDefinition, OfficeSceneActorStatus, OperationsCommandPlan, ReleaseGrowthPath } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
-import { formatEffects, statusLabel } from "../ui/formatters";
+import { formatCost, formatEffects, statusLabel } from "../ui/formatters";
 import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
@@ -409,7 +415,14 @@ export function GameStage({
               );
             })}
           </div>
-          {focusedOfficeActor && <OfficeActorFocusPanel actor={focusedOfficeActor} onOpenMenu={setActiveMenu} />}
+          {focusedOfficeActor && (
+            <OfficeActorFocusPanel
+              actor={focusedOfficeActor}
+              gameState={gameState}
+              onCareAction={setGameState}
+              onOpenMenu={setActiveMenu}
+            />
+          )}
           <div className="server-rack">
             <i />
             <i />
@@ -840,14 +853,24 @@ function OperationCommandPanel({
 
 function OfficeActorFocusPanel({
   actor,
+  gameState,
+  onCareAction,
   onOpenMenu,
 }: {
   actor: OfficeSceneActorStatus;
+  gameState: GameState;
+  onCareAction: Dispatch<SetStateAction<GameState>>;
   onOpenMenu: Dispatch<SetStateAction<MenuId>>;
 }) {
   const kindLabel = actor.kind === "human" ? "사람" : actor.kind === "robot" ? "로봇" : "AI";
   const energyTone = actor.energy <= 30 ? "danger" : actor.energy <= 55 ? "watch" : "safe";
   const loyaltyTone = actor.loyalty <= 45 ? "danger" : actor.loyalty <= 65 ? "watch" : "safe";
+  const agent = gameState.hiredAgents.find((entry) => entry.id === actor.id);
+  const restCheck = getAgentRestCheck(actor.id, gameState);
+  const salaryNegotiationCheck = getAgentSalaryNegotiationCheck(actor.id, gameState);
+  const restCost = agent ? getAgentRestCost(agent) : {};
+  const salaryNegotiationCost = agent ? getAgentSalaryNegotiationCost(agent) : {};
+  const hasDirectCareAction = Boolean(agent && (restCheck.ok || salaryNegotiationCheck.ok));
 
   return (
     <div className={`office-actor-focus-panel actor-focus-${actor.state}`} aria-live="polite">
@@ -867,6 +890,30 @@ function OfficeActorFocusPanel({
       <button onClick={() => onOpenMenu(actor.targetMenu)} type="button">
         {actor.actionLabel}
       </button>
+      {hasDirectCareAction && (
+        <div className="actor-focus-care-actions" aria-label={`${actor.name} 직접 케어`}>
+          {restCheck.ok && (
+            <button
+              onClick={() => onCareAction((current) => restAgent(actor.id, current))}
+              title={`비용 ${formatCost(restCost)}`}
+              type="button"
+            >
+              <strong>즉시 휴식</strong>
+              <span>{formatCost(restCost)}</span>
+            </button>
+          )}
+          {salaryNegotiationCheck.ok && (
+            <button
+              onClick={() => onCareAction((current) => negotiateAgentSalary(actor.id, current))}
+              title={`비용 ${formatCost(salaryNegotiationCost)}`}
+              type="button"
+            >
+              <strong>연봉 협상</strong>
+              <span>{formatCost(salaryNegotiationCost)}</span>
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

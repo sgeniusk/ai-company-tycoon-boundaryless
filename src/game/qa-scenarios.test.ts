@@ -7,7 +7,15 @@ import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
 import { runTenYearCampaignSimulation } from "./run-simulator";
-import { getOfficeScenePlan, getOperationsCommandPlan, getRecentStaffIncidentAftermathLog, getRecentStaffIncidentResolutionLog, getStaffIncidentBriefs } from "./simulation";
+import {
+  getAgentRestCheck,
+  getAgentSalaryNegotiationCheck,
+  getOfficeScenePlan,
+  getOperationsCommandPlan,
+  getRecentStaffIncidentAftermathLog,
+  getRecentStaffIncidentResolutionLog,
+  getStaffIncidentBriefs,
+} from "./simulation";
 
 describe("alpha v0.9.3 QA scenarios", () => {
   it("exposes stable browser QA scenario ids", () => {
@@ -297,6 +305,18 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.office.placedItemIds.length).toBeGreaterThanOrEqual(8);
     expect(scenario.state.office.placedItemIds.every((itemId) => linkedDecorIds.has(itemId))).toBe(true);
     expect(scenario.state.ownedItems).toEqual(expect.arrayContaining(scenario.state.office.placedItemIds));
+  });
+
+  it("creates a v0.44 office focus scenario with direct rest and salary care candidates", () => {
+    const scenario = createQaScenario("office-visuals");
+    const plan = getOfficeScenePlan(scenario.state);
+    const restingActor = plan.actors.find((actor) => actor.state === "resting");
+    const warningActor = plan.actors.find((actor) => actor.state === "warning");
+
+    expect(restingActor).toBeTruthy();
+    expect(warningActor).toBeTruthy();
+    expect(restingActor && getAgentRestCheck(restingActor.id, scenario.state).ok).toBe(true);
+    expect(warningActor && getAgentSalaryNegotiationCheck(warningActor.id, scenario.state).ok).toBe(true);
   });
 
   it("creates a 10-year finale scenario for ending QA", () => {

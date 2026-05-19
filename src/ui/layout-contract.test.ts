@@ -293,6 +293,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.operation-command-panel\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.operation-command-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.monthly-staff-aftermath-row\s*{/s);
+    expect(gameChrome).toContain("getAgentRestCheck");
+    expect(gameChrome).toContain("getAgentSalaryNegotiationCheck");
+    expect(gameChrome).toContain("restAgent");
+    expect(gameChrome).toContain("negotiateAgentSalary");
+    expect(gameChrome).toContain("actor-focus-care-actions");
+    expect(gameChrome).toContain("즉시 휴식");
+    expect(gameChrome).toContain("연봉 협상");
+    expect(gameChrome).toContain("onCareAction");
     expect(menuPanels).toContain("staff-incident-aftermath-warning");
     expect(menuPanels).toContain("staff-aftermath-panel");
     expect(menuPanels).toContain("staff-resolution-result-panel");

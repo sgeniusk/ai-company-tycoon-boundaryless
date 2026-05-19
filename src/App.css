@@ -1472,6 +1472,41 @@ p {
   padding: 0 8px;
 }
 
+.actor-focus-care-actions {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.actor-focus-care-actions button {
+  background: #fffdf5;
+  border-color: #d8c49b;
+  color: var(--green-dark);
+  display: grid;
+  gap: 2px;
+  min-height: 34px;
+  padding: 4px;
+}
+
+.actor-focus-care-actions strong,
+.actor-focus-care-actions span {
+  display: block;
+  line-height: 1.05;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actor-focus-care-actions strong {
+  font-size: 0.58rem;
+}
+
+.actor-focus-care-actions span {
+  color: #705a38;
+  font-size: 0.52rem;
+  font-weight: 900;
+}
+
 @keyframes pixel-actor-idle {
   0%,
   100% {
@@ -6422,13 +6457,19 @@ p {
   }
 
   .office-actor-focus-panel small,
-  .actor-focus-meters {
+  .actor-focus-meters,
+  .actor-focus-care-actions span {
     display: none;
   }
 
-  .office-actor-focus-panel button {
+  .office-actor-focus-panel button,
+  .actor-focus-care-actions button {
     font-size: 0.56rem;
     min-height: 24px;
+  }
+
+  .actor-focus-care-actions {
+    gap: 4px;
   }
 
   .monthly-report dl,
