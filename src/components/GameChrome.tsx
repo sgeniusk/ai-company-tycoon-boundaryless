@@ -39,7 +39,16 @@ import {
   resolveRivalEventChoice,
   restAgent,
 } from "../game/simulation";
-import type { GameState, ItemDefinition, OfficeSceneActorStatus, OperationsCommandPlan, ReleaseGrowthPath } from "../game/types";
+import type {
+  AgentSpriteDefinition,
+  GameState,
+  ItemDefinition,
+  OfficeObjectAssetDefinition,
+  OfficeSceneActorStatus,
+  OperationsCommandPlan,
+  ReleaseGrowthPath,
+  SpriteSheetDefinition,
+} from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, statusLabel } from "../ui/formatters";
 import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
@@ -54,9 +63,49 @@ function assetPaletteVars(palette?: string[]): CSSProperties {
   } as CSSProperties;
 }
 
+const agentSheetId = "agents_v045_isometric";
+const officeObjectSheetId = "office_objects_v045_isometric";
+const officeBackdropId = "office_isometric_v045";
+
+function getAssetSheet(sheetId?: string): SpriteSheetDefinition | undefined {
+  if (!sheetId) return undefined;
+  return assetManifest.sprite_sheets[sheetId];
+}
+
+function getSpriteSheetFrameStyle(
+  sheet: SpriteSheetDefinition,
+  frameIndex: number,
+  displayWidth: number,
+  displayHeight: number,
+): CSSProperties {
+  const column = frameIndex % sheet.columns;
+  const row = Math.floor(frameIndex / sheet.columns);
+
+  return {
+    backgroundImage: `url(${sheet.path})`,
+    backgroundPosition: `-${column * displayWidth}px -${row * displayHeight}px`,
+    backgroundSize: `${sheet.columns * displayWidth}px ${sheet.rows * displayHeight}px`,
+    height: `${displayHeight}px`,
+    width: `${displayWidth}px`,
+  };
+}
+
 function getAgentSprite(agentTypeId?: string) {
   if (!agentTypeId) return undefined;
   return assetManifest.agent_sprites.find((sprite) => sprite.agent_type_id === agentTypeId);
+}
+
+function getAgentSpriteFrameStyle(
+  sprite: AgentSpriteDefinition | undefined,
+  actorState: OfficeSceneActorStatus["state"],
+): CSSProperties | undefined {
+  const sheet = getAssetSheet(sprite?.sheet_id ?? agentSheetId);
+  if (!sprite?.sheet_id || !sheet) return undefined;
+  const animation = actorState === "working" ? sprite.animations.work : sprite.animations.idle;
+  const frame = actorState === "working" ? 1 : actorState === "resting" ? 2 : 0;
+  const frameIndex = animation.row * sheet.columns + Math.min(frame, animation.frames - 1);
+
+  return getSpriteSheetFrameStyle(sheet, frameIndex, 58, 58);
 }
 
 function getCompetitorIdentity(competitorId?: string) {
@@ -70,6 +119,15 @@ function getItemIcon(itemId: string) {
 
 function getOfficeObjectAsset(itemId: string) {
   return assetManifest.office_objects.find((object) => object.linked_item_id === itemId);
+}
+
+function getOfficeObjectSpriteFrameStyle(asset: OfficeObjectAssetDefinition): CSSProperties | undefined {
+  const sheet = getAssetSheet(asset.sheet_id ?? officeObjectSheetId);
+  if (!asset.sheet_id || typeof asset.sheet_index !== "number" || !sheet) return undefined;
+  const displayWidth = Math.max(56, Math.min(92, asset.footprint[0] * 34 + 22));
+  const displayHeight = Math.max(48, Math.min(72, asset.footprint[1] * 24 + 30));
+
+  return getSpriteSheetFrameStyle(sheet, asset.sheet_index, displayWidth, displayHeight);
 }
 
 type StageSideTabId = "guide" | "company" | "reports" | "results";
@@ -337,6 +395,7 @@ export function GameStage({
           <span>AI OPS {getAiOperationCapacity(gameState)}</span>
         </div>
         <div className="office-floor">
+          <OfficeIsometricBackdrop />
           <div className="pixel-office-grid" aria-hidden="true" />
           <div className="office-object-layer pixel-office-object-layer" aria-label="사무실 구획 시각화">
             {officeScenePlan.objects.map((object, index) => (
@@ -390,18 +449,20 @@ export function GameStage({
             {visibleOfficeActors.map((actor, index) => {
               const agentType = actor.agentTypeId ? agentTypes.find((type) => type.id === actor.agentTypeId) : undefined;
               const agentSprite = getAgentSprite(actor.agentTypeId);
+              const agentSpriteFrameStyle = getAgentSpriteFrameStyle(agentSprite, actor.state);
               const isSelected = focusedOfficeActor?.id === actor.id;
 
               return (
                 <button
                   aria-label={`${actor.name} · ${agentType?.role ?? "창업자"} · ${actor.assignmentLabel}`}
                   aria-pressed={isSelected}
-                  className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${isSelected ? "selected" : ""} ${actor.state === "working" ? "working" : "idle"} ${agentSprite?.body_class ?? ""}`}
+                  className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${isSelected ? "selected" : ""} ${actor.state === "working" ? "working" : "idle"} ${agentSpriteFrameStyle ? "sprite-sheet-frame" : ""} ${agentSprite?.body_class ?? ""}`}
                   key={actor.id}
                   onClick={() => setSelectedOfficeActorId(actor.id)}
                   style={
                     {
                       ...assetPaletteVars(agentSprite?.palette),
+                      ...agentSpriteFrameStyle,
                       "--actor-x": `${actor.x}%`,
                       "--actor-y": `${actor.y}%`,
                     } as CSSProperties
@@ -707,6 +768,22 @@ const decorAssetSlots = [
   { x: 82, y: 35 },
 ];
 
+function OfficeIsometricBackdrop() {
+  const backdrop = assetManifest.scene_backdrops[officeBackdropId];
+  if (!backdrop) return null;
+
+  return (
+    <img
+      alt=""
+      aria-hidden="true"
+      className="office-isometric-backdrop"
+      height={backdrop.height}
+      src={backdrop.path}
+      width={backdrop.width}
+    />
+  );
+}
+
 function OfficeDecorAssetLayer({ placedOfficeItems }: { placedOfficeItems: ItemDefinition[] }) {
   const decorAssets = placedOfficeItems
     .map((item, index) => {
@@ -728,24 +805,29 @@ function OfficeDecorAssetLayer({ placedOfficeItems }: { placedOfficeItems: ItemD
 
   return (
     <div className="office-decor-asset-layer" aria-label="배치된 그래픽 장식">
-      {decorAssets.map(({ asset, icon, item, slot }) => (
-        <span
-          aria-label={`${item.name} · ${asset.readable_shape}`}
-          className={`decor-asset-prop decor-object-${asset.object_id} ${icon?.icon_class ?? ""}`}
-          key={item.id}
-          role="img"
-          style={
-            {
-              ...assetPaletteVars(asset.palette),
-              "--decor-x": `${slot.x}%`,
-              "--decor-y": `${slot.y}%`,
-              "--decor-w": `${Math.max(20, asset.footprint[0] * 18)}px`,
-              "--decor-h": `${Math.max(18, asset.footprint[1] * 14)}px`,
-            } as CSSProperties
-          }
-          title={`${item.name} · ${asset.readable_shape}`}
-        />
-      ))}
+      {decorAssets.map(({ asset, icon, item, slot }) => {
+        const objectSpriteFrameStyle = getOfficeObjectSpriteFrameStyle(asset);
+
+        return (
+          <span
+            aria-label={`${item.name} · ${asset.readable_shape}`}
+            className={`decor-asset-prop decor-object-${asset.object_id} ${objectSpriteFrameStyle ? "sprite-sheet-frame" : ""} ${icon?.icon_class ?? ""}`}
+            key={item.id}
+            role="img"
+            style={
+              {
+                ...assetPaletteVars(asset.palette),
+                "--decor-x": `${slot.x}%`,
+                "--decor-y": `${slot.y}%`,
+                "--decor-w": `${Math.max(20, asset.footprint[0] * 18)}px`,
+                "--decor-h": `${Math.max(18, asset.footprint[1] * 14)}px`,
+                ...objectSpriteFrameStyle,
+              } as CSSProperties
+            }
+            title={`${item.name} · ${asset.readable_shape}`}
+          />
+        );
+      })}
     </div>
   );
 }

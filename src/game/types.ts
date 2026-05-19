@@ -216,6 +216,7 @@ export interface AgentSpriteDefinition {
   agent_type_id: string;
   source_status: "placeholder" | "draft" | "final";
   body_class: string;
+  sheet_id?: string;
   palette: string[];
   animations: {
     idle: SpriteAnimationDefinition;
@@ -242,6 +243,8 @@ export interface OfficeObjectAssetDefinition {
   readable_shape: string;
   palette: string[];
   linked_item_id?: string;
+  sheet_id?: string;
+  sheet_index?: number;
 }
 
 export interface ItemIconDefinition {
@@ -253,9 +256,30 @@ export interface ItemIconDefinition {
   readable_shape: string;
 }
 
+export interface SpriteSheetDefinition {
+  path: string;
+  source_status: "placeholder" | "draft" | "final";
+  frame_width: number;
+  frame_height: number;
+  columns: number;
+  rows: number;
+  frame_count: number;
+  slice_mode: string;
+}
+
+export interface SceneBackdropDefinition {
+  path: string;
+  source_status: "placeholder" | "draft" | "final";
+  width: number;
+  height: number;
+  prompt_summary: string;
+}
+
 export interface AssetManifestDefinition {
   version: string;
   sprite_grid: SpriteGridDefinition;
+  sprite_sheets: Record<string, SpriteSheetDefinition>;
+  scene_backdrops: Record<string, SceneBackdropDefinition>;
   agent_sprites: AgentSpriteDefinition[];
   competitor_identities: CompetitorIdentityDefinition[];
   office_objects: OfficeObjectAssetDefinition[];

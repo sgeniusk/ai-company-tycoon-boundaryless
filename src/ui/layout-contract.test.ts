@@ -146,17 +146,27 @@ describe("v0.13.3 compact game shell layout", () => {
   it("loads the full graphic asset manifest into the first-screen game surface", () => {
     expect(gameChrome).toContain("OfficeGraphicAssetWall");
     expect(gameChrome).toContain("OfficeDecorAssetLayer");
+    expect(gameChrome).toContain("OfficeIsometricBackdrop");
+    expect(gameChrome).toContain("getAssetSheet");
+    expect(gameChrome).toContain("getAgentSpriteFrameStyle");
+    expect(gameChrome).toContain("getOfficeObjectSpriteFrameStyle");
     expect(gameChrome).toContain("getCompetitorIdentity");
     expect(gameChrome).toContain("getItemIcon");
     expect(gameChrome).toContain("assetManifest.office_objects");
     expect(gameChrome).toContain("assetManifest.item_icons");
     expect(gameChrome).toContain("assetManifest.competitor_identities");
     expect(gameChrome).toContain("assetManifest.agent_sprites");
+    expect(gameChrome).toContain("agents_v045_isometric");
+    expect(gameChrome).toContain("office_objects_v045_isometric");
+    expect(gameChrome).toContain("office_isometric_v045");
     expect(gameChrome).toContain("competitor-hud-logo");
     expect(appCss).toMatch(/\.office-graphic-asset-wall\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.office-asset-row\s*{[^}]*display:\s*flex/s);
     expect(appCss).toMatch(/\.office-asset-mini\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.decor-asset-prop\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.office-isometric-backdrop\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.sprite-sheet-frame\s*{[^}]*background-repeat:\s*no-repeat/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.sprite-sheet-frame\s*{[^}]*border:\s*0/s);
     expect(appCss).toMatch(/\.competitor-hud-logo\s*{[^}]*image-rendering:\s*pixelated/s);
   });
 

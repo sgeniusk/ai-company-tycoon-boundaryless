@@ -99,3 +99,27 @@ Before generating assets:
 1. Confirm sprite size grid.
 2. Confirm palette constraints.
 3. Decide whether assets are generated first as mock sheets or drawn manually after prompt drafts.
+
+## v0.45 Generated Sheet Pipeline
+
+Implemented:
+
+- `npm run assets:v045` regenerates the current draft PNG assets.
+- `public/assets/sprites/v045-agents.png` is a 96×96 frame sheet with 3 columns and 10 rows.
+- Agent rows are ordered as idle/work pairs: prompt architect rows 0/1, code smith 2/3, data curator 4/5, infra operator 6/7, growth hacker 8/9.
+- `public/assets/sprites/v045-office-objects.png` is a 128×96 frame sheet with row-major office object frames.
+- `public/assets/backgrounds/v045-isometric-office.png` is the first 1280×720 isometric office backdrop.
+- `data/asset_manifest.json` now owns the sheet paths, dimensions, row/column counts, and scene backdrop path.
+
+Generation handoff:
+
+- AI-generated character sheets can replace `v045-agents.png` if they keep the same 96×96 slot size, 3 columns, 10 rows, transparent background, and idle/work row order.
+- AI-generated object sheets can replace `v045-office-objects.png` if they keep the same 128×96 slot size, 5 columns, row-major object order, and transparent background.
+- The first production prompt should ask for one full sheet at once, not separate per-frame generations, to reduce drift.
+- If true transparency is not available, generate against a flat chroma-key background and remove it before committing the PNG.
+
+Still pending:
+
+- Replace the deterministic draft sheets with approved AI-generated or hand-polished production sheets.
+- Add walking, emotion, and event rows after the idle/work rows stabilize.
+- Add a small preview sheet QA page so every slot can be checked outside the main game screen.

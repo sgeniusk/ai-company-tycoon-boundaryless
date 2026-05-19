@@ -37,7 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.44 office actor focus with direct care actions, zone objects, human/AI/robot actors, decor props, and asset wall |
+| Office Visuals | `?scenario=office-visuals` | v0.45 high-resolution isometric office backdrop, generated sprite-sheet actors, decor props, and direct actor care actions |
 
 Examples:
 
@@ -67,6 +67,21 @@ Examples:
 - `http://localhost:5173/?scenario=launch-impact`
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
+
+## v0.45 Isometric Sprite Sheet QA
+
+URL:
+
+- `?scenario=office-visuals`
+
+Expected:
+
+- The QA pill says `v0.45 고해상도 시트/사무실 액터 QA`.
+- The office playfield shows the `v045-isometric-office.png` pixel-art backdrop.
+- Human/AI priority actors render with `v045-agents.png` sprite-sheet frames rather than CSS-only body blocks.
+- Placed office items render with `v045-office-objects.png` sprite-sheet frames.
+- The actor focus panel and direct care actions from v0.44 still work.
+- Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
 
 ## v0.44 Office Actor Care QA
 

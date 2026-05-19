@@ -452,6 +452,23 @@ p {
   position: relative;
 }
 
+.office-isometric-backdrop {
+  height: 100%;
+  image-rendering: pixelated;
+  inset: 0;
+  object-fit: cover;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 0;
+}
+
+.sprite-sheet-frame {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
 .office-hud {
   display: grid;
   gap: 6px;
@@ -1181,6 +1198,17 @@ p {
   border-radius: 12px 12px 4px 4px;
 }
 
+.decor-asset-prop.sprite-sheet-frame {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.decor-asset-prop.sprite-sheet-frame::before,
+.decor-asset-prop.sprite-sheet-frame::after {
+  display: none;
+}
+
 .office-graphic-asset-wall {
   background: rgba(17, 29, 36, 0.84);
   border: 3px solid rgba(255, 243, 199, 0.72);
@@ -1302,6 +1330,24 @@ p {
   pointer-events: auto;
   top: var(--actor-y, 64%);
   transform: translate(-50%, -50%);
+}
+
+.staff-sprite.pixel-actor.sprite-sheet-frame {
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+  min-height: 0;
+  transform: translate(-50%, -70%);
+}
+
+.staff-sprite.pixel-actor.sprite-sheet-frame::before,
+.staff-sprite.pixel-actor.sprite-sheet-frame::after {
+  display: none;
+}
+
+.staff-sprite.pixel-actor.sprite-sheet-frame b {
+  bottom: -2px;
+  left: 4px;
 }
 
 .staff-sprite.pixel-actor:hover,
