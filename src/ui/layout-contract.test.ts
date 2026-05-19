@@ -151,6 +151,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("OfficeSpriteSheetInspector");
     expect(gameChrome).toContain("getAssetSheet");
     expect(gameChrome).toContain("getDepthStyle");
+    expect(gameChrome).toContain("getAnimatedSpriteSheetFrameStyle");
     expect(gameChrome).toContain("getAgentSpriteFrameStyle");
     expect(gameChrome).toContain("getOfficeObjectSpriteFrameStyle");
     expect(gameChrome).toContain("getSpriteSheetPreviewFrames");
@@ -163,7 +164,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("agents_v046_hires_isometric");
     expect(gameChrome).toContain("office_objects_v046_hires_isometric");
     expect(gameChrome).toContain("office_isometric_v046_hires");
-    expect(gameChrome).toContain("getSpriteSheetFrameStyle(sheet, frameIndex, 76, 76)");
+    expect(gameChrome).toContain("getAnimatedSpriteSheetFrameStyle(sheet, animation, 76, 76)");
+    expect(gameChrome).toContain("sprite-sheet-animated");
     expect(gameChrome).toContain("competitor-hud-logo");
     expect(appCss).toMatch(/\.office-graphic-asset-wall\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.office-asset-row\s*{[^}]*display:\s*flex/s);
@@ -173,6 +175,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.sprite-sheet-inspector\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.sprite-sheet-preview-frame\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.sprite-sheet-frame\s*{[^}]*background-repeat:\s*no-repeat/s);
+    expect(appCss).toMatch(/@keyframes\s+sprite-sheet-frame-cycle/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.sprite-sheet-frame\.sprite-sheet-animated\s*{[^}]*sprite-sheet-frame-cycle/s);
     expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.sprite-sheet-frame\s*{[^}]*border:\s*0/s);
     expect(appCss).toMatch(/\.competitor-hud-logo\s*{[^}]*image-rendering:\s*pixelated/s);
   });

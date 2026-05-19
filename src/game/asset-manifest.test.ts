@@ -7,7 +7,7 @@ describe("alpha v0.9 pixel asset manifest", () => {
   const knownItemIds = new Set(items.map((item) => item.id));
 
   it("defines a stable pixel grid for first-pass sprite replacement", () => {
-    expect(assetManifest.version).toBe("0.47-alpha");
+    expect(assetManifest.version).toBe("0.48-alpha");
     expect(assetManifest.sprite_grid.tile_size).toBe(16);
     expect(assetManifest.sprite_grid.character_frame_size).toBe(32);
     expect(assetManifest.sprite_grid.portrait_size).toBe(48);
@@ -46,7 +46,9 @@ describe("alpha v0.9 pixel asset manifest", () => {
       expect(sprite.palette).toHaveLength(3);
       expect(sprite.palette.every((color) => /^#[0-9a-f]{6}$/i.test(color))).toBe(true);
       expect(sprite.animations.idle.frames).toBe(3);
+      expect(sprite.animations.idle.duration_ms).toBeGreaterThanOrEqual(900);
       expect(sprite.animations.work.frames).toBe(3);
+      expect(sprite.animations.work.duration_ms ?? Number.POSITIVE_INFINITY).toBeLessThan(sprite.animations.idle.duration_ms ?? 0);
       expect(sprite.portrait_hint).toBeTruthy();
       expect(sprite.prop_hint).toBeTruthy();
     }

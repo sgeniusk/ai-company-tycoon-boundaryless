@@ -47,6 +47,7 @@ import type {
   OfficeSceneActorStatus,
   OperationsCommandPlan,
   ReleaseGrowthPath,
+  SpriteAnimationDefinition,
   SpriteSheetDefinition,
 } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
@@ -95,6 +96,28 @@ function getSpriteSheetPreviewFrames(sheet: SpriteSheetDefinition | undefined) {
   return (sheet.preview_frames?.length ? sheet.preview_frames : [0, 1, 2, 3]).filter((frameIndex) => frameIndex >= 0 && frameIndex < sheet.frame_count);
 }
 
+function getAnimatedSpriteSheetFrameStyle(
+  sheet: SpriteSheetDefinition,
+  animation: SpriteAnimationDefinition,
+  displayWidth: number,
+  displayHeight: number,
+): CSSProperties {
+  const frameIndex = animation.row * sheet.columns;
+  const column = frameIndex % sheet.columns;
+  const row = Math.floor(frameIndex / sheet.columns);
+  const frameCount = Math.max(1, Math.min(animation.frames, sheet.columns - column));
+
+  return {
+    ...getSpriteSheetFrameStyle(sheet, frameIndex, displayWidth, displayHeight),
+    "--sprite-cycle-duration": `${animation.duration_ms ?? 1000}ms`,
+    "--sprite-end-x": `-${(column + frameCount) * displayWidth}px`,
+    "--sprite-frame-steps": frameCount,
+    "--sprite-row-y": `-${row * displayHeight}px`,
+    "--sprite-start-x": `-${column * displayWidth}px`,
+    backgroundPosition: `-${column * displayWidth}px -${row * displayHeight}px`,
+  } as CSSProperties;
+}
+
 function getDepthStyle(depthPercent: number, base = 1): CSSProperties {
   return { zIndex: base + Math.round(depthPercent) };
 }
@@ -111,10 +134,8 @@ function getAgentSpriteFrameStyle(
   const sheet = getAssetSheet(sprite?.sheet_id ?? agentSheetId);
   if (!sprite?.sheet_id || !sheet) return undefined;
   const animation = actorState === "working" ? sprite.animations.work : sprite.animations.idle;
-  const frame = actorState === "working" ? 1 : actorState === "resting" ? 2 : 0;
-  const frameIndex = animation.row * sheet.columns + Math.min(frame, animation.frames - 1);
 
-  return getSpriteSheetFrameStyle(sheet, frameIndex, 76, 76);
+  return getAnimatedSpriteSheetFrameStyle(sheet, animation, 76, 76);
 }
 
 function getCompetitorIdentity(competitorId?: string) {
@@ -469,7 +490,7 @@ export function GameStage({
                 <button
                   aria-label={`${actor.name} · ${agentType?.role ?? "창업자"} · ${actor.assignmentLabel}`}
                   aria-pressed={isSelected}
-                  className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${isSelected ? "selected" : ""} ${actor.state === "working" ? "working" : "idle"} ${agentSpriteFrameStyle ? "sprite-sheet-frame" : ""} ${agentSprite?.body_class ?? ""}`}
+                  className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${isSelected ? "selected" : ""} ${actor.state === "working" ? "working" : "idle"} ${agentSpriteFrameStyle ? "sprite-sheet-frame sprite-sheet-animated" : ""} ${agentSprite?.body_class ?? ""}`}
                   key={actor.id}
                   onClick={() => setSelectedOfficeActorId(actor.id)}
                   style={

@@ -1,5 +1,5 @@
 {
-  "version": "0.47-alpha",
+  "version": "0.48-alpha",
   "sprite_grid": {
     "tile_size": 16,
     "character_frame_size": 32,
@@ -20,11 +20,13 @@
       "animations": {
         "idle": {
           "frames": 3,
-          "row": 0
+          "row": 0,
+          "duration_ms": 1280
         },
         "work": {
           "frames": 3,
-          "row": 1
+          "row": 1,
+          "duration_ms": 680
         }
       },
       "portrait_hint": "둥근 안경, 민트 앞머리, 후드형 체크 조끼",
@@ -43,11 +45,13 @@
       "animations": {
         "idle": {
           "frames": 3,
-          "row": 2
+          "row": 2,
+          "duration_ms": 1180
         },
         "work": {
           "frames": 3,
-          "row": 3
+          "row": 3,
+          "duration_ms": 620
         }
       },
       "portrait_hint": "검은 단발, 각진 작업복, 작은 로봇팔",
@@ -66,11 +70,13 @@
       "animations": {
         "idle": {
           "frames": 3,
-          "row": 4
+          "row": 4,
+          "duration_ms": 1320
         },
         "work": {
           "frames": 3,
-          "row": 5
+          "row": 5,
+          "duration_ms": 760
         }
       },
       "portrait_hint": "보라색 묶음 머리, 라벨 스티커 코트",
@@ -89,11 +95,13 @@
       "animations": {
         "idle": {
           "frames": 3,
-          "row": 6
+          "row": 6,
+          "duration_ms": 1420
         },
         "work": {
           "frames": 3,
-          "row": 7
+          "row": 7,
+          "duration_ms": 700
         }
       },
       "portrait_hint": "짧은 회색 머리, 서버실 방열 조끼, 툴벨트",
@@ -112,11 +120,13 @@
       "animations": {
         "idle": {
           "frames": 3,
-          "row": 8
+          "row": 8,
+          "duration_ms": 1120
         },
         "work": {
           "frames": 3,
-          "row": 9
+          "row": 9,
+          "duration_ms": 580
         }
       },
       "portrait_hint": "주황색 포니테일, 스티커 재킷, 스니커즈",

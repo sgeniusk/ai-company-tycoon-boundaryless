@@ -208,6 +208,7 @@ export interface SpriteGridDefinition {
 }
 
 export interface SpriteAnimationDefinition {
+  duration_ms?: number;
   frames: number;
   row: number;
 }

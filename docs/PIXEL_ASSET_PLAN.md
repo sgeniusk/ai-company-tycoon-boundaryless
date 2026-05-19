@@ -138,3 +138,18 @@ Next asset handoff:
 - When replacing `v046-agents-hires.png` with an AI-generated character sheet, first check the preview frames `[0, 1, 3, 4, 8, 9]` in `?scenario=office-visuals`.
 - When replacing `v046-office-objects-hires.png`, first check object preview frames `[0, 1, 3, 8, 13, 18]`.
 - If the preview strip drifts, fix the atlas slot size or row order before tuning the in-game actor positions.
+
+## v0.48 Runtime Sprite Animation
+
+Implemented:
+
+- Agent animation data now includes `duration_ms` for idle and work rows.
+- `getAnimatedSpriteSheetFrameStyle` starts at the animation row's first frame and cycles across the row with CSS `steps()`.
+- Runtime actors use `sprite-sheet-animated`, so the atlas itself moves instead of relying only on CSS block transforms.
+- Work loops are intentionally faster than idle loops to make active product development visible in the office scene.
+
+Next asset handoff:
+
+- AI-generated character sheets must keep all three frames in each row aligned to the same bottom-center anchor.
+- Work rows should show a small but readable prop/action change across the three frames.
+- Idle rows should keep the silhouette stable, with only small breathing or expression shifts.

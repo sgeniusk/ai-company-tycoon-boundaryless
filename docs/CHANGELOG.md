@@ -4,6 +4,21 @@
 
 ---
 
+## [0.48-alpha] — 2026-05-19
+
+### 시트 기반 액터 프레임 애니메이션
+
+**추가:**
+- `asset_manifest.json` 버전을 `0.48-alpha`로 올리고, 각 에이전트 idle/work 애니메이션에 `duration_ms`를 추가했다.
+- `getAnimatedSpriteSheetFrameStyle`을 추가해 agent atlas의 같은 행 3프레임을 CSS `steps()` 애니메이션으로 순환한다.
+- 사무실 액터는 `sprite-sheet-animated` 클래스를 받아 idle/work 상태에 맞는 속도로 프레임을 넘긴다.
+- `@keyframes sprite-sheet-frame-cycle`를 추가해 실제 atlas background-position을 움직인다.
+- `prefers-reduced-motion`에서는 기존 규칙대로 애니메이션이 꺼진다.
+
+**검증:**
+- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 35 tests
+- `npm run harness:gate` 통과, 40 files / 291 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+
 ## [0.47-alpha] — 2026-05-19
 
 ### 게임 내 시트 프리뷰와 아이소메트릭 깊이 정렬
