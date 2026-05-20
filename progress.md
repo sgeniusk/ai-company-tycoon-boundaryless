@@ -18,6 +18,12 @@ Last Updated: 2026-05-21
 
 In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible desktop/mobile screenshot QA for `office-visuals` and keep the actual final source-art replacement as the remaining art task.
 
+## End-of-Day Snapshot
+
+- Today's implementation work is pushed: v0.55 screenshot QA is reproducible and the mobile bottom strategy hand no longer clips in the 390×844 capture.
+- The active feature remains `in_progress` only because actual final external/AI source art has not been supplied or generated into the required PNG contracts yet.
+- No P0/P1 screenshot-QA blockers are open for the current draft-candidate game screen.
+
 ## What Changed
 
 - Added `scripts/qa/capture-office-visuals-screenshots.mjs`.
@@ -122,7 +128,13 @@ In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible de
 
 ## Recommended Next Step
 
-Collect or generate actual final source art, replace the draft candidates through `assets:v053` and `assets:v054`, then rerun `npm run qa:office-visuals:screenshots` and compare against the v0.55 baseline.
+Start the next session with final source-art intake:
+
+1. Prepare or collect final character source art at 1152×9600 RGBA PNG.
+2. Prepare or collect final office object source art at 2560×1920 RGBA PNG and backdrop source art at 5120×2880 RGBA PNG.
+3. Run `npm run assets:v053 -- --source <character-source>` and `npm run assets:v054 -- --objects-source <objects-source> --backdrop-source <backdrop-source>`.
+4. Rerun `npm run qa:office-visuals:screenshots` and compare actor anchors, object depth, backdrop framing, command HUD fit, and text overlap against the v0.55 baseline.
+5. If final art is still unavailable, do not mark v0.55 complete; either generate/collect source art first or branch into a documented v0.56 visual-polish task.
 
 ## Next Session
 

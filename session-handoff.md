@@ -32,7 +32,7 @@ Last Updated: 2026-05-21
 
 ## Recommended Next Step
 
-Continue `v0.55-alpha-final-source-art-screenshot-qa`: screenshot QA is implemented; next replace draft source candidates with actual final art through the import commands, then rerun desktop/mobile screenshot comparison.
+Continue `v0.55-alpha-final-source-art-screenshot-qa`: screenshot QA and mobile command-hand fit are implemented and pushed. Next, collect or generate final source art in the required PNG contracts, import through `assets:v053` and `assets:v054`, then rerun desktop/mobile screenshot comparison.
 
 ## Next Session
 

@@ -12,6 +12,7 @@
 - GitHub: `https://github.com/sgeniusk/ai-company-tycoon-boundaryless`
 - 현재 브랜치: `main`
 - 최신 구현 커밋: `df57811 Polish v0.55 mobile command hand QA`
+- 오늘 마감 상태: v0.55 스크린샷 QA와 모바일 하단 전략 손패 보정은 main에 푸시 완료. 실제 최종 원본 아트 교체는 다음 세션 작업으로 남김.
 - 로컬 실행 주소: `http://127.0.0.1:5201/`
 - 현재 시각 QA 진입 주소: `http://127.0.0.1:5201/?scenario=office-visuals`
 - 현재 페르소나 QA 진입 주소: `http://127.0.0.1:5201/?scenario=persona20`
@@ -165,12 +166,19 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 
 ## 다음 추천 작업
 
-1. 최종 원본 아트 교체와 스크린샷 재검증
-   - 실제 최종 캐릭터 원본을 `npm run assets:v053 -- --source <원본PNG>`로 교체
-   - 실제 최종 오브젝트/배경 원본을 `npm run assets:v054 -- --objects-source <원본PNG> --backdrop-source <원본PNG>`로 교체
-   - `npm run qa:office-visuals:screenshots`로 모바일/데스크톱 프레이밍, depth, HUD/텍스트 겹침 재검수
+1. 최종 원본 아트 수급/생성
+   - 캐릭터: 1152×9600 RGBA PNG
+   - 오피스 오브젝트: 2560×1920 RGBA PNG
+   - 오피스 배경: 5120×2880 RGBA PNG
 
-2. 이후 그래픽 퀄리티 패스
+2. 원본 교체와 스크린샷 재검증
+   - `npm run assets:v053 -- --source <캐릭터 원본PNG>`
+   - `npm run assets:v054 -- --objects-source <오브젝트 원본PNG> --backdrop-source <배경 원본PNG>`
+   - `npm run qa:office-visuals:screenshots`
+   - 확인 항목: actor anchor, object depth, backdrop framing, command HUD fit, 텍스트 겹침
+
+3. 이후 그래픽 퀄리티 패스
+   - 메뉴 패널 정보 밀도 재검토
    - 사운드/짧은 효과음 후보 정리
 
 ## 주의사항

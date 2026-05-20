@@ -208,7 +208,7 @@
         "2026-05-21: npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts passed with 3 files / 78 tests.",
         "2026-05-21: npm run harness:gate passed with 40 test files / 303 tests, data validation, and production build passing."
       ],
-      "next_step": "Collect or generate actual final source art, run assets:v053/assets:v054 imports, then rerun qa:office-visuals:screenshots and compare against the v0.55 baseline."
+      "next_step": "Next session: collect or generate final source art in the required PNG contracts, run assets:v053/assets:v054 imports, rerun qa:office-visuals:screenshots, and compare actor anchors, object depth, backdrop framing, command HUD fit, and text overlap against the v0.55 baseline."
     }
   ]
 }
