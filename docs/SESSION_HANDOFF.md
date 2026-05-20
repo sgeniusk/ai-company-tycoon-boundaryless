@@ -4,14 +4,14 @@
 
 ## 한 줄 요약
 
-현재 빌드는 `v0.50-alpha`다. **카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장**을 목표로 하며, 고밀도 픽셀 사무실 화면을 알파 후보로 묶기 위해 20인 페르소나 QA까지 다시 통과시켰다.
+현재 빌드는 `v0.51-alpha`다. **카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장**을 목표로 하며, 고밀도 픽셀 사무실 화면에 카드 사용/경보/출시용 이벤트 포즈 시트를 연결했다.
 
 ## 현재 작업 위치
 
 - 로컬 폴더: `/Users/taewookkim/Downloads/ai-company-tycoon`
 - GitHub: `https://github.com/sgeniusk/ai-company-tycoon-boundaryless`
 - 현재 브랜치: `main`
-- 최신 구현 커밋: `d816814 Add v0.50 alpha candidate review`
+- 최신 구현 커밋: `d4f59a4 Add v0.51 office event pose sheets`
 - 로컬 실행 주소: `http://127.0.0.1:5201/`
 - 현재 시각 QA 진입 주소: `http://127.0.0.1:5201/?scenario=office-visuals`
 - 현재 페르소나 QA 진입 주소: `http://127.0.0.1:5201/?scenario=persona20`
@@ -22,18 +22,21 @@
 
 ```bash
 npm run dev -- --port 5201
+npm run assets:v051
 npm run harness:gate
 ./init.sh
 ```
 
 최근 전체 검증 기준:
 
-- `npm test -- src/game/persona-playtest.test.ts src/game/qa-scenarios.test.ts`: 2개 테스트 파일 / 36개 테스트 통과
-- `npm run harness:gate`: 40개 테스트 파일 / 294개 테스트 통과
+- `npm run assets:v051`: `v051-agents-event-poses.png` 생성
+- `file public/assets/sprites/v051-agents-event-poses.png`: 576×4800 PNG 확인
+- `npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts`: 4개 테스트 파일 / 78개 테스트 통과
+- `npm run harness:gate`: 40개 테스트 파일 / 296개 테스트 통과
 - 데이터 검증 통과
 - 프로덕션 빌드 통과
-- `?scenario=persona20` HTTP 200 OK
 - `?scenario=office-visuals` HTTP 200 OK
+- `v051-agents-event-poses.png` HTTP 200 OK
 
 ## 핵심 플레이 루프
 
@@ -48,38 +51,25 @@ npm run harness:gate
 
 ## 최근 완성된 버전
 
+### v0.51-alpha
+
+- `asset_manifest.json` 버전을 `0.51-alpha`로 올렸다.
+- `agents_v051_event_poses` 시트 계약을 추가했다.
+- 우선순위 에이전트 5종이 `idle`, `work`, `card_use`, `cheer`, `alert` 3프레임 row를 가진다.
+- `public/assets/sprites/v051-agents-event-poses.png`를 생성했다.
+- `getOfficeScenePlan()`이 카드 사용을 `card_use`, 출시를 `cheer`, 케어/경쟁 경보를 `alert` 포즈로 연결한다.
+- `office-visuals` QA 시나리오가 `v0.51 사무실 이벤트 포즈 QA`로 열린다.
+
 ### v0.50-alpha
 
-- `runPersonaPlaytestReview()`를 `v0.50-alpha` 기준으로 갱신했다.
-- 20인 페르소나 결과에 미해결 P0/P1 목록과 첫 30초 화면 신호를 추가했다.
-- `persona20` QA 시나리오가 `v0.50`, `P0/P1: 없음`, `사무실 판타지`, `이번 달 목표`, `다음 행동`을 회사 기록 로그에 표시한다.
+- 최신 사무실 화면을 20인 페르소나 기준으로 다시 점검했다.
 - 20인 페르소나 결과는 76점 / 조건부 통과 / 미해결 P0/P1 0건이다.
-- v0.21의 우측 보조 패널 압축 항목은 현재 알파 후보 블로커에서 제거했다.
+- `persona20` QA 시나리오가 `P0/P1: 없음`, `사무실 판타지`, `이번 달 목표`, `다음 행동`을 표시한다.
 
 ### v0.49-alpha
 
 - `data/office_reactions.json`을 추가해 카드 사용, 제품 출시, 경쟁 속보, 인사 경보 반응을 데이터화했다.
-- `getOfficeScenePlan()`이 최근 카드 사용/출시/경쟁/인사 상태를 `eventReactions`로 변환한다.
 - `OfficeEventReactionLayer`가 사무실 플레이필드 위에 말풍선형 픽셀 플래시를 표시한다.
-- `office-visuals` QA 시나리오가 `프롬프트 스프린트` 카드 사용 반응을 바로 보여준다.
-
-### v0.48-alpha
-
-- `asset_manifest.json` 버전을 `0.48-alpha`로 올렸다.
-- 에이전트 idle/work 애니메이션에 `duration_ms`를 추가했다.
-- `getAnimatedSpriteSheetFrameStyle`로 같은 atlas row의 3프레임을 CSS `steps()` 애니메이션으로 순환한다.
-- 사무실 액터는 `sprite-sheet-animated` 클래스를 받아 idle/work 상태에 맞게 프레임을 넘긴다.
-- `prefers-reduced-motion`에서는 애니메이션을 끈다.
-
-### v0.47-alpha
-
-- 게임 내 시트 프리뷰와 y좌표 기반 깊이 정렬을 추가했다.
-- `office-visuals` QA 진입점에서 캐릭터/오브젝트 대표 프레임을 바로 검수할 수 있다.
-
-### v0.46-alpha
-
-- 2x 고밀도 픽셀 시트와 2560×1440 아이소메트릭 사무실 배경을 도입했다.
-- 에이전트/오브젝트/배경 시트 계약을 `asset_manifest.json`으로 관리한다.
 
 ## 주요 문서
 
@@ -91,21 +81,19 @@ npm run harness:gate
 - 최근 변경 로그: `docs/CHANGELOG.md`
 - QA 진입점: `docs/QA_SCENARIOS.md`
 - 인수 기준: `docs/ACCEPTANCE_CRITERIA.md`
-- 제작 보고서: `reports/production_alpha_v0_50_candidate.md`
-- QA 보고서: `reports/qa/v0_50_alpha_candidate_qa.md`
-- 플레이테스트 보고서: `reports/playtests/v0_50_persona20_playtest.md`
+- 제작 보고서: `reports/production_alpha_v0_51_event_pose_sheets.md`
+- QA 보고서: `reports/qa/v0_51_event_pose_sheets_qa.md`
 
 ## 중요한 코드 위치
 
 - 메인 게임 크롬: `src/components/GameChrome.tsx`
 - 사무실/운영 시뮬레이션: `src/game/simulation.ts`
-- 페르소나 QA 하네스: `src/game/persona-playtest.ts`
-- QA 시나리오: `src/game/qa-scenarios.ts`
 - 타입: `src/game/types.ts`
-- 데이터 로딩: `src/game/data.ts`
-- 사무실 시각 데이터: `data/office_scene.json`
-- 사무실 반응 데이터: `data/office_reactions.json`
+- QA 시나리오: `src/game/qa-scenarios.ts`
 - 에셋 매니페스트: `data/asset_manifest.json`
+- 포즈 시트 PNG: `public/assets/sprites/v051-agents-event-poses.png`
+- 시트 생성 스크립트: `scripts/assets/generate-v046-hires-pixel-sheets.mjs`
+- 사무실 반응 데이터: `data/office_reactions.json`
 - 레이아웃/픽셀 CSS: `src/App.css`
 
 ## 현재 좋은 점
@@ -113,30 +101,28 @@ npm run harness:gate
 - 한 판은 120개월 10년 엔딩까지 시뮬레이션으로 돈다.
 - 제품 조합은 5,184개 기본 조합을 만든다.
 - 로그라이트 새 런, 통찰, 메타 해금, 시작 덱이 있다.
-- 사무실 확장, 구획, 장식, 채용 브랜드, 직원 사건, 후폭풍, 운영 의제가 있다.
 - 고밀도 픽셀 시트와 아이소메트릭 사무실 배경이 실제 게임 화면에 연결됐다.
 - 사무실 액터가 클릭 가능하고 직접 케어 액션까지 이어진다.
-- 카드 사용과 사건 일부가 사무실 말풍선 반응으로 보인다.
+- 카드 사용과 케어 경보가 말풍선뿐 아니라 캐릭터 포즈로도 읽힌다.
 - 최신 20인 페르소나 QA에서 미해결 P0/P1은 0건이다.
 
 ## 아직 부족한 점
 
-- 카드 사용, 제품 출시, 경쟁사 사건의 말풍선 반응은 들어갔지만, 캐릭터 포즈 자체는 아직 idle/work 행을 재사용한다.
-- 실제 AI 생성 원본 시트로 교체한 뒤 프레임 anchor와 실루엣 drift를 검수해야 한다.
+- v0.51 포즈 시트는 코드 생성 픽셀 초안이다. 실제 이미지 생성 원본 시트로 교체해야 사용자가 기대한 고해상도 픽셀아트 감각에 더 가까워진다.
+- 실제 원본 시트 교체 후 프레임 anchor, 발 위치, 실루엣 drift를 검수해야 한다.
 - 최종 픽셀아트, 음악, 사운드가 없다.
-- 시스템이 많아졌기 때문에 메뉴 요약/접힘/튜토리얼 재정리가 계속 필요하다.
-- Browser screenshot capture는 이번 패스에서 도구로 재실행하지 못했고 HTTP/테스트/빌드로 검증했다.
+- Browser screenshot capture는 이번 세션에서 도구가 없어 재실행하지 못했고 HTTP/테스트/빌드로 검증했다.
 
 ## 다음 추천 작업
 
-1. `v0.51-alpha`: 이벤트 포즈 시트 확장
-   - 환호/경고/카드 사용 행 추가
-   - actor state와 reaction trigger를 포즈 row에 연결
-   - `office-visuals`에서 카드 사용 포즈와 경보/환호 포즈 확인
+1. `v0.52-alpha`: 실제 원본 시트 교체
+   - AI 생성 또는 외부 제작 원본을 v0.51 3열×25행 계약에 맞춰 정규화
+   - `office-visuals`에서 card_use/alert 포즈 유지 확인
+   - 시트 프리뷰에서 anchor와 실루엣 drift 점검
 
 2. 이후 그래픽 퀄리티 패스
-   - 실제 이미지 생성 원본 시트 교체
    - 모바일/데스크톱 스크린샷 재검증
+   - 출시 `cheer` 포즈가 더 자주 보이는 QA 상태 추가
    - 사운드/짧은 효과음 후보 정리
 
 ## 주의사항
@@ -155,9 +141,9 @@ npm run harness:gate
 
 먼저 `AGENTS.md`, `feature_list.json`, `progress.md`, `docs/SESSION_HANDOFF.md`, `docs/ROADMAP.md`, `docs/CHANGELOG.md`, `docs/QA_SCENARIOS.md`를 읽고 이어서 개발해줘.
 
-현재 버전은 v0.50-alpha이고, 최신 구현 커밋은 `d816814 Add v0.50 alpha candidate review`야. 스택은 Vite + React + TypeScript야.
+현재 버전은 v0.51-alpha이고, 최신 구현 커밋은 `d4f59a4 Add v0.51 office event pose sheets`야. 스택은 Vite + React + TypeScript야.
 
 로컬 실행은 `npm run dev -- --port 5201`, 시각 QA는 `http://127.0.0.1:5201/?scenario=office-visuals`, 페르소나 QA는 `http://127.0.0.1:5201/?scenario=persona20`, 전체 검증은 `npm run harness:gate`야.
 
-다음 추천 목표는 `feature_list.json`의 현재 feature인 `v0.51-alpha-event-pose-sheets`야. 완료 후 한국어로 변경점, 검증 결과, 다음 추천 작업을 짧게 보고해줘.
+다음 추천 목표는 `feature_list.json`의 현재 feature인 `v0.52-alpha-source-sprite-replacement`야. 완료 후 한국어로 변경점, 검증 결과, 다음 추천 작업을 짧게 보고해줘.
 ```

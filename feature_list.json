@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-05-20",
-  "current_feature_id": "v0.51-alpha-event-pose-sheets",
+  "current_feature_id": "v0.52-alpha-source-sprite-replacement",
   "features": [
     {
       "id": "harness-2026-05-20",
@@ -73,7 +73,7 @@
       "id": "v0.51-alpha-event-pose-sheets",
       "name": "Office event pose sheet expansion",
       "description": "Extend the high-density agent sprite-sheet contract so event reactions can change actor poses, not only show speech bubbles.",
-      "status": "ready",
+      "status": "completed",
       "priority": "P2",
       "dependencies": [
         "v0.50-alpha-candidate"
@@ -86,8 +86,35 @@
         "Relevant tests and npm run harness:gate pass.",
         "Changelog, QA report, and handoff docs are updated."
       ],
+      "evidence": [
+        "2026-05-20: Added agents_v051_event_poses sheet contract with idle, work, card_use, cheer, and alert rows for 5 priority agents.",
+        "2026-05-20: Generated public/assets/sprites/v051-agents-event-poses.png at 576x4800.",
+        "2026-05-20: getOfficeScenePlan now assigns card_use and alert reactionPose values in office-visuals.",
+        "2026-05-20: npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts passed with 4 files / 78 tests.",
+        "2026-05-20: npm run harness:gate passed with 40 test files / 296 tests, data validation, and production build passing.",
+        "2026-05-20: curl -I for office-visuals and v051-agents-event-poses.png returned 200 OK."
+      ],
+      "next_step": "Start v0.52-alpha-source-sprite-replacement to replace the generated draft sheet with AI-generated high-resolution pixel art while preserving the v0.51 contract."
+    },
+    {
+      "id": "v0.52-alpha-source-sprite-replacement",
+      "name": "Generated source sprite replacement",
+      "description": "Replace code-generated event-pose drafts with AI-generated high-resolution pixel art sheets while preserving the v0.51 manifest contract and anchor checks.",
+      "status": "ready",
+      "priority": "P2",
+      "dependencies": [
+        "v0.51-alpha-event-pose-sheets"
+      ],
+      "definition_of_done": [
+        "Replacement source sheet follows the v0.51 3-column, 25-row event-pose contract or a documented normalized equivalent.",
+        "Frame anchors, feet placement, and silhouette drift are inspected through office-visuals and sprite-sheet preview frames.",
+        "Card-use and alert poses remain visible in office-visuals.",
+        "Actor click, focus panel, and direct care actions remain intact.",
+        "Relevant tests and npm run harness:gate pass.",
+        "Changelog, QA report, and handoff docs are updated."
+      ],
       "evidence": [],
-      "next_step": "Design the pose-row manifest contract, then update office-scene tests before production code."
+      "next_step": "Prepare or generate the source pixel-art sheet, normalize it into the v0.51 layout, and verify in office-visuals."
     }
   ]
 }
