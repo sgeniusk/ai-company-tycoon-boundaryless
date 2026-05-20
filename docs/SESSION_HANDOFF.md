@@ -1,34 +1,39 @@
 # 세션 핸드오프 — AI Company Tycoon: Boundaryless
 
-작성일: 2026-05-19
+작성일: 2026-05-20
 
 ## 한 줄 요약
 
-현재 빌드는 `v0.42-alpha`다. **카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장**을 목표로 하며, 그래픽 최종 에셋 전 단계에서 “한 화면 게임처럼 보이는 알파”를 만드는 중이다.
+현재 빌드는 `v0.49-alpha`다. **카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장**을 목표로 하며, 고밀도 픽셀 시트와 데이터 기반 사무실 렌더링을 붙여 “스크린샷부터 게임처럼 보이는 알파”로 옮기는 중이다.
 
 ## 현재 작업 위치
 
 - 로컬 폴더: `/Users/taewookkim/Downloads/ai-company-tycoon`
 - GitHub: `https://github.com/sgeniusk/ai-company-tycoon-boundaryless`
 - 현재 브랜치: `main`
-- 최신 커밋: `06c0068 Add v0.42 office actor interaction`
+- 최신 구현 커밋: `0300048 Add v0.49 office event reactions`
 - 로컬 실행 주소: `http://127.0.0.1:5201/`
 - 현재 QA 진입 주소: `http://127.0.0.1:5201/?scenario=office-visuals`
+- 루트 시작 문서: `AGENTS.md`
+- 구조화 상태 파일: `feature_list.json`, `progress.md`
 
 ## 실행과 검증
 
 ```bash
 npm run dev -- --port 5201
 npm run harness:gate
+./init.sh
 ```
 
-최근 전체 검증 결과:
+최근 전체 검증 기준:
 
-- `npm run harness:gate` 통과
-- 40개 테스트 파일 / 285개 테스트 통과
-- 데이터 검증 통과
-- 프로덕션 빌드 통과
-- Browser QA: `?scenario=office-visuals`에서 액터 버튼 6개, 포커스 패널 1개, 작업 액터 제품 메뉴 이동, 가로 오버플로 없음, 콘솔 오류 없음
+- `npm run harness:gate`
+- v0.49 좁은 검증: 3개 테스트 파일 / 67개 테스트
+- 전체 게이트: 40개 테스트 파일 / 294개 테스트
+- 데이터 검증
+- 프로덕션 빌드
+- QA URL HTTP 200 OK
+- Browser QA 기준 진입점: `?scenario=office-visuals`
 
 ## 핵심 플레이 루프
 
@@ -43,36 +48,52 @@ npm run harness:gate
 
 ## 최근 완성된 버전
 
-### v0.42-alpha
+### v0.49-alpha
 
-- 사무실 사람/AI/로봇 액터를 클릭 가능한 버튼으로 전환.
-- 선택한 액터의 상태, 작업, 체력/충성도, 추천 액션을 보여주는 `OfficeActorFocusPanel` 추가.
-- 작업 중 액터는 제품 메뉴로, 케어/휴식/대기 액터는 에이전트 메뉴로 이동.
-- 프로젝트 정보 카드가 액터 클릭을 막지 않도록 `pointer-events: none` 처리.
+- `data/office_reactions.json`을 추가해 카드 사용, 제품 출시, 경쟁 속보, 인사 경보 반응을 데이터화했다.
+- `getOfficeScenePlan()`이 최근 카드 사용/출시/경쟁/인사 상태를 `eventReactions`로 변환한다.
+- `OfficeEventReactionLayer`가 사무실 플레이필드 위에 말풍선형 픽셀 플래시를 표시한다.
+- `office-visuals` QA 시나리오가 `프롬프트 스프린트` 카드 사용 반응을 바로 보여준다.
 
-### v0.41-alpha
+### v0.48-alpha
 
-- `data/office_scene.json` 추가.
-- `getOfficeScenePlan()` 추가.
-- 사무실 화면에 데이터 기반 구획 오브젝트, 사람/AI/로봇 액터, 작업/휴식/경고 상태를 표시.
-- `office-visuals` QA 시나리오 추가.
+- `asset_manifest.json` 버전을 `0.48-alpha`로 올렸다.
+- 에이전트 idle/work 애니메이션에 `duration_ms`를 추가했다.
+- `getAnimatedSpriteSheetFrameStyle`로 같은 atlas row의 3프레임을 CSS `steps()` 애니메이션으로 순환한다.
+- 사무실 액터는 `sprite-sheet-animated` 클래스를 받아 idle/work 상태에 맞게 프레임을 넘긴다.
+- `prefers-reduced-motion`에서는 애니메이션을 끈다.
 
-### v0.40-alpha
+### v0.47-alpha
 
-- `getOperationsCommandPlan()` 추가.
-- 월간 운영 의제 패널 추가.
-- 사무실 구획 효과가 인사 후폭풍 완화, 로봇 후보 풀 노출 같은 실제 운영 효과에 연결됨.
+- 게임 내 시트 프리뷰와 y좌표 기반 깊이 정렬을 추가했다.
+- `office-visuals` QA 진입점에서 캐릭터/오브젝트 대표 프레임을 바로 검수할 수 있다.
+
+### v0.46-alpha
+
+- 2x 고밀도 픽셀 시트와 2560×1440 아이소메트릭 사무실 배경을 도입했다.
+- 에이전트/오브젝트/배경 시트 계약을 `asset_manifest.json`으로 관리한다.
+
+### v0.45-alpha
+
+- 초안 픽셀 시트 생성 파이프라인과 sprite-sheet slicing 경로를 추가했다.
+- 기존 액터 클릭, 포커스 패널, 직접 케어 액션은 유지했다.
+
+### v0.44-alpha
+
+- 사무실 액터 포커스 패널에서 `즉시 휴식`과 `연봉 협상`을 바로 실행하게 했다.
 
 ## 주요 문서
 
+- 루트 시작 계약: `AGENTS.md`
+- 상태 추적: `feature_list.json`
+- 진행 로그: `progress.md`
 - PRD: `docs/PRD.md`
 - 로드맵: `docs/ROADMAP.md`
 - 최근 변경 로그: `docs/CHANGELOG.md`
 - QA 진입점: `docs/QA_SCENARIOS.md`
 - 인수 기준: `docs/ACCEPTANCE_CRITERIA.md`
-- 하네스/에이전트 역할: `AGENTS.md`
-- 제작 보고서: `reports/production_alpha_v0_42_office_actor_interaction.md`
-- QA 보고서: `reports/qa/v0_42_office_actor_interaction_qa.md`
+- 제작 보고서: `reports/production_alpha_v0_49_event_reactions.md`
+- QA 보고서: `reports/qa/v0_49_event_reactions_qa.md`
 
 ## 중요한 코드 위치
 
@@ -81,51 +102,41 @@ npm run harness:gate
 - 타입: `src/game/types.ts`
 - 데이터 로딩: `src/game/data.ts`
 - 사무실 시각 데이터: `data/office_scene.json`
+- 사무실 반응 데이터: `data/office_reactions.json`
 - 사무실 구획 데이터: `data/office_zones.json`
+- 에셋 매니페스트: `data/asset_manifest.json`
 - QA 시나리오: `src/game/qa-scenarios.ts`
 - 레이아웃/픽셀 CSS: `src/App.css`
-- 사무실 시뮬레이션 테스트: `src/game/office-scene.test.ts`
+- 에셋 매니페스트 테스트: `src/game/asset-manifest.test.ts`
 - 레이아웃 계약 테스트: `src/ui/layout-contract.test.ts`
 
 ## 현재 좋은 점
 
 - 한 판은 120개월 10년 엔딩까지 시뮬레이션으로 돈다.
 - 제품 조합은 5,184개 기본 조합을 만든다.
-- 기존 제품 리뉴얼/파생 출시 루프가 있다.
 - 로그라이트 새 런, 통찰, 메타 해금, 시작 덱이 있다.
 - 사무실 확장, 구획, 장식, 채용 브랜드, 직원 사건, 후폭풍, 운영 의제가 있다.
-- UI는 웹페이지형 스크롤보다 고정 게임 화면 쪽으로 많이 압축됐다.
-- 사무실에 픽셀풍 오브젝트와 액터가 보이고, 액터 클릭으로 메뉴 이동까지 된다.
+- 고밀도 픽셀 시트와 아이소메트릭 사무실 배경이 실제 게임 화면에 연결됐다.
+- 사무실 액터가 클릭 가능하고 직접 케어 액션까지 이어진다.
 
 ## 아직 부족한 점
 
-- 포커스 패널에서 휴식, 연봉 협상, 배치 변경 같은 실제 액션을 직접 실행하지는 않는다.
-- 카드 사용, 제품 출시, 경쟁사 사건의 사무실 내 연출이 아직 약하다.
+- 카드 사용, 제품 출시, 경쟁사 사건의 말풍선 반응은 들어갔지만, 캐릭터 포즈 자체는 아직 idle/work 행을 재사용한다.
+- 실제 AI 생성 원본 시트로 교체한 뒤 프레임 anchor와 실루엣 drift를 검수해야 한다.
 - 최종 픽셀아트, 음악, 사운드가 없다.
 - 시스템이 많아졌기 때문에 메뉴 요약/접힘/튜토리얼 재정리가 필요하다.
-- 20인 페르소나 재검증을 v0.42 이후 상태로 다시 돌려야 한다.
+- 20인 페르소나 재검증을 최신 화면 기준으로 다시 돌려야 한다.
 
 ## 다음 추천 작업
 
-1. `v0.43-alpha`: 액터 포커스 패널에서 직원 케어 직접 실행
-   - 휴식 실행
-   - 연봉 협상 실행
-   - 제품 배치/배치 해제 진입
-   - 액션 후 사무실 타임라인/말풍선 갱신
-
-2. `v0.44-alpha`: 사무실 사건 연출
-   - 카드 사용 순간 사무실 위 짧은 플래시
-   - 제품 출시 순간 런칭 무대 연출
-   - 경쟁사 속보/스카우트 사건을 액터 주변 경보로 표시
-
-3. `v0.45-alpha`: 실제 게임 화면 압축 2차
-   - 우측 메뉴 요약/접힘
-   - 사무실과 메뉴가 서로 덮지 않도록 모바일/데스크톱 레이아웃 조정
+1. `v0.50-alpha`: 알파 후보 정리
+   - 모바일/데스크톱 정보 압축 2차
    - 20인 페르소나 플레이테스트 재실행
+   - P0/P1만 해결하고 큰 버전 후보로 묶기
 
-4. `v0.50-alpha`: v0.5 큰 버전 후보
-   - 큰 UI 안정화 후 Vercel 배포
-   - 플레이어가 10년 엔딩까지 평가 가능한 알파 후보
+2. `v0.51-alpha`: 이벤트 포즈 시트 확장
+   - 환호/경고/카드 사용 행 추가
+   - actor state와 reaction trigger를 포즈 row에 연결
 
 ## 주의사항
 
@@ -138,42 +149,14 @@ npm run harness:gate
 
 ## 새 세션 시작 프롬프트
 
-아래 프롬프트를 새 Codex 세션에 붙여넣으면 된다.
-
 ```text
 프로젝트는 `/Users/taewookkim/Downloads/ai-company-tycoon`의 AI Company Tycoon: Boundaryless야.
 
-현재 버전은 v0.42-alpha이고, 최신 커밋은 `06c0068 Add v0.42 office actor interaction`이야. GitHub는 `https://github.com/sgeniusk/ai-company-tycoon-boundaryless`, 브랜치는 `main`.
+먼저 `AGENTS.md`, `feature_list.json`, `progress.md`, `docs/SESSION_HANDOFF.md`, `docs/ROADMAP.md`, `docs/CHANGELOG.md`, `docs/QA_SCENARIOS.md`를 읽고 이어서 개발해줘.
 
-게임 방향은 카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장이야. 한국 시골 차고에서 시작해서 사람 직원, AI 에이전트, 나중에는 로봇까지 고용하고, AI 모델/서비스를 만들다가 반도체, 로봇, 자동차, 커피 프랜차이즈, 장난감 같은 엉뚱한 산업으로 확장하는 타이쿤 게임을 만들고 있어.
+현재 버전은 v0.49-alpha이고, 최신 구현 커밋은 `0300048 Add v0.49 office event reactions`야. 스택은 Vite + React + TypeScript야.
 
-반드시 한국어로 보고해줘. 작업 후에는 `npm run harness:gate`를 돌려서 전체 테스트, 데이터 검증, 빌드를 통과시켜줘. 큰 버전업이 아니면 Vercel 배포는 하지 말고, 필요한 경우 GitHub에는 커밋/푸시해줘.
+로컬 실행은 `npm run dev -- --port 5201`, 브라우저 QA는 `http://127.0.0.1:5201/?scenario=office-visuals`, 전체 검증은 `npm run harness:gate`야.
 
-먼저 `docs/SESSION_HANDOFF.md`, `docs/ROADMAP.md`, `docs/CHANGELOG.md`, `docs/QA_SCENARIOS.md`, `AGENTS.md`를 읽고 이어서 개발해줘.
-
-현재 로컬 실행은 `npm run dev -- --port 5201`, 브라우저 QA는 `http://127.0.0.1:5201/?scenario=office-visuals`로 보면 돼.
-
-최근 구현:
-- v0.40: 월간 운영 의제와 사무실 구획 효과 연결
-- v0.41: 사무실 픽셀 시뮬레이션 1차, `office_scene.json`, `getOfficeScenePlan()`, 사람/AI/로봇 액터 표시
-- v0.42: 사무실 액터 클릭, `OfficeActorFocusPanel`, 체력/충성도 미터, 작업 액터는 제품 메뉴, 케어 액터는 에이전트 메뉴로 이동
-
-다음 추천 목표는 v0.43-alpha야. 사무실 액터 포커스 패널에서 실제 직원 케어 액션을 실행하게 만들어줘:
-1. 경고/휴식 필요 액터를 선택하면 휴식 또는 케어 액션을 바로 실행할 수 있게 하기
-2. 연봉 협상이나 케어 액션이 가능한 경우 버튼을 노출하기
-3. 작업 중 액터는 프로젝트/배치 상태로 이어지게 하기
-4. 액션 결과가 타임라인, 직원 상태, 사무실 포커스 패널에 즉시 반영되게 하기
-5. 모바일 390px 폭에서 가로 오버플로 없이 보이게 하기
-6. 테스트와 QA 문서를 갱신하기
-
-중요 코드 위치:
-- `src/components/GameChrome.tsx`
-- `src/game/simulation.ts`
-- `src/game/types.ts`
-- `src/game/qa-scenarios.ts`
-- `src/App.css`
-- `src/game/office-scene.test.ts`
-- `src/ui/layout-contract.test.ts`
-
-완료 후 한국어로 변경점, 검증 결과, 다음 추천 작업을 짧게 보고해줘.
+다음 추천 목표는 `feature_list.json`의 현재 feature인 `v0.50-alpha-candidate`야. 완료 후 한국어로 변경점, 검증 결과, 다음 추천 작업을 짧게 보고해줘.
 ```
