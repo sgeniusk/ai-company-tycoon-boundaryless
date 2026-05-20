@@ -19,11 +19,12 @@ Before writing code:
 
 ## Current Source Of Truth
 
-- Current version: `v0.54-alpha`
+- Current version: `v0.55-alpha`
 - Current stack: Vite + React + TypeScript
 - Main gate: `npm run harness:gate`
 - Local dev: `npm run dev -- --port 5201`
 - Asset generation: `npm run assets:v054`
+- Screenshot QA: `npm run qa:office-visuals:screenshots`
 - QA URL: `http://127.0.0.1:5201/?scenario=office-visuals`
 - Persona QA URL: `http://127.0.0.1:5201/?scenario=persona20`
 - State tracker: `feature_list.json`
@@ -38,6 +39,7 @@ Run the narrowest useful checks while developing, then run the full gate before 
 npm test
 npm run validate:data
 npm run build
+npm run qa:office-visuals:screenshots
 npm run harness:gate
 ```
 

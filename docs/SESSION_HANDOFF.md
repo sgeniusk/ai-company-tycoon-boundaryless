@@ -4,14 +4,14 @@
 
 ## 한 줄 요약
 
-현재 빌드는 `v0.54-alpha`다. **카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장**을 목표로 하며, 캐릭터 이벤트 포즈에 이어 오피스 오브젝트와 등각 배경도 고해상도 원본 PNG를 받아 게임용 에셋으로 정규화하는 임포트 파이프라인까지 갖췄다.
+현재 빌드는 `v0.55-alpha`다. **카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장**을 목표로 하며, 캐릭터/오브젝트/배경 원본 임포트 경로에 이어 `office-visuals` 데스크톱/모바일 스크린샷 QA 하네스까지 갖췄다.
 
 ## 현재 작업 위치
 
 - 로컬 폴더: `/Users/taewookkim/Downloads/ai-company-tycoon`
 - GitHub: `https://github.com/sgeniusk/ai-company-tycoon-boundaryless`
 - 현재 브랜치: `main`
-- 최신 구현 커밋: `eca92b8 Add v0.54 office art import pipeline`
+- 최신 구현 커밋: `fb0a6fc Add v0.55 office visuals screenshot QA`
 - 로컬 실행 주소: `http://127.0.0.1:5201/`
 - 현재 시각 QA 진입 주소: `http://127.0.0.1:5201/?scenario=office-visuals`
 - 현재 페르소나 QA 진입 주소: `http://127.0.0.1:5201/?scenario=persona20`
@@ -24,6 +24,7 @@
 npm run dev -- --port 5201
 npm run assets:v054
 npm run assets:v053
+npm run qa:office-visuals:screenshots
 npm run harness:gate
 ./init.sh
 ```
@@ -42,17 +43,14 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 
 최근 전체 검증 기준:
 
-- `npm run assets:v054`: v0.54 오브젝트/배경 원본 후보와 런타임 PNG 생성
-- `file public/assets/sprites/source/v054-office-objects-final-source.png`: 2560×1920 PNG 확인
-- `file public/assets/sprites/v054-office-objects-final.png`: 1280×960 PNG 확인
-- `file public/assets/backgrounds/source/v054-isometric-office-final-source.png`: 5120×2880 PNG 확인
-- `file public/assets/backgrounds/v054-isometric-office-final.png`: 2560×1440 PNG 확인
-- `npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts`: 4개 테스트 파일 / 82개 테스트 통과
-- `npm run harness:gate`: 40개 테스트 파일 / 300개 테스트 통과
+- `npm run qa:office-visuals:screenshots`: desktop 1366×768 / mobile 390×844 PNG 생성
+- `file reports/qa/screenshots/v0_55_office_visuals_desktop.png`: 1366×768 PNG 확인
+- `file reports/qa/screenshots/v0_55_office_visuals_mobile.png`: 390×844 PNG 확인
+- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`: 3개 테스트 파일 / 77개 테스트 통과
+- `npm run harness:gate`: 40개 테스트 파일 / 302개 테스트 통과
 - 데이터 검증 통과
 - 프로덕션 빌드 통과
 - `?scenario=office-visuals` HTTP 200 OK
-- v0.54 런타임/소스 PNG 4개 HTTP 200 OK
 
 ## 핵심 플레이 루프
 
@@ -66,6 +64,16 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 8. 10년차 최종 평가까지 가거나 실패 후 통찰과 해금을 들고 새 런을 시작한다.
 
 ## 최근 완성된 버전
+
+### v0.55-alpha
+
+- `asset_manifest.json` 버전을 `0.55-alpha`로 올렸다.
+- `scripts/qa/capture-office-visuals-screenshots.mjs`를 추가했다.
+- `npm run qa:office-visuals:screenshots`가 `office-visuals`를 1366×768 desktop과 390×844 mobile PNG로 캡처한다.
+- `visual_qa.office_visuals_v055_screenshot_qa` 계약을 추가했다.
+- 스크린샷 산출물은 `reports/qa/screenshots/`에 저장한다.
+- 모바일 headless 캡처에서 앱 셸이 왼쪽에서 잘리지 않도록 좁은 화면 정렬을 보정했다.
+- `office-visuals` QA 시나리오가 `v0.55 스크린샷 QA`로 열린다.
 
 ### v0.54-alpha
 
@@ -108,8 +116,8 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 - 최근 변경 로그: `docs/CHANGELOG.md`
 - QA 진입점: `docs/QA_SCENARIOS.md`
 - 인수 기준: `docs/ACCEPTANCE_CRITERIA.md`
-- 제작 보고서: `reports/production_alpha_v0_54_office_object_backdrop_art_import.md`
-- QA 보고서: `reports/qa/v0_54_office_object_backdrop_art_import_qa.md`
+- 제작 보고서: `reports/production_alpha_v0_55_final_source_art_screenshot_qa.md`
+- QA 보고서: `reports/qa/v0_55_final_source_art_screenshot_qa.md`
 
 ## 중요한 코드 위치
 
@@ -123,6 +131,10 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 - v0.54 오브젝트 게임용 시트: `public/assets/sprites/v054-office-objects-final.png`
 - v0.54 배경 원본: `public/assets/backgrounds/source/v054-isometric-office-final-source.png`
 - v0.54 배경 게임용 이미지: `public/assets/backgrounds/v054-isometric-office-final.png`
+- v0.55 스크린샷 스크립트: `scripts/qa/capture-office-visuals-screenshots.mjs`
+- v0.55 데스크톱 스크린샷: `reports/qa/screenshots/v0_55_office_visuals_desktop.png`
+- v0.55 모바일 스크린샷: `reports/qa/screenshots/v0_55_office_visuals_mobile.png`
+- v0.55 스크린샷 manifest: `reports/qa/screenshots/v0_55_office_visuals_screenshots.json`
 - v0.53 캐릭터 임포트 스크립트: `scripts/assets/import-v053-character-source.mjs`
 - v0.53 원본 시트: `public/assets/sprites/source/v053-agents-event-poses-final-source.png`
 - v0.53 게임용 시트: `public/assets/sprites/v053-agents-event-poses-final.png`
@@ -144,15 +156,16 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 
 - 실제 이미지 생성 또는 외부 제작 최종 캐릭터/오브젝트/배경 원본은 아직 별도 제공되지 않았다. 현재 v0.53/v0.54 source는 임포트 가능한 draft candidate다.
 - 최종 원본 시트 교체 후 프레임 anchor, 발 위치, 실루엣 drift, 오브젝트 depth, 배경 프레이밍을 브라우저 스크린샷으로 검수해야 한다.
+- v0.55 모바일 스크린샷에서 고정 게임 프레임 안의 일부 카드 행은 여전히 촘촘하게 압축된다. 최종 아트 교체 후 P2 polish로 다시 봐야 한다.
 - 최종 픽셀아트, 음악, 사운드가 없다.
-- Browser screenshot capture는 이번 세션에서 Playwright가 없어 재실행하지 못했고 HTTP/테스트/빌드로 검증했다.
+- Playwright는 이번 환경에 없지만, v0.55부터 로컬 headless Chrome 스크린샷 QA로 desktop/mobile 캡처를 남길 수 있다.
 
 ## 다음 추천 작업
 
-1. `v0.55-alpha`: 최종 원본 아트 교체와 스크린샷 QA
+1. 최종 원본 아트 교체와 스크린샷 재검증
    - 실제 최종 캐릭터 원본을 `npm run assets:v053 -- --source <원본PNG>`로 교체
    - 실제 최종 오브젝트/배경 원본을 `npm run assets:v054 -- --objects-source <원본PNG> --backdrop-source <원본PNG>`로 교체
-   - 모바일/데스크톱 스크린샷에서 프레이밍, depth, HUD/텍스트 겹침 검수
+   - `npm run qa:office-visuals:screenshots`로 모바일/데스크톱 프레이밍, depth, HUD/텍스트 겹침 재검수
 
 2. 이후 그래픽 퀄리티 패스
    - 사운드/짧은 효과음 후보 정리
@@ -173,9 +186,9 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 
 먼저 `AGENTS.md`, `feature_list.json`, `progress.md`, `docs/SESSION_HANDOFF.md`, `docs/ROADMAP.md`, `docs/CHANGELOG.md`, `docs/QA_SCENARIOS.md`를 읽고 이어서 개발해줘.
 
-현재 버전은 v0.54-alpha이고, 최신 구현 커밋은 `eca92b8 Add v0.54 office art import pipeline`야. 스택은 Vite + React + TypeScript야.
+현재 버전은 v0.55-alpha이고, 최신 구현 커밋은 `fb0a6fc Add v0.55 office visuals screenshot QA`야. 스택은 Vite + React + TypeScript야.
 
 로컬 실행은 `npm run dev -- --port 5201`, 시각 QA는 `http://127.0.0.1:5201/?scenario=office-visuals`, 페르소나 QA는 `http://127.0.0.1:5201/?scenario=persona20`, 전체 검증은 `npm run harness:gate`야.
 
-다음 추천 목표는 `feature_list.json`의 현재 feature인 `v0.55-alpha-final-source-art-screenshot-qa`야. 완료 후 한국어로 변경점, 검증 결과, 다음 추천 작업을 짧게 보고해줘.
+현재 feature는 `v0.55-alpha-final-source-art-screenshot-qa`이고 상태는 in_progress야. 스크린샷 QA 하네스는 들어갔지만 실제 최종 외부/AI 원본 아트 교체는 아직 남아 있어. 완료 후 한국어로 변경점, 검증 결과, 다음 추천 작업을 짧게 보고해줘.
 ```

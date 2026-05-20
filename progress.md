@@ -4,33 +4,32 @@ Last Updated: 2026-05-21
 
 ## Current State
 
-- Current version: `v0.54-alpha`
-- Latest implementation commit: `eca92b8 Add v0.54 office art import pipeline`
+- Current version: `v0.55-alpha`
+- Latest implementation commit: `fb0a6fc Add v0.55 office visuals screenshot QA`
 - Current branch: `main`
 - Stack: Vite + React + TypeScript
 - Main local QA route: `http://127.0.0.1:5201/?scenario=office-visuals`
 - Persona QA route: `http://127.0.0.1:5201/?scenario=persona20`
 - Main verification gate: `npm run harness:gate`
 - Asset generation: `npm run assets:v054`
+- Screenshot QA: `npm run qa:office-visuals:screenshots`
 
 ## Current Objective
 
-Completed `v0.54-alpha-office-object-backdrop-art-import`: add reproducible import paths for final or near-final office object and isometric backdrop source art, then normalize them into runtime game assets.
+In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible desktop/mobile screenshot QA for `office-visuals` and keep the actual final source-art replacement as the remaining art task.
 
 ## What Changed
 
-- Added `scripts/assets/import-v054-office-art.mjs`.
-- Added `npm run assets:v054`.
-- Added `office_objects_v054_final_art_import` and `office_isometric_v054_final_art_import` to `data/asset_manifest.json`.
-- Generated `public/assets/sprites/source/v054-office-objects-final-source.png` at 2560×1920.
-- Generated `public/assets/sprites/v054-office-objects-final.png` at 1280×960.
-- Generated `public/assets/backgrounds/source/v054-isometric-office-final-source.png` at 5120×2880.
-- Generated `public/assets/backgrounds/v054-isometric-office-final.png` at 2560×1440.
-- Updated placed office props and the office backdrop to use v0.54 import contracts.
-- Extended data validation for scene backdrop source/import metadata.
-- Updated `office-visuals` to `v0.54 오브젝트/배경 임포트 QA`.
-- Added v0.54 changelog, acceptance criteria, QA docs, production report, and QA report.
-- Moved the current feature pointer to `v0.55-alpha-final-source-art-screenshot-qa`.
+- Added `scripts/qa/capture-office-visuals-screenshots.mjs`.
+- Added `npm run qa:office-visuals:screenshots`.
+- Updated `asset_manifest.json` to `0.55-alpha`.
+- Added `visual_qa.office_visuals_v055_screenshot_qa` with desktop/mobile viewport expectations.
+- Captured `reports/qa/screenshots/v0_55_office_visuals_desktop.png` at 1366×768.
+- Captured `reports/qa/screenshots/v0_55_office_visuals_mobile.png` at 390×844.
+- Captured `reports/qa/screenshots/v0_55_office_visuals_screenshots.json`.
+- Updated `office-visuals` to `v0.55 스크린샷 QA`.
+- Fixed mobile headless left-crop by start-aligning the narrow app shell.
+- Added v0.55 changelog, acceptance criteria, QA docs, production report, and QA report.
 
 ## Files
 
@@ -48,9 +47,13 @@ Completed `v0.54-alpha-office-object-backdrop-art-import`: add reproducible impo
 - `public/assets/backgrounds/v054-isometric-office-final.png`
 - `public/assets/sprites/source/v054-office-objects-final-source.png`
 - `public/assets/sprites/v054-office-objects-final.png`
-- `reports/production_alpha_v0_54_office_object_backdrop_art_import.md`
-- `reports/qa/v0_54_office_object_backdrop_art_import_qa.md`
+- `reports/production_alpha_v0_55_final_source_art_screenshot_qa.md`
+- `reports/qa/screenshots/v0_55_office_visuals_desktop.png`
+- `reports/qa/screenshots/v0_55_office_visuals_mobile.png`
+- `reports/qa/screenshots/v0_55_office_visuals_screenshots.json`
+- `reports/qa/v0_55_final_source_art_screenshot_qa.md`
 - `scripts/assets/import-v054-office-art.mjs`
+- `scripts/qa/capture-office-visuals-screenshots.mjs`
 - `scripts/harness/validate-data.mjs`
 - `session-handoff.md`
 - `src/components/GameChrome.tsx`
@@ -64,33 +67,31 @@ Completed `v0.54-alpha-office-object-backdrop-art-import`: add reproducible impo
 
 - Final external/AI-generated character, office object, and backdrop artwork is still pending. The current v0.53/v0.54 sources are draft candidates so the pipeline remains reproducible.
 - Browser screenshot automation is unavailable in this environment because Playwright is not installed in the Node REPL runtime.
+  - Workaround: v0.55 uses local headless Chrome through `npm run qa:office-visuals:screenshots`.
 
 ## Verification Evidence
 
-- `npm run assets:v054`
+- `npm run qa:office-visuals:screenshots`
   - Result: Passed
-  - Output: generated v0.54 source candidates and runtime PNGs
-- `file public/assets/sprites/source/v054-office-objects-final-source.png`
+  - Output: desktop 1366×768 and mobile 390×844 screenshots generated
+- `file reports/qa/screenshots/v0_55_office_visuals_desktop.png`
   - Result: Passed
-  - Output: PNG image data, 2560 x 1920, 8-bit/color RGBA
-- `file public/assets/sprites/v054-office-objects-final.png`
+  - Output: PNG image data, 1366 x 768, 8-bit/color RGB
+- `file reports/qa/screenshots/v0_55_office_visuals_mobile.png`
   - Result: Passed
-  - Output: PNG image data, 1280 x 960, 8-bit/color RGBA
-- `file public/assets/backgrounds/source/v054-isometric-office-final-source.png`
-  - Result: Passed
-  - Output: PNG image data, 5120 x 2880, 8-bit/color RGBA
-- `file public/assets/backgrounds/v054-isometric-office-final.png`
-  - Result: Passed
-  - Output: PNG image data, 2560 x 1440, 8-bit/color RGBA
+  - Output: PNG image data, 390 x 844, 8-bit/color RGB
 - `npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts`
   - Result: Passed
-  - Output: 4 test files / 82 tests passed
+  - Output: 4 test files / 84 tests passed
+- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`
+  - Result: Passed
+  - Output: 3 test files / 77 tests passed
 - `npm run validate:data`
   - Result: Passed
   - Output: Data validation passed
 - `npm run harness:gate`
   - Result: Passed
-  - Output: 40 test files / 300 tests passed, data validation passed, production build passed
+  - Output: 40 test files / 302 tests passed, data validation passed, production build passed
 - `curl -I 'http://127.0.0.1:5201/?scenario=office-visuals'`
   - Result: Passed
   - Output: 200 OK
@@ -114,7 +115,7 @@ Completed `v0.54-alpha-office-object-backdrop-art-import`: add reproducible impo
 
 ## Recommended Next Step
 
-Start `v0.55-alpha-final-source-art-screenshot-qa`: collect or generate final source art, replace the draft candidates through `assets:v053` and `assets:v054`, then verify `office-visuals` with desktop/mobile screenshots.
+Collect or generate actual final source art, replace the draft candidates through `assets:v053` and `assets:v054`, then rerun `npm run qa:office-visuals:screenshots` and compare against the v0.55 baseline.
 
 ## Next Session
 

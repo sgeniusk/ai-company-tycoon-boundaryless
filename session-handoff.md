@@ -4,11 +4,12 @@ Last Updated: 2026-05-21
 
 ## Current State
 
-- Current version: `v0.54-alpha`
-- Latest implementation commit: `eca92b8 Add v0.54 office art import pipeline`
+- Current version: `v0.55-alpha`
+- Latest implementation commit: `fb0a6fc Add v0.55 office visuals screenshot QA`
 - Current stack: Vite + React + TypeScript
 - Local dev command: `npm run dev -- --port 5201`
 - Asset generation: `npm run assets:v054`
+- Screenshot QA: `npm run qa:office-visuals:screenshots`
 - Main visual QA URL: `http://127.0.0.1:5201/?scenario=office-visuals`
 - Persona QA URL: `http://127.0.0.1:5201/?scenario=persona20`
 - Full verification: `npm run harness:gate`
@@ -26,11 +27,11 @@ Last Updated: 2026-05-21
 ## Blockers
 
 - Final external/AI-generated character, office object, and backdrop artwork is still pending.
-- Browser screenshot automation is unavailable in this environment because Playwright is not installed in the Node REPL runtime.
+- Playwright is unavailable in the Node REPL runtime, but v0.55 uses local headless Chrome for screenshot QA.
 
 ## Recommended Next Step
 
-Start `v0.55-alpha-final-source-art-screenshot-qa`: replace draft source candidates with actual final art through the import commands, then verify `office-visuals` with desktop/mobile screenshots.
+Continue `v0.55-alpha-final-source-art-screenshot-qa`: screenshot QA is implemented; next replace draft source candidates with actual final art through the import commands, then rerun desktop/mobile screenshot comparison.
 
 ## Next Session
 
