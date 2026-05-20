@@ -5,7 +5,7 @@ Last Updated: 2026-05-21
 ## Current State
 
 - Current version: `v0.55-alpha`
-- Latest implementation commit: `fb0a6fc Add v0.55 office visuals screenshot QA`
+- Latest implementation commit: `df57811 Polish v0.55 mobile command hand QA`
 - Current branch: `main`
 - Stack: Vite + React + TypeScript
 - Main local QA route: `http://127.0.0.1:5201/?scenario=office-visuals`

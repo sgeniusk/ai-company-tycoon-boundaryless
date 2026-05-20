@@ -5,7 +5,7 @@ Last Updated: 2026-05-21
 ## Current State
 
 - Current version: `v0.55-alpha`
-- Latest implementation commit: `fb0a6fc Add v0.55 office visuals screenshot QA`
+- Latest implementation commit: `df57811 Polish v0.55 mobile command hand QA`
 - Current stack: Vite + React + TypeScript
 - Local dev command: `npm run dev -- --port 5201`
 - Asset generation: `npm run assets:v054`

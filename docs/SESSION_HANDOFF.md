@@ -11,7 +11,7 @@
 - 로컬 폴더: `/Users/taewookkim/Downloads/ai-company-tycoon`
 - GitHub: `https://github.com/sgeniusk/ai-company-tycoon-boundaryless`
 - 현재 브랜치: `main`
-- 최신 구현 커밋: `fb0a6fc Add v0.55 office visuals screenshot QA`
+- 최신 구현 커밋: `df57811 Polish v0.55 mobile command hand QA`
 - 로컬 실행 주소: `http://127.0.0.1:5201/`
 - 현재 시각 QA 진입 주소: `http://127.0.0.1:5201/?scenario=office-visuals`
 - 현재 페르소나 QA 진입 주소: `http://127.0.0.1:5201/?scenario=persona20`
@@ -189,7 +189,7 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 
 먼저 `AGENTS.md`, `feature_list.json`, `progress.md`, `docs/SESSION_HANDOFF.md`, `docs/ROADMAP.md`, `docs/CHANGELOG.md`, `docs/QA_SCENARIOS.md`를 읽고 이어서 개발해줘.
 
-현재 버전은 v0.55-alpha이고, 최신 구현 커밋은 `fb0a6fc Add v0.55 office visuals screenshot QA`야. 스택은 Vite + React + TypeScript야.
+현재 버전은 v0.55-alpha이고, 최신 구현 커밋은 `df57811 Polish v0.55 mobile command hand QA`야. 스택은 Vite + React + TypeScript야.
 
 로컬 실행은 `npm run dev -- --port 5201`, 시각 QA는 `http://127.0.0.1:5201/?scenario=office-visuals`, 페르소나 QA는 `http://127.0.0.1:5201/?scenario=persona20`, 전체 검증은 `npm run harness:gate`야.
 
