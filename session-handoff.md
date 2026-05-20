@@ -4,11 +4,11 @@ Last Updated: 2026-05-20
 
 ## Current State
 
-- Current version: `v0.51-alpha`
-- Latest implementation commit: `d4f59a4 Add v0.51 office event pose sheets`
+- Current version: `v0.52-alpha`
+- Latest implementation commit: `20c6f38 Add v0.52 source sprite replacement pipeline`
 - Current stack: Vite + React + TypeScript
 - Local dev command: `npm run dev -- --port 5201`
-- Asset generation: `npm run assets:v051`
+- Asset generation: `npm run assets:v052`
 - Main visual QA URL: `http://127.0.0.1:5201/?scenario=office-visuals`
 - Persona QA URL: `http://127.0.0.1:5201/?scenario=persona20`
 - Full verification: `npm run harness:gate`
@@ -29,7 +29,7 @@ Last Updated: 2026-05-20
 
 ## Recommended Next Step
 
-Start `v0.52-alpha-source-sprite-replacement`: replace the generated v0.51 event-pose draft sheet with AI-generated high-resolution pixel art while preserving the row contract and actor anchor checks.
+Start `v0.53-alpha-final-character-art-import`: replace the procedural v0.52 high-resolution source draft with final AI-generated or external pixel-art source art, regenerate the runtime sheet, and run screenshot-based office-visuals QA.
 
 ## Next Session
 

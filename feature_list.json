@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-05-20",
-  "current_feature_id": "v0.52-alpha-source-sprite-replacement",
+  "current_feature_id": "v0.53-alpha-final-character-art-import",
   "features": [
     {
       "id": "harness-2026-05-20",
@@ -99,8 +99,8 @@
     {
       "id": "v0.52-alpha-source-sprite-replacement",
       "name": "Generated source sprite replacement",
-      "description": "Replace code-generated event-pose drafts with AI-generated high-resolution pixel art sheets while preserving the v0.51 manifest contract and anchor checks.",
-      "status": "ready",
+      "description": "Replace code-generated event-pose drafts with source-normalized high-resolution pixel art sheets while preserving the v0.51 manifest contract and anchor checks.",
+      "status": "completed",
       "priority": "P2",
       "dependencies": [
         "v0.51-alpha-event-pose-sheets"
@@ -113,8 +113,35 @@
         "Relevant tests and npm run harness:gate pass.",
         "Changelog, QA report, and handoff docs are updated."
       ],
+      "evidence": [
+        "2026-05-20: Added agents_v052_source_event_poses with source_path, source scale, source frame size, anchor tolerance, and silhouette drift metadata.",
+        "2026-05-20: Generated public/assets/sprites/source/v052-agents-event-poses-source.png at 1152x9600 and public/assets/sprites/v052-agents-event-poses.png at 576x4800.",
+        "2026-05-20: GameChrome now renders priority actors from the v0.52 source-normalized event-pose sheet and shows source/game frame sizes in the QA inspector.",
+        "2026-05-20: npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts passed with 4 files / 79 tests.",
+        "2026-05-20: npm run harness:gate passed with 40 test files / 297 tests, data validation, and production build passing.",
+        "2026-05-20: curl -I for office-visuals, v052 runtime sheet, and v052 source sheet returned 200 OK."
+      ],
+      "next_step": "Start v0.53-alpha-final-character-art-import to replace the procedural high-resolution source draft with final AI-generated or external pixel-art source art."
+    },
+    {
+      "id": "v0.53-alpha-final-character-art-import",
+      "name": "Final character art source import",
+      "description": "Import final AI-generated or external pixel-art character source art into the v0.52 source-normalized sheet contract and verify visual anchors in the office scene.",
+      "status": "ready",
+      "priority": "P2",
+      "dependencies": [
+        "v0.52-alpha-source-sprite-replacement"
+      ],
+      "definition_of_done": [
+        "A final or near-final source character sheet replaces the procedural v0.52 source draft without changing the 3-column, 25-row event-pose contract.",
+        "The runtime v0.52 sheet is regenerated from the final source and remains 576x4800.",
+        "Card-use, cheer, and alert poses remain readable in office-visuals.",
+        "Desktop and mobile screenshot QA confirms feet anchors, silhouette drift, and actor click targets remain stable.",
+        "Relevant tests and npm run harness:gate pass.",
+        "Changelog, QA report, and handoff docs are updated."
+      ],
       "evidence": [],
-      "next_step": "Prepare or generate the source pixel-art sheet, normalize it into the v0.51 layout, and verify in office-visuals."
+      "next_step": "Create or import the final pixel-art source sheet, regenerate the normalized runtime atlas, and run screenshot-based office-visuals QA."
     }
   ]
 }
