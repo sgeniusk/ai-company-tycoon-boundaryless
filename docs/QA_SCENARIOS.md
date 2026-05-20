@@ -37,7 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.50 alpha-candidate 20-person persona review, P0/P1 status, and first-screen signal QA |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.53 imported final-art candidate poses over high-density sprite-sheet actors, reactions, preview, decor props, and direct actor care actions |
+| Office Visuals | `?scenario=office-visuals` | v0.54 imported office object/backdrop candidates with v0.53 character poses, reactions, preview, decor props, and direct actor care actions |
 
 Examples:
 
@@ -68,7 +68,7 @@ Examples:
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
 
-## v0.53 Final Character Art Import QA
+## v0.54 Office Object and Backdrop Art Import QA
 
 URL:
 
@@ -76,8 +76,18 @@ URL:
 
 Expected:
 
-- The QA pill says `v0.53 최종 아트 임포트 QA`.
+- The QA pill says `v0.54 오브젝트/배경 임포트 QA`.
 - The current agent sheet is `agents_v053_final_art_import`.
+- The current office object sheet is `office_objects_v054_final_art_import`.
+- The current office backdrop is `office_isometric_v054_final_art_import`.
+- The object source sheet points to `source/v054-office-objects-final-source.png` and is 2560×1920.
+- The object runtime sheet points to `v054-office-objects-final.png` and is 1280×960.
+- The backdrop source points to `source/v054-isometric-office-final-source.png` and is 5120×2880.
+- The backdrop runtime asset points to `v054-isometric-office-final.png` and is 2560×1440.
+- `npm run assets:v054` regenerates the source candidates and normalized runtime assets.
+- `npm run assets:v054 -- --objects-source <원본PNG> --backdrop-source <원본PNG>` can replace both high-resolution source candidates and regenerate runtime art.
+- The manifest includes `source_path`, `source_scale`, `normalized_from`, `source_origin`, `import_pipeline`, and `normalization_method` for the v0.54 office object sheet.
+- The manifest includes `source_path`, `source_width`, `source_height`, `source_scale`, `normalized_from`, `source_origin`, `import_pipeline`, and `normalization_method` for the v0.54 backdrop.
 - The source sheet points to `source/v053-agents-event-poses-final-source.png` and is 1152×9600.
 - The runtime sheet points to `v053-agents-event-poses-final.png` and is 576×4800.
 - Source frames are 384×384, game frames are 192×192, and the sheet keeps the 3-column, 25-row, 75-frame event-pose layout.
@@ -89,14 +99,28 @@ Expected:
 - The office playfield includes `office-event-reaction-layer` and at least one `card_use` reaction from `프롬프트 스프린트`.
 - Reaction bubbles use `office_reactions.json` position, tone, and duration metadata.
 - The reaction layer does not intercept clicks on office actors or direct care buttons.
-- The office playfield shows the `v046-isometric-office-hires.png` pixel-art backdrop.
-- Human/AI priority actors render with `v046-agents-hires.png` sprite-sheet frames rather than CSS-only body blocks.
+- The office playfield shows the `v054-isometric-office-final.png` pixel-art backdrop.
+- Human/AI priority actors render with `v053-agents-event-poses-final.png` sprite-sheet frames rather than CSS-only body blocks.
 - Human/AI priority actors include `sprite-sheet-animated` and cycle through their 3-frame idle/work rows.
-- Placed office items render with `v046-office-objects-hires.png` sprite-sheet frames.
+- Placed office items render with `v054-office-objects-final.png` sprite-sheet frames.
 - The in-scene `sprite-sheet-inspector` shows representative character and object atlas frames plus source/game frame sizes.
 - Actors, decor props, and office objects keep stable front/back ordering as their y positions change.
 - The actor focus panel and direct care actions from v0.44 still work.
 - Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
+
+## v0.53 Final Character Art Import QA (Historical)
+
+URL:
+
+- `?scenario=office-visuals`
+
+Expected:
+
+- Historical baseline only. The current active visual QA entry is the v0.54 section above.
+- The old QA pill said `v0.53 최종 아트 임포트 QA`.
+- The old current object sheet was `office_objects_v046_hires_isometric`.
+- The old current backdrop was `office_isometric_v046_hires`.
+- Character import expectations still apply through the current `agents_v053_final_art_import` sheet.
 
 ## v0.52 Source Sprite Replacement QA (Historical)
 
@@ -106,7 +130,7 @@ URL:
 
 Expected:
 
-- Historical baseline only. The current active visual QA entry is the v0.53 section above.
+- Historical baseline only. The current active visual QA entry is the v0.54 section above.
 - The old QA pill said `v0.52 사무실 원본 시트 QA`.
 - The old current agent sheet was `agents_v052_source_event_poses`.
 - The old source sheet pointed to `source/v052-agents-event-poses-source.png`.
@@ -120,7 +144,7 @@ URL:
 
 Expected:
 
-- Historical baseline only. The current active visual QA entry is the v0.53 section above.
+- Historical baseline only. The current active visual QA entry is the v0.54 section above.
 - The old QA pill said `v0.51 사무실 이벤트 포즈 QA`.
 - The old agent sheet was `agents_v051_event_poses` and pointed to `v051-agents-event-poses.png`.
 - Priority actors could use `card_use`, `cheer`, and `alert` pose rows in addition to idle/work.
@@ -133,7 +157,7 @@ URL:
 
 Expected:
 
-- Historical baseline only. The current active visual QA entry is the v0.53 section above.
+- Historical baseline only. The current active visual QA entry is the v0.54 section above.
 - The old QA pill said `v0.49 사무실 이벤트 리액션 QA`.
 - The office playfield included `office-event-reaction-layer` and at least one `card_use` reaction from `프롬프트 스프린트`.
 

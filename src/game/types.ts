@@ -282,9 +282,17 @@ export interface SpriteSheetDefinition {
 
 export interface SceneBackdropDefinition {
   path: string;
+  source_path?: string;
   source_status: "placeholder" | "draft" | "final";
   width: number;
   height: number;
+  source_width?: number;
+  source_height?: number;
+  source_scale?: number;
+  normalized_from?: string;
+  source_origin?: string;
+  import_pipeline?: string;
+  normalization_method?: string;
   prompt_summary: string;
 }
 

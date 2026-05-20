@@ -4,6 +4,34 @@
 
 ---
 
+## [0.54-alpha] — 2026-05-21
+
+### 오피스 오브젝트/배경 아트 임포트 파이프라인
+
+**추가:**
+- `asset_manifest.json` 버전을 `0.54-alpha`로 올리고 `office_objects_v054_final_art_import`와 `office_isometric_v054_final_art_import` 계약을 추가했다.
+- `scripts/assets/import-v054-office-art.mjs`를 추가해 오피스 오브젝트 2560×1920 RGBA 원본과 배경 5120×2880 RGBA 원본을 검증하고, 각각 1280×960 / 2560×1440 런타임 PNG로 정규화한다.
+- `npm run assets:v054` 명령을 추가했다. 기본으로 4x source candidate를 생성한 뒤 v0.54 런타임 에셋을 다시 만든다.
+- v0.54 원본/런타임 파일을 추가했다: `public/assets/sprites/source/v054-office-objects-final-source.png`, `public/assets/sprites/v054-office-objects-final.png`, `public/assets/backgrounds/source/v054-isometric-office-final-source.png`, `public/assets/backgrounds/v054-isometric-office-final.png`.
+- 오피스 장식 프롭과 배경 렌더링을 v0.54 import 계약으로 전환했고, `office-visuals` QA 라벨을 v0.54 오브젝트/배경 임포트 QA로 갱신했다.
+- 데이터 검증이 scene backdrop의 source/import 메타데이터도 확인하도록 확장됐다.
+
+**주의:**
+- 이번 v0.54 에셋은 최종 외부 제작본이 아니라 기존 절차적 픽셀아트에서 뽑은 4x source candidate다. 실제 AI 생성/외부 제작 오브젝트·배경 원본이 준비되면 같은 명령의 `--objects-source`, `--backdrop-source` 인자로 교체할 수 있다.
+
+**검증:**
+- `npm run assets:v054` 통과, v0.54 오브젝트/배경 원본 및 런타임 PNG 생성
+- `file public/assets/sprites/source/v054-office-objects-final-source.png` 통과, 2560×1920 PNG
+- `file public/assets/sprites/v054-office-objects-final.png` 통과, 1280×960 PNG
+- `file public/assets/backgrounds/source/v054-isometric-office-final-source.png` 통과, 5120×2880 PNG
+- `file public/assets/backgrounds/v054-isometric-office-final.png` 통과, 2560×1440 PNG
+- `npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 82 tests
+- `npm run harness:gate` 통과, 40 files / 300 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- `curl -I 'http://127.0.0.1:5201/?scenario=office-visuals'` 통과, 200 OK
+- v0.54 런타임/소스 PNG 4개에 대한 `curl -I` 통과, 모두 200 OK
+
+---
+
 ## [0.53-alpha] — 2026-05-20
 
 ### 최종 캐릭터 아트 임포트 파이프라인

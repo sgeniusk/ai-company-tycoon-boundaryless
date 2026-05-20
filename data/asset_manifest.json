@@ -1,5 +1,5 @@
 {
-  "version": "0.53-alpha",
+  "version": "0.54-alpha",
   "sprite_grid": {
     "tile_size": 16,
     "character_frame_size": 32,
@@ -370,7 +370,7 @@
         "#f0d28b",
         "#26342d"
       ],
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 0
     },
     {
@@ -388,7 +388,7 @@
         "#1d2a33"
       ],
       "linked_item_id": "gpu_rack_mini",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 1
     },
     {
@@ -405,7 +405,7 @@
         "#d8922b",
         "#2d6b4f"
       ],
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 2
     },
     {
@@ -423,7 +423,7 @@
         "#26342d"
       ],
       "linked_item_id": "tensor_whiteboard",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 3
     },
     {
@@ -440,7 +440,7 @@
         "#d8c49b",
         "#b84c38"
       ],
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 4
     },
     {
@@ -457,7 +457,7 @@
         "#fff0c8",
         "#3d3323"
       ],
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 5
     },
     {
@@ -475,7 +475,7 @@
         "#56d6e9"
       ],
       "linked_item_id": "cooling_fan_wall",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 6
     },
     {
@@ -493,7 +493,7 @@
         "#d8922b"
       ],
       "linked_item_id": "ux_sticky_wall",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 7
     },
     {
@@ -511,7 +511,7 @@
         "#547ad8"
       ],
       "linked_item_id": "feedback_inbox",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 8
     },
     {
@@ -529,7 +529,7 @@
         "#3d3323"
       ],
       "linked_item_id": "instant_noodle_corner",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 9
     },
     {
@@ -547,7 +547,7 @@
         "#d8dde4"
       ],
       "linked_item_id": "pager_phone",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 10
     },
     {
@@ -565,7 +565,7 @@
         "#f28a32"
       ],
       "linked_item_id": "customer_story_wall",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 11
     },
     {
@@ -583,7 +583,7 @@
         "#d6a640"
       ],
       "linked_item_id": "hiring_banner",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 12
     },
     {
@@ -601,7 +601,7 @@
         "#26342d"
       ],
       "linked_item_id": "nap_pod",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 13
     },
     {
@@ -619,7 +619,7 @@
         "#f09a38"
       ],
       "linked_item_id": "benchmark_dashboard",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 14
     },
     {
@@ -637,7 +637,7 @@
         "#5fc6a6"
       ],
       "linked_item_id": "playtest_mirror_room",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 15
     },
     {
@@ -655,7 +655,7 @@
         "#b84c38"
       ],
       "linked_item_id": "simulation_sandbox",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 16
     },
     {
@@ -673,7 +673,7 @@
         "#fffaf0"
       ],
       "linked_item_id": "prototype_printer",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 17
     },
     {
@@ -691,7 +691,7 @@
         "#20292d"
       ],
       "linked_item_id": "robot_charging_mat",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 18
     },
     {
@@ -709,7 +709,7 @@
         "#d8c49b"
       ],
       "linked_item_id": "inventory_beacon",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 19
     },
     {
@@ -727,7 +727,7 @@
         "#20231f"
       ],
       "linked_item_id": "lab_safety_cage",
-      "sheet_id": "office_objects_v046_hires_isometric",
+      "sheet_id": "office_objects_v054_final_art_import",
       "sheet_index": 20
     }
   ],
@@ -1017,6 +1017,26 @@
       "preview_frames": [0, 1, 3, 4, 8, 9],
       "slice_mode": "row-major animation rows: idle then work per agent"
     },
+    "office_objects_v054_final_art_import": {
+      "path": "/assets/sprites/v054-office-objects-final.png",
+      "source_path": "/assets/sprites/source/v054-office-objects-final-source.png",
+      "source_status": "draft",
+      "density": 2,
+      "source_scale": 4,
+      "source_frame_width": 512,
+      "source_frame_height": 384,
+      "normalized_from": "v054-office-objects-final-source",
+      "source_origin": "imported_source_candidate",
+      "import_pipeline": "scripts/assets/import-v054-office-art.mjs",
+      "normalization_method": "nearest-neighbor 4x source to 2x runtime",
+      "frame_width": 256,
+      "frame_height": 192,
+      "columns": 5,
+      "rows": 5,
+      "frame_count": 21,
+      "preview_frames": [0, 1, 3, 8, 13, 18],
+      "slice_mode": "row-major office object frames; imported source normalized by nearest-neighbor downsample"
+    },
     "office_objects_v046_hires_isometric": {
       "path": "/assets/sprites/v046-office-objects-hires.png",
       "source_status": "draft",
@@ -1031,6 +1051,21 @@
     }
   },
   "scene_backdrops": {
+    "office_isometric_v054_final_art_import": {
+      "path": "/assets/backgrounds/v054-isometric-office-final.png",
+      "source_path": "/assets/backgrounds/source/v054-isometric-office-final-source.png",
+      "source_status": "draft",
+      "width": 2560,
+      "height": 1440,
+      "source_width": 5120,
+      "source_height": 2880,
+      "source_scale": 4,
+      "normalized_from": "v054-isometric-office-final-source",
+      "source_origin": "imported_source_candidate",
+      "import_pipeline": "scripts/assets/import-v054-office-art.mjs",
+      "normalization_method": "nearest-neighbor 4x source to 2x runtime",
+      "prompt_summary": "4x source candidate imported into 2x-density isometric pixel-art AI startup office backdrop"
+    },
     "office_isometric_v046_hires": {
       "path": "/assets/backgrounds/v046-isometric-office-hires.png",
       "source_status": "draft",

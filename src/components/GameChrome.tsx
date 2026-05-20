@@ -66,8 +66,8 @@ function assetPaletteVars(palette?: string[]): CSSProperties {
 }
 
 const agentSheetId = "agents_v053_final_art_import";
-const officeObjectSheetId = "office_objects_v046_hires_isometric";
-const officeBackdropId = "office_isometric_v046_hires";
+const officeObjectSheetId = "office_objects_v054_final_art_import";
+const officeBackdropId = "office_isometric_v054_final_art_import";
 
 function getAssetSheet(sheetId?: string): SpriteSheetDefinition | undefined {
   if (!sheetId) return undefined;

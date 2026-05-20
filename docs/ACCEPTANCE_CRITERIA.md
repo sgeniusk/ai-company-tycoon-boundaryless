@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.54: Office Object and Backdrop Art Import Pipeline
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `asset_manifest.json` defines v0.54 imported office object and backdrop contracts | **Passed** |
+| 2 | `npm run assets:v054` generates 4x source candidates and normalizes runtime PNGs | **Passed** |
+| 3 | Office object source art validates at 2560×1920 and runtime output validates at 1280×960 | **Passed** |
+| 4 | Office backdrop source art validates at 5120×2880 and runtime output validates at 2560×1440 | **Passed** |
+| 5 | `GameChrome` renders placed decor props and the isometric backdrop from the v0.54 contracts | **Passed** |
+| 6 | Import script, asset dimensions, manifest metadata, scene backdrop validation, and layout contract are covered by tests or data validation | **Passed** |
+| 7 | Relevant tests, HTTP asset checks, and `npm run harness:gate` pass | **Passed** |
+
+Remaining note: the current v0.54 source files are high-resolution draft candidates generated from the procedural pixel-art baseline. Final external office object/backdrop art can now replace them through the same import command.
+
+---
+
 ## Alpha v0.53: Final Character Art Import Pipeline
 
 | # | Criterion | Status |

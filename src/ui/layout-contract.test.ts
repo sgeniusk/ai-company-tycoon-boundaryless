@@ -164,8 +164,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("assetManifest.agent_sprites");
     expect(gameChrome).toContain("agents_v053_final_art_import");
     expect(gameChrome).toContain("source_origin");
-    expect(gameChrome).toContain("office_objects_v046_hires_isometric");
-    expect(gameChrome).toContain("office_isometric_v046_hires");
+    expect(gameChrome).toContain("office_objects_v054_final_art_import");
+    expect(gameChrome).toContain("office_isometric_v054_final_art_import");
     expect(gameChrome).toContain("getAnimatedSpriteSheetFrameStyle(sheet, animation, 76, 76)");
     expect(gameChrome).toContain("getAgentSpriteFrameStyle(agentSprite, actor)");
     expect(gameChrome).toContain("actor-pose-");

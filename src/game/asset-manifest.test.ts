@@ -6,6 +6,7 @@ const packageJson = JSON.parse(readFileSync(new URL("../../package.json", import
   scripts: Record<string, string>;
 };
 const v053ImportScript = readFileSync(new URL("../../scripts/assets/import-v053-character-source.mjs", import.meta.url), "utf8");
+const v054ImportScript = readFileSync(new URL("../../scripts/assets/import-v054-office-art.mjs", import.meta.url), "utf8");
 
 function readPngSize(assetPath: string) {
   const buffer = readFileSync(new URL(`../../public${assetPath}`, import.meta.url), "binary");
@@ -28,7 +29,7 @@ describe("alpha v0.9 pixel asset manifest", () => {
   const knownItemIds = new Set(items.map((item) => item.id));
 
   it("defines a stable pixel grid for first-pass sprite replacement", () => {
-    expect(assetManifest.version).toBe("0.53-alpha");
+    expect(assetManifest.version).toBe("0.54-alpha");
     expect(assetManifest.sprite_grid.tile_size).toBe(16);
     expect(assetManifest.sprite_grid.character_frame_size).toBe(32);
     expect(assetManifest.sprite_grid.portrait_size).toBe(48);
@@ -73,6 +74,59 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(v053ImportScript).toContain("downsampleNearest");
     expect(v053ImportScript).toContain("validateSourceDimensions");
     expect(v053ImportScript).toContain("v053-agents-event-poses-final-source.png");
+  });
+
+  it("defines v0.54 imported office object and backdrop art contracts", () => {
+    const objectSheet = assetManifest.sprite_sheets.office_objects_v054_final_art_import;
+    const backdrop = assetManifest.scene_backdrops.office_isometric_v054_final_art_import;
+
+    expect(objectSheet).toMatchObject({
+      path: "/assets/sprites/v054-office-objects-final.png",
+      source_path: "/assets/sprites/source/v054-office-objects-final-source.png",
+      source_status: "draft",
+      density: 2,
+      source_scale: 4,
+      source_frame_width: 512,
+      source_frame_height: 384,
+      normalized_from: "v054-office-objects-final-source",
+      source_origin: "imported_source_candidate",
+      import_pipeline: "scripts/assets/import-v054-office-art.mjs",
+      normalization_method: "nearest-neighbor 4x source to 2x runtime",
+      frame_width: 256,
+      frame_height: 192,
+      columns: 5,
+      rows: 5,
+      frame_count: 21,
+    });
+    expect(readPngSize(objectSheet.path)).toEqual({ width: 1280, height: 960 });
+    if (!objectSheet.source_path) throw new Error("v0.54 office object sheet must keep a source_path");
+    expect(readPngSize(objectSheet.source_path)).toEqual({ width: 2560, height: 1920 });
+
+    expect(backdrop).toMatchObject({
+      path: "/assets/backgrounds/v054-isometric-office-final.png",
+      source_path: "/assets/backgrounds/source/v054-isometric-office-final-source.png",
+      source_status: "draft",
+      width: 2560,
+      height: 1440,
+      source_width: 5120,
+      source_height: 2880,
+      source_origin: "imported_source_candidate",
+      import_pipeline: "scripts/assets/import-v054-office-art.mjs",
+      normalization_method: "nearest-neighbor 4x source to 2x runtime",
+    });
+    expect(readPngSize(backdrop.path)).toEqual({ width: 2560, height: 1440 });
+    if (!backdrop.source_path) throw new Error("v0.54 office backdrop must keep a source_path");
+    expect(readPngSize(backdrop.source_path)).toEqual({ width: 5120, height: 2880 });
+  });
+
+  it("exposes a reproducible v0.54 office-art import command", () => {
+    expect(packageJson.scripts["assets:v054"]).toContain("scripts/assets/import-v054-office-art.mjs");
+    expect(v054ImportScript).toContain("decodePngRgba");
+    expect(v054ImportScript).toContain("downsampleNearest");
+    expect(v054ImportScript).toContain("validateObjectSourceDimensions");
+    expect(v054ImportScript).toContain("validateBackdropSourceDimensions");
+    expect(v054ImportScript).toContain("v054-office-objects-final-source.png");
+    expect(v054ImportScript).toContain("v054-isometric-office-final-source.png");
   });
 
   it("keeps v0.47 high-density office slicing contracts for generated pixel art", () => {
@@ -176,7 +230,7 @@ describe("alpha v0.9 pixel asset manifest", () => {
   });
 
   it("links first-screen office objects to a generated high-density object sheet", () => {
-    const generatedObjects = assetManifest.office_objects.filter((object) => object.sheet_id === "office_objects_v046_hires_isometric");
+    const generatedObjects = assetManifest.office_objects.filter((object) => object.sheet_id === "office_objects_v054_final_art_import");
 
     expect(generatedObjects.length).toBeGreaterThanOrEqual(10);
     for (const object of generatedObjects) {

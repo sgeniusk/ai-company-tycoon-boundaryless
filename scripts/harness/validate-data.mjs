@@ -857,14 +857,46 @@ if (!assetManifestData) {
           errors.push(`asset_manifest sprite_sheets "${sheetId}": ${optionalSourceField} must be a non-empty string when set`);
         }
       }
-      if (typeof sheet.anchor_reference !== "string" || sheet.anchor_reference.length === 0) {
-        errors.push(`asset_manifest sprite_sheets "${sheetId}": anchor_reference is required for source-normalized sheets`);
+      if ("anchor_reference" in sheet && (typeof sheet.anchor_reference !== "string" || sheet.anchor_reference.length === 0)) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": anchor_reference must be a non-empty string when set`);
       }
-      if (typeof sheet.anchor_tolerance_px !== "number" || sheet.anchor_tolerance_px <= 0) {
-        errors.push(`asset_manifest sprite_sheets "${sheetId}": anchor_tolerance_px must be positive`);
+      if ("anchor_tolerance_px" in sheet && (typeof sheet.anchor_tolerance_px !== "number" || sheet.anchor_tolerance_px <= 0)) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": anchor_tolerance_px must be positive when set`);
       }
-      if (typeof sheet.silhouette_drift_tolerance_px !== "number" || sheet.silhouette_drift_tolerance_px <= 0) {
-        errors.push(`asset_manifest sprite_sheets "${sheetId}": silhouette_drift_tolerance_px must be positive`);
+      if (
+        "silhouette_drift_tolerance_px" in sheet
+        && (typeof sheet.silhouette_drift_tolerance_px !== "number" || sheet.silhouette_drift_tolerance_px <= 0)
+      ) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": silhouette_drift_tolerance_px must be positive when set`);
+      }
+    }
+  }
+
+  for (const [backdropId, backdrop] of Object.entries(assetManifest.scene_backdrops ?? {})) {
+    validateAssetStatus(`asset_manifest scene_backdrops "${backdropId}"`, backdrop.source_status);
+    for (const field of ["path", "prompt_summary"]) {
+      if (typeof backdrop[field] !== "string" || backdrop[field].length === 0) {
+        errors.push(`asset_manifest scene_backdrops "${backdropId}": ${field} must be a non-empty string`);
+      }
+    }
+    for (const field of ["width", "height"]) {
+      if (typeof backdrop[field] !== "number" || backdrop[field] <= 0) {
+        errors.push(`asset_manifest scene_backdrops "${backdropId}": ${field} must be a positive number`);
+      }
+    }
+    if (backdrop.source_path) {
+      for (const field of ["source_width", "source_height", "source_scale"]) {
+        if (typeof backdrop[field] !== "number" || backdrop[field] <= 0) {
+          errors.push(`asset_manifest scene_backdrops "${backdropId}": ${field} must be a positive number when source_path is set`);
+        }
+      }
+      if (backdrop.source_width <= backdrop.width || backdrop.source_height <= backdrop.height) {
+        errors.push(`asset_manifest scene_backdrops "${backdropId}": source dimensions must be larger than runtime dimensions`);
+      }
+      for (const optionalSourceField of ["normalized_from", "source_origin", "import_pipeline", "normalization_method"]) {
+        if (optionalSourceField in backdrop && (typeof backdrop[optionalSourceField] !== "string" || backdrop[optionalSourceField].length === 0)) {
+          errors.push(`asset_manifest scene_backdrops "${backdropId}": ${optionalSourceField} must be a non-empty string when set`);
+        }
       }
     }
   }

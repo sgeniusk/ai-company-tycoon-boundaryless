@@ -9,9 +9,11 @@ const manifest = JSON.parse(fs.readFileSync(path.join(root, "data/asset_manifest
 const outSprites = path.join(root, "public/assets/sprites");
 const outSpriteSources = path.join(outSprites, "source");
 const outBackgrounds = path.join(root, "public/assets/backgrounds");
+const outBackgroundSources = path.join(outBackgrounds, "source");
 fs.mkdirSync(outSprites, { recursive: true });
 fs.mkdirSync(outSpriteSources, { recursive: true });
 fs.mkdirSync(outBackgrounds, { recursive: true });
+fs.mkdirSync(outBackgroundSources, { recursive: true });
 
 const crcTable = Array.from({ length: 256 }, (_, index) => {
   let value = index;
@@ -350,12 +352,12 @@ function drawOfficeObject(target, ox, oy, object, index) {
   fillRect(target, ox + 91, oy + 18, 10, 10, hexToRgba(index % 2 ? "#f2cf7f" : "#73e08c"));
 }
 
-function buildOfficeObjectSheet() {
+function buildOfficeObjectSheet(density = pixelDensity) {
   const frameWidth = 128;
   const frameHeight = 96;
   const columns = 5;
   const rows = Math.ceil(manifest.office_objects.length / columns);
-  const sheet = canvas(frameWidth * columns, frameHeight * rows, [0, 0, 0, 0], pixelDensity);
+  const sheet = canvas(frameWidth * columns, frameHeight * rows, [0, 0, 0, 0], density);
 
   manifest.office_objects.forEach((object, index) => {
     const ox = (index % columns) * frameWidth;
@@ -366,8 +368,8 @@ function buildOfficeObjectSheet() {
   return sheet;
 }
 
-function buildOfficeBackground() {
-  const target = canvas(1280, 720, hexToRgba("#9fb7bd"), pixelDensity);
+function buildOfficeBackground(density = pixelDensity) {
+  const target = canvas(1280, 720, hexToRgba("#9fb7bd"), density);
   const road = hexToRgba("#b9c2c8");
   const roadDark = hexToRgba("#88949b");
   const wall = hexToRgba("#cfa56f");
@@ -443,5 +445,7 @@ writePng(path.join(outSpriteSources, "v052-agents-event-poses-source.png"), buil
 writePng(path.join(outSprites, "v052-agents-event-poses.png"), buildAgentSheet(agentEventPoseModes, 2));
 writePng(path.join(outSprites, "v046-office-objects-hires.png"), buildOfficeObjectSheet());
 writePng(path.join(outBackgrounds, "v046-isometric-office-hires.png"), buildOfficeBackground());
+writePng(path.join(outSpriteSources, "v054-office-objects-final-source.png"), buildOfficeObjectSheet(4));
+writePng(path.join(outBackgroundSources, "v054-isometric-office-final-source.png"), buildOfficeBackground(4));
 
-console.log("Generated v0.46 high-density sheets plus v0.51/v0.52 agent event pose sheets.");
+console.log("Generated v0.46 high-density sheets, v0.51/v0.52 agent sheets, and v0.54 office source candidates.");
