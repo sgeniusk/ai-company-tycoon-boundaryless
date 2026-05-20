@@ -46,8 +46,9 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 - `npm run qa:office-visuals:screenshots`: desktop 1366×768 / mobile 390×844 PNG 생성
 - `file reports/qa/screenshots/v0_55_office_visuals_desktop.png`: 1366×768 PNG 확인
 - `file reports/qa/screenshots/v0_55_office_visuals_mobile.png`: 390×844 PNG 확인
-- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`: 3개 테스트 파일 / 77개 테스트 통과
-- `npm run harness:gate`: 40개 테스트 파일 / 302개 테스트 통과
+- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`: 2개 테스트 파일 / 43개 테스트 통과
+- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`: 3개 테스트 파일 / 78개 테스트 통과
+- `npm run harness:gate`: 40개 테스트 파일 / 303개 테스트 통과
 - 데이터 검증 통과
 - 프로덕션 빌드 통과
 - `?scenario=office-visuals` HTTP 200 OK
@@ -73,6 +74,8 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 - `visual_qa.office_visuals_v055_screenshot_qa` 계약을 추가했다.
 - 스크린샷 산출물은 `reports/qa/screenshots/`에 저장한다.
 - 모바일 headless 캡처에서 앱 셸이 왼쪽에서 잘리지 않도록 좁은 화면 정렬을 보정했다.
+- 모바일 하단 전략 손패를 고정 4칸 HUD로 압축해 390×844 스크린샷에서 오른쪽으로 잘리지 않게 했다.
+- `visual_qa.office_visuals_v055_screenshot_qa.checks`에 `mobile_command_hand_fit`을 추가했다.
 - `office-visuals` QA 시나리오가 `v0.55 스크린샷 QA`로 열린다.
 
 ### v0.54-alpha
@@ -156,7 +159,7 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 
 - 실제 이미지 생성 또는 외부 제작 최종 캐릭터/오브젝트/배경 원본은 아직 별도 제공되지 않았다. 현재 v0.53/v0.54 source는 임포트 가능한 draft candidate다.
 - 최종 원본 시트 교체 후 프레임 anchor, 발 위치, 실루엣 drift, 오브젝트 depth, 배경 프레이밍을 브라우저 스크린샷으로 검수해야 한다.
-- v0.55 모바일 스크린샷에서 고정 게임 프레임 안의 일부 카드 행은 여전히 촘촘하게 압축된다. 최종 아트 교체 후 P2 polish로 다시 봐야 한다.
+- 모바일 하단 전략 손패의 오른쪽 잘림은 v0.55 안에서 해결했다. 다만 최종 아트가 들어오면 메뉴 패널 내부의 촘촘한 정보 밀도는 다시 봐야 한다.
 - 최종 픽셀아트, 음악, 사운드가 없다.
 - Playwright는 이번 환경에 없지만, v0.55부터 로컬 headless Chrome 스크린샷 QA로 desktop/mobile 캡처를 남길 수 있다.
 

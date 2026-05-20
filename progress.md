@@ -29,6 +29,9 @@ In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible de
 - Captured `reports/qa/screenshots/v0_55_office_visuals_screenshots.json`.
 - Updated `office-visuals` to `v0.55 스크린샷 QA`.
 - Fixed mobile headless left-crop by start-aligning the narrow app shell.
+- Added `mobile_command_hand_fit` to the v0.55 visual QA manifest checks.
+- Fixed the mobile bottom strategy hand so its counter and visible cards fit inside the 390px screenshot frame without right-edge clipping.
+- Re-captured the v0.55 desktop/mobile screenshot QA artifacts after the mobile command-hand polish.
 - Added v0.55 changelog, acceptance criteria, QA docs, production report, and QA report.
 
 ## Files
@@ -57,6 +60,7 @@ In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible de
 - `scripts/harness/validate-data.mjs`
 - `session-handoff.md`
 - `src/components/GameChrome.tsx`
+- `src/App.css`
 - `src/game/asset-manifest.test.ts`
 - `src/game/qa-scenarios.ts`
 - `src/game/qa-scenarios.test.ts`
@@ -74,6 +78,9 @@ In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible de
 - `npm run qa:office-visuals:screenshots`
   - Result: Passed
   - Output: desktop 1366×768 and mobile 390×844 screenshots generated
+- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`
+  - Result: Passed
+  - Output: 2 test files / 43 tests passed
 - `file reports/qa/screenshots/v0_55_office_visuals_desktop.png`
   - Result: Passed
   - Output: PNG image data, 1366 x 768, 8-bit/color RGB
@@ -85,13 +92,13 @@ In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible de
   - Output: 4 test files / 84 tests passed
 - `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`
   - Result: Passed
-  - Output: 3 test files / 77 tests passed
+  - Output: 3 test files / 78 tests passed
 - `npm run validate:data`
   - Result: Passed
   - Output: Data validation passed
 - `npm run harness:gate`
   - Result: Passed
-  - Output: 40 test files / 302 tests passed, data validation passed, production build passed
+  - Output: 40 test files / 303 tests passed, data validation passed, production build passed
 - `curl -I 'http://127.0.0.1:5201/?scenario=office-visuals'`
   - Result: Passed
   - Output: 200 OK

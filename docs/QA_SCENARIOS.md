@@ -84,7 +84,9 @@ Expected:
 - The visual QA manifest status is `draft_candidates_pending_final_replacement`, so reports do not claim final external artwork exists yet.
 - Desktop screenshot should show the full game shell, top QA pill, office playfield, management console, resource strip, and command row.
 - Mobile screenshot should start at the left edge of the app shell and avoid headless viewport left-crop.
-- Mobile screenshot may compress or internally scroll dense card rows, but the main app frame, office scene, resources, command row, and menu tabs remain visible.
+- Mobile command row should keep the strategy hand counter and visible cards inside the 390px game frame without right-edge clipping.
+- The visual QA manifest includes `mobile_command_hand_fit` so future screenshot passes keep checking the bottom command HUD.
+- Mobile screenshot may compress dense menu panel content, but the main app frame, office scene, resources, command row, and menu tabs remain visible.
 - Any final-art replacement pass must rerun this command after `npm run assets:v053` and/or `npm run assets:v054`.
 
 ## v0.54 Office Object and Backdrop Art Import QA (Historical)

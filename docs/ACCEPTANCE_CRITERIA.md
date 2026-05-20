@@ -15,7 +15,8 @@ This document defines the acceptance criteria for each milestone. A milestone is
 | 3 | Desktop screenshot exists at 1366×768 and mobile screenshot exists at 390×844 | **Passed** |
 | 4 | Mobile layout is start-aligned to avoid headless narrow viewport left-crop | **Passed** |
 | 5 | `office-visuals` exposes a v0.55 screenshot QA label and timeline | **Passed** |
-| 6 | Relevant tests and data validation pass | **Passed** |
+| 6 | Mobile strategy hand and command row fit inside the 390px screenshot frame without right-edge clipping | **Passed** |
+| 7 | Relevant tests and data validation pass | **Passed** |
 
 Remaining note: final external source art is still pending. v0.55 records reproducible screenshot QA for the current draft candidates and keeps the actual final-art replacement as the next required art task.
 

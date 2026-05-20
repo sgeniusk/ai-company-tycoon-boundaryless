@@ -6454,17 +6454,25 @@ p {
   }
 
   .strategy-hand {
+    display: grid;
     grid-column: 1 / -1;
-    overflow-x: auto;
-    scrollbar-width: thin;
+    grid-template-columns: minmax(58px, 0.72fr) repeat(3, minmax(0, 1fr));
+    overflow: hidden;
   }
 
   .strategy-hand-card {
-    min-width: 96px;
+    min-width: 0;
+    padding: 4px 3px;
   }
 
   .hand-count {
-    min-width: 112px;
+    min-width: 0;
+    padding: 4px 3px;
+    white-space: normal;
+  }
+
+  .strategy-hand-card:nth-of-type(n + 5) {
+    display: none;
   }
 
   .resource-strip {

@@ -14,13 +14,16 @@
 - headless Chrome으로 `office-visuals`를 1366×768 desktop, 390×844 mobile 두 뷰포트에서 캡처한다.
 - 스크린샷 산출물을 추가했다: `reports/qa/screenshots/v0_55_office_visuals_desktop.png`, `reports/qa/screenshots/v0_55_office_visuals_mobile.png`, `reports/qa/screenshots/v0_55_office_visuals_screenshots.json`.
 - 모바일 headless 캡처에서 앱 셸이 좌측 여백 때문에 잘려 보이던 문제를 줄이기 위해 좁은 화면에서는 shell을 start 정렬하도록 수정했다.
+- 모바일 하단 전략 손패를 고정 4칸 HUD로 압축해 390×844 스크린샷에서 카드가 오른쪽으로 잘리지 않게 했다.
+- `visual_qa.office_visuals_v055_screenshot_qa.checks`에 `mobile_command_hand_fit`을 추가해 하단 명령 행 검수를 정식 항목으로 남겼다.
 - `office-visuals` QA 라벨을 `v0.55 스크린샷 QA`로 갱신했다.
 
 **주의:**
 - 실제 외부/AI 생성 최종 캐릭터·오브젝트·배경 원본은 아직 교체되지 않았다. 이번 v0.55는 최종 원본 교체 직후 화면 검수를 자동으로 남길 수 있는 스크린샷 QA 경로를 만든 단계다.
 
 **검증:**
-- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 77 tests
+- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 78 tests
+- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 43 tests
 - `npm run qa:office-visuals:screenshots` 통과, desktop 1366×768 / mobile 390×844 PNG 생성
 - `npm run validate:data` 통과
 

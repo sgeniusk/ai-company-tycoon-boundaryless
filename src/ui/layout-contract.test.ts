@@ -75,6 +75,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.command-row\s+p\s*{[^}]*white-space:\s*nowrap/s);
   });
 
+  it("fits the mobile strategy hand inside the screenshot viewport", () => {
+    expect(appCss).toMatch(
+      /@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.strategy-hand\s*{[^}]*display:\s*grid[^}]*grid-template-columns:\s*minmax\(58px,\s*0\.72fr\)\s+repeat\(3,\s*minmax\(0,\s*1fr\)\)[^}]*overflow:\s*hidden/s,
+    );
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.strategy-hand-card\s*{[^}]*min-width:\s*0/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.hand-count\s*{[^}]*min-width:\s*0/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.strategy-hand-card:nth-of-type\(n \+ 5\)\s*{[^}]*display:\s*none/s);
+  });
+
   it("keeps tablet and mobile layouts in a fixed game viewport with internal scrolling", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)\s*{[\s\S]*body\s*{[^}]*overflow:\s*hidden/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)\s*{[\s\S]*\.app-shell\s*{[^}]*height:\s*100dvh/s);

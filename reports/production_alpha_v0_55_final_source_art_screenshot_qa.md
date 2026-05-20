@@ -8,6 +8,8 @@ v0.55-alpha adds a reproducible screenshot QA path for the current `office-visua
 
 This pass also fixed the first issue caught by the new screenshot loop: the mobile headless capture was left-cropping the app shell because narrow layouts stayed centered in a wider layout viewport. Narrow screens now start-align the shell so the 390×844 capture begins at the game frame.
 
+A follow-up screenshot pass fixed the next visible mobile issue: the bottom strategy hand now uses a compact fixed grid, so the command cards fit inside the 390px game frame instead of clipping at the right edge.
+
 ## Implemented
 
 - Added `scripts/qa/capture-office-visuals-screenshots.mjs`.
@@ -17,6 +19,8 @@ This pass also fixed the first issue caught by the new screenshot loop: the mobi
 - Updated `office-visuals` label and timeline to `v0.55 스크린샷 QA`.
 - Added screenshot artifacts under `reports/qa/screenshots/`.
 - Adjusted mobile CSS alignment for headless narrow viewport capture.
+- Adjusted the mobile strategy hand into a fixed grid HUD.
+- Added `mobile_command_hand_fit` to the v0.55 visual QA manifest checks.
 
 ## Screenshot Contract
 
@@ -36,7 +40,10 @@ The command expects the local dev server to be serving `http://127.0.0.1:5201/?s
 
 - `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`
   - Passed
-  - 3 test files / 77 tests.
+  - 3 test files / 78 tests.
+- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`
+  - Passed
+  - 2 test files / 43 tests.
 - `npm run qa:office-visuals:screenshots`
   - Passed
   - Desktop 1366×768 and mobile 390×844 screenshots generated.
@@ -48,7 +55,7 @@ The command expects the local dev server to be serving `http://127.0.0.1:5201/?s
 
 - Desktop: full game shell is visible, including top QA pill, office playfield, resource strip, command row, and right management console.
 - Mobile: app shell now starts at the left edge instead of being cropped by headless capture.
-- Mobile dense command cards remain compressed and partially clipped by the fixed game frame; this is acceptable for the current compact shell but should be revisited during the final art polish pass.
+- Mobile: the bottom strategy hand fits inside the fixed game frame without right-edge clipping.
 
 ## Remaining Risk
 

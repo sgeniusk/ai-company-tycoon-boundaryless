@@ -149,6 +149,7 @@ describe("alpha v0.9 pixel asset manifest", () => {
       "object_depth_ordering",
       "backdrop_framing",
       "hud_text_overlap",
+      "mobile_command_hand_fit",
     ]));
   });
 

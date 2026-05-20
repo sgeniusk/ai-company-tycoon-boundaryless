@@ -201,8 +201,12 @@
         "2026-05-21: Added npm run qa:office-visuals:screenshots and scripts/qa/capture-office-visuals-screenshots.mjs using headless Chrome.",
         "2026-05-21: Captured reports/qa/screenshots/v0_55_office_visuals_desktop.png and reports/qa/screenshots/v0_55_office_visuals_mobile.png plus a JSON capture manifest.",
         "2026-05-21: Fixed mobile headless left-crop by start-aligning the narrow app shell.",
-        "2026-05-21: npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts passed with 3 files / 77 tests.",
-        "2026-05-21: npm run harness:gate passed with 40 test files / 302 tests, data validation, and production build passing."
+        "2026-05-21: Added mobile_command_hand_fit to the v0.55 visual QA manifest checks.",
+        "2026-05-21: Fixed the mobile bottom strategy hand so its counter and visible cards fit inside the 390px screenshot frame without right-edge clipping.",
+        "2026-05-21: Re-captured the v0.55 desktop/mobile screenshot QA artifacts after mobile command-hand polish.",
+        "2026-05-21: npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts passed with 2 files / 43 tests.",
+        "2026-05-21: npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts passed with 3 files / 78 tests.",
+        "2026-05-21: npm run harness:gate passed with 40 test files / 303 tests, data validation, and production build passing."
       ],
       "next_step": "Collect or generate actual final source art, run assets:v053/assets:v054 imports, then rerun qa:office-visuals:screenshots and compare against the v0.55 baseline."
     }

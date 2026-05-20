@@ -28,6 +28,7 @@ Last Updated: 2026-05-21
 
 - Final external/AI-generated character, office object, and backdrop artwork is still pending.
 - Playwright is unavailable in the Node REPL runtime, but v0.55 uses local headless Chrome for screenshot QA.
+- The mobile bottom strategy hand clipping found in v0.55 screenshots is fixed; final-art replacement still needs a fresh screenshot comparison.
 
 ## Recommended Next Step
 

@@ -1097,7 +1097,8 @@
         "actor_anchor_readability",
         "object_depth_ordering",
         "backdrop_framing",
-        "hud_text_overlap"
+        "hud_text_overlap",
+        "mobile_command_hand_fit"
       ]
     }
   }

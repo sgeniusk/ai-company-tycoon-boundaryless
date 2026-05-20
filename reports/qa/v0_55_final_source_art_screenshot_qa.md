@@ -12,6 +12,7 @@ Captured the `office-visuals` route in desktop and mobile dimensions using headl
 - Screenshot command captures desktop 1366×768 and mobile 390×844 PNGs.
 - Desktop screenshot includes the full game shell, office playfield, management console, resource strip, and command row.
 - Mobile screenshot starts at the left edge of the app shell without the prior headless left-crop.
+- Mobile strategy hand and bottom command row fit inside the 390px frame without right-edge clipping.
 - Tests and data validation pass.
 
 ## Results
@@ -23,12 +24,14 @@ Captured the `office-visuals` route in desktop and mobile dimensions using headl
 | Desktop screenshot 1366×768 | Passed |
 | Mobile screenshot 390×844 | Passed |
 | Mobile shell left-crop fix | Passed |
+| Mobile command hand fit | Passed |
 | `office-visuals` scenario label and timeline | Passed |
 | Data validation | Passed |
 
 ## Evidence
 
-- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`: 3 files / 77 tests passed.
+- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`: 3 files / 78 tests passed.
+- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`: 2 files / 43 tests passed.
 - `npm run qa:office-visuals:screenshots`: passed.
 - `reports/qa/screenshots/v0_55_office_visuals_desktop.png`: 1366 x 768 PNG.
 - `reports/qa/screenshots/v0_55_office_visuals_mobile.png`: 390 x 844 PNG.
@@ -39,7 +42,7 @@ Captured the `office-visuals` route in desktop and mobile dimensions using headl
 
 - No P0/P1 layout blockers found in the screenshot QA harness itself.
 - P2: final external/AI-generated source art is still pending, so these screenshots are a draft-candidate baseline.
-- P2: mobile command cards remain dense and can clip at the right edge of the fixed game frame. This should be reviewed after final art lands, when the visual hierarchy is clearer.
+- Resolved: mobile command cards no longer clip at the right edge of the fixed game frame in the 390×844 screenshot.
 
 ## Next QA Step
 
