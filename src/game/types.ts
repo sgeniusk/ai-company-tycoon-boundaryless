@@ -296,11 +296,26 @@ export interface SceneBackdropDefinition {
   prompt_summary: string;
 }
 
+export interface VisualQaArtifactDefinition {
+  scenario_url: string;
+  source_art_status: string;
+  desktop_screenshot_path: string;
+  mobile_screenshot_path: string;
+  report_path: string;
+  required_viewports: Array<{
+    id: string;
+    width: number;
+    height: number;
+  }>;
+  checks: string[];
+}
+
 export interface AssetManifestDefinition {
   version: string;
   sprite_grid: SpriteGridDefinition;
   sprite_sheets: Record<string, SpriteSheetDefinition>;
   scene_backdrops: Record<string, SceneBackdropDefinition>;
+  visual_qa: Record<string, VisualQaArtifactDefinition>;
   agent_sprites: AgentSpriteDefinition[];
   competitor_identities: CompetitorIdentityDefinition[];
   office_objects: OfficeObjectAssetDefinition[];

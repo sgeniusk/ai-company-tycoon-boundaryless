@@ -4,6 +4,28 @@
 
 ---
 
+## [0.55-alpha] — 2026-05-21
+
+### 최종 아트 교체 대비 스크린샷 QA 하네스
+
+**추가:**
+- `asset_manifest.json` 버전을 `0.55-alpha`로 올리고 `visual_qa.office_visuals_v055_screenshot_qa` 계약을 추가했다.
+- `scripts/qa/capture-office-visuals-screenshots.mjs`와 `npm run qa:office-visuals:screenshots`를 추가했다.
+- headless Chrome으로 `office-visuals`를 1366×768 desktop, 390×844 mobile 두 뷰포트에서 캡처한다.
+- 스크린샷 산출물을 추가했다: `reports/qa/screenshots/v0_55_office_visuals_desktop.png`, `reports/qa/screenshots/v0_55_office_visuals_mobile.png`, `reports/qa/screenshots/v0_55_office_visuals_screenshots.json`.
+- 모바일 headless 캡처에서 앱 셸이 좌측 여백 때문에 잘려 보이던 문제를 줄이기 위해 좁은 화면에서는 shell을 start 정렬하도록 수정했다.
+- `office-visuals` QA 라벨을 `v0.55 스크린샷 QA`로 갱신했다.
+
+**주의:**
+- 실제 외부/AI 생성 최종 캐릭터·오브젝트·배경 원본은 아직 교체되지 않았다. 이번 v0.55는 최종 원본 교체 직후 화면 검수를 자동으로 남길 수 있는 스크린샷 QA 경로를 만든 단계다.
+
+**검증:**
+- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 77 tests
+- `npm run qa:office-visuals:screenshots` 통과, desktop 1366×768 / mobile 390×844 PNG 생성
+- `npm run validate:data` 통과
+
+---
+
 ## [0.54-alpha] — 2026-05-21
 
 ### 오피스 오브젝트/배경 아트 임포트 파이프라인

@@ -901,6 +901,30 @@ if (!assetManifestData) {
     }
   }
 
+  for (const [qaId, visualQa] of Object.entries(assetManifest.visual_qa ?? {})) {
+    for (const field of ["scenario_url", "source_art_status", "desktop_screenshot_path", "mobile_screenshot_path", "report_path"]) {
+      if (typeof visualQa[field] !== "string" || visualQa[field].length === 0) {
+        errors.push(`asset_manifest visual_qa "${qaId}": ${field} must be a non-empty string`);
+      }
+    }
+    if (!Array.isArray(visualQa.required_viewports) || visualQa.required_viewports.length < 2) {
+      errors.push(`asset_manifest visual_qa "${qaId}": required_viewports must include desktop and mobile entries`);
+    }
+    for (const viewport of visualQa.required_viewports ?? []) {
+      if (typeof viewport.id !== "string" || viewport.id.length === 0) {
+        errors.push(`asset_manifest visual_qa "${qaId}": viewport id must be a non-empty string`);
+      }
+      for (const field of ["width", "height"]) {
+        if (typeof viewport[field] !== "number" || viewport[field] <= 0) {
+          errors.push(`asset_manifest visual_qa "${qaId}": viewport ${field} must be a positive number`);
+        }
+      }
+    }
+    if (!Array.isArray(visualQa.checks) || visualQa.checks.length < 4) {
+      errors.push(`asset_manifest visual_qa "${qaId}": checks must include at least four visual QA checks`);
+    }
+  }
+
   const requiredAgentSprites = ["prompt_architect", "code_smith", "data_curator", "infra_operator", "growth_hacker"];
   const spriteAgentIds = new Set();
   for (const sprite of assetManifest.agent_sprites ?? []) {

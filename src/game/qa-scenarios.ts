@@ -404,7 +404,7 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "office-visuals") {
     return {
       id,
-      label: "v0.54 오브젝트/배경 임포트 QA",
+      label: "v0.55 스크린샷 QA",
       state: createOfficeVisualScenarioState(),
       activeMenu: "company",
     };
@@ -534,7 +534,7 @@ function createOfficeVisualScenarioState(): GameState {
 
   return {
     ...reactedState,
-    timeline: ["v0.54 오브젝트/배경 임포트 QA: 카드 포즈, 케어 경보, 고해상도 오브젝트/배경 소스 정규화 확인", ...reactedState.timeline].slice(0, 8),
+    timeline: ["v0.55 스크린샷 QA: 데스크톱/모바일 프레이밍, 장식 depth, HUD 겹침, 후보 아트 교체 준비 확인", ...reactedState.timeline].slice(0, 8),
   };
 }
 

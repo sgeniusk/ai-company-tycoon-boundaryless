@@ -1,5 +1,5 @@
 {
-  "version": "0.54-alpha",
+  "version": "0.55-alpha",
   "sprite_grid": {
     "tile_size": 16,
     "character_frame_size": 32,
@@ -1072,6 +1072,33 @@
       "width": 2560,
       "height": 1440,
       "prompt_summary": "2x-density isometric pixel-art AI startup office backdrop"
+    }
+  },
+  "visual_qa": {
+    "office_visuals_v055_screenshot_qa": {
+      "scenario_url": "/?scenario=office-visuals",
+      "source_art_status": "draft_candidates_pending_final_replacement",
+      "desktop_screenshot_path": "reports/qa/screenshots/v0_55_office_visuals_desktop.png",
+      "mobile_screenshot_path": "reports/qa/screenshots/v0_55_office_visuals_mobile.png",
+      "report_path": "reports/qa/v0_55_final_source_art_screenshot_qa.md",
+      "required_viewports": [
+        {
+          "id": "desktop",
+          "width": 1366,
+          "height": 768
+        },
+        {
+          "id": "mobile",
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "checks": [
+        "actor_anchor_readability",
+        "object_depth_ordering",
+        "backdrop_framing",
+        "hud_text_overlap"
+      ]
     }
   }
 }

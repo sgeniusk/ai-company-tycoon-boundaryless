@@ -7,6 +7,7 @@ const packageJson = JSON.parse(readFileSync(new URL("../../package.json", import
 };
 const v053ImportScript = readFileSync(new URL("../../scripts/assets/import-v053-character-source.mjs", import.meta.url), "utf8");
 const v054ImportScript = readFileSync(new URL("../../scripts/assets/import-v054-office-art.mjs", import.meta.url), "utf8");
+const v055ScreenshotScript = readFileSync(new URL("../../scripts/qa/capture-office-visuals-screenshots.mjs", import.meta.url), "utf8");
 
 function readPngSize(assetPath: string) {
   const buffer = readFileSync(new URL(`../../public${assetPath}`, import.meta.url), "binary");
@@ -29,7 +30,7 @@ describe("alpha v0.9 pixel asset manifest", () => {
   const knownItemIds = new Set(items.map((item) => item.id));
 
   it("defines a stable pixel grid for first-pass sprite replacement", () => {
-    expect(assetManifest.version).toBe("0.54-alpha");
+    expect(assetManifest.version).toBe("0.55-alpha");
     expect(assetManifest.sprite_grid.tile_size).toBe(16);
     expect(assetManifest.sprite_grid.character_frame_size).toBe(32);
     expect(assetManifest.sprite_grid.portrait_size).toBe(48);
@@ -127,6 +128,37 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(v054ImportScript).toContain("validateBackdropSourceDimensions");
     expect(v054ImportScript).toContain("v054-office-objects-final-source.png");
     expect(v054ImportScript).toContain("v054-isometric-office-final-source.png");
+  });
+
+  it("defines v0.55 final-art screenshot QA artifacts without claiming final external art exists", () => {
+    const visualQa = assetManifest.visual_qa.office_visuals_v055_screenshot_qa;
+
+    expect(visualQa).toMatchObject({
+      scenario_url: "/?scenario=office-visuals",
+      source_art_status: "draft_candidates_pending_final_replacement",
+      desktop_screenshot_path: "reports/qa/screenshots/v0_55_office_visuals_desktop.png",
+      mobile_screenshot_path: "reports/qa/screenshots/v0_55_office_visuals_mobile.png",
+      report_path: "reports/qa/v0_55_final_source_art_screenshot_qa.md",
+    });
+    expect(visualQa.required_viewports).toEqual([
+      { id: "desktop", width: 1366, height: 768 },
+      { id: "mobile", width: 390, height: 844 },
+    ]);
+    expect(visualQa.checks).toEqual(expect.arrayContaining([
+      "actor_anchor_readability",
+      "object_depth_ordering",
+      "backdrop_framing",
+      "hud_text_overlap",
+    ]));
+  });
+
+  it("exposes a reproducible v0.55 office-visuals screenshot command", () => {
+    expect(packageJson.scripts["qa:office-visuals:screenshots"]).toContain("scripts/qa/capture-office-visuals-screenshots.mjs");
+    expect(v055ScreenshotScript).toContain("reports/qa/screenshots/v0_55_office_visuals_desktop.png");
+    expect(v055ScreenshotScript).toContain("reports/qa/screenshots/v0_55_office_visuals_mobile.png");
+    expect(v055ScreenshotScript).toContain("--window-size=1366,768");
+    expect(v055ScreenshotScript).toContain("--window-size=390,844");
+    expect(v055ScreenshotScript).toContain("?scenario=office-visuals");
   });
 
   it("keeps v0.47 high-density office slicing contracts for generated pixel art", () => {

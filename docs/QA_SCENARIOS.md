@@ -37,7 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.50 alpha-candidate 20-person persona review, P0/P1 status, and first-screen signal QA |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.54 imported office object/backdrop candidates with v0.53 character poses, reactions, preview, decor props, and direct actor care actions |
+| Office Visuals | `?scenario=office-visuals` | v0.55 screenshot QA for imported office object/backdrop candidates with v0.53 character poses, reactions, preview, decor props, and direct actor care actions |
 
 Examples:
 
@@ -68,7 +68,7 @@ Examples:
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
 
-## v0.54 Office Object and Backdrop Art Import QA
+## v0.55 Final Source Art Screenshot QA
 
 URL:
 
@@ -76,7 +76,27 @@ URL:
 
 Expected:
 
-- The QA pill says `v0.54 오브젝트/배경 임포트 QA`.
+- The QA pill says `v0.55 스크린샷 QA`.
+- The screenshot command is `npm run qa:office-visuals:screenshots`.
+- The command writes `reports/qa/screenshots/v0_55_office_visuals_desktop.png` at 1366×768.
+- The command writes `reports/qa/screenshots/v0_55_office_visuals_mobile.png` at 390×844.
+- The command writes `reports/qa/screenshots/v0_55_office_visuals_screenshots.json` with the source URL, viewport sizes, and file sizes.
+- The visual QA manifest status is `draft_candidates_pending_final_replacement`, so reports do not claim final external artwork exists yet.
+- Desktop screenshot should show the full game shell, top QA pill, office playfield, management console, resource strip, and command row.
+- Mobile screenshot should start at the left edge of the app shell and avoid headless viewport left-crop.
+- Mobile screenshot may compress or internally scroll dense card rows, but the main app frame, office scene, resources, command row, and menu tabs remain visible.
+- Any final-art replacement pass must rerun this command after `npm run assets:v053` and/or `npm run assets:v054`.
+
+## v0.54 Office Object and Backdrop Art Import QA (Historical)
+
+URL:
+
+- `?scenario=office-visuals`
+
+Expected:
+
+- Historical baseline only. The current active visual QA entry is the v0.55 section above.
+- The old QA pill said `v0.54 오브젝트/배경 임포트 QA`.
 - The current agent sheet is `agents_v053_final_art_import`.
 - The current office object sheet is `office_objects_v054_final_art_import`.
 - The current office backdrop is `office_isometric_v054_final_art_import`.

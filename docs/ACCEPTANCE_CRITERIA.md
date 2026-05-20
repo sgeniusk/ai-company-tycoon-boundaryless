@@ -6,6 +6,21 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.55: Final Source Art Screenshot QA Harness
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `asset_manifest.json` defines v0.55 visual QA artifacts and required desktop/mobile viewports | **Passed** |
+| 2 | `npm run qa:office-visuals:screenshots` captures the `office-visuals` route with headless Chrome | **Passed** |
+| 3 | Desktop screenshot exists at 1366×768 and mobile screenshot exists at 390×844 | **Passed** |
+| 4 | Mobile layout is start-aligned to avoid headless narrow viewport left-crop | **Passed** |
+| 5 | `office-visuals` exposes a v0.55 screenshot QA label and timeline | **Passed** |
+| 6 | Relevant tests and data validation pass | **Passed** |
+
+Remaining note: final external source art is still pending. v0.55 records reproducible screenshot QA for the current draft candidates and keeps the actual final-art replacement as the next required art task.
+
+---
+
 ## Alpha v0.54: Office Object and Backdrop Art Import Pipeline
 
 | # | Criterion | Status |
