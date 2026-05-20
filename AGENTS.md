@@ -19,11 +19,11 @@ Before writing code:
 
 ## Current Source Of Truth
 
-- Current version: `v0.52-alpha`
+- Current version: `v0.53-alpha`
 - Current stack: Vite + React + TypeScript
 - Main gate: `npm run harness:gate`
 - Local dev: `npm run dev -- --port 5201`
-- Asset generation: `npm run assets:v052`
+- Asset generation: `npm run assets:v053`
 - QA URL: `http://127.0.0.1:5201/?scenario=office-visuals`
 - Persona QA URL: `http://127.0.0.1:5201/?scenario=persona20`
 - State tracker: `feature_list.json`

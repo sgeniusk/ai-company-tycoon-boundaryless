@@ -4,11 +4,11 @@ Last Updated: 2026-05-20
 
 ## Current State
 
-- Current version: `v0.52-alpha`
-- Latest implementation commit: `20c6f38 Add v0.52 source sprite replacement pipeline`
+- Current version: `v0.53-alpha`
+- Latest implementation commit: `2dcd1e0 Add v0.53 character art import pipeline`
 - Current stack: Vite + React + TypeScript
 - Local dev command: `npm run dev -- --port 5201`
-- Asset generation: `npm run assets:v052`
+- Asset generation: `npm run assets:v053`
 - Main visual QA URL: `http://127.0.0.1:5201/?scenario=office-visuals`
 - Persona QA URL: `http://127.0.0.1:5201/?scenario=persona20`
 - Full verification: `npm run harness:gate`
@@ -25,11 +25,12 @@ Last Updated: 2026-05-20
 
 ## Blockers
 
-- None known.
+- Final external/AI-generated character artwork is still pending.
+- Browser screenshot automation is unavailable in this environment because Playwright is not installed in the Node REPL runtime.
 
 ## Recommended Next Step
 
-Start `v0.53-alpha-final-character-art-import`: replace the procedural v0.52 high-resolution source draft with final AI-generated or external pixel-art source art, regenerate the runtime sheet, and run screenshot-based office-visuals QA.
+Start `v0.54-alpha-office-object-backdrop-art-import`: create import/normalization paths for office object sheets and the isometric office backdrop, then verify `office-visuals`.
 
 ## Next Session
 
