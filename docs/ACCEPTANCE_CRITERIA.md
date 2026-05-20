@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.53: Final Character Art Import Pipeline
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `asset_manifest.json` defines a v0.53 imported final-art candidate sheet contract | **Passed** |
+| 2 | `npm run assets:v053` imports a 1152×9600 source PNG and regenerates a 576×4800 runtime sheet | **Passed** |
+| 3 | The PNG decoder validates 8-bit non-interlaced RGBA source sheets and preserves transparent pixels | **Passed** |
+| 4 | Priority agents use `agents_v053_final_art_import` without changing idle/work/card_use/cheer/alert rows | **Passed** |
+| 5 | `office-visuals` exposes card-use and alert poses through the v0.53 sheet | **Passed** |
+| 6 | The import script, manifest metadata, data validation, and layout contract are covered by tests | **Passed** |
+| 7 | Relevant tests and `npm run harness:gate` pass | **Passed** |
+
+Remaining note: final external character artwork is still pending. v0.53 makes the import and normalization path reproducible and keeps the current source as a draft candidate.
+
+---
+
 ## Alpha v0.52: Source Sprite Replacement Pipeline
 
 | # | Criterion | Status |

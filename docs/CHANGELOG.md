@@ -4,6 +4,31 @@
 
 ---
 
+## [0.53-alpha] — 2026-05-20
+
+### 최종 캐릭터 아트 임포트 파이프라인
+
+**추가:**
+- `asset_manifest.json` 버전을 `0.53-alpha`로 올리고 `agents_v053_final_art_import` 시트 계약을 추가했다.
+- `scripts/assets/import-v053-character-source.mjs`를 추가해 1152×9600 RGBA PNG 원본을 읽고, nearest-neighbor 방식으로 576×4800 게임용 시트를 생성한다.
+- `npm run assets:v053` 명령을 추가했다. 기본 입력은 v0.52 원본 후보이며, 실제 최종 원본이 준비되면 `npm run assets:v053 -- --source <원본PNG>`로 교체할 수 있다.
+- v0.53 원본 `public/assets/sprites/source/v053-agents-event-poses-final-source.png`와 게임용 `public/assets/sprites/v053-agents-event-poses-final.png`를 생성했다.
+- manifest에 `source_origin`, `import_pipeline`, `normalization_method` 메타데이터를 추가했다.
+- 우선순위 에이전트 5종이 v0.53 시트를 사용하도록 연결했고, `office-visuals` QA 라벨을 v0.53 최종 아트 임포트 QA로 갱신했다.
+
+**주의:**
+- 이번 v0.53 파일은 최종 아트 “임포트 파이프라인”의 기준 산출물이다. 실제 외부/이미지 생성 최종 캐릭터 아트는 아직 별도 파일로 제공되지 않았으므로 `source_status`는 `draft`로 유지했다.
+
+**검증:**
+- `npm run assets:v053` 통과, v0.53 원본/런타임 PNG 생성
+- `file public/assets/sprites/source/v053-agents-event-poses-final-source.png` 통과, 1152×9600 PNG
+- `file public/assets/sprites/v053-agents-event-poses-final.png` 통과, 576×4800 PNG
+- `npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 80 tests
+- `npm run harness:gate` 통과, 40 files / 298 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- `curl -I 'http://127.0.0.1:5201/?scenario=office-visuals'` 통과, 200 OK
+- `curl -I 'http://127.0.0.1:5201/assets/sprites/v053-agents-event-poses-final.png'` 통과, 200 OK
+- `curl -I 'http://127.0.0.1:5201/assets/sprites/source/v053-agents-event-poses-final-source.png'` 통과, 200 OK
+
 ## [0.52-alpha] — 2026-05-20
 
 ### 원본 시트 기반 스프라이트 교체 파이프라인

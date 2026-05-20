@@ -13,6 +13,7 @@
     "assets:v046": "node scripts/assets/generate-v046-hires-pixel-sheets.mjs",
     "assets:v051": "node scripts/assets/generate-v046-hires-pixel-sheets.mjs",
     "assets:v052": "node scripts/assets/generate-v046-hires-pixel-sheets.mjs",
+    "assets:v053": "node scripts/assets/import-v053-character-source.mjs",
     "harness:gate": "npm test && npm run validate:data && npm run build"
   },
   "dependencies": {

@@ -2,6 +2,11 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { agentTypes, assetManifest, competitors, items } from "./data";
 
+const packageJson = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as {
+  scripts: Record<string, string>;
+};
+const v053ImportScript = readFileSync(new URL("../../scripts/assets/import-v053-character-source.mjs", import.meta.url), "utf8");
+
 function readPngSize(assetPath: string) {
   const buffer = readFileSync(new URL(`../../public${assetPath}`, import.meta.url), "binary");
   const readUInt32BE = (offset: number) => (
@@ -23,7 +28,7 @@ describe("alpha v0.9 pixel asset manifest", () => {
   const knownItemIds = new Set(items.map((item) => item.id));
 
   it("defines a stable pixel grid for first-pass sprite replacement", () => {
-    expect(assetManifest.version).toBe("0.52-alpha");
+    expect(assetManifest.version).toBe("0.53-alpha");
     expect(assetManifest.sprite_grid.tile_size).toBe(16);
     expect(assetManifest.sprite_grid.character_frame_size).toBe(32);
     expect(assetManifest.sprite_grid.portrait_size).toBe(48);
@@ -31,18 +36,21 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(assetManifest.sprite_grid.competitor_logo_size).toBe(32);
   });
 
-  it("defines v0.52 source and normalized event-pose sheet contracts", () => {
-    const eventPoseSheet = assetManifest.sprite_sheets.agents_v052_source_event_poses;
+  it("defines v0.53 final-art import and normalized event-pose sheet contracts", () => {
+    const eventPoseSheet = assetManifest.sprite_sheets.agents_v053_final_art_import;
 
     expect(eventPoseSheet).toMatchObject({
-      path: "/assets/sprites/v052-agents-event-poses.png",
-      source_path: "/assets/sprites/source/v052-agents-event-poses-source.png",
+      path: "/assets/sprites/v053-agents-event-poses-final.png",
+      source_path: "/assets/sprites/source/v053-agents-event-poses-final-source.png",
       source_status: "draft",
       density: 2,
       source_scale: 4,
       source_frame_width: 384,
       source_frame_height: 384,
-      normalized_from: "v052-agents-event-poses-source",
+      normalized_from: "v053-agents-event-poses-final-source",
+      source_origin: "imported_source_candidate",
+      import_pipeline: "scripts/assets/import-v053-character-source.mjs",
+      normalization_method: "nearest-neighbor 4x source to 2x runtime",
       anchor_reference: "bottom-center",
       anchor_tolerance_px: 8,
       silhouette_drift_tolerance_px: 12,
@@ -55,8 +63,16 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(eventPoseSheet.preview_frames).toEqual(expect.arrayContaining([0, 1, 2, 3, 4, 7, 13, 19, 23]));
 
     expect(readPngSize(eventPoseSheet.path)).toEqual({ width: 576, height: 4800 });
-    if (!eventPoseSheet.source_path) throw new Error("v0.52 event-pose sheet must keep a source_path");
+    if (!eventPoseSheet.source_path) throw new Error("v0.53 event-pose sheet must keep a source_path");
     expect(readPngSize(eventPoseSheet.source_path)).toEqual({ width: 1152, height: 9600 });
+  });
+
+  it("exposes a reproducible v0.53 character-source import command", () => {
+    expect(packageJson.scripts["assets:v053"]).toBe("node scripts/assets/import-v053-character-source.mjs");
+    expect(v053ImportScript).toContain("decodePngRgba");
+    expect(v053ImportScript).toContain("downsampleNearest");
+    expect(v053ImportScript).toContain("validateSourceDimensions");
+    expect(v053ImportScript).toContain("v053-agents-event-poses-final-source.png");
   });
 
   it("keeps v0.47 high-density office slicing contracts for generated pixel art", () => {
@@ -96,10 +112,10 @@ describe("alpha v0.9 pixel asset manifest", () => {
     }
   });
 
-  it("attaches priority agents to the v0.52 source-replacement event-pose character sheet", () => {
+  it("attaches priority agents to the v0.53 imported final-art event-pose character sheet", () => {
     assetManifest.agent_sprites.forEach((sprite, index) => {
       expect(sprite.source_status).toBe("draft");
-      expect(sprite.sheet_id).toBe("agents_v052_source_event_poses");
+      expect(sprite.sheet_id).toBe("agents_v053_final_art_import");
       expect(sprite.animations.idle.row).toBe(index * 5);
       expect(sprite.animations.work.row).toBe(index * 5 + 1);
       expect(sprite.animations.card_use.row).toBe(index * 5 + 2);

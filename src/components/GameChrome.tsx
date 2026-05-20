@@ -65,7 +65,7 @@ function assetPaletteVars(palette?: string[]): CSSProperties {
   } as CSSProperties;
 }
 
-const agentSheetId = "agents_v052_source_event_poses";
+const agentSheetId = "agents_v053_final_art_import";
 const officeObjectSheetId = "office_objects_v046_hires_isometric";
 const officeBackdropId = "office_isometric_v046_hires";
 
@@ -898,6 +898,7 @@ function OfficeSpriteSheetInspector() {
                 {sheet.source_frame_width && sheet.source_frame_height
                   ? `원본 ${sheet.source_frame_width}×${sheet.source_frame_height} / 게임 ${sheet.frame_width}×${sheet.frame_height}`
                   : `${sheet.frame_width}×${sheet.frame_height}`}
+                {sheet.source_origin ? ` · ${sheet.source_origin}` : ""}
               </small>
             </span>
             <div>

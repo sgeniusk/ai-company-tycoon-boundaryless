@@ -852,6 +852,11 @@ if (!assetManifestData) {
       if (typeof sheet.normalized_from !== "string" || sheet.normalized_from.length === 0) {
         errors.push(`asset_manifest sprite_sheets "${sheetId}": normalized_from is required for source-normalized sheets`);
       }
+      for (const optionalSourceField of ["source_origin", "import_pipeline", "normalization_method"]) {
+        if (optionalSourceField in sheet && (typeof sheet[optionalSourceField] !== "string" || sheet[optionalSourceField].length === 0)) {
+          errors.push(`asset_manifest sprite_sheets "${sheetId}": ${optionalSourceField} must be a non-empty string when set`);
+        }
+      }
       if (typeof sheet.anchor_reference !== "string" || sheet.anchor_reference.length === 0) {
         errors.push(`asset_manifest sprite_sheets "${sheetId}": anchor_reference is required for source-normalized sheets`);
       }

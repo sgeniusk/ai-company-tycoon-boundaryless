@@ -37,7 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.50 alpha-candidate 20-person persona review, P0/P1 status, and first-screen signal QA |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.52 source-normalized event poses over high-density sprite-sheet actors, reactions, preview, decor props, and direct actor care actions |
+| Office Visuals | `?scenario=office-visuals` | v0.53 imported final-art candidate poses over high-density sprite-sheet actors, reactions, preview, decor props, and direct actor care actions |
 
 Examples:
 
@@ -68,7 +68,7 @@ Examples:
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
 
-## v0.52 Source Sprite Replacement QA
+## v0.53 Final Character Art Import QA
 
 URL:
 
@@ -76,12 +76,13 @@ URL:
 
 Expected:
 
-- The QA pill says `v0.52 사무실 원본 시트 QA`.
-- The current agent sheet is `agents_v052_source_event_poses`.
-- The source sheet points to `source/v052-agents-event-poses-source.png` and is 1152×9600.
-- The runtime sheet points to `v052-agents-event-poses.png` and is 576×4800.
+- The QA pill says `v0.53 최종 아트 임포트 QA`.
+- The current agent sheet is `agents_v053_final_art_import`.
+- The source sheet points to `source/v053-agents-event-poses-final-source.png` and is 1152×9600.
+- The runtime sheet points to `v053-agents-event-poses-final.png` and is 576×4800.
 - Source frames are 384×384, game frames are 192×192, and the sheet keeps the 3-column, 25-row, 75-frame event-pose layout.
-- The manifest includes `source_path`, `source_scale`, `normalized_from`, `anchor_reference`, `anchor_tolerance_px`, and `silhouette_drift_tolerance_px`.
+- The manifest includes `source_path`, `source_scale`, `normalized_from`, `source_origin`, `import_pipeline`, `normalization_method`, `anchor_reference`, `anchor_tolerance_px`, and `silhouette_drift_tolerance_px`.
+- `npm run assets:v053 -- --source <원본PNG>` can replace the source candidate and regenerate the runtime atlas.
 - Priority actors can use `card_use`, `cheer`, and `alert` pose rows in addition to idle/work.
 - The office scene plan exposes at least one `card_use` actor pose from `프롬프트 스프린트`.
 - The office scene plan exposes at least one `alert` actor pose from a care-risk actor.
@@ -97,6 +98,20 @@ Expected:
 - The actor focus panel and direct care actions from v0.44 still work.
 - Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
 
+## v0.52 Source Sprite Replacement QA (Historical)
+
+URL:
+
+- `?scenario=office-visuals`
+
+Expected:
+
+- Historical baseline only. The current active visual QA entry is the v0.53 section above.
+- The old QA pill said `v0.52 사무실 원본 시트 QA`.
+- The old current agent sheet was `agents_v052_source_event_poses`.
+- The old source sheet pointed to `source/v052-agents-event-poses-source.png`.
+- The old runtime sheet pointed to `v052-agents-event-poses.png`.
+
 ## v0.51 Office Event Pose QA (Historical)
 
 URL:
@@ -105,7 +120,7 @@ URL:
 
 Expected:
 
-- Historical baseline only. The current active visual QA entry is the v0.52 section above.
+- Historical baseline only. The current active visual QA entry is the v0.53 section above.
 - The old QA pill said `v0.51 사무실 이벤트 포즈 QA`.
 - The old agent sheet was `agents_v051_event_poses` and pointed to `v051-agents-event-poses.png`.
 - Priority actors could use `card_use`, `cheer`, and `alert` pose rows in addition to idle/work.
@@ -118,7 +133,7 @@ URL:
 
 Expected:
 
-- Historical baseline only. The current active visual QA entry is the v0.52 section above.
+- Historical baseline only. The current active visual QA entry is the v0.53 section above.
 - The old QA pill said `v0.49 사무실 이벤트 리액션 QA`.
 - The office playfield included `office-event-reaction-layer` and at least one `card_use` reaction from `프롬프트 스프린트`.
 

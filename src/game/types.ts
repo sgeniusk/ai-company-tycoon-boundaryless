@@ -265,6 +265,9 @@ export interface SpriteSheetDefinition {
   source_frame_width?: number;
   source_frame_height?: number;
   normalized_from?: string;
+  source_origin?: string;
+  import_pipeline?: string;
+  normalization_method?: string;
   anchor_reference?: "bottom-center" | "center" | string;
   anchor_tolerance_px?: number;
   silhouette_drift_tolerance_px?: number;
