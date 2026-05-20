@@ -4,6 +4,22 @@
 
 ---
 
+## [0.50-alpha] — 2026-05-20
+
+### 알파 후보 20인 페르소나 재검증
+
+**추가:**
+- `runPersonaPlaytestReview()`를 v0.50 알파 후보 기준으로 갱신했다.
+- 20인 페르소나 리포트가 미해결 P0/P1 목록과 첫 30초 화면 신호를 함께 반환한다.
+- `persona20` QA 시나리오가 `v0.50` 라벨, P0/P1 상태, 첫 화면 신호를 회사 기록 로그에 표시한다.
+- v0.21 시절의 우측 보조 패널 압축 우선순위를 제거하고, 이벤트 포즈 시트 확장과 최신 화면 재검증을 다음 우선순위로 남겼다.
+
+**검증:**
+- `npm test -- src/game/persona-playtest.test.ts src/game/qa-scenarios.test.ts` 통과, 2 files / 36 tests
+- `npm run harness:gate` 통과, 40 files / 294 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- `curl -I 'http://127.0.0.1:5201/?scenario=persona20'` 통과, 200 OK
+- `curl -I 'http://127.0.0.1:5201/?scenario=office-visuals'` 통과, 200 OK
+
 ## [0.49-alpha] — 2026-05-20
 
 ### 사무실 이벤트 리액션

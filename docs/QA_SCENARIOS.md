@@ -34,7 +34,7 @@ Use the local app URL and append one of these query strings:
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 | Readiness | `?scenario=readiness` | v0.20 alpha readiness state from the integrated simulation harness |
-| Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
+| Persona 20 | `?scenario=persona20` | v0.50 alpha-candidate 20-person persona review, P0/P1 status, and first-screen signal QA |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
 | Office Visuals | `?scenario=office-visuals` | v0.49 office event reactions over high-density sprite-sheet actors, preview, decor props, and direct actor care actions |
@@ -88,6 +88,22 @@ Expected:
 - Actors, decor props, and office objects keep stable front/back ordering as their y positions change.
 - The actor focus panel and direct care actions from v0.44 still work.
 - Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
+
+## v0.50 Alpha Candidate Persona QA
+
+URL:
+
+- `?scenario=persona20`
+
+Expected:
+
+- The top QA pill says `v0.50 알파 후보 20인 페르소나 QA`.
+- The active menu is `회사 기록`.
+- The first timeline entry includes `v0.50 20인 페르소나`.
+- The timeline lists `P0/P1: 없음`.
+- The timeline includes first-30-second signals for `사무실 판타지`, `이번 달 목표`, and `다음 행동`.
+- The timeline lists current v0.50 priorities, including event pose-sheet expansion and latest-screen retest records.
+- The old v0.21 right-side support-panel compression priority is not shown as an active alpha-candidate blocker.
 
 ## v0.44 Office Actor Care QA
 
@@ -171,7 +187,7 @@ Expected:
 - The panel names recently used cards such as `프롬프트 스프린트` and `고객 인터뷰`.
 - The log menu shows compact highlight moment cards for launch, rival pressure, or deck reward.
 
-## v0.21 Persona 20 QA
+## v0.21 Persona 20 QA (Historical)
 
 URL:
 
@@ -179,7 +195,8 @@ URL:
 
 Expected:
 
-- The top QA pill says `v0.21 20인 페르소나 QA`.
+- Historical baseline only. The current active persona QA entry is the v0.50 section above.
+- The old top QA pill said `v0.21 20인 페르소나 QA`.
 - The active menu is `회사 기록`.
 - The first timeline entry includes `v0.21 20인 페르소나`.
 - The timeline lists improvement priorities, including right-side panel compression.

@@ -367,11 +367,13 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     const campaign = runTenYearCampaignSimulation("productivity_line");
     return {
       id,
-      label: "v0.21 20인 페르소나 QA",
+      label: "v0.50 알파 후보 20인 페르소나 QA",
       state: {
         ...campaign.finalState,
         timeline: [
-          `v0.21 20인 페르소나: ${report.verdict} / ${report.score}점 / ${report.personaCount}명`,
+          `v0.50 20인 페르소나: ${report.verdict} / ${report.score}점 / ${report.personaCount}명`,
+          `P0/P1: ${report.unresolvedP0P1Findings.length > 0 ? report.unresolvedP0P1Findings.join(", ") : "없음"}`,
+          ...report.firstScreenSignals.map((signal) => `첫 30초: ${signal}`),
           ...report.topPriorities.slice(0, 4).map((priority) => `개선 우선순위: ${priority}`),
           ...report.personaNotes.slice(0, 2).map((note) => `${note.label}: ${note.request}`),
           ...campaign.finalState.timeline,

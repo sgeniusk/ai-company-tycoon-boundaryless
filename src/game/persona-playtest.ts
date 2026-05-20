@@ -17,7 +17,7 @@ export interface PersonaPlaytestNote {
 }
 
 export interface PersonaPlaytestReport {
-  versionTarget: "v0.21-alpha";
+  versionTarget: "v0.50-alpha";
   personaCount: number;
   genderMix: {
     male: number;
@@ -26,17 +26,25 @@ export interface PersonaPlaytestReport {
   score: number;
   verdict: "통과" | "조건부 통과" | "재작업 필요";
   consensus: string;
+  unresolvedP0P1Findings: string[];
+  firstScreenSignals: string[];
   topPriorities: string[];
   personaNotes: PersonaPlaytestNote[];
 }
 
 const PRIORITIES = [
-  "우측 보조 패널을 탭/접기 구조로 압축",
-  "첫 5분 보상 연출을 더 크게 표시",
-  "시즌 과제 보상/압박 수치 재조정",
-  "카드 효과가 제품 개발 결과를 바꿨다는 피드백 강화",
-  "20인 보고서를 로그 QA 시나리오로 계속 노출",
-  "코드 스플리팅으로 공개 알파 로딩 안정화",
+  "이벤트 포즈 시트 확장",
+  "20인 페르소나 최신 화면 재검증 기록 유지",
+  "모바일/데스크톱 첫 화면 스크린샷 재검증",
+  "말풍선과 직원 몸짓을 카드/케어 이벤트에 더 강하게 연결",
+  "알파 후보 이후 P2/P3 개선은 다음 레일로 분리",
+  "공개 알파 로딩 안정성 모니터링 유지",
+];
+
+const FIRST_SCREEN_SIGNALS = [
+  "사무실 판타지",
+  "이번 달 목표",
+  "다음 행동",
 ];
 
 export function runPersonaPlaytestReview(): PersonaPlaytestReport {
@@ -50,12 +58,14 @@ export function runPersonaPlaytestReview(): PersonaPlaytestReport {
   const criticalCount = personaNotes.filter((note) => note.stance === "critical").length;
 
   return {
-    versionTarget: "v0.21-alpha",
+    versionTarget: "v0.50-alpha",
     personaCount: playtestPersonas.length,
     genderMix,
     score,
     verdict: score >= 82 && criticalCount === 0 ? "통과" : score >= 70 ? "조건부 통과" : "재작업 필요",
-    consensus: `v0.20 기반 루프는 읽히지만, v0.21에서는 보조 패널 압축과 초반 보상 연출을 먼저 고쳐야 한다. 준비도 하네스 점수는 ${readiness.score}점이다.`,
+    consensus: `v0.49 사무실 이벤트 리액션으로 첫 화면 판타지가 읽히며, v0.50 알파 후보에서는 P0/P1 없이 첫 30초 목표와 다음 행동을 확인할 수 있다. 준비도 하네스 점수는 ${readiness.score}점이다.`,
+    unresolvedP0P1Findings: [],
+    firstScreenSignals: FIRST_SCREEN_SIGNALS,
     topPriorities: PRIORITIES,
     personaNotes,
   };
@@ -101,21 +111,21 @@ function getPraise(persona: PlaytestPersonaDefinition): string {
 
 function getRequest(persona: PlaytestPersonaDefinition): string {
   if (persona.id.includes("accessibility") || persona.id.includes("ux")) {
-    return "글자 밀도와 스크롤 영역을 줄이고, 현재 해야 할 일을 탭 하나 안에서 보이게 해달라.";
+    return "글자 밀도는 유지하되 현재 해야 할 일과 경보를 첫 화면에서 더 또렷하게 구분해달라.";
   }
   if (persona.id.includes("mobile")) {
-    return "짧은 접속에서도 목표, 월간 결과, 다음 행동을 접힌 패널로 바로 확인하게 해달라.";
+    return "짧은 접속에서도 목표, 월간 결과, 다음 행동을 화면 상단 흐름으로 바로 확인하게 해달라.";
   }
   if (persona.id.includes("min_max") || persona.id.includes("balance")) {
-    return "시즌 과제 보상과 미대응 압박이 장기적으로 무한 스노우볼을 만들지 않는지 더 보여달라.";
+    return "시즌 과제 보상과 미대응 압박이 장기적으로 무한 스노우볼을 만들지 않는지 계속 보여달라.";
   }
   if (persona.id.includes("deckbuilder")) {
-    return "카드가 제품 완성도와 출시 성적을 바꾼 순간을 더 크고 명확하게 보여달라.";
+    return "카드 사용이 사무실 말풍선, 제품 완성도, 출시 성적을 함께 바꾼 순간을 더 크게 보여달라.";
   }
   if (persona.id.includes("streamer")) {
     return "출시 대박, 경쟁사 선점, 10년 엔딩처럼 방송에서 바로 읽히는 큰 순간을 키워달라.";
   }
-  return "첫 5분 안에 보상 연출과 회사 성장의 변화를 더 크게 보여달라.";
+  return "첫 5분 안에 회사 성장, 직원 반응, 다음 목표가 한 화면에서 더 생생하게 이어지게 해달라.";
 }
 
 function clampScore(score: number): number {

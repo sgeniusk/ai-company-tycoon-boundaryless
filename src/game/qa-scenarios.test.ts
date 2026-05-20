@@ -263,13 +263,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.status).not.toBe("playing");
   });
 
-  it("creates a v0.21 20-person persona playtest scenario", () => {
+  it("creates a v0.50 20-person persona playtest scenario for alpha candidate QA", () => {
     const scenario = createQaScenario("persona20");
 
     expect(scenario.activeMenu).toBe("log");
+    expect(scenario.label).toContain("v0.50");
     expect(scenario.label).toContain("20인");
-    expect(scenario.state.timeline[0]).toContain("20인 페르소나");
-    expect(scenario.state.timeline.some((entry) => entry.includes("우측 보조 패널"))).toBe(true);
+    expect(scenario.state.timeline[0]).toContain("v0.50 20인 페르소나");
+    expect(scenario.state.timeline.some((entry) => entry.includes("P0/P1: 없음"))).toBe(true);
+    expect(scenario.state.timeline.some((entry) => entry.includes("첫 30초: 사무실 판타지"))).toBe(true);
+    expect(scenario.state.timeline.some((entry) => entry.includes("우측 보조 패널"))).toBe(false);
   });
 
   it("creates a v0.22 launch impact scenario with card-influenced release feedback", () => {

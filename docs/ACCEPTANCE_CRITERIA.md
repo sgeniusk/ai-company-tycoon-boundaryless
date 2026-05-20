@@ -6,6 +6,19 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.50: Alpha Candidate Consolidation
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | 20-person persona QA is rerun against the current v0.50 candidate | **Passed** |
+| 2 | The persona report exposes gender mix, score, verdict, first-screen signals, and P0/P1 status | **Passed** |
+| 3 | P0/P1 findings are fixed or explicitly waived; current unresolved P0/P1 list is empty | **Passed** |
+| 4 | `persona20` QA scenario shows `v0.50`, `P0/P1: 없음`, and first-30-second screen signals | **Passed** |
+| 5 | Stale v0.21 right-side panel compression priority is not shown as a current blocker | **Passed** |
+| 6 | Relevant tests and `npm run harness:gate` pass | **Passed** |
+
+---
+
 ## Alpha v0.49: Office Event Reactions
 
 | # | Criterion | Status |
