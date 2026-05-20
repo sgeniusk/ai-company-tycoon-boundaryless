@@ -18,21 +18,27 @@
 
 ```bash
 npm install
-npm run dev
+npm run dev -- --port 5201
 ```
 
 Validation:
 
 ```bash
+npm test
 npm run validate:data
 npm run build
+npm run harness:gate
+./init.sh
 ```
 
 ## Key Docs
 
+- `AGENTS.md` - coding-agent startup workflow, scope rule, and Definition of Done
+- `feature_list.json` - current feature state, dependencies, and done criteria
+- `progress.md` - current objective, touched files, blockers, and verification evidence
 - `docs/PRD.md` - 제품 요구사항과 MVP 정의
 - `docs/BENCHMARK_GAME_DEV_STORY.md` - Game Dev Story iOS 기준 벤치마크
-- `docs/GAME_PRODUCTION_PREP_HARNESS.md` - 모든 게임 제작 전에 쓰는 준비 하네스
+- `docs/PRODUCTION_HARNESS.md` - 현재 Vite/React 제작 하네스와 품질 게이트
 - `docs/SYNTHETIC_PLAYTEST_HARNESS.md` - 12명 합성 테스트 프로토콜
 - `docs/AGENT_REVIEW_PROTOCOL.md` - 에이전트 자기검증 역할과 게이트
 - `docs/IMPLEMENTATION_STRATEGY.md` - 아키텍처, 스택, 배포 전략

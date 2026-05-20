@@ -1,208 +1,81 @@
-# AGENTS.md — AI Company Tycoon: Boundaryless
+# AGENTS.md - AI Company Tycoon: Boundaryless
 
-## Production Harness Agent Roles
+This is the root startup contract for coding agents. Keep it short, follow it before touching code, and use the linked docs for detail.
 
-This document defines the simulated agent roles used during the production of **AI Company Tycoon: Boundaryless**. Each agent represents a perspective that must be satisfied before a milestone is considered complete.
+## Startup Workflow
 
----
+Before writing code:
 
-## Agent Roster
+1. Read `progress.md` for the current state, current objective, blockers, and latest verification evidence.
+2. Read `feature_list.json` and pick only the feature marked as current or explicitly requested by the user.
+3. Read the relevant project docs:
+   - `docs/ROADMAP.md`
+   - `docs/CHANGELOG.md`
+   - `docs/QA_SCENARIOS.md`
+   - `docs/ACCEPTANCE_CRITERIA.md`
+   - `docs/SESSION_HANDOFF.md`
+4. Check `git status --short` and do not overwrite unrelated user changes.
+5. For UI work, use the QA scenario that matches the feature, usually `?scenario=office-visuals`.
 
-### 1. Executive Producer Agent
+## Current Source Of Truth
 
-**Responsibility:** Ensure the project stays on schedule, within scope, and delivers a coherent player experience.
+- Current version: `v0.48-alpha`
+- Current stack: Vite + React + TypeScript
+- Main gate: `npm run harness:gate`
+- Local dev: `npm run dev -- --port 5201`
+- QA URL: `http://127.0.0.1:5201/?scenario=office-visuals`
+- State tracker: `feature_list.json`
+- Restart log: `progress.md`
+- Human-readable handoff: `docs/SESSION_HANDOFF.md` and root `session-handoff.md`
 
-**Review Focus:**
-- Is the milestone deliverable complete?
-- Does the current build move toward the 10-minute MVP goal?
-- Are there scope creep risks?
-- Is the next task clearly defined?
+## Verification Commands
 
----
+Run the narrowest useful checks while developing, then run the full gate before claiming done.
 
-### 2. Game Designer Agent
+```bash
+npm test
+npm run validate:data
+npm run build
+npm run harness:gate
+```
 
-**Responsibility:** Ensure mechanics express the game's core fantasy and design pillars.
+`./init.sh` is the restartable one-command harness check. It fails fast and ends by running `npm run harness:gate`.
 
-**Review Focus:**
-- Does the feature reinforce "boundaryless expansion"?
-- Does the player face meaningful strategic tension?
-- Are numbers readable and satisfying?
-- Is the core loop progressing toward 10-minute fun?
+## One Feature At A Time
 
----
+Work on one feature at a time unless the user explicitly asks for parallel work. Stay in scope:
 
-### 3. Systems Architect Agent
+- Use `feature_list.json` for feature status, dependencies, done criteria, and next step.
+- Do not start a new milestone while P0/P1 issues from the current milestone remain unresolved.
+- Keep tunable game content in JSON data files when feasible.
+- Keep `GameState` as the source of truth for gameplay state.
+- Record deferred P2/P3 issues in reports or `progress.md`.
 
-**Responsibility:** Ensure code architecture is clean, modular, and data-driven.
+## Definition Of Done
 
-**Review Focus:**
-- Are systems decoupled via EventBus?
-- Is all tunable data in JSON files?
-- Are there hardcoded values that should be externalized?
-- Is the GameState single source of truth?
-- Can the system be extended without refactoring?
+A change is done only when:
 
----
+1. The requested behavior is implemented.
+2. Relevant tests or validation commands pass.
+3. `npm run harness:gate` passes, or the reason it could not run is documented.
+4. Changelog, acceptance criteria, QA/report files, and progress state are updated when the change affects a milestone or harness behavior.
+5. Verification Evidence includes command names and summarized output.
+6. The next recommended step is clear.
 
-### 4. QA Agent
+## Reporting
 
-**Responsibility:** Ensure the build is stable, testable, and free of critical bugs.
+- Write user-facing reports in Korean by default.
+- Production reports live in `reports/production_<version_topic>.md`.
+- QA reports live in `reports/qa/`.
+- Playtest reports live in `reports/playtests/`.
+- Balance reports live in `reports/balance/`.
+- Detailed review roles and gates live in `docs/AGENT_REVIEW_PROTOCOL.md` and `docs/skills/ai-game-dev-harness/SKILL.md`.
 
-**Review Focus:**
-- Does the game launch without errors?
-- Do all systems load data correctly?
-- Are edge cases handled (zero resources, negative cash, missing data)?
-- Does DebugValidator pass?
-- Are save/load operations safe?
+## End Of Session
 
----
+Before ending:
 
-### 5. Balance Agent
-
-**Responsibility:** Ensure the game economy is fair, fun, and not exploitable.
-
-**Review Focus:**
-- Can any strategy dominate without counterplay?
-- Is the 10-month progression achievable but not trivial?
-- Are costs and revenues proportional?
-- Does hype decay prevent infinite snowball?
-- Is there a recovery path from bad decisions?
-
----
-
-### 6. UX Agent
-
-**Responsibility:** Ensure the UI is clear, responsive, and communicates state changes.
-
-**Review Focus:**
-- Can a new player understand what to do in 30 seconds?
-- Are resource changes visible immediately?
-- Are locked items explained clearly?
-- Is the screen readable without scrolling?
-- Are warnings and notifications obvious?
-
----
-
-### 7. Synthetic Playtester Agent
-
-**Responsibility:** Simulate different player archetypes and report experience quality.
-
-**Archetypes:**
-- New Player (first time, no genre knowledge)
-- Tycoon Fan (experienced with management games)
-- Min-Max Player (seeks optimal exploits)
-- Casual Steam Player (5-minute attention span)
-- Harsh Steam Reviewer (critical, genre-aware)
-- Accessibility Tester (checks clarity and readability)
-
----
-
-### 8. Retention / LTV Agent
-
-**Responsibility:** Ensure the game creates reasons to keep playing, return later, and build long-term attachment without exceeding solo-dev scope.
-
-**Review Focus:**
-- Is the first 30 seconds clear and motivating?
-- Does the first 5 minutes deliver a satisfying payoff before harsh pressure?
-- Is there a visible reason to return after the session ends?
-- Are long-term goals, collections, unlocks, and mastery paths visible?
-- Does the loop create retention value without relying on exploitative pressure?
-
----
-
-### 9. Shareability Agent
-
-**Responsibility:** Ensure the game produces moments that are easy to screenshot, stream, explain, and remember.
-
-**Review Focus:**
-- Does the build create a memorable "look what happened" moment?
-- Are product launches, rival moves, failures, and breakthroughs readable to an observer?
-- Would a short clip or screenshot communicate the fantasy?
-- Are names, events, and outcomes distinctive enough to discuss?
-
----
-
-### 10. Solo Dev Scope Agent
-
-**Responsibility:** Keep the project achievable for a solo developer while preserving the highest-impact fun.
-
-**Review Focus:**
-- Does this feature give high player value for low asset/code burden?
-- Is the implementation small enough to maintain?
-- Can the feature reuse existing data, UI, or systems?
-- Is any proposed content explosion being contained by templates or procedural structure?
-- What should be cut, deferred, or faked for the current version?
-
----
-
-### 11. Deck System Engineer
-
-**Responsibility:** Ensure the deckbuilding layer creates meaningful run-to-run choices without hiding the tycoon fantasy.
-
-**Review Focus:**
-- Do cards create distinct company strategies?
-- Are costs, effects, draw/discard states, and hand limits readable?
-- Do cards change product development rather than feeling cosmetic?
-- Are card definitions data-driven and easy to expand?
-
----
-
-### 12. Roguelite Meta Engineer
-
-**Responsibility:** Ensure failure, success, and restart loops create long-term motivation.
-
-**Review Focus:**
-- Does a failed run produce useful founder insight?
-- Are permanent unlocks exciting without trivializing the next run?
-- Is the next-run setup clear and fast?
-- Are meta rewards tied to player stories, not just grinding?
-
----
-
-### 13. Puzzle Mechanics Engineer
-
-**Responsibility:** Ensure development puzzles add hands-on agency to product creation.
-
-**Review Focus:**
-- Does puzzle performance affect product progress or quality?
-- Do agent stats and cards matter in puzzle outcomes?
-- Is the puzzle short enough for a tycoon loop?
-- Does the puzzle create mastery without becoming a separate game?
-
----
-
-### 14. Balance Simulation Engineer
-
-**Responsibility:** Stress-test card, meta, product, and economy loops for exploits and dead ends.
-
-**Review Focus:**
-- Can a card chain create infinite resources?
-- Does meta progression help recovery without removing risk?
-- Do early decks support at least two viable strategies?
-- Are negative effects meaningful but not punitive?
-
----
-
-## Agent Review Protocol
-
-After each milestone:
-1. Each agent reviews the deliverables from their perspective.
-2. Issues are classified as P0 (blocker), P1 (must fix), P2 (should fix), P3 (nice to have).
-3. P0 and P1 issues must be resolved before advancing.
-4. P2 and P3 issues are logged in the backlog.
-5. Results are recorded in `reports/` folder.
-
----
-
-## Communication
-
-Agents communicate through:
-- Milestone reports (`reports/production_milestone_X.md`)
-- QA reports (`reports/qa/`)
-- Playtest reports (`reports/playtests/`)
-- Balance reports (`reports/balance/`)
-- Retrospective logs (`reports/retrospectives/`)
-- Risk register (`docs/RISK_REGISTER.md`)
-- Changelog (`docs/CHANGELOG.md`)
-- Game development harness skill draft (`docs/skills/ai-game-dev-harness/SKILL.md`)
+1. Update `progress.md` with Last Updated, Current Objective, Files, Blockers, Verification Evidence, and Recommended Next Step.
+2. Update `feature_list.json` feature status/evidence if the active feature changed.
+3. Update `docs/SESSION_HANDOFF.md` if the current version, commit, QA entry point, or next milestone changed.
+4. Leave the project restartable from a clean checkout plus `./init.sh`.

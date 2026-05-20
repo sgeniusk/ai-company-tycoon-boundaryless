@@ -62,7 +62,7 @@ This document details the simulated agent roles used during production. Each age
 - Does the game launch without errors?
 - Do all JSON files load correctly?
 - Are edge cases handled (zero resources, negative values, missing data)?
-- Does DebugValidator pass?
+- Do `npm test`, `npm run validate:data`, and relevant build checks pass?
 - Are save/load operations safe?
 - Do UI elements update correctly?
 

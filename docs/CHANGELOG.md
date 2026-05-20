@@ -4,6 +4,22 @@
 
 ---
 
+## [0.49-alpha] — 2026-05-20
+
+### 사무실 이벤트 리액션
+
+**추가:**
+- `data/office_reactions.json`을 추가해 카드 사용, 제품 출시, 경쟁 속보, 인사 경보의 사무실 반응 위치/톤/지속시간을 데이터화했다.
+- `getOfficeScenePlan()`이 최근 카드 사용, 최근 출시, 경쟁/인사 타임라인을 읽어 `eventReactions`를 반환한다.
+- 사무실 플레이필드에 `OfficeEventReactionLayer`를 추가해 말풍선형 픽셀 플래시를 표시한다.
+- `office-visuals` QA 시나리오가 `prompt_sprint` 카드 사용 상태를 포함해 카드 반응을 즉시 확인할 수 있다.
+- reduced-motion 환경에서는 이벤트 반응 애니메이션도 꺼진다.
+
+**검증:**
+- `npm test -- src/game/office-scene.test.ts src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts` 통과, 3 files / 67 tests
+- `npm run harness:gate` 통과, 40 files / 294 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- `curl -I 'http://127.0.0.1:5201/?scenario=office-visuals'` 통과, 200 OK
+
 ## [0.48-alpha] — 2026-05-19
 
 ### 시트 기반 액터 프레임 애니메이션
@@ -52,6 +68,22 @@
 - `sips -g pixelWidth -g pixelHeight` 확인: 에이전트 576×1920, 오브젝트 1280×960, 배경 2560×1440
 - `npm run harness:gate` 통과, 40 files / 290 tests, 데이터 검증 통과, 프로덕션 빌드 통과
 - Browser QA 시도: 현재 Node REPL 런타임에 `playwright` 모듈이 없어 DOM 스크린샷 검증은 보류. 대신 정적 PNG 산출물, 서버 응답, 데이터/빌드 검증을 완료했다.
+
+## [0.45-alpha] — 2026-05-19
+
+### 고해상도 픽셀 시트 기반 사무실
+
+**추가:**
+- `scripts/assets/generate-v045-isometric-sheets.mjs`를 추가해 캐릭터, 오브젝트, 아이소메트릭 사무실 PNG 초안 시트를 생성한다.
+- `asset_manifest.json`에 `sprite_sheets`와 `scene_backdrops` 계약을 추가해 시트 경로와 슬라이스 규격을 데이터화했다.
+- `GameChrome`이 manifest 기반 agent/object frame style helper로 시트를 잘라 렌더링한다.
+- 기존 액터 클릭, 포커스 패널, 직접 케어 액션 경로는 유지했다.
+
+**검증:**
+- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 34 tests
+- `npm run assets:v045` 통과
+- `npm run harness:gate` 통과, 40 files / 290 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- Browser DOM 스크린샷 자동 검증은 Playwright 런치 타임아웃으로 보류했으며 QA 보고서에 리스크로 기록했다.
 
 ## [0.44-alpha] — 2026-05-19
 

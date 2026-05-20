@@ -1,121 +1,123 @@
-# Production Harness — AI Company Tycoon: Boundaryless
+# Production Harness - AI Company Tycoon: Boundaryless
 
 ## Purpose
 
-The production harness defines the workflow, quality gates, and documentation standards used to build this game. It ensures every milestone is delivered with consistent quality, tested from multiple perspectives, and documented for future reference.
+This production harness keeps the solo-dev game loop restartable for coding agents. It defines where state lives, how scope is chosen, which gates prove work, and what must be recorded before a milestone advances.
 
----
+## Current Stack
 
-## Workflow
+- Runtime: Vite + React + TypeScript
+- Game data: JSON files in `data/`
+- Tests: Vitest
+- Data validation: `scripts/harness/validate-data.mjs`
+- Build: TypeScript + Vite production build
+- Primary browser QA scenario: `?scenario=office-visuals`
 
-### Milestone-Based Development
+Legacy Godot files remain as reference material only. New implementation work should target the Vite/React stack unless the user explicitly asks otherwise.
 
-The game is built in sequential milestones. Each milestone has:
-- A clear goal
-- Specific deliverables
-- Acceptance criteria
-- Synthetic playtesting
-- Agent review
+## Startup Workflow
 
-### Milestone Sequence
+Every new coding-agent session should start from the root harness files:
 
-| # | Milestone | Goal |
-|---|---|---|
-| 0 | Harness Setup | Create production harness and docs |
-| 1 | Empty Playable Shell | Launch Godot scene with UI and resources |
-| 2 | Product Launch Loop | Player launches product and earns revenue |
-| 3 | Capability and Domain Unlocks | AI capability upgrades unlock products and domains |
-| 4 | Monthly Events | Events create strategic choices |
-| 5 | Upgrades and Automation | Player can choose long-term investments |
-| 6 | Save / Load | Game state persists |
-| 7 | 10-Minute MVP Integration | Connect all systems into coherent playable loop |
+1. Read `AGENTS.md` for startup rules and Definition of Done.
+2. Read `feature_list.json` for the current feature, dependencies, and done criteria.
+3. Read `progress.md` for the current state, blockers, touched files, and latest verification evidence.
+4. Read `docs/SESSION_HANDOFF.md`, `docs/ROADMAP.md`, `docs/CHANGELOG.md`, and `docs/QA_SCENARIOS.md` for project context.
+5. Run `git status --short` before editing.
 
----
+## One-Feature Scope Rule
+
+Use one active feature at a time unless the user explicitly asks for a broader pass. The active feature must have:
+
+- A stable id
+- A plain-language scope statement
+- Dependencies
+- Status
+- Definition of Done
+- Verification evidence
+- Next step
+
+`feature_list.json` is the structured tracker. `progress.md` is the restart log.
 
 ## Quality Gates
 
-Before advancing to the next milestone:
+Before advancing a feature or milestone:
 
-1. All acceptance criteria must pass.
-2. DebugValidator must run without errors.
-3. Synthetic playtest must be completed.
-4. All P0 and P1 issues must be resolved.
-5. Agent review must be documented.
-6. Production report must be written.
+1. Acceptance criteria for the version must be listed in `docs/ACCEPTANCE_CRITERIA.md`.
+2. Relevant unit, data, layout, or simulation tests must pass.
+3. `npm run validate:data` must pass for data/content changes.
+4. `npm run build` must pass for UI/runtime changes.
+5. `npm run harness:gate` must pass before claiming full completion.
+6. Browser QA should be recorded for visible UI changes when tooling is available.
+7. P0/P1 issues must be fixed or explicitly waived by the human owner.
+8. Production/QA/playtest/balance reports must be updated when the change affects their area.
 
----
+## Verification Commands
+
+```bash
+npm test
+npm run validate:data
+npm run build
+npm run harness:gate
+./init.sh
+```
+
+`./init.sh` is the restartable harness entrypoint. It installs dependencies only when `node_modules` is missing, then runs `npm run harness:gate`.
 
 ## Data-Driven Architecture
 
-All tunable values must be in JSON data files. Never hardcode:
-- Product names, costs, or revenue
-- Event text or effects
-- Upgrade values
-- Capability names
-- Domain unlock requirements
-- Balance coefficients
+Prefer data files over hardcoded tunables for:
 
----
+- Product names, costs, revenue, and requirements
+- Card definitions, costs, effects, and tags
+- Events, rival moves, and incident text/effects
+- Upgrade values and unlock requirements
+- Office zones, decor, sprites, and asset manifest entries
+- Balance coefficients and simulation thresholds
+
+Gameplay state should flow through `GameState` and typed simulation helpers rather than UI-only state.
+
+## Report Requirements
+
+For meaningful player-facing or harness milestones, update the relevant set:
+
+- `docs/CHANGELOG.md`
+- `docs/ACCEPTANCE_CRITERIA.md`
+- `docs/SESSION_HANDOFF.md`
+- `progress.md`
+- `feature_list.json`
+- `reports/production_<version_topic>.md`
+- `reports/qa/<version_topic>_qa.md`
+- `reports/playtests/<version_topic>_synthetic_playtest.md` when player feel changed
+- `reports/balance/<version_topic>_balance.md` when economy changed
+
+Reports should be Korean by default. Keep commands, code identifiers, and file paths in their original spelling when helpful.
 
 ## File Organization
 
-```
+```text
 ai-company-tycoon/
 ├── AGENTS.md
-├── docs/
-│   ├── GAME_VISION.md
-│   ├── PRODUCTION_HARNESS.md
-│   ├── AGENT_ROLES.md
-│   ├── QA_PROTOCOL.md
-│   ├── SYNTHETIC_PLAYTEST_PROTOCOL.md
-│   ├── ACCEPTANCE_CRITERIA.md
-│   ├── BALANCE_PROTOCOL.md
-│   ├── RETROSPECTIVE_LOG.md
-│   ├── CHANGELOG.md
-│   └── RISK_REGISTER.md
-├── reports/
-│   ├── qa/
-│   ├── playtests/
-│   ├── retrospectives/
-│   ├── balance/
-│   └── production_milestone_X.md
+├── feature_list.json
+├── progress.md
+├── session-handoff.md
+├── init.sh
 ├── data/
-│   ├── resources.json
-│   ├── balance.json
-│   ├── products.json
-│   ├── capabilities.json
-│   ├── domains.json
-│   ├── events.json
-│   ├── upgrades.json
-│   ├── automation_upgrades.json
-│   ├── company_stages.json
-│   └── ui_text.json
-├── scenes/
-│   └── ui/
+├── docs/
+├── public/
+├── reports/
 ├── scripts/
-│   ├── core/
-│   ├── systems/
-│   ├── ui/
-│   └── debug/
+│   ├── assets/
+│   └── harness/
+├── src/
 └── tests/
 ```
 
----
+## Lifecycle
 
-## Communication Protocol
+At the end of a session:
 
-- Each milestone produces a production report.
-- Issues are tracked with priority levels (P0-P3).
-- Retrospectives are logged after every 2 milestones.
-- Risk register is updated when new risks are identified.
-- Changelog is updated with every milestone completion.
-
----
-
-## Tools
-
-- Engine: Godot 4.x
-- Language: GDScript
-- Data format: JSON
-- Version control: Git (recommended)
-- Testing: DebugValidator + Synthetic Playtesting
+1. Update `progress.md` with Last Updated, Current Objective, Files, Blockers, Verification Evidence, and Recommended Next Step.
+2. Update `feature_list.json` status/evidence for the active feature.
+3. Update `docs/SESSION_HANDOFF.md` if the version, commit, QA route, or next milestone changed.
+4. Leave the project restartable from `AGENTS.md` plus `./init.sh`.

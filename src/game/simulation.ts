@@ -13,6 +13,7 @@ import {
   events,
   items,
   officeExpansions,
+  officeReactions,
   officeSceneObjects,
   officeSynergies,
   officeZones,
@@ -57,6 +58,7 @@ import type {
   MarketRanking,
   MonthlyEconomy,
   OfficeExpansionDefinition,
+  OfficeEventReactionStatus,
   OfficeGrowthDecorRecommendation,
   OfficeGrowthPlan,
   OfficeSceneActorStatus,
@@ -1218,8 +1220,65 @@ export function getOfficeScenePlan(state: GameState): OfficeScenePlan {
     workingActorCount,
     objects: visibleObjects,
     actors,
+    eventReactions: getOfficeEventReactions(state),
     activityTicker: createOfficeSceneActivityTicker(state, expansion.name, zonePlan.active.length, workingActorCount),
   };
+}
+
+function getOfficeEventReactions(state: GameState): OfficeEventReactionStatus[] {
+  const entries = officeReactions
+    .map((definition): OfficeEventReactionStatus | undefined => {
+      if (definition.trigger === "card_use") {
+        const cardEntry = state.timeline.find((entry) => entry.startsWith("카드 사용:"));
+        const playedCards = state.roguelite.deck.playedThisTurn;
+        const playedCardId = playedCards[playedCards.length - 1];
+        const playedCard = playedCardId ? strategyCards.find((card) => card.id === playedCardId) : undefined;
+        const cardName = playedCard?.name ?? cardEntry?.replace(/^카드 사용:\s*/, "").split(" (")[0];
+        if (!cardName) return undefined;
+
+        return {
+          ...definition,
+          headline: `${cardName} 발동`,
+          source: cardEntry ?? `playedThisTurn:${playedCardId}`,
+        };
+      }
+
+      if (definition.trigger === "product_launch") {
+        const launch = state.lastRelease;
+        if (!launch || launch.month < state.month - 1) return undefined;
+
+        return {
+          ...definition,
+          headline: `${launch.productName} ${launch.review.grade}`,
+          source: `lastRelease:${launch.productId}`,
+        };
+      }
+
+      if (definition.trigger === "rival_alert") {
+        const rivalEntry = state.timeline.find((entry) => entry.includes("경쟁사") || entry.includes("라이벌") || entry.includes("스카우트"));
+        const rivalEvent = state.currentRivalEvent;
+        if (!rivalEntry && !rivalEvent) return undefined;
+
+        return {
+          ...definition,
+          headline: rivalEvent ? t(rivalEvent.name_key) : "경쟁사 움직임",
+          source: rivalEntry ?? `rivalEvent:${rivalEvent?.id}`,
+        };
+      }
+
+      const staffEntry = state.timeline.find((entry) => entry.includes("인사") || entry.includes("후폭풍") || entry.includes("퇴사"));
+      const staffSummary = state.lastMonthReport?.staffAftermathSummary;
+      if (!staffEntry && !staffSummary) return undefined;
+
+      return {
+        ...definition,
+        headline: staffSummary ?? "직원 케어 경보",
+        source: staffEntry ?? "staffAftermathSummary",
+      };
+    })
+    .filter((reaction): reaction is OfficeEventReactionStatus => Boolean(reaction));
+
+  return entries.sort((a, b) => b.priority - a.priority || a.id.localeCompare(b.id)).slice(0, 3);
 }
 
 function createOfficeSceneActor(agent: HiredAgent, index: number, state: GameState): OfficeSceneActorStatus {

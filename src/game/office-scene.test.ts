@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { agentTypes, officeSceneObjects, products } from "./data";
+import { agentTypes, officeReactions, officeSceneObjects, products } from "./data";
+import { getStrategyCardById, playStrategyCard } from "./deckbuilding";
 import { createInitialState, getOfficeScenePlan, startProductProject } from "./simulation";
 import type { GameState, HiredAgent } from "./types";
 
@@ -102,5 +103,34 @@ describe("v0.41 office visual simulation plan", () => {
 
     expect(robotActor?.kind).toBe("robot");
     expect(robotActor?.activity).toContain("충전");
+  });
+});
+
+describe("v0.49 office event reactions", () => {
+  it("loads data-driven reaction hooks for card, launch, rival, and staff moments", () => {
+    expect(officeReactions.map((reaction) => reaction.trigger)).toEqual(
+      expect.arrayContaining(["card_use", "product_launch", "rival_alert", "staff_incident"]),
+    );
+    for (const reaction of officeReactions) {
+      expect(reaction.duration_ms).toBeGreaterThanOrEqual(900);
+      expect(reaction.x).toBeGreaterThanOrEqual(0);
+      expect(reaction.x).toBeLessThanOrEqual(100);
+      expect(reaction.y).toBeGreaterThanOrEqual(0);
+      expect(reaction.y).toBeLessThanOrEqual(100);
+    }
+  });
+
+  it("turns a recent card use into a visible office reaction", () => {
+    const codingProduct = products.find((product) => product.id === "ai_coding_assistant");
+    const sprintCard = getStrategyCardById("prompt_sprint");
+    if (!codingProduct || !sprintCard) throw new Error("Missing office reaction fixture");
+
+    const state = officeVisualState();
+    const started = startProductProject(codingProduct, state, [state.hiredAgents[0].id]);
+    const played = playStrategyCard(sprintCard, started);
+    const plan = getOfficeScenePlan(played);
+
+    expect(plan.eventReactions.map((reaction) => reaction.trigger)).toContain("card_use");
+    expect(plan.eventReactions.find((reaction) => reaction.trigger === "card_use")?.headline).toContain("프롬프트 스프린트");
   });
 });

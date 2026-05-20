@@ -1,0 +1,67 @@
+{
+  "last_updated": "2026-05-20",
+  "current_feature_id": "v0.50-alpha-candidate",
+  "features": [
+    {
+      "id": "harness-2026-05-20",
+      "name": "Harness reliability pass",
+      "description": "Make the coding-agent harness restartable by adding root state files, a startup script, current source-of-truth routing, and updated Vite/React production docs.",
+      "status": "completed",
+      "priority": "P1",
+      "dependencies": [],
+      "definition_of_done": [
+        "Root AGENTS.md documents startup workflow, verification commands, scope rules, and Definition of Done.",
+        "Root feature_list.json, progress.md, session-handoff.md, and init.sh exist.",
+        "docs/SESSION_HANDOFF.md, docs/PRODUCTION_HARNESS.md, and docs/ACCEPTANCE_CRITERIA.md reflect the v0.48/Vite state.",
+        "harness-creator validation reaches at least 70/100.",
+        "npm run harness:gate passes."
+      ],
+      "evidence": [
+        "2026-05-20: harness-creator validation passed at 100/100 across instructions, state, verification, scope, and lifecycle.",
+        "2026-05-20: ./init.sh passed; it ran npm run harness:gate with 40 test files / 291 tests, data validation, and production build passing."
+      ],
+      "next_step": "Use the updated root harness files for future sessions, then start v0.49-alpha-event-reactions when product work resumes."
+    },
+    {
+      "id": "v0.49-alpha-event-reactions",
+      "name": "Office event reaction animation pass",
+      "description": "Use the v0.48 sprite-sheet animation path to make card use, product launches, and rival/staff incidents produce short readable office reactions.",
+      "status": "completed",
+      "priority": "P2",
+      "dependencies": [
+        "v0.48-alpha-sprite-animation"
+      ],
+      "definition_of_done": [
+        "At least one card-use or launch moment creates a visible office reaction.",
+        "Reaction data is driven by JSON or stable typed constants with a clear expansion path.",
+        "office-visuals QA scenario exposes the reaction state.",
+        "Relevant tests and npm run harness:gate pass.",
+        "Changelog, acceptance criteria, production report, and QA report are updated."
+      ],
+      "evidence": [
+        "2026-05-20: Added data/office_reactions.json with card_use, product_launch, rival_alert, and staff_incident hooks.",
+        "2026-05-20: getOfficeScenePlan now returns eventReactions and office-visuals exposes a prompt_sprint card-use reaction.",
+        "2026-05-20: npm test -- src/game/office-scene.test.ts src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts passed with 3 files / 67 tests."
+      ],
+      "next_step": "Add sprite-sheet pose rows for cheers, alerts, and card-use effects after the alpha candidate pass."
+    },
+    {
+      "id": "v0.50-alpha-candidate",
+      "name": "Alpha candidate consolidation",
+      "description": "Bundle UI stability, persona retest, and screenshot-readiness into a larger alpha candidate after event reactions land.",
+      "status": "ready",
+      "priority": "P2",
+      "dependencies": [
+        "v0.49-alpha-event-reactions"
+      ],
+      "definition_of_done": [
+        "20-person persona QA is rerun against the current v0.5 candidate.",
+        "P0/P1 findings are fixed or explicitly waived.",
+        "The first screen communicates the fantasy and first action within 30 seconds.",
+        "npm run harness:gate passes and reports are updated."
+      ],
+      "evidence": [],
+      "next_step": "Start after v0.49 reactions or after the user asks for a larger alpha-candidate pass."
+    }
+  ]
+}

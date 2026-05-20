@@ -84,6 +84,7 @@ const officeExpansionsData = readJson("office_expansions.json");
 const officeSynergiesData = readJson("office_synergies.json");
 const officeZonesData = readJson("office_zones.json");
 const officeSceneData = readJson("office_scene.json");
+const officeReactionsData = readJson("office_reactions.json");
 const workforceSynergiesData = readJson("workforce_synergies.json");
 const annualReviewsData = readJson("annual_reviews.json");
 const annualDirectiveChoicesData = readJson("annual_directive_choices.json");
@@ -121,6 +122,7 @@ const officeExpansions = officeExpansionsData?.office_expansions ?? [];
 const officeSynergies = officeSynergiesData?.office_synergies ?? [];
 const officeZones = officeZonesData?.office_zones ?? [];
 const officeSceneObjects = officeSceneData?.office_scene_objects ?? [];
+const officeReactions = officeReactionsData?.office_reactions ?? [];
 const workforceSynergies = workforceSynergiesData?.workforce_synergies ?? [];
 const annualReviews = annualReviewsData?.annual_reviews ?? [];
 const annualDirectiveChoices = annualDirectiveChoicesData?.annual_directive_choices ?? [];
@@ -156,6 +158,7 @@ idsAreUnique("office_expansions", officeExpansions);
 idsAreUnique("office_synergies", officeSynergies);
 const officeZoneIds = idsAreUnique("office_zones", officeZones);
 idsAreUnique("office_scene.office_scene_objects", officeSceneObjects);
+idsAreUnique("office_reactions", officeReactions);
 idsAreUnique("workforce_synergies", workforceSynergies);
 idsAreUnique("annual_reviews", annualReviews);
 idsAreUnique("annual_directive_choices", annualDirectiveChoices);
@@ -420,6 +423,40 @@ for (const object of officeSceneObjects) {
 
 if (officeSceneObjects.length < 10) {
   errors.push("office_scene: expected at least 10 office scene objects");
+}
+
+const officeReactionTriggers = new Set(["card_use", "product_launch", "rival_alert", "staff_incident"]);
+const officeReactionTones = new Set(["boost", "success", "warning", "danger"]);
+for (const reaction of officeReactions) {
+  for (const field of ["trigger", "label", "bubble", "detail", "tone", "x", "y", "duration_ms", "priority", "tags"]) {
+    if (!(field in reaction)) errors.push(`office_reactions "${reaction.id}": missing ${field}`);
+  }
+  if (!officeReactionTriggers.has(reaction.trigger)) {
+    errors.push(`office_reactions "${reaction.id}": unknown trigger "${reaction.trigger}"`);
+  }
+  if (!officeReactionTones.has(reaction.tone)) {
+    errors.push(`office_reactions "${reaction.id}": unknown tone "${reaction.tone}"`);
+  }
+  for (const field of ["x", "y"]) {
+    if (typeof reaction[field] !== "number" || reaction[field] < 0 || reaction[field] > 100) {
+      errors.push(`office_reactions "${reaction.id}": ${field} must be a 0-100 number`);
+    }
+  }
+  if (typeof reaction.duration_ms !== "number" || reaction.duration_ms < 500) {
+    errors.push(`office_reactions "${reaction.id}": duration_ms must be at least 500`);
+  }
+  if (typeof reaction.priority !== "number") {
+    errors.push(`office_reactions "${reaction.id}": priority must be a number`);
+  }
+  if (!Array.isArray(reaction.tags) || reaction.tags.length === 0) {
+    errors.push(`office_reactions "${reaction.id}": tags must be a non-empty array`);
+  }
+}
+
+for (const trigger of officeReactionTriggers) {
+  if (!officeReactions.some((reaction) => reaction.trigger === trigger)) {
+    errors.push(`office_reactions: missing trigger "${trigger}"`);
+  }
 }
 
 for (const synergy of workforceSynergies) {

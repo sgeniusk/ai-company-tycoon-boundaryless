@@ -727,6 +727,82 @@ p {
   font-weight: 900;
 }
 
+.office-event-reaction-layer {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 6;
+}
+
+.office-event-reaction {
+  animation: office-reaction-pop var(--reaction-duration, 1200ms) steps(3) infinite;
+  background: #fff7df;
+  border: 3px solid var(--blue);
+  box-shadow: 0 4px 0 rgba(61, 51, 35, 0.38);
+  color: #233b2e;
+  display: grid;
+  gap: 2px;
+  left: var(--reaction-x, 50%);
+  max-width: 142px;
+  min-width: 96px;
+  padding: 6px 8px;
+  position: absolute;
+  top: var(--reaction-y, 50%);
+  transform: translate(-50%, -100%);
+}
+
+.office-event-reaction::after {
+  background: inherit;
+  border-bottom: 3px solid currentColor;
+  border-right: 3px solid currentColor;
+  bottom: -9px;
+  content: "";
+  height: 12px;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+}
+
+.office-event-reaction strong,
+.office-event-reaction small {
+  display: block;
+  line-height: 1.05;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.office-event-reaction strong {
+  font-size: 0.66rem;
+}
+
+.office-event-reaction small {
+  color: #705a38;
+  font-size: 0.55rem;
+  font-weight: 900;
+}
+
+.office-event-reaction.tone-boost {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.office-event-reaction.tone-success {
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+
+.office-event-reaction.tone-warning {
+  border-color: #d59b21;
+  color: #8a5f0d;
+}
+
+.office-event-reaction.tone-danger {
+  border-color: var(--red);
+  color: var(--red);
+}
+
 .office-level-2 .office-floor {
   min-height: 212px;
 }
@@ -1662,6 +1738,18 @@ p {
   }
   to {
     background-position: var(--sprite-end-x, 0) var(--sprite-row-y, 0);
+  }
+}
+
+@keyframes office-reaction-pop {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: translate(-50%, -100%);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 8px));
   }
 }
 
@@ -6125,6 +6213,7 @@ p {
   button,
   .release-spotlight,
   .office-object.pixel-office-object,
+  .office-event-reaction,
   .staff-sprite.pixel-actor {
     animation: none;
     transition: none;

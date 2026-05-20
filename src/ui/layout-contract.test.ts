@@ -181,6 +181,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.competitor-hud-logo\s*{[^}]*image-rendering:\s*pixelated/s);
   });
 
+  it("renders v0.49 office event reactions without covering the playfield", () => {
+    expect(gameChrome).toContain("OfficeEventReactionLayer");
+    expect(gameChrome).toContain("officeScenePlan.eventReactions");
+    expect(gameChrome).toContain("office-event-reaction-layer");
+    expect(gameChrome).toContain("office-event-reaction");
+    expect(appCss).toMatch(/\.office-event-reaction-layer\s*{[^}]*pointer-events:\s*none/s);
+    expect(appCss).toMatch(/\.office-event-reaction\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/@keyframes\s+office-reaction-pop/s);
+  });
+
   it("protects the playfield by narrowing the persistent console column", () => {
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*0\.94fr\)\s+minmax\(0,\s*1fr\)\s+clamp\(330px,\s*28vw,\s*390px\)/s);
     expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);

@@ -37,7 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.21 20-person persona review, priorities, and log-menu QA state |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.48 high-density sprite-sheet actor animation, preview, isometric depth sorting, decor props, and direct actor care actions |
+| Office Visuals | `?scenario=office-visuals` | v0.49 office event reactions over high-density sprite-sheet actors, preview, decor props, and direct actor care actions |
 
 Examples:
 
@@ -68,7 +68,7 @@ Examples:
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
 
-## v0.48 Sprite Sheet Animation QA
+## v0.49 Office Event Reaction QA
 
 URL:
 
@@ -76,7 +76,10 @@ URL:
 
 Expected:
 
-- The QA pill says `v0.48 사무실 액터 시트 애니메이션 QA`.
+- The QA pill says `v0.49 사무실 이벤트 리액션 QA`.
+- The office playfield includes `office-event-reaction-layer` and at least one `card_use` reaction from `프롬프트 스프린트`.
+- Reaction bubbles use `office_reactions.json` position, tone, and duration metadata.
+- The reaction layer does not intercept clicks on office actors or direct care buttons.
 - The office playfield shows the `v046-isometric-office-hires.png` pixel-art backdrop.
 - Human/AI priority actors render with `v046-agents-hires.png` sprite-sheet frames rather than CSS-only body blocks.
 - Human/AI priority actors include `sprite-sheet-animated` and cycle through their 3-frame idle/work rows.

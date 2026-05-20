@@ -44,6 +44,7 @@ import type {
   GameState,
   ItemDefinition,
   OfficeObjectAssetDefinition,
+  OfficeEventReactionStatus,
   OfficeSceneActorStatus,
   OperationsCommandPlan,
   ReleaseGrowthPath,
@@ -479,6 +480,7 @@ export function GameStage({
           />
           <RivalIncidentBanner gameState={gameState} />
           <OperationCommandPanel plan={operationsPlan} onOpenMenu={setActiveMenu} />
+          <OfficeEventReactionLayer reactions={officeScenePlan.eventReactions} />
           <div className="office-actor-layer" aria-label="사무실 액터">
             {visibleOfficeActors.map((actor, index) => {
               const agentType = actor.agentTypeId ? agentTypes.find((type) => type.id === actor.agentTypeId) : undefined;
@@ -976,6 +978,33 @@ function OfficeGraphicAssetWall() {
             </span>
           ))}
         </div>
+      ))}
+    </div>
+  );
+}
+
+function OfficeEventReactionLayer({ reactions }: { reactions: OfficeEventReactionStatus[] }) {
+  if (reactions.length === 0) return null;
+
+  return (
+    <div className="office-event-reaction-layer" aria-label="사무실 이벤트 반응" aria-live="polite">
+      {reactions.map((reaction) => (
+        <span
+          className={`office-event-reaction tone-${reaction.tone} reaction-${reaction.trigger}`}
+          key={reaction.id}
+          style={
+            {
+              "--reaction-duration": `${reaction.duration_ms}ms`,
+              "--reaction-x": `${reaction.x}%`,
+              "--reaction-y": `${reaction.y}%`,
+              ...getDepthStyle(reaction.y, 120),
+            } as CSSProperties
+          }
+          title={`${reaction.label} · ${reaction.detail}`}
+        >
+          <strong>{reaction.bubble}</strong>
+          <small>{reaction.headline}</small>
+        </span>
       ))}
     </div>
   );

@@ -8,7 +8,7 @@ Define the quality assurance process for every milestone to ensure stability, co
 
 ## QA Layers
 
-### Layer 1: DebugValidator (Automated)
+### Layer 1: Data And Contract Validation (Automated)
 
 Run after every code or data change.
 
@@ -17,10 +17,20 @@ Run after every code or data change.
 - All required fields are present
 - No duplicate IDs exist
 - All cross-references resolve (e.g., product requires capability that exists)
-- Starting game state is playable (positive cash, at least one launchable product)
+- Starting game state is playable
 - No orphaned data (upgrades referencing non-existent capabilities)
+- Asset manifest, QA scenario, save/load, layout, or simulation contracts affected by the change
 
-**Output:** Pass/Fail with detailed error list.
+**Commands:**
+
+```bash
+npm test
+npm run validate:data
+npm run build
+npm run harness:gate
+```
+
+**Output:** Pass/Fail with summarized evidence in the QA report.
 
 ---
 
@@ -81,8 +91,12 @@ After every fix:
 
 ## Date: YYYY-MM-DD
 
-## DebugValidator
+## Automated Verification
 - Status: Pass / Fail
+- Commands:
+  - `npm test`
+  - `npm run validate:data`
+  - `npm run build`
 - Errors: (list)
 
 ## Functional Tests
@@ -111,7 +125,7 @@ After every fix:
 
 ## QA Cadence
 
-- DebugValidator: After every data or code change
+- Automated data/test/build verification: After every data or code change
 - Functional testing: After every milestone
 - Edge case testing: After Milestone 2+
 - Regression testing: After every bug fix

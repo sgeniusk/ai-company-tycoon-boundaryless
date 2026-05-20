@@ -1,0 +1,56 @@
+{
+  "office_reactions": [
+    {
+      "id": "card_use",
+      "trigger": "card_use",
+      "label": "전략 카드",
+      "bubble": "카드 발동",
+      "detail": "손패에서 낸 카드가 개발석 주변에 짧은 픽셀 플래시로 표시된다.",
+      "tone": "boost",
+      "x": 55,
+      "y": 58,
+      "duration_ms": 1200,
+      "priority": 40,
+      "tags": ["deck", "card", "development"]
+    },
+    {
+      "id": "product_launch",
+      "trigger": "product_launch",
+      "label": "출시 반응",
+      "bubble": "출시!",
+      "detail": "최근 출시 제품이 런칭 무대와 스크린 주변 반응으로 표시된다.",
+      "tone": "success",
+      "x": 72,
+      "y": 44,
+      "duration_ms": 1500,
+      "priority": 35,
+      "tags": ["launch", "product", "shareable"]
+    },
+    {
+      "id": "rival_alert",
+      "trigger": "rival_alert",
+      "label": "경쟁 속보",
+      "bubble": "라이벌!",
+      "detail": "경쟁사 움직임이 상단 속보와 사무실 경보 반응으로 이어진다.",
+      "tone": "danger",
+      "x": 82,
+      "y": 28,
+      "duration_ms": 1300,
+      "priority": 25,
+      "tags": ["rival", "market", "alert"]
+    },
+    {
+      "id": "staff_incident",
+      "trigger": "staff_incident",
+      "label": "인사 경보",
+      "bubble": "케어 필요",
+      "detail": "번아웃, 스카우트, 후폭풍 같은 직원 사건을 액터 근처 경고로 표시한다.",
+      "tone": "warning",
+      "x": 40,
+      "y": 62,
+      "duration_ms": 1400,
+      "priority": 30,
+      "tags": ["staff", "care", "incident"]
+    }
+  ]
+}

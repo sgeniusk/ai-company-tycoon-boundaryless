@@ -153,3 +153,17 @@ Next asset handoff:
 - AI-generated character sheets must keep all three frames in each row aligned to the same bottom-center anchor.
 - Work rows should show a small but readable prop/action change across the three frames.
 - Idle rows should keep the silhouette stable, with only small breathing or expression shifts.
+
+## v0.49 Event Reaction Layer
+
+Implemented:
+
+- `data/office_reactions.json` defines reaction trigger, tone, position, duration, priority, and tags for card use, product launch, rival alert, and staff incident moments.
+- `getOfficeScenePlan()` exposes `eventReactions` so the office scene can render feedback from existing game state without adding a second visual state store.
+- `OfficeEventReactionLayer` displays the first reaction pass as pixel-styled bubbles over the isometric office.
+
+Next asset handoff:
+
+- Add dedicated cheer, alert, and card-use rows after the current idle/work pairs.
+- Keep reaction-specific pose rows in the same 192×192 slot grid and bottom-center anchor.
+- Let the bubble layer remain as readable UI while future sprite rows supply body language.

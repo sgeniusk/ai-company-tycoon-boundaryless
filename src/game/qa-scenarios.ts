@@ -402,7 +402,7 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "office-visuals") {
     return {
       id,
-      label: "v0.48 사무실 액터 시트 애니메이션 QA",
+      label: "v0.49 사무실 이벤트 리액션 QA",
       state: createOfficeVisualScenarioState(),
       activeMenu: "company",
     };
@@ -518,7 +518,7 @@ function createOfficeVisualScenarioState(): GameState {
       ]
     : visualAgents;
 
-  return {
+  const visualState: GameState = {
     ...baseState,
     hiredAgents,
     ownedItems: [...new Set([...baseState.ownedItems, ...visualDecorItemIds])],
@@ -526,7 +526,13 @@ function createOfficeVisualScenarioState(): GameState {
       ...baseState.office,
       placedItemIds: visualDecorItemIds,
     },
-    timeline: ["v0.48 시트 애니메이션 QA: 고밀도 액터 atlas가 상태별 3프레임으로 움직이는지 확인", ...baseState.timeline].slice(0, 8),
+  };
+  const sprintCard = getStrategyCardById("prompt_sprint");
+  const reactedState = sprintCard ? playStrategyCard(sprintCard, visualState) : visualState;
+
+  return {
+    ...reactedState,
+    timeline: ["v0.49 이벤트 리액션 QA: 카드 사용, 케어 경보, 사무실 말풍선 반응 확인", ...reactedState.timeline].slice(0, 8),
   };
 }
 

@@ -6,6 +6,96 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.49: Office Event Reactions
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `data/office_reactions.json` defines card use, product launch, rival alert, and staff incident hooks | **Passed** |
+| 2 | `getOfficeScenePlan()` returns `eventReactions` from recent card, launch, rival, or staff state | **Passed** |
+| 3 | `OfficeEventReactionLayer` renders reactions in the office playfield without intercepting actor clicks | **Passed** |
+| 4 | `office-visuals` QA scenario exposes a card-use reaction state | **Passed** |
+| 5 | Reduced-motion users keep reaction animation disabled | **Passed** |
+| 6 | Relevant tests pass before the full harness gate | **Passed** |
+
+---
+
+## Alpha v0.48: Sprite Sheet Actor Animation
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `asset_manifest.json` declares the current sprite animation contract as `0.48-alpha` | **Passed** |
+| 2 | Priority human/AI actor idle and work animations include `duration_ms` | **Passed** |
+| 3 | Office actors render through sprite-sheet frames with `sprite-sheet-animated` | **Passed** |
+| 4 | Work animation reads faster than idle animation | **Passed** |
+| 5 | Reduced-motion users keep animation disabled | **Passed** |
+| 6 | `npm run harness:gate` passes with tests, data validation, and production build | **Passed** |
+
+---
+
+## Alpha v0.47: Sprite Sheet Inspector And Depth Sorting
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `asset_manifest.json` includes density and preview-frame metadata for high-density sheets | **Passed** |
+| 2 | `OfficeSpriteSheetInspector` appears only in QA scenarios such as `office-visuals` | **Passed** |
+| 3 | Character and object atlas preview frames can be inspected in-game | **Passed** |
+| 4 | Office zones, decor props, and actors use y-position depth ordering | **Passed** |
+| 5 | Mobile layout keeps the preview compact without blocking the office controls | **Passed** |
+| 6 | `npm run harness:gate` passes | **Passed** |
+
+---
+
+## Alpha v0.46: High-Density Pixel Sheet Office
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | High-density agent, object, and isometric office PNG assets are generated | **Passed** |
+| 2 | Asset manifest points to the high-density sheet contracts | **Passed** |
+| 3 | Runtime actor and decor rendering use the high-density sheet frames | **Passed** |
+| 4 | Data validation and asset manifest tests cover the sheet contract | **Passed** |
+| 5 | `npm run harness:gate` passes | **Passed** |
+
+---
+
+## Alpha v0.45: Isometric Sprite Sheet Pipeline
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `npm run assets:v045` generates agent, object, and office background PNGs | **Passed** |
+| 2 | `asset_manifest.json` stores sprite sheet and scene backdrop slicing data | **Passed** |
+| 3 | `GameChrome` can slice agent and office object frames from the manifest | **Passed** |
+| 4 | Existing actor click, focus panel, and direct care actions remain intact | **Passed** |
+| 5 | Data validation, build, and `npm run harness:gate` pass | **Passed** |
+| 6 | Browser DOM screenshot QA limitation is recorded as a remaining risk | **Passed** |
+
+---
+
+## Alpha v0.44: Office Actor Direct Care Actions
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Focus panel shows `즉시 휴식` when the selected actor can rest | **Passed** |
+| 2 | Focus panel shows `연봉 협상` when the selected actor can negotiate salary | **Passed** |
+| 3 | Buttons reuse existing staff-care checks, costs, state updates, and timeline entries | **Passed** |
+| 4 | `office-visuals` QA scenario includes rest and negotiation candidates | **Passed** |
+| 5 | Mobile layout avoids horizontal overflow with care buttons visible | **Passed** |
+| 6 | `npm run harness:gate` passes | **Passed** |
+
+---
+
+## Alpha v0.43: Graphic Asset Game Screen
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | Office screen renders agent, competitor, item, and office object assets from `asset_manifest.json` | **Passed** |
+| 2 | Placed office items appear as visible decor props | **Passed** |
+| 3 | Rival HUD includes competitor logo miniatures | **Passed** |
+| 4 | `office-visuals` QA scenario exposes the graphic asset wall and decor layer | **Passed** |
+| 5 | Actors and focus panel remain visible with the graphic layer active | **Passed** |
+| 6 | `npm run harness:gate` passes | **Passed** |
+
+---
+
 ## Alpha v0.42: Office Actor Interaction
 
 | # | Criterion | Status |

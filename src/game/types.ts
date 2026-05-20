@@ -759,6 +759,28 @@ export interface OfficeSceneObjectStatus extends OfficeSceneObjectDefinition {
   zoneTitle?: string;
 }
 
+export type OfficeEventReactionTrigger = "card_use" | "product_launch" | "rival_alert" | "staff_incident";
+export type OfficeEventReactionTone = "boost" | "success" | "warning" | "danger";
+
+export interface OfficeEventReactionDefinition {
+  id: string;
+  trigger: OfficeEventReactionTrigger;
+  label: string;
+  bubble: string;
+  detail: string;
+  tone: OfficeEventReactionTone;
+  x: number;
+  y: number;
+  duration_ms: number;
+  priority: number;
+  tags: string[];
+}
+
+export interface OfficeEventReactionStatus extends OfficeEventReactionDefinition {
+  headline: string;
+  source: string;
+}
+
 export type OfficeSceneActorKind = "human" | "ai_agent" | "robot";
 export type OfficeSceneActorState = "working" | "resting" | "warning" | "idle";
 export type OfficeSceneActorActionTarget = "agents" | "products";
@@ -789,6 +811,7 @@ export interface OfficeScenePlan {
   workingActorCount: number;
   objects: OfficeSceneObjectStatus[];
   actors: OfficeSceneActorStatus[];
+  eventReactions: OfficeEventReactionStatus[];
   activityTicker: string[];
 }
 

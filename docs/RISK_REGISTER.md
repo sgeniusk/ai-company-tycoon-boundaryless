@@ -29,7 +29,7 @@ This document tracks identified risks to the project, their severity, likelihood
 |---|---|---|---|---|---|
 | R001 | Balance may favor one strategy too strongly | P1 | Medium | Run balance simulations after Milestone 2; tune via data/balance.json | Open |
 | R002 | 10-minute MVP scope may be too ambitious | P1 | Medium | Prioritize core loop; cut automation features if needed | Open |
-| R003 | UI may become too crowded with all panels | P2 | Medium | Design modular panels; allow collapsing; test with UX agent | Open |
+| R003 | UI may become too crowded with all panels | P2 | Medium | Continue compact game-shell work, add collapsible summaries, and retest with UX/persona scenarios before alpha candidate | Monitoring |
 | R004 | Event system may feel random rather than strategic | P2 | Medium | Use condition-based events; ensure player can prepare | Open |
 | R005 | Compute pressure curve may be too punishing early | P2 | Low | Tune users_per_compute_cost_unit in balance.json | Open |
 | R006 | Save/Load may corrupt state if systems change between milestones | P2 | Low | Version save files; validate on load | Open |
@@ -43,7 +43,7 @@ This document tracks identified risks to the project, their severity, likelihood
 
 | ID | Risk | Resolution | Date |
 |---|---|---|---|
-| R003 | UI may become too crowded with all panels | Alpha introduced a game-like office screen and stronger grouping; still monitor as features grow | 2026-05-15 |
+| R000 | Initial panel sprawl was reduced by the game-shell pass | Alpha introduced a game-like office screen and stronger grouping; continued monitoring remains active as R003 | 2026-05-15 |
 
 ---
 
