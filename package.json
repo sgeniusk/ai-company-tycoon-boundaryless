@@ -11,6 +11,7 @@
     "validate:data": "node scripts/harness/validate-data.mjs",
     "assets:v045": "node scripts/assets/generate-v045-isometric-sheets.mjs",
     "assets:v046": "node scripts/assets/generate-v046-hires-pixel-sheets.mjs",
+    "assets:v051": "node scripts/assets/generate-v046-hires-pixel-sheets.mjs",
     "harness:gate": "npm test && npm run validate:data && npm run build"
   },
   "dependencies": {

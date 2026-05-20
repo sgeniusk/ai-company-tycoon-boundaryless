@@ -4,6 +4,24 @@
 
 ---
 
+## [0.51-alpha] — 2026-05-20
+
+### 사무실 이벤트 포즈 시트
+
+**추가:**
+- `asset_manifest.json` 버전을 `0.51-alpha`로 올리고 `agents_v051_event_poses` 시트 계약을 추가했다.
+- 우선순위 에이전트 5종에 `idle`, `work`, `card_use`, `cheer`, `alert` 3프레임 row를 정의했다.
+- `npm run assets:v051`로 `public/assets/sprites/v051-agents-event-poses.png`를 생성한다.
+- `getOfficeScenePlan()`이 카드 사용, 출시, 경보 상태를 액터의 `reactionPose`로 연결한다.
+- `GameChrome`이 액터 상태뿐 아니라 `reactionPose`를 보고 포즈 row를 렌더링한다.
+- `office-visuals` QA 시나리오를 v0.51 이벤트 포즈 QA로 갱신했다.
+
+**검증:**
+- `npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 78 tests
+- `npm run harness:gate` 통과, 40 files / 296 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- `curl -I 'http://127.0.0.1:5201/?scenario=office-visuals'` 통과, 200 OK
+- `curl -I 'http://127.0.0.1:5201/assets/sprites/v051-agents-event-poses.png'` 통과, 200 OK
+
 ## [0.50-alpha] — 2026-05-20
 
 ### 알파 후보 20인 페르소나 재검증

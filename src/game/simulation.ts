@@ -1188,6 +1188,7 @@ const officeActorSlots = [
 export function getOfficeScenePlan(state: GameState): OfficeScenePlan {
   const expansion = getOfficeExpansion(state);
   const zonePlan = getOfficeZonePlan(state);
+  const eventReactions = getOfficeEventReactions(state);
   const activeZoneIds = new Set(zonePlan.active.map((zone) => zone.id));
   const zoneTitles = new Map([...zonePlan.active, ...zonePlan.locked].map((zone) => [zone.id, zone.title]));
   const objectStatuses = officeSceneObjects.map((object): OfficeSceneObjectStatus => {
@@ -1208,7 +1209,10 @@ export function getOfficeScenePlan(state: GameState): OfficeScenePlan {
   });
   const visibleObjects = objectStatuses.filter((object) => object.active || object.min_office_level <= expansion.level + 1);
   const actors = state.hiredAgents.length
-    ? state.hiredAgents.slice(0, officeActorSlots.length).map((agent, index) => createOfficeSceneActor(agent, index, state))
+    ? assignOfficeActorReactionPoses(
+        state.hiredAgents.slice(0, officeActorSlots.length).map((agent, index) => createOfficeSceneActor(agent, index, state)),
+        eventReactions,
+      )
     : [createFounderPlaceholderActor()];
   const workingActorCount = actors.filter((actor) => actor.state === "working").length;
 
@@ -1220,9 +1224,60 @@ export function getOfficeScenePlan(state: GameState): OfficeScenePlan {
     workingActorCount,
     objects: visibleObjects,
     actors,
-    eventReactions: getOfficeEventReactions(state),
+    eventReactions,
     activityTicker: createOfficeSceneActivityTicker(state, expansion.name, zonePlan.active.length, workingActorCount),
   };
+}
+
+function assignOfficeActorReactionPoses(
+  actors: OfficeSceneActorStatus[],
+  reactions: OfficeEventReactionStatus[],
+): OfficeSceneActorStatus[] {
+  const cardUseReaction = reactions.find((reaction) => reaction.trigger === "card_use");
+  const launchReaction = reactions.find((reaction) => reaction.trigger === "product_launch");
+  const alertReaction = reactions.find((reaction) => reaction.trigger === "rival_alert" || reaction.trigger === "staff_incident");
+  const cardTargetIndex = cardUseReaction ? actors.findIndex((actor) => actor.state === "working") : -1;
+  const cheerTargetIndex = launchReaction
+    ? actors.findIndex((actor) => actor.state !== "warning" && actor.state !== "resting")
+    : -1;
+
+  return actors.map((actor, index) => {
+    if (index === cardTargetIndex && cardUseReaction) {
+      return {
+        ...actor,
+        reactionPose: "card_use",
+        reactionPoseSource: `card_use:${cardUseReaction.source}`,
+      };
+    }
+
+    if (index === cheerTargetIndex && launchReaction) {
+      return {
+        ...actor,
+        reactionPose: "cheer",
+        reactionPoseSource: `product_launch:${launchReaction.source}`,
+      };
+    }
+
+    if (actor.state === "warning" || actor.state === "resting") {
+      return {
+        ...actor,
+        reactionPose: "alert",
+        reactionPoseSource: actor.state === "warning"
+          ? `loyalty:${actor.loyalty}`
+          : `energy:${actor.energy}`,
+      };
+    }
+
+    if (alertReaction) {
+      return {
+        ...actor,
+        reactionPose: "alert",
+        reactionPoseSource: `${alertReaction.trigger}:${alertReaction.source}`,
+      };
+    }
+
+    return actor;
+  });
 }
 
 function getOfficeEventReactions(state: GameState): OfficeEventReactionStatus[] {

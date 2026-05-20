@@ -74,6 +74,8 @@ function hexToRgba(hex, alpha = 255) {
 }
 
 const pixelDensity = 2;
+const agentBaseModes = ["idle", "work"];
+const agentEventPoseModes = ["idle", "work", "card_use", "cheer", "alert"];
 
 function canvas(width, height, background = [0, 0, 0, 0], density = 1) {
   const actualWidth = Math.round(width * density);
@@ -198,8 +200,9 @@ function drawAgentFrame(target, ox, oy, sprite, agentIndex, mode, frame) {
   const shadow = [35, 33, 28, 90];
   const white = hexToRgba("#fffaf0");
   const dark = hexToRgba("#1f2224");
-  const bob = frame === 1 ? -3 : 0;
+  const bob = mode === "cheer" ? (frame === 1 ? -6 : -3) : mode === "alert" ? (frame === 1 ? -2 : 1) : frame === 1 ? -3 : 0;
   const workShift = mode === "work" ? (frame - 1) * 3 : 0;
+  const pulseShift = frame === 1 ? 2 : 0;
 
   drawIsoDiamond(target, ox + 48, oy + 76, 48, 18, shadow);
   fillRect(target, ox + 39, oy + 47 + bob, 21, 26, primary);
@@ -225,6 +228,29 @@ function drawAgentFrame(target, ox, oy, sprite, agentIndex, mode, frame) {
     fillRect(target, ox + 65 + workShift, oy + 50 + bob, 12, 5, white);
     fillRect(target, ox + 68 + workShift, oy + 52 + bob, 8, 1.5, accent);
     fillRect(target, ox + 29 + workShift, oy + 54 + bob, 13, 7, accent);
+  } else if (mode === "card_use") {
+    line(target, ox + 40, oy + 55 + bob, ox + 27 - pulseShift, oy + 45 + bob, secondary, 4);
+    line(target, ox + 59, oy + 55 + bob, ox + 77 + pulseShift, oy + 42 + bob, secondary, 4);
+    fillRect(target, ox + 72 + pulseShift, oy + 34 + bob, 18, 14, white);
+    fillRect(target, ox + 75 + pulseShift, oy + 37 + bob, 12, 2, accent);
+    fillRect(target, ox + 78 + pulseShift, oy + 42 + bob, 8, 2, secondary);
+    fillRect(target, ox + 25 - pulseShift, oy + 39 + bob, 12, 9, accent);
+    fillRect(target, ox + 79 + pulseShift, oy + 25 + bob, 4, 4, hexToRgba("#f2cf7f"));
+    fillRect(target, ox + 86 + pulseShift, oy + 30 + bob, 3, 3, hexToRgba("#f2cf7f"));
+  } else if (mode === "cheer") {
+    line(target, ox + 40, oy + 52 + bob, ox + 30 - pulseShift, oy + 29 + bob, secondary, 4);
+    line(target, ox + 59, oy + 52 + bob, ox + 70 + pulseShift, oy + 29 + bob, secondary, 4);
+    fillRect(target, ox + 28 - pulseShift, oy + 24 + bob, 7, 7, accent);
+    fillRect(target, ox + 67 + pulseShift, oy + 24 + bob, 7, 7, accent);
+    fillRect(target, ox + 78, oy + 18 + bob, 6, 6, hexToRgba("#f2cf7f"));
+    fillRect(target, ox + 20, oy + 20 + bob, 5, 5, hexToRgba("#73e08c"));
+  } else if (mode === "alert") {
+    line(target, ox + 40, oy + 55 + bob, ox + 29, oy + 47 + bob, dark, 4);
+    line(target, ox + 59, oy + 55 + bob, ox + 72, oy + 47 + bob, dark, 4);
+    fillRect(target, ox + 67, oy + 17 + bob, 14, 23, hexToRgba("#d64838"));
+    fillRect(target, ox + 72, oy + 20 + bob, 4, 12, white);
+    fillRect(target, ox + 72, oy + 35 + bob, 4, 4, white);
+    fillRect(target, ox + 26, oy + 43 + bob, 11, 9, hexToRgba("#d64838"));
   } else {
     fillRect(target, ox + 29, oy + 55 + bob, 12, 6, secondary);
     fillRect(target, ox + 60, oy + 55 + bob, 10, 6, secondary);
@@ -243,16 +269,17 @@ function drawAgentFrame(target, ox, oy, sprite, agentIndex, mode, frame) {
   }
 }
 
-function buildAgentSheet() {
+function buildAgentSheet(modes = agentBaseModes) {
   const frameWidth = 96;
   const frameHeight = 96;
   const columns = 3;
-  const sheet = canvas(frameWidth * columns, frameHeight * manifest.agent_sprites.length * 2, [0, 0, 0, 0], pixelDensity);
+  const sheet = canvas(frameWidth * columns, frameHeight * manifest.agent_sprites.length * modes.length, [0, 0, 0, 0], pixelDensity);
 
   manifest.agent_sprites.forEach((sprite, index) => {
     for (let frame = 0; frame < columns; frame += 1) {
-      drawAgentFrame(sheet, frame * frameWidth, index * 2 * frameHeight, sprite, index, "idle", frame);
-      drawAgentFrame(sheet, frame * frameWidth, (index * 2 + 1) * frameHeight, sprite, index, "work", frame);
+      modes.forEach((mode, modeIndex) => {
+        drawAgentFrame(sheet, frame * frameWidth, (index * modes.length + modeIndex) * frameHeight, sprite, index, mode, frame);
+      });
     }
   });
 
@@ -407,8 +434,9 @@ function buildOfficeBackground() {
   return target;
 }
 
-writePng(path.join(outSprites, "v046-agents-hires.png"), buildAgentSheet());
+writePng(path.join(outSprites, "v046-agents-hires.png"), buildAgentSheet(agentBaseModes));
+writePng(path.join(outSprites, "v051-agents-event-poses.png"), buildAgentSheet(agentEventPoseModes));
 writePng(path.join(outSprites, "v046-office-objects-hires.png"), buildOfficeObjectSheet());
 writePng(path.join(outBackgrounds, "v046-isometric-office-hires.png"), buildOfficeBackground());
 
-console.log("Generated v0.46 high-density isometric pixel sheets and office backdrop.");
+console.log("Generated v0.46 high-density sheets plus v0.51 agent event pose sheet.");

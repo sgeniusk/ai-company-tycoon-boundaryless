@@ -1515,6 +1515,18 @@ p {
   filter: saturate(1.2);
 }
 
+.staff-sprite.pixel-actor.actor-pose-card_use {
+  filter: saturate(1.25) drop-shadow(0 0 5px rgba(95, 198, 166, 0.65));
+}
+
+.staff-sprite.pixel-actor.actor-pose-cheer {
+  filter: saturate(1.25) drop-shadow(0 0 5px rgba(242, 207, 127, 0.75));
+}
+
+.staff-sprite.pixel-actor.actor-pose-alert {
+  filter: saturate(1.2) drop-shadow(0 0 5px rgba(214, 72, 56, 0.55));
+}
+
 .staff-sprite.pixel-actor.sprite-sheet-frame.sprite-sheet-animated {
   animation: sprite-sheet-frame-cycle var(--sprite-cycle-duration, 1000ms) steps(var(--sprite-frame-steps, 3)) infinite;
   background-position: var(--sprite-start-x, 0) var(--sprite-row-y, 0);

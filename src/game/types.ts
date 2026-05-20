@@ -213,16 +213,15 @@ export interface SpriteAnimationDefinition {
   row: number;
 }
 
+export type AgentSpriteAnimationKey = "idle" | "work" | "card_use" | "cheer" | "alert";
+
 export interface AgentSpriteDefinition {
   agent_type_id: string;
   source_status: "placeholder" | "draft" | "final";
   body_class: string;
   sheet_id?: string;
   palette: string[];
-  animations: {
-    idle: SpriteAnimationDefinition;
-    work: SpriteAnimationDefinition;
-  };
+  animations: Record<AgentSpriteAnimationKey, SpriteAnimationDefinition>;
   portrait_hint: string;
   prop_hint: string;
 }
@@ -784,12 +783,15 @@ export interface OfficeEventReactionStatus extends OfficeEventReactionDefinition
 export type OfficeSceneActorKind = "human" | "ai_agent" | "robot";
 export type OfficeSceneActorState = "working" | "resting" | "warning" | "idle";
 export type OfficeSceneActorActionTarget = "agents" | "products";
+export type OfficeSceneActorReactionPose = "card_use" | "cheer" | "alert";
 
 export interface OfficeSceneActorStatus {
   id: string;
   name: string;
   kind: OfficeSceneActorKind;
   state: OfficeSceneActorState;
+  reactionPose?: OfficeSceneActorReactionPose;
+  reactionPoseSource?: string;
   agentTypeId?: string;
   x: number;
   y: number;

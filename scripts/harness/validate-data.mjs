@@ -825,7 +825,7 @@ if (!assetManifestData) {
     spriteAgentIds.add(sprite.agent_type_id);
     validateAssetStatus(`asset_manifest agent_sprites "${sprite.agent_type_id}"`, sprite.source_status);
     validatePalette(`asset_manifest agent_sprites "${sprite.agent_type_id}"`, sprite.palette);
-    for (const animationName of ["idle", "work"]) {
+    for (const animationName of ["idle", "work", "card_use", "cheer", "alert"]) {
       const animation = sprite.animations?.[animationName];
       if (!animation || typeof animation.frames !== "number" || animation.frames <= 0) {
         errors.push(`asset_manifest agent_sprites "${sprite.agent_type_id}": ${animationName} animation needs positive frames`);

@@ -6,6 +6,20 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.51: Office Event Pose Sheets
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `asset_manifest.json` defines a v0.51 agent event-pose sheet contract | **Passed** |
+| 2 | Priority agents expose `idle`, `work`, `card_use`, `cheer`, and `alert` animation rows | **Passed** |
+| 3 | A generated `v051-agents-event-poses.png` asset exists and matches the 3-column, 25-row contract | **Passed** |
+| 4 | Office event reactions can assign matching actor `reactionPose` values | **Passed** |
+| 5 | `office-visuals` exposes at least one card-use pose and one alert pose | **Passed** |
+| 6 | Reduced-motion still disables motion-heavy actor animation | **Passed** |
+| 7 | Relevant tests and `npm run harness:gate` pass | **Passed** |
+
+---
+
 ## Alpha v0.50: Alpha Candidate Consolidation
 
 | # | Criterion | Status |

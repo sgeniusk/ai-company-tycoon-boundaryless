@@ -134,3 +134,29 @@ describe("v0.49 office event reactions", () => {
     expect(plan.eventReactions.find((reaction) => reaction.trigger === "card_use")?.headline).toContain("프롬프트 스프린트");
   });
 });
+
+describe("v0.51 office event poses", () => {
+  it("assigns warning actors to alert poses before the player opens the staff panel", () => {
+    const plan = getOfficeScenePlan(officeVisualState());
+    const warningActor = plan.actors.find((actor) => actor.state === "warning");
+
+    expect(warningActor?.reactionPose).toBe("alert");
+    expect(warningActor?.reactionPoseSource).toContain("loyalty");
+  });
+
+  it("turns a recent card use reaction into a card-use actor pose", () => {
+    const codingProduct = products.find((product) => product.id === "ai_coding_assistant");
+    const sprintCard = getStrategyCardById("prompt_sprint");
+    if (!codingProduct || !sprintCard) throw new Error("Missing office pose fixture");
+
+    const state = officeVisualState();
+    const started = startProductProject(codingProduct, state, [state.hiredAgents[0].id]);
+    const played = playStrategyCard(sprintCard, started);
+    const plan = getOfficeScenePlan(played);
+    const workingActor = plan.actors.find((actor) => actor.state === "working");
+
+    expect(plan.eventReactions.map((reaction) => reaction.trigger)).toContain("card_use");
+    expect(workingActor?.reactionPose).toBe("card_use");
+    expect(workingActor?.reactionPoseSource).toContain("card_use");
+  });
+});

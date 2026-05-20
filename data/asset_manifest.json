@@ -1,5 +1,5 @@
 {
-  "version": "0.48-alpha",
+  "version": "0.51-alpha",
   "sprite_grid": {
     "tile_size": 16,
     "character_frame_size": 32,
@@ -27,11 +27,26 @@
           "frames": 3,
           "row": 1,
           "duration_ms": 680
+        },
+        "card_use": {
+          "frames": 3,
+          "row": 2,
+          "duration_ms": 560
+        },
+        "cheer": {
+          "frames": 3,
+          "row": 3,
+          "duration_ms": 720
+        },
+        "alert": {
+          "frames": 3,
+          "row": 4,
+          "duration_ms": 520
         }
       },
       "portrait_hint": "둥근 안경, 민트 앞머리, 후드형 체크 조끼",
       "prop_hint": "말풍선 태블릿",
-      "sheet_id": "agents_v046_hires_isometric"
+      "sheet_id": "agents_v051_event_poses"
     },
     {
       "agent_type_id": "code_smith",
@@ -45,18 +60,33 @@
       "animations": {
         "idle": {
           "frames": 3,
-          "row": 2,
+          "row": 5,
           "duration_ms": 1180
         },
         "work": {
           "frames": 3,
-          "row": 3,
+          "row": 6,
           "duration_ms": 620
+        },
+        "card_use": {
+          "frames": 3,
+          "row": 7,
+          "duration_ms": 540
+        },
+        "cheer": {
+          "frames": 3,
+          "row": 8,
+          "duration_ms": 700
+        },
+        "alert": {
+          "frames": 3,
+          "row": 9,
+          "duration_ms": 500
         }
       },
       "portrait_hint": "검은 단발, 각진 작업복, 작은 로봇팔",
       "prop_hint": "빛나는 기계식 키보드",
-      "sheet_id": "agents_v046_hires_isometric"
+      "sheet_id": "agents_v051_event_poses"
     },
     {
       "agent_type_id": "data_curator",
@@ -70,18 +100,33 @@
       "animations": {
         "idle": {
           "frames": 3,
-          "row": 4,
+          "row": 10,
           "duration_ms": 1320
         },
         "work": {
           "frames": 3,
-          "row": 5,
+          "row": 11,
           "duration_ms": 760
+        },
+        "card_use": {
+          "frames": 3,
+          "row": 12,
+          "duration_ms": 600
+        },
+        "cheer": {
+          "frames": 3,
+          "row": 13,
+          "duration_ms": 760
+        },
+        "alert": {
+          "frames": 3,
+          "row": 14,
+          "duration_ms": 560
         }
       },
       "portrait_hint": "보라색 묶음 머리, 라벨 스티커 코트",
       "prop_hint": "색상별 데이터 카드 케이스",
-      "sheet_id": "agents_v046_hires_isometric"
+      "sheet_id": "agents_v051_event_poses"
     },
     {
       "agent_type_id": "infra_operator",
@@ -95,18 +140,33 @@
       "animations": {
         "idle": {
           "frames": 3,
-          "row": 6,
+          "row": 15,
           "duration_ms": 1420
         },
         "work": {
           "frames": 3,
-          "row": 7,
+          "row": 16,
           "duration_ms": 700
+        },
+        "card_use": {
+          "frames": 3,
+          "row": 17,
+          "duration_ms": 580
+        },
+        "cheer": {
+          "frames": 3,
+          "row": 18,
+          "duration_ms": 780
+        },
+        "alert": {
+          "frames": 3,
+          "row": 19,
+          "duration_ms": 540
         }
       },
       "portrait_hint": "짧은 회색 머리, 서버실 방열 조끼, 툴벨트",
       "prop_hint": "작은 GPU 카트",
-      "sheet_id": "agents_v046_hires_isometric"
+      "sheet_id": "agents_v051_event_poses"
     },
     {
       "agent_type_id": "growth_hacker",
@@ -120,18 +180,33 @@
       "animations": {
         "idle": {
           "frames": 3,
-          "row": 8,
+          "row": 20,
           "duration_ms": 1120
         },
         "work": {
           "frames": 3,
-          "row": 9,
+          "row": 21,
           "duration_ms": 580
+        },
+        "card_use": {
+          "frames": 3,
+          "row": 22,
+          "duration_ms": 520
+        },
+        "cheer": {
+          "frames": 3,
+          "row": 23,
+          "duration_ms": 660
+        },
+        "alert": {
+          "frames": 3,
+          "row": 24,
+          "duration_ms": 480
         }
       },
       "portrait_hint": "주황색 포니테일, 스티커 재킷, 스니커즈",
       "prop_hint": "실시간 바이럴 그래프 폰",
-      "sheet_id": "agents_v046_hires_isometric"
+      "sheet_id": "agents_v051_event_poses"
     }
   ],
   "competitor_identities": [
@@ -875,6 +950,18 @@
     }
   ],
   "sprite_sheets": {
+    "agents_v051_event_poses": {
+      "path": "/assets/sprites/v051-agents-event-poses.png",
+      "source_status": "draft",
+      "density": 2,
+      "frame_width": 192,
+      "frame_height": 192,
+      "columns": 3,
+      "rows": 25,
+      "frame_count": 75,
+      "preview_frames": [0, 1, 2, 3, 4, 7, 13, 19, 23],
+      "slice_mode": "row-major animation rows: idle, work, card_use, cheer, alert per agent"
+    },
     "agents_v046_hires_isometric": {
       "path": "/assets/sprites/v046-agents-hires.png",
       "source_status": "draft",
