@@ -4,7 +4,7 @@
 
 ## 한 줄 요약
 
-현재 빌드는 `v0.55-alpha`다. **카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장**을 목표로 하며, 캐릭터/오브젝트/배경 원본 임포트 경로에 이어 `office-visuals` 데스크톱/모바일 스크린샷 QA 하네스까지 갖췄다.
+현재 빌드는 `v0.55-alpha`이고 다음 작업 목표는 `v0.56-alpha-playtest-slice-lock`이다. **카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장**을 목표로 하되, 다음 단계에서는 새 시스템보다 20~30분 플레이 가능한 웹 알파 검증 슬라이스를 잠근다.
 
 ## 현재 작업 위치
 
@@ -12,7 +12,8 @@
 - GitHub: `https://github.com/sgeniusk/ai-company-tycoon-boundaryless`
 - 현재 브랜치: `main`
 - 최신 구현 커밋: `df57811 Polish v0.55 mobile command hand QA`
-- 오늘 마감 상태: v0.55 스크린샷 QA와 모바일 하단 전략 손패 보정은 main에 푸시 완료. 실제 최종 원본 아트 교체는 다음 세션 작업으로 남김.
+- 현재 목표: `v0.56-alpha-playtest-slice-lock`
+- 오늘 마감 상태: v0.55 스크린샷 QA와 모바일 하단 전략 손패 보정은 완료. 최종 원본 아트 교체는 `docs/ART_INTAKE.md`의 P2 작업으로 분리.
 - 로컬 실행 주소: `http://127.0.0.1:5201/`
 - 현재 시각 QA 진입 주소: `http://127.0.0.1:5201/?scenario=office-visuals`
 - 현재 페르소나 QA 진입 주소: `http://127.0.0.1:5201/?scenario=persona20`
@@ -120,6 +121,8 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 - 최근 변경 로그: `docs/CHANGELOG.md`
 - QA 진입점: `docs/QA_SCENARIOS.md`
 - 인수 기준: `docs/ACCEPTANCE_CRITERIA.md`
+- 아트 수급/교체: `docs/ART_INTAKE.md`
+- 블라인드 테스트 체크리스트: `docs/BLIND_PLAYTEST_CHECKLIST.md`
 - 제작 보고서: `reports/production_alpha_v0_55_final_source_art_screenshot_qa.md`
 - QA 보고서: `reports/qa/v0_55_final_source_art_screenshot_qa.md`
 
@@ -160,26 +163,34 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 
 - 실제 이미지 생성 또는 외부 제작 최종 캐릭터/오브젝트/배경 원본은 아직 별도 제공되지 않았다. 현재 v0.53/v0.54 source는 임포트 가능한 draft candidate다.
 - 최종 원본 시트 교체 후 프레임 anchor, 발 위치, 실루엣 drift, 오브젝트 depth, 배경 프레이밍을 브라우저 스크린샷으로 검수해야 한다.
+- 실제 5명 블라인드 플레이테스트 기록이 아직 없다.
+- 첫 제품 출시 결과에서 카드 영향, 리뷰, 경쟁사 반응이 한눈에 보이는 연출이 아직 약하다.
 - 모바일 하단 전략 손패의 오른쪽 잘림은 v0.55 안에서 해결했다. 다만 최종 아트가 들어오면 메뉴 패널 내부의 촘촘한 정보 밀도는 다시 봐야 한다.
 - 최종 픽셀아트, 음악, 사운드가 없다.
 - Playwright는 이번 환경에 없지만, v0.55부터 로컬 headless Chrome 스크린샷 QA로 desktop/mobile 캡처를 남길 수 있다.
 
 ## 다음 추천 작업
 
-1. 최종 원본 아트 수급/생성
+1. v0.56 플레이테스트 슬라이스 잠금
+   - 첫 제품 출시 결과 연출 강화
+   - 카드 영향 체감 표시
+   - 경쟁사 사건 1개와 직원 사건 1개를 화면 사건으로 표시
+   - 연간 심사 1회까지 설명 없이 도달 가능하게 정리
+   - `docs/BLIND_PLAYTEST_CHECKLIST.md` 기준으로 5명 테스트 기록
+
+2. Art Intake는 병렬 P2로 관리
    - 캐릭터: 1152×9600 RGBA PNG
    - 오피스 오브젝트: 2560×1920 RGBA PNG
    - 오피스 배경: 5120×2880 RGBA PNG
-
-2. 원본 교체와 스크린샷 재검증
    - `npm run assets:v053 -- --source <캐릭터 원본PNG>`
    - `npm run assets:v054 -- --objects-source <오브젝트 원본PNG> --backdrop-source <배경 원본PNG>`
    - `npm run qa:office-visuals:screenshots`
-   - 확인 항목: actor anchor, object depth, backdrop framing, command HUD fit, 텍스트 겹침
 
-3. 이후 그래픽 퀄리티 패스
-   - 메뉴 패널 정보 밀도 재검토
-   - 사운드/짧은 효과음 후보 정리
+3. 지금 하지 않을 것
+   - 새 대형 시스템 추가
+   - 제품 조합 수 추가
+   - 산업군 대량 확장
+   - 모바일 완성도 깊게 파기
 
 ## 주의사항
 
@@ -197,9 +208,9 @@ npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
 
 먼저 `AGENTS.md`, `feature_list.json`, `progress.md`, `docs/SESSION_HANDOFF.md`, `docs/ROADMAP.md`, `docs/CHANGELOG.md`, `docs/QA_SCENARIOS.md`를 읽고 이어서 개발해줘.
 
-현재 버전은 v0.55-alpha이고, 최신 구현 커밋은 `df57811 Polish v0.55 mobile command hand QA`야. 스택은 Vite + React + TypeScript야.
+현재 버전은 v0.55-alpha이고 다음 목표는 `v0.56-alpha-playtest-slice-lock`이야. 최신 구현 커밋은 `df57811 Polish v0.55 mobile command hand QA`야. 스택은 Vite + React + TypeScript야.
 
 로컬 실행은 `npm run dev -- --port 5201`, 시각 QA는 `http://127.0.0.1:5201/?scenario=office-visuals`, 페르소나 QA는 `http://127.0.0.1:5201/?scenario=persona20`, 전체 검증은 `npm run harness:gate`야.
 
-현재 feature는 `v0.55-alpha-final-source-art-screenshot-qa`이고 상태는 in_progress야. 스크린샷 QA 하네스는 들어갔지만 실제 최종 외부/AI 원본 아트 교체는 아직 남아 있어. 완료 후 한국어로 변경점, 검증 결과, 다음 추천 작업을 짧게 보고해줘.
+현재 feature는 `v0.56-alpha-playtest-slice-lock`이고 상태는 in_progress야. v0.55 스크린샷 QA 하네스는 완료로 보고, 최종 외부/AI 원본 아트 교체는 `docs/ART_INTAKE.md`의 P2 작업으로 분리했어. 다음 작업은 첫 제품 출시/카드 영향/경쟁사 사건/직원 사건/블라인드 테스트 슬라이스에 집중해줘. 완료 후 한국어로 변경점, 검증 결과, 다음 추천 작업을 짧게 보고해줘.
 ```

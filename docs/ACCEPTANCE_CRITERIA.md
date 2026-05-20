@@ -6,6 +6,23 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.56: Playtest Slice Lock
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | First 10 seconds communicate the AI company management fantasy | **Pending** |
+| 2 | First product development is reachable within 3 minutes without explanation | **Pending** |
+| 3 | First product launch is reachable within 10 minutes | **Pending** |
+| 4 | First launch result shows product name, reviews, resource changes, card impact, and rival reaction | **Pending** |
+| 5 | At least one rival incident appears as a readable screen moment | **Pending** |
+| 6 | At least one staff incident appears as a readable screen moment | **Pending** |
+| 7 | One annual review is reachable in the test slice | **Pending** |
+| 8 | Five blind playtest records are saved under `reports/playtests/` | **Pending** |
+
+Scope rule: do not add broad new systems for this milestone. Improve first product launch, card impact, rival pressure, staff incident readability, and blind-test readiness.
+
+---
+
 ## Alpha v0.55: Final Source Art Screenshot QA Harness
 
 | # | Criterion | Status |

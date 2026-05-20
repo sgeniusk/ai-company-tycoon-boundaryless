@@ -89,6 +89,22 @@ Expected:
 - Mobile screenshot may compress dense menu panel content, but the main app frame, office scene, resources, command row, and menu tabs remain visible.
 - Any final-art replacement pass must rerun this command after `npm run assets:v053` and/or `npm run assets:v054`.
 
+## v0.56 Playtest Slice QA (Planned)
+
+Primary routes:
+
+- `?scenario=flow`
+- `?scenario=launch-impact`
+- `?scenario=office-visuals`
+
+Expected:
+
+- The first 10 seconds read as AI company management, not a generic dashboard.
+- The flow route supports first-product-development readability.
+- The launch-impact route must make product name, review/result, resource changes, card influence, and rival reaction easy to scan.
+- The office-visuals route remains the visual reference for rival/staff incidents and office screen readability.
+- Real-user results should be recorded with `docs/BLIND_PLAYTEST_CHECKLIST.md`, not replaced by AI persona QA.
+
 ## v0.54 Office Object and Backdrop Art Import QA (Historical)
 
 URL:

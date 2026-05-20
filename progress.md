@@ -16,13 +16,13 @@ Last Updated: 2026-05-21
 
 ## Current Objective
 
-In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible desktop/mobile screenshot QA for `office-visuals` and keep the actual final source-art replacement as the remaining art task.
+In progress on `v0.56-alpha-playtest-slice-lock`: stop adding broad systems and make a 20-30 minute web-alpha slice where a new player reaches first product launch, sees card impact, encounters rival/staff incidents, and reaches one annual review.
 
 ## End-of-Day Snapshot
 
-- Today's implementation work is pushed: v0.55 screenshot QA is reproducible and the mobile bottom strategy hand no longer clips in the 390×844 capture.
-- The active feature remains `in_progress` only because actual final external/AI source art has not been supplied or generated into the required PNG contracts yet.
-- No P0/P1 screenshot-QA blockers are open for the current draft-candidate game screen.
+- v0.55 screenshot QA is now treated as completed readiness work: final art is no longer allowed to block the next playable slice.
+- Final source-art replacement moved to the separate `art-intake-final-source-art` track and `docs/ART_INTAKE.md`.
+- The active work is now v0.56 playtest-slice lock, with first launch payoff, card impact, rival/staff incidents, and blind playtest records as the P0 focus.
 
 ## What Changed
 
@@ -38,6 +38,11 @@ In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible de
 - Added `mobile_command_hand_fit` to the v0.55 visual QA manifest checks.
 - Fixed the mobile bottom strategy hand so its counter and visible cards fit inside the 390px screenshot frame without right-edge clipping.
 - Re-captured the v0.55 desktop/mobile screenshot QA artifacts after the mobile command-hand polish.
+- Rewrote `docs/ROADMAP.md` to remove historical version bulk and focus on current state, current decision, and the next five milestones.
+- Added `docs/ART_INTAKE.md` for final source-art contracts and import QA.
+- Added `docs/BLIND_PLAYTEST_CHECKLIST.md` for v0.56 real-user validation.
+- Marked v0.55 screenshot QA readiness as completed in `feature_list.json`.
+- Added `v0.56-alpha-playtest-slice-lock` as the current P0 feature.
 - Added v0.55 changelog, acceptance criteria, QA docs, production report, and QA report.
 
 ## Files
@@ -45,6 +50,8 @@ In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible de
 - `AGENTS.md`
 - `data/asset_manifest.json`
 - `docs/ACCEPTANCE_CRITERIA.md`
+- `docs/ART_INTAKE.md`
+- `docs/BLIND_PLAYTEST_CHECKLIST.md`
 - `docs/CHANGELOG.md`
 - `docs/QA_SCENARIOS.md`
 - `docs/ROADMAP.md`
@@ -75,7 +82,8 @@ In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible de
 
 ## Blockers
 
-- Final external/AI-generated character, office object, and backdrop artwork is still pending. The current v0.53/v0.54 sources are draft candidates so the pipeline remains reproducible.
+- Final external/AI-generated character, office object, and backdrop artwork is still pending, but it is now tracked as P2 Art Intake rather than a blocker for v0.56.
+- The main P0 risk is now playtest clarity: first launch payoff, card impact, and rival/staff incident moments must be obvious to blind testers.
 - Browser screenshot automation is unavailable in this environment because Playwright is not installed in the Node REPL runtime.
   - Workaround: v0.55 uses local headless Chrome through `npm run qa:office-visuals:screenshots`.
 
@@ -128,13 +136,13 @@ In progress on `v0.55-alpha-final-source-art-screenshot-qa`: add reproducible de
 
 ## Recommended Next Step
 
-Start the next session with final source-art intake:
+Start v0.56 with the smallest playable validation slice:
 
-1. Prepare or collect final character source art at 1152×9600 RGBA PNG.
-2. Prepare or collect final office object source art at 2560×1920 RGBA PNG and backdrop source art at 5120×2880 RGBA PNG.
-3. Run `npm run assets:v053 -- --source <character-source>` and `npm run assets:v054 -- --objects-source <objects-source> --backdrop-source <backdrop-source>`.
-4. Rerun `npm run qa:office-visuals:screenshots` and compare actor anchors, object depth, backdrop framing, command HUD fit, and text overlap against the v0.55 baseline.
-5. If final art is still unavailable, do not mark v0.55 complete; either generate/collect source art first or branch into a documented v0.56 visual-polish task.
+1. Strengthen the first product launch result moment: product name, reviews, resource changes, card impact, rival reaction, and staff reaction.
+2. Make card impact visible in the launch/result surface so the player understands which card changed the outcome.
+3. Add one rival incident and one staff incident as screen moments rather than buried log lines.
+4. Keep mobile as "not broken"; use desktop web as the primary playtest target.
+5. Run the 5-person blind playtest from `docs/BLIND_PLAYTEST_CHECKLIST.md` and record results under `reports/playtests/`.
 
 ## Next Session
 

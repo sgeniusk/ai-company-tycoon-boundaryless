@@ -20,6 +20,7 @@ Before writing code:
 ## Current Source Of Truth
 
 - Current version: `v0.55-alpha`
+- Current objective: `v0.56-alpha-playtest-slice-lock`
 - Current stack: Vite + React + TypeScript
 - Main gate: `npm run harness:gate`
 - Local dev: `npm run dev -- --port 5201`
