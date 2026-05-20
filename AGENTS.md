@@ -19,11 +19,12 @@ Before writing code:
 
 ## Current Source Of Truth
 
-- Current version: `v0.48-alpha`
+- Current version: `v0.50-alpha`
 - Current stack: Vite + React + TypeScript
 - Main gate: `npm run harness:gate`
 - Local dev: `npm run dev -- --port 5201`
 - QA URL: `http://127.0.0.1:5201/?scenario=office-visuals`
+- Persona QA URL: `http://127.0.0.1:5201/?scenario=persona20`
 - State tracker: `feature_list.json`
 - Restart log: `progress.md`
 - Human-readable handoff: `docs/SESSION_HANDOFF.md` and root `session-handoff.md`

@@ -4,11 +4,12 @@ Last Updated: 2026-05-20
 
 ## Current State
 
-- Current version: `v0.49-alpha`
-- Latest implementation commit: `0300048 Add v0.49 office event reactions`
+- Current version: `v0.50-alpha`
+- Latest implementation commit: `d816814 Add v0.50 alpha candidate review`
 - Current stack: Vite + React + TypeScript
 - Local dev command: `npm run dev -- --port 5201`
-- Main QA URL: `http://127.0.0.1:5201/?scenario=office-visuals`
+- Main visual QA URL: `http://127.0.0.1:5201/?scenario=office-visuals`
+- Persona QA URL: `http://127.0.0.1:5201/?scenario=persona20`
 - Full verification: `npm run harness:gate`
 
 ## Files
@@ -27,7 +28,7 @@ Last Updated: 2026-05-20
 
 ## Recommended Next Step
 
-Start `v0.50-alpha-candidate`: rerun the latest screen against persona/QA expectations, fix only P0/P1 alpha-candidate blockers, and keep v0.49 event reactions intact.
+Start `v0.51-alpha-event-pose-sheets`: add cheer, alert, and card-use pose rows so v0.49/v0.50 office reactions change actor body language, not only speech bubbles.
 
 ## Next Session
 
