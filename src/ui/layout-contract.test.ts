@@ -155,13 +155,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("getAgentSpriteFrameStyle");
     expect(gameChrome).toContain("getOfficeObjectSpriteFrameStyle");
     expect(gameChrome).toContain("getSpriteSheetPreviewFrames");
+    expect(gameChrome).toContain("source_frame_width");
     expect(gameChrome).toContain("getCompetitorIdentity");
     expect(gameChrome).toContain("getItemIcon");
     expect(gameChrome).toContain("assetManifest.office_objects");
     expect(gameChrome).toContain("assetManifest.item_icons");
     expect(gameChrome).toContain("assetManifest.competitor_identities");
     expect(gameChrome).toContain("assetManifest.agent_sprites");
-    expect(gameChrome).toContain("agents_v051_event_poses");
+    expect(gameChrome).toContain("agents_v052_source_event_poses");
     expect(gameChrome).toContain("office_objects_v046_hires_isometric");
     expect(gameChrome).toContain("office_isometric_v046_hires");
     expect(gameChrome).toContain("getAnimatedSpriteSheetFrameStyle(sheet, animation, 76, 76)");

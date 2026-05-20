@@ -404,7 +404,7 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "office-visuals") {
     return {
       id,
-      label: "v0.51 사무실 이벤트 포즈 QA",
+      label: "v0.52 사무실 원본 시트 QA",
       state: createOfficeVisualScenarioState(),
       activeMenu: "company",
     };
@@ -534,7 +534,7 @@ function createOfficeVisualScenarioState(): GameState {
 
   return {
     ...reactedState,
-    timeline: ["v0.51 이벤트 포즈 QA: 카드 사용 포즈, 케어 경보 포즈, 사무실 말풍선 반응 확인", ...reactedState.timeline].slice(0, 8),
+    timeline: ["v0.52 원본 시트 QA: 카드 사용 포즈, 케어 경보 포즈, 사무실 말풍선 반응 확인", ...reactedState.timeline].slice(0, 8),
   };
 }
 

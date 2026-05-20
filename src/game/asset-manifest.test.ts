@@ -1,5 +1,21 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { agentTypes, assetManifest, competitors, items } from "./data";
+
+function readPngSize(assetPath: string) {
+  const buffer = readFileSync(new URL(`../../public${assetPath}`, import.meta.url), "binary");
+  const readUInt32BE = (offset: number) => (
+    ((buffer.charCodeAt(offset) & 0xff) * 0x1000000)
+    + ((buffer.charCodeAt(offset + 1) & 0xff) << 16)
+    + ((buffer.charCodeAt(offset + 2) & 0xff) << 8)
+    + (buffer.charCodeAt(offset + 3) & 0xff)
+  );
+
+  return {
+    width: readUInt32BE(16),
+    height: readUInt32BE(20),
+  };
+}
 
 describe("alpha v0.9 pixel asset manifest", () => {
   const knownAgentIds = new Set(agentTypes.map((agent) => agent.id));
@@ -7,7 +23,7 @@ describe("alpha v0.9 pixel asset manifest", () => {
   const knownItemIds = new Set(items.map((item) => item.id));
 
   it("defines a stable pixel grid for first-pass sprite replacement", () => {
-    expect(assetManifest.version).toBe("0.51-alpha");
+    expect(assetManifest.version).toBe("0.52-alpha");
     expect(assetManifest.sprite_grid.tile_size).toBe(16);
     expect(assetManifest.sprite_grid.character_frame_size).toBe(32);
     expect(assetManifest.sprite_grid.portrait_size).toBe(48);
@@ -15,15 +31,35 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(assetManifest.sprite_grid.competitor_logo_size).toBe(32);
   });
 
-  it("defines v0.47 high-density sheet slicing contracts for generated pixel art", () => {
-    expect(assetManifest.sprite_sheets.agents_v051_event_poses.path).toBe("/assets/sprites/v051-agents-event-poses.png");
-    expect(assetManifest.sprite_sheets.agents_v051_event_poses.frame_width).toBe(192);
-    expect(assetManifest.sprite_sheets.agents_v051_event_poses.frame_height).toBe(192);
-    expect(assetManifest.sprite_sheets.agents_v051_event_poses.columns).toBe(3);
-    expect(assetManifest.sprite_sheets.agents_v051_event_poses.rows).toBe(25);
-    expect(assetManifest.sprite_sheets.agents_v051_event_poses.frame_count).toBe(75);
-    expect(assetManifest.sprite_sheets.agents_v051_event_poses.density).toBe(2);
-    expect(assetManifest.sprite_sheets.agents_v051_event_poses.preview_frames).toEqual(expect.arrayContaining([0, 1, 2, 3, 4]));
+  it("defines v0.52 source and normalized event-pose sheet contracts", () => {
+    const eventPoseSheet = assetManifest.sprite_sheets.agents_v052_source_event_poses;
+
+    expect(eventPoseSheet).toMatchObject({
+      path: "/assets/sprites/v052-agents-event-poses.png",
+      source_path: "/assets/sprites/source/v052-agents-event-poses-source.png",
+      source_status: "draft",
+      density: 2,
+      source_scale: 4,
+      source_frame_width: 384,
+      source_frame_height: 384,
+      normalized_from: "v052-agents-event-poses-source",
+      anchor_reference: "bottom-center",
+      anchor_tolerance_px: 8,
+      silhouette_drift_tolerance_px: 12,
+      frame_width: 192,
+      frame_height: 192,
+      columns: 3,
+      rows: 25,
+      frame_count: 75,
+    });
+    expect(eventPoseSheet.preview_frames).toEqual(expect.arrayContaining([0, 1, 2, 3, 4, 7, 13, 19, 23]));
+
+    expect(readPngSize(eventPoseSheet.path)).toEqual({ width: 576, height: 4800 });
+    if (!eventPoseSheet.source_path) throw new Error("v0.52 event-pose sheet must keep a source_path");
+    expect(readPngSize(eventPoseSheet.source_path)).toEqual({ width: 1152, height: 9600 });
+  });
+
+  it("keeps v0.47 high-density office slicing contracts for generated pixel art", () => {
     expect(assetManifest.sprite_sheets.office_objects_v046_hires_isometric.path).toBe("/assets/sprites/v046-office-objects-hires.png");
     expect(assetManifest.sprite_sheets.office_objects_v046_hires_isometric.frame_width).toBe(256);
     expect(assetManifest.sprite_sheets.office_objects_v046_hires_isometric.frame_height).toBe(192);
@@ -60,10 +96,10 @@ describe("alpha v0.9 pixel asset manifest", () => {
     }
   });
 
-  it("attaches priority agents to the v0.51 generated event-pose character sheet", () => {
+  it("attaches priority agents to the v0.52 source-replacement event-pose character sheet", () => {
     assetManifest.agent_sprites.forEach((sprite, index) => {
       expect(sprite.source_status).toBe("draft");
-      expect(sprite.sheet_id).toBe("agents_v051_event_poses");
+      expect(sprite.sheet_id).toBe("agents_v052_source_event_poses");
       expect(sprite.animations.idle.row).toBe(index * 5);
       expect(sprite.animations.work.row).toBe(index * 5 + 1);
       expect(sprite.animations.card_use.row).toBe(index * 5 + 2);

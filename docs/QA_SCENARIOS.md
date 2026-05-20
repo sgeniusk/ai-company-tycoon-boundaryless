@@ -37,7 +37,7 @@ Use the local app URL and append one of these query strings:
 | Persona 20 | `?scenario=persona20` | v0.50 alpha-candidate 20-person persona review, P0/P1 status, and first-screen signal QA |
 | Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.51 office event poses over high-density sprite-sheet actors, reactions, preview, decor props, and direct actor care actions |
+| Office Visuals | `?scenario=office-visuals` | v0.52 source-normalized event poses over high-density sprite-sheet actors, reactions, preview, decor props, and direct actor care actions |
 
 Examples:
 
@@ -68,7 +68,7 @@ Examples:
 - `http://localhost:5173/?scenario=operations`
 - `http://localhost:5173/?scenario=office-visuals`
 
-## v0.51 Office Event Pose QA
+## v0.52 Source Sprite Replacement QA
 
 URL:
 
@@ -76,8 +76,12 @@ URL:
 
 Expected:
 
-- The QA pill says `v0.51 사무실 이벤트 포즈 QA`.
-- The current agent sheet is `agents_v051_event_poses` and points to `v051-agents-event-poses.png`.
+- The QA pill says `v0.52 사무실 원본 시트 QA`.
+- The current agent sheet is `agents_v052_source_event_poses`.
+- The source sheet points to `source/v052-agents-event-poses-source.png` and is 1152×9600.
+- The runtime sheet points to `v052-agents-event-poses.png` and is 576×4800.
+- Source frames are 384×384, game frames are 192×192, and the sheet keeps the 3-column, 25-row, 75-frame event-pose layout.
+- The manifest includes `source_path`, `source_scale`, `normalized_from`, `anchor_reference`, `anchor_tolerance_px`, and `silhouette_drift_tolerance_px`.
 - Priority actors can use `card_use`, `cheer`, and `alert` pose rows in addition to idle/work.
 - The office scene plan exposes at least one `card_use` actor pose from `프롬프트 스프린트`.
 - The office scene plan exposes at least one `alert` actor pose from a care-risk actor.
@@ -88,10 +92,23 @@ Expected:
 - Human/AI priority actors render with `v046-agents-hires.png` sprite-sheet frames rather than CSS-only body blocks.
 - Human/AI priority actors include `sprite-sheet-animated` and cycle through their 3-frame idle/work rows.
 - Placed office items render with `v046-office-objects-hires.png` sprite-sheet frames.
-- The in-scene `sprite-sheet-inspector` shows representative character and object atlas frames.
+- The in-scene `sprite-sheet-inspector` shows representative character and object atlas frames plus source/game frame sizes.
 - Actors, decor props, and office objects keep stable front/back ordering as their y positions change.
 - The actor focus panel and direct care actions from v0.44 still work.
 - Browser console has no runtime errors and narrow/mobile view does not create horizontal page overflow.
+
+## v0.51 Office Event Pose QA (Historical)
+
+URL:
+
+- `?scenario=office-visuals`
+
+Expected:
+
+- Historical baseline only. The current active visual QA entry is the v0.52 section above.
+- The old QA pill said `v0.51 사무실 이벤트 포즈 QA`.
+- The old agent sheet was `agents_v051_event_poses` and pointed to `v051-agents-event-poses.png`.
+- Priority actors could use `card_use`, `cheer`, and `alert` pose rows in addition to idle/work.
 
 ## v0.49 Office Event Reaction QA (Historical)
 
@@ -101,7 +118,7 @@ URL:
 
 Expected:
 
-- Historical baseline only. The current active visual QA entry is the v0.51 section above.
+- Historical baseline only. The current active visual QA entry is the v0.52 section above.
 - The old QA pill said `v0.49 사무실 이벤트 리액션 QA`.
 - The office playfield included `office-event-reaction-layer` and at least one `card_use` reaction from `프롬프트 스프린트`.
 

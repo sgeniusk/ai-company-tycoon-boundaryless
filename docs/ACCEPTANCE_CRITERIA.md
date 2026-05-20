@@ -6,6 +6,22 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 ---
 
+## Alpha v0.52: Source Sprite Replacement Pipeline
+
+| # | Criterion | Status |
+|---|---|---|
+| 1 | `asset_manifest.json` defines a v0.52 source-normalized event-pose sheet contract | **Passed** |
+| 2 | The source sheet exists at 1152×9600 with 384×384 source frames | **Passed** |
+| 3 | The runtime sheet exists at 576×4800 with 192×192 game frames | **Passed** |
+| 4 | Priority agents use `agents_v052_source_event_poses` without changing idle/work/card_use/cheer/alert rows | **Passed** |
+| 5 | `office-visuals` exposes card-use and alert poses through the v0.52 sheet | **Passed** |
+| 6 | Manifest validation checks source scale, anchor metadata, preview frames, and sheet bounds | **Passed** |
+| 7 | Relevant tests and `npm run harness:gate` pass | **Passed** |
+
+Remaining note: the v0.52 source PNG is a replacement-ready high-resolution draft, not a final external AI-generated artwork import.
+
+---
+
 ## Alpha v0.51: Office Event Pose Sheets
 
 | # | Criterion | Status |

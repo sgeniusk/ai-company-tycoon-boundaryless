@@ -4,6 +4,31 @@
 
 ---
 
+## [0.52-alpha] — 2026-05-20
+
+### 원본 시트 기반 스프라이트 교체 파이프라인
+
+**추가:**
+- `asset_manifest.json` 버전을 `0.52-alpha`로 올리고 `agents_v052_source_event_poses` 시트 계약을 추가했다.
+- v0.52 캐릭터 시트는 4배 원본 `public/assets/sprites/source/v052-agents-event-poses-source.png`와 게임용 정규화 시트 `public/assets/sprites/v052-agents-event-poses.png`를 함께 가진다.
+- 원본 프레임 384×384, 게임 프레임 192×192, 3열×25행, 75프레임 계약을 테스트로 고정했다.
+- `source_path`, `source_scale`, `normalized_from`, `anchor_reference`, `anchor_tolerance_px`, `silhouette_drift_tolerance_px` 메타데이터를 manifest와 데이터 검증에 추가했다.
+- 우선순위 에이전트 5종이 v0.52 시트를 사용하도록 연결했고, `office-visuals` QA 라벨을 원본 시트 QA로 갱신했다.
+- QA 시트 프리뷰가 원본 프레임 치수와 게임 프레임 치수를 함께 보여준다.
+
+**주의:**
+- 이번 산출물은 실제 외부 이미지 생성 최종본이 아니라, 최종 원본 PNG를 갈아끼울 수 있게 만든 4배 소스 초안과 정규화 파이프라인이다.
+
+**검증:**
+- `npm run assets:v052` 통과, v0.52 원본/정규화 PNG 생성
+- `file public/assets/sprites/source/v052-agents-event-poses-source.png` 통과, 1152×9600 PNG
+- `file public/assets/sprites/v052-agents-event-poses.png` 통과, 576×4800 PNG
+- `npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 79 tests
+- `npm run harness:gate` 통과, 40 files / 297 tests, 데이터 검증 통과, 프로덕션 빌드 통과
+- `curl -I 'http://127.0.0.1:5201/?scenario=office-visuals'` 통과, 200 OK
+- `curl -I 'http://127.0.0.1:5201/assets/sprites/v052-agents-event-poses.png'` 통과, 200 OK
+- `curl -I 'http://127.0.0.1:5201/assets/sprites/source/v052-agents-event-poses-source.png'` 통과, 200 OK
+
 ## [0.51-alpha] — 2026-05-20
 
 ### 사무실 이벤트 포즈 시트

@@ -817,6 +817,53 @@ if (!assetManifestData) {
     }
   }
 
+  const spriteSheets = assetManifest.sprite_sheets ?? {};
+  for (const [sheetId, sheet] of Object.entries(spriteSheets)) {
+    validateAssetStatus(`asset_manifest sprite_sheets "${sheetId}"`, sheet.source_status);
+    for (const field of ["path", "slice_mode"]) {
+      if (typeof sheet[field] !== "string" || sheet[field].length === 0) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": ${field} must be a non-empty string`);
+      }
+    }
+    for (const field of ["frame_width", "frame_height", "columns", "rows", "frame_count"]) {
+      if (typeof sheet[field] !== "number" || sheet[field] <= 0) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": ${field} must be a positive number`);
+      }
+    }
+    if (sheet.frame_count > sheet.columns * sheet.rows) {
+      errors.push(`asset_manifest sprite_sheets "${sheetId}": frame_count must fit inside columns * rows`);
+    }
+    for (const frameIndex of sheet.preview_frames ?? []) {
+      if (!Number.isInteger(frameIndex) || frameIndex < 0 || frameIndex >= sheet.frame_count) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": preview frame ${frameIndex} is outside sheet bounds`);
+      }
+    }
+    if (sheet.source_path) {
+      if (typeof sheet.source_scale !== "number" || sheet.source_scale <= 1) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": source_scale must be greater than 1 when source_path is set`);
+      }
+      const normalizedSourceScale = sheet.source_scale / (sheet.density ?? 1);
+      if (sheet.source_frame_width !== sheet.frame_width * normalizedSourceScale) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": source_frame_width must match frame_width * source_scale / density`);
+      }
+      if (sheet.source_frame_height !== sheet.frame_height * normalizedSourceScale) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": source_frame_height must match frame_height * source_scale / density`);
+      }
+      if (typeof sheet.normalized_from !== "string" || sheet.normalized_from.length === 0) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": normalized_from is required for source-normalized sheets`);
+      }
+      if (typeof sheet.anchor_reference !== "string" || sheet.anchor_reference.length === 0) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": anchor_reference is required for source-normalized sheets`);
+      }
+      if (typeof sheet.anchor_tolerance_px !== "number" || sheet.anchor_tolerance_px <= 0) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": anchor_tolerance_px must be positive`);
+      }
+      if (typeof sheet.silhouette_drift_tolerance_px !== "number" || sheet.silhouette_drift_tolerance_px <= 0) {
+        errors.push(`asset_manifest sprite_sheets "${sheetId}": silhouette_drift_tolerance_px must be positive`);
+      }
+    }
+  }
+
   const requiredAgentSprites = ["prompt_architect", "code_smith", "data_curator", "infra_operator", "growth_hacker"];
   const spriteAgentIds = new Set();
   for (const sprite of assetManifest.agent_sprites ?? []) {
@@ -825,6 +872,8 @@ if (!assetManifestData) {
     spriteAgentIds.add(sprite.agent_type_id);
     validateAssetStatus(`asset_manifest agent_sprites "${sprite.agent_type_id}"`, sprite.source_status);
     validatePalette(`asset_manifest agent_sprites "${sprite.agent_type_id}"`, sprite.palette);
+    const sheet = spriteSheets[sprite.sheet_id];
+    if (!sheet) errors.push(`asset_manifest agent_sprites "${sprite.agent_type_id}": unknown sheet_id "${sprite.sheet_id}"`);
     for (const animationName of ["idle", "work", "card_use", "cheer", "alert"]) {
       const animation = sprite.animations?.[animationName];
       if (!animation || typeof animation.frames !== "number" || animation.frames <= 0) {
@@ -832,6 +881,12 @@ if (!assetManifestData) {
       }
       if (!animation || typeof animation.row !== "number" || animation.row < 0) {
         errors.push(`asset_manifest agent_sprites "${sprite.agent_type_id}": ${animationName} animation needs non-negative row`);
+      }
+      if (sheet && animation?.row >= sheet.rows) {
+        errors.push(`asset_manifest agent_sprites "${sprite.agent_type_id}": ${animationName} row exceeds sheet rows`);
+      }
+      if (sheet && animation?.frames > sheet.columns) {
+        errors.push(`asset_manifest agent_sprites "${sprite.agent_type_id}": ${animationName} frames exceed sheet columns`);
       }
     }
   }
@@ -868,6 +923,9 @@ if (!assetManifestData) {
     validateAssetStatus(`asset_manifest office_objects "${object.object_id}"`, object.source_status);
     validatePalette(`asset_manifest office_objects "${object.object_id}"`, object.palette);
     if (object.tile_size !== grid.tile_size) errors.push(`asset_manifest office_objects "${object.object_id}": tile_size must match sprite_grid.tile_size`);
+    if (object.sheet_id && !spriteSheets[object.sheet_id]) {
+      errors.push(`asset_manifest office_objects "${object.object_id}": unknown sheet_id "${object.sheet_id}"`);
+    }
     if (!Array.isArray(object.footprint) || object.footprint.length !== 2) {
       errors.push(`asset_manifest office_objects "${object.object_id}": footprint must be [width, height]`);
     }

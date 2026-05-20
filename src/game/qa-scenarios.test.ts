@@ -295,13 +295,14 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(plan.activeSafeguards.join(" ")).toContain("구획");
   });
 
-  it("creates a v0.51 office visual scenario for event pose browser QA", () => {
+  it("creates a v0.52 office visual scenario for source-replaced event pose browser QA", () => {
     const scenario = createQaScenario("office-visuals");
     const plan = getOfficeScenePlan(scenario.state);
     const linkedDecorIds = new Set(assetManifest.office_objects.flatMap((object) => object.linked_item_id ? [object.linked_item_id] : []));
 
     expect(scenario.activeMenu).toBe("company");
-    expect(scenario.label).toContain("이벤트 포즈");
+    expect(scenario.label).toContain("원본 시트");
+    expect(scenario.state.timeline[0]).toContain("v0.52 원본 시트");
     expect(plan.objects.length).toBeGreaterThanOrEqual(8);
     expect(plan.actors.some((actor) => actor.kind === "robot")).toBe(true);
     expect(plan.eventReactions.map((reaction) => reaction.trigger)).toContain("card_use");

@@ -7,8 +7,10 @@ const root = process.cwd();
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "data/asset_manifest.json"), "utf8"));
 
 const outSprites = path.join(root, "public/assets/sprites");
+const outSpriteSources = path.join(outSprites, "source");
 const outBackgrounds = path.join(root, "public/assets/backgrounds");
 fs.mkdirSync(outSprites, { recursive: true });
+fs.mkdirSync(outSpriteSources, { recursive: true });
 fs.mkdirSync(outBackgrounds, { recursive: true });
 
 const crcTable = Array.from({ length: 256 }, (_, index) => {
@@ -37,6 +39,7 @@ function pngChunk(type, data = Buffer.alloc(0)) {
 }
 
 function writePng(filePath, canvas) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   const raw = Buffer.alloc((canvas.width * 4 + 1) * canvas.height);
   for (let y = 0; y < canvas.height; y += 1) {
     const rowStart = y * (canvas.width * 4 + 1);
@@ -269,11 +272,11 @@ function drawAgentFrame(target, ox, oy, sprite, agentIndex, mode, frame) {
   }
 }
 
-function buildAgentSheet(modes = agentBaseModes) {
+function buildAgentSheet(modes = agentBaseModes, density = pixelDensity) {
   const frameWidth = 96;
   const frameHeight = 96;
   const columns = 3;
-  const sheet = canvas(frameWidth * columns, frameHeight * manifest.agent_sprites.length * modes.length, [0, 0, 0, 0], pixelDensity);
+  const sheet = canvas(frameWidth * columns, frameHeight * manifest.agent_sprites.length * modes.length, [0, 0, 0, 0], density);
 
   manifest.agent_sprites.forEach((sprite, index) => {
     for (let frame = 0; frame < columns; frame += 1) {
@@ -436,7 +439,9 @@ function buildOfficeBackground() {
 
 writePng(path.join(outSprites, "v046-agents-hires.png"), buildAgentSheet(agentBaseModes));
 writePng(path.join(outSprites, "v051-agents-event-poses.png"), buildAgentSheet(agentEventPoseModes));
+writePng(path.join(outSpriteSources, "v052-agents-event-poses-source.png"), buildAgentSheet(agentEventPoseModes, 4));
+writePng(path.join(outSprites, "v052-agents-event-poses.png"), buildAgentSheet(agentEventPoseModes, 2));
 writePng(path.join(outSprites, "v046-office-objects-hires.png"), buildOfficeObjectSheet());
 writePng(path.join(outBackgrounds, "v046-isometric-office-hires.png"), buildOfficeBackground());
 
-console.log("Generated v0.46 high-density sheets plus v0.51 agent event pose sheet.");
+console.log("Generated v0.46 high-density sheets plus v0.51/v0.52 agent event pose sheets.");

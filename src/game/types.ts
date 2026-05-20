@@ -258,8 +258,16 @@ export interface ItemIconDefinition {
 
 export interface SpriteSheetDefinition {
   path: string;
+  source_path?: string;
   source_status: "placeholder" | "draft" | "final";
   density?: number;
+  source_scale?: number;
+  source_frame_width?: number;
+  source_frame_height?: number;
+  normalized_from?: string;
+  anchor_reference?: "bottom-center" | "center" | string;
+  anchor_tolerance_px?: number;
+  silhouette_drift_tolerance_px?: number;
   frame_width: number;
   frame_height: number;
   columns: number;
