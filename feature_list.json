@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-05-20",
-  "current_feature_id": "v0.54-alpha-office-object-backdrop-art-import",
+  "last_updated": "2026-05-21",
+  "current_feature_id": "v0.55-alpha-final-source-art-screenshot-qa",
   "features": [
     {
       "id": "harness-2026-05-20",
@@ -155,7 +155,7 @@
       "id": "v0.54-alpha-office-object-backdrop-art-import",
       "name": "Office object and backdrop art import",
       "description": "Create reproducible import/normalization paths for final office object sprite sheets and isometric backdrop source art, matching the character import workflow.",
-      "status": "ready",
+      "status": "completed",
       "priority": "P2",
       "dependencies": [
         "v0.53-alpha-final-character-art-import"
@@ -168,8 +168,36 @@
         "Relevant tests and npm run harness:gate pass.",
         "Changelog, QA report, and handoff docs are updated."
       ],
+      "evidence": [
+        "2026-05-21: Added scripts/assets/import-v054-office-art.mjs to validate 2560x1920 office object sources and 5120x2880 backdrop sources, then generate 1280x960 and 2560x1440 runtime PNGs.",
+        "2026-05-21: Added npm run assets:v054 plus office_objects_v054_final_art_import and office_isometric_v054_final_art_import manifest contracts.",
+        "2026-05-21: Generated public/assets/sprites/source/v054-office-objects-final-source.png, public/assets/sprites/v054-office-objects-final.png, public/assets/backgrounds/source/v054-isometric-office-final-source.png, and public/assets/backgrounds/v054-isometric-office-final.png.",
+        "2026-05-21: GameChrome now renders placed decor props and the office backdrop from the v0.54 import contracts; office-visuals opens as v0.54 오브젝트/배경 임포트 QA.",
+        "2026-05-21: npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts passed with 4 files / 82 tests.",
+        "2026-05-21: npm run harness:gate passed with 40 test files / 300 tests, data validation, and production build passing.",
+        "2026-05-21: curl -I for office-visuals and all v0.54 runtime/source PNGs returned 200 OK."
+      ],
+      "next_step": "Start v0.55-alpha-final-source-art-screenshot-qa to replace draft source candidates with actual final art and run screenshot QA."
+    },
+    {
+      "id": "v0.55-alpha-final-source-art-screenshot-qa",
+      "name": "Final source art replacement and screenshot QA",
+      "description": "Replace draft source candidates with actual AI-generated or external pixel-art source sheets, then verify desktop/mobile screenshots for framing, depth, and readability.",
+      "status": "ready",
+      "priority": "P2",
+      "dependencies": [
+        "v0.54-alpha-office-object-backdrop-art-import"
+      ],
+      "definition_of_done": [
+        "Final or near-final character, office object, and backdrop source art replaces the current draft candidates through the import commands.",
+        "Runtime sheets and backdrop regenerate without changing manifest frame contracts or scenario wiring.",
+        "Desktop and mobile screenshot QA checks actor anchors, object depth ordering, backdrop framing, and HUD/text overlap.",
+        "Any remaining art-quality gaps are logged as P2/P3 with screenshots or concrete asset paths.",
+        "Relevant tests and npm run harness:gate pass.",
+        "Changelog, QA report, and handoff docs are updated."
+      ],
       "evidence": [],
-      "next_step": "Build import scripts and manifest metadata for office objects and the isometric office backdrop, then verify office-visuals."
+      "next_step": "Collect or generate final source art, run assets:v053/assets:v054 imports, then perform screenshot QA for office-visuals."
     }
   ]
 }
