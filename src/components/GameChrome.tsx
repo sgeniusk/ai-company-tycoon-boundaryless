@@ -1497,6 +1497,12 @@ function LaunchImpactPanel({
   summary: ReleaseImpactSummary;
   onOpenNextAction: (menu: ReleaseImpactSummary["nextActionSteps"][number]["menu"]) => void;
 }) {
+  const [extrasOpen, setExtrasOpen] = useState(true);
+  const hasExtras =
+    summary.momentHighlights.length > 0 ||
+    summary.reviewSnippets.length > 0 ||
+    summary.cardInfluences.length > 0;
+
   return (
     <div className="launch-impact-panel">
       <div>
@@ -1516,16 +1522,6 @@ function LaunchImpactPanel({
           </button>
         ))}
       </div>
-      {summary.momentHighlights.length > 0 && (
-        <div className="launch-reaction-grid">
-          {summary.momentHighlights.map((moment) => (
-            <span className={`launch-reaction-card tone-${moment.tone}`} key={moment.id}>
-              <small>{moment.label}</small>
-              <strong>{moment.title}</strong>
-            </span>
-          ))}
-        </div>
-      )}
       <div className="launch-resource-list">
         {summary.resourceHighlights.map((highlight) => (
           <span className={highlight.amount > 0 ? "positive" : ""} key={highlight.resourceId}>
@@ -1534,22 +1530,52 @@ function LaunchImpactPanel({
           </span>
         ))}
       </div>
-      <div className="launch-review-stack" aria-label="출시 반응">
-        {summary.reviewSnippets.map((snippet) => (
-          <span className={`launch-review-line tone-${snippet.tone}`} key={snippet.id}>
-            <strong>{snippet.speaker}</strong>
-            <em>{snippet.text}</em>
-          </span>
-        ))}
-      </div>
-      {summary.cardInfluences.length > 0 && (
-        <div className="card-impact-list">
-          {summary.cardInfluences.map((influence) => (
-            <span key={influence.cardId}>
-              <strong>{influence.cardName}</strong>
-              {influence.effects}
-            </span>
-          ))}
+      {hasExtras && (
+        <button
+          aria-controls="launch-impact-extras"
+          aria-expanded={extrasOpen}
+          className="launch-impact-extras-toggle"
+          onClick={() => setExtrasOpen((prev) => !prev)}
+          type="button"
+        >
+          <span>카드 영향 / 출시 반응</span>
+          <em>{extrasOpen ? "접기" : "보기"}</em>
+        </button>
+      )}
+      {hasExtras && (
+        <div
+          aria-hidden={!extrasOpen}
+          className={`launch-impact-extras${extrasOpen ? " open" : ""}`}
+          id="launch-impact-extras"
+        >
+          {summary.momentHighlights.length > 0 && (
+            <div className="launch-reaction-grid">
+              {summary.momentHighlights.map((moment) => (
+                <span className={`launch-reaction-card tone-${moment.tone}`} key={moment.id}>
+                  <small>{moment.label}</small>
+                  <strong>{moment.title}</strong>
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="launch-review-stack" aria-label="출시 반응">
+            {summary.reviewSnippets.map((snippet) => (
+              <span className={`launch-review-line tone-${snippet.tone}`} key={snippet.id}>
+                <strong>{snippet.speaker}</strong>
+                <em>{snippet.text}</em>
+              </span>
+            ))}
+          </div>
+          {summary.cardInfluences.length > 0 && (
+            <div className="card-impact-list">
+              {summary.cardInfluences.map((influence) => (
+                <span key={influence.cardId}>
+                  <strong>{influence.cardName}</strong>
+                  {influence.effects}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       )}
       <small>{summary.nextAction}</small>

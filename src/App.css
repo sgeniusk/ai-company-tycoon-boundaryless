@@ -3059,6 +3059,48 @@ p {
   padding: 7px;
 }
 
+.launch-impact-extras-toggle {
+  display: none;
+}
+
+.launch-impact-extras {
+  display: contents;
+}
+
+@media (max-width: 520px) {
+  .launch-impact-extras-toggle {
+    align-items: center;
+    background: #fffdf7;
+    border: 1px solid #d8c49b;
+    color: #4f3b21;
+    cursor: pointer;
+    display: flex;
+    font-size: 0.66rem;
+    font-weight: 900;
+    gap: 6px;
+    justify-content: space-between;
+    padding: 6px 8px;
+  }
+
+  .launch-impact-extras-toggle em {
+    color: #b8530f;
+    font-style: normal;
+  }
+
+  .launch-impact-extras {
+    display: block;
+  }
+
+  .launch-impact-extras:not(.open) {
+    display: none;
+  }
+
+  .launch-impact-extras.open {
+    display: grid;
+    gap: 5px;
+  }
+}
+
 .launch-impact-panel strong,
 .launch-impact-panel span,
 .launch-impact-panel small {
