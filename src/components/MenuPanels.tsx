@@ -277,6 +277,15 @@ export function renderMenuContent(
                   <span>{getMenuLabel(annualDirective.recommendedMenu)}</span>
                 </article>
               </div>
+              <ol className="year-two-next-flow" aria-label="2년차 다음 30분 흐름">
+                <li>이번 달 보너스</li>
+                <li className="year-two-flow-arrow" aria-hidden="true">→</li>
+                <li>추천 연구</li>
+                <li className="year-two-flow-arrow" aria-hidden="true">→</li>
+                <li>신제품 후보</li>
+                <li className="year-two-flow-arrow" aria-hidden="true">→</li>
+                <li>두 번째 출시 보상</li>
+              </ol>
               <div className="annual-directive-actions">
                 <button onClick={() => setActiveMenu?.(annualDirective.recommendedMenu as MenuId)} type="button">
                   추천 메뉴 열기

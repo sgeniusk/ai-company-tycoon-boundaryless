@@ -405,6 +405,20 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.year-two-kickoff-grid[\s\S]*grid-template-columns:\s*1fr/s);
   });
 
+  it("animates the year-two kickoff entry and previews the next 30 minute flow", () => {
+    expect(menuPanels).toContain("year-two-next-flow");
+    expect(menuPanels).toContain("year-two-flow-arrow");
+    expect(menuPanels).toContain("2년차 다음 30분 흐름");
+    expect(menuPanels).toContain("추천 연구");
+    expect(menuPanels).toContain("신제품 후보");
+    expect(menuPanels).toContain("두 번째 출시 보상");
+    expect(appCss).toMatch(/\.year-two-kickoff\s*{[^}]*animation:\s*year-two-kickoff-enter/s);
+    expect(appCss).toMatch(/@keyframes year-two-kickoff-enter/);
+    expect(appCss).toMatch(/\.year-two-next-flow\s*{[^}]*display:\s*flex/s);
+    expect(appCss).toMatch(/\.year-two-next-flow li\.year-two-flow-arrow\s*{[^}]*animation:\s*card-impact-arrow-pulse/s);
+    expect(appCss).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.year-two-kickoff[\s\S]*animation:\s*none/);
+  });
+
   it("surfaces annual directive research as a direct launchpad", () => {
     expect(menuPanels).toContain("annual-research-launchpad");
     expect(menuPanels).toContain("연간 지시 추천 연구");

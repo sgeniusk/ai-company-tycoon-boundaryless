@@ -5216,12 +5216,60 @@ p {
 }
 
 .year-two-kickoff {
+  animation: year-two-kickoff-enter 420ms ease-out both;
   background: #eaf6f7;
   border: 2px solid #66a9ad;
   color: #173f43;
   display: grid;
   gap: 8px;
   padding: 9px;
+}
+
+@keyframes year-two-kickoff-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.year-two-next-flow {
+  align-items: center;
+  background: #fffdf7;
+  border: 1px solid #86bdc0;
+  border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  list-style: none;
+  margin: 0;
+  padding: 6px 8px;
+}
+
+.year-two-next-flow li {
+  color: #11383c;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.year-two-next-flow li.year-two-flow-arrow {
+  animation: card-impact-arrow-pulse 1400ms ease-in-out infinite;
+  color: #b8530f;
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .year-two-kickoff,
+  .year-two-next-flow li.year-two-flow-arrow {
+    animation: none;
+  }
 }
 
 .year-two-kickoff > div:first-child {
