@@ -8286,6 +8286,68 @@ p {
 
 .reward-choice {
   min-height: 0;
+  position: relative;
+}
+
+.reward-choice.rarity-rare,
+.reward-choice.rarity-epic {
+  isolation: isolate;
+}
+
+.reward-choice.rarity-rare {
+  border-color: #3f6fc4;
+  box-shadow: 0 0 0 1px #3f6fc4 inset, 0 2px 10px rgba(63, 111, 196, 0.28);
+}
+
+.reward-choice.rarity-rare::after {
+  background: #3f6fc4;
+  border-radius: 4px;
+  color: #fffdf7;
+  content: "희귀";
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+}
+
+.reward-choice.rarity-epic {
+  animation: reward-rarity-epic-pulse 1800ms ease-in-out infinite;
+  background: linear-gradient(135deg, #fff4e1 0%, #fbe4ff 100%);
+  border-color: #8a4dc9;
+  box-shadow: 0 0 0 1px #8a4dc9 inset, 0 3px 14px rgba(138, 77, 201, 0.34);
+}
+
+.reward-choice.rarity-epic::after {
+  background: linear-gradient(135deg, #d59a3d 0%, #8a4dc9 100%);
+  border-radius: 4px;
+  color: #fffdf7;
+  content: "특수";
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+}
+
+@keyframes reward-rarity-epic-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px #8a4dc9 inset, 0 3px 14px rgba(138, 77, 201, 0.34);
+  }
+  50% {
+    box-shadow: 0 0 0 1px #8a4dc9 inset, 0 3px 22px rgba(138, 77, 201, 0.58);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reward-choice.rarity-epic {
+    animation: none;
+  }
 }
 
 .reward-effects-preview {

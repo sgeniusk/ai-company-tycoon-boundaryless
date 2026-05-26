@@ -367,6 +367,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.reward-effects-arrow[\s\S]*animation:\s*none/);
   });
 
+  it("differentiates reward card rarity tiers with badges and glow", () => {
+    expect(appCss).toMatch(/\.reward-choice\.rarity-rare\s*{[^}]*box-shadow:/s);
+    expect(appCss).toMatch(/\.reward-choice\.rarity-rare::after\s*{[^}]*content:\s*"희귀"/s);
+    expect(appCss).toMatch(/\.reward-choice\.rarity-epic\s*{[^}]*animation:\s*reward-rarity-epic-pulse/s);
+    expect(appCss).toMatch(/\.reward-choice\.rarity-epic::after\s*{[^}]*content:\s*"특수"/s);
+    expect(appCss).toMatch(/@keyframes reward-rarity-epic-pulse/);
+    expect(appCss).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.reward-choice\.rarity-epic[\s\S]*animation:\s*none/);
+  });
+
   it("confirms the selected growth branch as the next monthly plan", () => {
     expect(gameChrome).toContain("growth-choice-confirmation");
     expect(gameChrome).toContain("성장 분기 선택 완료");
