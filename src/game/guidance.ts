@@ -508,11 +508,17 @@ function getAnnualReviewRunwayGuidance(state: GameState): GuidanceStep | undefin
   return {
     id: "advance_annual_review",
     title: "1년차 심사까지 마무리하기",
-    description: `첫 출시와 경쟁 대응을 확인했습니다. 이제 1년차 심사인 ${review.title}까지 ${monthsLeft}개월만 넘기면 첫해 성과를 볼 수 있습니다.`,
+    description:
+      monthsLeft > 0
+        ? `첫 출시와 경쟁 대응을 확인했습니다. 버튼을 누르면 ${monthsLeft}개월이 한 번에 자동 진행되어 1년차 심사인 ${review.title}로 도달합니다.`
+        : `첫 출시와 경쟁 대응을 확인했습니다. 이제 1년차 심사인 ${review.title}까지 ${monthsLeft}개월만 넘기면 첫해 성과를 볼 수 있습니다.`,
     actionLabel: monthsLeft === 0 ? "심사 확인" : "심사까지 진행",
     tone: progress.completed === progress.total ? "primary" : "steady",
     priorityLabel: "연간 심사",
-    helperText: `${getAnnualReviewCountdown(state)} · 목표 ${progress.completed}/${progress.total}`,
+    helperText:
+      monthsLeft > 0
+        ? `한 번에 ${monthsLeft}개월 자동 진행 · ${getAnnualReviewCountdown(state)} · 목표 ${progress.completed}/${progress.total}`
+        : `${getAnnualReviewCountdown(state)} · 목표 ${progress.completed}/${progress.total}`,
   };
 }
 
