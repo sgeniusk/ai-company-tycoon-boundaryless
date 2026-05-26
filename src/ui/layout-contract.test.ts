@@ -356,6 +356,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.reward-choice-confirmation ol[\s\S]*grid-template-columns:\s*1fr/s);
   });
 
+  it("previews each reward card's effects with the launch-impact arrow flow", () => {
+    expect(menuPanels).toContain("reward-effects-preview");
+    expect(menuPanels).toContain("reward-effects-arrow");
+    expect(menuPanels).toContain("reward-effects-list");
+    expect(menuPanels).toContain("효과 미리보기");
+    expect(menuPanels).toContain("이 카드");
+    expect(appCss).toMatch(/\.reward-effects-preview\s*{[^}]*grid-template-columns:\s*auto auto minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.reward-effects-arrow\s*{[^}]*animation:\s*card-impact-arrow-pulse/s);
+    expect(appCss).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.reward-effects-arrow[\s\S]*animation:\s*none/);
+  });
+
   it("confirms the selected growth branch as the next monthly plan", () => {
     expect(gameChrome).toContain("growth-choice-confirmation");
     expect(gameChrome).toContain("성장 분기 선택 완료");

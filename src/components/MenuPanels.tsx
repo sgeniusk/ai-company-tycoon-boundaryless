@@ -998,9 +998,13 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                     <h3>{card.name}</h3>
                     <p>{card.description}</p>
                     {biasMatch && <small className="reward-bias-match">{biasMatch.label}</small>}
+                    <div className="reward-effects-preview" aria-label={`${card.name} 효과 미리보기`}>
+                      <strong>이 카드</strong>
+                      <em className="reward-effects-arrow" aria-hidden="true">→</em>
+                      <span className="reward-effects-list">{formatEffects(effects)}</span>
+                    </div>
                     <div className="mini-row">
                       <span>비용 {formatCost(card.cost)}</span>
-                      <span>효과 {formatEffects(effects)}</span>
                     </div>
                     <button disabled={!check.ok} onClick={() => setGameState((current) => chooseCardReward(card.id, current))}>
                       덱에 추가
