@@ -8,20 +8,31 @@ Before writing code:
 
 1. Read `progress.md` for the current state, current objective, blockers, and latest verification evidence.
 2. Read `feature_list.json` and pick only the feature marked as current or explicitly requested by the user.
-3. Read the relevant project docs:
+3. Read only the relevant slice of project docs:
    - `docs/ROADMAP.md`
-   - `docs/CHANGELOG.md`
    - `docs/QA_SCENARIOS.md`
    - `docs/ACCEPTANCE_CRITERIA.md`
    - `docs/SESSION_HANDOFF.md`
-4. Check `git status --short` and do not overwrite unrelated user changes.
-5. For UI work, use the QA scenario that matches the feature, usually `?scenario=office-visuals`.
+4. Read `docs/CHANGELOG.md` only when you need version history or release notes; otherwise use `progress.md`.
+5. Check `git status --short` and do not overwrite unrelated user changes.
+6. For UI work, use the QA scenario that matches the feature, usually `?scenario=office-visuals`.
+
+## Context Budget
+
+Keep startup context lean:
+
+- Treat `AGENTS.md`, `feature_list.json`, and `progress.md` as the mandatory startup set.
+- Prefer the first 120-180 lines of large docs before reading deeper.
+- Read reports, screenshots, and long changelog history only for the feature you are actively touching.
+- Keep `progress.md` under about 1,000 words and `feature_list.json` to current, next, and recently completed items.
+- Move detailed evidence to `reports/` and leave only summaries plus paths in root state files.
 
 ## Current Source Of Truth
 
 - Current version: `v0.55-alpha`
 - Current objective: `v0.56-alpha-playtest-slice-lock`
 - Current stack: Vite + React + TypeScript
+- Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`
 - Local dev: `npm run dev -- --port 5201`
 - Asset generation: `npm run assets:v054`
@@ -31,6 +42,14 @@ Before writing code:
 - State tracker: `feature_list.json`
 - Restart log: `progress.md`
 - Human-readable handoff: `docs/SESSION_HANDOFF.md` and root `session-handoff.md`
+
+## Validation Policy (Updated 2026-05-26)
+
+- v0.56 blind playtest slice is validated by 5 AGY agent reviews, not real human sessions, per user decision on 2026-05-26.
+- Session files `reports/playtests/v0_56_blind_playtest_session_01.md` through `_05.md` are filled with AGY agent runs; the 테스터 프로필 row MUST start with `AGY agent` and declare its scenario focus.
+- Real human playtests stay a P2 follow-up track and do not block v0.57 entry.
+- `qa:asset-handoff` is the gate for final art request; it must report `AGY 발송 가능` before any vendor send.
+- Coding agents downstream of this policy (Claude Code as harness, Codex CLI for parallel implementation, AGY CLI for art/playtest) share this validation contract.
 
 ## Verification Commands
 
