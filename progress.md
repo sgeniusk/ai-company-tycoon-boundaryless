@@ -21,6 +21,7 @@ Close v0.56 with 5 AGY agent reviews (validation policy upgraded 2026-05-26 per 
 
 ## What Changed
 
+- Product catalog expansion completed: `data/products.json` now has 30 unique products, preserving existing IDs and adding 15 new Korean products across education, mobility, robotics, semiconductors, and odd industries; the product domain filter test now derives semiconductor count from data instead of assuming one chip product.
 - v0.56 pre-art slice is code/QA-ready: first-screen fantasy signal, Mina welcome, a clickable guide-side 30-minute alpha-run roadmap plus office playfield focus strip with next reward previews, click feedback, state-aware step targets, safe direct fast actions for active early steps, a year-two directive/research/product-start roadmap chain, and a 100% alpha-run completion payoff panel that now follows through into the 2nd-year issue, launch, second reward pick, post-reward completion state, and alpha-run debrief visible from both guide and results with a four-beat run timeline, plus first-hire/project/issue/reward/growth fast-starts, annual-review fast-forward, starter product launchpad, first launch payoff, year-two research/product candidate/needed-research/ready/started/issue-result/launch-impact path, rival/staff incident moments, workforce mix panel/HUD, and playtest observer HUD.
 - Blind-test operations are scaffolded: request packet, AGY outbox, dispatch log, URL sync, five-session link sheet, sandbox-safe live-link structure check, readiness/preflight reports, returned-session intake, issue queue, final art gate, final art handoff packet, and automatic rehearsal.
 - A Cloudflare quick tunnel is active for the current local dev server, and the request packet/AGY outbox have been synced to the remote player/facilitator URLs.
@@ -32,6 +33,7 @@ Close v0.56 with 5 AGY agent reviews (validation policy upgraded 2026-05-26 per 
 ## Files
 
 - Startup state: `AGENTS.md`, `feature_list.json`, `progress.md`, `session-handoff.md`
+- Product data expansion: `data/products.json`, `src/game/product-filters.test.ts`
 - Main handoff/docs: `docs/SESSION_HANDOFF.md`, `docs/ROADMAP.md`, `docs/QA_SCENARIOS.md`, `docs/BLIND_PLAYTEST_CHECKLIST.md`
 - Art intake: `docs/ART_INTAKE.md`, `docs/ANTIGRAVITY_ART_BRIEF.md`
 - Playtest reports: `reports/playtests/v0_56_*`, including `v0_56_blind_playtest_session_links.md`
@@ -48,6 +50,7 @@ Close v0.56 with 5 AGY agent reviews (validation policy upgraded 2026-05-26 per 
 
 ## Verification Evidence
 
+- Latest product catalog expansion check: JSON parse/count check reported 30 products and 30 unique IDs; `npm run validate:data` passed; `npm run harness:gate` passed with 43 test files / 406 tests, data validation, and production build.
 - Latest full gate: `npm run harness:gate` passed with 43 test files / 406 tests, data validation, and production build.
 - Latest 30-minute alpha-run roadmap/focus-strip check: active step buttons now run safe early fast actions, click feedback, the year-two directive/research/product-start chain, a 100% completion payoff panel, and completion follow-through into 2nd-year issue resolution, launch, second reward pick, post-reward completion state, and alpha-run debrief with product/reward/year-two/readiness highlights plus first release/card payoff/annual directive/second reward timeline in both guide and results; final completion action is `디브리프 보기`; `npm test -- src/game/guidance.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` passed with 3 files / 123 tests; `npm run build` passed; `npm run harness:gate` passed with 43 files / 406 tests; `npm run qa:asset-handoff` kept final art intake `대기` and send status `AGY 발송 금지`; `curl -I 'http://127.0.0.1:5201/?scenario=alpha-run-second-reward-picked'` returned 200 OK.
 - Latest first-hire fast-start check: `npm test -- src/game/simulation.test.ts src/ui/layout-contract.test.ts` passed with 2 files / 76 tests; `npm test -- src/game/blind-playtest-records.test.ts` passed with 1 file / 26 tests after updating the first-3-minute session checkpoint; `npm run build` passed; headless Chrome captured `?scenario=fresh` at `/private/tmp/ai-company-v056-first-hire-fast-start-v5.png`.

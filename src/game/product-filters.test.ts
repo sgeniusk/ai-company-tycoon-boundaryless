@@ -21,8 +21,8 @@ describe("v0.12.5 product domain filters", () => {
   it("filters the product list by selected domain and falls back to all products", () => {
     const chipProducts = getProductsByDomainFilter(products, "semiconductors");
 
-    expect(chipProducts).toHaveLength(1);
-    expect(chipProducts[0].id).toBe("ai_training_chip");
+    expect(chipProducts).toHaveLength(products.filter((product) => product.domain === "semiconductors").length);
+    expect(chipProducts.map((product) => product.id)).toContain("ai_training_chip");
     expect(getProductsByDomainFilter(products, "missing_domain")).toHaveLength(products.length);
     expect(getProductsByDomainFilter(products, "all")).toHaveLength(products.length);
   });
