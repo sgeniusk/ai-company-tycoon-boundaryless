@@ -14,6 +14,9 @@ describe("v0.30 helper character tutorial guide", () => {
       helperName: "미나",
       targetMenu: "agents",
     });
+    expect(guide?.title).toContain("AI 회사");
+    expect(guide?.message).toContain("사람과 AI 에이전트");
+    expect(guide?.message).toContain("첫 제품 출시");
 
     const dismissed = dismissTutorialGuide(guide!.id, initial);
 
@@ -47,6 +50,37 @@ describe("v0.30 helper character tutorial guide", () => {
       id: "card_reward",
       targetMenu: "deck",
     });
+  });
+
+  it("points a hired first teammate to the product menu starter project card", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    if (!architect) throw new Error("Missing prompt architect");
+
+    const staffed = hireAgent(architect, {
+      ...createInitialState(),
+      seenTutorials: ["welcome_garage"],
+    });
+    const guide = getTutorialGuide(staffed, "agents");
+
+    expect(guide).toMatchObject({
+      id: "agent_hired",
+      targetMenu: "products",
+      actionLabel: "첫 제품 개발",
+    });
+    expect(guide?.message).toContain("제품 메뉴 상단");
+    expect(guide?.message).toContain("추천 첫 제품");
+  });
+
+  it("does not interrupt the starter project card with the idea composer tutorial before the first project starts", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    if (!architect) throw new Error("Missing prompt architect");
+
+    const staffed = hireAgent(architect, {
+      ...createInitialState(),
+      seenTutorials: ["welcome_garage", "agent_hired"],
+    });
+
+    expect(getTutorialGuide(staffed, "products")).toBeUndefined();
   });
 
   it("keeps dismissed helper guides through save restore and next-run reset", () => {

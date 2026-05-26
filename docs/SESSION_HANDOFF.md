@@ -1,216 +1,88 @@
 # 세션 핸드오프 — AI Company Tycoon: Boundaryless
 
-작성일: 2026-05-21
+작성일: 2026-05-26
 
 ## 한 줄 요약
 
-현재 빌드는 `v0.55-alpha`이고 다음 작업 목표는 `v0.56-alpha-playtest-slice-lock`이다. **카이로소프트식 AI 회사 경영 + 로그라이트 덱빌딩 + 10년 캠페인 + 경계 없는 산업 확장**을 목표로 하되, 다음 단계에서는 새 시스템보다 20~30분 플레이 가능한 웹 알파 검증 슬라이스를 잠근다.
+현재 빌드는 `v0.55-alpha`이고, 현재 목표는 `v0.56-alpha-playtest-slice-lock`이다. 지금부터는 새 시스템을 더 붙이기보다 **20~30분 플레이 가능한 pre-art 웹 알파 슬라이스**를 실제 5명 블라인드 테스트로 검증하고 P0를 닫는 단계다.
 
-## 현재 작업 위치
+## 현재 상태
 
 - 로컬 폴더: `/Users/taewookkim/Downloads/ai-company-tycoon`
-- GitHub: `https://github.com/sgeniusk/ai-company-tycoon-boundaryless`
-- 현재 브랜치: `main`
-- 최신 구현 커밋: `df57811 Polish v0.55 mobile command hand QA`
-- 현재 목표: `v0.56-alpha-playtest-slice-lock`
-- 오늘 마감 상태: v0.55 스크린샷 QA와 모바일 하단 전략 손패 보정은 완료. 최종 원본 아트 교체는 `docs/ART_INTAKE.md`의 P2 작업으로 분리.
-- 로컬 실행 주소: `http://127.0.0.1:5201/`
-- 현재 시각 QA 진입 주소: `http://127.0.0.1:5201/?scenario=office-visuals`
-- 현재 페르소나 QA 진입 주소: `http://127.0.0.1:5201/?scenario=persona20`
-- 루트 시작 문서: `AGENTS.md`
-- 구조화 상태 파일: `feature_list.json`, `progress.md`
+- 브랜치: `main`
+- 최신 구현 커밋: `538c174 Refocus roadmap on playtest slice`
+- 스택: Vite + React + TypeScript
+- 로컬 실행: `npm run dev -- --port 5201`
+- 임시 원격 테스트 URL: `https://librarian-matches-engaged-compact.trycloudflare.com/?scenario=fresh`
+- 메인 QA: `http://127.0.0.1:5201/?scenario=office-visuals`
+- 페르소나 QA: `http://127.0.0.1:5201/?scenario=persona20`
+- 전체 게이트: `npm run harness:gate`
+- 루트 시작 문서: `AGENTS.md`, `feature_list.json`, `progress.md`
 
-## 실행과 검증
+## v0.56 범위
 
-```bash
-npm run dev -- --port 5201
-npm run assets:v054
-npm run assets:v053
-npm run qa:office-visuals:screenshots
-npm run harness:gate
-./init.sh
-```
+v0.56은 첫 화면에서 AI 회사 경영 판타지를 이해하고, 클릭 가능한 30분 알파런 로드맵과 오피스 화면의 현재 목표 스트립으로 첫 출시부터 2년차 신제품 착수까지의 목적지와 다음 보상을 본 뒤, 클릭 피드백으로 방금 실행한 액션을 확인한다. 활성 단계에서는 고용/개발/이슈/출시/보상/성장/심사를 직접 실행하고, 후반 2년차 단계에서는 `지시 선택 -> 엔터프라이즈 연구 -> 에이전트 연구 -> 신제품 개발` 체인으로 이어진다. 100% 상태에서는 알파런 완주/잠금 패널이 신제품 개발 진행률과 다음 개발 이슈 버튼을 보여주며, 버튼은 이후 신제품 이슈 해결, 출시 진행, 두 번째 보상 선택, 보상 선택 완료 상태, `디브리프 보기` 버튼, 제품/보상/2년차/블라인드 준비 디브리프로 이어진다. 디브리프는 가이드 탭과 결과 탭 양쪽에 표시되고, 첫 출시/카드 영향/연간 지시/두 번째 보상까지 4개 핵심 장면 타임라인을 보여준다. 추천 첫 팀원 빠른 고용과 추천 첫 제품 빠른 개발로 덱/이슈 단계에 진입하고, 이어서 가이드의 첫 이슈 빠른 해결, 첫 출시 진행 가속, 첫 보상/성장 빠른 선택, 첫 연간 심사 빠른 진행, 회사 메뉴의 다음 해 지시 선택, 명시적인 `2년차 시작`, 카드 보상/성장 선택/연간 지시/2년차 연구와 제품 후보/필요 연구/신제품 개발 착수/이슈 결과/출시 결과까지 이어지는 블라인드 테스트용 슬라이스다. 경쟁사/직원 사건, 인력 조합, 관찰 HUD, 블라인드 테스트 요약/이슈 큐/아트 게이트도 준비되어 있다. 사용자가 수동 실행한 AGY 에이전트 리뷰는 수신했고, 그 P1 후보 중 인력 조합/모바일 가독성 보강은 반영했지만 실제 사람 블라인드 테스트로 계산하지 않는다.
 
-최종 오브젝트/배경 원본을 받을 때:
+상세 변경 목록은 루트 상태 파일에 반복하지 않는다. 필요한 경우 아래 파일만 골라 읽는다.
 
-```bash
-npm run assets:v054 -- --objects-source <path-to-2560x1920-rgba-png> --backdrop-source <path-to-5120x2880-rgba-png>
-```
-
-최종 캐릭터 원본을 받을 때:
-
-```bash
-npm run assets:v053 -- --source <path-to-1152x9600-rgba-png>
-```
-
-최근 전체 검증 기준:
-
-- `npm run qa:office-visuals:screenshots`: desktop 1366×768 / mobile 390×844 PNG 생성
-- `file reports/qa/screenshots/v0_55_office_visuals_desktop.png`: 1366×768 PNG 확인
-- `file reports/qa/screenshots/v0_55_office_visuals_mobile.png`: 390×844 PNG 확인
-- `npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`: 2개 테스트 파일 / 43개 테스트 통과
-- `npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts`: 3개 테스트 파일 / 78개 테스트 통과
-- `npm run harness:gate`: 40개 테스트 파일 / 303개 테스트 통과
-- 데이터 검증 통과
-- 프로덕션 빌드 통과
-- `?scenario=office-visuals` HTTP 200 OK
-
-## 핵심 플레이 루프
-
-1. 한국 시골 차고에서 작은 AI 회사를 시작한다.
-2. 사람 직원과 AI 에이전트를 고용한다.
-3. 소재/산업, 제품 타입, 파격 옵션을 조합해 제품 아이디어를 만든다.
-4. 직원을 제품에 배치해 AI 모델/서비스를 개발한다.
-5. 기존 제품은 메이저 업데이트, 리뉴얼, 파생 라인으로 다시 출시할 수 있다.
-6. 카드와 개발 이슈 대응으로 완성도와 출시 결과를 올린다.
-7. 경쟁사, 시장 충격, 연간 심사, 직원 사건이 회사를 흔든다.
-8. 10년차 최종 평가까지 가거나 실패 후 통찰과 해금을 들고 새 런을 시작한다.
-
-## 최근 완성된 버전
-
-### v0.55-alpha
-
-- `asset_manifest.json` 버전을 `0.55-alpha`로 올렸다.
-- `scripts/qa/capture-office-visuals-screenshots.mjs`를 추가했다.
-- `npm run qa:office-visuals:screenshots`가 `office-visuals`를 1366×768 desktop과 390×844 mobile PNG로 캡처한다.
-- `visual_qa.office_visuals_v055_screenshot_qa` 계약을 추가했다.
-- 스크린샷 산출물은 `reports/qa/screenshots/`에 저장한다.
-- 모바일 headless 캡처에서 앱 셸이 왼쪽에서 잘리지 않도록 좁은 화면 정렬을 보정했다.
-- 모바일 하단 전략 손패를 고정 4칸 HUD로 압축해 390×844 스크린샷에서 오른쪽으로 잘리지 않게 했다.
-- `visual_qa.office_visuals_v055_screenshot_qa.checks`에 `mobile_command_hand_fit`을 추가했다.
-- `office-visuals` QA 시나리오가 `v0.55 스크린샷 QA`로 열린다.
-
-### v0.54-alpha
-
-- `asset_manifest.json` 버전을 `0.54-alpha`로 올렸다.
-- `scripts/assets/import-v054-office-art.mjs`를 추가했다.
-- `npm run assets:v054`로 오브젝트 2560×1920 원본과 배경 5120×2880 원본을 검증하고 2x 런타임 PNG를 생성한다.
-- `office_objects_v054_final_art_import`와 `office_isometric_v054_final_art_import` 계약을 추가했다.
-- scene backdrop source/import metadata를 데이터 검증에 포함했다.
-- `GameChrome`이 배치 장식 프롭과 사무실 배경을 v0.54 에셋에서 렌더링한다.
-- `office-visuals` QA 시나리오가 `v0.54 오브젝트/배경 임포트 QA`로 열린다.
-
-### v0.53-alpha
-
-- `asset_manifest.json` 버전을 `0.53-alpha`로 올렸다.
-- `scripts/assets/import-v053-character-source.mjs`를 추가했다.
-- `npm run assets:v053`로 1152×9600 원본 PNG를 검증하고 576×4800 게임용 시트를 생성한다.
-- `agents_v053_final_art_import` 시트 계약을 추가했다.
-- `source_origin`, `import_pipeline`, `normalization_method` 메타데이터를 추가했다.
-- `GameChrome`이 우선순위 액터를 v0.53 시트에서 렌더링한다.
-- `office-visuals` QA 시나리오가 `v0.53 최종 아트 임포트 QA`로 열린다.
-
-### v0.52-alpha
-
-- 이벤트 포즈 시트를 4배 원본 PNG와 2배 게임용 정규화 PNG로 분리했다.
-- 원본 프레임 384×384, 게임 프레임 192×192, 3열×25행, 75프레임 계약을 테스트로 고정했다.
-
-### v0.51-alpha
-
-- `agents_v051_event_poses` 시트 계약을 추가했다.
-- 우선순위 에이전트 5종이 `idle`, `work`, `card_use`, `cheer`, `alert` 3프레임 row를 가진다.
-- `getOfficeScenePlan()`이 카드 사용을 `card_use`, 출시를 `cheer`, 케어/경쟁 경보를 `alert` 포즈로 연결한다.
-
-## 주요 문서
-
-- 루트 시작 계약: `AGENTS.md`
-- 상태 추적: `feature_list.json`
-- 진행 로그: `progress.md`
-- PRD: `docs/PRD.md`
 - 로드맵: `docs/ROADMAP.md`
-- 최근 변경 로그: `docs/CHANGELOG.md`
-- QA 진입점: `docs/QA_SCENARIOS.md`
-- 인수 기준: `docs/ACCEPTANCE_CRITERIA.md`
-- 아트 수급/교체: `docs/ART_INTAKE.md`
+- QA 시나리오: `docs/QA_SCENARIOS.md`
 - 블라인드 테스트 체크리스트: `docs/BLIND_PLAYTEST_CHECKLIST.md`
-- 제작 보고서: `reports/production_alpha_v0_55_final_source_art_screenshot_qa.md`
-- QA 보고서: `reports/qa/v0_55_final_source_art_screenshot_qa.md`
+- v0.56 리포트 묶음: `reports/playtests/v0_56_*`, `reports/qa/v0_56_*`
+- 최종 아트: `docs/ART_INTAKE.md`, `docs/ANTIGRAVITY_ART_BRIEF.md`
 
-## 중요한 코드 위치
+## 핵심 명령
 
-- 메인 게임 크롬: `src/components/GameChrome.tsx`
-- 사무실/운영 시뮬레이션: `src/game/simulation.ts`
-- 타입: `src/game/types.ts`
-- QA 시나리오: `src/game/qa-scenarios.ts`
-- 에셋 매니페스트: `data/asset_manifest.json`
-- v0.54 오피스 아트 임포트 스크립트: `scripts/assets/import-v054-office-art.mjs`
-- v0.54 오브젝트 원본 시트: `public/assets/sprites/source/v054-office-objects-final-source.png`
-- v0.54 오브젝트 게임용 시트: `public/assets/sprites/v054-office-objects-final.png`
-- v0.54 배경 원본: `public/assets/backgrounds/source/v054-isometric-office-final-source.png`
-- v0.54 배경 게임용 이미지: `public/assets/backgrounds/v054-isometric-office-final.png`
-- v0.55 스크린샷 스크립트: `scripts/qa/capture-office-visuals-screenshots.mjs`
-- v0.55 데스크톱 스크린샷: `reports/qa/screenshots/v0_55_office_visuals_desktop.png`
-- v0.55 모바일 스크린샷: `reports/qa/screenshots/v0_55_office_visuals_mobile.png`
-- v0.55 스크린샷 manifest: `reports/qa/screenshots/v0_55_office_visuals_screenshots.json`
-- v0.53 캐릭터 임포트 스크립트: `scripts/assets/import-v053-character-source.mjs`
-- v0.53 원본 시트: `public/assets/sprites/source/v053-agents-event-poses-final-source.png`
-- v0.53 게임용 시트: `public/assets/sprites/v053-agents-event-poses-final.png`
-- 사무실 반응 데이터: `data/office_reactions.json`
-- 레이아웃/픽셀 CSS: `src/App.css`
-
-## 현재 좋은 점
-
-- 한 판은 120개월 10년 엔딩까지 시뮬레이션으로 돈다.
-- 제품 조합은 5,184개 기본 조합을 만든다.
-- 로그라이트 새 런, 통찰, 메타 해금, 시작 덱이 있다.
-- 고밀도 픽셀 시트와 아이소메트릭 사무실 배경이 실제 게임 화면에 연결됐다.
-- 사무실 액터가 클릭 가능하고 직접 케어 액션까지 이어진다.
-- 카드 사용과 케어 경보가 말풍선뿐 아니라 캐릭터 포즈로도 읽힌다.
-- 캐릭터 포즈, 오피스 오브젝트, 오피스 배경은 이제 외부/AI 최종 원본 PNG를 받을 수 있는 임포트 경로가 있다.
-- 최신 20인 페르소나 QA에서 미해결 P0/P1은 0건이다.
-
-## 아직 부족한 점
-
-- 실제 이미지 생성 또는 외부 제작 최종 캐릭터/오브젝트/배경 원본은 아직 별도 제공되지 않았다. 현재 v0.53/v0.54 source는 임포트 가능한 draft candidate다.
-- 최종 원본 시트 교체 후 프레임 anchor, 발 위치, 실루엣 drift, 오브젝트 depth, 배경 프레이밍을 브라우저 스크린샷으로 검수해야 한다.
-- 실제 5명 블라인드 플레이테스트 기록이 아직 없다.
-- 첫 제품 출시 결과에서 카드 영향, 리뷰, 경쟁사 반응이 한눈에 보이는 연출이 아직 약하다.
-- 모바일 하단 전략 손패의 오른쪽 잘림은 v0.55 안에서 해결했다. 다만 최종 아트가 들어오면 메뉴 패널 내부의 촘촘한 정보 밀도는 다시 봐야 한다.
-- 최종 픽셀아트, 음악, 사운드가 없다.
-- Playwright는 이번 환경에 없지만, v0.55부터 로컬 headless Chrome 스크린샷 QA로 desktop/mobile 캡처를 남길 수 있다.
-
-## 다음 추천 작업
-
-1. v0.56 플레이테스트 슬라이스 잠금
-   - 첫 제품 출시 결과 연출 강화
-   - 카드 영향 체감 표시
-   - 경쟁사 사건 1개와 직원 사건 1개를 화면 사건으로 표시
-   - 연간 심사 1회까지 설명 없이 도달 가능하게 정리
-   - `docs/BLIND_PLAYTEST_CHECKLIST.md` 기준으로 5명 테스트 기록
-
-2. Art Intake는 병렬 P2로 관리
-   - 캐릭터: 1152×9600 RGBA PNG
-   - 오피스 오브젝트: 2560×1920 RGBA PNG
-   - 오피스 배경: 5120×2880 RGBA PNG
-   - `npm run assets:v053 -- --source <캐릭터 원본PNG>`
-   - `npm run assets:v054 -- --objects-source <오브젝트 원본PNG> --backdrop-source <배경 원본PNG>`
-   - `npm run qa:office-visuals:screenshots`
-
-3. 지금 하지 않을 것
-   - 새 대형 시스템 추가
-   - 제품 조합 수 추가
-   - 산업군 대량 확장
-   - 모바일 완성도 깊게 파기
-
-## 주의사항
-
-- 사용자는 보고서를 한국어로 읽고 싶어 한다.
-- 작은 작업마다 Vercel 배포하지 않는다. 큰 버전업 때만 배포한다.
-- 현재 Vercel은 이전에 무료 배포 한도 오류가 났다.
-- 기존 변경을 되돌리지 말고, 작업 후 `npm run harness:gate`를 통과시킨다.
-- 파일 수정은 되도록 `apply_patch`를 쓴다.
-- 브라우저 QA는 `http://127.0.0.1:5201/?scenario=office-visuals`와 `http://127.0.0.1:5201/?scenario=persona20`를 함께 본다.
-
-## 새 세션 시작 프롬프트
-
-```text
-프로젝트는 `/Users/taewookkim/Downloads/ai-company-tycoon`의 AI Company Tycoon: Boundaryless야.
-
-먼저 `AGENTS.md`, `feature_list.json`, `progress.md`, `docs/SESSION_HANDOFF.md`, `docs/ROADMAP.md`, `docs/CHANGELOG.md`, `docs/QA_SCENARIOS.md`를 읽고 이어서 개발해줘.
-
-현재 버전은 v0.55-alpha이고 다음 목표는 `v0.56-alpha-playtest-slice-lock`이야. 최신 구현 커밋은 `df57811 Polish v0.55 mobile command hand QA`야. 스택은 Vite + React + TypeScript야.
-
-로컬 실행은 `npm run dev -- --port 5201`, 시각 QA는 `http://127.0.0.1:5201/?scenario=office-visuals`, 페르소나 QA는 `http://127.0.0.1:5201/?scenario=persona20`, 전체 검증은 `npm run harness:gate`야.
-
-현재 feature는 `v0.56-alpha-playtest-slice-lock`이고 상태는 in_progress야. v0.55 스크린샷 QA 하네스는 완료로 보고, 최종 외부/AI 원본 아트 교체는 `docs/ART_INTAKE.md`의 P2 작업으로 분리했어. 다음 작업은 첫 제품 출시/카드 영향/경쟁사 사건/직원 사건/블라인드 테스트 슬라이스에 집중해줘. 완료 후 한국어로 변경점, 검증 결과, 다음 추천 작업을 짧게 보고해줘.
+```bash
+npm run harness:gate
+npm run qa:blind-readiness
+npm run qa:blind-session-links
+npm run qa:blind-live-check
+npm run qa:blind-summary
+npm run qa:blind-intake -- --source <folder>
+npm run qa:blind-issues
+npm run qa:art-gate
+npm run qa:asset-handoff
 ```
+
+## 현재 게이트 상태
+
+- 최신 전체 게이트: `npm run harness:gate` 통과, 43 files / 406 tests, 데이터 검증, production build 통과
+- 30분 알파런 로드맵/오피스 포커스 스트립 검증: 활성 단계 버튼은 안전한 fast action, 클릭 피드백, 2년차 지시/연구/신제품 착수 체인, 100% 완료 패널, 완료 후 신제품 이슈/출시/두 번째 보상 선택/보상 선택 완료/디브리프 체인을 실행/표시한다; 디브리프는 가이드와 결과 탭 모두에 보이고 4개 핵심 장면 타임라인을 포함한다; `npm test -- src/game/guidance.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 123 tests; `npm run build` 통과; `npm run harness:gate` 통과, 43 files / 406 tests; `npm run qa:asset-handoff`는 final art intake `대기`, Send status `AGY 발송 금지` 유지; `curl -I 'http://127.0.0.1:5201/?scenario=alpha-run-second-reward-picked'` 200 OK
+- 첫 팀원 빠른 고용 검증: `npm test -- src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 76 tests; `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 26 tests; `npm run build` 통과; headless Chrome `?scenario=fresh` 캡처 `/private/tmp/ai-company-v056-first-hire-fast-start-v5.png`
+- 첫 제품 빠른 개발 검증: `npm test -- src/game/simulation.test.ts` 통과, 1 file / 33 tests; `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 45 tests; focused combined check 통과, 3 files / 104 tests; `npm run build` 통과; headless Chrome `?scenario=staffing` 캡처 `/private/tmp/ai-company-v056-first-project-fast-start.png`
+- 첫 이슈 빠른 해결/출시 가속 검증: `npm test -- src/game/simulation.test.ts` 통과, 1 file / 35 tests; `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 47 tests; focused combined check 통과, 4 files / 112 tests; `npm run build` 통과; `npm run harness:gate` 통과, 43 files / 374 tests; `npm run qa:asset-handoff`는 final art intake `대기`, Send status `AGY 발송 금지` 유지; headless Chrome `?scenario=project` 캡처 `/private/tmp/ai-company-v056-first-issue-fast-start.png`
+- 첫 보상/성장 빠른 선택 검증: `npm test -- src/game/simulation.test.ts` 통과, 1 file / 37 tests; `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 48 tests; focused simulation/layout/guidance/deckbuilding check 통과, 4 files / 115 tests; focused QA-scenario/simulation/layout check 통과, 3 files / 130 tests; `npm run build` 통과; `npm run harness:gate` 통과, 43 files / 378 tests; `npm run qa:asset-handoff`는 final art intake `대기`, Send status `AGY 발송 금지` 유지; headless Chrome `?scenario=reward` 캡처 `/private/tmp/ai-company-v056-first-reward-fast-start-no-modal.png`, `?scenario=reward-picked` 캡처 `/private/tmp/ai-company-v056-first-growth-fast-start-no-modal.png`
+- 첫 연간 심사/2년차 시작 명확화 검증: `npm test -- src/game/simulation.test.ts` 통과, 1 file / 38 tests; `npm test -- src/game/guidance.test.ts` 통과, 1 file / 12 tests; `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 48 tests; `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 26 tests; focused simulation/guidance/layout/QA 기록/QA 시나리오 check 통과, 5 files / 169 tests; `npm run build` 통과; `npm run harness:gate` 통과, 43 files / 379 tests; `npm run qa:asset-handoff`는 final art intake `대기`, Send status `AGY 발송 금지` 유지; headless Chrome `?scenario=flow` 캡처 `/private/tmp/ai-company-v056-annual-review-fast-forward-flow.png`, `?scenario=annual-directed` 캡처 `/private/tmp/ai-company-v056-annual-directed-year-two-start.png`
+- 제품 후보 필요 연구 검증: `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 49 tests; `npm test -- src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts` 통과, 2 files / 94 tests; focused layout/QA 시나리오/블라인드 기록 check 통과, 3 files / 120 tests; `npm run build` 통과; `npm run harness:gate` 통과, 43 files / 380 tests; `npm run qa:asset-handoff`는 final art intake `대기`, Send status `AGY 발송 금지` 유지; `curl -I` for `?scenario=year-two-product-candidate&menu=research` 200 OK; headless Chrome desktop/mobile 캡처 `/private/tmp/ai-company-v056-product-candidate-needed-research.png`, `/private/tmp/ai-company-v056-product-candidate-needed-research-mobile.png`
+- 2년차 신제품 개발 착수/이슈 결과/출시 결과 검증: `npm test -- src/game/qa-scenarios.test.ts` 통과, 1 file / 49 tests; focused QA 시나리오/layout/블라인드 기록/리허설 check 통과, 4 files / 128 tests; `npm run qa:blind-rehearsal` 리포트 재생성; 당시 전체 게이트는 43 files / 391 tests 통과했고 현재 최신 전체 게이트는 위의 43 files / 406 tests가 기준이다; `npm run qa:asset-handoff`는 final art intake `대기`, Send status `AGY 발송 금지` 유지; `curl -I` for `?scenario=year-two-product-started`, `?scenario=year-two-product-issue-result`, `?scenario=year-two-product-launch-impact` 200 OK; product-start headless Chrome desktop/mobile 캡처 `/private/tmp/ai-company-v056-year-two-product-started.png`, `/private/tmp/ai-company-v056-year-two-product-started-mobile.png`
+- 원격 URL 동기화/터널 검증: `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 32 tests; 만료된 Cloudflare URL을 새 quick tunnel로 교체; `qa:blind-url-sync`는 `PLAYTEST_BASE_URL`을 요청 패킷과 AGY outbox에 반영하는 사전 발송 도구; `qa:blind-session-links`는 세션 01-05별 관찰 URL과 기록 파일 상태를 생성; `qa:blind-live-check`는 링크 구조와 세션 상태를 sandbox-safe로 점검; Cloudflare player/session 1/session 5 URL은 direct `curl -I` 200 OK; preflight는 `원격 테스트 준비`, request packet URL `동기화 완료`
+- 실제 블라인드 세션: 0/5
+- `qa:blind-preflight`: `원격 테스트 준비`, tutorial delay OK, final art request `대기`
+- `qa:blind-summary`: 열린 P0 0, 열린 P1 0, P0 미기록 0, 상태 미인정 0, 증거 미기록 0, 아트 게이트 `대기`
+- `qa:blind-issues`: P0 큐 0, P1 큐 0, 실제 세션 대기
+- `qa:asset-handoff`: final art intake `대기`, AGY 발송 금지
+- preflight 후속 검증: `npm test -- src/game/tutorial-guide.test.ts src/game/blind-playtest-records.test.ts`, 2 files / 32 tests 통과
+- 스크린샷 QA: `npm run qa:office-visuals:screenshots` 외부 승인 실행으로 desktop 1366×768 / mobile 390×844 캡처 통과
+
+## 블로커
+
+- 실제 사람 5명 세션이 아직 없다.
+- 최종 그래픽 에셋 투입은 `qa:asset-handoff`가 가능을 낼 때까지 금지한다.
+- 임시 Cloudflare quick tunnel은 프로세스가 꺼지면 만료되므로, 세션 진행 전 URL이 열리는지 다시 확인한다.
+- Codex 환경의 직접 `agy` CLI 발송은 실행 정책에 막혔다. 사용자가 수동 실행한 AGY 에이전트 리뷰는 수신됐지만, 실제 세션 발송/회신은 아직 없다. 원격 세션 전에는 `PLAYTEST_BASE_URL`로 `qa:blind-preflight`를 통과시킨 뒤 수동 outbox/request packet을 쓰거나 반환된 세션 폴더를 `qa:blind-intake`로 가져온다.
+
+## 다음 작업
+
+1. 현재 Cloudflare quick tunnel URL이 열리는지 확인한다.
+2. `reports/playtests/v0_56_blind_playtest_session_links.md`, request packet, AGY outbox를 실제 진행자/AGY에 전달한다.
+3. 5개 세션 파일을 정확히 `Status: 완료`로 채운다.
+4. `npm run qa:asset-handoff`를 실행한다.
+5. P0가 있으면 먼저 수정하고, P0가 0이면 최종 그래픽 에셋 요청으로 넘어간다.
+
+## 다음 세션 시작
+
+1. `AGENTS.md`, `feature_list.json`, `progress.md`를 먼저 읽는다.
+2. `git status --short`로 기존 로컬 변경을 확인한다.
+3. 필요한 v0.56 리포트만 골라 읽는다.
+4. 루트 상태 파일은 짧게 유지하고, 상세 증거는 `reports/`에 남긴다.

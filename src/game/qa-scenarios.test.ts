@@ -2,19 +2,23 @@ import { describe, expect, it } from "vitest";
 import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./qa-scenarios";
 import { getAnnualDirectiveChoiceRows } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
-import { assetManifest } from "./data";
+import { assetManifest, products } from "./data";
 import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
 import { runTenYearCampaignSimulation } from "./run-simulator";
+import { getTutorialGuide } from "./tutorial-guide";
+import { getAlphaRunCompletionSummary, getAlphaRunDebriefSummary, getAlphaRunRoadmapProgress, getFirstTenMinuteProgress, getGuidanceStep } from "./guidance";
 import {
   getAgentRestCheck,
   getAgentSalaryNegotiationCheck,
   getOfficeScenePlan,
   getOperationsCommandPlan,
+  getProductProjectCheck,
   getRecentStaffIncidentAftermathLog,
   getRecentStaffIncidentResolutionLog,
   getStaffIncidentBriefs,
+  advanceMonth,
 } from "./simulation";
 
 describe("alpha v0.9.3 QA scenarios", () => {
@@ -25,9 +29,12 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "project",
       "release",
       "reward",
+      "reward-picked",
+      "growth-picked",
       "shop",
       "office",
       "deck",
+      "deck-result",
       "deck-synergy",
       "strategy",
       "counter",
@@ -39,6 +46,19 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "restart-setup",
       "finale",
       "review",
+      "annual-directed",
+      "year-two-plan",
+      "year-two-research",
+      "year-two-research-complete",
+      "year-two-product-candidate",
+      "year-two-product-ready",
+      "year-two-product-started",
+      "year-two-product-issue-result",
+      "year-two-product-launch-impact",
+      "alpha-run-complete",
+      "alpha-run-issue-complete",
+      "alpha-run-second-launch",
+      "alpha-run-second-reward-picked",
       "reward-bias",
       "annual-strategy",
       "ten-year-sim",
@@ -82,6 +102,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.hiredAgents.length).toBeGreaterThanOrEqual(2);
     expect(scenario.state.productProjects).toHaveLength(0);
     expect(scenario.state.activeProducts).toHaveLength(0);
+    expect(scenario.state.seenTutorials).toEqual(expect.arrayContaining(["welcome_garage", "agent_hired"]));
   });
 
   it("creates a staff incident scenario for HR drama browser QA", () => {
@@ -155,12 +176,68 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.roguelite.deckEditTokens).toBeGreaterThanOrEqual(1);
   });
 
+  it("keeps post-release reward and growth QA scenarios clear of helper tutorial modals", () => {
+    for (const scenarioId of ["reward", "reward-picked", "growth-picked"] as const) {
+      const scenario = createQaScenario(scenarioId);
+
+      expect(scenario.state.seenTutorials).toEqual(
+        expect.arrayContaining([
+          "welcome_garage",
+          "agent_hired",
+          "product_ideas",
+          "development_project",
+          "card_reward",
+          "office_growth",
+          "competition_pressure",
+        ]),
+      );
+      expect(getTutorialGuide(scenario.state, scenario.activeMenu)).toBeUndefined();
+    }
+  });
+
+  it("creates a picked first reward scenario for the post-choice confirmation", () => {
+    const scenario = createQaScenario("reward-picked");
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("보상 선택 완료");
+    expect(scenario.state.roguelite.pendingCardReward).toBeUndefined();
+    expect(scenario.state.roguelite.rewardHistory).toHaveLength(1);
+    expect(scenario.state.timeline[0]).toContain("카드 보상 선택");
+    expect(scenario.state.seenTutorials).toEqual(
+      expect.arrayContaining(["welcome_garage", "agent_hired", "development_project", "card_reward", "office_growth"]),
+    );
+  });
+
+  it("creates a picked growth branch scenario for the post-choice confirmation", () => {
+    const scenario = createQaScenario("growth-picked");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("성장 분기 선택 완료");
+    expect(scenario.state.chosenGrowthPath?.id).toBe("productivity_line");
+    expect(scenario.state.roguelite.pendingCardReward).toBeUndefined();
+    expect(scenario.state.roguelite.rewardHistory).toHaveLength(1);
+    expect(scenario.state.timeline[0]).toContain("성장 경로 선택");
+  });
+
   it("creates a deck and puzzle scenario for roguelite QA", () => {
     const scenario = createQaScenario("deck");
 
     expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("첫 개발 이슈");
     expect(scenario.state.productProjects).toHaveLength(1);
     expect(scenario.state.roguelite.deck.hand.length).toBeGreaterThanOrEqual(4);
+    expect(scenario.state.lastDevelopmentPuzzle).toBeUndefined();
+  });
+
+  it("creates a first development issue result scenario with card impact", () => {
+    const scenario = createQaScenario("deck-result");
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("첫 개발 이슈 결과");
+    expect(scenario.state.productProjects).toHaveLength(1);
+    expect(scenario.state.lastDevelopmentPuzzle?.score).toBeGreaterThan(0);
+    expect(scenario.state.lastDevelopmentPuzzle?.appliedModifierLabels).toContain("고객 인터뷰");
+    expect(scenario.state.timeline[0]).toContain("개발 퍼즐");
   });
 
   it("creates an active deck synergy scenario for v0.31 deck QA", () => {
@@ -202,12 +279,32 @@ describe("alpha v0.9.3 QA scenarios", () => {
 
   it("creates a first ten minute flow scenario for guidance QA", () => {
     const scenario = createQaScenario("flow");
+    const guidance = getGuidanceStep(scenario.state);
 
     expect(scenario.activeMenu).toBe("company");
     expect(scenario.label).toContain("첫 10분");
     expect(scenario.state.chosenGrowthPath?.id).toBe("productivity_line");
+    expect(scenario.state.lastRelease?.productName).toBeTruthy();
+    expect(Object.keys(scenario.state.productReviews)).toContain(scenario.state.lastRelease?.productId);
     expect(scenario.state.office.expansionId).toBe("startup_suite");
     expect(scenario.state.ownedItems).toContain("gpu_rack_mini");
+    expect(scenario.state.seenTutorials).toEqual(expect.arrayContaining(["welcome_garage", "competition_pressure"]));
+    expect(getFirstTenMinuteProgress(scenario.state)).toBe(100);
+    expect(guidance.id).toBe("advance_annual_review");
+  });
+
+  it("lets the v0.56 flow slice reach the first annual review", () => {
+    let state = createQaScenario("flow").state;
+
+    while (state.month < 12) {
+      state = advanceMonth(state);
+    }
+
+    expect(state.month).toBe(12);
+    expect(state.annualReviewHistory[0]).toMatchObject({
+      reviewId: "year_1_local_demo_day",
+    });
+    expect(state.pendingAnnualDirectiveChoices?.offeredDirectiveIds.length).toBeGreaterThanOrEqual(1);
   });
 
   it("creates a 10-minute alpha completion scenario with run result and next-run value", () => {
@@ -275,14 +372,20 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.timeline.some((entry) => entry.includes("우측 보조 패널"))).toBe(false);
   });
 
-  it("creates a v0.22 launch impact scenario with card-influenced release feedback", () => {
+  it("creates a v0.56 launch impact scenario with card, rival, and team reactions", () => {
     const scenario = createQaScenario("launch-impact");
 
     expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("v0.56");
     expect(scenario.label).toContain("출시 체감");
     expect(scenario.state.lastRelease?.productName).toBeTruthy();
     expect(scenario.state.timeline[0]).toContain("출시 체감 QA");
+    expect(scenario.state.timeline[0]).toContain("경쟁사");
+    expect(scenario.state.timeline[0]).toContain("팀 반응");
     expect(scenario.state.roguelite.deck.discardPile).toEqual(expect.arrayContaining(["prompt_sprint", "customer_interviews"]));
+    expect(scenario.state.seenTutorials).toEqual(
+      expect.arrayContaining(["welcome_garage", "agent_hired", "development_project", "card_reward"]),
+    );
   });
 
   it("creates a v0.40 operations command scenario for first-screen browser QA", () => {
@@ -299,10 +402,15 @@ describe("alpha v0.9.3 QA scenarios", () => {
     const scenario = createQaScenario("office-visuals");
     const plan = getOfficeScenePlan(scenario.state);
     const linkedDecorIds = new Set(assetManifest.office_objects.flatMap((object) => object.linked_item_id ? [object.linked_item_id] : []));
+    const staffIncidents = getStaffIncidentBriefs(scenario.state);
 
     expect(scenario.activeMenu).toBe("company");
     expect(scenario.label).toContain("스크린샷 QA");
     expect(scenario.state.timeline[0]).toContain("v0.55 스크린샷 QA");
+    expect(scenario.state.timeline[0]).toContain("v0.56 사건 화면");
+    expect(scenario.state.currentRivalEvent?.id).toBeTruthy();
+    expect(staffIncidents.length).toBeGreaterThan(0);
+    expect(staffIncidents.map((incident) => incident.type)).toEqual(expect.arrayContaining(["burnout", "poaching"]));
     expect(plan.objects.length).toBeGreaterThanOrEqual(8);
     expect(plan.actors.some((actor) => actor.kind === "robot")).toBe(true);
     expect(plan.eventReactions.map((reaction) => reaction.trigger)).toContain("card_use");
@@ -348,6 +456,202 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.annualDirective?.title).toContain("투자자");
     expect(scenario.state.pendingAnnualDirectiveChoices?.offeredDirectiveIds).toHaveLength(3);
     expect(getAnnualDirectiveChoiceRows(scenario.state).map((choice) => choice.id)).toContain("product_launch_marathon");
+  });
+
+  it("creates an annual directive confirmation scenario after the first review choice", () => {
+    const scenario = createQaScenario("annual-directed");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("지시 선택 완료");
+    expect(scenario.state.month).toBe(12);
+    expect(scenario.state.annualReviewHistory[0]).toMatchObject({
+      reviewId: "year_1_local_demo_day",
+      passed: true,
+    });
+    expect(scenario.state.pendingAnnualDirectiveChoices).toBeUndefined();
+    expect(scenario.state.annualDirective?.title).toBe("신뢰 복리 프로그램");
+    expect(scenario.state.seenTutorials).toEqual(
+      expect.arrayContaining(["welcome_garage", "office_growth", "competition_pressure"]),
+    );
+    expect(scenario.state.timeline[0]).toContain("연간 지시 선택");
+  });
+
+  it("creates a year-two operating plan scenario after the annual directive starts paying monthly bonuses", () => {
+    const scenario = createQaScenario("year-two-plan");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("2년차 운영");
+    expect(scenario.state.month).toBe(13);
+    expect(scenario.state.annualDirective?.title).toBe("신뢰 복리 프로그램");
+    expect(scenario.state.pendingAnnualDirectiveChoices).toBeUndefined();
+    expect(scenario.state.lastMonthReport?.strategyEffects?.trust).toBeGreaterThanOrEqual(1);
+    expect(scenario.state.lastMonthReport?.strategyEffects?.cash).toBeGreaterThanOrEqual(220);
+    expect(scenario.state.timeline[0]).toContain("2년차 운영 시작");
+  });
+
+  it("creates a year-two research recommendation scenario from the annual directive menu", () => {
+    const scenario = createQaScenario("year-two-research");
+    const advice = getAnnualStrategyAdvice(scenario.state);
+
+    expect(scenario.activeMenu).toBe("research");
+    expect(scenario.label).toContain("2년차 연구");
+    expect(scenario.state.month).toBe(13);
+    expect(scenario.state.annualDirective?.recommendedMenu).toBe("research");
+    expect(advice?.capabilityRecommendations[0]?.name).toBeTruthy();
+    expect(scenario.state.timeline[0]).toContain("2년차 연구 추천");
+  });
+
+  it("creates a year-two research completion scenario after the recommended research is executed", () => {
+    const scenario = createQaScenario("year-two-research-complete");
+
+    expect(scenario.activeMenu).toBe("research");
+    expect(scenario.label).toContain("2년차 연구 완료");
+    expect(scenario.state.month).toBe(13);
+    expect(scenario.state.lastCapabilityUpgrade).toMatchObject({
+      capabilityId: "enterprise",
+      capabilityName: "엔터프라이즈",
+      previousLevel: 0,
+      nextLevel: 1,
+      unlockedDomainId: "enterprise_automation",
+      unlockedDomainName: "기업 자동화",
+    });
+    expect(scenario.state.unlockedDomains).toContain("enterprise_automation");
+    expect(scenario.state.timeline[0]).toContain("2년차 연구 완료");
+  });
+
+  it("creates a year-two product candidate scenario from the completed research reward", () => {
+    const scenario = createQaScenario("year-two-product-candidate");
+    const enterpriseProduct = products.find((product) => product.id === "enterprise_workflow_agent");
+    if (!enterpriseProduct) throw new Error("Missing enterprise workflow product fixture");
+    const check = getProductProjectCheck(enterpriseProduct, scenario.state, []);
+
+    expect(scenario.activeMenu).toBe("products");
+    expect(scenario.label).toContain("2년차 제품 후보");
+    expect(scenario.state.month).toBe(13);
+    expect(scenario.state.lastCapabilityUpgrade?.unlockedDomainId).toBe("enterprise_automation");
+    expect(scenario.state.unlockedDomains).toContain("enterprise_automation");
+    expect(scenario.state.capabilities.agent ?? 0).toBeLessThan(2);
+    expect(check.reasons.join(" ")).toContain("에이전트 Lv.2 필요");
+    expect(scenario.state.timeline[0]).toContain("2년차 제품 후보");
+  });
+
+  it("creates a year-two product ready scenario after the missing research is completed", () => {
+    const scenario = createQaScenario("year-two-product-ready");
+    const enterpriseProduct = products.find((product) => product.id === "enterprise_workflow_agent");
+    if (!enterpriseProduct) throw new Error("Missing enterprise workflow product fixture");
+    const availableAgentIds = scenario.state.hiredAgents.filter((agent) => !agent.assignment).slice(0, 3).map((agent) => agent.id);
+    const check = getProductProjectCheck(enterpriseProduct, scenario.state, availableAgentIds);
+
+    expect(scenario.activeMenu).toBe("products");
+    expect(scenario.label).toContain("2년차 제품 개발 준비");
+    expect(scenario.state.month).toBe(13);
+    expect(scenario.state.capabilities.enterprise ?? 0).toBeGreaterThanOrEqual(1);
+    expect(scenario.state.capabilities.agent ?? 0).toBeGreaterThanOrEqual(2);
+    expect(check.ok).toBe(true);
+    expect(scenario.state.timeline[0]).toContain("2년차 제품 개발 준비");
+  });
+
+  it("creates a year-two product started scenario after the ready product is launched into development", () => {
+    const scenario = createQaScenario("year-two-product-started");
+    const project = scenario.state.productProjects.find((productProject) => productProject.productId === "enterprise_workflow_agent");
+
+    expect(scenario.activeMenu).toBe("products");
+    expect(scenario.label).toContain("2년차 제품 개발 착수");
+    expect(scenario.state.month).toBe(13);
+    expect(project).toBeTruthy();
+    expect(project?.progress).toBe(0);
+    expect(project?.assignedAgentIds.length).toBeGreaterThan(0);
+    expect(scenario.state.timeline[0]).toContain("2년차 제품 개발 착수");
+  });
+
+  it("creates a year-two product issue-result scenario after the started product resolves its first issue", () => {
+    const scenario = createQaScenario("year-two-product-issue-result");
+    const project = scenario.state.productProjects.find((productProject) => productProject.productId === "enterprise_workflow_agent");
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("2년차 제품 이슈 결과");
+    expect(project).toBeTruthy();
+    expect(project?.progress).toBeGreaterThan(0);
+    expect(scenario.state.lastDevelopmentPuzzle?.projectId).toBe(project?.id);
+    expect(scenario.state.lastDevelopmentPuzzle?.progressGain).toBeGreaterThan(0);
+    expect(scenario.state.timeline[0]).toContain("2년차 제품 이슈 결과");
+  });
+
+  it("creates a year-two product launch-impact scenario after the second-year product ships", () => {
+    const scenario = createQaScenario("year-two-product-launch-impact");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("2년차 신제품 출시");
+    expect(scenario.state.lastRelease).toMatchObject({
+      productId: "enterprise_workflow_agent",
+      productName: "기업 업무 에이전트",
+    });
+    expect(scenario.state.activeProducts).toContain("enterprise_workflow_agent");
+    expect(scenario.state.productProjects.some((project) => project.productId === "enterprise_workflow_agent")).toBe(false);
+    expect(scenario.state.roguelite.pendingCardReward?.productId).toBe("enterprise_workflow_agent");
+    expect(scenario.state.timeline[0]).toContain("2년차 신제품 출시");
+  });
+
+  it("creates a complete alpha-run scenario for the guide payoff panel", () => {
+    const scenario = createQaScenario("alpha-run-complete");
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("30분 알파런");
+    expect(scenario.state.productProjects.some((project) => project.productId === "enterprise_workflow_agent")).toBe(true);
+    expect(getAlphaRunRoadmapProgress(scenario.state)).toBe(100);
+    expect(getAlphaRunCompletionSummary(scenario.state)).toMatchObject({
+      title: "30분 알파런 잠금",
+      nextActionLabel: "다음 개발 이슈",
+      nextMenu: "deck",
+    });
+    expect(scenario.state.timeline[0]).toContain("30분 알파런 완료");
+  });
+
+  it("creates alpha-run follow-through scenarios through issue resolution, second launch, and second reward", () => {
+    const issueScenario = createQaScenario("alpha-run-issue-complete");
+    const launchScenario = createQaScenario("alpha-run-second-launch");
+    const rewardScenario = createQaScenario("alpha-run-second-reward-picked");
+
+    expect(getAlphaRunCompletionSummary(issueScenario.state)).toMatchObject({
+      nextActionId: "launch_product",
+      nextActionLabel: "출시까지 진행",
+    });
+    expect(issueScenario.state.lastDevelopmentPuzzle?.productId).toBe("enterprise_workflow_agent");
+    expect(issueScenario.state.productProjects.some((project) => project.productId === "enterprise_workflow_agent")).toBe(true);
+    expect(issueScenario.state.timeline[0]).toContain("신제품 이슈 완료");
+
+    expect(getAlphaRunCompletionSummary(launchScenario.state)).toMatchObject({
+      nextActionId: "choose_reward",
+      nextActionLabel: "두 번째 보상 고르기",
+    });
+    expect(launchScenario.state.activeProducts).toContain("enterprise_workflow_agent");
+    expect(launchScenario.state.roguelite.pendingCardReward?.productId).toBe("enterprise_workflow_agent");
+    expect(launchScenario.state.timeline[0]).toContain("두 번째 출시");
+
+    expect(getAlphaRunCompletionSummary(rewardScenario.state)).toMatchObject({
+      nextActionId: "view_release",
+      nextActionLabel: "디브리프 보기",
+      statusLabel: "두 번째 보상 선택 완료",
+    });
+    expect(getAlphaRunDebriefSummary(rewardScenario.state)).toMatchObject({
+      title: "알파런 디브리프",
+      statusLabel: "블라인드 테스트 직전 점검",
+    });
+    expect(getAlphaRunDebriefSummary(rewardScenario.state)?.highlights.map((highlight) => highlight.id)).toEqual([
+      "products",
+      "rewards",
+      "year_two",
+      "readiness",
+    ]);
+    expect(getAlphaRunDebriefSummary(rewardScenario.state)?.moments.map((moment) => moment.id)).toEqual([
+      "first_release",
+      "card_payoff",
+      "annual_directive",
+      "second_reward",
+    ]);
+    expect(rewardScenario.state.roguelite.pendingCardReward).toBeUndefined();
+    expect(rewardScenario.state.roguelite.rewardHistory.some((reward) => reward.productId === "enterprise_workflow_agent")).toBe(true);
+    expect(rewardScenario.state.timeline[0]).toContain("두 번째 보상 선택");
   });
 
   it("creates an annual directive reward-bias scenario for deck QA", () => {
@@ -421,6 +725,15 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=restart-setup")?.id).toBe("restart-setup");
     expect(createQaScenarioFromSearch("?scenario=finale")?.id).toBe("finale");
     expect(createQaScenarioFromSearch("?scenario=review")?.id).toBe("review");
+    expect(createQaScenarioFromSearch("?scenario=year-two-product-candidate")?.id).toBe("year-two-product-candidate");
+    expect(createQaScenarioFromSearch("?scenario=year-two-product-ready")?.id).toBe("year-two-product-ready");
+    expect(createQaScenarioFromSearch("?scenario=year-two-product-started")?.id).toBe("year-two-product-started");
+    expect(createQaScenarioFromSearch("?scenario=year-two-product-issue-result")?.id).toBe("year-two-product-issue-result");
+    expect(createQaScenarioFromSearch("?scenario=year-two-product-launch-impact")?.id).toBe("year-two-product-launch-impact");
+    expect(createQaScenarioFromSearch("?scenario=alpha-run-complete")?.id).toBe("alpha-run-complete");
+    expect(createQaScenarioFromSearch("?scenario=alpha-run-issue-complete")?.id).toBe("alpha-run-issue-complete");
+    expect(createQaScenarioFromSearch("?scenario=alpha-run-second-launch")?.id).toBe("alpha-run-second-launch");
+    expect(createQaScenarioFromSearch("?scenario=alpha-run-second-reward-picked")?.id).toBe("alpha-run-second-reward-picked");
     expect(createQaScenarioFromSearch("?scenario=reward-bias")?.id).toBe("reward-bias");
     expect(createQaScenarioFromSearch("?scenario=annual-strategy")?.id).toBe("annual-strategy");
     expect(createQaScenarioFromSearch("?scenario=ten-year-sim")?.id).toBe("ten-year-sim");
@@ -442,6 +755,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=annual-strategy&menu=products")?.activeMenu).toBe("products");
     expect(createQaScenarioFromSearch("?scenario=annual-strategy&menu=research")?.activeMenu).toBe("research");
     expect(createQaScenarioFromSearch("?scenario=annual-strategy&menu=competition")?.activeMenu).toBe("competition");
+    expect(createQaScenarioFromSearch("?scenario=year-two-product-candidate&menu=research")?.activeMenu).toBe("research");
     expect(createQaScenarioFromSearch("?scenario=annual-strategy&menu=unknown")?.activeMenu).toBe("company");
   });
 });

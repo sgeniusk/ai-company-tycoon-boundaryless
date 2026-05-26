@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { CommandRow, EventPanels, GameStage, MainMenu, ResourceStrip, TopBar } from "./components/GameChrome";
 import { renderMenuContent } from "./components/MenuPanels";
+import { createBlindPlaytestObserverSummary, type BlindPlaytestObserverSummary } from "./game/blind-playtest-observer";
 import { products } from "./game/data";
 import { applyOfflineSettlement, calculateOfflineSettlement, type OfflineSettlement } from "./game/offline";
 import { createQaScenarioFromSearch } from "./game/qa-scenarios";
@@ -69,6 +70,10 @@ function App() {
     [gameState],
   );
   const tutorialGuide = useMemo(() => getTutorialGuide(gameState, activeMenu), [gameState, activeMenu]);
+  const blindPlaytestObserver = useMemo(
+    () => createBlindPlaytestObserverSummary(gameState, typeof window !== "undefined" ? window.location.search : ""),
+    [gameState],
+  );
 
   const handleTutorialAction = () => {
     if (!tutorialGuide) return;
@@ -163,7 +168,32 @@ function App() {
           </div>
         </section>
       )}
+      {blindPlaytestObserver.active && <BlindPlaytestObserverPanel summary={blindPlaytestObserver} />}
     </main>
+  );
+}
+
+function BlindPlaytestObserverPanel({ summary }: { summary: BlindPlaytestObserverSummary }) {
+  return (
+    <aside className="playtest-observer-panel" aria-label="블라인드 테스트 관찰">
+      <div>
+        <p className="eyebrow">블라인드 테스트 관찰</p>
+        <strong>{summary.verdictLabel}</strong>
+        <span>세션 {summary.sessionNumber} · {summary.sessionRecordPath}</span>
+      </div>
+      <div className="playtest-checkpoint-grid">
+        {summary.checkpoints.map((checkpoint) => (
+          <span className={`playtest-checkpoint ${checkpoint.completed ? "complete" : "pending"}`} key={checkpoint.id}>
+            <strong>{checkpoint.timeLabel}</strong>
+            <small>{checkpoint.title} · {checkpoint.evidenceLabel}</small>
+            <em>{checkpoint.observationPrompt}</em>
+          </span>
+        ))}
+      </div>
+      <small>
+        URL: <code>?playtest=v056</code> · {summary.artGateLabel}
+      </small>
+    </aside>
   );
 }
 

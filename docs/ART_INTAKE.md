@@ -9,6 +9,8 @@
 
 Art Intake는 `v0.56-alpha` 플레이테스트 슬라이스의 P0가 아니다. 최종 아트가 없어도 플레이 가능한 재미 검증은 진행한다.
 
+현재 아트 요청/투입 게이트는 `npm run qa:asset-handoff`로 확인한다. 이 명령은 `qa:blind-summary`, `qa:blind-issues`, `qa:art-gate`를 순서대로 실행한 뒤 `reports/playtests/v0_56_final_art_handoff_packet.md`를 만든다. 패킷이 `Status: 아트 요청 가능`이 되기 전에는 AGY나 외부 제작자에게 최종 그래픽 에셋 제작 착수를 요청하지 않는다.
+
 ## 필요한 원본
 
 | Asset | Required Source | Runtime Output | Import Command |
@@ -35,4 +37,8 @@ Art Intake는 `v0.56-alpha` 플레이테스트 슬라이스의 P0가 아니다. 
 
 ## Next Action
 
-Collect or generate one complete source set, import it through the existing commands, and attach the resulting desktop/mobile screenshots to a QA report under `reports/qa/`.
+Run the five real blind-test sessions first, then run `npm run qa:asset-handoff`. After the handoff packet says `Status: 아트 요청 가능`, collect or generate one complete source set, import it through the existing commands, and attach the resulting desktop/mobile screenshots to a QA report under `reports/qa/`.
+
+## Antigravity Handoff
+
+안티그래비티 또는 외부 제작자에게 넘길 구체 브리프는 `docs/ANTIGRAVITY_ART_BRIEF.md`를 기준으로 한다. 실제 전달 패킷은 `reports/playtests/v0_56_final_art_handoff_packet.md`이며, 제작 착수 시점은 `npm run qa:asset-handoff`가 `아트 요청 가능`을 보여준 뒤다.

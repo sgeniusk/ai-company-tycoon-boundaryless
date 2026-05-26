@@ -16,7 +16,18 @@
     "assets:v053": "node scripts/assets/import-v053-character-source.mjs",
     "assets:v054": "node scripts/assets/generate-v046-hires-pixel-sheets.mjs && node scripts/assets/import-v054-office-art.mjs",
     "qa:office-visuals:screenshots": "node scripts/qa/capture-office-visuals-screenshots.mjs",
-    "harness:gate": "npm test && npm run validate:data && npm run build"
+    "qa:blind-rehearsal": "node scripts/qa/run-v056-blind-rehearsal.mjs",
+    "qa:blind-summary": "node scripts/qa/summarize-v056-blind-sessions.mjs",
+    "qa:blind-readiness": "node scripts/qa/check-v056-blind-readiness.mjs",
+    "qa:blind-preflight": "node scripts/qa/check-v056-blind-preflight.mjs",
+    "qa:blind-url-sync": "node scripts/qa/sync-v056-blind-playtest-urls.mjs",
+    "qa:blind-session-links": "node scripts/qa/prepare-v056-blind-session-links.mjs",
+    "qa:blind-live-check": "node scripts/qa/check-v056-blind-live-links.mjs",
+    "qa:blind-intake": "node scripts/qa/import-v056-blind-session-bundle.mjs",
+    "qa:blind-issues": "node scripts/qa/extract-v056-blind-issues.mjs",
+    "qa:art-gate": "npm run qa:blind-summary && npm run qa:blind-issues && node scripts/qa/check-v056-art-intake-gate.mjs",
+    "qa:asset-handoff": "npm run qa:art-gate && node scripts/qa/prepare-v056-final-art-handoff.mjs",
+    "harness:gate": "npm test -- --maxWorkers=1 && npm run validate:data && npm run build"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

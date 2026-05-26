@@ -1150,6 +1150,17 @@ export interface MonthlyEconomy extends MonthlyReport {
   resourceDelta: ResourceMap;
 }
 
+export interface CapabilityUpgradeMoment {
+  capabilityId: string;
+  capabilityName: string;
+  previousLevel: number;
+  nextLevel: number;
+  resourceCost: ResourceMap;
+  month: number;
+  unlockedDomainId?: string;
+  unlockedDomainName?: string;
+}
+
 export interface StaffIncidentResolutionLogEntry {
   id: string;
   month: number;
@@ -1191,6 +1202,7 @@ export interface GameState {
   roguelite: RogueliteState;
   activeDevelopmentPuzzleModifiers: ActiveDevelopmentPuzzleModifier[];
   lastDevelopmentPuzzle?: DevelopmentPuzzleResult;
+  lastCapabilityUpgrade?: CapabilityUpgradeMoment;
   chosenGrowthPath?: ChosenGrowthPath;
   unlockedAchievements: string[];
   annualReviewHistory: AnnualReviewHistoryEntry[];

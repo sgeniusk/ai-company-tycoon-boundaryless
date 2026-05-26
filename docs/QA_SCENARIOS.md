@@ -1,6 +1,6 @@
 # QA Scenarios — AI Company Tycoon: Boundaryless
 
-Date: 2026-05-16
+Date: 2026-05-21
 
 ## Purpose
 
@@ -16,28 +16,44 @@ Use the local app URL and append one of these query strings:
 | Staffing | `?scenario=staffing` | Two hired agents, no active project, explicit product team assignment UI |
 | Project | `?scenario=project` | First product in development, progress UI, objective state |
 | Release | `?scenario=release` | Release spotlight, growth fork cards, boundaryless expansion hint, office scene |
-| Reward | `?scenario=reward` | Post-release card reward, deck edit tokens, card remove/upgrade UI |
+| Reward | `?scenario=reward` | Post-release card reward, first reward spotlight, deck edit tokens, card remove/upgrade UI |
+| Reward Picked | `?scenario=reward-picked` | First reward choice completed, selected card confirmation, growth branch next step |
+| Growth Picked | `?scenario=growth-picked` | First reward and growth branch completed, selected growth confirmation, annual-review next step |
 | Shop | `?scenario=shop` | Post-release shop guidance and item-card scanability |
 | Office | `?scenario=office` | Expanded office, placed decorations, decoration management, next office upgrade |
-| Deck | `?scenario=deck` | Active project with strategy hand, development puzzle, and meta unlock panel |
+| Deck | `?scenario=deck` | Active project with strategy hand, first development issue launchpad, and meta unlock panel |
+| Deck Result | `?scenario=deck-result` | First development issue solved with card impact result ribbon |
 | Strategy | `?scenario=strategy` | Chosen growth path, competition signal badges, rival pressure |
 | Counter | `?scenario=counter` | Chosen growth path with a claimed rival product, counter cards, and recommendation UI |
 | Rivals | `?scenario=rivals` | Month-12 market with annual strong rivals already entered |
 | Arc | `?scenario=arc` | Chosen strategy, 10-month MVP arc, follow-up objective checklist |
-| Flow | `?scenario=flow` | First 10-minute loop with growth choice, office setup, and next rival counter guidance |
+| Flow | `?scenario=flow` | v0.56 first 10-minute completion state with launch, office setup, rival counter, and annual-review runway guidance |
 | Alpha | `?scenario=alpha` | 10-minute alpha completion with run result, insight reward, and next-run readiness |
 | Next Run | `?scenario=next-run` | New run after accepting alpha insight, deck onboarding, run history, and meta unlock candidates |
 | Finale | `?scenario=finale` | 10-year campaign ending, final rank, Seoul location, and campaign summary |
 | Review | `?scenario=review` | Year-one annual review with passed goals, reward application, and recent review history |
+| Annual Directed | `?scenario=annual-directed` | Year-one annual review after choosing the next-year directive, monthly bonus, and recommended menu |
+| Year Two Plan | `?scenario=year-two-plan` | Month-13 year-two kickoff after the annual directive monthly bonus has applied |
+| Year Two Research | `?scenario=year-two-research` | Month-13 research menu with the annual directive recommendation as a direct research launchpad |
+| Year Two Research Complete | `?scenario=year-two-research-complete` | Month-13 research menu after the recommended research is completed, showing level gain, unlocked market, and product candidates |
+| Year Two Product Candidate | `?scenario=year-two-product-candidate` | Month-13 products menu after research completion, showing the unlocked-market product candidate and missing research path |
+| Year Two Product Ready | `?scenario=year-two-product-ready` | Month-13 products menu after the missing research is completed and the 2nd-year product can be started |
+| Year Two Product Started | `?scenario=year-two-product-started` | Month-13 products menu after the 2nd-year product project is started, showing the project confirmation and next deck action |
+| Year Two Product Issue Result | `?scenario=year-two-product-issue-result` | Month-13 deck menu after the 2nd-year product resolves its first development issue |
+| Year Two Product Launch Impact | `?scenario=year-two-product-launch-impact` | Month-13 company menu after the 2nd-year product ships, showing release impact and pending card reward |
+| Alpha Run Complete | `?scenario=alpha-run-complete` | Complete 30-minute roadmap state with first launch, card payoff, growth, annual directive, year-two product start, and guide payoff panel |
+| Alpha Run Issue Complete | `?scenario=alpha-run-issue-complete` | Complete 30-minute roadmap after the guide payoff resolves the 2nd-year product's first development issue and retargets to launch |
+| Alpha Run Second Launch | `?scenario=alpha-run-second-launch` | Complete 30-minute roadmap after the guide payoff launches the 2nd-year product and keeps the 100% state while the second reward is pending |
+| Alpha Run Second Reward Picked | `?scenario=alpha-run-second-reward-picked` | Complete 30-minute roadmap after the second launch reward is picked and the guide retargets to final release/result review |
 | Reward Bias | `?scenario=reward-bias` | Deck reward screen with an active annual directive biasing reward cards |
 | Foundation | `?scenario=foundation` | Enterprise-stage content foundation, hiring recommendations, agent filters, item recommendations |
 | Commercial | `?scenario=commercial` | 10-month commercial-readiness state, run result, achievements, strategy effect, two-product scan |
 | Result | `?scenario=result` | Final run recap with representative product, card, rival pressure, and insight reward |
 | Readiness | `?scenario=readiness` | v0.20 alpha readiness state from the integrated simulation harness |
 | Persona 20 | `?scenario=persona20` | v0.50 alpha-candidate 20-person persona review, P0/P1 status, and first-screen signal QA |
-| Launch Impact | `?scenario=launch-impact` | v0.22 card-influenced launch payoff and reward-panel QA |
+| Launch Impact | `?scenario=launch-impact` | v0.56 card/rival/team launch payoff and reward-panel QA |
 | Operations | `?scenario=operations` | v0.40 monthly operations command, office safeguards, staff risk, and zone-linked hiring QA |
-| Office Visuals | `?scenario=office-visuals` | v0.55 screenshot QA for imported office object/backdrop candidates with v0.53 character poses, reactions, preview, decor props, and direct actor care actions |
+| Office Visuals | `?scenario=office-visuals` | v0.55 screenshot QA plus v0.56 rival/staff incident screen-moment QA for the office frame |
 
 Examples:
 
@@ -46,9 +62,12 @@ Examples:
 - `http://localhost:5173/?scenario=project`
 - `http://localhost:5173/?scenario=release`
 - `http://localhost:5173/?scenario=reward`
+- `http://localhost:5173/?scenario=reward-picked`
+- `http://localhost:5173/?scenario=growth-picked`
 - `http://localhost:5173/?scenario=shop`
 - `http://localhost:5173/?scenario=office`
 - `http://localhost:5173/?scenario=deck`
+- `http://localhost:5173/?scenario=deck-result`
 - `http://localhost:5173/?scenario=strategy`
 - `http://localhost:5173/?scenario=counter`
 - `http://localhost:5173/?scenario=rivals`
@@ -58,6 +77,19 @@ Examples:
 - `http://localhost:5173/?scenario=next-run`
 - `http://localhost:5173/?scenario=finale`
 - `http://localhost:5173/?scenario=review`
+- `http://localhost:5173/?scenario=annual-directed`
+- `http://localhost:5173/?scenario=year-two-plan`
+- `http://localhost:5173/?scenario=year-two-research`
+- `http://localhost:5173/?scenario=year-two-research-complete`
+- `http://localhost:5173/?scenario=year-two-product-candidate`
+- `http://localhost:5173/?scenario=year-two-product-ready`
+- `http://localhost:5173/?scenario=year-two-product-started`
+- `http://localhost:5173/?scenario=year-two-product-issue-result`
+- `http://localhost:5173/?scenario=year-two-product-launch-impact`
+- `http://localhost:5173/?scenario=alpha-run-complete`
+- `http://localhost:5173/?scenario=alpha-run-issue-complete`
+- `http://localhost:5173/?scenario=alpha-run-second-launch`
+- `http://localhost:5173/?scenario=alpha-run-second-reward-picked`
 - `http://localhost:5173/?scenario=reward-bias`
 - `http://localhost:5173/?scenario=foundation`
 - `http://localhost:5173/?scenario=commercial`
@@ -93,17 +125,133 @@ Expected:
 
 Primary routes:
 
+- `?scenario=staffing`
+- `?scenario=project`
+- `?scenario=deck`
+- `?scenario=deck-result`
 - `?scenario=flow`
 - `?scenario=launch-impact`
+- `?scenario=reward-picked`
+- `?scenario=growth-picked`
+- `?scenario=annual-directed`
+- `?scenario=year-two-plan`
+- `?scenario=year-two-research`
+- `?scenario=year-two-research-complete`
+- `?scenario=year-two-product-candidate`
+- `?scenario=year-two-product-ready`
+- `?scenario=year-two-product-started`
+- `?scenario=year-two-product-issue-result`
+- `?scenario=year-two-product-launch-impact`
 - `?scenario=office-visuals`
+
+Automation:
+
+- `npm run qa:blind-rehearsal` writes `reports/playtests/v0_56_blind_playtest_rehearsal.md`.
+- Add `?playtest=v056&session=1` to any route to show the in-game blind-test observer HUD.
+- `npm run qa:blind-summary` writes `reports/playtests/v0_56_blind_playtest_summary.md` and keeps final-art intake blocked until 5/5 real sessions are recorded with exact `Status: 완료`, open P0 is 0, P0 missing count is 0, unrecognized status count is 0, and required tester-profile, observation, and exit-interview evidence is present.
+- The blind summary also reports `열린 P1` for triage; open P1 findings stay visible as tuning work but do not block final-art intake when the P0/evidence gate passes.
+- `reports/playtests/v0_56_blind_playtest_request_packet.md` is the handoff packet for external facilitators or AGY: it includes request copy, player/facilitator URLs, session files, operating checklist, and the final-art gate.
+- `reports/playtests/v0_56_blind_playtest_agy_outbox.md` is the copy-paste message for AGY. It remains `발송 준비 / 실제 발송 미확인` until a human confirms it was sent.
+- `reports/playtests/v0_56_blind_playtest_dispatch_log.md` remains `발송 대기 / 실제 발송 미확인` until a human confirms the handoff happened.
+- `npm run qa:blind-url-sync` updates the request packet and AGY outbox with `PLAYTEST_BASE_URL` player/facilitator URLs before external sessions.
+- `npm run qa:blind-session-links` writes `reports/playtests/v0_56_blind_playtest_session_links.md` with the common player URL, session 01-05 observer URLs, record file names, and each session record status for facilitator handoff.
+- `npm run qa:blind-live-check` writes `reports/playtests/v0_56_blind_playtest_live_check.md` and validates the generated link-sheet structure, non-local player/observer URLs, and `Status: 예정` session records; direct `curl -I` remains the HTTP evidence path in this sandbox.
+- `npm run qa:blind-readiness` writes `reports/playtests/v0_56_blind_playtest_readiness.md` and confirms the request packet, AGY outbox, untouched `Status: 예정` session files, and waiting art gate before handoff.
+- `npm run qa:blind-preflight` writes `reports/playtests/v0_56_blind_playtest_preflight.md` and checks whether `PLAYTEST_BASE_URL` provides a non-local player/facilitator URL, whether early idea/competition tutorials still wait until an active product exists, and whether real sessions/final art remain locked.
+- `npm run qa:blind-intake -- --source <folder>` imports returned AGY/facilitator session files only when they use the expected `v0_56_blind_playtest_session_XX.md` names, exact `Status: 완료`, and a non-empty `P0:` line; it writes `reports/playtests/v0_56_blind_playtest_intake.md` and leaves missing sessions untouched.
+- `npm run qa:blind-issues` writes `reports/playtests/v0_56_blind_playtest_issue_queue.md` and extracts completed-session P0/P1 findings, next fix candidates, and the most confusing moment for post-session triage.
+- `npm run qa:art-gate` reruns `qa:blind-summary` and `qa:blind-issues`, then writes `reports/playtests/v0_56_final_art_intake_gate.md` as the single final graphic asset intake decision.
+- `npm run qa:asset-handoff` reruns `qa:art-gate`, then writes `reports/playtests/v0_56_final_art_handoff_packet.md` with the AGY request copy, source-size checklist, import commands, and send/no-send status.
+- The blind summary table includes a `증거` column so each session shows `OK`, `-`, or the concrete missing evidence labels.
+- The rehearsal confirms QA route coverage only; it is not a substitute for the five real human session files.
+- Rehearsal screenshots live under `reports/qa/screenshots/v0_56_blind_rehearsal_*.png`.
 
 Expected:
 
 - The first 10 seconds read as AI company management, not a generic dashboard.
-- The flow route supports first-product-development readability.
-- The launch-impact route must make product name, review/result, resource changes, card influence, and rival reaction easy to scan.
+- The fresh route should show an `opening-fantasy-signal` with garage, AI agents, first product launch, rival pressure, and 10-year growth cues.
+- The guide tab should show an `alpha-run-roadmap` with the full 30-minute alpha arc: first product launch, card payoff, reward/growth choice, annual directive, and year-two product start.
+- The alpha-run roadmap should mark the active milestone, show percentage progress, preview the next reward, and let each milestone act as a click target into the relevant menu or result/company tab.
+- The first-launch roadmap milestone should retarget as the player progresses: `팀원 고용`, `제품 개발`, `카드/이슈`, `출시 진행`, then `출시 확인`.
+- The office playfield should also show an `alpha-run-focus-strip` with the active alpha-run milestone, percentage progress, next reward preview, and the same state-aware step action button so the goal remains visible outside the guide tab.
+- The active alpha-run step action should show `alpha-run-feedback` after click so the player can see which action just advanced and what the next reward is.
+- The active alpha-run step action should directly run safe fast-start actions when available: first hire, first project, first issue, first launch, first reward, first growth, first annual review, and the year-two product chain.
+- The year-two alpha-run milestone should retarget through `지시 선택`, `엔터프라이즈 연구`, `에이전트 연구`, then `신제품 개발` instead of remaining a generic research/products link.
+- The 100% alpha-run completion panel should continue through `다음 개발 이슈`, `출시까지 진행`, `두 번째 보상 고르기`, then `디브리프 보기` without dropping roadmap completion.
+- After the second reward is picked, the guide tab should show an `alpha-run-debrief-panel` with products, rewards, year-two outcome, and blind-test readiness highlights.
+- The alpha-run debrief should include an `alpha-run-debrief-timeline` for first release, card payoff, annual directive, and second reward.
+- The fresh route should show a `첫 팀원 바로 고용` primary guide action before the player has hired anyone.
+- The fresh route should show a `first-hire-fast-start` panel with the recommended first teammate, hire cost, and quality/risk badges.
+- Clicking the first-hire fast-start action should hire the recommendation through `open_recruiting` and move the player to the products menu.
+- After the first hire, the guide should expose a `첫 제품 바로 개발` primary action and a `first-project-fast-start` panel before any project exists.
+- Clicking the first-project fast-start action should start the recommended `AI 글쓰기 비서` project with the automatic team and move the player to the deck menu.
+- The fresh route's first Mina tutorial should explicitly frame the game as a garage AI company, connect people with AI agents, and push toward first product launch.
+- The fresh route should show an `인력 조합` panel that distinguishes `사람 직원`, `AI 에이전트`, and `로봇 인력` before final art is imported.
+- The workforce mix panel should show short role badges and core metrics for each lane so the player can scan `감독`, `자동화`, and `현장` roles without reading only long text.
+- On 520px-and-under mobile widths, each workforce row should split the role area from status/metric/impact text to reduce line density.
+- The office wall HUD should show `TEAM`, `AI OPS`, and `ROBOT` as separate workforce counters.
+- The staffing route should show a product-menu `first-project-launchpad` with a recommended first product, automatic team, forecast, and `첫 제품 개발 시작` button.
+- The staffing route should also show the guide-side `first-project-fast-start` so the player can start the first product from either the guide or product panel.
+- The staffing route should not be covered by idea-composer or competition tutorial modals before the first project starts.
+- The project route should show the guide-side `first-issue-fast-start` with `추천 첫 개발 이슈`, `고객 인터뷰`, recommended issue count, and `첫 이슈 바로 해결`.
+- Clicking the first-issue fast-start action should use the recommended card before resolving the recommended development issue so `고객 인터뷰` appears in the result impact.
+- The `출시까지 진행` guidance action after the first issue should advance to the first release milestone instead of requiring repeated one-month clicks.
+- The deck route should show a `첫 개발 이슈` launchpad at the top of the strategy deck panel.
+- The deck route should show current project progress, quality, recommended issue tiles, and an `자동 선택 이슈 해결` button.
+- The first development issue launchpad should explain that this is the first moment where cards change the result.
+- The deck-result route should show a solved `이슈 해결 결과` ribbon with verdict, score, progress gain, quality gain, card impact, solved issue labels, and next goal.
+- The deck-result route should include `고객 인터뷰` as the card impact so the result has a concrete card cause.
+- The flow route supports first-product-development readability and opens after the first launch, office setup, and rival counter moment.
+- The flow route should show the first ten-minute loop at 100% and guide the player toward the year-one annual review.
+- The flow route should show `심사까지 진행`, and that guide action should advance directly to the year-one annual review, then route the menu panel to company so the next-year directive choices are immediately visible.
+- Advancing the flow route to month 12 should create the first annual review history entry and annual directive choices.
+- The launch-impact route must make product name, review/result, resource changes, card influence, rival reaction, and team reaction easy to scan.
+- The launch-impact route should show a short event strip for card combo, rival pressure, and team reaction before the deeper result details.
+- The launch-impact state includes three launch review snippets for early user, local owner, and market watcher flavor.
+- The launch-impact route should show a `launch-next-action-ribbon` with `보상 카드 선택`, `성장 분기 선택`, and `다음 달 진행`.
+- The launch-impact next-action ribbon entries should act as buttons that route to the deck menu, results tab, and company menu targets.
+- The launch-impact route should keep tutorial helper modals hidden so the launch result panel is not covered during screenshot QA.
+- The reward route should show `first-reward-spotlight` before the normal reward choice list when the first post-launch reward is pending.
+- The reward route should make `첫 출시 보상 도착`, `3장 중 1장`, and the reward-to-growth flow visible in the deck panel.
+- The reward route should show `first-reward-fast-start` in the result/guide surface with `첫 보상 바로 선택` so the first card reward can be accepted without menu hunting.
+- The reward route should keep helper tutorial modals hidden so the first reward fast-start and result panel are not covered during screenshot QA.
+- The reward-picked route should show `reward-choice-confirmation` with `보상 선택 완료`, the selected card name, `덱에 들어갔습니다`, and `다음은 성장 분기`.
+- The reward-picked route should show `first-growth-fast-start` in the result/guide surface with `성장 분기 바로 선택` so the first growth branch can be committed without searching the fork list.
+- The reward-picked and growth-picked routes should keep helper tutorial modals hidden so the post-choice confirmations are not covered during screenshot QA.
+- The growth-picked route should show `growth-choice-confirmation` with `성장 분기 선택 완료`, the selected branch name, `다음 달부터 월간 보너스`, and `연간 심사까지`.
+- The annual-directed route should show `annual-directive-confirmation` with `다음 해 지시 선택 완료`, selected directive title, monthly bonus, recommended menu, duration, `추천 메뉴 열기`, and `2년차 시작`.
+- The annual-directed route should open on the company menu after the year-one annual review, hide helper tutorial modals, and keep the confirmation near the top of the company panel for screenshot QA.
+- The year-two-plan route should show `year-two-kickoff` with `2년차 운영 시작`, `이번 달 보너스`, `연간 지시 효과`, recommended menu, `추천 메뉴 열기`, and `한 달 더 운영`.
+- The year-two-plan route should be month 13 after the year-one annual directive starts paying monthly strategic effects.
+- The year-two-research route should open on the research menu and show `annual-research-launchpad` with `연간 지시 추천 연구`, the recommended capability, and `바로 연구`.
+- The year-two-research-complete route should show `research-completion-ribbon` with `연구 완료`, level gain, spent resources, `해금 시장`, `제품 후보`, and `제품 후보 보기`.
+- The year-two-research-complete mobile screenshot should at least expose the top of `연구 완료` in the first 390×844 viewport so the player sees the reward before scrolling.
+- The year-two-product-candidate route should open on the products menu and show `research-product-launchpad` with `연구가 연 제품 후보`, `해금 시장`, `다음 제품 후보`, product forecast, and `필요 연구 보기` when requirements remain.
+- The year-two-product-candidate route with `&menu=research` should show `product-candidate-requirement-launchpad` with `제품 후보 필요 연구`, current/needed level, and `바로 연구` for the exact missing capability.
+- The year-two-product-ready route should open on the products menu after 에이전트 Lv.2 and 엔터프라이즈 Lv.1 are ready, and the product candidate should show `신제품 개발 시작`.
+- The year-two-product-started route should show `research-product-started-ribbon` with `신제품 개발 시작`, product name, progress, quality/trust baseline, assigned team, `다음 개발 이슈`, and `덱 열기`.
+- The year-two-product-started route with `&menu=deck` should show the deck launchpad as `신제품 개발 이슈` so the post-start issue step does not read like the first product tutorial.
+- The year-two-product-issue-result route should open on the deck menu and show the issue-result ribbon after the 2nd-year product's first development issue raises progress and quality.
+- The year-two-product-launch-impact route should open on the company menu after `기업 업무 에이전트` ships, remove its active project, show it in active products, and keep its pending card reward visible.
 - The office-visuals route remains the visual reference for rival/staff incidents and office screen readability.
+- The office-visuals route should keep the 4-column office wall HUD visible with location, `TEAM`, `AI OPS`, and `ROBOT`.
+- The office-visuals route should show a readable `직원 화면 사건` panel and `경쟁사 화면 사건` panel in the main stage event stack.
+- The staff incident panel should expose direct resolution choices, and the rival incident panel should identify the competitor pressure.
 - Real-user results should be recorded with `docs/BLIND_PLAYTEST_CHECKLIST.md`, not replaced by AI persona QA.
+- The automatic rehearsal report should say `실제 사람 5명 블라인드 테스트가 아님`.
+- The observer HUD should say `블라인드 테스트 관찰`, show the session record path, and keep `?playtest=v056` visible.
+- The summary report should show `아트 투입 판정: 대기` until the five real sessions are recorded with exact `Status: 완료`, open P0 is 0, P0 missing count is 0, unrecognized status count is 0, and required tester-profile, observation, and exit-interview evidence is present.
+- The summary report should expose a `증거` table column; pending rows show `-`, complete rows with full evidence show `OK`, and incomplete complete rows list the missing fields.
+- The issue queue report should show `Status: 실제 세션 대기`, `실제 세션: 0/5`, `P0 큐: 0`, and `P1 큐: 0` before real sessions are filled.
+- After real sessions are filled, any P0 queue item must be closed before final graphic asset intake; P1 queue items can remain as tuning backlog if the summary gate passes.
+- The final art intake gate report should show `Status: 실제 세션 대기`, `실제 세션: 0/5`, and `최종 그래픽 에셋 투입: 대기` before real sessions are filled.
+- Final graphic asset intake should only start when `npm run qa:art-gate` reports `최종 그래픽 에셋 투입: 가능`.
+- The final art handoff packet should show `Status: 아트 요청 대기` and `AGY 발송 금지` until the final art intake gate is possible.
+- The preflight report should show `Status: 원격 URL 필요` until a real tunnel or preview URL is provided through `PLAYTEST_BASE_URL`; with a non-local base URL it should verify the player/facilitator URLs and report whether the request packet/AGY outbox are `동기화 완료` or still need `qa:blind-url-sync`.
+- The preflight report should keep `튜토리얼 딜레이: OK`, confirming that idea-composer and competition tutorial prompts do not appear before the first product/project moment.
+- Once the final art gate is possible, the handoff packet should switch to `Status: 아트 요청 가능` and include the required 1152×9600, 2560×1920, and 5120×2880 RGBA PNG source specs.
+- Five prepared real-user session files live under `reports/playtests/v0_56_blind_playtest_session_01.md` through `session_05.md`.
+- Prepared session files must remain `Status: 예정` until a real observed session happens.
 
 ## v0.54 Office Object and Backdrop Art Import QA (Historical)
 

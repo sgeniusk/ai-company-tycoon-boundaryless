@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { agentTypes, automationUpgrades, events, items, products, upgrades } from "./data";
+import { agentTypes, automationUpgrades, capabilities, events, items, products, upgrades } from "./data";
+import { chooseCardReward, playStrategyCard } from "./deckbuilding";
+import { resolveDevelopmentPuzzle } from "./development-puzzle";
 import {
   advanceMonth,
   buyAutomationUpgrade,
@@ -13,8 +15,18 @@ import {
   getCompanyStage,
   getMarketRankings,
   getPlayerMarketShare,
+  advanceToFirstAnnualReview,
+  advanceToFirstLaunch,
+  getFirstDevelopmentIssueRecommendation,
+  getFirstGrowthRecommendation,
+  getFirstProjectRecommendation,
+  getFirstRewardRecommendation,
+  getYearTwoProductIssueRecommendation,
+  getYearTwoProductRecommendation,
   getProductProjectCheck,
   getProductProjectForecast,
+  getFirstHireRecommendation,
+  getWorkforceMixSummary,
   getWorkforceSynergySummary,
   hydrateGameState,
   hireAgent,
@@ -23,7 +35,72 @@ import {
   resolveEventChoice,
   serializeGameState,
   startProductProject,
+  upgradeCapability,
+  advanceYearTwoProductRoadmap,
 } from "./simulation";
+import type { GameState } from "./types";
+
+function createReviewedFirstRunState(): GameState {
+  const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+  const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+  if (!architect || !writingProduct) throw new Error("Missing reviewed run fixtures");
+
+  const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+  const issueRecommendation = getFirstDevelopmentIssueRecommendation(started);
+  if (!issueRecommendation) throw new Error("Missing first issue recommendation");
+
+  const prepared = issueRecommendation.card ? playStrategyCard(issueRecommendation.card, started) : started;
+  const resolved = resolveDevelopmentPuzzle(issueRecommendation.projectId, issueRecommendation.selectedTileIds, prepared);
+  const launched = advanceToFirstLaunch(resolved);
+  const rewardRecommendation = getFirstRewardRecommendation(launched);
+  if (!rewardRecommendation) throw new Error("Missing first reward recommendation");
+
+  const rewarded = chooseCardReward(rewardRecommendation.card.id, launched);
+  const chosen = chooseGrowthPath("productivity_line", rewarded);
+
+  return advanceToFirstAnnualReview({
+    ...chosen,
+    currentEvent: undefined,
+    currentRivalEvent: undefined,
+    month: 10,
+    annualReviewHistory: [],
+    pendingAnnualDirectiveChoices: undefined,
+    resources: {
+      ...chosen.resources,
+      cash: Math.max(chosen.resources.cash ?? 0, 14000),
+      compute: Math.max(chosen.resources.compute ?? 0, 100),
+      data: Math.max(chosen.resources.data ?? 0, 70),
+      talent: Math.max(chosen.resources.talent ?? 0, 3),
+      trust: Math.max(chosen.resources.trust ?? 0, 80),
+    },
+  }, 12);
+}
+
+function withYearTwoProductReadiness(state: GameState): GameState {
+  const floorResources = (current: GameState): GameState => ({
+    ...current,
+    currentEvent: undefined,
+    currentRivalEvent: undefined,
+    resources: {
+      ...current.resources,
+      cash: Math.max(current.resources.cash ?? 0, 60000),
+      compute: Math.max(current.resources.compute ?? 0, 500),
+      data: Math.max(current.resources.data ?? 0, 500),
+      talent: Math.max(current.resources.talent ?? 0, 8),
+      trust: Math.max(current.resources.trust ?? 0, 90),
+    },
+  });
+
+  const yearTwoTeamIds = ["garage_junior_dev", "prompt_architect", "data_curator", "infra_operator"];
+  const staffed = yearTwoTeamIds.reduce((currentState, agentTypeId) => {
+    if (currentState.hiredAgents.some((agent) => agent.typeId === agentTypeId)) return floorResources(currentState);
+
+    const agentType = agentTypes.find((agent) => agent.id === agentTypeId);
+    return agentType ? hireAgent(agentType, floorResources(currentState)) : floorResources(currentState);
+  }, floorResources(state));
+
+  return floorResources(staffed);
+}
 
 describe("simulation milestone 1 shell helpers", () => {
   it("starts as the Korean garage-stage company", () => {
@@ -117,6 +194,24 @@ describe("alpha simulation loop", () => {
     expect(purchased.resources.automation).toBe(10);
   });
 
+  it("records the last capability upgrade as a readable research moment", () => {
+    const enterprise = capabilities.find((capability) => capability.id === "enterprise");
+    if (!enterprise) throw new Error("Missing enterprise capability");
+
+    const researched = upgradeCapability(enterprise, createInitialState());
+    const hydrated = hydrateGameState(serializeGameState(researched));
+
+    expect(researched.lastCapabilityUpgrade).toMatchObject({
+      capabilityId: "enterprise",
+      capabilityName: "엔터프라이즈",
+      previousLevel: 0,
+      nextLevel: 1,
+      unlockedDomainId: "enterprise_automation",
+      unlockedDomainName: "기업 자동화",
+    });
+    expect(hydrated.lastCapabilityUpgrade).toEqual(researched.lastCapabilityUpgrade);
+  });
+
   it("serializes and hydrates runtime state for alpha save/load", () => {
     const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
     if (!writingProduct) throw new Error("Missing AI writing assistant product");
@@ -131,6 +226,256 @@ describe("alpha simulation loop", () => {
 });
 
 describe("alpha production systems", () => {
+  it("recommends a one-click first hire only before the first teammate joins", () => {
+    const initial = createInitialState();
+    const recommendation = getFirstHireRecommendation(initial);
+
+    expect(recommendation).toMatchObject({
+      channelId: "open_recruiting",
+      actionLabel: "첫 팀원 바로 고용",
+      title: "추천 첫 팀원",
+      check: { ok: true },
+    });
+    expect(recommendation?.agent.id).toBe("prompt_architect");
+    expect(recommendation?.offer.agent.id).toBe("prompt_architect");
+
+    const hired = recommendation ? hireAgent(recommendation.agent, initial) : initial;
+
+    expect(getFirstHireRecommendation(hired)).toBeUndefined();
+  });
+
+  it("recommends a one-click first product project after the first teammate joins", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    if (!architect) throw new Error("Missing prompt architect");
+
+    const staffed = hireAgent(architect, createInitialState());
+    const recommendation = getFirstProjectRecommendation(staffed);
+
+    expect(recommendation).toMatchObject({
+      actionLabel: "첫 제품 바로 개발",
+      title: "추천 첫 제품",
+      product: { id: "ai_writing_assistant" },
+      assignedAgentIds: [staffed.hiredAgents[0].id],
+      check: { ok: true },
+    });
+    expect(recommendation?.forecast.estimatedMonths).toBeGreaterThan(0);
+
+    const started = recommendation
+      ? startProductProject(recommendation.product, staffed, recommendation.assignedAgentIds)
+      : staffed;
+
+    expect(started.productProjects[0]).toMatchObject({
+      productId: "ai_writing_assistant",
+      assignedAgentIds: [staffed.hiredAgents[0].id],
+    });
+    expect(getFirstProjectRecommendation(started)).toBeUndefined();
+  });
+
+  it("recommends a one-click first card and development issue after the first project starts", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing first issue fixtures");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const recommendation = getFirstDevelopmentIssueRecommendation(started);
+
+    expect(recommendation).toMatchObject({
+      actionLabel: "첫 이슈 바로 해결",
+      title: "추천 첫 개발 이슈",
+      product: { id: "ai_writing_assistant" },
+      projectId: started.productProjects[0].id,
+      card: { id: "customer_interviews" },
+      check: { ok: true },
+    });
+    expect(recommendation?.selectedTileIds).toHaveLength(4);
+    expect(recommendation?.tiles.map((tile) => tile.label)).toContain("UX 빈틈");
+
+    const prepared = recommendation?.card ? playStrategyCard(recommendation.card, started) : started;
+    const resolved = recommendation
+      ? resolveDevelopmentPuzzle(recommendation.projectId, recommendation.selectedTileIds, prepared)
+      : started;
+
+    expect(resolved.lastDevelopmentPuzzle?.appliedModifierLabels).toContain("고객 인터뷰");
+    expect(getFirstDevelopmentIssueRecommendation(resolved)).toBeUndefined();
+  });
+
+  it("advances a solved first project directly to the first launch milestone", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing first launch fixtures");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const recommendation = getFirstDevelopmentIssueRecommendation(started);
+    if (!recommendation) throw new Error("Missing first issue recommendation");
+
+    const prepared = recommendation.card ? playStrategyCard(recommendation.card, started) : started;
+    const resolved = resolveDevelopmentPuzzle(recommendation.projectId, recommendation.selectedTileIds, prepared);
+    const launched = advanceToFirstLaunch(resolved);
+
+    expect(launched.month).toBeGreaterThan(resolved.month);
+    expect(launched.activeProducts).toContain("ai_writing_assistant");
+    expect(launched.productProjects.some((project) => project.productId === "ai_writing_assistant")).toBe(false);
+    expect(launched.lastRelease?.productId).toBe("ai_writing_assistant");
+  });
+
+  it("recommends the first post-launch card reward and clears after choosing it", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing first reward fixtures");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const issueRecommendation = getFirstDevelopmentIssueRecommendation(started);
+    if (!issueRecommendation) throw new Error("Missing first issue recommendation");
+
+    const prepared = issueRecommendation.card ? playStrategyCard(issueRecommendation.card, started) : started;
+    const resolved = resolveDevelopmentPuzzle(issueRecommendation.projectId, issueRecommendation.selectedTileIds, prepared);
+    const launched = advanceToFirstLaunch(resolved);
+    const rewardRecommendation = getFirstRewardRecommendation(launched);
+
+    expect(rewardRecommendation).toMatchObject({
+      actionLabel: "첫 보상 바로 선택",
+      title: "추천 첫 보상",
+      productName: "AI 글쓰기 비서",
+      check: { ok: true },
+    });
+    expect(rewardRecommendation?.card.id).toBe(launched.roguelite.pendingCardReward?.offeredCardIds[0]);
+
+    const rewarded = rewardRecommendation ? chooseCardReward(rewardRecommendation.card.id, launched) : launched;
+
+    expect(rewarded.roguelite.pendingCardReward).toBeUndefined();
+    expect(rewarded.roguelite.rewardHistory).toHaveLength(1);
+    expect(getFirstRewardRecommendation(rewarded)).toBeUndefined();
+  });
+
+  it("recommends the first growth branch after the first reward is chosen", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing first growth fixtures");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const issueRecommendation = getFirstDevelopmentIssueRecommendation(started);
+    if (!issueRecommendation) throw new Error("Missing first issue recommendation");
+
+    const prepared = issueRecommendation.card ? playStrategyCard(issueRecommendation.card, started) : started;
+    const resolved = resolveDevelopmentPuzzle(issueRecommendation.projectId, issueRecommendation.selectedTileIds, prepared);
+    const launched = advanceToFirstLaunch(resolved);
+    const rewardRecommendation = getFirstRewardRecommendation(launched);
+    if (!rewardRecommendation) throw new Error("Missing first reward recommendation");
+
+    const rewarded = chooseCardReward(rewardRecommendation.card.id, launched);
+    const growthRecommendation = getFirstGrowthRecommendation(rewarded);
+
+    expect(growthRecommendation).toMatchObject({
+      actionLabel: "성장 분기 바로 선택",
+      title: "추천 성장 분기",
+      path: {
+        id: "productivity_line",
+        title: "생산성 제품 라인 확장",
+      },
+      check: { ok: true },
+    });
+
+    const chosen = growthRecommendation ? chooseGrowthPath(growthRecommendation.path.id, rewarded) : rewarded;
+
+    expect(chosen.chosenGrowthPath?.id).toBe("productivity_line");
+    expect(getFirstGrowthRecommendation(chosen)).toBeUndefined();
+  });
+
+  it("advances a post-growth first run directly to the year-one annual review", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing annual review fast-forward fixtures");
+
+    const started = startProductProject(writingProduct, hireAgent(architect, createInitialState()));
+    const issueRecommendation = getFirstDevelopmentIssueRecommendation(started);
+    if (!issueRecommendation) throw new Error("Missing first issue recommendation");
+
+    const prepared = issueRecommendation.card ? playStrategyCard(issueRecommendation.card, started) : started;
+    const resolved = resolveDevelopmentPuzzle(issueRecommendation.projectId, issueRecommendation.selectedTileIds, prepared);
+    const launched = advanceToFirstLaunch(resolved);
+    const rewardRecommendation = getFirstRewardRecommendation(launched);
+    if (!rewardRecommendation) throw new Error("Missing first reward recommendation");
+
+    const rewarded = chooseCardReward(rewardRecommendation.card.id, launched);
+    const chosen = chooseGrowthPath("productivity_line", rewarded);
+    const reviewRunwayState = {
+      ...chosen,
+      currentEvent: undefined,
+      currentRivalEvent: undefined,
+      month: 10,
+      annualReviewHistory: [],
+      pendingAnnualDirectiveChoices: undefined,
+      resources: { ...chosen.resources, cash: 12000, compute: 80, data: 50 },
+    };
+    const reviewed = advanceToFirstAnnualReview(reviewRunwayState);
+
+    expect(reviewed.month).toBe(12);
+    expect(reviewed.annualReviewHistory[0]).toMatchObject({
+      year: 1,
+      month: 12,
+      reviewId: "year_1_local_demo_day",
+    });
+    expect(reviewed.pendingAnnualDirectiveChoices?.offeredDirectiveIds.length).toBeGreaterThan(0);
+  });
+
+  it("recommends the enterprise trust directive before year-two product research", () => {
+    const reviewed = createReviewedFirstRunState();
+    const recommendation = getYearTwoProductRecommendation(reviewed);
+
+    expect(recommendation).toMatchObject({
+      action: "choose_directive",
+      actionLabel: "지시 선택",
+      directiveChoiceId: "trust_compound_program",
+      menu: "company",
+      product: { id: "enterprise_workflow_agent" },
+      check: { ok: true },
+    });
+
+    const directed = advanceYearTwoProductRoadmap(reviewed, 1);
+    const researchRecommendation = getYearTwoProductRecommendation(directed);
+
+    expect(directed.annualDirective?.title).toBe("신뢰 복리 프로그램");
+    expect(directed.pendingAnnualDirectiveChoices).toBeUndefined();
+    expect(researchRecommendation).toMatchObject({
+      action: "upgrade_research",
+      actionLabel: "엔터프라이즈 연구",
+      capability: { id: "enterprise" },
+      menu: "research",
+    });
+  });
+
+  it("carries a funded year-two run through research into the enterprise product project", () => {
+    const ready = withYearTwoProductReadiness(createReviewedFirstRunState());
+    const advanced = advanceYearTwoProductRoadmap(ready);
+
+    expect(advanced.annualDirective?.title).toBe("신뢰 복리 프로그램");
+    expect(advanced.capabilities.enterprise).toBeGreaterThanOrEqual(1);
+    expect(advanced.capabilities.agent).toBeGreaterThanOrEqual(2);
+    expect(advanced.productProjects.some((project) => project.productId === "enterprise_workflow_agent")).toBe(true);
+    expect(getYearTwoProductRecommendation(advanced)).toBeUndefined();
+  });
+
+  it("recommends and resolves the year-two product issue even after the first launch puzzle", () => {
+    const ready = withYearTwoProductReadiness(createReviewedFirstRunState());
+    const advanced = advanceYearTwoProductRoadmap(ready);
+    const recommendation = getYearTwoProductIssueRecommendation(advanced);
+
+    expect(advanced.lastDevelopmentPuzzle?.projectId).not.toBe(recommendation?.projectId);
+    expect(recommendation).toMatchObject({
+      actionLabel: "신제품 이슈 바로 해결",
+      product: { id: "enterprise_workflow_agent" },
+      check: { ok: true },
+    });
+
+    const prepared = recommendation?.card ? playStrategyCard(recommendation.card, advanced) : advanced;
+    const resolved = recommendation
+      ? resolveDevelopmentPuzzle(recommendation.projectId, recommendation.selectedTileIds, prepared)
+      : advanced;
+
+    expect(resolved.lastDevelopmentPuzzle?.projectId).toBe(recommendation?.projectId);
+    expect(getYearTwoProductIssueRecommendation(resolved)).toBeUndefined();
+  });
+
   it("hires an agent using data-driven cost and raises team talent", () => {
     const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
     if (!architect) throw new Error("Missing prompt architect");
@@ -235,6 +580,51 @@ describe("alpha production systems", () => {
 
     expect(fullCellForecast.monthlyProgressGain).toBeGreaterThan(humanAiForecast.monthlyProgressGain);
     expect(fullCellForecast.expectedQuality).toBeGreaterThan(humanAiForecast.expectedQuality);
+  });
+
+  it("summarizes the human, AI, and robot workforce mix for first blind-test readability", () => {
+    const human = agentTypes.find((agent) => agent.id === "garage_junior_dev");
+    const ai = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const robot = agentTypes.find((agent) => agent.id === "factory_robot_unit");
+    if (!human || !ai || !robot) throw new Error("Missing workforce mix fixtures");
+
+    const initial = getWorkforceMixSummary(createInitialState());
+
+    expect(initial.headline).toBe("사람 0 · AI 0/3 · 로봇 0");
+    expect(initial.rows.map((row) => row.kind)).toEqual(["human", "ai_agent", "robot"]);
+    expect(initial.rows.find((row) => row.kind === "robot")).toMatchObject({
+      count: 0,
+      statusLabel: "로보틱스 Lv.1 필요",
+      emphasis: "locked",
+    });
+
+    const roboticsReady = {
+      ...createInitialState(),
+      resources: { ...createInitialState().resources, cash: 100000, compute: 1000 },
+      capabilities: { ...createInitialState().capabilities, robotics: 1 },
+    };
+    const mixed = hireAgent(robot, hireAgent(ai, hireAgent(human, roboticsReady)));
+    const summary = getWorkforceMixSummary(mixed);
+
+    expect(summary.headline).toBe("사람 1 · AI 1/5 · 로봇 1");
+    expect(summary.rows.find((row) => row.kind === "human")?.impactLabel).toContain("AI 운용 한도 +2");
+    expect(summary.rows.find((row) => row.kind === "human")).toMatchObject({
+      roleBadge: "감독",
+      metricLabel: "한도 +2",
+    });
+    expect(summary.rows.find((row) => row.kind === "ai_agent")?.impactLabel).toContain("AI 운용 1/5");
+    expect(summary.rows.find((row) => row.kind === "ai_agent")).toMatchObject({
+      roleBadge: "자동화",
+      metricLabel: "운용 1/5",
+    });
+    expect(summary.rows.find((row) => row.kind === "robot")?.impactLabel).toContain("하드웨어");
+    expect(summary.rows.find((row) => row.kind === "robot")).toMatchObject({
+      roleBadge: "현장",
+      metricLabel: "완성도 보정",
+    });
+    expect(summary.activeSynergyLabels).toEqual(
+      expect.arrayContaining(["사람-AI 감독 루프", "사람-로봇 현장 운영", "AI-로봇 자동화 파이프라인", "풀스택 회사 셀"]),
+    );
   });
 
   it("keeps project duration stable while team composition changes launch quality", () => {

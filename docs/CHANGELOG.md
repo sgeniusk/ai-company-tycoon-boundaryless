@@ -4,6 +4,535 @@
 
 ---
 
+## [0.56-alpha] — 2026-05-21
+
+### 30분 알파런 완료 후속 체인과 디브리프
+
+**변경:**
+- 완료 패널 버튼을 단순 이동에서 실제 진행 버튼으로 바꿨다. `다음 개발 이슈`는 2년차 신제품 이슈를 해결하고, 이후 `출시까지 진행`, `두 번째 보상 고르기`, `디브리프 보기`로 상태에 맞춰 바뀐다.
+- `getYearTwoProductIssueRecommendation()`을 추가해 첫 제품 이슈 해결 기록이 있어도 2년차 신제품 프로젝트의 첫 이슈를 별도로 추천/해결할 수 있게 했다.
+- 두 번째 출시 보상 대기 상태가 생겨도 30분 알파런의 첫 보상/성장 단계가 다시 미완료가 되지 않도록 보상 완료 판정을 분리했다.
+- 두 번째 보상 선택 뒤에는 알파런 완주 상태가 유지되고, 가이드 탭과 결과 탭에 제품/보상/2년차/블라인드 준비 하이라이트와 첫 출시/카드 영향/연간 지시/두 번째 보상 4개 장면 타임라인을 보여준다.
+- `?scenario=alpha-run-issue-complete`, `?scenario=alpha-run-second-launch`, `?scenario=alpha-run-second-reward-picked`를 추가해 완료 패널 이후 이슈 해결, 두 번째 출시, 두 번째 보상 선택과 디브리프까지 직접 검수할 수 있게 했다.
+
+**검증:**
+- `npm test -- src/game/guidance.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 123 tests
+- `npm run build` 통과
+- `npm run harness:gate` 통과, 43 files / 406 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- `curl -I 'http://127.0.0.1:5201/?scenario=alpha-run-second-reward-picked'` 200 OK
+- 상세 리포트: `reports/qa/v0_56_alpha_run_roadmap.md`
+
+### 30분 알파런 완주 패널
+
+**변경:**
+- `getAlphaRunCompletionSummary()`를 추가해 30분 알파런 100% 상태에서 완주/잠금 문구, 신제품 개발 진행률, 다음 행동을 계산한다.
+- 가이드 패널에 `AlphaRunCompletionPanel`을 추가해 2년차 신제품 착수 후에도 다음 개발 이슈로 이어지는 목표가 사라지지 않게 했다.
+- `?scenario=alpha-run-complete`를 추가해 첫 출시, 카드 체감, 성장 선택, 연간 지시, 2년차 신제품 착수가 모두 누적된 완료 상태를 브라우저에서 바로 검수할 수 있게 했다.
+
+**검증:**
+- `npm test -- src/game/qa-scenarios.test.ts src/game/guidance.test.ts src/ui/layout-contract.test.ts --maxWorkers=1` 통과, 3 files / 120 tests
+- `npm run harness:gate` 통과, 43 files / 402 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- Headless Chrome DevTools DOM check로 `?scenario=alpha-run-complete` 가이드 탭의 완료 패널 표시, 목표 `100%`, overflow 0 확인
+- Headless Chrome capture: `/private/tmp/ai-company-v056-alpha-run-complete-guide-1366.png`
+- 상세 리포트: `reports/qa/v0_56_alpha_run_roadmap.md`
+
+### 30분 알파런 로드맵 2차
+
+**변경:**
+- `alpha-run-feedback`을 추가해 활성 알파런 버튼 클릭 직후 실행된 액션과 다음 보상이 바로 보이게 했다.
+- 2년차 신제품 단계의 액션 라벨을 상태에 따라 `지시 선택`, `엔터프라이즈 연구`, `에이전트 연구`, `신제품 개발`로 바꿨다.
+- `getYearTwoProductRecommendation()`과 `advanceYearTwoProductRoadmap()`을 추가해 연간 지시 선택, 필요한 연구, 기업 업무 에이전트 프로젝트 착수를 하나의 알파런 체인으로 이어준다.
+- 기업 자동화 도메인 해금은 바로 다음 레벨에서 도메인을 여는 연구를 먼저 고르도록 정리했다.
+- 오피스 포커스 스트립의 2년차 신제품 버튼도 같은 체인을 실행해, 가이드 탭을 열지 않아도 후반 목표를 전진시킬 수 있다.
+
+**검증:**
+- `npm test -- src/game/simulation.test.ts src/game/guidance.test.ts src/ui/layout-contract.test.ts --maxWorkers=1` 통과, 3 files / 109 tests
+- `npm run harness:gate` 통과, 43 files / 400 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- `curl -I 'http://127.0.0.1:5201/?scenario=fresh'` 200 OK
+- Headless Chrome desktop capture로 `?scenario=fresh` 렌더링 확인, `/private/tmp/ai-company-v056-alpha-run-year-two-chain-fresh.png`
+- 상세 리포트: `reports/qa/v0_56_alpha_run_roadmap.md`
+
+### 30분 알파런 로드맵 1차
+
+**변경:**
+- 가이드 탭에 `alpha-run-roadmap`을 추가해 첫 출시, 카드 체감, 보상/성장 선택, 1년차 심사, 2년차 신제품 착수를 한 번에 보여준다.
+- 로드맵은 현재 상태에 맞춰 완료/활성 단계를 자동 표시하고, 각 단계의 다음 보상 미리보기를 함께 보여준다.
+- 가이드 탭 진행률은 첫 10분 세부 루프가 아니라 30분 알파런 전체 진행률을 표시하도록 바꿨다.
+- 각 로드맵 단계를 클릭 가능한 컨트롤로 바꿔 현재 단계의 메뉴, 결과 탭, 회사 탭으로 바로 이동할 수 있게 했다.
+- 첫 출시 단계는 진행 상태에 따라 `팀원 고용`, `제품 개발`, `카드/이슈`, `출시 진행`, `출시 확인`으로 액션 라벨과 이동 메뉴를 바꾼다.
+- 오피스 화면 안에 `alpha-run-focus-strip`을 추가해 현재 알파런 목표, 진행률, 다음 보상, 단계 이동 버튼을 가이드 탭 밖에서도 계속 볼 수 있게 했다.
+- `getActiveAlphaRunRoadmapStep()`을 추가해 가이드 로드맵과 오피스 포커스 스트립이 같은 활성 단계를 공유한다.
+- 활성 단계 버튼은 안전한 초반 단계에서 추천 첫 고용, 첫 제품 개발, 첫 이슈 해결, 출시 진행, 첫 보상/성장 선택, 첫 연간 심사 진행을 즉시 실행한다.
+- 기존 첫 10분 루프, 빠른 고용/개발/이슈/보상/성장 버튼은 유지해 “큰 목적지”와 “지금 누를 버튼”이 같이 보이게 했다.
+
+**검증:**
+- `npm test -- src/game/guidance.test.ts` 통과, 1 file / 17 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 51 tests
+- `npm test -- src/game/guidance.test.ts src/ui/layout-contract.test.ts --maxWorkers=1` 통과, 2 files / 68 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm run harness:gate` 통과, 43 files / 397 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- Headless Chrome desktop/mobile capture로 `?scenario=fresh` 렌더링 확인, `/private/tmp/ai-company-v056-alpha-run-roadmap-clickable-fresh.png`, `/private/tmp/ai-company-v056-alpha-run-focus-strip-fresh-desktop-v2.png`, `/private/tmp/ai-company-v056-alpha-run-focus-strip-fresh-mobile.png`
+- 상세 리포트: `reports/qa/v0_56_alpha_run_roadmap.md`
+
+### 첫 화면 판타지 신호 1차
+
+**변경:**
+- `?scenario=fresh` 시작 화면의 가이드 카드에 첫 화면 전용 `opening-fantasy-signal`을 추가했다.
+- 첫 화면 신호는 `강원 산골 차고`, `사람과 AI 에이전트`, `첫 제품 출시`, `경쟁사 압박`, `10년 성장`을 한 번에 보여준다.
+- 진행 중 화면에는 나오지 않도록 1개월차, 고용/프로젝트/출시가 없는 시작 상태에서만 표시한다.
+- 미나의 첫 튜토리얼도 `차고 AI 회사`, `사람과 AI 에이전트`, `첫 제품 출시`, `경쟁사 전 첫 시장 반응`을 직접 말하도록 보강했다.
+
+**검증:**
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 30 tests
+- `npm test -- src/game/tutorial-guide.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 34 tests
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=fresh` 렌더링 확인
+- Headless Chrome desktop capture로 `/tmp/ai-company-v056-first-screen-tutorial.png` 생성 및 미나 첫 안내 확인
+- `npm run harness:gate` 통과, 41 files / 310 tests, 데이터 검증 통과, production build 통과
+
+### 첫 제품 개발 진입 1차
+
+**변경:**
+- 고용 직후 가이드가 제품 메뉴 상단의 추천 첫 제품 카드로 플레이어를 보낸다.
+- 제품 메뉴 상단에 `first-project-launchpad`를 추가해 추천 첫 제품, 예상 기간/리뷰/완성도, 자동 팀, `첫 제품 개발 시작` 버튼을 한 번에 보여준다.
+- 첫 프로젝트 시작 전에는 아이디어 조합실 튜토리얼과 경쟁사 튜토리얼이 끼어들지 않도록 늦췄다.
+- `staffing` QA 시나리오는 튜토리얼 모달이 추천 첫 제품 카드를 가리지 않는 상태로 열린다.
+
+**검증:**
+- `npm test -- src/game/guidance.test.ts src/game/tutorial-guide.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 85 tests
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=staffing` 렌더링 확인, `/tmp/ai-company-v056-starter-project-launchpad.png`
+- `npm run harness:gate` 통과, 41 files / 313 tests, 데이터 검증 통과, production build 통과
+
+### 첫 팀원 빠른 고용 1차
+
+**변경:**
+- `getFirstHireRecommendation()`을 추가해 초기 상태에서 추천 첫 팀원 `프롬프트 설계가`와 공채 비용/품질/위험 정보를 계산한다.
+- 첫 화면 가이드 카드의 메인 버튼을 초기 상태에서는 `첫 팀원 바로 고용`으로 바꿔, 메뉴 탐색 없이 첫 팀원을 즉시 고용하게 했다.
+- 가이드 카드 안에 `first-hire-fast-start` 패널을 추가해 추천 팀원, 추천 이유, 영입 비용을 첫 화면에 보여준다.
+- 빠른 고용 후에는 제품 메뉴로 바로 이동해 기존 `first-project-launchpad`의 첫 제품 개발 버튼을 곧바로 볼 수 있게 했다.
+- 좁은 가이드 패널에서 긴 버튼 문구가 본문을 세로로 밀어내지 않도록 가이드 버튼을 전체 폭으로 내려 배치했다.
+
+**검증:**
+- `npm test -- src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 76 tests
+- `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 26 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm run harness:gate` 통과, 43 files / 368 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:blind-readiness` 통과, Ready to send yes, Sessions untouched yes, Real sessions 0/5, Art gate `대기`
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=fresh` 렌더링 확인, `/private/tmp/ai-company-v056-first-hire-fast-start-v5.png`
+- 상세 리포트: `reports/qa/v0_56_first_hire_fast_start.md`
+
+### 첫 제품 빠른 개발 1차
+
+**변경:**
+- `getFirstProjectRecommendation()`을 추가해 첫 팀원이 고용된 뒤 추천 첫 제품, 자동 투입 팀, 예상 개발 기간/리뷰를 계산한다.
+- 고용 후 가이드 카드의 메인 버튼을 `첫 제품 바로 개발`로 바꿔 제품 메뉴 탐색 없이 첫 프로젝트를 바로 만들 수 있게 했다.
+- 가이드 카드 안에 `first-project-fast-start` 패널을 추가해 `AI 글쓰기 비서`, 예상 기간, 예상 리뷰, 팀 규모를 보여준다.
+- 빠른 개발 후에는 덱 메뉴로 이동해 첫 개발 이슈/카드 체감 단계가 바로 다음 목표가 되도록 했다.
+
+**검증:**
+- `npm test -- src/game/simulation.test.ts` 통과, 1 file / 33 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 45 tests
+- `npm test -- src/game/simulation.test.ts src/ui/layout-contract.test.ts src/game/blind-playtest-records.test.ts` 통과, 3 files / 104 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm run harness:gate` 통과, 43 files / 370 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=staffing` 렌더링 확인, `/private/tmp/ai-company-v056-first-project-fast-start.png`
+- 상세 리포트: `reports/qa/v0_56_first_project_fast_start.md`
+
+### 첫 이슈 빠른 해결/출시 가속 1차
+
+**변경:**
+- `getFirstDevelopmentIssueRecommendation()`을 추가해 첫 프로젝트 진행 중 추천 카드, 추천 개발 이슈, 선택 한도를 계산한다.
+- 가이드 카드 안에 `first-issue-fast-start` 패널을 추가해 `고객 인터뷰` 카드와 추천 이슈 4개를 보여준다.
+- `첫 이슈 바로 해결` 버튼은 추천 카드를 먼저 사용한 뒤 추천 이슈를 해결해 `이슈 해결 결과`에 카드 영향이 남게 한다.
+- `advanceToFirstLaunch()`를 추가해 가이드의 `출시까지 진행` 액션이 한 달만 넘기지 않고 첫 제품 출시 시점까지 짧게 진행하게 했다.
+
+**검증:**
+- `npm test -- src/game/simulation.test.ts` 통과, 1 file / 35 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 47 tests
+- `npm test -- src/game/simulation.test.ts src/ui/layout-contract.test.ts src/game/guidance.test.ts src/game/deckbuilding.test.ts` 통과, 4 files / 112 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm run harness:gate` 통과, 43 files / 374 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=project` 렌더링 확인, `/private/tmp/ai-company-v056-first-issue-fast-start.png`
+- 상세 리포트: `reports/qa/v0_56_first_issue_fast_start.md`
+
+### 첫 보상/성장 빠른 선택 1차
+
+**변경:**
+- `getFirstRewardRecommendation()`을 추가해 첫 출시 보상 대기 상태에서 추천 보상 카드, 선택 가능 여부, 빠른 선택 문구를 계산한다.
+- `getFirstGrowthRecommendation()`을 추가해 첫 보상 선택 직후 추천 성장 분기와 선택 가능 여부를 계산한다.
+- 결과 탭과 가이드 카드에 `first-reward-fast-start`, `first-growth-fast-start` 패널을 추가해 출시 후 보상 카드와 성장 분기를 메뉴 탐색 없이 바로 선택할 수 있게 했다.
+- `첫 보상 바로 선택`은 기존 `chooseCardReward()`를 사용해 보상 카드를 덱에 넣고 결과 탭에 머문다.
+- `성장 분기 바로 선택`은 기존 `chooseGrowthPath()`를 사용해 추천 성장 분기를 선택하고 해당 성장 분기의 다음 메뉴로 이동한다.
+- `reward`, `reward-picked`, `growth-picked` QA 상태는 출시 이후 튜토리얼을 이미 본 상태로 열어 첫 화면용 미나 안내 모달이 보상/성장 화면을 가리지 않게 했다.
+
+**검증:**
+- `npm test -- src/game/simulation.test.ts` 통과, 1 file / 37 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 48 tests
+- `npm test -- src/game/simulation.test.ts src/ui/layout-contract.test.ts src/game/guidance.test.ts src/game/deckbuilding.test.ts` 통과, 4 files / 115 tests
+- `npm test -- src/game/qa-scenarios.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 130 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm run harness:gate` 통과, 43 files / 378 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=reward` 렌더링 확인, `/private/tmp/ai-company-v056-first-reward-fast-start-no-modal.png`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=reward-picked` 렌더링 확인, `/private/tmp/ai-company-v056-first-growth-fast-start-no-modal.png`
+- 상세 리포트: `reports/qa/v0_56_first_reward_growth_fast_start.md`
+
+### 연간 심사 빠른 진행 1차
+
+**변경:**
+- `advanceToFirstAnnualReview()`를 추가해 첫 출시/성장 선택 이후 1년차 심사까지 반복 월 진행 없이 바로 이동할 수 있게 했다.
+- 첫 10분 루프가 완료된 뒤 가이드의 연간 심사 액션 문구를 `심사까지 진행`으로 바꿨다.
+- 가이드 액션 `advance_annual_review`가 한 달만 넘기지 않고 첫 연간 심사 및 다음 해 지시 선택 상태까지 진행하게 했다.
+- `심사까지 진행` 이후 우측 패널을 회사 메뉴로 고정해 다음 해 지시 3택1을 바로 찾게 했다.
+- 다음 해 지시 선택 완료 리본의 월 진행 버튼 문구를 `2년차 시작`으로 바꿔 심사 이후 행동을 더 명확히 했다.
+
+**검증:**
+- `npm test -- src/game/simulation.test.ts` 통과, 1 file / 38 tests
+- `npm test -- src/game/guidance.test.ts` 통과, 1 file / 12 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 48 tests
+- `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 26 tests
+- `npm test -- src/ui/layout-contract.test.ts src/game/blind-playtest-records.test.ts src/game/qa-scenarios.test.ts` 통과, 3 files / 119 tests
+- `npm test -- src/game/simulation.test.ts src/game/guidance.test.ts src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts` 통과, 4 files / 143 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm run harness:gate` 통과, 43 files / 379 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=flow` 렌더링 확인, `/private/tmp/ai-company-v056-annual-review-fast-forward-flow.png`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=annual-directed` 렌더링 확인, `/private/tmp/ai-company-v056-annual-directed-year-two-start.png`
+- 상세 리포트: `reports/qa/v0_56_annual_review_fast_forward.md`
+
+### 제품 후보 필요 연구 런치패드 1차
+
+**추가 변경:**
+- `year-two-product-ready` QA 경로를 추가해 필요 연구가 모두 채워진 뒤 `기업 업무 에이전트`가 실제로 개발 가능한 상태를 고정했다.
+- `year-two-product-started` QA 경로를 추가해 2년차 신제품 프로젝트가 시작된 상태와 제품 메뉴의 `research-product-started-ribbon`을 검수할 수 있게 했다.
+- `year-two-product-issue-result` QA 경로를 추가해 신제품 착수 이후 첫 개발 이슈 결과까지 덱 메뉴에서 검수할 수 있게 했다.
+- `year-two-product-launch-impact` QA 경로를 추가해 신제품 첫 이슈 이후 `기업 업무 에이전트` 출시 결과와 카드 보상 대기 상태까지 검수할 수 있게 했다.
+- 제품 메뉴 상단에 `신제품 개발 시작` 확인 리본을 추가해 개발 진행률, 완성도/신뢰 기준, 투입 팀, 다음 개발 이슈, `덱 열기`를 보여준다.
+
+**추가 검증:**
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 99 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts src/game/blind-playtest-records.test.ts src/game/blind-playtest-rehearsal.test.ts` 통과, 4 files / 128 tests
+- `npm run qa:blind-rehearsal` 통과, 자동 리허설 리포트 재생성
+- `npm run harness:gate` 통과, 43 files / 386 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- `curl -I 'http://127.0.0.1:5201/?scenario=year-two-product-started'` 통과, 200 OK
+- `curl -I 'http://127.0.0.1:5201/?scenario=year-two-product-issue-result'` 통과, 200 OK
+- `curl -I 'http://127.0.0.1:5201/?scenario=year-two-product-launch-impact'` 통과, 200 OK
+
+### 블라인드 테스트 URL 동기화 1차
+
+**변경:**
+- `qa:blind-url-sync`를 추가해 `PLAYTEST_BASE_URL`을 요청 패킷과 AGY outbox의 플레이어/진행자 URL에 자동 반영한다.
+- `v0_56_blind_playtest_url_sync.md`를 추가해 원격 URL 미지정 상태와 실행 방법을 기록한다.
+- preflight와 체크리스트의 다음 행동을 URL sync -> preflight -> readiness 순서로 정리했다.
+- Cloudflare quick tunnel 원격 URL을 request packet/AGY outbox에 동기화하고, Vite dev server가 `.trycloudflare.com` preview host를 허용하도록 설정했다.
+- `qa:blind-preflight`가 request packet/AGY outbox URL 동기화 상태를 직접 판정해 `동기화 완료`와 `URL 동기화 필요`를 구분한다.
+- `qa:blind-session-links`를 추가해 세션 01-05의 공통 플레이어 URL, 진행자 관찰 URL, 기록 파일 상태를 `v0_56_blind_playtest_session_links.md`로 생성한다.
+- `qa:blind-live-check`를 추가해 세션 링크 구조, 세션 01-05 관찰 URL, 실제 세션 파일 `Status: 예정` 상태를 발송 직전 리포트로 확인한다.
+- 만료된 Cloudflare quick tunnel을 새 URL로 교체하고 request packet, AGY outbox, session links, preflight를 새 URL로 다시 동기화했다.
+
+**검증:**
+- `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 32 tests
+- `npm run qa:blind-session-links` 통과, Status `세션 링크 준비`, 세션 파일 5개 모두 `Status: 예정`
+- `npm run qa:blind-live-check` 통과, Status `링크 구조 준비`, 세션 링크 수 5/5, 세션 파일 5개 모두 `Status: 예정`
+- `PLAYTEST_BASE_URL=https://librarian-matches-engaged-compact.trycloudflare.com npm run qa:blind-preflight` 통과, Status `원격 테스트 준비`, request packet URL `동기화 완료`, tutorial delay OK
+- Cloudflare player/session 1/session 5 URL direct `curl -I` 통과, 200 OK
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- `npm run harness:gate` 통과, 43 files / 391 tests, 데이터 검증 통과, production build 통과
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=year-two-product-started` 렌더링 확인, `/private/tmp/ai-company-v056-year-two-product-started.png`
+- Headless Chrome mobile capture로 같은 URL 렌더링 확인, `/private/tmp/ai-company-v056-year-two-product-started-mobile.png`
+- 상세 리포트: `reports/qa/v0_56_year_two_product_started.md`
+
+**변경:**
+- 잠긴 2년차 제품 후보가 요구하는 부족 연구를 연구 메뉴에서 `제품 후보 필요 연구` 카드로 다시 보여준다.
+- 새 카드는 후보 제품명, 현재/필요 레벨, 정확한 부족 연구, `바로 연구` 버튼을 제공한다.
+- `year-two-product-candidate&menu=research` QA 경로로 제품 후보에서 연구 메뉴로 돌아온 상태를 검수할 수 있게 했다.
+
+**검증:**
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 49 tests
+- `npm test -- src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts` 통과, 2 files / 94 tests
+- `npm test -- src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts src/game/blind-playtest-records.test.ts` 통과, 3 files / 120 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm run harness:gate` 통과, 43 files / 380 tests, 데이터 검증 통과, production build 통과
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, Send status `AGY 발송 금지`
+- `curl -I 'http://127.0.0.1:5201/?scenario=year-two-product-candidate&menu=research'` 통과, 200 OK
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=year-two-product-candidate&menu=research` 렌더링 확인, `/private/tmp/ai-company-v056-product-candidate-needed-research.png`
+- Headless Chrome mobile capture로 같은 URL 렌더링 확인, `/private/tmp/ai-company-v056-product-candidate-needed-research-mobile.png`
+- 상세 리포트: `reports/qa/v0_56_year_two_product_candidate.md`
+
+### 첫 개발 이슈/카드 체감 진입 1차
+
+**변경:**
+- 첫 프로젝트 진행 중 가이드가 덱 메뉴 상단의 첫 개발 이슈 카드로 플레이어를 보낸다.
+- `?scenario=deck` 라벨을 `첫 개발 이슈 QA`로 갱신했다.
+- `?scenario=deck-result`를 추가해 `고객 인터뷰` 카드 보정 후 첫 개발 이슈를 해결한 상태를 고정했다.
+- 덱 메뉴 상단에 `development-issue-launchpad`를 추가해 현재 제품, 진행도, 완성도, 추천 이슈, 선택 수를 보여준다.
+- `자동 선택 이슈 해결` 버튼으로 추천 이슈 타일을 즉시 해결해 진행도와 완성도 변화가 남도록 했다.
+- 덱 메뉴 상단에 `development-issue-result-ribbon`을 추가해 이슈 해결 직후 판정, 점수, 진행도/완성도 상승, 카드 영향, 다음 목표를 다시 보여준다.
+- 첫 15분 블라인드 테스트 기준을 “첫 개발 이슈 카드, 이슈 해결 결과 리본, 또는 출시 결과에서 카드가 결과를 바꿨다고 이해한다”로 구체화했다.
+
+**검증:**
+- `npm test -- src/game/guidance.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 80 tests
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 70 tests
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=deck` 렌더링 확인, `/tmp/ai-company-v056-development-issue-launchpad.png`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=deck-result` 렌더링 확인, `/tmp/ai-company-v056-development-issue-result-ribbon.png`
+- `npm run harness:gate` 통과, 41 files / 314 tests, 데이터 검증 통과, production build 통과
+
+### 첫 출시 보상감/카드 체감 1차
+
+**변경:**
+- `?scenario=launch-impact`를 `v0.56 출시 체감 QA`로 갱신했다.
+- 첫 출시 결과 요약에 3개 리뷰 스니펫을 추가했다: 초기 사용자, 동네 사장님, 시장 관찰자 반응.
+- 출시 결과 요약에 카드 체감, 경쟁사 반응, 팀 반응 하이라이트를 추가했다.
+- `LaunchImpactPanel`이 첫 출시 결과 안에서 카드 콤보, 경쟁사 견제, 팀 회고를 짧은 사건 요약으로 보여준다.
+- 카드 영향 상세는 기존 카드 영향 리스트와 새 하이라이트 데이터 양쪽에서 유지한다.
+- 출시 결과 요약에 `nextActionSteps`를 추가해 `보상 카드 선택`, `성장 분기 선택`, `다음 달 진행`을 3단계 다음 행동으로 고정했다.
+- `LaunchImpactPanel`의 `launch-next-action-ribbon`을 버튼형 리본으로 바꿔 덱 메뉴, 결과 탭, 회사 메뉴로 바로 이동하거나 유지할 수 있게 했다.
+- `launch-impact` QA 상태는 주요 튜토리얼을 이미 본 상태로 열어 출시 결과 패널이 모달에 가려지지 않게 했다.
+- 덱 패널에 `first-reward-spotlight`를 추가해 첫 출시 보상이 대기 중일 때 `첫 출시 보상 도착`, `3장 중 1장`, 덱 추가, 성장 분기 흐름을 먼저 보여준다.
+- 기존 카드 보상 선택 로직은 유지하고, 첫 보상 선택이 플레이어에게 명시적인 선택 순간으로 읽히도록 보강했다.
+- `?scenario=reward-picked`를 추가해 첫 보상 카드를 고른 직후의 확인 상태를 고정했다.
+- 덱 패널에 `reward-choice-confirmation`을 추가해 선택한 카드가 덱에 들어갔고 다음 목표가 성장 분기라는 점을 보여준다.
+- `?scenario=growth-picked`를 추가해 첫 보상과 성장 분기를 모두 선택한 직후의 확인 상태를 고정했다.
+- 출시 결과 패널 상단에 `growth-choice-confirmation`을 추가해 선택한 성장 분기, 다음 달 월간 보너스, 연간 심사까지의 방향을 보여준다.
+- 보상/성장 선택 확인 리본은 모바일 520px 이하에서 1열로 접혀 텍스트가 좁은 카드 안에 뭉개지지 않게 했다.
+
+**검증:**
+- `npm test -- src/game/release-impact.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 66 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 33 tests
+- `npm test -- src/game/release-impact.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts src/game/blind-playtest-records.test.ts` 통과, 4 files / 76 tests
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 1 file / 34 tests
+- `npm test -- src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts src/game/blind-playtest-records.test.ts` 통과, 3 files / 73 tests
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 75 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=launch-impact` 렌더링 확인
+- Headless Chrome desktop capture로 `/tmp/ai-company-v056-launch-next-action-ribbon-buttons.png` 생성 및 다음 행동 리본 버튼 확인
+- Headless Chrome desktop capture로 `/tmp/ai-company-v056-first-reward-spotlight.png` 생성 및 첫 보상 스포트라이트 확인
+- Headless Chrome desktop capture로 `/tmp/ai-company-v056-reward-choice-confirmation-v2.png` 생성 및 보상 선택 완료 리본 확인
+- Headless Chrome mobile capture로 `/tmp/ai-company-v056-reward-choice-confirmation-mobile-v2.png` 생성 및 보상 확인 리본 모바일 접힘 확인
+- Headless Chrome desktop capture로 `/tmp/ai-company-v056-growth-choice-confirmation-v3.png` 생성 및 성장 분기 선택 완료 리본 확인
+- `curl -I 'http://127.0.0.1:5201/?scenario=growth-picked'` 통과, 200 OK
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts src/game/blind-playtest-records.test.ts` 통과, 3 files / 77 tests
+- `npm run harness:gate` 통과, 41 files / 322 tests, 데이터 검증 통과, production build 통과
+- `npm run harness:gate` 통과, 40 files / 304 tests, 데이터 검증 통과, production build 통과
+- `npm run harness:gate` 통과, 41 files / 317 tests, 데이터 검증 통과, production build 통과
+- `npm run harness:gate` 1차 실행은 `src/game/product-ideas.test.ts` 전 조합 테스트가 5초 제한에 걸려 실패했으나, 해당 테스트 단독 재실행은 통과했다.
+- `npm run harness:gate` 재실행 통과, 41 files / 318 tests, 데이터 검증 통과, production build 통과
+
+### 경쟁사/직원 사건 화면화 1차
+
+**변경:**
+- `?scenario=office-visuals`가 v0.56 사건 화면 QA도 겸하도록 라이벌 스카우트 이벤트와 직원 번아웃/스카우트 위험을 고정 노출한다.
+- 메인 이벤트 스택에 `incident-screen-moment` 패널을 추가해 경쟁사 사건과 직원 사건을 로그가 아니라 화면 사건으로 읽히게 했다.
+- 직원 사건 패널에서 추천 대응 선택지를 바로 누를 수 있게 `getStaffIncidentResolutionOptions()`와 `resolveStaffIncident()`를 연결했다.
+- 사건 패널 버튼을 압축해 데스크톱 QA 프레임에서 직원 사건과 경쟁사 사건이 함께 보이도록 조정했다.
+
+**검증:**
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 64 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=office-visuals` 렌더링 확인
+- `npm run harness:gate` 통과, 40 files / 305 tests, 데이터 검증 통과, production build 통과
+
+### 첫 10분 흐름/연간 심사 연결 1차
+
+**변경:**
+- `?scenario=flow`가 v0.56 첫 10분 완료 상태를 열도록 갱신했다.
+- `flow`는 첫 출시 결과, 카드 체감, 사무실 정비, 경쟁 대응을 거친 뒤 1년차 연간 심사까지 2개월 남은 상태를 보여준다.
+- 첫 10분 로드맵이 100% 완료된 뒤에도 마지막 단계에 머물던 가이드를 고쳐, 다음 목표가 `연간 심사`로 넘어가게 했다.
+- 가이드 버튼 `다음 달 진행`이 연간 심사 런웨이에서도 월 진행을 수행한다.
+- QA용 `flow` 상태에서는 튜토리얼 모달을 숨겨 연간 심사 안내가 가려지지 않게 했다.
+
+**검증:**
+- `npm test -- src/game/guidance.test.ts src/game/qa-scenarios.test.ts` 통과, 2 files / 48 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=flow` 렌더링 확인
+- `npm run harness:gate` 통과, 40 files / 307 tests, 데이터 검증 통과, production build 통과
+
+### 블라인드 플레이테스트 기록 준비
+
+**변경:**
+- `reports/playtests/v0_56_blind_playtest_plan.md`를 추가해 실제 테스트 운영 URL, 테스터 구성, 체크포인트, P0 판정 기준을 한곳에 모았다.
+- `reports/playtests/v0_56_blind_playtest_session_01.md`부터 `session_05.md`까지 5개 빈 세션 기록지를 추가했다.
+- 각 세션 파일은 `Status: 예정`이며, 실제 세션 전에는 결과를 채우지 않는다는 문구를 포함한다.
+- `docs/BLIND_PLAYTEST_CHECKLIST.md`에 준비된 기록 파일 목록을 연결했다.
+
+**검증:**
+- `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 2 tests
+- `npm run harness:gate` 통과, 41 files / 309 tests, 데이터 검증 통과, production build 통과
+
+**남은 작업:**
+- 실제 5명 플레이 후 세션 파일을 채우고 P0/P1 수정 후보를 추린다.
+
+### 연간 심사 후 다음 해 지시 확인 1차
+
+**변경:**
+- `?scenario=annual-directed`를 추가해 1년차 연간 심사를 통과하고 `신뢰 복리 프로그램` 지시를 고른 직후 상태를 고정했다.
+- `?scenario=year-two-plan`를 추가해 다음 달로 넘어간 13개월차에 연간 지시 월간 보너스가 실제 운영 효과로 적용된 상태를 고정했다.
+- `?scenario=year-two-research`를 추가해 13개월차 연구 메뉴에서 연간 지시 추천 연구를 바로 확인하는 상태를 고정했다.
+- `?scenario=year-two-research-complete`를 추가해 추천 연구 실행 직후의 레벨 상승, 사용 자원, 해금 시장, 제품 후보를 고정했다.
+- `?scenario=year-two-product-candidate`를 추가해 연구 완료 보상이 제품 메뉴의 다음 제품 후보로 이어지는 상태를 고정했다.
+- 회사 패널 상단에 `annual-directive-confirmation`을 추가해 `다음 해 지시 선택 완료`, 선택한 지시, 월간 보너스, 추천 메뉴, 적용 기간을 보여준다.
+- `annual-directive-confirmation`에 `추천 메뉴 열기`와 `2년차 시작` 버튼을 추가해 심사 이후 흐름이 바로 끊기지 않게 했다.
+- 회사 패널 상단에 `year-two-kickoff`를 추가해 `2년차 운영 시작`, `이번 달 보너스`, `연간 지시 효과`, 추천 메뉴, `한 달 더 운영`을 보여준다.
+- 연구 패널 상단에 `annual-research-launchpad`를 추가해 `연간 지시 추천 연구`와 `바로 연구` 버튼을 보여준다.
+- `upgradeCapability()`가 `lastCapabilityUpgrade`를 기록하게 해 연구 완료 순간이 저장/불러오기 후에도 유지된다.
+- 연구 패널 상단에 `research-completion-ribbon`을 추가해 `연구 완료`, 레벨 상승, 사용 자원, 해금 시장, 제품 후보, `제품 후보 보기`를 보여준다.
+- 제품 패널 상단에 `research-product-launchpad`를 추가해 `연구가 연 제품 후보`, 해금 시장, 다음 제품 후보, 예상 결과, `필요 연구 보기`를 보여준다.
+- 연구 직후 제품 후보가 아직 잠겨 있으면 누락된 연구 조건을 보여주고, `필요 연구 보기`로 연구 메뉴에 바로 돌아갈 수 있게 했다.
+- 모바일에서 연구 완료 보상이 추천 연구 카드 아래로 밀리지 않도록 완료 리본을 연구 패널의 첫 보상 카드로 올렸다.
+- `annual-directed` QA 상태는 튜토리얼 도움말을 이미 본 상태로 열어 다음 해 지시 확인 리본이 화면에서 가려지지 않게 했다.
+- 블라인드 플레이테스트 계획과 5개 세션 기록지에 다음 해 지시 선택 완료 리본, 선택한 연간 지시, 월간 보너스/추천 메뉴 이해 여부, 누른 다음 행동, 2년차 운영 시작 카드, 연간 지시 추천 연구 카드, 연구 완료 리본, 해금 시장/제품 후보 이해 여부를 기록하도록 추가했다.
+
+**검증:**
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 77 tests
+- `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 2 tests
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts src/game/blind-playtest-records.test.ts` 통과, 3 files / 79 tests
+- `npm test -- src/ui/layout-contract.test.ts src/game/blind-playtest-records.test.ts` 통과, 2 files / 39 tests
+- `npm run harness:gate` 통과, 41 files / 324 tests, 데이터 검증 통과, production build 통과
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts src/game/blind-playtest-records.test.ts` 재통과, 3 files / 79 tests
+- `npm run harness:gate` 재통과, 41 files / 324 tests, 데이터 검증 통과, production build 통과
+- `npm test -- src/game/blind-playtest-records.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 81 tests
+- `npm run harness:gate` 통과, 41 files / 326 tests, 데이터 검증 통과, production build 통과
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 81 tests
+- `npm test -- src/game/blind-playtest-records.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 83 tests
+- `npm run harness:gate` 통과, 41 files / 328 tests, 데이터 검증 통과, production build 통과
+- `npm test -- src/game/qa-scenarios.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 113 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm test -- src/game/blind-playtest-records.test.ts src/game/qa-scenarios.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 115 tests
+- `npm run harness:gate` 통과, 41 files / 331 tests, 데이터 검증 통과, production build 통과
+- `npm test -- src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 85 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm run harness:gate` 통과, 41 files / 333 tests, 데이터 검증 통과, production build 통과
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=annual-directed` 렌더링 확인, `/tmp/ai-company-v056-annual-directive-confirmation-v2.png`
+- Headless Chrome mobile capture로 `http://127.0.0.1:5201/?scenario=annual-directed` 렌더링 확인, `/tmp/ai-company-v056-annual-directive-confirmation-mobile.png`
+- Headless Chrome desktop capture로 행동 버튼 확인, `/tmp/ai-company-v056-annual-directive-actions.png`
+- Headless Chrome mobile capture로 모바일 기본/tall 뷰 확인, `/tmp/ai-company-v056-annual-directive-actions-mobile.png`, `/tmp/ai-company-v056-annual-directive-actions-mobile-tall.png`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=year-two-plan` 렌더링 확인, `/tmp/ai-company-v056-year-two-kickoff.png`
+- Headless Chrome mobile capture로 `http://127.0.0.1:5201/?scenario=year-two-plan` 렌더링 확인, `/tmp/ai-company-v056-year-two-kickoff-mobile.png`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=year-two-research` 렌더링 확인, `/tmp/ai-company-v056-year-two-research-launchpad.png`
+- Headless Chrome mobile capture로 `http://127.0.0.1:5201/?scenario=year-two-research` 렌더링 확인, `/tmp/ai-company-v056-year-two-research-launchpad-mobile.png`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=year-two-research-complete` 렌더링 확인, `/tmp/ai-company-v056-year-two-research-complete.png`
+- Headless Chrome mobile capture로 `http://127.0.0.1:5201/?scenario=year-two-research-complete` 렌더링 확인, `/tmp/ai-company-v056-year-two-research-complete-mobile.png`
+- Headless Chrome desktop capture로 `http://127.0.0.1:5201/?scenario=year-two-product-candidate` 렌더링 확인, `/tmp/ai-company-v056-year-two-product-candidate.png`
+- Headless Chrome mobile capture로 `http://127.0.0.1:5201/?scenario=year-two-product-candidate` 렌더링 확인, `/tmp/ai-company-v056-year-two-product-candidate-mobile.png`
+
+### 자동 블라인드 리허설과 아트 외주 브리프
+
+**변경:**
+- `src/game/blind-playtest-rehearsal.ts`를 추가해 첫 10초, 3분, 10분, 15분, 20분, 30분 체크포인트를 안정 QA 루트와 연결했다.
+- `npm run qa:blind-rehearsal`을 추가해 `reports/playtests/v0_56_blind_playtest_rehearsal.md`를 생성한다.
+- 자동 리허설 보고서는 실제 사람 5명 블라인드 테스트가 아님을 명시하고, 실제 세션 파일은 `예정` 상태로 유지한다.
+- 리허설용 데스크톱/모바일 스크린샷 6장을 `reports/qa/screenshots/`에 추가했다.
+- `docs/ANTIGRAVITY_ART_BRIEF.md`를 추가해 최종 그래픽 에셋 투입 시점, 캐릭터/오브젝트/배경 원본 규격, QA 절차를 정리했다.
+- `docs/ART_INTAKE.md`에서 안티그래비티 브리프를 연결했다.
+
+**검증:**
+- `npm run qa:blind-rehearsal` 통과, 리허설 보고서 생성
+- `npm test -- src/game/blind-playtest-rehearsal.test.ts src/game/blind-playtest-records.test.ts` 통과, 2 files / 6 tests
+- Headless Chrome desktop/mobile capture로 `fresh`, `launch-impact`, `year-two-product-candidate` 리허설 스크린샷 생성
+- `file reports/qa/screenshots/v0_56_blind_rehearsal_*.png` 확인, desktop 1366×768 / mobile 390×844 PNG
+- `npm run harness:gate` 통과, 42 files / 337 tests, 데이터 검증 통과, production build 통과
+
+### 인력 조합 가독성 1차
+
+**변경:**
+- `getWorkforceMixSummary()`를 추가해 사람 직원, AI 에이전트, 로봇 인력 수와 역할/효과/시너지를 `GameState`에서 계산한다.
+- 가이드 패널에 `WorkforceMixPanel`을 추가해 `인력 조합`, `사람 직원`, `AI 에이전트`, `로봇 인력`을 최종 에셋 전에도 읽히게 했다.
+- 사무실 벽 HUD를 4열로 확장해 위치, `TEAM`, `AI OPS`, `ROBOT` 카운터를 고정 노출한다.
+- 블라인드 테스트 계획/체크리스트/세션 기록/자동 리허설에 사람/AI/로봇 역할 차이 관찰 항목을 추가했다.
+- `reports/qa/v0_56_workforce_mix_readability.md`를 추가하고 fresh/office-visuals 데스크톱·모바일 스크린샷 4장을 남겼다.
+
+**검증:**
+- `npm test -- src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 73 tests
+- `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 3 tests
+- `npm run qa:blind-rehearsal` 통과, 리허설 보고서 재생성
+- `npm test -- src/game/blind-playtest-rehearsal.test.ts src/game/blind-playtest-records.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 4 files / 79 tests
+- Headless Chrome desktop/mobile capture로 `fresh`, `office-visuals` 스크린샷 생성
+- `file reports/qa/screenshots/v0_56_workforce_mix_*.png` 확인, desktop 1366×768 / mobile 390×844 PNG
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `git diff --check` 통과
+- `npm run harness:gate` 통과, 42 files / 339 tests, 데이터 검증 통과, production build 통과
+
+### 블라인드 테스트 관찰 HUD와 아트 투입 게이트
+
+**변경:**
+- `src/game/blind-playtest-observer.ts`를 추가해 현재 게임 상태에서 v0.56 체크포인트 화면 증거를 요약한다.
+- URL에 `?playtest=v056&session=1`을 붙이면 `BlindPlaytestObserverPanel`이 뜨고 세션 기록 파일, 체크포인트, 아트 투입 원칙을 보여준다.
+- `npm run qa:blind-summary`와 `scripts/qa/summarize-v056-blind-sessions.mjs`를 추가했다.
+- `reports/playtests/v0_56_blind_playtest_summary.md`는 실제 세션 수, 열린 P0, 열린 P1, P0 미기록, 상태 미인정, 증거 미기록을 읽어 `아트 투입 판정`을 `대기` 또는 `가능`으로 정리한다.
+- 열린 P1은 후속 튜닝 후보로 집계하되, P0/필수 증거 게이트를 통과하면 최종 그래픽 에셋 투입을 막지 않는다.
+- 실제 세션 전 `Status: 예정` 기록지의 빈 P0/P1 템플릿 줄은 요약표에서 `-`로 표시해, 미기록 상태가 열린 이슈처럼 보이지 않게 했다.
+- 완료 처리된 세션의 `P0:`가 비어 있으면 `P0 미기록`으로 세고, 이 값이 0이 되기 전에는 아트 투입 판정을 열지 않게 했다.
+- 실제 세션 완료 상태는 정확히 `Status: 완료`만 인정하고, 다른 상태 문구는 `상태 미인정`으로 세어 아트 투입을 막는다.
+- 완료 세션의 테스터 프로필, `날짜/시간`, `환경`, 6개 체크포인트 관찰 칸, 종료 질문 5개 답변이 비어 있으면 `증거 미기록`으로 세어 아트 투입을 막는다.
+- 요약표에 `증거` 열을 추가해 세션별 `OK`, `-`, 또는 누락 항목을 바로 확인할 수 있게 했다.
+- 세션 템플릿의 종료 질문을 답변 필드로 바꾸고, 종료 질문 누락도 `증거` 열의 누락 항목으로 표시한다.
+- 세션 템플릿의 `대상`과 `방식`을 실제 세션 때 채우는 필드로 바꾸고, 테스터 프로필 누락도 `증거` 열의 누락 항목으로 표시한다.
+- 블라인드 요약 회귀 테스트가 임시 세션 파일과 스크립트 실행을 검증할 수 있도록 로컬 Node 타입 shim을 필요한 범위만 확장했다.
+- 관찰 HUD 스크린샷 3장을 `reports/qa/screenshots/`에 추가했다.
+- `reports/playtests/v0_56_blind_playtest_request_packet.md`를 추가해 외부 진행자나 AGY에게 넘길 요청 문구, 플레이어/진행자 URL, 세션 파일 목록, 운영 체크리스트, 완료 게이트를 한 장으로 정리했다.
+- `reports/playtests/v0_56_blind_playtest_agy_outbox.md`를 추가해 AGY에 붙여 넣을 최종 발송문을 `발송 준비 / 실제 발송 미확인` 상태로 분리했다.
+- `reports/playtests/v0_56_blind_playtest_dispatch_log.md`를 추가해 실제 발송 전에는 `발송 대기 / 실제 발송 미확인`으로 유지하고, 발송 완료와 회신 예정만 따로 기록하게 했다.
+- `npm run qa:blind-readiness`와 `scripts/qa/check-v056-blind-readiness.mjs`를 추가해 발송 전 요청 패킷, AGY 발송문, 세션 파일 미기입 상태, 요약 게이트 대기 상태를 한 번에 점검한다.
+- `reports/playtests/v0_56_blind_playtest_readiness.md`를 추가해 현재 발송 준비 상태와 5개 세션 파일의 `예정` 상태를 기록한다.
+- `npm run qa:blind-preflight`와 `scripts/qa/check-v056-blind-preflight.mjs`를 추가해 외부/AGY 세션 전 원격 URL(`PLAYTEST_BASE_URL`), 첫 프로젝트 전 튜토리얼 딜레이, 실제 세션 0/5, 최종 아트 대기 상태를 점검한다.
+- `reports/playtests/v0_56_blind_playtest_preflight.md`를 추가했다. 초기 상태는 `원격 URL 필요`이며, 원격 URL과 요청 패킷/outbox 동기화가 맞으면 `원격 테스트 준비`를 표시한다.
+- `npm run qa:blind-intake`와 `scripts/qa/import-v056-blind-session-bundle.mjs`를 추가해 AGY/외부 진행자가 돌려준 `v0_56_blind_playtest_session_XX.md` 파일을 `Status: 완료`와 `P0:` 기록이 있을 때만 가져오고, 누락 세션은 건드리지 않게 했다.
+- `reports/playtests/v0_56_blind_playtest_intake.md`를 추가해 수신 대기/수신 반영/거부 상태, 수신 폴더, 후속 `qa:blind-summary`/`qa:blind-issues` 명령을 기록한다.
+- 사용자가 수동 실행한 AGY 에이전트 리뷰를 `reports/playtests/v0_56_agy_agent_playtest_review.md`로 수신했다. 이 리뷰는 실제 사람 블라인드 테스트가 아니며 세션 5개는 계속 `Status: 예정`으로 유지한다.
+- AGY 에이전트 리뷰의 P1 후보를 반영해 `getWorkforceMixSummary()`에 `roleBadge`/`metricLabel`을 추가하고, `WorkforceMixPanel`이 인력 역할 배지와 핵심 수치를 표시하도록 개선했다.
+- 모바일 520px 이하에서 인력 조합 행을 역할 영역과 상태/수치/효과 영역으로 나눠 정보 밀도를 낮췄다.
+- `reports/qa/v0_56_agy_review_workforce_mobile_polish.md`를 추가해 AGY 리뷰 후속 반영과 실제 세션 미대체 경계를 기록했다.
+- `npm run qa:blind-issues`와 `scripts/qa/extract-v056-blind-issues.mjs`를 추가해 완료된 실제 세션의 P0/P1, 다음 수정 후보, 제일 헷갈렸던 순간을 `reports/playtests/v0_56_blind_playtest_issue_queue.md`로 추출한다.
+- 이슈 큐는 현재 실제 세션 0/5에서는 `실제 세션 대기`, P0 큐 0, P1 큐 0을 유지하고, 완료 세션에 열린 P0가 있으면 `P0 수정 필요`로 표시한다.
+- `npm run qa:art-gate`와 `scripts/qa/check-v056-art-intake-gate.mjs`를 추가해 `qa:blind-summary`와 `qa:blind-issues`를 연속 실행한 뒤 최종 그래픽 에셋 투입 가능 여부를 `reports/playtests/v0_56_final_art_intake_gate.md`로 합산한다.
+- 최종 아트 게이트는 현재 실제 세션 0/5에서는 `실제 세션 대기`, `최종 그래픽 에셋 투입: 대기`를 유지하고, 요약 게이트가 가능이어도 P0 큐가 남아 있으면 계속 `대기`로 막는다.
+- `npm run qa:asset-handoff`와 `scripts/qa/prepare-v056-final-art-handoff.mjs`를 추가해 최종 아트 게이트를 다시 확인한 뒤 AGY/외주 전달용 에셋 요청서와 납품 체크리스트를 `reports/playtests/v0_56_final_art_handoff_packet.md`로 생성한다.
+- 에셋 핸드오프 패킷은 현재 `아트 요청 대기`, `AGY 발송 금지`로 잠겨 있으며, `최종 그래픽 에셋 투입: 가능` 전에는 제작 착수 요청을 보내지 않도록 명시한다.
+- 블라인드 테스트 계획과 체크리스트에서 요청 패킷을 연결했다.
+- `reports/qa/v0_56_playtest_observer_and_summary_gate.md`를 추가했다.
+
+**검증:**
+- `npm test -- src/game/blind-playtest-observer.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 46 tests
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `curl -I 'http://127.0.0.1:5201/?scenario=fresh&playtest=v056&session=1'` 통과, 200 OK
+- Headless Chrome desktop/mobile capture로 관찰 HUD 스크린샷 생성
+- `file reports/qa/screenshots/v0_56_playtest_observer_*.png` 확인, desktop 1366×768 / mobile 390×844 PNG
+- `npm run qa:blind-summary` 통과, 실제 세션 0/5, 열린 P0 0, 열린 P1 0, P0 미기록 0, 상태 미인정 0, 증거 미기록 0, 아트 게이트 `대기` 확인
+- `npm run qa:blind-readiness` 통과, Ready to send: yes, Sessions untouched: yes, Real sessions 0/5, Art gate `대기` 확인
+- `PLAYTEST_BASE_URL` 없이 실행한 `npm run qa:blind-preflight` 통과, Status `원격 URL 필요`, tutorial delay OK, real sessions 0/5, final art request `대기`
+- `npm run qa:blind-issues` 통과, 실제 세션 0/5, P0 큐 0, P1 큐 0, 상태 미인정 0 확인
+- `npm run qa:art-gate` 통과, 실제 세션 0/5, summary art gate `대기`, P0 큐 0, final art intake `대기` 확인
+- `npm run qa:asset-handoff` 통과, final art intake `대기`, AGY send status `발송 금지` 확인
+- `npm run qa:blind-intake` 통과, 수신 폴더 미지정 상태에서 `v0_56_blind_playtest_intake.md`를 `수신 대기`로 생성
+- `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 23 tests after blind-session intake coverage
+- `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 26 tests after blind preflight coverage
+- `npm test -- src/game/tutorial-guide.test.ts src/game/blind-playtest-records.test.ts` 통과, 2 files / 32 tests after preflight/tutorial-delay coverage
+- `npm test -- src/game/blind-playtest-records.test.ts src/game/blind-playtest-observer.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 69 tests after blind-session intake coverage
+- `npm run harness:gate` 통과, 43 files / 363 tests, 데이터 검증 통과, production build 통과
+- `npm test -- src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 2 files / 74 tests after workforce/mobile P1 polish
+- `npm test -- src/game/blind-playtest-records.test.ts src/game/simulation.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 98 tests after AGY review receipt and workforce/mobile P1 polish
+- `npm run qa:office-visuals:screenshots` 통과, 외부 승인 headless Chrome 실행으로 desktop 1366×768 / mobile 390×844 캡처 생성
+- `npm test -- src/game/blind-playtest-records.test.ts` 통과, 1 file / 20 tests
+- `npm test -- src/game/blind-playtest-records.test.ts src/game/blind-playtest-observer.test.ts src/ui/layout-contract.test.ts` 통과, 3 files / 66 tests
+- `reports/playtests/v0_56_blind_playtest_summary.md` 요약표가 `증거` 열을 포함하고 예정 세션은 `-`로 표시하는 것을 확인
+- `reports/playtests/v0_56_blind_playtest_issue_queue.md` 수정 큐가 5개 예정 세션과 빈 P0/P1 큐를 표시하는 것을 확인
+- `reports/playtests/v0_56_final_art_intake_gate.md`가 summary/issue queue 입력 보고서를 연결하고 `최종 그래픽 에셋 투입: 대기`를 표시하는 것을 확인
+- `reports/playtests/v0_56_final_art_handoff_packet.md`가 AGY 요청 요약, 1152×9600 / 2560×1920 / 5120×2880 원본 체크리스트, import/QA 명령, 발송 전 잠금 문구를 포함하는 것을 확인
+- `git diff --check` 통과
+- `npm run build` 통과, TypeScript와 Vite production build 성공
+- `npm run harness:gate` 통과, 43 files / 364 tests, 데이터 검증 통과, production build 통과
+- `npm run harness:gate` 통과, 43 files / 366 tests, 데이터 검증 통과, production build 통과
+
+---
+
 ## [Planning] — 2026-05-21
 
 ### Roadmap scope-control pass

@@ -61,6 +61,7 @@ import {
 } from "../game/deckbuilding";
 import { getMetaUnlockCheck, getNextRunSetupPlan, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
 import {
+  advanceMonth,
   buyAutomationUpgrade,
   buyItem,
   buyUpgrade,
@@ -140,6 +141,7 @@ import type {
   HiredAgent,
   ItemDefinition,
   ItemIconDefinition,
+  ProductDefinition,
   StrategyCardDefinition,
 } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
@@ -203,6 +205,13 @@ export function renderMenuContent(
     const annualStrategyAdvice = getAnnualStrategyAdvice(gameState);
     const competitionSeason = getCompetitionSeasonBrief(gameState);
     const competitionChallenges = getCompetitionSeasonChallenges(gameState);
+    const shouldShowAnnualDirectiveConfirmation = Boolean(
+      recentAnnualReview && annualDirective && annualDirectiveChoices.length === 0 && gameState.month === recentAnnualReview.month,
+    );
+    const shouldShowYearTwoKickoff = Boolean(
+      recentAnnualReview && annualDirective && annualDirectiveChoices.length === 0 && gameState.month === recentAnnualReview.month + 1,
+    );
+    const yearTwoBonus = gameState.lastMonthReport?.strategyEffects ?? annualDirective?.monthlyEffects;
 
     return (
       <div className="panel-grid two-col">
@@ -212,6 +221,76 @@ export function renderMenuContent(
             <p>성장 단계, 해금 분야, 활성 제품을 한눈에 봅니다.</p>
           </div>
           <CampaignShockPanel gameState={gameState} setActiveMenu={setActiveMenu} />
+          {shouldShowAnnualDirectiveConfirmation && annualDirective && (
+            <div className="annual-directive-confirmation" aria-label="다음 해 지시 선택 완료">
+              <div>
+                <p className="eyebrow">다음 해 지시 선택 완료</p>
+                <strong>{annualDirective.title}</strong>
+                <span>월간 보너스가 다음 해 운영에 적용됩니다. 추천 메뉴로 이동해 첫해 심사 이후의 방향을 바로 실행하세요.</span>
+              </div>
+              <ol>
+                <li>
+                  <strong>월간 보너스</strong>
+                  <span>{formatEffects(annualDirective.monthlyEffects)}</span>
+                </li>
+                <li>
+                  <strong>추천 메뉴</strong>
+                  <span>{getMenuLabel(annualDirective.recommendedMenu)}</span>
+                </li>
+                <li>
+                  <strong>적용 기간</strong>
+                  <span>{annualDirective.expiresMonth}개월차까지</span>
+                </li>
+              </ol>
+              <div className="annual-directive-actions">
+                <button onClick={() => setActiveMenu?.(annualDirective.recommendedMenu as MenuId)} type="button">
+                  추천 메뉴 열기
+                </button>
+                <button
+                  disabled={gameState.status !== "playing"}
+                  onClick={() => setGameState((current) => advanceMonth(current))}
+                  type="button"
+                >
+                  2년차 시작
+                </button>
+              </div>
+            </div>
+          )}
+          {shouldShowYearTwoKickoff && annualDirective && (
+            <div className="year-two-kickoff" aria-label="2년차 운영 시작">
+              <div>
+                <p className="eyebrow">2년차 운영 시작</p>
+                <strong>{annualDirective.title}</strong>
+                <span>연간 지시 효과가 이번 달 운영에 반영됐습니다. 추천 메뉴에서 다음 실험을 바로 고르세요.</span>
+              </div>
+              <div className="year-two-kickoff-grid">
+                <article>
+                  <strong>이번 달 보너스</strong>
+                  <span>{yearTwoBonus ? formatEffects(yearTwoBonus) : formatEffects(annualDirective.monthlyEffects)}</span>
+                </article>
+                <article>
+                  <strong>연간 지시 효과</strong>
+                  <span>{annualDirective.description}</span>
+                </article>
+                <article>
+                  <strong>추천 메뉴</strong>
+                  <span>{getMenuLabel(annualDirective.recommendedMenu)}</span>
+                </article>
+              </div>
+              <div className="annual-directive-actions">
+                <button onClick={() => setActiveMenu?.(annualDirective.recommendedMenu as MenuId)} type="button">
+                  추천 메뉴 열기
+                </button>
+                <button
+                  disabled={gameState.status !== "playing"}
+                  onClick={() => setGameState((current) => advanceMonth(current))}
+                  type="button"
+                >
+                  한 달 더 운영
+                </button>
+              </div>
+            </div>
+          )}
           <div className="annual-review-panel">
             <div className="annual-review-header">
               <div>
@@ -521,7 +600,7 @@ export function renderMenuContent(
   }
 
   if (activeMenu === "products") {
-    return <ProductsPanel gameState={gameState} setGameState={setGameState} locale={locale} />;
+    return <ProductsPanel gameState={gameState} setGameState={setGameState} locale={locale} setActiveMenu={setActiveMenu} />;
   }
 
   if (activeMenu === "deck") {
@@ -533,7 +612,7 @@ export function renderMenuContent(
   }
 
   if (activeMenu === "research") {
-    return <ResearchPanel gameState={gameState} setGameState={setGameState} />;
+    return <ResearchPanel gameState={gameState} setGameState={setGameState} setActiveMenu={setActiveMenu} />;
   }
 
   if (activeMenu === "shop") {
@@ -569,6 +648,14 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
     .slice(0, 3);
   const selectionLimit = getDevelopmentPuzzleSelectionLimit(gameState, activeProject?.id);
   const resolveCheck = activeProject ? getDevelopmentPuzzleResolveCheck(activeProject.id, selectedPuzzleTileIds, gameState) : undefined;
+  const recommendedPuzzleTileIds = puzzle ? puzzle.tiles.slice(0, Math.min(4, selectionLimit)).map((tile) => tile.id) : [];
+  const recommendedPuzzleTiles = puzzle ? puzzle.tiles.filter((tile) => recommendedPuzzleTileIds.includes(tile.id)) : [];
+  const activeIssueResult = activeProject && gameState.lastDevelopmentPuzzle?.projectId === activeProject.id
+    ? gameState.lastDevelopmentPuzzle
+    : undefined;
+  const activeIssueResultTiles = activeIssueResult
+    ? activeIssueResult.tiles.filter((tile) => activeIssueResult.selectedTileIds.includes(tile.id))
+    : [];
   const topRivalCounter = getRivalCounterPlans(gameState, 1)[0];
   const archetypeSummary = getDeckArchetypeSummary(gameState);
   const deckSynergySummary = getDeckSynergySummary(gameState);
@@ -576,6 +663,18 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const nextRunSetupPlan = getNextRunSetupPlan(gameState);
   const shouldShowNextRunSetup =
     gameState.month >= 10 || gameState.status !== "playing" || gameState.roguelite.runHistory.length > 0;
+  const shouldShowDevelopmentIssueLaunchpad = Boolean(activeProject && activeProduct && puzzle && !gameState.lastDevelopmentPuzzle);
+  const shouldShowFirstRewardSpotlight = Boolean(pendingReward && gameState.roguelite.rewardHistory.length === 0);
+  const latestRewardChoice = gameState.roguelite.rewardHistory[0];
+  const latestRewardCard = latestRewardChoice ? getStrategyCardById(latestRewardChoice.chosenCardId) : undefined;
+  const developmentIssueTitle = activeProject && activeProject.startedMonth > 1 ? "신제품 개발 이슈" : "첫 개발 이슈";
+  const developmentIssueDescription =
+    activeProject && activeProject.startedMonth > 1
+      ? "새 제품 개발의 첫 이슈입니다. 추천 이슈를 해결하면 진행도와 완성도가 바로 오릅니다."
+      : "카드가 결과를 바꾸는 첫 순간입니다. 추천 이슈를 해결하면 진행도와 완성도가 바로 오릅니다.";
+  const shouldShowRewardConfirmation = Boolean(
+    !pendingReward && latestRewardChoice && latestRewardCard && gameState.roguelite.rewardHistory.length === 1,
+  );
 
   useEffect(() => {
     if (!puzzle) {
@@ -621,6 +720,104 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <span>편집 토큰 {gameState.roguelite.deckEditTokens}</span>
           <span>{pendingReward ? "보상 선택 대기" : "보상 없음"}</span>
         </div>
+        {shouldShowFirstRewardSpotlight && pendingReward && (
+          <div className="first-reward-spotlight" aria-label="첫 출시 보상 선택">
+            <div>
+              <p className="eyebrow">첫 출시 보상 도착</p>
+              <h3>{pendingReward.productName}</h3>
+              <span>3장 중 1장으로 이번 런의 색을 정합니다. 보상 선택 후 성장 분기까지 이어가세요.</span>
+            </div>
+            <ol>
+              <li>
+                <strong>보상 카드 선택</strong>
+                <span>{pendingReward.offeredCardIds.length}장 후보</span>
+              </li>
+              <li>
+                <strong>덱에 추가</strong>
+                <span>버림 더미로 들어감</span>
+              </li>
+              <li>
+                <strong>성장 분기</strong>
+                <span>보상 선택 후 성장 분기 확인</span>
+              </li>
+            </ol>
+          </div>
+        )}
+        {shouldShowRewardConfirmation && latestRewardChoice && latestRewardCard && (
+          <div className="reward-choice-confirmation" aria-label="보상 선택 완료">
+            <div>
+              <p className="eyebrow">보상 선택 완료</p>
+              <h3>{latestRewardCard.name}</h3>
+              <span>{latestRewardCard.name} 카드가 덱에 들어갔습니다. 다음은 성장 분기 선택입니다.</span>
+            </div>
+            <ol>
+              <li>
+                <strong>덱 반영</strong>
+                <span>버림 더미에 추가</span>
+              </li>
+              <li>
+                <strong>다음은 성장 분기</strong>
+                <span>결과 탭의 성장 카드 선택</span>
+              </li>
+              <li>
+                <strong>다음 달 진행</strong>
+                <span>새 방향을 운영에 반영</span>
+              </li>
+            </ol>
+          </div>
+        )}
+        {shouldShowDevelopmentIssueLaunchpad && activeProject && activeProduct && (
+          <div className="development-issue-launchpad" aria-label={developmentIssueTitle}>
+            <div>
+              <p className="eyebrow">{developmentIssueTitle}</p>
+              <h3>{activeProduct.name}</h3>
+              <span>{developmentIssueDescription}</span>
+            </div>
+            <div className="development-issue-meta">
+              <span>현재 진행 {Math.round(activeProject.progress)}%</span>
+              <span>완성도 {Math.round(activeProject.quality)}</span>
+              <span>선택 {recommendedPuzzleTileIds.length}/{selectionLimit}</span>
+            </div>
+            <div className="development-issue-recommendations">
+              <strong>추천 이슈</strong>
+              <span>{recommendedPuzzleTiles.map((tile) => tile.label).join(", ")}</span>
+            </div>
+            <button
+              disabled={!recommendedPuzzleTileIds.length || gameState.status !== "playing"}
+              onClick={() => setGameState((current) => resolveDevelopmentPuzzle(activeProject.id, recommendedPuzzleTileIds, current))}
+              type="button"
+            >
+              자동 선택 이슈 해결
+            </button>
+          </div>
+        )}
+        {activeIssueResult && activeProject && activeProduct && (
+          <div className="development-issue-result-ribbon" aria-label="이슈 해결 결과">
+            <div>
+              <p className="eyebrow">이슈 해결 결과</p>
+              <h3>
+                {activeIssueResult.verdict} · {activeIssueResult.score}점
+              </h3>
+              <span>
+                {activeProduct.name} 진행 +{activeIssueResult.progressGain}, 완성도 +{activeIssueResult.qualityGain}
+              </span>
+            </div>
+            <div className="impact-chip-grid">
+              <span className="impact-chip">현재 진행 {Math.round(activeProject.progress)}%</span>
+              <span className="impact-chip">완성도 {Math.round(activeProject.quality)}</span>
+              <span className="impact-chip">
+                카드 영향 {activeIssueResult.appliedModifierLabels.length ? activeIssueResult.appliedModifierLabels.join(", ") : "없음"}
+              </span>
+              <span className="impact-chip">
+                해결 이슈 {activeIssueResultTiles.map((tile) => tile.label).join(", ")}
+              </span>
+            </div>
+            <div className="development-issue-next">
+              <strong>다음 목표</strong>
+              <span>출시까지 진행해서 리뷰와 경쟁사 반응을 확인하세요.</span>
+            </div>
+          </div>
+        )}
         {shouldShowNextRunSetup && (
           <div className="next-run-command-panel">
             <div className="next-run-command-header">
@@ -991,10 +1188,12 @@ function ProductsPanel({
   gameState,
   setGameState,
   locale,
+  setActiveMenu,
 }: {
   gameState: GameState;
   setGameState: Dispatch<SetStateAction<GameState>>;
   locale: LocaleCode;
+  setActiveMenu?: Dispatch<SetStateAction<MenuId>>;
 }) {
   const [selectedAgentIdsByProduct, setSelectedAgentIdsByProduct] = useState<Record<string, string[]>>({});
   const [selectedDomainFilterId, setSelectedDomainFilterId] = useState(ALL_PRODUCT_DOMAIN_FILTER_ID);
@@ -1009,6 +1208,7 @@ function ProductsPanel({
   const boundarylessGoals = getBoundarylessExpansionGoals(gameState);
   const domainFilters = getProductDomainFilters(availableProducts, domains, gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "products");
+  const lastCapabilityUpgrade = gameState.lastCapabilityUpgrade;
   const ideaCoverage = getProductIdeaCoverage();
   const selectedConcept = createProductConcept(selectedIdeaSubjectId, selectedIdeaTypeId, selectedIdeaOptionId);
   const conceptCheck = getProductConceptProjectCheck(selectedConcept, gameState, defaultSelectedAgentIds);
@@ -1039,6 +1239,41 @@ function ProductsPanel({
       return { ...current, [productId]: nextSelectedIds };
     });
   };
+  const starterProduct =
+    availableProducts.find((product) => product.id === "ai_writing_assistant") ??
+    filteredProducts.find((product) => getProductProjectCheck(product, gameState, defaultSelectedAgentIds).ok);
+  const starterAgentIds = starterProduct ? getSelectedAgentIds(starterProduct.id) : [];
+  const starterAgents = gameState.hiredAgents.filter((agent) => starterAgentIds.includes(agent.id));
+  const starterCheck = starterProduct ? getProductProjectCheck(starterProduct, gameState, starterAgentIds) : undefined;
+  const starterForecast = starterProduct ? getProductProjectForecast(starterProduct, gameState, starterAgentIds) : undefined;
+  const shouldShowStarterLaunchpad =
+    Boolean(starterProduct) &&
+    gameState.hiredAgents.length > 0 &&
+    gameState.productProjects.length === 0 &&
+    gameState.activeProducts.length === 0;
+  const researchProductCandidates = lastCapabilityUpgrade
+    ? getResearchProductCandidates(lastCapabilityUpgrade, availableProducts, gameState)
+    : [];
+  const researchProduct = researchProductCandidates[0];
+  const researchProductStarted = lastCapabilityUpgrade
+    ? getResearchProductStartedCandidate(lastCapabilityUpgrade, availableProducts, gameState)
+    : undefined;
+  const researchProductStartedProject = researchProductStarted
+    ? gameState.productProjects.find((project) => project.productId === researchProductStarted.id)
+    : undefined;
+  const researchProductStartedAgents = researchProductStartedProject
+    ? gameState.hiredAgents.filter((agent) => researchProductStartedProject.assignedAgentIds.includes(agent.id))
+    : [];
+  const researchProductAgentIds = researchProduct ? getSelectedAgentIds(researchProduct.id) : [];
+  const researchProductCheck = researchProduct ? getProductProjectCheck(researchProduct, gameState, researchProductAgentIds) : undefined;
+  const researchProductForecast = researchProduct ? getProductProjectForecast(researchProduct, gameState, researchProductAgentIds) : undefined;
+  const researchProductDomain = researchProduct ? domains.find((domain) => domain.id === researchProduct.domain) : undefined;
+  const shouldShowResearchProductLaunchpad = Boolean(
+    lastCapabilityUpgrade && lastCapabilityUpgrade.month === gameState.month && researchProduct,
+  );
+  const shouldShowResearchProductStarted = Boolean(
+    lastCapabilityUpgrade && lastCapabilityUpgrade.month === gameState.month && researchProductStarted && researchProductStartedProject,
+  );
 
   return (
     <section className="panel products-panel">
@@ -1050,6 +1285,100 @@ function ProductsPanel({
         <div className="strategy-focus-strip">
           <strong>{strategyFocus.title}: {strategyFocus.label}</strong>
           <span>{strategyFocus.reason}</span>
+        </div>
+      )}
+      {shouldShowResearchProductStarted && lastCapabilityUpgrade && researchProductStarted && researchProductStartedProject && (
+        <div className="research-product-started-ribbon" aria-label="신제품 개발 시작">
+          <div>
+            <p className="eyebrow">신제품 개발 시작</p>
+            <h3>{researchProductStarted.name}</h3>
+            <span>{lastCapabilityUpgrade.capabilityName} Lv.{lastCapabilityUpgrade.nextLevel} 연구 성과가 실제 개발 프로젝트로 전환됐습니다.</span>
+          </div>
+          <div className="research-product-started-grid">
+            <article>
+              <strong>개발 진행</strong>
+              <span>{researchProductStartedProject.progress}% · {researchProductStartedProject.startedMonth}개월차 착수</span>
+            </article>
+            <article>
+              <strong>완성도</strong>
+              <span>{researchProductStartedProject.quality} / 신뢰 기준 {researchProductStarted.trust_requirement}</span>
+            </article>
+            <article>
+              <strong>투입 팀</strong>
+              <span>{researchProductStartedAgents.length ? researchProductStartedAgents.map((agent) => agent.name).join(", ") : "투입 팀 확인 필요"}</span>
+            </article>
+          </div>
+          <div className="research-product-started-actions">
+            <span>다음 개발 이슈: 덱에서 카드 이슈를 해결해 진행률과 완성도를 끌어올리세요.</span>
+            <button onClick={() => setActiveMenu?.("deck")} type="button">
+              덱 열기
+            </button>
+          </div>
+        </div>
+      )}
+      {shouldShowResearchProductLaunchpad && lastCapabilityUpgrade && researchProduct && researchProductCheck && researchProductForecast && (
+        <div className="research-product-launchpad" aria-label="연구가 연 제품 후보">
+          <div>
+            <p className="eyebrow">연구가 연 제품 후보</p>
+            <h3>{researchProduct.name}</h3>
+            <span>{lastCapabilityUpgrade.capabilityName} Lv.{lastCapabilityUpgrade.nextLevel} 연구가 {researchProductDomain?.name ?? researchProduct.domain} 시장 진입로를 열었습니다.</span>
+          </div>
+          <div className="research-product-grid">
+            <article>
+              <strong>해금 시장</strong>
+              <span>{lastCapabilityUpgrade.unlockedDomainName ?? researchProductDomain?.name ?? "기존 시장 강화"}</span>
+            </article>
+            <article>
+              <strong>다음 제품 후보</strong>
+              <span>{researchProduct.name}</span>
+            </article>
+            <article>
+              <strong>예상 결과</strong>
+              <span>{researchProductForecast.expectedReviewGrade} / {researchProductForecast.expectedReviewScore}점 · {researchProductForecast.estimatedMonths}개월</span>
+            </article>
+          </div>
+          <div className="research-product-actions">
+            <span>{researchProductCheck.ok ? "지금 개발을 시작할 수 있습니다." : `필요 조건: ${researchProductCheck.reasons.join(" / ")}`}</span>
+            {researchProductCheck.ok ? (
+              <button
+                disabled={gameState.status !== "playing"}
+                onClick={() => setGameState((current) => startProductProject(researchProduct, current, researchProductAgentIds))}
+                type="button"
+              >
+                신제품 개발 시작
+              </button>
+            ) : (
+              <button onClick={() => setActiveMenu?.("research")} type="button">
+                필요 연구 보기
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+      {shouldShowStarterLaunchpad && starterProduct && starterCheck && starterForecast && (
+        <div className="first-project-launchpad" aria-label="추천 첫 제품">
+          <div>
+            <p className="eyebrow">추천 첫 제품</p>
+            <h3>{starterProduct.name}</h3>
+            <span>{starterProduct.description}</span>
+          </div>
+          <div className="first-project-launchpad-meta">
+            <span>예상 {starterForecast.estimatedMonths}개월</span>
+            <span>리뷰 {starterForecast.expectedReviewGrade} / {starterForecast.expectedReviewScore}점</span>
+            <span>완성도 {starterForecast.expectedQuality}</span>
+          </div>
+          <div className="first-project-launchpad-team">
+            <strong>자동 팀</strong>
+            <span>{starterAgents.length ? starterAgents.map((agent) => agent.name).join(", ") : "투입 가능한 에이전트 없음"}</span>
+          </div>
+          <button
+            disabled={!starterCheck.ok || gameState.status !== "playing"}
+            onClick={() => setGameState((current) => startProductProject(starterProduct, current, starterAgentIds))}
+            type="button"
+          >
+            첫 제품 개발 시작
+          </button>
+          {!starterCheck.ok && <small>{starterCheck.reasons.join(" / ")}</small>}
         </div>
       )}
       <div className="idea-composer-panel">
@@ -1324,6 +1653,43 @@ function ProductsPanel({
         })}
       </div>
     </section>
+  );
+}
+
+function getResearchProductCandidatePool(
+  moment: NonNullable<GameState["lastCapabilityUpgrade"]>,
+  availableProducts: ProductDefinition[],
+): ProductDefinition[] {
+  const domainProducts = moment.unlockedDomainId
+    ? availableProducts.filter((product) => product.domain === moment.unlockedDomainId)
+    : [];
+  const capabilityProducts = availableProducts.filter((product) => {
+    const requiredLevel = product.required_capabilities[moment.capabilityId];
+    return typeof requiredLevel === "number" && requiredLevel <= moment.nextLevel;
+  });
+
+  return [...new Map([...domainProducts, ...capabilityProducts].map((product) => [product.id, product])).values()].slice(0, 3);
+}
+
+function getResearchProductCandidates(
+  moment: NonNullable<GameState["lastCapabilityUpgrade"]>,
+  availableProducts: ProductDefinition[],
+  gameState: GameState,
+) {
+  return getResearchProductCandidatePool(moment, availableProducts).filter(
+    (product) =>
+      !gameState.activeProducts.includes(product.id) &&
+      !gameState.productProjects.some((project) => project.productId === product.id),
+  );
+}
+
+function getResearchProductStartedCandidate(
+  moment: NonNullable<GameState["lastCapabilityUpgrade"]>,
+  availableProducts: ProductDefinition[],
+  gameState: GameState,
+) {
+  return getResearchProductCandidatePool(moment, availableProducts).find((product) =>
+    gameState.productProjects.some((project) => project.productId === product.id),
   );
 }
 
@@ -1827,8 +2193,22 @@ function AgentCard({
   );
 }
 
-function ResearchPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+function ResearchPanel({
+  gameState,
+  setGameState,
+  setActiveMenu,
+}: {
+  gameState: GameState;
+  setGameState: Dispatch<SetStateAction<GameState>>;
+  setActiveMenu?: Dispatch<SetStateAction<MenuId>>;
+}) {
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "research");
+  const focusedCapability = strategyFocus ? capabilities.find((capability) => capability.id === strategyFocus.targetId) : undefined;
+  const focusedCapabilityCheck = focusedCapability ? getCapabilityCheck(focusedCapability, gameState) : undefined;
+  const lastCapabilityUpgrade = gameState.lastCapabilityUpgrade;
+  const shouldShowResearchCompletion = Boolean(lastCapabilityUpgrade && lastCapabilityUpgrade.month === gameState.month);
+  const completionProducts = lastCapabilityUpgrade ? getResearchCompletionProducts(lastCapabilityUpgrade, gameState) : [];
+  const productCandidateRequirement = getProductCandidateRequirement(gameState);
   const orderedCapabilities = prioritizeAnnualStrategyFocus(capabilities.map((capability) => capability.id), strategyFocus)
     .map((capabilityId) => capabilities.find((capability) => capability.id === capabilityId))
     .filter((capability): capability is NonNullable<typeof capability> => Boolean(capability));
@@ -1839,10 +2219,83 @@ function ResearchPanel({ gameState, setGameState }: { gameState: GameState; setG
         <h2>AI 연구</h2>
         <p>재사용 가능한 능력이 새 시장을 엽니다.</p>
       </div>
+      {shouldShowResearchCompletion && lastCapabilityUpgrade && (
+        <div className="research-completion-ribbon" aria-label="연구 완료">
+          <div>
+            <p className="eyebrow">연구 완료</p>
+            <strong>{lastCapabilityUpgrade.capabilityName} Lv.{lastCapabilityUpgrade.nextLevel}</strong>
+            <span>연간 지시 추천 연구가 실제 능력 상승과 제품 후보로 이어졌습니다.</span>
+          </div>
+          <div className="research-completion-grid">
+            <article>
+              <strong>레벨 상승</strong>
+              <span>Lv.{lastCapabilityUpgrade.previousLevel} -&gt; Lv.{lastCapabilityUpgrade.nextLevel}</span>
+            </article>
+            <article>
+              <strong>사용 자원</strong>
+              <span>{formatCost(lastCapabilityUpgrade.resourceCost)}</span>
+            </article>
+            <article>
+              <strong>해금 시장</strong>
+              <span>{lastCapabilityUpgrade.unlockedDomainName ?? "기존 시장 강화"}</span>
+            </article>
+          </div>
+          <div className="research-completion-products">
+            <strong>제품 후보</strong>
+            <span>{completionProducts.length ? completionProducts.map((product) => product.name).join(" / ") : "추천 제품 후보를 다시 계산 중"}</span>
+            <button onClick={() => setActiveMenu?.("products")} type="button">
+              제품 후보 보기
+            </button>
+          </div>
+        </div>
+      )}
+      {productCandidateRequirement && (
+        <div className="product-candidate-requirement-launchpad" aria-label="제품 후보 필요 연구">
+          <div>
+            <p className="eyebrow">제품 후보 필요 연구</p>
+            <strong>{productCandidateRequirement.requiredCapability.name}</strong>
+            <span>
+              {productCandidateRequirement.candidateProduct.name} 개발에는 {productCandidateRequirement.requiredCapability.name}{" "}
+              필요 Lv.{productCandidateRequirement.requiredLevel}이 필요합니다.
+            </span>
+          </div>
+          <div className="product-candidate-requirement-meta">
+            <span>현재 Lv.{productCandidateRequirement.currentLevel}</span>
+            <span>필요 Lv.{productCandidateRequirement.requiredLevel}</span>
+            <span>{productCandidateRequirement.candidateProduct.name}</span>
+          </div>
+          <button
+            disabled={!productCandidateRequirement.check.ok || gameState.status !== "playing"}
+            onClick={() => setGameState((current) => upgradeCapability(productCandidateRequirement.requiredCapability, current))}
+            title={productCandidateRequirement.check.ok ? "필요 연구를 바로 진행" : productCandidateRequirement.check.reasons.join(" / ")}
+            type="button"
+          >
+            바로 연구
+          </button>
+          {!productCandidateRequirement.check.ok && <small>{productCandidateRequirement.check.reasons.join(" / ")}</small>}
+        </div>
+      )}
       {strategyFocus && (
         <div className="strategy-focus-strip">
           <strong>{strategyFocus.title}: {strategyFocus.label}</strong>
           <span>{strategyFocus.reason}</span>
+        </div>
+      )}
+      {strategyFocus && focusedCapability && (
+        <div className="annual-research-launchpad" aria-label="연간 지시 추천 연구">
+          <div>
+            <p className="eyebrow">연간 지시 추천 연구</p>
+            <strong>{focusedCapability.name}</strong>
+            <span>{strategyFocus.reason}</span>
+          </div>
+          <button
+            disabled={!focusedCapabilityCheck?.ok || gameState.status !== "playing"}
+            onClick={() => setGameState((current) => upgradeCapability(focusedCapability, current))}
+            type="button"
+          >
+            바로 연구
+          </button>
+          {focusedCapabilityCheck && !focusedCapabilityCheck.ok && <small>{focusedCapabilityCheck.reasons[0]}</small>}
         </div>
       )}
       <div className="item-list compact">
@@ -1869,6 +2322,48 @@ function ResearchPanel({ gameState, setGameState }: { gameState: GameState; setG
       </div>
     </section>
   );
+}
+
+function getResearchCompletionProducts(
+  moment: NonNullable<GameState["lastCapabilityUpgrade"]>,
+  gameState: GameState,
+) {
+  const inactiveProducts = products.filter((product) => !gameState.activeProducts.includes(product.id));
+  const domainProducts = moment.unlockedDomainId
+    ? inactiveProducts.filter((product) => product.domain === moment.unlockedDomainId)
+    : [];
+  const capabilityProducts = inactiveProducts.filter(
+    (product) => {
+      const requiredLevel = product.required_capabilities[moment.capabilityId];
+      return typeof requiredLevel === "number" && requiredLevel <= moment.nextLevel;
+    },
+  );
+
+  return [...new Map([...domainProducts, ...capabilityProducts].map((product) => [product.id, product])).values()].slice(0, 3);
+}
+
+function getProductCandidateRequirement(gameState: GameState) {
+  const moment = gameState.lastCapabilityUpgrade;
+  if (!moment || moment.month !== gameState.month) return undefined;
+
+  const candidateProduct = getResearchCompletionProducts(moment, gameState)[0];
+  if (!candidateProduct) return undefined;
+
+  for (const [capabilityId, requiredLevel] of Object.entries(candidateProduct.required_capabilities)) {
+    const requiredCapability = capabilities.find((capability) => capability.id === capabilityId);
+    const currentLevel = gameState.capabilities[capabilityId] ?? 0;
+    if (requiredCapability && currentLevel < requiredLevel) {
+      return {
+        candidateProduct,
+        check: getCapabilityCheck(requiredCapability, gameState),
+        currentLevel,
+        requiredCapability,
+        requiredLevel,
+      };
+    }
+  }
+
+  return undefined;
 }
 
 function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {

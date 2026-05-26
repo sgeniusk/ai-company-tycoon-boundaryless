@@ -1,6 +1,6 @@
 {
   "version": "0.55-alpha",
-  "captured_at": "2026-05-20T16:00:36.443Z",
+  "captured_at": "2026-05-23T07:16:01.301Z",
   "url": "http://127.0.0.1:5201/?scenario=office-visuals",
   "chrome_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "screenshots": [
@@ -9,14 +9,14 @@
       "width": 1366,
       "height": 768,
       "path": "reports/qa/screenshots/v0_55_office_visuals_desktop.png",
-      "bytes": 290798
+      "bytes": 274645
     },
     {
       "id": "mobile",
       "width": 390,
       "height": 844,
       "path": "reports/qa/screenshots/v0_55_office_visuals_mobile.png",
-      "bytes": 77803
+      "bytes": 82762
     }
   ]
 }

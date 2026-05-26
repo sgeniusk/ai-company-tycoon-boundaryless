@@ -5,8 +5,10 @@ import { menus } from "./menu";
 const appCss = readFileSync(new URL("../App.css", import.meta.url), "utf8");
 const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
 const gameChrome = readFileSync(new URL("../components/GameChrome.tsx", import.meta.url), "utf8");
+const guidanceSource = readFileSync(new URL("../game/guidance.ts", import.meta.url), "utf8");
 const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.meta.url), "utf8");
 const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPanel.tsx", import.meta.url), "utf8");
+const playtestObserver = readFileSync(new URL("../game/blind-playtest-observer.ts", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
@@ -41,6 +43,182 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.resource-tile\.critical\s*{/s);
   });
 
+  it("makes the first 10 seconds read as a garage AI company game", () => {
+    expect(gameChrome).toContain("OpeningFantasySignal");
+    expect(gameChrome).toContain("opening-fantasy-signal");
+    expect(gameChrome).toContain("사람과 AI 에이전트");
+    expect(gameChrome).toContain("첫 제품 출시");
+    expect(gameChrome).toContain("경쟁사 압박");
+    expect(gameChrome).toContain("10년 성장");
+    expect(appCss).toMatch(/\.opening-fantasy-signal\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.opening-fantasy-signal ul\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.opening-fantasy-signal li\s*{[^}]*white-space:\s*nowrap/s);
+  });
+
+  it("shows a 30 minute alpha-run roadmap before final art intake", () => {
+    expect(gameChrome).toContain("getAlphaRunRoadmap");
+    expect(gameChrome).toContain("getAlphaRunRoadmapProgress");
+    expect(gameChrome).toContain("getAlphaRunCompletionSummary");
+    expect(gameChrome).toContain("getAlphaRunActionFeedback");
+    expect(gameChrome).toContain("getActiveAlphaRunRoadmapStep");
+    expect(gameChrome).toContain("getYearTwoProductIssueRecommendation");
+    expect(gameChrome).toContain("activeAlphaRunStep");
+    expect(gameChrome).toContain("alphaRunFeedback");
+    expect(gameChrome).toContain("setAlphaRunFeedback(getAlphaRunActionFeedback(step))");
+    expect(gameChrome).toContain("handleAlphaRunRoadmapStep");
+    expect(gameChrome).toContain("handleAlphaRunCompletionAction");
+    expect(gameChrome).toContain("runAlphaRunRoadmapAction");
+    expect(gameChrome).toContain("if (runAlphaRunRoadmapAction(step)) return");
+    expect(gameChrome).toContain("handleFastFirstHire()");
+    expect(gameChrome).toContain("handleFastFirstProject()");
+    expect(gameChrome).toContain("handleFastFirstIssue()");
+    expect(gameChrome).toContain("handleFastFirstReward()");
+    expect(gameChrome).toContain("handleFastFirstGrowth()");
+    expect(gameChrome).toContain("setActiveMenu(step.menu)");
+    expect(gameChrome).toContain("setActiveStageTab(\"results\")");
+    expect(gameChrome).toContain("AlphaRunFocusStrip");
+    expect(gameChrome).toContain("alpha-run-focus-strip");
+    expect(gameChrome).toContain("alpha-run-feedback");
+    expect(gameChrome).toContain("alpha-run-focus-action");
+    expect(gameChrome).toContain("AlphaRunRoadmap");
+    expect(gameChrome).toContain("AlphaRunCompletionPanel");
+    expect(gameChrome).toContain("AlphaRunDebriefPanel");
+    expect(gameChrome).toContain("getAlphaRunDebriefSummary");
+    expect(gameChrome).toContain("const alphaRunDebrief = getAlphaRunDebriefSummary(gameState)");
+    expect(gameChrome).toContain("{alphaRunDebrief && <AlphaRunDebriefPanel summary={alphaRunDebrief} />}");
+    expect(gameChrome).toContain("alpha-run-debrief-panel");
+    expect(gameChrome).toContain("alpha-run-debrief-timeline");
+    expect(gameChrome).toContain("알파런 핵심 장면");
+    expect(gameChrome).toContain("알파런 디브리프");
+    expect(gameChrome).toContain("completion.nextActionId === \"resolve_issue\"");
+    expect(gameChrome).toContain("completion.nextActionId === \"launch_product\"");
+    expect(gameChrome).toContain("completion.nextActionId === \"choose_reward\"");
+    expect(gameChrome).toContain("alpha-run-roadmap");
+    expect(gameChrome).toContain("alpha-run-completion-panel");
+    expect(gameChrome).toContain("roadmap-step-button");
+    expect(gameChrome).toContain("step.actionLabel");
+    expect(gameChrome).toContain("30분 알파런");
+    expect(gameChrome).toContain("다음 보상");
+    expect(guidanceSource).toContain("2년차 신제품 착수");
+    expect(guidanceSource).toContain("30분 알파런 완주");
+    expect(appCss).toMatch(/\.alpha-run-roadmap\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.alpha-run-completion-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.alpha-run-completion-panel button\s*{[^}]*background:\s*var\(--green\)/s);
+    expect(appCss).toMatch(/\.alpha-run-debrief-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.alpha-run-debrief-grid\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.alpha-run-debrief-timeline\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.alpha-run-debrief-timeline li\s*{[^}]*grid-template-columns:\s*42px minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.alpha-run-debrief-checklist\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.alpha-run-focus-strip\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.alpha-run-focus-strip\s*{[^}]*grid-template-columns:\s*auto minmax\(0,\s*1fr\) auto/s);
+    expect(appCss).toMatch(/\.alpha-run-feedback\s*{[^}]*grid-column:\s*1\s*\/\s*-1/s);
+    expect(appCss).toMatch(/\.alpha-run-focus-action\s*{[^}]*background:\s*var\(--blue\)/s);
+    expect(appCss).toMatch(/\.alpha-run-roadmap ol\s*{[^}]*grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.alpha-run-roadmap button\s*{[^}]*background:\s*transparent/s);
+    expect(appCss).toMatch(/\.alpha-run-action\s*{[^}]*background:\s*var\(--blue\)/s);
+    expect(appCss).toMatch(/\.alpha-run-roadmap li\.active\s*{[^}]*border-color:\s*var\(--yellow-dark\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.alpha-run-focus-strip\s*{[^}]*left:\s*130px/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.alpha-run-roadmap ol\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.alpha-run-debrief-grid\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.alpha-run-roadmap ol\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("lets a new player fast-hire the recommended first teammate from the guide", () => {
+    expect(gameChrome).toContain("getFirstHireRecommendation");
+    expect(gameChrome).toContain("hireAgentViaChannel");
+    expect(gameChrome).toContain("FirstHireFastStart");
+    expect(gameChrome).toContain("first-hire-fast-start");
+    expect(gameChrome).toContain("추천 첫 팀원");
+    expect(gameChrome).toContain("첫 팀원 바로 고용");
+    expect(gameChrome).toContain("setActiveMenu(\"products\")");
+    expect(appCss).toMatch(/\.first-hire-fast-start\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.first-hire-fast-start\s+button\s*{[^}]*background:\s*var\(--green\)/s);
+  });
+
+  it("lets a staffed new player start the recommended first product from the guide", () => {
+    expect(gameChrome).toContain("getFirstProjectRecommendation");
+    expect(gameChrome).toContain("startProductProject");
+    expect(gameChrome).toContain("FirstProjectFastStart");
+    expect(gameChrome).toContain("first-project-fast-start");
+    expect(gameChrome).toContain("추천 첫 제품");
+    expect(gameChrome).toContain("첫 제품 바로 개발");
+    expect(gameChrome).toContain("setActiveMenu(\"deck\")");
+    expect(appCss).toMatch(/\.first-project-fast-start\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.first-project-fast-start\s+button\s*{[^}]*background:\s*var\(--green\)/s);
+  });
+
+  it("lets an active first project resolve the first card issue from the guide", () => {
+    expect(gameChrome).toContain("getFirstDevelopmentIssueRecommendation");
+    expect(gameChrome).toContain("playStrategyCard");
+    expect(gameChrome).toContain("resolveDevelopmentPuzzle");
+    expect(gameChrome).toContain("FirstIssueFastStart");
+    expect(gameChrome).toContain("first-issue-fast-start");
+    expect(gameChrome).toContain("추천 첫 개발 이슈");
+    expect(gameChrome).toContain("첫 이슈 바로 해결");
+    expect(gameChrome).toContain("firstIssueRecommendation");
+    expect(appCss).toMatch(/\.first-issue-fast-start\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.first-issue-fast-start\s+button\s*{[^}]*background:\s*var\(--green\)/s);
+  });
+
+  it("makes the launch guidance button advance to the first release milestone", () => {
+    expect(gameChrome).toContain("advanceToFirstLaunch");
+    expect(gameChrome).toContain("advanceToFirstAnnualReview");
+    expect(gameChrome).toContain("guidance.id === \"advance_project\"");
+    expect(gameChrome).toContain("setGameState((current) => advanceToFirstLaunch(current))");
+    expect(gameChrome).toContain("guidance.id === \"advance_annual_review\"");
+    expect(gameChrome).toContain("setGameState((current) => advanceToFirstAnnualReview(current))");
+    expect(gameChrome).toContain("setActiveMenu(\"company\")");
+  });
+
+  it("lets the guide pick the first launch reward and growth branch without menu hunting", () => {
+    expect(gameChrome).toContain("getFirstRewardRecommendation");
+    expect(gameChrome).toContain("getFirstGrowthRecommendation");
+    expect(gameChrome).toContain("chooseCardReward");
+    expect(gameChrome).toContain("FirstRewardFastStart");
+    expect(gameChrome).toContain("FirstGrowthFastStart");
+    expect(gameChrome).toContain("first-reward-fast-start");
+    expect(gameChrome).toContain("first-growth-fast-start");
+    expect(gameChrome).toContain("첫 보상 바로 선택");
+    expect(gameChrome).toContain("성장 분기 바로 선택");
+    expect(appCss).toMatch(/\.first-reward-fast-start\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.first-growth-fast-start\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.first-reward-fast-start\s+button\s*{[^}]*background:\s*var\(--green\)/s);
+    expect(appCss).toMatch(/\.first-growth-fast-start\s+button\s*{[^}]*background:\s*var\(--green\)/s);
+  });
+
+  it("shows the human, AI, and robot workforce mix before final art is imported", () => {
+    expect(gameChrome).toContain("WorkforceMixPanel");
+    expect(gameChrome).toContain("workforce-mix-panel");
+    expect(gameChrome).toContain("인력 조합");
+    expect(gameChrome).toContain("사람 직원");
+    expect(gameChrome).toContain("AI 에이전트");
+    expect(gameChrome).toContain("로봇 인력");
+    expect(gameChrome).toContain("workforce-mix-row-heading");
+    expect(gameChrome).toContain("workforce-mix-badge");
+    expect(gameChrome).toContain("workforce-mix-metric");
+    expect(gameChrome).toContain("getWorkforceMixSummary");
+    expect(gameChrome).toContain("ROBOT");
+    expect(appCss).toMatch(/\.office-wall\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.workforce-mix-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.workforce-mix-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.workforce-mix-badge\s*{[^}]*border-radius:\s*4px/s);
+    expect(appCss).toMatch(/\.workforce-mix-metric\s*{[^}]*white-space:\s*nowrap/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.workforce-mix-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.workforce-mix-row\s*{[^}]*grid-template-columns:\s*minmax\(72px,\s*0\.78fr\)\s+minmax\(0,\s*1fr\)/s);
+  });
+
+  it("adds an in-game v0.56 blind playtest observer before final asset intake", () => {
+    expect(appSource).toContain("BlindPlaytestObserverPanel");
+    expect(appSource).toContain("createBlindPlaytestObserverSummary");
+    expect(appSource).toContain("?playtest=v056");
+    expect(playtestObserver).toContain("reports/playtests/v0_56_blind_playtest_session_");
+    expect(appSource).toContain("블라인드 테스트 관찰");
+    expect(appCss).toMatch(/\.app-shell\s*{[^}]*position:\s*relative/s);
+    expect(appCss).toMatch(/\.playtest-observer-panel\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.playtest-checkpoint-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.playtest-checkpoint-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("adds the v0.34.1 game navigation layer from the design review backlog", () => {
     expect(gameChrome).toContain("primaryMenuIds");
     expect(gameChrome).toContain("secondaryMenuIds");
@@ -61,6 +239,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.office-action-slot-grid\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.office-action-slot\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.rival-incident-banner\s*{[^}]*position:\s*absolute/s);
+  });
+
+  it("surfaces v0.56 rival and staff incidents as readable screen moments", () => {
+    expect(gameChrome).toContain("incident-screen-moment");
+    expect(gameChrome).toContain("staff-event-panel");
+    expect(gameChrome).toContain("getStaffIncidentBriefs");
+    expect(gameChrome).toContain("getStaffIncidentResolutionOptions");
+    expect(gameChrome).toContain("resolveStaffIncident");
+    expect(appCss).toMatch(/\.incident-screen-moment\s*{[^}]*border-width:\s*3px/s);
+    expect(appCss).toMatch(/\.staff-event-panel\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.event-moment-meta\s*{[^}]*display:\s*block/s);
   });
 
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
@@ -129,7 +318,100 @@ describe("v0.13.3 compact game shell layout", () => {
   it("gives launch impact feedback a distinct reward panel inside the results tab", () => {
     expect(appCss).toMatch(/\.launch-impact-panel\s*{[^}]*background:/s);
     expect(appCss).toMatch(/\.launch-impact-badges\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(gameChrome).toContain("launch-reaction-grid");
+    expect(appCss).toMatch(/\.launch-reaction-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.launch-reaction-card\s*{[^}]*min-width:\s*0/s);
+    expect(gameChrome).toContain("launch-review-stack");
+    expect(appCss).toMatch(/\.launch-review-stack\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.card-impact-list\s*{[^}]*gap:/s);
+    expect(gameChrome).toContain("launch-next-action-ribbon");
+    expect(gameChrome).toContain("보상 카드 선택");
+    expect(gameChrome).toContain("성장 분기 선택");
+    expect(gameChrome).toContain("다음 달 진행");
+    expect(gameChrome).toContain("<LaunchImpactPanel summary={releaseImpact} onOpenNextAction={handleLaunchNextAction} />");
+    expect(gameChrome).toContain('type="button"');
+    expect(gameChrome).toContain("if (menu === \"results\")");
+    expect(gameChrome).toContain("onOpenNextAction(step.menu)");
+    expect(appCss).toMatch(/\.launch-next-action-ribbon\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.launch-next-action-ribbon\s+button\s*{[^}]*background:\s*#fffdf7/s);
+  });
+
+  it("makes the first post-launch card reward feel like an explicit choice moment", () => {
+    expect(menuPanels).toContain("first-reward-spotlight");
+    expect(menuPanels).toContain("첫 출시 보상 도착");
+    expect(menuPanels).toContain("3장 중 1장");
+    expect(menuPanels).toContain("보상 선택 후 성장 분기");
+    expect(appCss).toMatch(/\.first-reward-spotlight\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.first-reward-spotlight\s+ol\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.first-reward-spotlight ol[\s\S]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("confirms the chosen first reward and points back to growth selection", () => {
+    expect(menuPanels).toContain("reward-choice-confirmation");
+    expect(menuPanels).toContain("보상 선택 완료");
+    expect(menuPanels).toContain("덱에 들어갔습니다");
+    expect(menuPanels).toContain("다음은 성장 분기");
+    expect(appCss).toMatch(/\.reward-choice-confirmation\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.reward-choice-confirmation\s+ol\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.reward-choice-confirmation ol[\s\S]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("confirms the selected growth branch as the next monthly plan", () => {
+    expect(gameChrome).toContain("growth-choice-confirmation");
+    expect(gameChrome).toContain("성장 분기 선택 완료");
+    expect(gameChrome).toContain("다음 달부터 월간 보너스");
+    expect(gameChrome).toContain("연간 심사까지");
+    expect(appCss).toMatch(/\.growth-choice-confirmation\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.growth-choice-confirmation\s+ol\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.growth-choice-confirmation ol[\s\S]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("confirms annual directive selection as a year-two operating plan", () => {
+    expect(menuPanels).toContain("annual-directive-confirmation");
+    expect(menuPanels).toContain("다음 해 지시 선택 완료");
+    expect(menuPanels).toContain("월간 보너스");
+    expect(menuPanels).toContain("추천 메뉴");
+    expect(menuPanels).toContain("annual-directive-actions");
+    expect(menuPanels).toContain("추천 메뉴 열기");
+    expect(menuPanels).toContain("2년차 시작");
+    expect(menuPanels).toContain("advanceMonth(current)");
+    expect(appCss).toMatch(/\.annual-directive-confirmation\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.annual-directive-actions\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.annual-directive-confirmation\s+ol\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.annual-directive-actions button\s*{[^}]*min-height:/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.annual-directive-confirmation ol[\s\S]*grid-template-columns:\s*1fr/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.annual-directive-actions[\s\S]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("shows a year-two kickoff panel after annual directive bonuses start", () => {
+    expect(menuPanels).toContain("year-two-kickoff");
+    expect(menuPanels).toContain("2년차 운영 시작");
+    expect(menuPanels).toContain("이번 달 보너스");
+    expect(menuPanels).toContain("연간 지시 효과");
+    expect(menuPanels).toContain("한 달 더 운영");
+    expect(appCss).toMatch(/\.year-two-kickoff\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.year-two-kickoff-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.year-two-kickoff-grid[\s\S]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("surfaces annual directive research as a direct launchpad", () => {
+    expect(menuPanels).toContain("annual-research-launchpad");
+    expect(menuPanels).toContain("연간 지시 추천 연구");
+    expect(menuPanels).toContain("바로 연구");
+    expect(menuPanels).toContain("strategyFocus?.targetId === capability.id");
+    expect(appCss).toMatch(/\.annual-research-launchpad\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.annual-research-launchpad button\s*{[^}]*min-height:/s);
+  });
+
+  it("confirms annual directive research after the focused upgrade is completed", () => {
+    expect(menuPanels).toContain("research-completion-ribbon");
+    expect(menuPanels).toContain("연구 완료");
+    expect(menuPanels).toContain("해금 시장");
+    expect(menuPanels).toContain("제품 후보");
+    expect(menuPanels).toContain("lastCapabilityUpgrade");
+    expect(appCss).toMatch(/\.research-completion-ribbon\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.research-completion-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.research-completion-grid[\s\S]*grid-template-columns:\s*1fr/s);
   });
 
   it("shows shareable timeline moments as a compact highlight grid", () => {
@@ -229,6 +511,78 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.idea-composer-panel\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.idea-result-card\s*{[^}]*background:/s);
     expect(appCss).toMatch(/\.renewal-option-grid\s*{[^}]*grid-template-columns:/s);
+  });
+
+  it("gives staffed fresh runs a product-menu starter project launchpad", () => {
+    expect(menuPanels).toContain("first-project-launchpad");
+    expect(menuPanels).toContain("추천 첫 제품");
+    expect(menuPanels).toContain("첫 제품 개발 시작");
+    expect(menuPanels).toContain("자동 팀");
+    expect(menuPanels).toContain("startProductProject(starterProduct");
+    expect(appCss).toMatch(/\.first-project-launchpad\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.first-project-launchpad\s+button\s*{[^}]*background:\s*var\(--green\)/s);
+  });
+
+  it("turns completed research into a product-candidate launchpad", () => {
+    expect(menuPanels).toContain("research-product-launchpad");
+    expect(menuPanels).toContain("연구가 연 제품 후보");
+    expect(menuPanels).toContain("해금 시장");
+    expect(menuPanels).toContain("다음 제품 후보");
+    expect(menuPanels).toContain("필요 연구 보기");
+    expect(menuPanels).toContain("lastCapabilityUpgrade");
+    expect(menuPanels).toContain("setActiveMenu?.(\"research\")");
+    expect(appCss).toMatch(/\.research-product-launchpad\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.research-product-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.research-product-grid[\s\S]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("confirms started year-two research products before moving into development issues", () => {
+    expect(menuPanels).toContain("research-product-started-ribbon");
+    expect(menuPanels).toContain("신제품 개발 시작");
+    expect(menuPanels).toContain("투입 팀");
+    expect(menuPanels).toContain("다음 개발 이슈");
+    expect(menuPanels).toContain("덱 열기");
+    expect(menuPanels).toContain("getResearchProductStartedCandidate");
+    expect(menuPanels).toContain("setActiveMenu?.(\"deck\")");
+    expect(appCss).toMatch(/\.research-product-started-ribbon\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.research-product-started-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.research-product-started-ribbon\s+button\s*{[^}]*background:\s*var\(--green\)/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.research-product-started-grid[\s\S]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("routes locked product candidates back to the exact needed research", () => {
+    expect(menuPanels).toContain("product-candidate-requirement-launchpad");
+    expect(menuPanels).toContain("제품 후보 필요 연구");
+    expect(menuPanels).toContain("필요 Lv.");
+    expect(menuPanels).toContain("바로 연구");
+    expect(menuPanels).toContain("upgradeCapability(productCandidateRequirement.requiredCapability");
+    expect(appCss).toMatch(/\.product-candidate-requirement-launchpad\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.product-candidate-requirement-launchpad\s+button\s*{[^}]*min-height:/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.product-candidate-requirement-launchpad[\s\S]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("gives active first projects a deck-menu development issue launchpad", () => {
+    expect(menuPanels).toContain("development-issue-launchpad");
+    expect(menuPanels).toContain("첫 개발 이슈");
+    expect(menuPanels).toContain("developmentIssueTitle");
+    expect(menuPanels).toContain("신제품 개발 이슈");
+    expect(menuPanels).toContain("activeProject.startedMonth > 1");
+    expect(menuPanels).toContain("추천 이슈");
+    expect(menuPanels).toContain("카드가 결과를 바꾸는 첫 순간");
+    expect(menuPanels).toContain("자동 선택 이슈 해결");
+    expect(menuPanels).toContain("resolveDevelopmentPuzzle(activeProject.id, recommendedPuzzleTileIds");
+    expect(appCss).toMatch(/\.development-issue-launchpad\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.development-issue-launchpad\s+button\s*{[^}]*background:\s*var\(--green\)/s);
+  });
+
+  it("shows a first development issue result ribbon after cards change the project", () => {
+    expect(menuPanels).toContain("development-issue-result-ribbon");
+    expect(menuPanels).toContain("이슈 해결 결과");
+    expect(menuPanels).toContain("카드 영향");
+    expect(menuPanels).toContain("다음 목표");
+    expect(menuPanels).toContain("출시까지 진행");
+    expect(appCss).toMatch(/\.development-issue-result-ribbon\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.development-issue-result-ribbon\s+\.impact-chip\s*{[^}]*background:\s*#fffdf5/s);
   });
 
   it("surfaces a compact office growth planner inside the shop console", () => {

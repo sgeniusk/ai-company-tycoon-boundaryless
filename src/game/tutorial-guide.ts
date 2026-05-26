@@ -11,8 +11,8 @@ const tutorialGuideRules: TutorialGuideRule[] = [
   {
     id: "welcome_garage",
     helperName,
-    title: "차고 창업을 시작했어요",
-    message: "처음에는 좋은 사람을 한 명 뽑고, 그 사람에게 AI 에이전트를 붙여 첫 제품을 만드는 흐름이 가장 안전합니다.",
+    title: "차고 AI 회사를 시작했어요",
+    message: "강원 산골 차고에서 사람과 AI 에이전트를 한 팀으로 묶어 첫 제품 출시까지 밀어보세요. 경쟁사가 움직이기 전에 첫 시장 반응을 잡는 게 목표입니다.",
     targetMenu: "agents",
     actionLabel: "인재 보기",
     visible: () => true,
@@ -21,9 +21,9 @@ const tutorialGuideRules: TutorialGuideRule[] = [
     id: "agent_hired",
     helperName,
     title: "첫 팀원이 합류했어요",
-    message: "이제 제품 메뉴에서 만들 제품을 고르고, 투입할 에이전트를 골라 개발 프로젝트를 시작할 수 있습니다.",
+    message: "이제 제품 메뉴 상단의 추천 첫 제품 카드에서 자동 팀을 확인하고 바로 개발을 시작할 수 있습니다.",
     targetMenu: "products",
-    actionLabel: "제품 개발",
+    actionLabel: "첫 제품 개발",
     visible: (state) => state.hiredAgents.length > 0,
   },
   {
@@ -33,7 +33,7 @@ const tutorialGuideRules: TutorialGuideRule[] = [
     message: "소재, 제품 타입, 파격 옵션을 조합하면 앱부터 전기차, 커피 프랜차이즈까지 실제 개발 후보로 만들 수 있습니다.",
     targetMenu: "products",
     actionLabel: "조합 보기",
-    visible: (state, activeMenu) => activeMenu === "products" && state.hiredAgents.length > 0,
+    visible: (state, activeMenu) => activeMenu === "products" && state.hiredAgents.length > 0 && state.activeProducts.length > 0,
   },
   {
     id: "development_project",
@@ -78,7 +78,9 @@ const tutorialGuideRules: TutorialGuideRule[] = [
     message: "경쟁 메뉴에서 누가 어떤 시장을 선점했는지 확인하고, 카드와 제품으로 대응 방향을 잡아보세요.",
     targetMenu: "competition",
     actionLabel: "경쟁 확인",
-    visible: (state) => state.competitorStates.some((competitor) => competitor.claimedProducts.length > 0 || competitor.marketShare >= 18),
+    visible: (state) =>
+      state.activeProducts.length > 0 &&
+      state.competitorStates.some((competitor) => competitor.claimedProducts.length > 0 || competitor.marketShare >= 18),
   },
 ];
 

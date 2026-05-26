@@ -1,0 +1,31 @@
+You are Antigravity CLI helping on the local game project at /Users/taewookkim/Downloads/ai-company-tycoon.
+
+Before acting, read:
+- AGENTS.md
+- progress.md
+- feature_list.json
+- docs/ROADMAP.md
+- docs/QA_SCENARIOS.md
+- docs/ACCEPTANCE_CRITERIA.md
+- docs/SESSION_HANDOFF.md
+
+Task: run an external QA-agent pass for v0.56-alpha-playtest-slice-lock before final game assets.
+
+Strict boundaries:
+- Do not fabricate real human blind-test sessions.
+- Do not edit reports/playtests/v0_56_blind_playtest_session_01.md through reports/playtests/v0_56_blind_playtest_session_05.md.
+- Do not mark any real session as Status: 완료.
+- Do not unlock final graphic asset intake.
+- Keep final graphic asset request blocked until npm run qa:asset-handoff says art request possible.
+- Prefer read-only inspection plus local verification commands.
+- If you edit, keep changes limited to reports/playtests/v0_56_agy_agent_playtest_review.md unless a tiny documentation correction is essential.
+
+Write a Korean report at reports/playtests/v0_56_agy_agent_playtest_review.md with:
+- Status line saying this is AGY agent review, not a real human blind test.
+- Commands run and outputs summarized.
+- Route/checkpoint coverage for fresh, staffing, deck, deck-result, launch-impact, reward/reward-picked, growth-picked, annual-directed, year-two-plan, year-two-research, year-two-research-complete, year-two-product-candidate, year-two-product-ready, year-two-product-started, year-two-product-issue-result, year-two-product-launch-impact, office-visuals.
+- P0/P1 candidate findings only if supported by code, screenshot, or test evidence.
+- Recommended next fixes before five real sessions.
+- Explicit note that final graphics remain blocked.
+
+Return a concise summary and list changed files.

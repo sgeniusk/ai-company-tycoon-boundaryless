@@ -10,14 +10,31 @@ This document defines the acceptance criteria for each milestone. A milestone is
 
 | # | Criterion | Status |
 |---|---|---|
-| 1 | First 10 seconds communicate the AI company management fantasy | **Pending** |
-| 2 | First product development is reachable within 3 minutes without explanation | **Pending** |
-| 3 | First product launch is reachable within 10 minutes | **Pending** |
-| 4 | First launch result shows product name, reviews, resource changes, card impact, and rival reaction | **Pending** |
-| 5 | At least one rival incident appears as a readable screen moment | **Pending** |
-| 6 | At least one staff incident appears as a readable screen moment | **Pending** |
-| 7 | One annual review is reachable in the test slice | **Pending** |
-| 8 | Five blind playtest records are saved under `reports/playtests/` | **Pending** |
+| 1 | First 10 seconds communicate the AI company management fantasy | **Implemented in QA slice via opening signal and Mina welcome; pending blind test** |
+| 2 | First product development is reachable within 3 minutes without explanation | **Implemented in QA slice via first-hire fast-start, first-project fast-start, and starter launchpad; pending blind test** |
+| 3 | First product launch is reachable within 10 minutes | **Implemented in QA slice via first-issue fast-start and launch guidance fast-forward; pending blind test** |
+| 4 | First active project exposes card/development issue response before launch | **Implemented in QA slice via guide-side first-issue fast-start, deck issue launchpad, and result ribbon; pending blind test** |
+| 5 | First launch result shows product name, reviews, resource changes, card impact, rival reaction, and next-action ribbon | **Implemented with clickable next-action ribbon; pending blind test** |
+| 6 | First post-launch card reward appears as an explicit 3-card choice moment | **Implemented via first reward spotlight and first-reward fast-start; pending blind test** |
+| 7 | Reward choice and growth branch choice show clear post-choice confirmation | **Implemented via reward/growth confirmation ribbons and first-growth fast-start; pending blind test** |
+| 8 | At least one rival incident appears as a readable screen moment | **Implemented; pending blind test** |
+| 9 | At least one staff incident appears as a readable screen moment | **Implemented; pending blind test** |
+| 10 | One annual review is reachable in the test slice | **Implemented in QA slice via annual-review fast-forward; pending blind test** |
+| 11 | The annual-review follow-up shows a next-year directive confirmation with monthly bonus, recommended menu, and immediate next-action buttons | **Implemented via annual-directed QA; pending blind test** |
+| 12 | The month-13 follow-up shows that the annual directive bonus actually applied and gives the player another action | **Implemented via year-two-plan QA; pending blind test** |
+| 13 | The recommended research menu exposes a direct annual-directive research action | **Implemented via year-two-research QA; pending blind test** |
+| 14 | The recommended research action confirms the completed research, level gain, unlocked market, and product candidates | **Implemented via year-two-research-complete QA; pending blind test** |
+| 15 | Completed research can route into a product-candidate launchpad, show the missing requirement path, confirm the resulting 2nd-year product project start, resolve its first development issue, and ship the resulting product into a release-impact moment | **Implemented via year-two-product-candidate/ready/started/issue-result/launch-impact QA, needed-research launchpad, project-start confirmation ribbon, 2nd-year issue result, and 2nd-year launch result; pending blind test** |
+| 16 | Automatic rehearsal verifies v0.56 QA route coverage without fabricating human outcomes | **Implemented via qa:blind-rehearsal; real sessions still pending** |
+| 17 | Five blind playtest records are saved under `reports/playtests/` | **Prepared; pending real sessions** |
+| 18 | Human staff, AI agents, and robots are visible as distinct workforce lanes before final art is imported | **Implemented via workforce mix panel, role badges, core metrics, mobile split rows, and office wall HUD; pending blind test** |
+| 19 | A handoff-ready request packet, AGY outbox message, dispatch log, URL sync report, five-session link sheet, live-link structure report, readiness report, and preflight report exist for external facilitators or AGY, including player/facilitator URLs, remote URL check, tutorial-delay check, session files, operating checklist, untouched-session check, and final-art gate | **Prepared with synced temporary Cloudflare URL; real sessions still pending** |
+| 20 | Returned AGY/facilitator session files can be received from a folder without overwriting missing sessions, and incomplete/non-`완료` files are rejected before they affect the summary gate | **Implemented via qa:blind-intake; real sessions still pending** |
+| 21 | Real-session summary blocks final graphic asset intake until 5/5 sessions are recorded with exact `Status: 완료`, open P0 is 0, no completed session has an unrecorded P0 field, unrecognized status count is 0, required tester-profile, observation, and exit-interview evidence is present, reports open P1 separately for tuning, and the session table shows per-session evidence state | **Implemented via observer HUD and qa:blind-summary; real sessions still pending** |
+| 22 | Real-session issue queue extracts completed-session P0/P1 findings, next fix candidates, and confusing moments, and keeps final graphic asset intake blocked while the P0 queue is nonzero | **Implemented via qa:blind-issues; real sessions still pending** |
+| 23 | Final art intake gate reruns the blind summary and issue queue, then produces one `가능`/`대기` decision for starting final graphic asset preparation | **Implemented via qa:art-gate; real sessions still pending** |
+| 24 | Final art handoff packet creates an AGY/external request checklist but stays blocked until the final art intake gate is possible | **Implemented via qa:asset-handoff; real sessions still pending** |
+| 25 | The in-game guide and office playfield expose a 30-minute alpha-run roadmap from first launch through year-two product start, including active milestone, progress percentage, next reward preview, click feedback, milestone click targets into the relevant menu/result tab, safe direct fast-start actions for the active early steps, a year-two directive/research/product-start action chain, a 100% completion payoff panel, and follow-through from the completion panel into the 2nd-year issue, launch, second reward pick, post-reward completion state, and guide/results debrief with four core run moments | **Implemented via clickable alpha-run roadmap, office focus strip, click feedback, active-step fast actions, year-two product roadmap automation, alpha-run completion panel, alpha-run debrief panel, `?scenario=alpha-run-complete`, `?scenario=alpha-run-issue-complete`, `?scenario=alpha-run-second-launch`, and `?scenario=alpha-run-second-reward-picked`; pending blind test** |
 
 Scope rule: do not add broad new systems for this milestone. Improve first product launch, card impact, rival pressure, staff incident readability, and blind-test readiness.
 

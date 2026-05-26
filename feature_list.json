@@ -1,261 +1,87 @@
 {
-  "last_updated": "2026-05-21",
+  "last_updated": "2026-05-26",
   "current_feature_id": "v0.56-alpha-playtest-slice-lock",
   "features": [
     {
-      "id": "harness-2026-05-20",
-      "name": "Harness reliability pass",
-      "description": "Make the coding-agent harness restartable by adding root state files, a startup script, current source-of-truth routing, and updated Vite/React production docs.",
+      "id": "harness-2026-05-23-context-budget",
+      "name": "Harness context budget pass",
+      "description": "Reduce startup token load by keeping root state files concise and moving detailed evidence to reports and version docs.",
       "status": "completed",
       "priority": "P1",
-      "dependencies": [],
-      "definition_of_done": [
-        "Root AGENTS.md documents startup workflow, verification commands, scope rules, and Definition of Done.",
-        "Root feature_list.json, progress.md, session-handoff.md, and init.sh exist.",
-        "docs/SESSION_HANDOFF.md, docs/PRODUCTION_HARNESS.md, and docs/ACCEPTANCE_CRITERIA.md reflect the v0.48/Vite state.",
-        "harness-creator validation reaches at least 70/100.",
-        "npm run harness:gate passes."
-      ],
-      "evidence": [
-        "2026-05-20: harness-creator validation passed at 100/100 across instructions, state, verification, scope, and lifecycle.",
-        "2026-05-20: ./init.sh passed; it ran npm run harness:gate with 40 test files / 291 tests, data validation, and production build passing."
-      ],
-      "next_step": "Use the updated root harness files for future sessions, then start v0.49-alpha-event-reactions when product work resumes."
-    },
-    {
-      "id": "v0.49-alpha-event-reactions",
-      "name": "Office event reaction animation pass",
-      "description": "Use the v0.48 sprite-sheet animation path to make card use, product launches, and rival/staff incidents produce short readable office reactions.",
-      "status": "completed",
-      "priority": "P2",
       "dependencies": [
-        "v0.48-alpha-sprite-animation"
+        "harness-2026-05-20"
       ],
       "definition_of_done": [
-        "At least one card-use or launch moment creates a visible office reaction.",
-        "Reaction data is driven by JSON or stable typed constants with a clear expansion path.",
-        "office-visuals QA scenario exposes the reaction state.",
-        "Relevant tests and npm run harness:gate pass.",
-        "Changelog, acceptance criteria, production report, and QA report are updated."
+        "AGENTS.md tells future agents to read root state first and avoid full changelog/report ingestion unless needed.",
+        "feature_list.json tracks only the current feature, one near-term art track, and recent harness maintenance.",
+        "progress.md gives restart state, blockers, verification evidence, and next step in under about 1,000 words.",
+        "Root and docs session handoffs point to detailed reports instead of repeating every implementation event.",
+        "harness-creator validation stays green."
       ],
       "evidence": [
-        "2026-05-20: Added data/office_reactions.json with card_use, product_launch, rival_alert, and staff_incident hooks.",
-        "2026-05-20: getOfficeScenePlan now returns eventReactions and office-visuals exposes a prompt_sprint card-use reaction.",
-        "2026-05-20: npm test -- src/game/office-scene.test.ts src/ui/layout-contract.test.ts src/game/qa-scenarios.test.ts passed with 3 files / 67 tests."
+        "2026-05-23: Root startup files were compressed and a Context Budget section was added to AGENTS.md.",
+        "2026-05-23: harness-creator validation stayed 100/100; npm run harness:gate passed with 43 files / 366 tests, data validation, and production build."
       ],
-      "next_step": "Add sprite-sheet pose rows for cheers, alerts, and card-use effects after the alpha candidate pass."
-    },
-    {
-      "id": "v0.50-alpha-candidate",
-      "name": "Alpha candidate consolidation",
-      "description": "Bundle UI stability, persona retest, and screenshot-readiness into a larger alpha candidate after event reactions land.",
-      "status": "completed",
-      "priority": "P2",
-      "dependencies": [
-        "v0.49-alpha-event-reactions"
-      ],
-      "definition_of_done": [
-        "20-person persona QA is rerun against the current v0.5 candidate.",
-        "P0/P1 findings are fixed or explicitly waived.",
-        "The first screen communicates the fantasy and first action within 30 seconds.",
-        "npm run harness:gate passes and reports are updated."
-      ],
-      "evidence": [
-        "2026-05-20: runPersonaPlaytestReview now targets v0.50-alpha and reports 20 personas, 10/10 gender mix, first-screen signals, and no unresolved P0/P1 findings.",
-        "2026-05-20: persona20 QA scenario shows v0.50, P0/P1: 없음, and first-30-second signals for office fantasy, monthly goal, and next action.",
-        "2026-05-20: npm test -- src/game/persona-playtest.test.ts src/game/qa-scenarios.test.ts passed with 2 files / 36 tests.",
-        "2026-05-20: npm run harness:gate passed with 40 test files / 294 tests, data validation, and production build passing.",
-        "2026-05-20: curl -I for persona20 and office-visuals returned 200 OK."
-      ],
-      "next_step": "Start v0.51-alpha-event-pose-sheets to add cheer, alert, and card-use pose rows for office event reactions."
-    },
-    {
-      "id": "v0.51-alpha-event-pose-sheets",
-      "name": "Office event pose sheet expansion",
-      "description": "Extend the high-density agent sprite-sheet contract so event reactions can change actor poses, not only show speech bubbles.",
-      "status": "completed",
-      "priority": "P2",
-      "dependencies": [
-        "v0.50-alpha-candidate"
-      ],
-      "definition_of_done": [
-        "Asset manifest defines cheer, alert, and card-use pose rows or a clear equivalent pose contract.",
-        "Office event reactions can select a matching actor pose without breaking idle/work animation.",
-        "office-visuals QA scenario exposes at least one card-use pose and one alert/cheer pose.",
-        "Reduced-motion still disables motion-heavy animation.",
-        "Relevant tests and npm run harness:gate pass.",
-        "Changelog, QA report, and handoff docs are updated."
-      ],
-      "evidence": [
-        "2026-05-20: Added agents_v051_event_poses sheet contract with idle, work, card_use, cheer, and alert rows for 5 priority agents.",
-        "2026-05-20: Generated public/assets/sprites/v051-agents-event-poses.png at 576x4800.",
-        "2026-05-20: getOfficeScenePlan now assigns card_use and alert reactionPose values in office-visuals.",
-        "2026-05-20: npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts passed with 4 files / 78 tests.",
-        "2026-05-20: npm run harness:gate passed with 40 test files / 296 tests, data validation, and production build passing.",
-        "2026-05-20: curl -I for office-visuals and v051-agents-event-poses.png returned 200 OK."
-      ],
-      "next_step": "Start v0.52-alpha-source-sprite-replacement to replace the generated draft sheet with AI-generated high-resolution pixel art while preserving the v0.51 contract."
-    },
-    {
-      "id": "v0.52-alpha-source-sprite-replacement",
-      "name": "Generated source sprite replacement",
-      "description": "Replace code-generated event-pose drafts with source-normalized high-resolution pixel art sheets while preserving the v0.51 manifest contract and anchor checks.",
-      "status": "completed",
-      "priority": "P2",
-      "dependencies": [
-        "v0.51-alpha-event-pose-sheets"
-      ],
-      "definition_of_done": [
-        "Replacement source sheet follows the v0.51 3-column, 25-row event-pose contract or a documented normalized equivalent.",
-        "Frame anchors, feet placement, and silhouette drift are inspected through office-visuals and sprite-sheet preview frames.",
-        "Card-use and alert poses remain visible in office-visuals.",
-        "Actor click, focus panel, and direct care actions remain intact.",
-        "Relevant tests and npm run harness:gate pass.",
-        "Changelog, QA report, and handoff docs are updated."
-      ],
-      "evidence": [
-        "2026-05-20: Added agents_v052_source_event_poses with source_path, source scale, source frame size, anchor tolerance, and silhouette drift metadata.",
-        "2026-05-20: Generated public/assets/sprites/source/v052-agents-event-poses-source.png at 1152x9600 and public/assets/sprites/v052-agents-event-poses.png at 576x4800.",
-        "2026-05-20: GameChrome now renders priority actors from the v0.52 source-normalized event-pose sheet and shows source/game frame sizes in the QA inspector.",
-        "2026-05-20: npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts passed with 4 files / 79 tests.",
-        "2026-05-20: npm run harness:gate passed with 40 test files / 297 tests, data validation, and production build passing.",
-        "2026-05-20: curl -I for office-visuals, v052 runtime sheet, and v052 source sheet returned 200 OK."
-      ],
-      "next_step": "Start v0.53-alpha-final-character-art-import to replace the procedural high-resolution source draft with final AI-generated or external pixel-art source art."
-    },
-    {
-      "id": "v0.53-alpha-final-character-art-import",
-      "name": "Final character art source import",
-      "description": "Import final AI-generated or external pixel-art character source art into the v0.52 source-normalized sheet contract and verify visual anchors in the office scene.",
-      "status": "completed",
-      "priority": "P2",
-      "dependencies": [
-        "v0.52-alpha-source-sprite-replacement"
-      ],
-      "definition_of_done": [
-        "A final or near-final source character sheet replaces the procedural v0.52 source draft without changing the 3-column, 25-row event-pose contract.",
-        "The runtime v0.52 sheet is regenerated from the final source and remains 576x4800.",
-        "Card-use, cheer, and alert poses remain readable in office-visuals.",
-        "Desktop and mobile screenshot QA confirms feet anchors, silhouette drift, and actor click targets remain stable.",
-        "Relevant tests and npm run harness:gate pass.",
-        "Changelog, QA report, and handoff docs are updated."
-      ],
-      "evidence": [
-        "2026-05-20: Added scripts/assets/import-v053-character-source.mjs to validate 1152x9600 RGBA source sheets and generate 576x4800 runtime atlases.",
-        "2026-05-20: Added npm run assets:v053 and agents_v053_final_art_import with source_origin, import_pipeline, and normalization_method metadata.",
-        "2026-05-20: Generated public/assets/sprites/source/v053-agents-event-poses-final-source.png at 1152x9600 and public/assets/sprites/v053-agents-event-poses-final.png at 576x4800.",
-        "2026-05-20: GameChrome now renders priority actors from the v0.53 imported final-art candidate sheet and office-visuals opens as v0.53 final-art import QA.",
-        "2026-05-20: npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts passed with 4 files / 80 tests.",
-        "2026-05-20: npm run harness:gate passed with 40 test files / 298 tests, data validation, and production build passing.",
-        "2026-05-20: curl -I for office-visuals, v053 runtime sheet, and v053 source sheet returned 200 OK."
-      ],
-      "next_step": "Start v0.54-alpha-office-object-backdrop-art-import to add the same import/normalization path for office object sheets and backdrop source art."
-    },
-    {
-      "id": "v0.54-alpha-office-object-backdrop-art-import",
-      "name": "Office object and backdrop art import",
-      "description": "Create reproducible import/normalization paths for final office object sprite sheets and isometric backdrop source art, matching the character import workflow.",
-      "status": "completed",
-      "priority": "P2",
-      "dependencies": [
-        "v0.53-alpha-final-character-art-import"
-      ],
-      "definition_of_done": [
-        "Office object source art can be imported and normalized into the existing object sheet contract.",
-        "The isometric office backdrop has a documented source/import path and runtime asset target.",
-        "Placed decor props and backdrop still render in office-visuals without breaking actor interactions.",
-        "Asset dimensions, manifest metadata, and import scripts are covered by tests or data validation.",
-        "Relevant tests and npm run harness:gate pass.",
-        "Changelog, QA report, and handoff docs are updated."
-      ],
-      "evidence": [
-        "2026-05-21: Added scripts/assets/import-v054-office-art.mjs to validate 2560x1920 office object sources and 5120x2880 backdrop sources, then generate 1280x960 and 2560x1440 runtime PNGs.",
-        "2026-05-21: Added npm run assets:v054 plus office_objects_v054_final_art_import and office_isometric_v054_final_art_import manifest contracts.",
-        "2026-05-21: Generated public/assets/sprites/source/v054-office-objects-final-source.png, public/assets/sprites/v054-office-objects-final.png, public/assets/backgrounds/source/v054-isometric-office-final-source.png, and public/assets/backgrounds/v054-isometric-office-final.png.",
-        "2026-05-21: GameChrome now renders placed decor props and the office backdrop from the v0.54 import contracts; office-visuals opens as v0.54 오브젝트/배경 임포트 QA.",
-        "2026-05-21: npm test -- src/game/asset-manifest.test.ts src/game/office-scene.test.ts src/game/qa-scenarios.test.ts src/ui/layout-contract.test.ts passed with 4 files / 82 tests.",
-        "2026-05-21: npm run harness:gate passed with 40 test files / 300 tests, data validation, and production build passing.",
-        "2026-05-21: curl -I for office-visuals and all v0.54 runtime/source PNGs returned 200 OK."
-      ],
-      "next_step": "Start v0.55-alpha-final-source-art-screenshot-qa to replace draft source candidates with actual final art and run screenshot QA."
-    },
-    {
-      "id": "v0.55-alpha-final-source-art-screenshot-qa",
-      "name": "Final-art readiness screenshot QA",
-      "description": "Prepare reproducible desktop/mobile screenshot QA for imported character, office object, and backdrop art candidates without blocking on final external artwork.",
-      "status": "completed",
-      "priority": "P2",
-      "dependencies": [
-        "v0.54-alpha-office-object-backdrop-art-import"
-      ],
-      "definition_of_done": [
-        "The visual QA manifest defines desktop/mobile screenshot artifacts and required viewports.",
-        "The screenshot command captures the office-visuals route with headless Chrome.",
-        "Desktop and mobile screenshot QA checks actor anchors, object depth ordering, backdrop framing, command HUD fit, and HUD/text overlap.",
-        "Actual final source art is explicitly moved to a separate Art Intake track so v0.56 playtest work is not blocked.",
-        "Relevant tests and npm run harness:gate pass.",
-        "Changelog, QA report, and handoff docs are updated."
-      ],
-      "evidence": [
-        "2026-05-21: Added visual_qa.office_visuals_v055_screenshot_qa manifest metadata with desktop 1366x768 and mobile 390x844 required viewports.",
-        "2026-05-21: Added npm run qa:office-visuals:screenshots and scripts/qa/capture-office-visuals-screenshots.mjs using headless Chrome.",
-        "2026-05-21: Captured reports/qa/screenshots/v0_55_office_visuals_desktop.png and reports/qa/screenshots/v0_55_office_visuals_mobile.png plus a JSON capture manifest.",
-        "2026-05-21: Fixed mobile headless left-crop by start-aligning the narrow app shell.",
-        "2026-05-21: Added mobile_command_hand_fit to the v0.55 visual QA manifest checks.",
-        "2026-05-21: Fixed the mobile bottom strategy hand so its counter and visible cards fit inside the 390px screenshot frame without right-edge clipping.",
-        "2026-05-21: Re-captured the v0.55 desktop/mobile screenshot QA artifacts after mobile command-hand polish.",
-        "2026-05-21: npm test -- src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts passed with 2 files / 43 tests.",
-        "2026-05-21: npm test -- src/game/qa-scenarios.test.ts src/game/asset-manifest.test.ts src/ui/layout-contract.test.ts passed with 3 files / 78 tests.",
-        "2026-05-21: npm run harness:gate passed with 40 test files / 303 tests, data validation, and production build passing."
-      ],
-      "next_step": "Use docs/ART_INTAKE.md for final source-art replacement, and start v0.56-alpha-playtest-slice-lock for the next active development slice."
-    },
-    {
-      "id": "art-intake-final-source-art",
-      "name": "Final source art intake",
-      "description": "Collect or generate final character, office object, and backdrop source PNGs, import them through the existing v0.53/v0.54 pipelines, and rerun screenshot QA against the v0.55 baseline.",
-      "status": "planned",
-      "priority": "P2",
-      "dependencies": [
-        "v0.55-alpha-final-source-art-screenshot-qa"
-      ],
-      "definition_of_done": [
-        "Character source art is provided as 1152x9600 RGBA PNG.",
-        "Office object source art is provided as 2560x1920 RGBA PNG.",
-        "Office backdrop source art is provided as 5120x2880 RGBA PNG.",
-        "assets:v053 and assets:v054 import the final sources without changing runtime frame contracts.",
-        "qa:office-visuals:screenshots is rerun and compared against the v0.55 baseline.",
-        "Art-quality gaps are logged in a QA report with concrete screenshot paths."
-      ],
-      "evidence": [
-        "2026-05-21: docs/ART_INTAKE.md defines source dimensions, import commands, acceptance checks, and non-goals."
-      ],
-      "next_step": "Collect or generate one complete final source-art set, then import and screenshot-verify it."
+      "next_step": "Keep detailed implementation history in reports and update root files only with summaries."
     },
     {
       "id": "v0.56-alpha-playtest-slice-lock",
       "name": "20-30 minute blind playtest slice lock",
-      "description": "Stop adding new systems and focus on a playable web-alpha slice where players reach first product launch, see card impact, experience rival/staff incidents, and complete one annual review.",
+      "description": "Stop adding broad systems and validate a web-alpha slice where new players reach first launch, see card impact, encounter rival/staff incidents, and reach one annual review.",
       "status": "in_progress",
       "priority": "P0",
       "dependencies": [
         "v0.55-alpha-final-source-art-screenshot-qa"
       ],
       "definition_of_done": [
-        "A new player can identify the AI company management fantasy within 10 seconds.",
-        "A new player can reach first product development within 3 minutes.",
-        "A new player can launch the first product within 10 minutes.",
-        "The first launch result clearly shows product name, reviews, resource changes, card impact, and rival reaction.",
-        "At least one rival incident and one staff incident appear as readable screen moments.",
-        "The player can reach one annual review in the slice.",
-        "Five blind playtest records are captured under reports/playtests.",
-        "Relevant tests and npm run harness:gate pass."
+        "Five real blind playtest session records are completed with exact Status: 완료.",
+        "Blind summary reports real sessions 5/5, open P0 0, missing P0 0, unrecognized status 0, and missing evidence 0.",
+        "Blind issue queue reports P0 queue 0 before final graphic asset intake.",
+        "Open P1 findings are counted as tuning follow-ups, not final-art blockers.",
+        "Blind preflight verifies tutorial modal delay and flags missing remote playtest URL before external/AGY sessions are sent.",
+        "qa:asset-handoff reports final art request possible before AGY/external art requests go out.",
+        "npm run harness:gate passes after any fixes."
       ],
       "evidence": [
-        "2026-05-21: docs/ROADMAP.md was reduced to current state, next milestones, and explicit v0.56 playtest-slice goals.",
-        "2026-05-21: docs/BLIND_PLAYTEST_CHECKLIST.md defines the first 10 seconds, 3 minutes, 10 minutes, 15 minutes, 20 minutes, and 30 minutes success criteria."
+        "2026-05-26: v0.56 pre-art slice is code/QA-ready; latest recorded gate passed with 43 files / 406 tests, data validation, and production build.",
+        "2026-05-23: qa:blind-summary, qa:blind-issues, qa:art-gate, and qa:asset-handoff are in place; real sessions remain 0/5 and final art remains blocked.",
+        "2026-05-23: User-run AGY agent review was received as reports/playtests/v0_56_agy_agent_playtest_review.md; it is not a real human session, and the safe P1 workforce/mobile readability follow-up passed focused tests with 3 files / 98 tests.",
+        "2026-05-23: qa:blind-readiness and qa:asset-handoff still report real sessions 0/5, art gate/final art intake 대기, and AGY send status 발송 금지 after AGY follow-up.",
+        "2026-05-23: qa:blind-preflight was added; it reports remote URL readiness, request/outbox URL sync state, tutorial delay OK, real-session 0/5, and final-art lock before external sessions.",
+        "2026-05-24: qa:blind-url-sync was added to copy PLAYTEST_BASE_URL player/facilitator URLs into the request packet and AGY outbox before external sessions; qa:blind-session-links now writes session 01-05 observer URLs and record statuses; qa:blind-live-check now validates the link-sheet structure in sandbox-safe mode; focused blind-record tests passed with 1 file / 32 tests, the refreshed Cloudflare player/session-1/session-5 URLs returned 200 via direct curl, and preflight reported 원격 테스트 준비 with request packet URL 동기화 완료.",
+        "2026-05-26: Guide-side 30-minute alpha-run roadmap now includes clickable active milestones, full-run progress, next reward previews, state-aware menu/result targets, click feedback, a matching office playfield focus strip, safe direct fast actions, a year-two directive/research/product-start chain, a 100% completion payoff panel, completion follow-through into the 2nd-year issue, launch, second reward pick, post-reward completion state, and an alpha-run debrief with product/reward/year-two/readiness highlights plus first release/card payoff/annual directive/second reward timeline visible from both guide and results; final completion action is now 디브리프 보기; focused guidance/QA/layout tests passed with 3 files / 123 tests, npm run harness:gate passed with 43 files / 406 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and ?scenario=alpha-run-second-reward-picked returned 200 OK.",
+        "2026-05-23: First-hire fast-start was added to the fresh guide; npm run harness:gate passed with 43 files / 368 tests, data validation, and production build, and qa:asset-handoff still kept final art intake 대기 / AGY 발송 금지.",
+        "2026-05-23: First-project fast-start was added after hiring; focused simulation/layout/blind-record tests passed with 3 files / 104 tests, npm run harness:gate passed with 43 files / 370 tests, and headless Chrome captured ?scenario=staffing.",
+        "2026-05-23: First-issue fast-start and first-launch guidance fast-forward were added; focused simulation/layout/guidance/deckbuilding tests passed with 4 files / 112 tests, npm run harness:gate passed with 43 files / 374 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=project.",
+        "2026-05-23: First reward/growth fast-start was added after launch; focused simulation/layout/guidance/deckbuilding tests passed with 4 files / 115 tests, focused QA-scenario/simulation/layout tests passed with 3 files / 130 tests, npm run harness:gate passed with 43 files / 378 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=reward and ?scenario=reward-picked without helper tutorial modals.",
+        "2026-05-23: Annual-review fast-forward was added after first growth; focused simulation/guidance/layout/qa-scenario tests passed with 4 files / 143 tests, npm run harness:gate passed with 43 files / 379 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=flow.",
+        "2026-05-23: Annual-review guidance now routes directly to the company menu after 심사까지 진행, and the post-directive continuation button is labeled 2년차 시작; focused simulation/guidance/layout/QA-record/QA-scenario tests passed with 5 files / 169 tests, npm run harness:gate passed with 43 files / 379 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=annual-directed.",
+        "2026-05-23: Locked year-two product candidates now route back to an exact needed-research launchpad; focused layout/QA-scenario/blind-record tests passed with 3 files / 120 tests, npm run harness:gate passed with 43 files / 380 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=year-two-product-candidate&menu=research on desktop/mobile.",
+        "2026-05-24: Year-two product flow now continues through ready, started, issue-result, and launch-impact QA states; focused QA-scenario/layout/blind-record/rehearsal tests passed with 4 files / 128 tests, latest npm run harness:gate passed with 43 files / 391 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and curl returned 200 OK for ?scenario=year-two-product-started, ?scenario=year-two-product-issue-result, and ?scenario=year-two-product-launch-impact.",
+        "Details live in reports/playtests/v0_56_* and reports/qa/v0_56_*."
       ],
-      "next_step": "Implement v0.56 around first product launch payoff, card impact visibility, one rival incident, one staff incident, and a deployable blind-test build."
+      "next_step": "Use the synced Cloudflare quick tunnel URL and v0_56_blind_playtest_session_links.md for five real sessions while the tunnel is active, then rerun qa:asset-handoff."
+    },
+    {
+      "id": "art-intake-final-source-art",
+      "name": "Final source art intake",
+      "description": "Collect or generate final character, office object, and backdrop source PNGs after v0.56 blind-test P0 is closed.",
+      "status": "planned",
+      "priority": "P2",
+      "dependencies": [
+        "v0.56-alpha-playtest-slice-lock"
+      ],
+      "definition_of_done": [
+        "Character source art is provided as 1152x9600 RGBA PNG.",
+        "Office object source art is provided as 2560x1920 RGBA PNG.",
+        "Office backdrop source art is provided as 5120x2880 RGBA PNG.",
+        "assets:v053 and assets:v054 import the final sources without changing runtime frame contracts.",
+        "qa:office-visuals:screenshots is rerun and compared against the v0.55 baseline."
+      ],
+      "evidence": [
+        "docs/ART_INTAKE.md and docs/ANTIGRAVITY_ART_BRIEF.md define source dimensions, import commands, and gate timing."
+      ],
+      "next_step": "Start only after qa:asset-handoff reports final art request possible."
     }
   ]
 }

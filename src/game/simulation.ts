@@ -27,11 +27,23 @@ import {
   growthPaths,
 } from "./data";
 import { applyAchievementUnlocks } from "./achievements";
-import { applyDueAnnualReview, getActiveAnnualDirective } from "./annual-review";
+import { applyDueAnnualReview, chooseAnnualDirective, getActiveAnnualDirective } from "./annual-review";
+import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
 import { applyDueCampaignShocks } from "./campaign-shocks";
 import { CAMPAIGN_FINAL_MONTH, getCompanyStarRating, getCurrentLocation, getLocationRequirementReasons } from "./campaign";
 import { getCompetitionSeasonChallenges } from "./competition-signals";
-import { createInitialRogueliteState, createReleaseCardReward, getDeckSynergyMonthlyEffects, refreshStrategyDeckForNewMonth } from "./deckbuilding";
+import {
+  createInitialRogueliteState,
+  createReleaseCardReward,
+  getCardRewardChoiceCheck,
+  getDeckSynergyMonthlyEffects,
+  getStrategyCardById,
+  getStrategyCardEffects,
+  getStrategyCardPlayCheck,
+  playStrategyCard,
+  refreshStrategyDeckForNewMonth,
+} from "./deckbuilding";
+import { createDevelopmentPuzzle, getDevelopmentPuzzleResolveCheck, getDevelopmentPuzzleSelectionLimit } from "./development-puzzle";
 import { createReleaseGrowthPaths } from "./growth-paths";
 import { getRenewalReleaseOptions, type ProductConcept } from "./product-ideas";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
@@ -50,6 +62,7 @@ import type {
   CompetitorState,
   ActiveDevelopmentPuzzleModifier,
   DevelopmentPuzzleResult,
+  DevelopmentPuzzleTile,
   EventChoiceDefinition,
   EventDefinition,
   GameState,
@@ -84,7 +97,9 @@ import type {
   ResourceMap,
   StaffIncidentResolutionLogEntry,
   ProductProjectForecast,
+  ReleaseGrowthPath,
   StrategyDeckState,
+  StrategyCardDefinition,
   UpgradeDefinition,
   WorkforceSynergyStatus,
   WorkforceSynergySummary,
@@ -127,6 +142,73 @@ export interface RecruitmentOffer {
   recommendationReason: string;
 }
 
+export interface FirstHireRecommendation {
+  agent: AgentTypeDefinition;
+  channelId: RecruitmentChannelId;
+  offer: RecruitmentOffer;
+  check: ActionCheck;
+  title: string;
+  description: string;
+  actionLabel: string;
+}
+
+export interface FirstProjectRecommendation {
+  product: ProductDefinition;
+  assignedAgentIds: string[];
+  forecast: ProductProjectForecast;
+  check: ActionCheck;
+  title: string;
+  description: string;
+  actionLabel: string;
+}
+
+export interface FirstDevelopmentIssueRecommendation {
+  projectId: string;
+  product: ProductDefinition;
+  card?: StrategyCardDefinition;
+  selectedTileIds: string[];
+  tiles: DevelopmentPuzzleTile[];
+  selectionLimit: number;
+  check: ActionCheck;
+  title: string;
+  description: string;
+  actionLabel: string;
+}
+
+export interface FirstRewardRecommendation {
+  rewardId: string;
+  productName: string;
+  card: StrategyCardDefinition;
+  check: ActionCheck;
+  title: string;
+  description: string;
+  actionLabel: string;
+}
+
+export interface FirstGrowthRecommendation {
+  path: ReleaseGrowthPath;
+  check: ActionCheck;
+  title: string;
+  description: string;
+  actionLabel: string;
+}
+
+export type YearTwoProductAction = "choose_directive" | "upgrade_research" | "start_product";
+export type YearTwoProductActionMenu = "company" | "research" | "products";
+
+export interface YearTwoProductRecommendation {
+  action: YearTwoProductAction;
+  actionLabel: string;
+  title: string;
+  description: string;
+  menu: YearTwoProductActionMenu;
+  product: ProductDefinition;
+  check: ActionCheck;
+  directiveChoiceId?: string;
+  capability?: CapabilityDefinition;
+  assignedAgentIds?: string[];
+}
+
 export interface RecruitmentCandidatePool {
   channel: RecruitmentChannelDefinition;
   candidateIds: string[];
@@ -144,6 +226,26 @@ export interface RecruitmentBrandProfile {
   candidatePoolBonus: number;
   drivers: string[];
   warnings: string[];
+}
+
+export type WorkforceMixKind = NonNullable<AgentTypeDefinition["kind"]>;
+
+export interface WorkforceMixRow {
+  kind: WorkforceMixKind;
+  label: string;
+  count: number;
+  statusLabel: string;
+  impactLabel: string;
+  roleBadge: string;
+  metricLabel: string;
+  emphasis: "ready" | "missing" | "locked";
+}
+
+export interface WorkforceMixSummary {
+  headline: string;
+  rows: WorkforceMixRow[];
+  activeSynergyLabels: string[];
+  nextSynergyLabel?: string;
 }
 
 export interface AgentCareerStatus {
@@ -262,6 +364,8 @@ export const recruitmentChannels: RecruitmentChannelDefinition[] = [
     riskLabel: "검증 필요",
   },
 ];
+
+const firstHireCandidateIds = ["prompt_architect", "garage_pm_intern", "garage_junior_dev"];
 
 const formatMoney = (value: number) =>
   new Intl.NumberFormat("ko-KR", {
@@ -565,6 +669,328 @@ export function getRecruitmentOffer(agent: AgentTypeDefinition, state: GameState
     riskLabel: channel.riskLabel,
     recommendationReason: locationHint,
   };
+}
+
+export function getFirstHireRecommendation(state: GameState): FirstHireRecommendation | undefined {
+  if (state.status !== "playing" || state.hiredAgents.length > 0 || state.productProjects.length > 0 || state.activeProducts.length > 0) {
+    return undefined;
+  }
+
+  const channelId: RecruitmentChannelId = "open_recruiting";
+  const agent = firstHireCandidateIds
+    .map((agentId) => agentTypes.find((candidate) => candidate.id === agentId))
+    .filter((candidate): candidate is AgentTypeDefinition => Boolean(candidate))
+    .find((candidate) => getAgentHireCheckForChannel(candidate, state, channelId).ok);
+
+  if (!agent) return undefined;
+
+  const offer = getRecruitmentOffer(agent, state, channelId);
+
+  return {
+    agent,
+    channelId,
+    offer,
+    check: getAgentHireCheckForChannel(agent, state, channelId),
+    title: "추천 첫 팀원",
+    description: `${agent.name}는 첫 제품 개발의 기획/카피 품질을 빠르게 올립니다.`,
+    actionLabel: "첫 팀원 바로 고용",
+  };
+}
+
+export function getFirstProjectRecommendation(state: GameState): FirstProjectRecommendation | undefined {
+  if (state.status !== "playing" || state.hiredAgents.length === 0 || state.productProjects.length > 0 || state.activeProducts.length > 0) {
+    return undefined;
+  }
+
+  const assignedAgentIds = state.hiredAgents
+    .filter((agent) => !agent.assignment)
+    .slice(0, 3)
+    .map((agent) => agent.id);
+  if (assignedAgentIds.length === 0) return undefined;
+
+  const availableProducts = getAvailableProductDefinitions(state);
+  const preferredProduct = availableProducts.find((product) => product.id === "ai_writing_assistant");
+  const fallbackProduct = availableProducts.find((product) => getProductProjectCheck(product, state, assignedAgentIds).ok);
+  const product =
+    preferredProduct && getProductProjectCheck(preferredProduct, state, assignedAgentIds).ok
+      ? preferredProduct
+      : fallbackProduct;
+
+  if (!product) return undefined;
+
+  const check = getProductProjectCheck(product, state, assignedAgentIds);
+
+  return {
+    product,
+    assignedAgentIds,
+    forecast: getProductProjectForecast(product, state, assignedAgentIds),
+    check,
+    title: "추천 첫 제품",
+    description: `${product.name}로 첫 시장 반응과 카드 영향을 빠르게 확인합니다.`,
+    actionLabel: "첫 제품 바로 개발",
+  };
+}
+
+const firstIssueCardPreference = ["customer_interviews", "prompt_sprint", "safety_review", "gpu_burst"];
+
+export function getFirstDevelopmentIssueRecommendation(state: GameState): FirstDevelopmentIssueRecommendation | undefined {
+  const project = state.productProjects[0];
+  return getDevelopmentIssueRecommendationForProject(state, project, {
+    title: "추천 첫 개발 이슈",
+    actionLabel: "첫 이슈 바로 해결",
+    withCardDescription: (product, card) => `${card.name} 카드를 먼저 쓰고 추천 이슈를 해결해 카드 영향이 결과에 남게 합니다.`,
+    withoutCardDescription: (product) => `${product.name}의 추천 이슈를 해결해 진행도와 완성도를 바로 올립니다.`,
+  });
+}
+
+export function getYearTwoProductIssueRecommendation(state: GameState): FirstDevelopmentIssueRecommendation | undefined {
+  const project = state.productProjects.find((productProject) => productProject.productId === yearTwoProductId);
+  return getDevelopmentIssueRecommendationForProject(state, project, {
+    title: "추천 신제품 개발 이슈",
+    actionLabel: "신제품 이슈 바로 해결",
+    withCardDescription: (product, card) => `${card.name} 카드를 적용하고 ${product.name}의 첫 이슈를 해결해 두 번째 출시 보상을 준비합니다.`,
+    withoutCardDescription: (product) => `${product.name}의 첫 이슈를 해결해 두 번째 출시까지 밀어붙입니다.`,
+  });
+}
+
+function getDevelopmentIssueRecommendationForProject(
+  state: GameState,
+  project: ProductProject | undefined,
+  copy: {
+    title: string;
+    actionLabel: string;
+    withCardDescription: (product: ProductDefinition, card: StrategyCardDefinition) => string;
+    withoutCardDescription: (product: ProductDefinition) => string;
+  },
+): FirstDevelopmentIssueRecommendation | undefined {
+  if (state.status !== "playing" || !project || state.lastDevelopmentPuzzle?.projectId === project.id) {
+    return undefined;
+  }
+
+  const product = getAvailableProductDefinitions(state).find((entry) => entry.id === project.productId);
+  if (!product) return undefined;
+
+  const hasPreparedModifier = state.activeDevelopmentPuzzleModifiers.some((modifier) => modifier.projectId === project.id && modifier.usesRemaining > 0);
+  const card = hasPreparedModifier ? undefined : getFirstIssueCardRecommendation(state);
+  const preparedState = card ? playStrategyCard(card, state) : state;
+  const puzzle = createDevelopmentPuzzle(project.id, preparedState);
+  const selectionLimit = getDevelopmentPuzzleSelectionLimit(preparedState, project.id);
+  const selectedTileIds = puzzle.tiles.slice(0, Math.min(4, selectionLimit)).map((tile) => tile.id);
+  const selectedTileIdSet = new Set(selectedTileIds);
+
+  return {
+    projectId: project.id,
+    product,
+    card,
+    selectedTileIds,
+    tiles: puzzle.tiles.filter((tile) => selectedTileIdSet.has(tile.id)),
+    selectionLimit,
+    check: getDevelopmentPuzzleResolveCheck(project.id, selectedTileIds, preparedState),
+    title: copy.title,
+    description: card ? copy.withCardDescription(product, card) : copy.withoutCardDescription(product),
+    actionLabel: copy.actionLabel,
+  };
+}
+
+function getFirstIssueCardRecommendation(state: GameState): StrategyCardDefinition | undefined {
+  const handCards = state.roguelite.deck.hand
+    .map((cardId) => getStrategyCardById(cardId))
+    .filter((card): card is StrategyCardDefinition => Boolean(card));
+  const preferredCards = firstIssueCardPreference
+    .map((cardId) => handCards.find((card) => card.id === cardId))
+    .filter((card): card is StrategyCardDefinition => Boolean(card));
+  const orderedCards = [...preferredCards, ...handCards].filter((card, index, cards) => cards.findIndex((entry) => entry.id === card.id) === index);
+
+  return orderedCards.find((card) => getStrategyCardPlayCheck(card, state).ok && hasDevelopmentPuzzleEffect(card, state));
+}
+
+function hasDevelopmentPuzzleEffect(card: StrategyCardDefinition, state: GameState): boolean {
+  const effects = getStrategyCardEffects(card, state);
+  return Boolean(effects.puzzle_score_bonus || effects.puzzle_difficulty_delta || effects.puzzle_tile_limit);
+}
+
+export function getFirstRewardRecommendation(state: GameState): FirstRewardRecommendation | undefined {
+  const reward = state.roguelite.pendingCardReward;
+  if (state.status !== "playing" || !reward || (state.roguelite.rewardHistory ?? []).length > 0) {
+    return undefined;
+  }
+
+  const card = reward.offeredCardIds
+    .map((cardId) => getStrategyCardById(cardId))
+    .filter((candidate): candidate is StrategyCardDefinition => Boolean(candidate))
+    .find((candidate) => getCardRewardChoiceCheck(candidate.id, state).ok);
+
+  if (!card) return undefined;
+
+  return {
+    rewardId: reward.id,
+    productName: reward.productName,
+    card,
+    check: getCardRewardChoiceCheck(card.id, state),
+    title: "추천 첫 보상",
+    description: `${reward.productName} 출시 보상으로 ${card.name} 카드를 덱에 넣고 성장 분기로 이어갑니다.`,
+    actionLabel: "첫 보상 바로 선택",
+  };
+}
+
+export function getFirstGrowthRecommendation(state: GameState): FirstGrowthRecommendation | undefined {
+  const rewardHistory = state.roguelite.rewardHistory ?? [];
+  if (
+    state.status !== "playing"
+    || state.chosenGrowthPath
+    || state.roguelite.pendingCardReward
+    || rewardHistory.length !== 1
+    || !state.lastRelease?.growthPaths?.length
+  ) {
+    return undefined;
+  }
+
+  const paths = state.lastRelease.growthPaths;
+  const path =
+    paths.find((candidate) => candidate.id === "productivity_line" && getGrowthPathChoiceCheck(candidate.id, state).ok)
+    ?? paths.find((candidate) => getGrowthPathChoiceCheck(candidate.id, state).ok);
+
+  if (!path) return undefined;
+
+  return {
+    path,
+    check: getGrowthPathChoiceCheck(path.id, state),
+    title: "추천 성장 분기",
+    description: `${path.title}을 선택해 다음 제품 개발 동선을 열고 월간 보너스를 고정합니다.`,
+    actionLabel: "성장 분기 바로 선택",
+  };
+}
+
+const yearTwoProductId = "enterprise_workflow_agent";
+const yearTwoDirectivePreference = ["trust_compound_program", "research_lab_sprint", "product_launch_marathon"];
+const yearTwoCapabilityPreference = ["enterprise", "agent"];
+
+export function getYearTwoProductRecommendation(state: GameState): YearTwoProductRecommendation | undefined {
+  const product = products.find((candidate) => candidate.id === yearTwoProductId);
+  if (
+    !product ||
+    state.status !== "playing" ||
+    state.activeProducts.includes(product.id) ||
+    state.productProjects.some((project) => project.productId === product.id)
+  ) {
+    return undefined;
+  }
+
+  const directiveChoiceId = getPreferredYearTwoDirectiveChoiceId(state);
+  if (directiveChoiceId) {
+    const directiveChoice = annualDirectiveChoices.find((choice) => choice.id === directiveChoiceId);
+
+    return {
+      action: "choose_directive",
+      actionLabel: "지시 선택",
+      title: "2년차 지시 선택",
+      description: `${directiveChoice?.title ?? "추천 지시"}를 고르고 기업용 제품 연구로 이어갑니다.`,
+      menu: "company",
+      product,
+      check: { ok: true, reasons: [] },
+      directiveChoiceId,
+    };
+  }
+
+  const missingCapability = getYearTwoProductMissingCapability(product, state);
+  if (missingCapability) {
+    const check = getCapabilityCheck(missingCapability, state);
+
+    return {
+      action: "upgrade_research",
+      actionLabel: check.ok ? `${missingCapability.name} 연구` : "필요 연구 보기",
+      title: "2년차 필요 연구",
+      description: `${product.name} 개발에 필요한 ${missingCapability.name} 연구를 먼저 진행합니다.`,
+      menu: "research",
+      product,
+      check,
+      capability: missingCapability,
+    };
+  }
+
+  const assignedAgentIds = getAvailableAgents(state).slice(0, 3).map((agent) => agent.id);
+  const check = getProductProjectCheck(product, state, assignedAgentIds);
+
+  return {
+    action: "start_product",
+    actionLabel: check.ok ? "신제품 개발" : "제품 조건 확인",
+    title: "2년차 신제품 착수",
+    description: `${product.name} 개발을 시작해 두 번째 출시 보상으로 이어갑니다.`,
+    menu: "products",
+    product,
+    check,
+    assignedAgentIds,
+  };
+}
+
+export function advanceYearTwoProductRoadmap(state: GameState, maxActions = 5): GameState {
+  let nextState = state;
+
+  for (let actionIndex = 0; actionIndex < maxActions; actionIndex += 1) {
+    const recommendation = getYearTwoProductRecommendation(nextState);
+    if (!recommendation || !recommendation.check.ok) return nextState;
+
+    const advancedState = applyYearTwoProductRecommendation(nextState, recommendation);
+    if (advancedState === nextState) return nextState;
+
+    nextState = advancedState;
+    if (recommendation.action === "start_product") return nextState;
+  }
+
+  return nextState;
+}
+
+function applyYearTwoProductRecommendation(state: GameState, recommendation: YearTwoProductRecommendation): GameState {
+  if (recommendation.action === "choose_directive" && recommendation.directiveChoiceId) {
+    return chooseAnnualDirective(recommendation.directiveChoiceId, state);
+  }
+
+  if (recommendation.action === "upgrade_research" && recommendation.capability) {
+    return upgradeCapability(recommendation.capability, state);
+  }
+
+  if (recommendation.action === "start_product") {
+    return startProductProject(recommendation.product, state, recommendation.assignedAgentIds);
+  }
+
+  return state;
+}
+
+function getPreferredYearTwoDirectiveChoiceId(state: GameState): string | undefined {
+  const pending = state.pendingAnnualDirectiveChoices;
+  if (!pending?.offeredDirectiveIds.length) return undefined;
+
+  return (
+    yearTwoDirectivePreference.find((choiceId) => pending.offeredDirectiveIds.includes(choiceId)) ??
+    pending.offeredDirectiveIds[0]
+  );
+}
+
+function getYearTwoProductMissingCapability(product: ProductDefinition, state: GameState): CapabilityDefinition | undefined {
+  const missingCapabilities = Object.entries(product.required_capabilities)
+    .filter(([capabilityId, requiredLevel]) => (state.capabilities[capabilityId] ?? 0) < requiredLevel)
+    .map(([capabilityId]) => capabilities.find((capability) => capability.id === capabilityId))
+    .filter((capability): capability is CapabilityDefinition => Boolean(capability));
+
+  if (!missingCapabilities.length) return undefined;
+
+  if (!state.unlockedDomains.includes(product.domain)) {
+    const domainUnlocker = missingCapabilities.find((capability) =>
+      capability.unlocks_domains?.[String((state.capabilities[capability.id] ?? 0) + 1)] === product.domain,
+    );
+    if (domainUnlocker) return domainUnlocker;
+  }
+
+  const adviceCapabilityId = getAnnualStrategyAdvice(state)?.capabilityRecommendations[0]?.id;
+  const adviceCapability = missingCapabilities.find((capability) => capability.id === adviceCapabilityId);
+  if (adviceCapability) return adviceCapability;
+
+  return (
+    yearTwoCapabilityPreference
+      .map((capabilityId) => missingCapabilities.find((capability) => capability.id === capabilityId))
+      .find((capability): capability is CapabilityDefinition => Boolean(capability)) ??
+    missingCapabilities[0]
+  );
 }
 
 export function getHiredAgentMonthlyUpkeep(agent: HiredAgent): ResourceMap {
@@ -1011,6 +1437,61 @@ export function getWorkforceSynergySummary(state: GameState, assignedAgentIds?: 
     ),
     projectQualityBonus: active.reduce((sum, synergy) => sum + synergy.project_effects.quality, 0),
     projectProgressBonus: active.reduce((sum, synergy) => sum + synergy.project_effects.progress, 0),
+  };
+}
+
+export function getWorkforceMixSummary(state: GameState): WorkforceMixSummary {
+  const counts = state.hiredAgents.reduce<Record<WorkforceMixKind, number>>(
+    (total, agent) => {
+      const agentType = agentTypes.find((entry) => entry.id === agent.typeId);
+      const kind = agentType ? getAgentKind(agentType) : "ai_agent";
+      total[kind] += 1;
+      return total;
+    },
+    { human: 0, ai_agent: 0, robot: 0 },
+  );
+  const aiCapacity = getAiOperationCapacity(state);
+  const roboticsUnlocked = (state.capabilities.robotics ?? 0) >= 1;
+  const synergySummary = getWorkforceSynergySummary(state);
+
+  return {
+    headline: `사람 ${counts.human} · AI ${counts.ai_agent}/${aiCapacity} · 로봇 ${counts.robot}`,
+    rows: [
+      {
+        kind: "human",
+        label: "사람 직원",
+        count: counts.human,
+        statusLabel: counts.human > 0 ? "AI 운용 감독" : "첫 직원 필요",
+        impactLabel: counts.human > 0 ? `AI 운용 한도 +${counts.human * 2}` : "AI 에이전트 한도와 케어 안정성을 엽니다",
+        roleBadge: counts.human > 0 ? "감독" : "채용",
+        metricLabel: counts.human > 0 ? `한도 +${counts.human * 2}` : "한도 잠김",
+        emphasis: counts.human > 0 ? "ready" : "missing",
+      },
+      {
+        kind: "ai_agent",
+        label: "AI 에이전트",
+        count: counts.ai_agent,
+        statusLabel: counts.ai_agent > 0 ? "제품/연구 자동화" : "AI 에이전트 대기",
+        impactLabel: `AI 운용 ${counts.ai_agent}/${aiCapacity}`,
+        roleBadge: counts.ai_agent > 0 ? "자동화" : "대기",
+        metricLabel: `운용 ${counts.ai_agent}/${aiCapacity}`,
+        emphasis: counts.ai_agent > 0 ? "ready" : "missing",
+      },
+      {
+        kind: "robot",
+        label: "로봇 인력",
+        count: counts.robot,
+        statusLabel: counts.robot > 0 ? "현장 자동화 가동" : roboticsUnlocked ? "로봇 후보 준비" : "로보틱스 Lv.1 필요",
+        impactLabel: counts.robot > 0 ? "하드웨어/운영 제품 완성도 보정" : "로봇/제조/오프라인 산업 확장용",
+        roleBadge: counts.robot > 0 ? "현장" : roboticsUnlocked ? "후보" : "잠금",
+        metricLabel: counts.robot > 0 ? "완성도 보정" : roboticsUnlocked ? "채용 가능" : "Lv.1 잠금",
+        emphasis: counts.robot > 0 ? "ready" : roboticsUnlocked ? "missing" : "locked",
+      },
+    ],
+    activeSynergyLabels: synergySummary.active.map((synergy) => synergy.title),
+    nextSynergyLabel: synergySummary.nextCandidate
+      ? `${synergySummary.nextCandidate.title} · ${synergySummary.nextCandidate.progressLabel}`
+      : undefined,
   };
 }
 
@@ -2306,6 +2787,16 @@ export function upgradeCapability(capability: CapabilityDefinition, state: GameS
     ...state,
     resources: nextResources,
     capabilities: { ...state.capabilities, [capability.id]: nextLevel },
+    lastCapabilityUpgrade: {
+      capabilityId: capability.id,
+      capabilityName: capability.name,
+      previousLevel: currentLevel,
+      nextLevel,
+      resourceCost: capability.upgrade_costs[currentLevel],
+      month: state.month,
+      unlockedDomainId,
+      unlockedDomainName: unlockedDomainId ? domainName(unlockedDomainId) : undefined,
+    },
     unlockedDomains: [...unlockedDomains],
     timeline: [
       `${capability.name} Lv.${nextLevel} 연구 완료${unlockedDomainId ? `: 새 분야 ${domainName(unlockedDomainId)} 해금` : ""}`,
@@ -2429,6 +2920,46 @@ export function advanceMonth(state: GameState): GameState {
   const finalStatus = getNextStatus(shockedState.resources, shockedState.activeProducts.length, nextMonth);
 
   return refreshStrategyDeckForNewMonth({ ...shockedState, status: finalStatus });
+}
+
+export function advanceToFirstLaunch(state: GameState, maxMonths = 6): GameState {
+  if (state.status !== "playing" || state.productProjects.length === 0) return state;
+
+  const startingActiveProductIds = new Set(state.activeProducts);
+  let nextState = state;
+
+  for (let monthIndex = 0; monthIndex < maxMonths; monthIndex += 1) {
+    if (nextState.status !== "playing" || nextState.productProjects.length === 0) return nextState;
+
+    nextState = advanceMonth(nextState);
+    const hasNewProduct = nextState.activeProducts.some((productId) => !startingActiveProductIds.has(productId));
+    if (hasNewProduct || nextState.productProjects.length === 0) return nextState;
+  }
+
+  return nextState;
+}
+
+export function advanceToFirstAnnualReview(state: GameState, maxMonths = 8): GameState {
+  if (state.status !== "playing" || state.activeProducts.length === 0) return state;
+
+  let nextState = state;
+
+  for (let monthIndex = 0; monthIndex < maxMonths; monthIndex += 1) {
+    if (nextState.status !== "playing") return nextState;
+    if (hasFirstAnnualReviewArrived(nextState)) return nextState;
+
+    nextState = advanceMonth(nextState);
+    if (hasFirstAnnualReviewArrived(nextState)) return nextState;
+  }
+
+  return nextState;
+}
+
+function hasFirstAnnualReviewArrived(state: GameState): boolean {
+  return (
+    Boolean(state.pendingAnnualDirectiveChoices?.offeredDirectiveIds.length) ||
+    state.annualReviewHistory.some((review) => review.year === 1)
+  );
 }
 
 function getPriorityStaffTimelineEntries(timeline: string[]): string[] {
@@ -2686,6 +3217,7 @@ export function hydrateGameState(serialized: string): GameState {
     roguelite: hydrateRogueliteState(rawState.roguelite, initialState.roguelite, generatedProducts),
     activeDevelopmentPuzzleModifiers: hydrateDevelopmentPuzzleModifiers(rawState.activeDevelopmentPuzzleModifiers),
     lastDevelopmentPuzzle: hydrateDevelopmentPuzzleResult(rawState.lastDevelopmentPuzzle),
+    lastCapabilityUpgrade: hydrateCapabilityUpgradeMoment(rawState.lastCapabilityUpgrade),
     chosenGrowthPath: hydrateChosenGrowthPath(rawState.chosenGrowthPath),
     unlockedAchievements: sanitizeStringArray(rawState.unlockedAchievements),
     annualReviewHistory: hydrateAnnualReviewHistory(rawState.annualReviewHistory),
@@ -3527,6 +4059,30 @@ function hydrateAnnualDirective(value: unknown): AnnualDirectiveState | undefine
     recommendedMenu: value.recommendedMenu,
     rivalMomentumDelta: Math.round(clamp(sanitizeNumber(value.rivalMomentumDelta, 0), -12, 12)),
     rewardBiasTags: sanitizeStringArray(value.rewardBiasTags),
+  };
+}
+
+function hydrateCapabilityUpgradeMoment(value: unknown): GameState["lastCapabilityUpgrade"] {
+  if (!isRecord(value)) return undefined;
+  const capabilityId = typeof value.capabilityId === "string" ? value.capabilityId : "";
+  const capability = capabilities.find((entry) => entry.id === capabilityId);
+  if (!capability) return undefined;
+  const previousLevel = Math.max(0, Math.round(sanitizeNumber(value.previousLevel, 0)));
+  const nextLevel = Math.max(previousLevel + 1, Math.round(sanitizeNumber(value.nextLevel, previousLevel + 1)));
+  const unlockedDomainId =
+    typeof value.unlockedDomainId === "string" && domains.some((domain) => domain.id === value.unlockedDomainId)
+      ? value.unlockedDomainId
+      : undefined;
+
+  return {
+    capabilityId,
+    capabilityName: typeof value.capabilityName === "string" ? value.capabilityName : capability.name,
+    previousLevel,
+    nextLevel,
+    resourceCost: isRecord(value.resourceCost) ? sanitizeResourceDelta(value.resourceCost) : {},
+    month: Math.max(1, Math.round(sanitizeNumber(value.month, 1))),
+    unlockedDomainId,
+    unlockedDomainName: unlockedDomainId ? domainName(unlockedDomainId) : undefined,
   };
 }
 

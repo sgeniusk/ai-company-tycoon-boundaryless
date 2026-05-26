@@ -1,20 +1,27 @@
-import { agentTypes, items, officeExpansions, products } from "./data";
+import { agentTypes, capabilities, items, officeExpansions, products, rivalEvents } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
+import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
 import { applyDueCampaignShocks } from "./campaign-shocks";
-import { createReleaseCardReward, getStrategyCardById, playStrategyCard } from "./deckbuilding";
+import { chooseCardReward, createReleaseCardReward, getStrategyCardById, playStrategyCard } from "./deckbuilding";
+import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { runPersonaPlaytestReview } from "./persona-playtest";
 import { evaluateAlphaReadiness, runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
 import {
   advanceMonth,
+  advanceToFirstAnnualReview,
+  advanceToFirstLaunch,
+  advanceYearTwoProductRoadmap,
   buyItem,
   buyOfficeExpansion,
   chooseGrowthPath,
   createInitialState,
   getStaffIncidentBriefs,
+  getYearTwoProductIssueRecommendation,
   hireAgent,
   resolveStaffIncident,
   startProductProject,
+  upgradeCapability,
 } from "./simulation";
 import type { GameState } from "./types";
 import type { MenuId } from "../ui/menu";
@@ -25,9 +32,12 @@ export const qaScenarioIds = [
   "project",
   "release",
   "reward",
+  "reward-picked",
+  "growth-picked",
   "shop",
   "office",
   "deck",
+  "deck-result",
   "deck-synergy",
   "strategy",
   "counter",
@@ -39,6 +49,19 @@ export const qaScenarioIds = [
   "restart-setup",
   "finale",
   "review",
+  "annual-directed",
+  "year-two-plan",
+  "year-two-research",
+  "year-two-research-complete",
+  "year-two-product-candidate",
+  "year-two-product-ready",
+  "year-two-product-started",
+  "year-two-product-issue-result",
+  "year-two-product-launch-impact",
+  "alpha-run-complete",
+  "alpha-run-issue-complete",
+  "alpha-run-second-launch",
+  "alpha-run-second-reward-picked",
   "reward-bias",
   "annual-strategy",
   "ten-year-sim",
@@ -64,6 +87,17 @@ export interface QaScenario {
   state: GameState;
   activeMenu: MenuId;
 }
+
+const postReleaseSeenTutorials = [
+  "welcome_garage",
+  "agent_hired",
+  "product_ideas",
+  "development_project",
+  "card_reward",
+  "next_run_setup",
+  "office_growth",
+  "competition_pressure",
+];
 
 export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "fresh") {
@@ -128,8 +162,26 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     return {
       id,
       label: "카드 보상 QA",
-      state: releaseState,
+      state: withPostReleaseTutorialsSeen(releaseState),
       activeMenu: "deck",
+    };
+  }
+
+  if (id === "reward-picked") {
+    return {
+      id,
+      label: "보상 선택 완료 QA",
+      state: createRewardPickedScenarioState(releaseState),
+      activeMenu: "deck",
+    };
+  }
+
+  if (id === "growth-picked") {
+    return {
+      id,
+      label: "성장 분기 선택 완료 QA",
+      state: createGrowthPickedScenarioState(releaseState),
+      activeMenu: "company",
     };
   }
 
@@ -154,8 +206,17 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "deck") {
     return {
       id,
-      label: "덱 퍼즐 QA",
+      label: "첫 개발 이슈 QA",
       state: projectState,
+      activeMenu: "deck",
+    };
+  }
+
+  if (id === "deck-result") {
+    return {
+      id,
+      label: "첫 개발 이슈 결과 QA",
+      state: createDevelopmentIssueResultState(projectState),
       activeMenu: "deck",
     };
   }
@@ -274,6 +335,123 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     };
   }
 
+  if (id === "annual-directed") {
+    return {
+      id,
+      label: "연간 지시 선택 완료 QA",
+      state: createAnnualDirectedScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "year-two-plan") {
+    return {
+      id,
+      label: "2년차 운영 시작 QA",
+      state: createYearTwoPlanScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "year-two-research") {
+    return {
+      id,
+      label: "2년차 연구 추천 QA",
+      state: createYearTwoResearchScenarioState(),
+      activeMenu: "research",
+    };
+  }
+
+  if (id === "year-two-research-complete") {
+    return {
+      id,
+      label: "2년차 연구 완료 QA",
+      state: createYearTwoResearchCompleteScenarioState(),
+      activeMenu: "research",
+    };
+  }
+
+  if (id === "year-two-product-candidate") {
+    return {
+      id,
+      label: "2년차 제품 후보 QA",
+      state: createYearTwoProductCandidateScenarioState(),
+      activeMenu: "products",
+    };
+  }
+
+  if (id === "year-two-product-ready") {
+    return {
+      id,
+      label: "2년차 제품 개발 준비 QA",
+      state: createYearTwoProductReadyScenarioState(),
+      activeMenu: "products",
+    };
+  }
+
+  if (id === "year-two-product-started") {
+    return {
+      id,
+      label: "2년차 제품 개발 착수 QA",
+      state: createYearTwoProductStartedScenarioState(),
+      activeMenu: "products",
+    };
+  }
+
+  if (id === "year-two-product-issue-result") {
+    return {
+      id,
+      label: "2년차 제품 이슈 결과 QA",
+      state: createYearTwoProductIssueResultScenarioState(),
+      activeMenu: "deck",
+    };
+  }
+
+  if (id === "year-two-product-launch-impact") {
+    return {
+      id,
+      label: "2년차 신제품 출시 QA",
+      state: createYearTwoProductLaunchImpactScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "alpha-run-complete") {
+    return {
+      id,
+      label: "30분 알파런 완료 QA",
+      state: createAlphaRunCompleteScenarioState(),
+      activeMenu: "deck",
+    };
+  }
+
+  if (id === "alpha-run-issue-complete") {
+    return {
+      id,
+      label: "30분 알파런 신제품 이슈 완료 QA",
+      state: createAlphaRunIssueCompleteScenarioState(),
+      activeMenu: "deck",
+    };
+  }
+
+  if (id === "alpha-run-second-launch") {
+    return {
+      id,
+      label: "30분 알파런 두 번째 출시 QA",
+      state: createAlphaRunSecondLaunchScenarioState(),
+      activeMenu: "deck",
+    };
+  }
+
+  if (id === "alpha-run-second-reward-picked") {
+    return {
+      id,
+      label: "30분 알파런 두 번째 보상 선택 QA",
+      state: createAlphaRunSecondRewardPickedScenarioState(),
+      activeMenu: "deck",
+    };
+  }
+
   if (id === "reward-bias") {
     return {
       id,
@@ -386,7 +564,7 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
   if (id === "launch-impact") {
     return {
       id,
-      label: "v0.22 출시 체감 QA",
+      label: "v0.56 출시 체감 QA",
       state: createLaunchImpactScenarioState(),
       activeMenu: "company",
     };
@@ -415,6 +593,28 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
     label: "출시 스포트라이트 QA",
     state: releaseState,
     activeMenu: "company",
+  };
+}
+
+function createGrowthPickedScenarioState(releaseState: GameState): GameState {
+  const rewardPickedState = createRewardPickedScenarioState(releaseState);
+  const growthPickedState = chooseGrowthPath("productivity_line", rewardPickedState);
+
+  return withPostReleaseTutorialsSeen(growthPickedState);
+}
+
+function createRewardPickedScenarioState(releaseState: GameState): GameState {
+  const reward = releaseState.roguelite.pendingCardReward;
+  if (!reward?.offeredCardIds.length) return releaseState;
+
+  const pickedState = chooseCardReward(reward.offeredCardIds[0], releaseState);
+  return withPostReleaseTutorialsSeen(pickedState);
+}
+
+function withPostReleaseTutorialsSeen(state: GameState): GameState {
+  return {
+    ...state,
+    seenTutorials: [...new Set([...(state.seenTutorials ?? []), ...postReleaseSeenTutorials])],
   };
 }
 
@@ -501,7 +701,7 @@ function createOfficeVisualScenarioState(): GameState {
   ];
   const visualAgents = baseState.hiredAgents.map((agent, index) => {
     if (index === 0) return { ...agent, energy: 78, loyalty: 72 };
-    if (index === 1) return { ...agent, energy: 74, loyalty: 38 };
+    if (index === 1) return { ...agent, energy: 74, level: 4, loyalty: 38 };
     if (index === 2) return { ...agent, energy: 24, loyalty: 76 };
     return agent;
   });
@@ -531,10 +731,15 @@ function createOfficeVisualScenarioState(): GameState {
   };
   const sprintCard = getStrategyCardById("prompt_sprint");
   const reactedState = sprintCard ? playStrategyCard(sprintCard, visualState) : visualState;
+  const incidentRivalEvent = rivalEvents.find((event) => event.id === "talent_poach");
 
   return {
     ...reactedState,
-    timeline: ["v0.55 스크린샷 QA: 데스크톱/모바일 프레이밍, 장식 depth, HUD 겹침, 후보 아트 교체 준비 확인", ...reactedState.timeline].slice(0, 8),
+    currentRivalEvent: incidentRivalEvent ?? reactedState.currentRivalEvent,
+    timeline: [
+      "v0.55 스크린샷 QA / v0.56 사건 화면 QA: 라이벌 이벤트와 인사 사건을 한 화면에서 확인",
+      ...reactedState.timeline,
+    ].slice(0, 8),
   };
 }
 
@@ -554,7 +759,18 @@ function createLaunchImpactScenarioState(): GameState {
 
   return {
     ...state,
-    timeline: ["출시 체감 QA: 카드가 첫 제품 성과와 보상 패널에 반영됨", ...state.timeline].slice(0, 8),
+    seenTutorials: [
+      ...new Set([
+        ...(state.seenTutorials ?? []),
+        "welcome_garage",
+        "agent_hired",
+        "development_project",
+        "card_reward",
+        "office_growth",
+        "competition_pressure",
+      ]),
+    ],
+    timeline: ["v0.56 출시 체감 QA: 카드, 경쟁사, 팀 반응이 첫 제품 성과 패널에 묶임", ...state.timeline].slice(0, 8),
   };
 }
 
@@ -600,6 +816,26 @@ function createDeckSynergyScenarioState(projectState: GameState): GameState {
   };
 }
 
+function createDevelopmentIssueResultState(projectState: GameState): GameState {
+  const interviewCard = getStrategyCardById("customer_interviews");
+  const preparedState = interviewCard ? playStrategyCard(interviewCard, projectState) : projectState;
+  const projectId = preparedState.productProjects[0]?.id;
+  if (!projectId) return preparedState;
+
+  const puzzle = createDevelopmentPuzzle(projectId, preparedState);
+  const selectedTileIds = puzzle.tiles.slice(0, 4).map((tile) => tile.id);
+  const resolvedState = resolveDevelopmentPuzzle(projectId, selectedTileIds, preparedState);
+
+  return {
+    ...resolvedState,
+    timeline: [
+      ...resolvedState.timeline.slice(0, 1),
+      "v0.56 첫 개발 이슈 결과 QA: 카드 보정과 진행도 상승을 덱 상단에서 확인",
+      ...resolvedState.timeline.slice(1),
+    ].slice(0, 8),
+  };
+}
+
 function createAnnualReviewScenarioState(): GameState {
   const activeProductIds = ["foundation_model_v0", "ai_writing_assistant"];
   const readyState: GameState = {
@@ -623,6 +859,269 @@ function createAnnualReviewScenarioState(): GameState {
     ...reviewedState,
     timeline: ["연간 심사 QA: 목표 달성, 보상, 최근 결과 카드 확인", ...reviewedState.timeline].slice(0, 8),
   };
+}
+
+function createAnnualDirectedScenarioState(): GameState {
+  const reviewedState = createAnnualReviewScenarioState();
+  const directedState = chooseAnnualDirective("trust_compound_program", reviewedState);
+  return {
+    ...directedState,
+    seenTutorials: [
+      ...new Set([
+        ...(directedState.seenTutorials ?? []),
+        "welcome_garage",
+        "agent_hired",
+        "product_ideas",
+        "development_project",
+        "card_reward",
+        "office_growth",
+        "competition_pressure",
+        "next_run_setup",
+      ]),
+    ],
+    timeline: [
+      "연간 지시 선택 완료 QA: 다음 해 운영 방향과 월간 보너스를 확인",
+      ...directedState.timeline,
+    ].slice(0, 8),
+  };
+}
+
+function createYearTwoPlanScenarioState(): GameState {
+  const directedState = createAnnualDirectedScenarioState();
+  const yearTwoState = advanceMonth(directedState);
+
+  return {
+    ...yearTwoState,
+    timeline: [
+      "2년차 운영 시작 QA: 연간 지시 월간 보너스와 추천 메뉴가 실제 운영으로 이어짐",
+      ...yearTwoState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createYearTwoResearchScenarioState(): GameState {
+  const yearTwoState = createYearTwoPlanScenarioState();
+
+  return {
+    ...yearTwoState,
+    timeline: [
+      "2년차 연구 추천 QA: 연간 지시가 추천한 연구 메뉴에서 바로 다음 실험을 시작",
+      ...yearTwoState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createYearTwoResearchCompleteScenarioState(): GameState {
+  const researchState = createYearTwoResearchScenarioState();
+  const recommendedCapabilityId = getAnnualStrategyAdvice(researchState)?.capabilityRecommendations[0]?.id;
+  const recommendedCapability = capabilities.find((capability) => capability.id === recommendedCapabilityId);
+  const completedState = recommendedCapability ? upgradeCapability(recommendedCapability, researchState) : researchState;
+
+  return {
+    ...completedState,
+    timeline: [
+      "2년차 연구 완료 QA: 추천 연구가 해금 시장과 다음 제품 후보로 이어짐",
+      ...completedState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createYearTwoProductCandidateScenarioState(): GameState {
+  const completedState = createYearTwoResearchCompleteScenarioState();
+
+  return {
+    ...completedState,
+    timeline: [
+      "2년차 제품 후보 QA: 연구 완료 보상이 새 시장 제품 후보와 다음 필요 연구로 이어짐",
+      ...completedState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createYearTwoProductReadyScenarioState(): GameState {
+  const candidateState = createYearTwoProductCandidateScenarioState();
+  const enterpriseProduct = products.find((product) => product.id === "enterprise_workflow_agent");
+  if (!enterpriseProduct) return candidateState;
+
+  let state = withYearTwoProductTeam(candidateState);
+  for (const [capabilityId, requiredLevel] of Object.entries(enterpriseProduct.required_capabilities)) {
+    const requiredCapability = capabilities.find((capability) => capability.id === capabilityId);
+    if (!requiredCapability) continue;
+
+    for (let guard = 0; (state.capabilities[capabilityId] ?? 0) < requiredLevel && guard <= requiredCapability.max_level; guard += 1) {
+      const fundedState = withYearTwoProductResourceFloors(state);
+      const upgradedState = upgradeCapability(requiredCapability, fundedState);
+      if (upgradedState === fundedState) break;
+      state = upgradedState;
+    }
+  }
+
+  const readyState = withYearTwoProductTeam(state);
+
+  return {
+    ...readyState,
+    timeline: [
+      "2년차 제품 개발 준비 QA: 필요 연구를 채워 기업 업무 에이전트 개발 버튼을 확인",
+      ...readyState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createYearTwoProductStartedScenarioState(): GameState {
+  const readyState = createYearTwoProductReadyScenarioState();
+  const enterpriseProduct = products.find((product) => product.id === "enterprise_workflow_agent");
+  if (!enterpriseProduct) return readyState;
+
+  const assignedAgentIds = readyState.hiredAgents.filter((agent) => !agent.assignment).slice(0, 3).map((agent) => agent.id);
+  const startedState = startProductProject(enterpriseProduct, readyState, assignedAgentIds);
+
+  return {
+    ...startedState,
+    timeline: [
+      "2년차 제품 개발 착수 QA: 연구 보상이 실제 신제품 프로젝트로 전환됨",
+      ...startedState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createYearTwoProductIssueResultScenarioState(): GameState {
+  const startedState = createYearTwoProductStartedScenarioState();
+  const project = startedState.productProjects.find((productProject) => productProject.productId === "enterprise_workflow_agent");
+  if (!project) return startedState;
+
+  const puzzle = createDevelopmentPuzzle(project.id, startedState);
+  const selectedTileIds = puzzle.tiles.slice(0, 4).map((tile) => tile.id);
+  const resolvedState = resolveDevelopmentPuzzle(project.id, selectedTileIds, startedState);
+
+  return {
+    ...resolvedState,
+    timeline: [
+      "2년차 제품 이슈 결과 QA: 신제품 개발 이슈가 진행도와 완성도를 실제로 올림",
+      ...resolvedState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createYearTwoProductLaunchImpactScenarioState(): GameState {
+  const issueResultState = createYearTwoProductIssueResultScenarioState();
+  const launchedState = advanceToFirstLaunch(issueResultState, 8);
+
+  return {
+    ...launchedState,
+    seenTutorials: [...new Set([...(launchedState.seenTutorials ?? []), ...postReleaseSeenTutorials])],
+    timeline: [
+      "2년차 신제품 출시 QA: 연구 보상이 기업 업무 에이전트 출시 결과와 카드 보상으로 이어짐",
+      ...launchedState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createAlphaRunCompleteScenarioState(): GameState {
+  const firstIssueState = createDevelopmentIssueResultState(createStarterProjectState());
+  const firstReleaseState = advanceToFirstLaunch(firstIssueState, 8);
+  const growthPickedState = createGrowthPickedScenarioState(firstReleaseState);
+  const reviewedState = advanceToFirstAnnualReview(
+    {
+      ...growthPickedState,
+      currentEvent: undefined,
+      currentRivalEvent: undefined,
+      resources: {
+        ...growthPickedState.resources,
+        cash: Math.max(growthPickedState.resources.cash ?? 0, 36000),
+        compute: Math.max(growthPickedState.resources.compute ?? 0, 160),
+        data: Math.max(growthPickedState.resources.data ?? 0, 260),
+        talent: Math.max(growthPickedState.resources.talent ?? 0, 9),
+        trust: Math.max(growthPickedState.resources.trust ?? 0, 88),
+      },
+    },
+    12,
+  );
+  const yearTwoReadyState = withYearTwoProductTeam(withYearTwoProductResourceFloors(reviewedState));
+  const completeState = advanceYearTwoProductRoadmap(yearTwoReadyState);
+
+  return {
+    ...completeState,
+    seenTutorials: [...new Set([...(completeState.seenTutorials ?? []), ...postReleaseSeenTutorials])],
+    timeline: [
+      "30분 알파런 완료 QA: 첫 출시, 카드 보상, 성장, 연간 지시, 2년차 신제품 착수를 한 화면에서 확인",
+      ...completeState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createAlphaRunIssueCompleteScenarioState(): GameState {
+  const completeState = createAlphaRunCompleteScenarioState();
+  const recommendation = getYearTwoProductIssueRecommendation(completeState);
+  if (!recommendation?.check.ok) return completeState;
+
+  const preparedState = recommendation.card ? playStrategyCard(recommendation.card, completeState) : completeState;
+  const resolvedState = resolveDevelopmentPuzzle(recommendation.projectId, recommendation.selectedTileIds, preparedState);
+
+  return {
+    ...resolvedState,
+    timeline: [
+      "30분 알파런 신제품 이슈 완료 QA: 완주 패널의 다음 개발 이슈가 실제 진행도와 완성도를 올림",
+      ...resolvedState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createAlphaRunSecondLaunchScenarioState(): GameState {
+  const issueCompleteState = createAlphaRunIssueCompleteScenarioState();
+  const launchedState = advanceToFirstLaunch(withYearTwoProductResourceFloors(issueCompleteState), 16);
+
+  return {
+    ...launchedState,
+    seenTutorials: [...new Set([...(launchedState.seenTutorials ?? []), ...postReleaseSeenTutorials])],
+    timeline: [
+      "30분 알파런 두 번째 출시 QA: 완주 패널의 출시 진행이 두 번째 보상 순간으로 이어짐",
+      ...launchedState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function createAlphaRunSecondRewardPickedScenarioState(): GameState {
+  const launchState = createAlphaRunSecondLaunchScenarioState();
+  const reward = launchState.roguelite.pendingCardReward;
+  const cardId = reward?.offeredCardIds[0];
+  const rewardedState = cardId ? chooseCardReward(cardId, launchState) : launchState;
+
+  return {
+    ...rewardedState,
+    timeline: [
+      "30분 알파런 두 번째 보상 선택 QA: 두 번째 출시 보상까지 선택해 알파런 핵심 루프를 닫음",
+      ...rewardedState.timeline,
+    ].slice(0, 10),
+  };
+}
+
+function withYearTwoProductResourceFloors(state: GameState): GameState {
+  return {
+    ...state,
+    resources: {
+      ...state.resources,
+      cash: Math.max(state.resources.cash ?? 0, 32000),
+      compute: Math.max(state.resources.compute ?? 0, 140),
+      data: Math.max(state.resources.data ?? 0, 240),
+      talent: Math.max(state.resources.talent ?? 0, 8),
+      trust: Math.max(state.resources.trust ?? 0, 85),
+    },
+  };
+}
+
+function withYearTwoProductTeam(state: GameState): GameState {
+  const yearTwoTeamIds = ["garage_junior_dev", "prompt_architect", "data_curator", "infra_operator"];
+
+  return yearTwoTeamIds.reduce((currentState, agentTypeId) => {
+    if (currentState.hiredAgents.some((agent) => agent.typeId === agentTypeId)) {
+      return withYearTwoProductResourceFloors(currentState);
+    }
+
+    const agentType = agentTypes.find((agent) => agent.id === agentTypeId);
+    if (!agentType) return withYearTwoProductResourceFloors(currentState);
+
+    return hireAgent(agentType, withYearTwoProductResourceFloors(currentState));
+  }, withYearTwoProductResourceFloors(state));
 }
 
 function createAnnualRewardBiasScenarioState(): GameState {
@@ -800,7 +1299,12 @@ function createStaffingState(): GameState {
 
   if (!architect || !curator) return createInitialState();
 
-  return hireAgent(curator, hireAgent(architect, createInitialState()));
+  const staffed = hireAgent(curator, hireAgent(architect, createInitialState()));
+
+  return {
+    ...staffed,
+    seenTutorials: [...staffed.seenTutorials, "welcome_garage", "agent_hired"],
+  };
 }
 
 function createStaffIncidentState(): GameState {
@@ -895,21 +1399,38 @@ function createOfficeScenarioState(releaseState: GameState): GameState {
 function createFirstTenMinuteFlowState(strategyState: GameState): GameState {
   const startupSuite = officeExpansions.find((expansion) => expansion.id === "startup_suite");
   const gpuRack = items.find((item) => item.id === "gpu_rack_mini");
+  const alphaState = runTenMinuteAlphaSimulation(strategyState.chosenGrowthPath?.id ?? "productivity_line").finalState;
   const fundedState: GameState = {
-    ...strategyState,
+    ...alphaState,
+    currentEvent: undefined,
+    currentRivalEvent: undefined,
+    month: Math.max(alphaState.month, 10),
+    seenTutorials: [
+      ...new Set([
+        ...(alphaState.seenTutorials ?? []),
+        "welcome_garage",
+        "agent_hired",
+        "product_ideas",
+        "development_project",
+        "card_reward",
+        "next_run_setup",
+        "office_growth",
+        "competition_pressure",
+      ]),
+    ],
     resources: {
-      ...strategyState.resources,
-      cash: Math.max(strategyState.resources.cash ?? 0, 12000),
-      data: Math.max(strategyState.resources.data ?? 0, 40),
-      compute: Math.max(strategyState.resources.compute ?? 0, 80),
+      ...alphaState.resources,
+      cash: Math.max(alphaState.resources.cash ?? 0, 12000),
+      data: Math.max(alphaState.resources.data ?? 0, 40),
+      compute: Math.max(alphaState.resources.compute ?? 0, 80),
     },
   };
-  const expandedState = startupSuite ? buyOfficeExpansion(startupSuite, fundedState) : fundedState;
-  const decoratedState = gpuRack ? buyItem(gpuRack, expandedState) : expandedState;
+  const expandedState = startupSuite && fundedState.office.expansionId !== startupSuite.id ? buyOfficeExpansion(startupSuite, fundedState) : fundedState;
+  const decoratedState = gpuRack && !expandedState.ownedItems.includes(gpuRack.id) ? buyItem(gpuRack, expandedState) : expandedState;
 
   return {
     ...decoratedState,
-    timeline: ["첫 10분 흐름 QA: 출시, 성장 선택, 사무실 정비 후 경쟁 대응 직전", ...decoratedState.timeline].slice(0, 8),
+    timeline: ["v0.56 첫 10분 흐름 QA: 첫 출시, 카드 체감, 사무실 정비, 경쟁 대응 후 연간 심사까지 2개월", ...decoratedState.timeline].slice(0, 8),
   };
 }
 

@@ -1,5 +1,6 @@
-import { products, resources, strategyCards } from "./data";
-import type { GameState, ResourceMap, StrategyCardDefinition } from "./types";
+import { agentTypes, competitors, products, resources, strategyCards } from "./data";
+import type { CompetitorState, GameState, ProductDefinition, ResourceMap, StrategyCardDefinition } from "./types";
+import { t } from "../i18n";
 
 export interface ReleaseResourceHighlight {
   resourceId: string;
@@ -13,12 +14,37 @@ export interface ReleaseCardInfluence {
   effects: string;
 }
 
+export interface ReleaseReviewSnippet {
+  id: "early-user" | "local-owner" | "market-watcher";
+  speaker: string;
+  text: string;
+  tone: "warm" | "funny" | "watch";
+}
+
+export interface ReleaseMomentHighlight {
+  id: "card-impact" | "rival-reaction" | "team-reaction";
+  label: string;
+  title: string;
+  detail: string;
+  tone: "card" | "rival" | "team";
+}
+
+export interface ReleaseNextActionStep {
+  id: "reward" | "growth" | "advance";
+  label: string;
+  detail: string;
+  menu: "deck" | "results" | "company";
+}
+
 export interface ReleaseImpactSummary {
   headline: string;
   description: string;
   badges: string[];
   resourceHighlights: ReleaseResourceHighlight[];
   cardInfluences: ReleaseCardInfluence[];
+  reviewSnippets: ReleaseReviewSnippet[];
+  momentHighlights: ReleaseMomentHighlight[];
+  nextActionSteps: ReleaseNextActionStep[];
   nextAction: string;
 }
 
@@ -76,9 +102,171 @@ export function getReleaseImpactSummary(state: GameState): ReleaseImpactSummary 
       },
     ],
     cardInfluences,
+    reviewSnippets: getReleaseReviewSnippets(release, product, cardInfluences),
+    momentHighlights: getReleaseMomentHighlights(state, product, cardInfluences),
+    nextActionSteps: getReleaseNextActionSteps(pendingRewardCount),
     nextAction: pendingRewardCount
       ? "덱 메뉴에서 보상 카드를 고르고, 결과 탭의 성장 분기를 하나 확정하세요."
       : "성장 분기 선택 후 다음 제품이나 경쟁 대응으로 이어가세요.",
+  };
+}
+
+function getReleaseNextActionSteps(pendingRewardCount: number): ReleaseNextActionStep[] {
+  return [
+    {
+      id: "reward",
+      label: "보상 카드 선택",
+      detail: pendingRewardCount ? `${pendingRewardCount}장 중 1장으로 이번 런의 색을 정합니다.` : "보상 카드가 없으면 현재 덱으로 다음 선택을 이어갑니다.",
+      menu: "deck",
+    },
+    {
+      id: "growth",
+      label: "성장 분기 선택",
+      detail: "생산성, 신뢰, 연구 중 다음 성장 방향을 확정합니다.",
+      menu: "results",
+    },
+    {
+      id: "advance",
+      label: "다음 달 진행",
+      detail: "새 카드와 성장 방향이 월간 운영에 반영되는지 확인합니다.",
+      menu: "company",
+    },
+  ];
+}
+
+function getReleaseReviewSnippets(
+  release: NonNullable<GameState["lastRelease"]>,
+  product: ProductDefinition | undefined,
+  cardInfluences: ReleaseCardInfluence[],
+): ReleaseReviewSnippet[] {
+  const isStrongLaunch = release.review.score >= 80;
+  const cardName = cardInfluences[0]?.cardName;
+  const domainHook = getDomainReviewHook(product?.domain);
+
+  return [
+    {
+      id: "early-user",
+      speaker: "초기 사용자",
+      text: isStrongLaunch
+        ? `${release.productName}, 첫날부터 결과물이 빨라서 유료 버튼을 찾게 됩니다.`
+        : `${release.productName}, 아이디어는 보이는데 다음 업데이트가 빨리 필요합니다.`,
+      tone: "warm",
+    },
+    {
+      id: "local-owner",
+      speaker: "동네 사장님",
+      text: domainHook,
+      tone: "funny",
+    },
+    {
+      id: "market-watcher",
+      speaker: "시장 관찰자",
+      text: cardName
+        ? `${cardName} 덕분에 출시 서사가 생겼습니다. 이제 경쟁사가 숫자를 확인할 차례입니다.`
+        : "카드를 섞어 출시하면 다음 결과표에 플레이어의 손맛이 더 선명하게 남습니다.",
+      tone: "watch",
+    },
+  ];
+}
+
+function getDomainReviewHook(domain?: string): string {
+  if (domain === "personal_productivity") return "회의가 12분 짧아졌는데, 직원들이 이걸 복지라고 우기기 시작했습니다.";
+  if (domain === "developer_tools") return "버그 리포트가 줄어든 건 좋은데 개발자들이 새 기능을 더 많이 요구합니다.";
+  if (domain === "customer_support") return "새벽 문의가 조용해졌습니다. 대신 사장님이 대시보드를 계속 새로고침합니다.";
+  if (domain === "robotics") return "로봇이 일을 잘해서 박수쳤더니, 옆에서 충전부터 해달라고 합니다.";
+  if (domain === "odd_industries") return "이상한 조합인데 손님들이 사진을 찍기 시작했습니다. 위험하지만 맛있습니다.";
+
+  return "처음엔 반신반의했는데, 오늘 매장 앞에서 두 명이 이 제품 이야기만 했습니다.";
+}
+
+function getReleaseMomentHighlights(
+  state: GameState,
+  product: ProductDefinition | undefined,
+  cardInfluences: ReleaseCardInfluence[],
+): ReleaseMomentHighlight[] {
+  const highlights: ReleaseMomentHighlight[] = [];
+  const firstCardInfluence = cardInfluences[0];
+
+  if (firstCardInfluence) {
+    const visibleCardNames = cardInfluences
+      .slice(0, 2)
+      .map((influence) => influence.cardName)
+      .join(" + ");
+    const visibleEffects = cardInfluences
+      .slice(0, 2)
+      .map((influence) => `${influence.cardName}: ${influence.effects}`)
+      .join(" · ");
+
+    highlights.push({
+      id: "card-impact",
+      label: "카드 체감",
+      title: cardInfluences.length > 1 ? "카드 콤보 적용" : `${firstCardInfluence.cardName} 적용`,
+      detail: visibleEffects,
+      tone: "card",
+    });
+  }
+
+  const rivalTarget = getLaunchRivalTarget(state, product);
+  if (rivalTarget) {
+    const definition = competitors.find((competitor) => competitor.id === rivalTarget.id);
+    const rivalName = definition ? t(definition.name_key) : rivalTarget.id;
+    const domainLabel = product?.domain ? product.domain.replace(/_/g, " ") : "핵심";
+    const eventDetail =
+      state.currentRivalEvent?.competitor_id === rivalTarget.id
+        ? ` · ${t(state.currentRivalEvent.name_key)}`
+        : "";
+
+    highlights.push({
+      id: "rival-reaction",
+      label: "경쟁사 반응",
+      title: `${rivalName} 견제`,
+      detail: `${rivalName} ${rivalTarget.marketShare}% · ${domainLabel} 대응 준비${eventDetail}`,
+      tone: "rival",
+    });
+  }
+
+  const leadAgent = getLeadLaunchAgent(state);
+  if (leadAgent) {
+    const energyTone = leadAgent.agent.energy < 35 ? "지친 상태로도" : leadAgent.agent.energy < 60 ? "숨을 고르며" : "들뜬 표정으로";
+
+    highlights.push({
+      id: "team-reaction",
+      label: "팀 반응",
+      title: `${leadAgent.name} 회고`,
+      detail: `${leadAgent.name}가 ${energyTone} 다음 업데이트 아이디어를 붙였습니다.`,
+      tone: "team",
+    });
+  }
+
+  return highlights.slice(0, 3);
+}
+
+function getLaunchRivalTarget(state: GameState, product: ProductDefinition | undefined): CompetitorState | undefined {
+  const eventTarget = state.currentRivalEvent
+    ? state.competitorStates.find((competitor) => competitor.id === state.currentRivalEvent?.competitor_id)
+    : undefined;
+  if (eventTarget) return eventTarget;
+
+  const focusedCompetitors = product
+    ? state.competitorStates.filter((competitorState) => {
+        const definition = competitors.find((competitor) => competitor.id === competitorState.id);
+        return definition?.focus_domains.includes(product.domain);
+      })
+    : [];
+  const candidates = focusedCompetitors.length ? focusedCompetitors : state.competitorStates;
+
+  return [...candidates].sort((left, right) => right.marketShare - left.marketShare || right.score - left.score)[0];
+}
+
+function getLeadLaunchAgent(state: GameState) {
+  const agent = [...state.hiredAgents].sort((left, right) => right.level - left.level || right.energy - left.energy)[0];
+  if (!agent) return undefined;
+
+  const definition = agentTypes.find((agentType) => agentType.id === agent.typeId);
+
+  return {
+    agent,
+    name: agent.name || definition?.name || "창업팀",
   };
 }
 
