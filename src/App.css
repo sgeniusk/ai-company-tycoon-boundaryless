@@ -2945,16 +2945,45 @@ p {
   white-space: nowrap;
 }
 
+.workforce-mix-panel .workforce-mix-metric {
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 2px 6px;
+}
+
 .workforce-mix-row.emphasis-ready {
   border-color: var(--green);
 }
 
+.workforce-mix-row.emphasis-ready .workforce-mix-status::before {
+  content: "\2714  ";
+  color: var(--green);
+  margin-right: 2px;
+}
+
 .workforce-mix-row.emphasis-locked {
-  background: #f1f1f1;
+  background: #fff3e6;
+  border-color: #e89868;
+}
+
+.workforce-mix-row.emphasis-locked .workforce-mix-status {
+  color: #8b3d0a;
+  font-weight: 900;
+}
+
+.workforce-mix-row.emphasis-locked .workforce-mix-status::before {
+  content: "\1F512  ";
+  color: #b8530f;
+  margin-right: 2px;
 }
 
 .workforce-mix-impact {
   color: #5d7180;
+}
+
+.workforce-mix-panel .workforce-mix-impact {
+  font-size: 0.6rem;
+  opacity: 0.85;
 }
 
 .guidance-warning {
