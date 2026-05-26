@@ -2072,6 +2072,44 @@ p {
   white-space: nowrap;
 }
 
+.opening-fantasy-signal {
+  animation: opening-signal-enter 400ms ease-out both;
+}
+
+@keyframes opening-signal-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.first-hire-fast-start button:not(:disabled) {
+  animation: first-hire-pulse 2400ms ease-in-out infinite;
+}
+
+@keyframes first-hire-pulse {
+  0%,
+  100% {
+    box-shadow: 0 2px 0 rgba(45, 88, 58, 0.18);
+  }
+  50% {
+    box-shadow:
+      0 2px 0 rgba(45, 88, 58, 0.18),
+      0 0 12px rgba(45, 88, 58, 0.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening-fantasy-signal,
+  .first-hire-fast-start button:not(:disabled) {
+    animation: none;
+  }
+}
+
 .first-hire-fast-start {
   background: #fffdf5;
   border: 2px solid var(--green);
