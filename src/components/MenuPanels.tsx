@@ -821,6 +821,20 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                 해결 이슈 {activeIssueResultTiles.map((tile) => tile.label).join(", ")}
               </span>
             </div>
+            <div
+              className="release-progress-meter"
+              role="progressbar"
+              aria-valuenow={Math.round(activeProject.progress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="출시까지 진행도"
+            >
+              <strong>출시까지</strong>
+              <div className="release-progress-bar">
+                <i style={{ width: `${Math.min(100, Math.max(0, Math.round(activeProject.progress)))}%` }} />
+              </div>
+              <span>{Math.round(activeProject.progress)}% · 완성도 {Math.round(activeProject.quality)}</span>
+            </div>
             <div className="development-issue-next">
               <strong>다음 목표</strong>
               <span>출시까지 진행해서 리뷰와 경쟁사 반응을 확인하세요.</span>

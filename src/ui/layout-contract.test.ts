@@ -610,6 +610,18 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.development-issue-result-ribbon\s+\.impact-chip\s*{[^}]*background:\s*#fffdf5/s);
   });
 
+  it("visualizes the release progress meter inside the issue result ribbon", () => {
+    expect(menuPanels).toContain("release-progress-meter");
+    expect(menuPanels).toContain("release-progress-bar");
+    expect(menuPanels).toContain("출시까지 진행도");
+    expect(menuPanels).toContain('role="progressbar"');
+    expect(appCss).toMatch(/\.release-progress-meter\s*{[^}]*grid-template-columns:\s*auto minmax\(0,\s*1fr\)\s+auto/s);
+    expect(appCss).toMatch(/\.release-progress-bar\s*{[^}]*border-radius:\s*999px/s);
+    expect(appCss).toMatch(/\.release-progress-bar i\s*{[^}]*animation:\s*release-progress-fill/s);
+    expect(appCss).toMatch(/@keyframes release-progress-fill/);
+    expect(appCss).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.release-progress-bar i[\s\S]*animation:\s*none/);
+  });
+
   it("surfaces a compact office growth planner inside the shop console", () => {
     expect(menuPanels).toContain("getOfficeGrowthPlan");
     expect(menuPanels).toContain("office-growth-planner");

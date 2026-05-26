@@ -8118,6 +8118,64 @@ p {
   padding: 7px;
 }
 
+.release-progress-meter {
+  align-items: center;
+  background: #fffdf5;
+  border: 2px solid #88b957;
+  border-radius: 6px;
+  display: grid;
+  gap: 4px 8px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: 7px 9px;
+}
+
+.release-progress-meter strong {
+  color: #264c23;
+  font-size: 0.74rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.release-progress-bar {
+  background: #e6f2d8;
+  border: 1px solid #b8d59a;
+  border-radius: 999px;
+  height: 9px;
+  min-width: 60px;
+  overflow: hidden;
+}
+
+.release-progress-bar i {
+  animation: release-progress-fill 540ms ease-out both;
+  background: linear-gradient(90deg, #88b957 0%, #4d8f33 100%);
+  display: block;
+  height: 100%;
+}
+
+.release-progress-meter span {
+  color: #385a2f;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+@keyframes release-progress-fill {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .release-progress-bar i {
+    animation: none;
+  }
+}
+
 .development-issue-next {
   background: #e6f2d8;
   border: 2px solid var(--green);
