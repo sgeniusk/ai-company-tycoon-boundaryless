@@ -3388,6 +3388,55 @@ p {
   margin-bottom: 2px;
 }
 
+.card-impact-list span {
+  align-items: center;
+  display: grid;
+  gap: 4px 6px;
+  grid-template-columns: auto auto minmax(0, 1fr);
+}
+
+.card-impact-list strong {
+  margin-bottom: 0;
+}
+
+.card-impact-arrow {
+  animation: card-impact-arrow-pulse 1400ms ease-in-out infinite;
+  color: #b8530f;
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.card-impact-effects {
+  color: #4f3b21;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1.2;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+@keyframes card-impact-arrow-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-impact-arrow {
+    animation: none;
+  }
+}
+
 .launch-next-action-ribbon {
   display: grid;
   gap: 5px;

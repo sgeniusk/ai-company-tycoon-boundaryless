@@ -1571,7 +1571,8 @@ function LaunchImpactPanel({
               {summary.cardInfluences.map((influence) => (
                 <span key={influence.cardId}>
                   <strong>{influence.cardName}</strong>
-                  {influence.effects}
+                  <em className="card-impact-arrow" aria-hidden="true">→</em>
+                  <span className="card-impact-effects">{influence.effects}</span>
                 </span>
               ))}
             </div>
