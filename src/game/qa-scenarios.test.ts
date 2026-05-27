@@ -74,6 +74,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "launch-impact",
       "operations",
       "office-visuals",
+      "market-share",
     ]);
   });
 

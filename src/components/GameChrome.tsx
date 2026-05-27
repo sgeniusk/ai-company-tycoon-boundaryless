@@ -86,6 +86,7 @@ import type {
 import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, statusLabel } from "../ui/formatters";
 import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
+import { MarketSharePanel } from "./MarketSharePanel";
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
   if (!palette?.length) return {};
@@ -279,6 +280,7 @@ export function TopBar({
         </div>
         <CompetitorHudStrip gameState={gameState} locale={locale} />
       </div>
+      <MarketSharePanel gameState={gameState} locale={locale} />
     </section>
   );
 }

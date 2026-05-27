@@ -9,6 +9,7 @@ const guidanceSource = readFileSync(new URL("../game/guidance.ts", import.meta.u
 const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.meta.url), "utf8");
 const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPanel.tsx", import.meta.url), "utf8");
 const playtestObserver = readFileSync(new URL("../game/blind-playtest-observer.ts", import.meta.url), "utf8");
+const marketSharePanel = readFileSync(new URL("../components/MarketSharePanel.tsx", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
@@ -777,5 +778,23 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.retention-alert-list\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.contract-badge\s*{[^}]*font-weight:\s*900/s);
     expect(appCss).toMatch(/\.agent-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("v0.58 #1 visualizes market share with derive-only data and top-pressure highlight", () => {
+    expect(gameChrome).toContain("MarketSharePanel");
+    expect(gameChrome).toContain("<MarketSharePanel gameState={gameState} locale={locale} />");
+    expect(marketSharePanel).toContain("getPlayerMarketShare");
+    expect(marketSharePanel).toContain("getCompetitionSeasonBrief");
+    expect(marketSharePanel).toContain("competitorStates");
+    expect(marketSharePanel).toContain("market-share-panel");
+    expect(marketSharePanel).toContain("market-share-bar");
+    expect(marketSharePanel).toContain("market-share-legend");
+    expect(marketSharePanel).toContain("market-share-top");
+    expect(appCss).toMatch(/\.market-share-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.market-share-bar\s*{[^}]*display:\s*flex/s);
+    expect(appCss).toMatch(/\.market-share-segment\s*{[^}]*transition:/s);
+    expect(appCss).toMatch(/\.market-share-top\s*{/s);
+    expect(appCss).toMatch(/\.market-share-legend\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.market-share-panel/s);
   });
 });

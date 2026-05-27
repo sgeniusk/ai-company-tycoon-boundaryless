@@ -9419,3 +9419,124 @@ p {
     grid-column: 2;
   }
 }
+
+.market-share-panel {
+  background: #11201a;
+  border: 2px solid var(--line);
+  color: #fff7df;
+  display: grid;
+  gap: 6px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.market-share-header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.market-share-header strong {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.market-share-self-pill,
+.market-share-pressure-pill {
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  font-size: 0.58rem;
+  font-weight: 700;
+  padding: 3px 6px;
+}
+
+.market-share-self-pill {
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.market-share-pressure-pill {
+  background: #ffb43a;
+  color: #25190a;
+}
+
+.market-share-bar {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  height: 14px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.market-share-segment {
+  border-right: 1px solid rgba(0, 0, 0, 0.35);
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.market-share-segment.market-share-self {
+  background: var(--blue);
+}
+
+.market-share-segment.market-share-other {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.market-share-top {
+  box-shadow: inset 0 0 0 2px #ffb43a;
+}
+
+.market-share-legend {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.market-share-legend li {
+  align-items: center;
+  display: flex;
+  font-size: 0.58rem;
+  gap: 5px;
+}
+
+.market-share-legend strong {
+  margin-left: auto;
+}
+
+.market-share-legend-top {
+  background: rgba(255, 180, 58, 0.14);
+}
+
+.market-share-swatch {
+  background: var(--blue);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: block;
+  flex: 0 0 10px;
+  height: 10px;
+  width: 10px;
+}
+
+.market-share-pressure-badge {
+  background: #ffb43a;
+  color: #25190a;
+  font-size: 0.5rem;
+  font-style: normal;
+  font-weight: 800;
+  margin-left: 4px;
+  padding: 1px 4px;
+}
+
+@media (max-width: 700px) {
+  .market-share-panel {
+    padding: 6px 8px;
+  }
+
+  .market-share-legend {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

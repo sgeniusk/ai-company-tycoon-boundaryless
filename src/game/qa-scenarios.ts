@@ -77,6 +77,7 @@ export const qaScenarioIds = [
   "launch-impact",
   "operations",
   "office-visuals",
+  "market-share",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -105,6 +106,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "첫 화면 QA",
       state: createInitialState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "market-share") {
+    return {
+      id,
+      label: "시장 점유율 시각화 QA",
+      state: advanceToFirstAnnualReview(createInitialState()),
       activeMenu: "company",
     };
   }

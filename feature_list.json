@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-05-27",
-  "current_feature_id": "v0.57-alpha-core-fun-polish",
+  "current_feature_id": "v0.58-alpha-market-season-strength",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -76,7 +76,31 @@
         "2026-05-27: v0.57 #8 release-progress-meter with gradient bar inside issue-result ribbon (commit e280f4e); harness:gate 43 files / 409 tests pass.",
         "2026-05-27: v0.57 #9 reward-choice rarity differentiation - rare blue glow + 희귀 badge, epic purple/gold pulse + 특수 badge (commit bc75b7d); harness:gate 43 files / 410 tests pass."
       ],
-      "next_step": "Decide next milestone in the next session. Candidates: (a) v0.58-alpha market season strength (rival presence, market share, big event popup), (b) AGY agent 5x review + real human playtest if final art is wanted, (c) v0.57 P2 mobile polish backlog."
+      "next_step": "Closed. Next milestone selected as v0.58-alpha-market-season-strength on 2026-05-27."
+    },
+    {
+      "id": "v0.58-alpha-market-season-strength",
+      "name": "Market season strength (rival presence, market share visualization, response cards, big event popup)",
+      "description": "Make competitors feel alive by visualizing market share, surfacing rival archetype/weakness, response cards, and big event popup. First isolated block is market share visualization (HUD panel) using derive-only data - no simulation changes.",
+      "status": "in_progress",
+      "priority": "P0",
+      "dependencies": [
+        "v0.57-alpha-core-fun-polish"
+      ],
+      "definition_of_done": [
+        "Market share visualization HUD panel shows player vs 13 competitors using derive-only data (no simulation changes).",
+        "Top pressure competitor highlighted with shared color/badge.",
+        "Rival archetype/weakness surfaced near the market share panel.",
+        "Response card differentiation makes rival pressure feel like a card need.",
+        "Big event popup on annual challenger entry uses competitors[].entry_announcement.",
+        "Each block adds one layout-contract it block.",
+        "Mobile 390x844 stays unbroken.",
+        "npm run harness:gate passes."
+      ],
+      "evidence": [
+        "2026-05-27: v0.58 entry chosen as next milestone. Track A (market share visualization, Claude Code direct) starts with current-snapshot stacked bar; sparkline deferred to v0.58 #2 because CompetitorState lacks history. Track B (AGY 5x agent review automation) and Track C (v0.57 P2 mobile polish backlog) prepared as Codex CLI handoff at reports/codex-handoff/v0_58_track_b_agy_review.md and reports/codex-handoff/v0_57_track_c_p2_mobile_backlog.md."
+      ],
+      "next_step": "v0.58 #1 - market share visualization HUD panel (derive-only) under ?scenario=market-share. Files: src/components/MarketSharePanel.tsx (new), src/components/GameChrome.tsx, src/App.css, src/game/qa-scenarios.ts, src/ui/layout-contract.test.ts."
     },
     {
       "id": "art-intake-final-source-art",

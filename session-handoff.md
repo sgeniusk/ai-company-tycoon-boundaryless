@@ -1,74 +1,70 @@
-# Session Handoff - AI Company Tycoon: Boundaryless
+# 세션 핸드오프 — AI Company Tycoon: Boundaryless
 
-Last Updated: 2026-05-27
+작성일: 2026-05-27
 
-## Current State
+## 한 줄 요약
 
-- Current version: `v0.57-alpha`
-- Current feature: `v0.57-alpha-core-fun-polish` (completed)
-- Next milestone: unselected (candidates listed below)
-- Latest implementation commit: `bc75b7d v0.57 #9: reward-choice rarity differentiation`
-- Stack: Vite + React + TypeScript
-- Local dev: `npm run dev -- --port 5201`
-- Visual QA: `http://127.0.0.1:5201/?scenario=office-visuals`
-- Claude Code entry: `CLAUDE.md`
-- Full gate: `npm run harness:gate`
+빌드는 `v0.57-alpha`에서 `v0.58-alpha`로 진입 중. 다음 마일스톤 `v0.58-alpha-market-season-strength` 선택. Track A(시장 점유율 시각화)는 Claude Code 직접 구현, Track B(AGY 자동화)/Track C(v0.57 P2 모바일 백로그)는 Codex CLI 위임 파일로 준비됨.
 
-## Current Work
+## 현재 상태
 
-v0.57 core fun polish closed 2026-05-27. The pre-art 20-30 minute slice (v0.56) and the first 30 minute UX polish (v0.57) are both done. Next milestone is unselected — pick one in the next session.
+- 로컬 폴더: `/Users/taewookkim/dev/ai-company-tycoon`
+- 브랜치: `main`
+- 최신 구현 커밋: `6761c00 v0.57 closeout: sync root state to v0.57-alpha (next milestone unselected)`
+- 스택: Vite + React + TypeScript
+- 로컬 실행: `npm run dev -- --port 5201`
+- 메인 QA: `http://127.0.0.1:5201/?scenario=office-visuals`
+- Track A QA: `http://127.0.0.1:5201/?scenario=market-share` (신규)
+- 전체 게이트: `npm run harness:gate`
+- 루트 시작 문서: `AGENTS.md`, `feature_list.json`, `progress.md`
 
-### Candidates for next current feature
+## v0.58 트랙 분배 (2026-05-27)
 
-- `v0.58-alpha-market-season-strength` — rival presence, market share visualization, response cards, big event popup (ROADMAP section 4).
-- P2 follow-up: AGY 5x agent reviews + 5x real human blind sessions if final graphic art is to be requested.
-- v0.57 P2 mobile polish backlog.
+- **Track A** — Claude Code 본 세션. v0.58 #1 시장 점유율 시각화 HUD 패널. derive-only — `getPlayerMarketShare()` + `competitorStates[].marketShare`. simulation.ts 미수정. Sparkline은 history 필요라 v0.58 #2로 분리.
+- **Track B** — Codex CLI 병렬. AGY 5x agent review 자동화 → `qa:asset-handoff` 게이트 해제. 인계 파일 `reports/codex-handoff/v0_58_track_b_agy_review.md`.
+- **Track C Phase 1** — Codex CLI 병렬. v0.57 P2 모바일 폴리시 백로그 수집 → `reports/qa/v0_57_p2_mobile_backlog.md`. 인계 파일 `reports/codex-handoff/v0_57_track_c_p2_mobile_backlog.md`.
 
-## v0.57 Slice Summary
+## v0.57 슬라이스 요약 (closed)
 
-v0.57 stacked 9 polish `#N` commits + 4 P1 polish commits on top of the locked v0.56 slice:
+v0.57은 v0.56 잠금 슬라이스 위에 9개 `#N` 폴리시 커밋 + 4개 P1 폴리시 커밋 + closeout 커밋(`6761c00`)을 쌓아 첫 30분 UX를 정돈한 마일스톤이다. 최종 `harness:gate` 상태는 43 files / 410 tests. 상세 변경 이력은 커밋 메시지(`87cd32c` ~ `bc75b7d` + `6761c00`)와 `docs/CHANGELOG.md`에 보관한다.
 
-- `#1` launch-impact entry animations and shine (commit `87cd32c`)
-- `#2` card → effects arrow flow in launch-impact (commit `204330c`); introduced shared `card-impact-arrow-pulse` keyframe
-- `#3` products.json expanded to 30 entries via Codex CLI (commit `5078ceb`)
-- `#4` burnout aftermath progress/quality penalty eased (commit `9f5efe8`)
-- `#5` first-screen entry animation + first-hire pulse glow (commit `9493f24`)
-- `#6` reward-choice card → effects arrow flow (commit `a38315a`); reuses `card-impact-arrow-pulse`
-- `#7` year-two kickoff entry animation + 4-step next-30min arrow flow (commit `2a77039`); reuses `card-impact-arrow-pulse`
-- `#8` release progress meter with gradient fill inside issue result ribbon (commit `e280f4e`); `role=progressbar` accessibility
-- `#9` reward-choice rarity differentiation: rare blue glow + 희귀 badge, epic purple/gold pulse + 특수 badge (commit `bc75b7d`)
-- P1 #1-4: workforce mix visual hierarchy, launch-impact mobile collapsible, auto-advance monthly count surfacing, mobile debrief visual hierarchy
+## 파일
 
-Detailed change history lives in commits; do not duplicate it in root state files.
+- 로드맵: `docs/ROADMAP.md`
+- QA 시나리오: `docs/QA_SCENARIOS.md`
+- v0.56 리포트 (닫힌 슬라이스): `reports/playtests/v0_56_*`, `reports/qa/v0_56_*`
+- Codex CLI 인계: `reports/codex-handoff/v0_58_track_b_agy_review.md`, `reports/codex-handoff/v0_57_track_c_p2_mobile_backlog.md`
+- 최종 아트 (P2): `docs/ART_INTAKE.md`, `docs/ANTIGRAVITY_ART_BRIEF.md`
 
-## Files
+## 핵심 명령
 
-- Startup: `AGENTS.md`, `feature_list.json`, `progress.md`
-- Claude Code handoff: `CLAUDE.md`
-- Detailed handoff: `docs/SESSION_HANDOFF.md`
-- Roadmap: `docs/ROADMAP.md`
-- v0.56 playtest reports (closed slice): `reports/playtests/v0_56_*`
-- Art track (P2): `docs/ART_INTAKE.md`, `docs/ANTIGRAVITY_ART_BRIEF.md`
+```bash
+npm run harness:gate
+npm run qa:blind-readiness
+npm run qa:asset-handoff
+```
 
-## Blockers
+## 현재 게이트 상태
 
-- No v0.57-blocking items.
-- P2 follow-up: AGY 5x agent review and 5x real human blind sessions still 0/5; optional until final graphic art is wanted.
-- Final art remains gated by `qa:asset-handoff` until the P2 follow-up track lands.
+- 사전 v0.58 baseline (2026-05-27): `npm run harness:gate` 통과, 43 files / 410 tests, 데이터 검증, production build 806ms
+- `qa:asset-handoff`: final art intake `대기`, AGY 발송 금지 (Track B 완료 시 해제)
 
-## Verification Evidence
+## 블로커
 
-- Latest full gate after v0.57 #9: `npm run harness:gate` passed with 43 files / 410 tests, data validation, and production build in 699ms.
-- v0.57 #6 → #9 each added one layout-contract `it` block (407 → 408 → 409 → 410 tests).
-- Live scenarios touched in v0.57 #6-9 returned 200 OK: `?scenario=reward`, `?scenario=reward-picked`, `?scenario=year-two-plan`, `?scenario=annual-directed`, `?scenario=deck-result`, `?scenario=project`.
+- Track A는 막힘 없음 — derive-only 데이터 충분
+- P2 follow-up: AGY 5x 0/5 — Track B Codex 인계로 처리
+- 최종 그래픽 에셋 투입은 `qa:asset-handoff` 가능 시점까지 금지
 
-## Recommended Next Step
+## 다음 작업
 
-Decide the next current feature before touching code. Update `feature_list.json` first, then plan the smallest focused change set for that feature.
+1. Track A v0.58 #1 — `src/components/MarketSharePanel.tsx`(신규) + `src/components/GameChrome.tsx` 마운트 + `src/App.css` 스타일 + `?scenario=market-share` 등록 + layout-contract test it block 1개.
+2. `npm test -- src/ui/layout-contract.test.ts`로 좁은 검증.
+3. `npm run harness:gate` 통과 (43 files / 411 tests 목표).
+4. 커밋 후 Track B/C는 `reports/codex-handoff/`의 프롬프트로 Codex CLI 위임.
 
-## Next Session Start
+## 다음 세션 시작
 
-1. Read `AGENTS.md`, `feature_list.json`, and `progress.md`.
-2. Check `git status --short` (expected clean after v0.57 closeout commit).
-3. Pick the next current feature and update `feature_list.json`.
-4. Run `npm run harness:gate` as the baseline before changes.
+1. `AGENTS.md`, `feature_list.json`, `progress.md`를 먼저 읽는다.
+2. `git status --short`로 로컬 변경을 확인한다.
+3. v0.58 #2 (history + sparkline) 또는 Track B/C 진행 상태 확인.
+4. 루트 상태 파일은 짧게 유지하고, 상세 증거는 `reports/`에 남긴다.
