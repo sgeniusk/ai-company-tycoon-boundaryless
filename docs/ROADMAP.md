@@ -207,9 +207,15 @@ v0.57 이후 단계는 Claude Code(하네스), Codex CLI(병렬 구현), AGY CLI
 완료 조건:
 
 - 경쟁사별 성향/약점 표시
-- 시장 점유율 변화 시각화
+- 시장 점유율 변화 시각화 — v0.58 #1 `9a5d493`에서 derive-only stacked bar로 1차 완료. sparkline/history는 #2로 분리.
 - 경쟁사 대응 카드 체감
 - 대형 사건 팝업 1차
+
+후속 검토 (v0.58 시즌 종료 후, 2026-05-27 기록):
+
+- Recursive 스타일 AI 자원 가시화(GPU 시간, 데이터 신선도, 다음 출시까지 GPU 필요량)를 연구 패널에 derive-only 인디케이터로 도입할지 검토. `data/products.json`의 `compute_per_1000_users`, `data_generated_per_month`가 이미 모델링되어 있으므로 시뮬레이션 변경 없이 표시만 가능.
+- 10년 캠페인 관통하는 메가 게이지(AGI/회사 정체성)를 시장 점유율 시각화 위에 얹을지 검토. v0.58 시각화 완성도 보고 결정.
+- 도입 결정 시 v0.58 시즌 후속 격리 블록 또는 v0.59 진입 전 별도 마일스톤으로 잡는다. 새 시스템(HEAT/Politics 같은)은 ROADMAP §5와 충돌하므로 도입하지 않는다.
 
 ### v0.59-alpha — 경계 없는 산업 확장 슬라이스
 
