@@ -43,9 +43,10 @@
         "2026-05-26: Validation policy upgraded - AGY agent reviews and real human blind sessions are P2 follow-up tracks and no longer block v0.57 entry.",
         "2026-05-26: v0.56 closeout commit 29648e5 - project moved to /Users/taewookkim/dev/ai-company-tycoon; npm run harness:gate passed 43 files / 406 tests.",
         "2026-05-26: 30-minute alpha-run roadmap with year-two directive/research/product-start chain and debrief 4-beat timeline shipped.",
+        "2026-05-27: v0.57 P2 Track B AGY 5x agent review automation added; npm run qa:agy-review writes source-marked session files and chains through qa:asset-handoff. Evidence: reports/qa/v0_57_agy_agent_review_run.md.",
         "Detailed evidence lives in reports/playtests/v0_56_* and reports/qa/v0_56_*."
       ],
-      "next_step": "P2 follow-up: 5 AGY agent reviews + 5 real human blind sessions before requesting final graphic assets via qa:asset-handoff."
+      "next_step": "P2 follow-up: real human blind sessions remain optional; AGY 5x agent review automation is available through npm run qa:agy-review before final graphic asset handoff."
     },
     {
       "id": "v0.57-alpha-core-fun-polish",

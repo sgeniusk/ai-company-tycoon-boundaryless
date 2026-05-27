@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "vitest run",
+    "test": "vitest run --configLoader runner",
     "validate:data": "node scripts/harness/validate-data.mjs",
     "assets:v045": "node scripts/assets/generate-v045-isometric-sheets.mjs",
     "assets:v046": "node scripts/assets/generate-v046-hires-pixel-sheets.mjs",
@@ -27,6 +27,7 @@
     "qa:blind-issues": "node scripts/qa/extract-v056-blind-issues.mjs",
     "qa:art-gate": "npm run qa:blind-summary && npm run qa:blind-issues && node scripts/qa/check-v056-art-intake-gate.mjs",
     "qa:asset-handoff": "npm run qa:art-gate && node scripts/qa/prepare-v056-final-art-handoff.mjs",
+    "qa:agy-review": "node scripts/qa/run-v057-agy-agent-review.mjs",
     "harness:gate": "npm test -- --maxWorkers=1 && npm run validate:data && npm run build"
   },
   "dependencies": {

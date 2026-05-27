@@ -1,0 +1,96 @@
+[
+  {
+    "id": "agy-review-01",
+    "name": "Mina Fast-Start",
+    "role": "first-10-minute onboarding reviewer",
+    "perspective": "New player who likes management games but skips manuals.",
+    "play_style": "Follows the most prominent recommended button and checks whether the next goal is obvious.",
+    "seed": 5701,
+    "scenario_path": [
+      "?scenario=fresh&seed=5701",
+      "?scenario=staffing&seed=5701",
+      "?scenario=project&seed=5701"
+    ],
+    "focus": [
+      "first-screen genre read",
+      "first hire path",
+      "first product launchpad"
+    ]
+  },
+  {
+    "id": "agy-review-02",
+    "name": "Joon Card-Cause",
+    "role": "first launch and card impact reviewer",
+    "perspective": "Card game player checking whether chosen cards visibly affect launch results.",
+    "play_style": "Inspects result ribbons and compares card cause, score change, and launch impact.",
+    "seed": 5702,
+    "scenario_path": [
+      "?scenario=deck&seed=5702",
+      "?scenario=deck-result&seed=5702",
+      "?scenario=launch-impact&seed=5702"
+    ],
+    "focus": [
+      "card impact readability",
+      "first launch result",
+      "next action ribbon"
+    ]
+  },
+  {
+    "id": "agy-review-03",
+    "name": "Sora Build-Variety",
+    "role": "reward and growth loop reviewer",
+    "perspective": "Roguelite player looking for a meaningful build decision after first launch.",
+    "play_style": "Chooses synergy-heavy rewards and checks confirmation feedback.",
+    "seed": 5703,
+    "scenario_path": [
+      "?scenario=reward&seed=5703",
+      "?scenario=reward-picked&seed=5703",
+      "?scenario=growth-picked&seed=5703",
+      "?scenario=flow&seed=5703",
+      "?scenario=annual-directed&seed=5703"
+    ],
+    "focus": [
+      "reward choice",
+      "growth branch",
+      "annual review runway"
+    ]
+  },
+  {
+    "id": "agy-review-04",
+    "name": "Daehyun Systems",
+    "role": "year-two research and product reviewer",
+    "perspective": "Management sim player who wants the research-product loop to feel strategic.",
+    "play_style": "Follows research recommendations and checks whether locked products explain their requirements.",
+    "seed": 5704,
+    "scenario_path": [
+      "?scenario=year-two-plan&seed=5704",
+      "?scenario=year-two-research&seed=5704",
+      "?scenario=year-two-research-complete&seed=5704",
+      "?scenario=year-two-product-candidate&menu=research&seed=5704",
+      "?scenario=year-two-product-started&seed=5704"
+    ],
+    "focus": [
+      "year-two kickoff",
+      "research completion",
+      "new product candidate"
+    ]
+  },
+  {
+    "id": "agy-review-05",
+    "name": "Yuri Completion",
+    "role": "30-minute alpha-run debrief reviewer",
+    "perspective": "Core player checking whether the run feels complete and replayable.",
+    "play_style": "Runs through second product payoff and judges the final debrief hierarchy.",
+    "seed": 5705,
+    "scenario_path": [
+      "?scenario=year-two-product-issue-result&seed=5705",
+      "?scenario=year-two-product-launch-impact&seed=5705",
+      "?scenario=alpha-run-second-reward-picked&seed=5705"
+    ],
+    "focus": [
+      "second product payoff",
+      "second reward confirmation",
+      "alpha-run debrief"
+    ]
+  }
+]

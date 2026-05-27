@@ -1,7 +1,7 @@
 # v0.56 Blind Playtest Readiness
 
 Status: 발송 준비
-작성일: 2026-05-24
+작성일: 2026-05-27
 
 ## 판정
 
@@ -33,8 +33,6 @@ Status: 발송 준비
 
 ## 다음 행동
 
-1. 외부/AGY 세션이면 `PLAYTEST_BASE_URL=https://...`와 함께 `npm run qa:blind-preflight`를 먼저 실행한다.
-2. AGY 또는 실제 진행자에게 `v0_56_blind_playtest_agy_outbox.md`를 보낸다.
-3. 실제 세션 완료 후 해당 세션 파일의 `Status`를 `완료`로 바꾼다.
-4. `npm run qa:blind-summary`를 실행한다.
-5. `실제 세션: 5/5`, `열린 P0: 0`, `P0 미기록: 0`, `상태 미인정: 0`, `증거 미기록: 0`, `아트 투입 판정: 가능`일 때만 최종 그래픽 에셋 투입을 시작한다.
+1. AGY agent auto-run 결과는 `npm run qa:agy-review`로 생성한다.
+2. 생성된 세션 파일에는 `source: AGY agent auto-run` 마커가 있어야 한다.
+3. 실제 사람 세션은 별도 P2 후속 트랙으로 유지한다.
