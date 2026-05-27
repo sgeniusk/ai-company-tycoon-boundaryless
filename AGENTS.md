@@ -29,8 +29,8 @@ Keep startup context lean:
 
 ## Current Source Of Truth
 
-- Current version: `v0.55-alpha`
-- Current objective: `v0.56-alpha-playtest-slice-lock`
+- Current version: `v0.57-alpha`
+- Current feature: `v0.57-alpha-core-fun-polish` (completed; next milestone unselected)
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`
@@ -45,11 +45,10 @@ Keep startup context lean:
 
 ## Validation Policy (Updated 2026-05-26)
 
-- v0.56 blind playtest slice is validated by 5 AGY agent reviews, not real human sessions, per user decision on 2026-05-26.
-- Session files `reports/playtests/v0_56_blind_playtest_session_01.md` through `_05.md` are filled with AGY agent runs; the 테스터 프로필 row MUST start with `AGY agent` and declare its scenario focus.
-- Real human playtests stay a P2 follow-up track and do not block v0.57 entry.
-- `qa:asset-handoff` is the gate for final art request; it must report `AGY 발송 가능` before any vendor send.
-- Coding agents downstream of this policy (Claude Code as harness, Codex CLI for parallel implementation, AGY CLI for art/playtest) share this validation contract.
+- v0.56 blind playtest slice is closed (validation policy upgrade 2026-05-26). AGY 5x agent review and 5x real human blind sessions are P2 follow-up tracks, not v0.57 blockers.
+- v0.57 core fun polish (`v0.57-alpha-core-fun-polish`) closed 2026-05-27 via 9 `#N` commits + 4 P1 polish commits; harness:gate carried 43 files / 410 tests at closure.
+- Final art request still requires `qa:asset-handoff` to report `AGY 발송 가능`, which is gated by the P2 follow-up tracks.
+- Coding agents downstream of this contract (Claude Code as harness, Codex CLI for parallel implementation, AGY CLI for art/playtest) share this validation contract.
 
 ## Verification Commands
 

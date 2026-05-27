@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-05-26",
-  "current_feature_id": "v0.56-alpha-playtest-slice-lock",
+  "last_updated": "2026-05-27",
+  "current_feature_id": "v0.57-alpha-core-fun-polish",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -28,39 +28,55 @@
       "id": "v0.56-alpha-playtest-slice-lock",
       "name": "20-30 minute blind playtest slice lock",
       "description": "Stop adding broad systems and validate a web-alpha slice where new players reach first launch, see card impact, encounter rival/staff incidents, and reach one annual review.",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "P0",
       "dependencies": [
         "v0.55-alpha-final-source-art-screenshot-qa"
       ],
       "definition_of_done": [
-        "Five real blind playtest session records are completed with exact Status: 완료.",
-        "Blind summary reports real sessions 5/5, open P0 0, missing P0 0, unrecognized status 0, and missing evidence 0.",
-        "Blind issue queue reports P0 queue 0 before final graphic asset intake.",
-        "Open P1 findings are counted as tuning follow-ups, not final-art blockers.",
+        "Pre-art slice covers first launch, card payoff, reward/growth, rival/staff incident, and annual review.",
         "Blind preflight verifies tutorial modal delay and flags missing remote playtest URL before external/AGY sessions are sent.",
-        "qa:asset-handoff reports final art request possible before AGY/external art requests go out.",
+        "qa:asset-handoff reports final art request possible before AGY/external art requests go out (P2 follow-up gate).",
         "npm run harness:gate passes after any fixes."
       ],
       "evidence": [
-        "2026-05-26: v0.56 pre-art slice is code/QA-ready; latest recorded gate passed with 43 files / 406 tests, data validation, and production build.",
-        "2026-05-23: qa:blind-summary, qa:blind-issues, qa:art-gate, and qa:asset-handoff are in place; real sessions remain 0/5 and final art remains blocked.",
-        "2026-05-23: User-run AGY agent review was received as reports/playtests/v0_56_agy_agent_playtest_review.md; it is not a real human session, and the safe P1 workforce/mobile readability follow-up passed focused tests with 3 files / 98 tests.",
-        "2026-05-23: qa:blind-readiness and qa:asset-handoff still report real sessions 0/5, art gate/final art intake 대기, and AGY send status 발송 금지 after AGY follow-up.",
-        "2026-05-23: qa:blind-preflight was added; it reports remote URL readiness, request/outbox URL sync state, tutorial delay OK, real-session 0/5, and final-art lock before external sessions.",
-        "2026-05-24: qa:blind-url-sync was added to copy PLAYTEST_BASE_URL player/facilitator URLs into the request packet and AGY outbox before external sessions; qa:blind-session-links now writes session 01-05 observer URLs and record statuses; qa:blind-live-check now validates the link-sheet structure in sandbox-safe mode; focused blind-record tests passed with 1 file / 32 tests, the refreshed Cloudflare player/session-1/session-5 URLs returned 200 via direct curl, and preflight reported 원격 테스트 준비 with request packet URL 동기화 완료.",
-        "2026-05-26: Guide-side 30-minute alpha-run roadmap now includes clickable active milestones, full-run progress, next reward previews, state-aware menu/result targets, click feedback, a matching office playfield focus strip, safe direct fast actions, a year-two directive/research/product-start chain, a 100% completion payoff panel, completion follow-through into the 2nd-year issue, launch, second reward pick, post-reward completion state, and an alpha-run debrief with product/reward/year-two/readiness highlights plus first release/card payoff/annual directive/second reward timeline visible from both guide and results; final completion action is now 디브리프 보기; focused guidance/QA/layout tests passed with 3 files / 123 tests, npm run harness:gate passed with 43 files / 406 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and ?scenario=alpha-run-second-reward-picked returned 200 OK.",
-        "2026-05-23: First-hire fast-start was added to the fresh guide; npm run harness:gate passed with 43 files / 368 tests, data validation, and production build, and qa:asset-handoff still kept final art intake 대기 / AGY 발송 금지.",
-        "2026-05-23: First-project fast-start was added after hiring; focused simulation/layout/blind-record tests passed with 3 files / 104 tests, npm run harness:gate passed with 43 files / 370 tests, and headless Chrome captured ?scenario=staffing.",
-        "2026-05-23: First-issue fast-start and first-launch guidance fast-forward were added; focused simulation/layout/guidance/deckbuilding tests passed with 4 files / 112 tests, npm run harness:gate passed with 43 files / 374 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=project.",
-        "2026-05-23: First reward/growth fast-start was added after launch; focused simulation/layout/guidance/deckbuilding tests passed with 4 files / 115 tests, focused QA-scenario/simulation/layout tests passed with 3 files / 130 tests, npm run harness:gate passed with 43 files / 378 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=reward and ?scenario=reward-picked without helper tutorial modals.",
-        "2026-05-23: Annual-review fast-forward was added after first growth; focused simulation/guidance/layout/qa-scenario tests passed with 4 files / 143 tests, npm run harness:gate passed with 43 files / 379 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=flow.",
-        "2026-05-23: Annual-review guidance now routes directly to the company menu after 심사까지 진행, and the post-directive continuation button is labeled 2년차 시작; focused simulation/guidance/layout/QA-record/QA-scenario tests passed with 5 files / 169 tests, npm run harness:gate passed with 43 files / 379 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=annual-directed.",
-        "2026-05-23: Locked year-two product candidates now route back to an exact needed-research launchpad; focused layout/QA-scenario/blind-record tests passed with 3 files / 120 tests, npm run harness:gate passed with 43 files / 380 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and headless Chrome captured ?scenario=year-two-product-candidate&menu=research on desktop/mobile.",
-        "2026-05-24: Year-two product flow now continues through ready, started, issue-result, and launch-impact QA states; focused QA-scenario/layout/blind-record/rehearsal tests passed with 4 files / 128 tests, latest npm run harness:gate passed with 43 files / 391 tests, qa:asset-handoff kept final art intake 대기 / AGY 발송 금지, and curl returned 200 OK for ?scenario=year-two-product-started, ?scenario=year-two-product-issue-result, and ?scenario=year-two-product-launch-impact.",
-        "Details live in reports/playtests/v0_56_* and reports/qa/v0_56_*."
+        "2026-05-26: Validation policy upgraded - AGY agent reviews and real human blind sessions are P2 follow-up tracks and no longer block v0.57 entry.",
+        "2026-05-26: v0.56 closeout commit 29648e5 - project moved to /Users/taewookkim/dev/ai-company-tycoon; npm run harness:gate passed 43 files / 406 tests.",
+        "2026-05-26: 30-minute alpha-run roadmap with year-two directive/research/product-start chain and debrief 4-beat timeline shipped.",
+        "Detailed evidence lives in reports/playtests/v0_56_* and reports/qa/v0_56_*."
       ],
-      "next_step": "Use the synced Cloudflare quick tunnel URL and v0_56_blind_playtest_session_links.md for five real sessions while the tunnel is active, then rerun qa:asset-handoff."
+      "next_step": "P2 follow-up: 5 AGY agent reviews + 5 real human blind sessions before requesting final graphic assets via qa:asset-handoff."
+    },
+    {
+      "id": "v0.57-alpha-core-fun-polish",
+      "name": "Core fun polish (first 30 minute UX)",
+      "description": "Polish the first 30 minute experience after the v0.56 slice locked: launch impact connoting card cause, card effect visibility, balanced product catalogue, staff burnout pacing, and year-two onboarding flow.",
+      "status": "completed",
+      "priority": "P0",
+      "dependencies": [
+        "v0.56-alpha-playtest-slice-lock"
+      ],
+      "definition_of_done": [
+        "First launch result has entry animations and shine.",
+        "Cards explicitly visualize their effect (card name -> arrow -> effects) at launch impact and reward choice.",
+        "Curated 30 product catalogue covers education, mobility, robotics, semiconductors, and odd industries.",
+        "Burnout aftermath progress/quality penalty is eased so early game does not become fatigue avoidance.",
+        "First 30 minute attrition risks (first screen impact, first hire pulse, year-two onboarding ambiguity, release ETA legibility, reward rarity differentiation) are reduced.",
+        "npm run harness:gate passes."
+      ],
+      "evidence": [
+        "2026-05-26: v0.57 #1 launch-impact entry animations and shine shipped (commit 87cd32c).",
+        "2026-05-26: v0.57 #2 card -> effects arrow flow in launch-impact shipped (commit 204330c); card-impact-arrow-pulse keyframe reused across later polish.",
+        "2026-05-26: v0.57 #3 products.json expanded to 30 entries via Codex CLI delegation (commit 5078ceb).",
+        "2026-05-26: v0.57 #4 staff burnout aftermath progress/quality penalty eased (commit 9f5efe8).",
+        "2026-05-26: v0.57 #5 first-screen entry animation + first-hire pulse glow shipped (commit 9493f24).",
+        "2026-05-26: v0.57 P1 #1-4 workforce mix visual hierarchy, launch-impact mobile collapsible, auto-advance monthly count surfacing, and mobile debrief visual hierarchy shipped.",
+        "2026-05-27: v0.57 #6 reward-choice card -> effects arrow flow added so reward selection mirrors launch-impact visual language (commit a38315a); harness:gate 43 files / 407 tests pass.",
+        "2026-05-27: v0.57 #7 year-two kickoff entry animation + 4-step next-30min arrow flow (commit 2a77039); harness:gate 43 files / 408 tests pass.",
+        "2026-05-27: v0.57 #8 release-progress-meter with gradient bar inside issue-result ribbon (commit e280f4e); harness:gate 43 files / 409 tests pass.",
+        "2026-05-27: v0.57 #9 reward-choice rarity differentiation - rare blue glow + 희귀 badge, epic purple/gold pulse + 특수 badge (commit bc75b7d); harness:gate 43 files / 410 tests pass."
+      ],
+      "next_step": "Decide next milestone in the next session. Candidates: (a) v0.58-alpha market season strength (rival presence, market share, big event popup), (b) AGY agent 5x review + real human playtest if final art is wanted, (c) v0.57 P2 mobile polish backlog."
     },
     {
       "id": "art-intake-final-source-art",
@@ -81,7 +97,7 @@
       "evidence": [
         "docs/ART_INTAKE.md and docs/ANTIGRAVITY_ART_BRIEF.md define source dimensions, import commands, and gate timing."
       ],
-      "next_step": "Start only after qa:asset-handoff reports final art request possible."
+      "next_step": "Start only after qa:asset-handoff reports final art request possible (gated by P2 AGY/real human blind playtest track)."
     }
   ]
 }

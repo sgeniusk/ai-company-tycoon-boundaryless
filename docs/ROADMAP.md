@@ -1,12 +1,14 @@
 # ROADMAP — AI Company Tycoon: Boundaryless
 
 작성일: 2026-05-19
-최종 정리: 2026-05-26
-현재 빌드: `v0.55-alpha`
+최종 정리: 2026-05-27
+현재 빌드: `v0.57-alpha`
 
 ## 1. 현재 목표
 
-최종 아트가 없어도 **20~30분 동안 플레이 가능한 웹 알파 후보**를 만든다. 코드/QA 기준으로 v0.56 플레이테스트 슬라이스는 검증 준비가 끝났고, 사용자 결정(2026-05-26)에 따라 v0.56 P0는 **AGY 에이전트 5회 리뷰**(첫 10분/첫 출시/카드 영향/2년차 신제품/30분 디브리프)에서 막히는 지점을 닫는 것이다. 실제 사람 5명 블라인드 테스트는 P2 후속 트랙으로 분리해 v0.57 진입을 막지 않는다. v0.57 이후 단계는 Claude Code(하네스), Codex CLI(병렬 구현), AGY CLI(아트/검증)를 분담해 진행한다.
+v0.56 pre-art 슬라이스는 닫혔고, v0.57 코어 재미 개선(`v0.57-alpha-core-fun-polish`)도 9개 `#N` 폴리시 + 4개 P1 폴리시 커밋으로 닫혔다. 다음 마일스톤은 미선정 상태로 대기 중이다. 후보는 `v0.58-alpha-market-season-strength`(시장/경쟁사 시즌 강화), P2 AGY 5회 + 실제 사람 5회 블라인드 트랙(최종 아트 게이트 해제용), v0.57 P2 모바일 백로그다.
+
+v0.57 이후 단계는 Claude Code(하네스), Codex CLI(병렬 구현), AGY CLI(아트/검증)를 분담해 진행한다.
 
 핵심 검증 질문:
 
@@ -25,10 +27,10 @@
 
 오늘 마감 판정:
 
-- 코드 기준: v0.56 pre-art 플레이테스트 슬라이스 준비 완료
-- 검증 기준: `npm run harness:gate` 통과, 43 files / 406 tests
-- 실제 테스트 기준: `reports/playtests/v0_56_blind_playtest_summary.md`는 실제 세션 0/5, 아트 투입 판정 `대기`
-- 다음 작업 기준: AGY 에이전트 5회 리뷰를 `session_01.md` ~ `_05.md`에 `Status: 완료`로 채우고, `qa:blind-summary`의 열린 P0, P0 미기록, 상태 미인정, 증거 미기록이 모두 0개일 때 최종 그래픽 에셋 투입. `qa:blind-issues`의 P0 큐는 최종 그래픽 에셋 전에 0이어야 하며, `qa:art-gate`가 `최종 그래픽 에셋 투입: 가능`을 보여야 한다. 열린 P1은 후속 튜닝 후보로 집계하지만 아트 게이트를 막지는 않는다. 실제 사람 5명 테스트는 v0.57 이후 P2 후속 트랙으로 진행한다.
+- 코드 기준: v0.56 pre-art 플레이테스트 슬라이스 + v0.57 코어 재미 개선 둘 다 완료
+- 검증 기준: `npm run harness:gate` 통과, 43 files / 410 tests (v0.57 #9 이후 기준)
+- 실제 테스트 기준: AGY/실제 사람 블라인드 세션은 0/5로 P2 follow-up 트랙으로 분리
+- 다음 작업 기준: 다음 current feature를 선택한 뒤 `feature_list.json`을 갱신하고 코드를 손댄다. `v0.58-alpha-market-season-strength`로 가면 시장/경쟁사 시즌 강화를 시작한다. P2 블라인드 트랙으로 가면 `session_01.md` ~ `_05.md`에 AGY 에이전트 5회 리뷰를 `Status: 완료`로 채우고 `qa:asset-handoff`가 `AGY 발송 가능`을 보일 때 최종 그래픽 에셋 요청을 한다.
 
 ## 2. 현재 상태
 
@@ -172,16 +174,12 @@
 - 5명 블라인드 플레이테스트 기록이 남는다.
 - 새 시스템 추가 없이 첫 제품 출시/카드 체감/경쟁사 사건 중심으로 다듬는다.
 
-현재 상태:
+현재 상태: **닫힘 (2026-05-26)**
 
-- 코드/QA 준비: 완료
-- 임시 원격 테스트 URL: Cloudflare quick tunnel 동기화 완료, 세션 직전 재확인 필요
-- 실제 세션 기록: 0/5
-- 아트 투입 게이트: `대기`
-- 이슈 큐: `reports/playtests/v0_56_blind_playtest_issue_queue.md`는 P0 큐 0, P1 큐 0, 실제 세션 대기
-- 최종 아트 투입 판정: `reports/playtests/v0_56_final_art_intake_gate.md`는 `최종 그래픽 에셋 투입: 대기`
-- 에셋 핸드오프 패킷: `reports/playtests/v0_56_final_art_handoff_packet.md`는 `아트 요청 대기`, `AGY 발송 금지`
-- 다음 액션: 5명 세션 기록 작성, P0/P1 분류, P0 수정 후 `qa:asset-handoff` 재실행
+- 코드/QA 준비: 완료, 커밋 `29648e5 v0.56 closeout`
+- 검증 정책 업그레이드: AGY 5x 에이전트 리뷰와 실제 사람 5x 블라인드 세션은 P2 follow-up 트랙으로 분리. v0.57 진입 차단 해제.
+- P2 follow-up 트랙 진행도: AGY 0/5, 실제 사람 0/5 (최종 아트 요청 시점에 닫는다.)
+- 최종 아트 투입 판정: `대기` 유지 (`qa:asset-handoff`가 `AGY 발송 가능`을 보일 때 해제)
 
 ### v0.57-alpha — 코어 재미 개선
 
@@ -189,11 +187,18 @@
 
 완료 조건:
 
-- 첫 출시 결과 연출 개선
-- 카드 효과 가시화
-- 제품 조합 대표 30개 큐레이션
-- 직원 케어 피로도 조정
-- 첫 30분 이탈 원인 수정
+- 첫 출시 결과 연출 개선 — `#1 launch-impact entry animations and shine` (`87cd32c`), `#2 card → effects arrow flow` (`204330c`)
+- 카드 효과 가시화 — `#2` launch-impact, `#6 reward-choice card → effects arrow flow` (`a38315a`), `#7 year-two next-30min arrow flow` (`2a77039`) 에서 공용 `card-impact-arrow-pulse` keyframe 으로 통일
+- 제품 조합 대표 30개 큐레이션 — `#3 products.json 30 entries` (`5078ceb`, Codex CLI 위임)
+- 직원 케어 피로도 조정 — `#4 burnout aftermath penalty 완화` (`9f5efe8`)
+- 첫 30분 이탈 원인 수정 — `#5 first-screen entry + first-hire pulse` (`9493f24`), `#7 year-two kickoff entry + 4-step arrow flow` (`2a77039`), `#8 release progress meter` (`e280f4e`), `#9 reward rarity differentiation` (`bc75b7d`), P1 `#1-4` (workforce mix, launch-impact mobile collapsible, auto-advance monthly count, mobile debrief)
+
+현재 상태: **닫힘 (2026-05-27)**
+
+- 최신 전체 게이트: `npm run harness:gate` 통과, 43 files / 410 tests, 데이터 검증, production build 699ms
+- v0.57 #6 → #9 각 단계마다 layout-contract `it` block 1개씩 증가 (407 → 408 → 409 → 410 tests)
+- P2 follow-up 트랙(AGY/실제 사람 블라인드): v0.56 closeout 시점 그대로 유지
+- 다음 마일스톤: 미선정. 후보는 v0.58-alpha-market-season-strength, P2 AGY/실제 사람 블라인드 트랙, v0.57 P2 모바일 백로그.
 
 ### v0.58-alpha — 시장/경쟁사 시즌 강화
 
