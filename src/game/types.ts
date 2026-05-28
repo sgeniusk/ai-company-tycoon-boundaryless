@@ -1206,6 +1206,7 @@ export interface GameState {
   productLevels: Record<string, number>;
   competitorStates: CompetitorState[];
   marketShareHistory: MarketShareHistoryEntry[];
+  pendingChallengerEntryIds: string[];
   productReviews: Record<string, ReleaseReview>;
   lastRelease?: ReleaseMoment;
   roguelite: RogueliteState;

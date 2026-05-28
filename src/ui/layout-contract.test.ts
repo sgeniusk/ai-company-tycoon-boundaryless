@@ -11,6 +11,7 @@ const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPane
 const playtestObserver = readFileSync(new URL("../game/blind-playtest-observer.ts", import.meta.url), "utf8");
 const marketSharePanel = readFileSync(new URL("../components/MarketSharePanel.tsx", import.meta.url), "utf8");
 const rivalArchetypePanel = readFileSync(new URL("../components/RivalArchetypePanel.tsx", import.meta.url), "utf8");
+const bigEventModal = readFileSync(new URL("../components/BigEventModal.tsx", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
@@ -827,5 +828,23 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.rival-archetype-card\.rival-archetype-contested\s*{/s);
     expect(appCss).toMatch(/\.rival-archetype-weakness-row\s+\.rival-archetype-value\s*{/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.rival-archetype-list/s);
+  });
+
+  it("v0.58 #5 surfaces a big-event modal for annual_challenger / late_boss entry with dismiss action", () => {
+    expect(gameChrome).toContain("BigEventModal");
+    expect(gameChrome).toContain("<BigEventModal gameState={gameState} setGameState={setGameState} locale={locale} />");
+    expect(bigEventModal).toContain("pendingChallengerEntryIds");
+    expect(bigEventModal).toContain("dismissChallengerEntry");
+    expect(bigEventModal).toContain("entry_announcement");
+    expect(bigEventModal).toContain("big-event-overlay");
+    expect(bigEventModal).toContain("big-event-card");
+    expect(bigEventModal).toContain("role=\"dialog\"");
+    expect(bigEventModal).toContain("aria-modal=\"true\"");
+    expect(appCss).toMatch(/\.big-event-overlay\s*{[^}]*position:\s*fixed/s);
+    expect(appCss).toMatch(/\.big-event-card\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.big-event-card\.big-event-tier-late_boss\s*{/s);
+    expect(appCss).toMatch(/\.big-event-dismiss\s*{[^}]*cursor:\s*pointer/s);
+    expect(appCss).toMatch(/@keyframes\s+big-event-pop-in/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.big-event-card/s);
   });
 });

@@ -75,6 +75,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "operations",
       "office-visuals",
       "market-share",
+      "big-event",
     ]);
   });
 

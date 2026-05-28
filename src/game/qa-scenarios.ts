@@ -78,6 +78,7 @@ export const qaScenarioIds = [
   "operations",
   "office-visuals",
   "market-share",
+  "big-event",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -115,6 +116,20 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "시장 점유율 시각화 QA",
       state: advanceToFirstAnnualReview(createInitialState()),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "big-event") {
+    // v0.58 #5 — annual_challenger가 진입한 직후 상태 (entry_month 12). pendingChallengerEntryIds 큐에 autonovaMotors / brewchain이 들어차서 BigEventModal이 즉시 보인다.
+    let bigEventState = createInitialState();
+    while (bigEventState.month < 13 && bigEventState.status === "playing") {
+      bigEventState = advanceMonth(bigEventState);
+    }
+    return {
+      id,
+      label: "대형 사건 팝업 QA",
+      state: bigEventState,
       activeMenu: "company",
     };
   }

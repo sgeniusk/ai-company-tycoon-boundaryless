@@ -397,6 +397,7 @@ export function createInitialState(): GameState {
     productLevels: {},
     competitorStates: createInitialCompetitorStates(startingState.month),
     marketShareHistory: [],
+    pendingChallengerEntryIds: [],
     productReviews: {},
     roguelite: createInitialRogueliteState(),
     activeDevelopmentPuzzleModifiers: [],
@@ -3215,6 +3216,7 @@ export function hydrateGameState(serialized: string): GameState {
     productLevels: sanitizeProductLevels(rawState.productLevels, hydratedActiveProducts, generatedProducts),
     competitorStates: Array.isArray(rawState.competitorStates) ? rawState.competitorStates : initialState.competitorStates,
     marketShareHistory: sanitizeMarketShareHistory(rawState.marketShareHistory),
+    pendingChallengerEntryIds: sanitizeStringArray(rawState.pendingChallengerEntryIds),
     productReviews: isRecord(rawState.productReviews) ? rawState.productReviews : {},
     lastRelease: hydrateReleaseMoment(rawState.lastRelease, generatedProducts),
     roguelite: hydrateRogueliteState(rawState.roguelite, initialState.roguelite, generatedProducts),
@@ -3425,15 +3427,30 @@ function addScheduledCompetitors(state: GameState): GameState {
 
   if (entrants.length === 0) return state;
 
+  // v0.58 #5 — annual_challenger / late_boss 진입을 BigEventModal 큐에 push. initial 티어는 시작부터 보이는 상수라 제외.
+  const challengerEntryIds = entrants
+    .filter((competitor) => competitor.rival_tier === "annual_challenger" || competitor.rival_tier === "late_boss")
+    .map((competitor) => competitor.id);
+
   return {
     ...state,
     competitorStates: [...state.competitorStates, ...entrants.map(createCompetitorState)],
+    pendingChallengerEntryIds: [...state.pendingChallengerEntryIds, ...challengerEntryIds],
     timeline: [
       ...entrants.map(
         (competitor) => competitor.entry_announcement ?? `강력한 신규 경쟁사 등장: ${competitor.id} 시장 진입`,
       ),
       ...state.timeline,
     ].slice(0, 8),
+  };
+}
+
+// v0.58 #5 — BigEventModal 닫기. 큐 head를 shift.
+export function dismissChallengerEntry(state: GameState): GameState {
+  if (!state.pendingChallengerEntryIds.length) return state;
+  return {
+    ...state,
+    pendingChallengerEntryIds: state.pendingChallengerEntryIds.slice(1),
   };
 }
 
