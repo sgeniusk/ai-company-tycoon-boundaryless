@@ -5,8 +5,8 @@ Last Updated: 2026-05-29
 ## Current State
 
 - Current version: `v0.57-alpha` (entering `v0.58-alpha`)
-- Current feature: `v0.58-alpha-market-season-strength` — #1, #2, #3, #5 complete; only #4 (response card differentiation) remains
-- Latest implementation commits: `v0.58 #5 big event popup` (this commit), `fb1abd6 v0.58 #3`, `f31088e v0.58 #2`, `78a816d docs annotation`, `e81cf23 v0.57 P2 Track C`, `91788a2 v0.57 P2 Track B`, `9a5d493 v0.58 #1`
+- Current feature: `v0.58-alpha-market-season-strength` — all 5 functional DoD bullets complete; closeout commit pending
+- Latest implementation commits: `v0.58 #4 response card differentiation` (this commit), `8df6bde v0.58 #5`, `fb1abd6 v0.58 #3`, `f31088e v0.58 #2`, `9a5d493 v0.58 #1`
 - Stack: Vite + React + TypeScript
 - Local dev: `npm run dev -- --port 5201`
 - Visual QA: `http://127.0.0.1:5201/?scenario=office-visuals`
@@ -24,8 +24,8 @@ Last Updated: 2026-05-29
 - **v0.58 #1** — DONE at `9a5d493`. Market share HUD panel (derive-only stacked bar + top-pressure highlight).
 - **v0.58 #2** — DONE at `f31088e`. `marketShareHistory` tracking + sparkline.
 - **v0.58 #3** — DONE at `fb1abd6`. `RivalArchetypePanel` with archetype + weakness + severity color coding.
-- **v0.58 #4** — pending. Response card differentiation (touches deck system; lower isolation). Approach: surface a `rival 압박 대응` badge on `strategyCards` that already carry `counter` tag or rival-targeting effects.
-- **v0.58 #5** — DONE (this commit). `BigEventModal` shows annual_challenger / late_boss entry with archetype + weakness + dismiss. `pendingChallengerEntryIds` queue + `dismissChallengerEntry` action. `late_boss` tier gets a red glow accent. New `?scenario=big-event`.
+- **v0.58 #4** — DONE (this commit). `isCounterCard` + `getRivalCounterSignal` exported. `DeckPanel` derives the signal once, then surfaces a `압박 대응` badge + glow on counter-tagged or rival-targeting cards in hand and reward-choice UI. `high` signal pulses with `prefers-reduced-motion` fallback. Derive-only.
+- **v0.58 #5** — DONE at `8df6bde`. `BigEventModal` shows annual_challenger / late_boss entry with archetype + weakness + dismiss. `pendingChallengerEntryIds` queue + `dismissChallengerEntry` action. `late_boss` tier gets a red glow accent. New `?scenario=big-event`.
 
 ### v0.57 P2 Follow-Up (merged)
 
@@ -63,15 +63,16 @@ v0.57 stacked 9 polish `#N` commits + 4 P1 polish commits + closeout (`6761c00`)
 - v0.57 P2 Track C (e81cf23): single file added.
 - v0.58 #2 (f31088e): `npm run harness:gate` 43 files / 412 tests / build 720ms.
 - v0.58 #3 (fb1abd6): `npm run harness:gate` 43 files / 413 tests.
-- v0.58 #5 (this commit): `npm run harness:gate` 43 files / 414 tests; narrow tests 3 files / 151 tests / 864ms.
+- v0.58 #5 (8df6bde): `npm run harness:gate` 43 files / 414 tests.
+- v0.58 #4 (this commit): `npm run harness:gate` 43 files / 415 tests; narrow `npx vitest run src/ui/layout-contract.test.ts` 60 tests / 453ms.
 
 ## Recommended Next Step
 
-Pick v0.58 #4 — response card differentiation. Use existing `strategyCards` data: `tags.includes("counter")` and `effects.rival_score_delta` / `effects.rival_momentum_delta`. Surface a "rival 압박 대응" badge in deck panel and reward-choice UI when rival pressure is elevated (derive from `getRivalCounterPlans` severity). Stay derive-only; add one `layout-contract` `it` block (target 43 files / 415 tests). After #4 lands, write a v0.58 closeout commit summarizing the milestone and choose the next current_feature_id.
+Write the **v0.58 closeout commit**. Flip `feature_list.json` `v0.58-alpha-market-season-strength` status to `completed`, refresh handoffs to celebrate v0.58 close, and pick the next `current_feature_id`. Candidates: Recursive-inspired AI resource visualization (`docs/ROADMAP.md` 후속 검토 block under v0.58), v0.59-alpha boundaryless industry expansion, or v0.57 P2 Track C Phase 2 (implement one mobile polish backlog item).
 
 ## Next Session Start
 
 1. Read `AGENTS.md`, `feature_list.json`, and `progress.md`.
 2. Check `git status --short`.
-3. Pick v0.58 #4 (closes the milestone) or jump to v0.58 closeout if #4 is deferred.
+3. Write v0.58 closeout commit OR pick the next current_feature_id directly.
 4. Run `npm run harness:gate` as the baseline before changes.

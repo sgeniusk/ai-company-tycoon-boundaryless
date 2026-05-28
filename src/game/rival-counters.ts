@@ -155,6 +155,17 @@ function getCounterCardIds(domainIds: string[]): string[] {
     .slice(0, 3);
 }
 
-function isCounterCard(card: StrategyCardDefinition): boolean {
+// v0.58 #4 — 덱/보상 UI에서 카드별 "rival 압박 대응" 여부 판단 용. tags 또는 rival_*_delta 효과 기준.
+export function isCounterCard(card: StrategyCardDefinition): boolean {
   return card.tags.includes("counter") || Boolean(card.effects.rival_score_delta || card.effects.rival_momentum_delta);
+}
+
+// v0.58 #4 — 현재 라이벌 압박 수준을 high/low/none으로 derive. getRivalCounterPlans 상위 5개의 severity를 집계.
+export type RivalCounterSignal = "high" | "low" | "none";
+
+export function getRivalCounterSignal(state: GameState): RivalCounterSignal {
+  const plans = getRivalCounterPlans(state, 5);
+  if (plans.some((plan) => plan.severity === "contested")) return "high";
+  if (plans.some((plan) => plan.severity === "strategic")) return "low";
+  return "none";
 }

@@ -847,4 +847,19 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@keyframes\s+big-event-pop-in/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.big-event-card/s);
   });
+
+  it("v0.58 #4 differentiates rival-counter strategy cards with a derive-only pressure badge in deck and reward UI", () => {
+    expect(menuPanels).toContain("isCounterCard");
+    expect(menuPanels).toContain("getRivalCounterSignal");
+    expect(menuPanels).toContain("rivalCounterSignal");
+    expect(menuPanels).toContain("strategy-card-counter");
+    expect(menuPanels).toContain("strategy-card-counter-badge");
+    expect(menuPanels).toContain("압박 대응");
+    expect(appCss).toMatch(/\.strategy-card-counter\.strategy-card-counter-high\s*{[^}]*box-shadow:/s);
+    expect(appCss).toMatch(/\.strategy-card-counter\.strategy-card-counter-low\s*{[^}]*box-shadow:/s);
+    expect(appCss).toMatch(/\.strategy-card-counter-badge\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/\.strategy-card-counter-badge\.strategy-card-counter-badge-high\s*{[^}]*animation:/s);
+    expect(appCss).toMatch(/@keyframes\s+strategy-card-counter-pulse/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*strategy-card-counter-badge-high/s);
+  });
 });

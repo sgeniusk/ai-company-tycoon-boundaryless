@@ -9885,3 +9885,51 @@ p {
     font-size: 1.12rem;
   }
 }
+
+/* v0.58 #4 — 라이벌 압박 대응 카드 배지. counter 태그 또는 rival_*_delta 효과가 있는 카드에 표시. high(빨강) / low(주황). */
+.strategy-card-counter {
+  position: relative;
+}
+
+.strategy-card-counter.strategy-card-counter-high {
+  box-shadow: 0 0 0 1px rgba(255, 86, 64, 0.55), 0 0 18px rgba(255, 86, 64, 0.22) inset;
+}
+
+.strategy-card-counter.strategy-card-counter-low {
+  box-shadow: 0 0 0 1px rgba(255, 180, 58, 0.42), 0 0 14px rgba(255, 180, 58, 0.16) inset;
+}
+
+.strategy-card-counter-badge {
+  background: rgba(255, 86, 64, 0.92);
+  color: #fff5f1;
+  cursor: help;
+  font-size: 0.52rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-left: 6px;
+  padding: 1px 5px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.strategy-card-counter-badge.strategy-card-counter-badge-high {
+  animation: strategy-card-counter-pulse 1600ms ease-in-out infinite;
+  background: rgba(255, 86, 64, 0.95);
+}
+
+.strategy-card-counter-badge.strategy-card-counter-badge-low {
+  background: rgba(255, 180, 58, 0.92);
+  color: #25190a;
+}
+
+@keyframes strategy-card-counter-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 86, 64, 0.45); }
+  50% { box-shadow: 0 0 0 4px rgba(255, 86, 64, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strategy-card-counter-badge.strategy-card-counter-badge-high {
+    animation: none;
+  }
+}

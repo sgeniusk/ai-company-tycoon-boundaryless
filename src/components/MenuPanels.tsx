@@ -33,7 +33,7 @@ import {
   productIdeaTypes,
 } from "../game/product-ideas";
 import { ALL_PRODUCT_DOMAIN_FILTER_ID, getProductDomainFilters, getProductsByDomainFilter } from "../game/product-filters";
-import { getRivalCounterPlans } from "../game/rival-counters";
+import { getRivalCounterPlans, isCounterCard, getRivalCounterSignal } from "../game/rival-counters";
 import { getShareableMoments } from "../game/shareable-moments";
 import { getTenMonthArc } from "../game/ten-month-arc";
 import {
@@ -636,6 +636,8 @@ export function renderMenuContent(
 }
 
 function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+  // v0.58 #4 — 라이벌 압박 수준 derive (high/low/none). isCounterCard와 함께 strategy-card에 압박 대응 배지를 띄울지 결정.
+  const rivalCounterSignal = getRivalCounterSignal(gameState);
   const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
   const deck = gameState.roguelite.deck;
   const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
@@ -974,8 +976,18 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             const check = getStrategyCardPlayCheck(card, gameState);
             const effects = getStrategyCardEffects(card, gameState);
             return (
-              <article className={`strategy-card rarity-${card.rarity}${upgradedCardIds.has(card.id) ? " upgraded" : ""}`} key={card.id}>
-                <p className="item-meta">{card.category} / {card.rarity}</p>
+              <article className={`strategy-card rarity-${card.rarity}${upgradedCardIds.has(card.id) ? " upgraded" : ""}${isCounterCard(card) && rivalCounterSignal !== "none" ? ` strategy-card-counter strategy-card-counter-${rivalCounterSignal}` : ""}`} key={card.id}>
+                <p className="item-meta">
+                  {card.category} / {card.rarity}
+                  {isCounterCard(card) && rivalCounterSignal !== "none" && (
+                    <em
+                      className={`strategy-card-counter-badge strategy-card-counter-badge-${rivalCounterSignal}`}
+                      title="라이벌 압박 대응 카드"
+                    >
+                      압박 대응
+                    </em>
+                  )}
+                </p>
                 <h3>{card.name}</h3>
                 <p>{card.description}</p>
                 <div className="mini-row">
@@ -1016,8 +1028,18 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                 const effects = getStrategyCardEffects(card, gameState);
                 const biasMatch = getAnnualDirectiveRewardBiasMatch(card, gameState);
                 return (
-                  <article className={`strategy-card reward-choice rarity-${card.rarity}`} key={card.id}>
-                    <p className="item-meta">{card.category} / {card.rarity}</p>
+                  <article className={`strategy-card reward-choice rarity-${card.rarity}${isCounterCard(card) && rivalCounterSignal !== "none" ? ` strategy-card-counter strategy-card-counter-${rivalCounterSignal}` : ""}`} key={card.id}>
+                    <p className="item-meta">
+                      {card.category} / {card.rarity}
+                      {isCounterCard(card) && rivalCounterSignal !== "none" && (
+                        <em
+                          className={`strategy-card-counter-badge strategy-card-counter-badge-${rivalCounterSignal}`}
+                          title="라이벌 압박 대응 카드"
+                        >
+                          압박 대응
+                        </em>
+                      )}
+                    </p>
                     <h3>{card.name}</h3>
                     <p>{card.description}</p>
                     {biasMatch && <small className="reward-bias-match">{biasMatch.label}</small>}

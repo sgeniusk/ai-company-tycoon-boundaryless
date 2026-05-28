@@ -4,13 +4,13 @@
 
 ## 한 줄 요약
 
-`v0.58-alpha-market-season-strength` 마일스톤이 거의 닫힘. #1(시장 점유율 시각화), #2(히스토리 + sparkline), #3(라이벌 archetype/weakness 패널), #5(대형 사건 팝업) 완료. #4(대응 카드 차별화)만 남음.
+`v0.58-alpha-market-season-strength` 마일스톤의 5개 DoD 항목 모두 완료. closeout 커밋만 남았음. 다음 마일스톤 미선정.
 
 ## 현재 상태
 
 - 로컬 폴더: `/Users/taewookkim/dev/ai-company-tycoon`
 - 브랜치: `main`
-- 최신 구현 커밋: `v0.58 #5 big event popup` (이 커밋)
+- 최신 구현 커밋: `v0.58 #4 response card differentiation` (이 커밋)
 - 스택: Vite + React + TypeScript
 - 로컬 실행: `npm run dev -- --port 5201`
 - 메인 QA: `http://127.0.0.1:5201/?scenario=office-visuals`
@@ -24,8 +24,8 @@
 - **v0.58 #1** — DONE at `9a5d493`. derive-only 가로 stacked bar + 상위 5개 legend + 최대 압박 경쟁사 노란색 강조 + `?scenario=market-share`.
 - **v0.58 #2** — DONE at `f31088e`. `MarketShareHistoryEntry` 타입, `GameState.marketShareHistory`, `advanceCompetitors` 24개월 sliding window push, save 마이그레이션, SVG sparkline.
 - **v0.58 #3** — DONE at `fb1abd6`. 신규 `RivalArchetypePanel`. `getRivalCounterPlans` pressureScore 상위 3곳 archetype + weakness pill 표시. severity 컬러 코딩.
-- **v0.58 #4** — 대기. 대응 카드 차별화. 덱 시스템 손댐, 격리도 낮음. `strategyCards` 기존 `counter` 태그/`rival_score_delta` 효과 활용해 "rival 압박 대응" 배지를 덱 / 보상 UI에 surface.
-- **v0.58 #5** — DONE (이 커밋). `BigEventModal.tsx` annual_challenger / late_boss 진입 모달. `pendingChallengerEntryIds` 큐 + `dismissChallengerEntry` 액션. late_boss는 빨간 글로우 강조. `?scenario=big-event` 신규.
+- **v0.58 #4** — DONE (이 커밋). `isCounterCard` + `getRivalCounterSignal` 노출. `DeckPanel`이 시그널을 derive해서 hand / reward-choice의 counter 카드에 "압박 대응" 배지 + 글로우 표시. high signal은 pulse (prefers-reduced-motion fallback). derive-only.
+- **v0.58 #5** — DONE at `8df6bde`. `BigEventModal.tsx` annual_challenger / late_boss 진입 모달. `pendingChallengerEntryIds` 큐 + `dismissChallengerEntry` 액션. late_boss는 빨간 글로우 강조. `?scenario=big-event` 신규.
 
 ## v0.57 P2 follow-up (merged)
 
@@ -50,7 +50,7 @@ npm run qa:asset-handoff
 
 ## 현재 게이트 상태
 
-- v0.58 #5 이후: `npm run harness:gate` 통과, 43 files / 414 tests
+- v0.58 #4 이후: `npm run harness:gate` 통과, 43 files / 415 tests
 - `qa:asset-handoff`: `AGY 발송 가능`
 
 ## 블로커
@@ -60,8 +60,8 @@ npm run qa:asset-handoff
 
 ## 다음 작업
 
-1. v0.58 #4 — 대응 카드 차별화 (마지막 DoD 항목). `strategyCards`의 기존 `counter` 태그 + `rival_score_delta`/`rival_momentum_delta` effects 활용해 "rival 압박 대응" 배지를 덱/보상 UI에 표시. derive-only. 목표 43 files / 415 tests.
-2. #4 완료 후 v0.58 closeout 커밋 + 다음 마일스톤 선택.
+1. v0.58 closeout 커밋 — `feature_list.json` `v0.58-alpha-market-season-strength` 상태를 `completed`로 전환. handoff 파일들 closeout 메모. 다음 마일스톤 선택.
+2. 후보 — Recursive 영감 자원 가시화 (`docs/ROADMAP.md` 후속 검토), v0.59-alpha 산업 확장, v0.57 P2 모바일 백로그 Phase 2.
 
 ## 다음 세션 시작
 
