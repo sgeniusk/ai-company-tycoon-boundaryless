@@ -9578,3 +9578,146 @@ p {
     height: 32px;
   }
 }
+
+.rival-archetype-panel {
+  background: rgba(20, 28, 42, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  display: grid;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 8px 10px;
+}
+
+.rival-archetype-header {
+  align-items: baseline;
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.rival-archetype-header strong {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+}
+
+.rival-archetype-subtitle {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.52rem;
+}
+
+.rival-archetype-list {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rival-archetype-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  display: grid;
+  gap: 4px;
+  padding: 6px 7px;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.rival-archetype-card.rival-archetype-contested {
+  background: rgba(255, 86, 64, 0.12);
+  border-color: rgba(255, 86, 64, 0.45);
+}
+
+.rival-archetype-card.rival-archetype-strategic {
+  background: rgba(255, 180, 58, 0.1);
+  border-color: rgba(255, 180, 58, 0.4);
+}
+
+.rival-archetype-card.rival-archetype-watch {
+  background: rgba(120, 180, 255, 0.08);
+  border-color: rgba(120, 180, 255, 0.3);
+}
+
+.rival-archetype-card-header {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+}
+
+.rival-archetype-swatch {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: block;
+  flex: 0 0 8px;
+  height: 8px;
+  width: 8px;
+}
+
+.rival-archetype-name {
+  color: rgba(255, 255, 255, 0.92);
+  flex: 1 1 auto;
+  font-size: 0.58rem;
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rival-archetype-severity {
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.46rem;
+  font-style: normal;
+  font-weight: 700;
+  padding: 1px 4px;
+}
+
+.rival-archetype-contested .rival-archetype-severity {
+  background: rgba(255, 86, 64, 0.42);
+  color: #fff5f1;
+}
+
+.rival-archetype-strategic .rival-archetype-severity {
+  background: rgba(255, 180, 58, 0.42);
+  color: #25190a;
+}
+
+.rival-archetype-body {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+
+.rival-archetype-row {
+  align-items: baseline;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: 28px 1fr;
+}
+
+.rival-archetype-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.46rem;
+  letter-spacing: 0.04em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.rival-archetype-value {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.52rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.rival-archetype-weakness-row .rival-archetype-value {
+  color: rgba(255, 200, 130, 0.92);
+}
+
+@media (max-width: 700px) {
+  .rival-archetype-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

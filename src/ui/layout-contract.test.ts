@@ -10,6 +10,7 @@ const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.m
 const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPanel.tsx", import.meta.url), "utf8");
 const playtestObserver = readFileSync(new URL("../game/blind-playtest-observer.ts", import.meta.url), "utf8");
 const marketSharePanel = readFileSync(new URL("../components/MarketSharePanel.tsx", import.meta.url), "utf8");
+const rivalArchetypePanel = readFileSync(new URL("../components/RivalArchetypePanel.tsx", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
@@ -809,5 +810,22 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.market-share-sparkline-player\s*{[^}]*stroke:/s);
     expect(appCss).toMatch(/\.market-share-sparkline-rival\s*{[^}]*stroke:/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.market-share-sparkline/s);
+  });
+
+  it("v0.58 #3 surfaces rival archetype and weakness in a derive-only panel mounted next to market share", () => {
+    expect(gameChrome).toContain("RivalArchetypePanel");
+    expect(gameChrome).toContain("<RivalArchetypePanel gameState={gameState} locale={locale} />");
+    expect(rivalArchetypePanel).toContain("getRivalCounterPlans");
+    expect(rivalArchetypePanel).toContain("archetype_key");
+    expect(rivalArchetypePanel).toContain("weakness_key");
+    expect(rivalArchetypePanel).toContain("rival-archetype-panel");
+    expect(rivalArchetypePanel).toContain("rival-archetype-card");
+    expect(rivalArchetypePanel).toContain("rival-archetype-severity");
+    expect(rivalArchetypePanel).toContain("rival-archetype-weakness-row");
+    expect(appCss).toMatch(/\.rival-archetype-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.rival-archetype-list\s*{[^}]*grid-template-columns:\s*repeat\(3/s);
+    expect(appCss).toMatch(/\.rival-archetype-card\.rival-archetype-contested\s*{/s);
+    expect(appCss).toMatch(/\.rival-archetype-weakness-row\s+\.rival-archetype-value\s*{/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.rival-archetype-list/s);
   });
 });
