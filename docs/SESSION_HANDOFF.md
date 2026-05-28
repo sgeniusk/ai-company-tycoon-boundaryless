@@ -5,8 +5,8 @@ Last Updated: 2026-05-29
 ## Current State
 
 - Current version: `v0.57-alpha` (entering `v0.58-alpha`)
-- Current feature: `v0.58-alpha-market-season-strength` — all 5 functional DoD bullets complete; closeout commit pending
-- Latest implementation commits: `v0.58 #4 response card differentiation` (this commit), `8df6bde v0.58 #5`, `fb1abd6 v0.58 #3`, `f31088e v0.58 #2`, `9a5d493 v0.58 #1`
+- Current feature: `v0.58-alpha-market-season-strength` — **CLOSED 2026-05-29**; next milestone unselected
+- Latest implementation commits: `v0.58 closeout` (this commit), `72d5d3a v0.58 #4`, `8df6bde v0.58 #5`, `fb1abd6 v0.58 #3`, `f31088e v0.58 #2`, `9a5d493 v0.58 #1`
 - Stack: Vite + React + TypeScript
 - Local dev: `npm run dev -- --port 5201`
 - Visual QA: `http://127.0.0.1:5201/?scenario=office-visuals`
@@ -68,11 +68,15 @@ v0.57 stacked 9 polish `#N` commits + 4 P1 polish commits + closeout (`6761c00`)
 
 ## Recommended Next Step
 
-Write the **v0.58 closeout commit**. Flip `feature_list.json` `v0.58-alpha-market-season-strength` status to `completed`, refresh handoffs to celebrate v0.58 close, and pick the next `current_feature_id`. Candidates: Recursive-inspired AI resource visualization (`docs/ROADMAP.md` 후속 검토 block under v0.58), v0.59-alpha boundaryless industry expansion, or v0.57 P2 Track C Phase 2 (implement one mobile polish backlog item).
+Pick the next `current_feature_id` in the next session. Candidates:
+
+- **Recursive-inspired AI resource visualization** (`docs/ROADMAP.md` v0.58 후속 검토 block). Small derive-only HUD additions for GPU hours, data freshness, next-launch compute, with an optional 10-year mega gauge.
+- **v0.59-alpha boundaryless industry expansion**. 3 new physical industries + 10 cross-industry synergies + 10 high-risk/high-reward combos.
+- **v0.57 P2 Track C Phase 2**. Pick one mobile polish item from `reports/qa/v0_57_p2_mobile_backlog.md` 손댈 후보 (top: 모바일 패널 접힘 요약 at `?scenario=office-visuals` 390×844).
 
 ## Next Session Start
 
 1. Read `AGENTS.md`, `feature_list.json`, and `progress.md`.
 2. Check `git status --short`.
-3. Write v0.58 closeout commit OR pick the next current_feature_id directly.
+3. Pick the next `current_feature_id` from the candidate list above and update `feature_list.json` before touching code.
 4. Run `npm run harness:gate` as the baseline before changes.

@@ -5,8 +5,8 @@ Last Updated: 2026-05-29
 ## Current State
 
 - Current version: `v0.57-alpha` (entering `v0.58-alpha`)
-- Current feature: `v0.58-alpha-market-season-strength` (all 5 functional DoD bullets complete; closeout commit pending)
-- Latest implementation commits: `v0.58 #4 response card differentiation` (this commit), `8df6bde v0.58 #5`, `fb1abd6 v0.58 #3`, `f31088e v0.58 #2`, `9a5d493 v0.58 #1`
+- Current feature: `v0.58-alpha-market-season-strength` (CLOSED 2026-05-29; next milestone unselected)
+- Latest implementation commits: `v0.58 closeout` (this commit), `72d5d3a v0.58 #4`, `8df6bde v0.58 #5`, `fb1abd6 v0.58 #3`, `f31088e v0.58 #2`, `9a5d493 v0.58 #1`
 - Current branch: `main`
 - Stack: Vite + React + TypeScript
 - Local dev: `npm run dev -- --port 5201`
@@ -17,7 +17,7 @@ Last Updated: 2026-05-29
 
 ## Current Objective
 
-`v0.58-alpha-market-season-strength` has all 5 functional DoD bullets done. Closeout commit is the only step remaining before the next milestone selection.
+`v0.58-alpha-market-season-strength` is **CLOSED** as of 2026-05-29. All 5 functional DoD bullets shipped as derive-only / queue-only blocks with no simulation tick behavior changes. The next milestone is unselected — pick one in the next session.
 
 v0.58 block status (2026-05-29):
 
@@ -55,15 +55,20 @@ v0.57 stacked 9 polish `#N` commits + 4 P1 polish commits + closeout commit on t
 - v0.58 #2 (f31088e): `npm run harness:gate` 43 files / 412 tests / build 720ms.
 - v0.58 #3 (fb1abd6): `npm run harness:gate` 43 files / 413 tests.
 - v0.58 #5 (8df6bde): `npm run harness:gate` 43 files / 414 tests.
-- v0.58 #4 (this commit): `npm run harness:gate` 43 files / 415 tests; narrow `npx vitest run src/ui/layout-contract.test.ts` 60 tests / 453ms.
+- v0.58 #4 (72d5d3a): `npm run harness:gate` 43 files / 415 tests.
+- v0.58 closeout (this commit): root state files synced to mark `v0.58-alpha-market-season-strength` completed and the next milestone unselected.
 
 ## Recommended Next Step
 
-Write the **v0.58 closeout commit**. Flip `feature_list.json` `v0.58-alpha-market-season-strength` status to `completed`, refresh handoff files to celebrate v0.58 close, and leave the milestone selection question open. Candidates for next current feature: Recursive-inspired AI resource visualization (`docs/ROADMAP.md` 후속 검토 block under v0.58), v0.59-alpha boundaryless industry expansion, or v0.57 P2 Track C Phase 2 (implement one mobile polish backlog item).
+Pick the next milestone (current feature) in the next session. Candidates:
+
+- **Recursive-inspired AI resource visualization** — `docs/ROADMAP.md` v0.58 후속 검토 block. Surface derive-only GPU hours, data freshness, next-launch compute requirement in the research panel. Optional 10-year campaign mega gauge. Small scope, fast win.
+- **v0.59-alpha boundaryless industry expansion** — 3 new physical industries + robotics/manufacturing/logistics requirements + 10 cross-industry synergies + 10 high-risk/high-reward combos. Larger scope, fits the game's "boundaryless" identity.
+- **v0.57 P2 Track C Phase 2** — pick one item from `reports/qa/v0_57_p2_mobile_backlog.md` 손댈 후보 (top candidate: 모바일 패널 접힘 요약 at `?scenario=office-visuals` 390×844). Smallest scope; clears mobile polish backlog.
 
 ## Next Session
 
 1. Read `AGENTS.md`, `feature_list.json`, and this file first.
 2. Check `git status --short`.
-3. Write v0.58 closeout commit OR pick the next current_feature_id.
+3. Pick the next current_feature_id from the candidate list above and update `feature_list.json` before touching code.
 4. Run `npm run harness:gate` as the baseline before changes.

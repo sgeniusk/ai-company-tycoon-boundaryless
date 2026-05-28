@@ -4,13 +4,13 @@
 
 ## 한 줄 요약
 
-`v0.58-alpha-market-season-strength` 마일스톤의 5개 DoD 항목 모두 완료. closeout 커밋만 남았음. 다음 마일스톤 미선정.
+`v0.58-alpha-market-season-strength` 마일스톤 **CLOSED** (2026-05-29). 5개 DoD 항목 + closeout 커밋까지 완료. 다음 마일스톤 미선정.
 
 ## 현재 상태
 
 - 로컬 폴더: `/Users/taewookkim/dev/ai-company-tycoon`
 - 브랜치: `main`
-- 최신 구현 커밋: `v0.58 #4 response card differentiation` (이 커밋)
+- 최신 구현 커밋: `v0.58 closeout` (이 커밋, `72d5d3a v0.58 #4` 직후)
 - 스택: Vite + React + TypeScript
 - 로컬 실행: `npm run dev -- --port 5201`
 - 메인 QA: `http://127.0.0.1:5201/?scenario=office-visuals`
@@ -60,8 +60,11 @@ npm run qa:asset-handoff
 
 ## 다음 작업
 
-1. v0.58 closeout 커밋 — `feature_list.json` `v0.58-alpha-market-season-strength` 상태를 `completed`로 전환. handoff 파일들 closeout 메모. 다음 마일스톤 선택.
-2. 후보 — Recursive 영감 자원 가시화 (`docs/ROADMAP.md` 후속 검토), v0.59-alpha 산업 확장, v0.57 P2 모바일 백로그 Phase 2.
+다음 세션에서 current_feature_id 선택. 후보:
+
+1. Recursive 영감 자원 가시화 — `docs/ROADMAP.md` v0.58 후속 검토. derive-only GPU 시간 / 데이터 신선도 / 다음 출시 compute. 소규모, 빠른 진척.
+2. v0.59-alpha 경계 없는 산업 확장 — 물리 산업 3개 + 산업 간 시너지 10개 + 위험/대박 조합 10개. 대규모, 게임 정체성 확장.
+3. v0.57 P2 Track C Phase 2 — `reports/qa/v0_57_p2_mobile_backlog.md` 손댈 후보 1개 픽업 (top: 모바일 패널 접힘 요약 390×844). 최소 규모.
 
 ## 다음 세션 시작
 
