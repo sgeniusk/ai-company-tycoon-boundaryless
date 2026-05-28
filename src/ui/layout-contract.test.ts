@@ -797,4 +797,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.market-share-legend\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.market-share-panel/s);
   });
+
+  it("v0.58 #2 tracks marketShareHistory and renders sparkline polylines for player and top rival", () => {
+    expect(marketSharePanel).toContain("marketShareHistory");
+    expect(marketSharePanel).toContain("market-share-sparkline");
+    expect(marketSharePanel).toContain("market-share-sparkline-player");
+    expect(marketSharePanel).toContain("market-share-sparkline-rival");
+    expect(marketSharePanel).toContain("polyline");
+    expect(marketSharePanel).toContain("market-share-trend");
+    expect(appCss).toMatch(/\.market-share-sparkline\s*{[^}]*display:\s*block/s);
+    expect(appCss).toMatch(/\.market-share-sparkline-player\s*{[^}]*stroke:/s);
+    expect(appCss).toMatch(/\.market-share-sparkline-rival\s*{[^}]*stroke:/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.market-share-sparkline/s);
+  });
 });

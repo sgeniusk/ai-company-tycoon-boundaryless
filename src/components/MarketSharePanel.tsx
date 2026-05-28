@@ -25,6 +25,26 @@ export function MarketSharePanel({ gameState, locale }: { gameState: GameState; 
   const competitorTotal = competitorShares.reduce((sum, c) => sum + c.share, 0);
   const otherShare = Math.max(0, 100 - playerShare - competitorTotal);
 
+  // v0.58 #2 — 최근 24개월 sliding window의 우리/최상위 라이벌 점유율 sparkline. 2개월 미만은 추세선 의미가 없어 렌더 생략.
+  const history = gameState.marketShareHistory ?? [];
+  const SPARKLINE_W = 240;
+  const SPARKLINE_H = 40;
+  const SPARKLINE_PAD_X = 2;
+  const SPARKLINE_PAD_Y = 4;
+  const sparklineInnerW = SPARKLINE_W - SPARKLINE_PAD_X * 2;
+  const sparklineInnerH = SPARKLINE_H - SPARKLINE_PAD_Y * 2;
+  const sparklineMax = Math.max(
+    50,
+    ...history.map((entry) => Math.max(entry.player, entry.topRivalShare)),
+  );
+  const sparklineX = (i: number) =>
+    SPARKLINE_PAD_X + (history.length <= 1 ? sparklineInnerW / 2 : (i / (history.length - 1)) * sparklineInnerW);
+  const sparklineY = (value: number) =>
+    SPARKLINE_PAD_Y + sparklineInnerH - (value / sparklineMax) * sparklineInnerH;
+  const playerPoints = history.map((entry, i) => `${sparklineX(i)},${sparklineY(entry.player)}`).join(" ");
+  const rivalPoints = history.map((entry, i) => `${sparklineX(i)},${sparklineY(entry.topRivalShare)}`).join(" ");
+  const hasTrend = history.length >= 2;
+
   return (
     <section className="market-share-panel" aria-label="시장 점유율">
       <header className="market-share-header">
@@ -62,6 +82,29 @@ export function MarketSharePanel({ gameState, locale }: { gameState: GameState; 
           />
         )}
       </div>
+      {hasTrend && (
+        <div className="market-share-trend">
+          <span className="market-share-trend-label">최근 {history.length}개월 추세 (우리 · 최상위 라이벌)</span>
+          <svg
+            className="market-share-sparkline"
+            viewBox={`0 0 ${SPARKLINE_W} ${SPARKLINE_H}`}
+            preserveAspectRatio="none"
+            role="img"
+            aria-label={`최근 ${history.length}개월 시장 점유율 추세`}
+          >
+            <polyline
+              className="market-share-sparkline-rival"
+              points={rivalPoints}
+              fill="none"
+            />
+            <polyline
+              className="market-share-sparkline-player"
+              points={playerPoints}
+              fill="none"
+            />
+          </svg>
+        </div>
+      )}
       <ol className="market-share-legend">
         <li className="market-share-legend-self">
           <i className="market-share-swatch market-share-swatch-self" aria-hidden="true" />

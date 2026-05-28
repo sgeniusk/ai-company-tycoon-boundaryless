@@ -60,6 +60,7 @@ import type {
   CompanyStageDefinition,
   CompetitorDefinition,
   CompetitorState,
+  MarketShareHistoryEntry,
   ActiveDevelopmentPuzzleModifier,
   DevelopmentPuzzleResult,
   DevelopmentPuzzleTile,
@@ -395,6 +396,7 @@ export function createInitialState(): GameState {
     productProjects: [],
     productLevels: {},
     competitorStates: createInitialCompetitorStates(startingState.month),
+    marketShareHistory: [],
     productReviews: {},
     roguelite: createInitialRogueliteState(),
     activeDevelopmentPuzzleModifiers: [],
@@ -3212,6 +3214,7 @@ export function hydrateGameState(serialized: string): GameState {
     productProjects: Array.isArray(rawState.productProjects) ? rawState.productProjects : [],
     productLevels: sanitizeProductLevels(rawState.productLevels, hydratedActiveProducts, generatedProducts),
     competitorStates: Array.isArray(rawState.competitorStates) ? rawState.competitorStates : initialState.competitorStates,
+    marketShareHistory: sanitizeMarketShareHistory(rawState.marketShareHistory),
     productReviews: isRecord(rawState.productReviews) ? rawState.productReviews : {},
     lastRelease: hydrateReleaseMoment(rawState.lastRelease, generatedProducts),
     roguelite: hydrateRogueliteState(rawState.roguelite, initialState.roguelite, generatedProducts),
@@ -3499,12 +3502,49 @@ function advanceCompetitors(state: GameState): GameState {
   });
   const nextCompetitors = recalculateMarketShares(movedCompetitors, state);
   const competitionTimeline = getCompetitionTimeline(state.competitorStates, nextCompetitors).slice(0, 3);
+  const marketShareHistory = pushMarketShareHistory(state, nextCompetitors);
 
   return {
     ...state,
     competitorStates: nextCompetitors,
+    marketShareHistory,
     timeline: [...competitionTimeline, ...state.timeline].slice(0, 8),
   };
+}
+
+// v0.58 #2 — 매월 advanceCompetitors가 호출된 직후 플레이어와 최상위 라이벌의 점유율을 sliding window로 기록한다. derive-only.
+const MARKET_SHARE_HISTORY_WINDOW = 24;
+
+function pushMarketShareHistory(state: GameState, nextCompetitors: CompetitorState[]): MarketShareHistoryEntry[] {
+  const projectedState: GameState = { ...state, competitorStates: nextCompetitors };
+  const playerShare = getPlayerMarketShare(projectedState);
+  const topRival = [...nextCompetitors].sort((a, b) => b.marketShare - a.marketShare)[0];
+  const entry: MarketShareHistoryEntry = {
+    month: state.month,
+    player: playerShare,
+    topRivalShare: topRival?.marketShare ?? 0,
+    topRivalId: topRival?.id,
+  };
+  const previous = Array.isArray(state.marketShareHistory) ? state.marketShareHistory : [];
+  return [...previous, entry].slice(-MARKET_SHARE_HISTORY_WINDOW);
+}
+
+function sanitizeMarketShareHistory(raw: unknown): MarketShareHistoryEntry[] {
+  if (!Array.isArray(raw)) return [];
+  const sanitized: MarketShareHistoryEntry[] = [];
+  for (const entry of raw) {
+    if (!isRecord(entry)) continue;
+    const candidate: MarketShareHistoryEntry = {
+      month: sanitizeNumber(entry.month, 0),
+      player: sanitizeNumber(entry.player, 0),
+      topRivalShare: sanitizeNumber(entry.topRivalShare, 0),
+    };
+    if (typeof entry.topRivalId === "string") {
+      candidate.topRivalId = entry.topRivalId;
+    }
+    sanitized.push(candidate);
+  }
+  return sanitized.slice(-MARKET_SHARE_HISTORY_WINDOW);
 }
 
 function recalculateMarketShares(competitorStates: CompetitorState[], state: GameState): CompetitorState[] {

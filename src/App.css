@@ -9531,6 +9531,40 @@ p {
   padding: 1px 4px;
 }
 
+.market-share-trend {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.market-share-trend-label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.52rem;
+  letter-spacing: 0.02em;
+}
+
+.market-share-sparkline {
+  display: block;
+  height: 40px;
+  width: 100%;
+}
+
+.market-share-sparkline-player {
+  stroke: var(--blue);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.market-share-sparkline-rival {
+  opacity: 0.85;
+  stroke: #ffb43a;
+  stroke-dasharray: 4 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
 @media (max-width: 700px) {
   .market-share-panel {
     padding: 6px 8px;
@@ -9538,5 +9572,9 @@ p {
 
   .market-share-legend {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .market-share-sparkline {
+    height: 32px;
   }
 }

@@ -99,9 +99,11 @@
         "npm run harness:gate passes."
       ],
       "evidence": [
-        "2026-05-27: v0.58 entry chosen as next milestone. Track A (market share visualization, Claude Code direct) starts with current-snapshot stacked bar; sparkline deferred to v0.58 #2 because CompetitorState lacks history. Track B (AGY 5x agent review automation) and Track C (v0.57 P2 mobile polish backlog) prepared as Codex CLI handoff at reports/codex-handoff/v0_58_track_b_agy_review.md and reports/codex-handoff/v0_57_track_c_p2_mobile_backlog.md."
+        "2026-05-27: v0.58 entry chosen as next milestone. Track A (market share visualization, Claude Code direct) starts with current-snapshot stacked bar; sparkline deferred to v0.58 #2 because CompetitorState lacks history. Track B (AGY 5x agent review automation) and Track C (v0.57 P2 mobile polish backlog) prepared as Codex CLI handoff at reports/codex-handoff/v0_58_track_b_agy_review.md and reports/codex-handoff/v0_57_track_c_p2_mobile_backlog.md.",
+        "2026-05-27: v0.58 #1 market share visualization HUD panel shipped at 9a5d493 (derive-only stacked bar + top-pressure highlight + ?scenario=market-share registration); npm run harness:gate passed 43 files / 411 tests / build 689ms.",
+        "2026-05-27: v0.58 #2 marketShareHistory tracking + sparkline shipped. Added MarketShareHistoryEntry type, GameState.marketShareHistory field, advanceCompetitors pushes 24-month sliding window, sanitizeMarketShareHistory handles save migrations, MarketSharePanel renders 2-polyline SVG (player vs top rival). npm run harness:gate passed 43 files / 412 tests / build 720ms."
       ],
-      "next_step": "v0.58 #1 - market share visualization HUD panel (derive-only) under ?scenario=market-share. Files: src/components/MarketSharePanel.tsx (new), src/components/GameChrome.tsx, src/App.css, src/game/qa-scenarios.ts, src/ui/layout-contract.test.ts."
+      "next_step": "v0.58 #3 - rival archetype/weakness surfacing near the market share panel. Candidate files: src/components/MarketSharePanel.tsx (extend with archetype/weakness pill), src/game/data.ts (expose competitors[].archetype_key + competitors[].weakness_key if i18n keys ready), src/App.css, src/ui/layout-contract.test.ts. Skip simulation changes; stay derive-only."
     },
     {
       "id": "art-intake-final-source-art",

@@ -182,6 +182,14 @@ export interface CompetitorState {
   lastMove: string;
 }
 
+// v0.58 #2 — 시장 점유율 sparkline용 derive-only 히스토리. recalculateMarketShares 호출 직후 매월 1개 push, 최근 24개월 슬라이딩 윈도우.
+export interface MarketShareHistoryEntry {
+  month: number;
+  player: number;
+  topRivalShare: number;
+  topRivalId?: string;
+}
+
 export interface RivalEventChoiceDefinition {
   id: string;
   text_key: string;
@@ -1197,6 +1205,7 @@ export interface GameState {
   productProjects: ProductProject[];
   productLevels: Record<string, number>;
   competitorStates: CompetitorState[];
+  marketShareHistory: MarketShareHistoryEntry[];
   productReviews: Record<string, ReleaseReview>;
   lastRelease?: ReleaseMoment;
   roguelite: RogueliteState;
