@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { difficultyTiers, runModifiers } from "../game/data";
 import { DEFAULT_RUN_MODIFIER_SELECTION } from "../game/run-modifiers";
 import { formatResource } from "../game/simulation";
+import { getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "../game/tag-derivation";
 import type { GameState, RunModifierOptionDefinition, RunModifiersState } from "../game/types";
 
 type RevealAxis = {
@@ -63,11 +64,31 @@ function getDeltaEntries(option?: RunModifierOptionDefinition): string[] {
   return [...resourceEntries, ...capabilityEntries];
 }
 
+function getScenario(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  return new URLSearchParams(window.location.search).get("scenario") ?? undefined;
+}
+
+function getScenarioPreviousArchetypeIds(): string[] | undefined {
+  return getScenario() === "archetype-collection" ? ["frontier_garage"] : undefined;
+}
+
 export function WorldRevealModal({ gameState }: { gameState: GameState }) {
   const [dismissedSeeds, setDismissedSeeds] = useState<Set<string>>(() => new Set());
   const [revealedCount, setRevealedCount] = useState(1);
+  const previousDiscoveredArchetypeIdsRef = useRef<string[] | undefined>(getScenarioPreviousArchetypeIds());
   const selection = gameState.runModifiers;
   const axes = useMemo(() => getRevealAxes(selection), [selection]);
+  const derivedArchetypes = useMemo(() => getDerivedArchetypes(gameState), [gameState]);
+  const newlyDiscoveredArchetypeIds = useMemo(
+    () => getNewlyDiscoveredArchetypes(previousDiscoveredArchetypeIdsRef.current ?? gameState.roguelite.discoveredArchetypeIds ?? [], derivedArchetypes),
+    [derivedArchetypes, gameState.roguelite.discoveredArchetypeIds],
+  );
+  const newlyDiscoveredArchetypeSet = useMemo(() => new Set(newlyDiscoveredArchetypeIds), [newlyDiscoveredArchetypeIds]);
+  const newlyDiscoveredArchetypes = useMemo(
+    () => derivedArchetypes.filter((rule) => newlyDiscoveredArchetypeSet.has(rule.id)),
+    [derivedArchetypes, newlyDiscoveredArchetypeSet],
+  );
   const challengeTier = difficultyTiers.find((tier) => tier.id === selection.challengeTier) ?? difficultyTiers.find((tier) => tier.id === "standard");
   const shouldShow = !isStandardRun(selection) && !dismissedSeeds.has(selection.seed);
 
@@ -87,6 +108,10 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
 
     return () => window.clearInterval(revealTimer);
   }, [axes.length, selection.seed, shouldShow]);
+
+  useEffect(() => {
+    previousDiscoveredArchetypeIdsRef.current = gameState.roguelite.discoveredArchetypeIds ?? [];
+  }, [gameState.roguelite.discoveredArchetypeIds]);
 
   if (!shouldShow) return null;
 
@@ -132,6 +157,27 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
             );
           })}
         </div>
+        {newlyDiscoveredArchetypes.length > 0 && (
+          <div className="archetype-discovery-panel" aria-label="신규 아키타입 발견">
+            <div>
+              <p className="world-reveal-kicker">New archetype</p>
+              <strong>신규 아키타입 발견</strong>
+              <span>
+                이번 런 조합에서 {newlyDiscoveredArchetypes.length}개가 도감에 추가되었습니다.
+              </span>
+            </div>
+            <div className="archetype-discovery-grid">
+              {newlyDiscoveredArchetypes.map((archetype) => (
+                <article key={archetype.id}>
+                  <p className="item-meta">{archetype.yields.kind === "product" ? "제품 후보" : archetype.yields.kind === "event" ? "이벤트 씨앗" : "보너스 씨앗"}</p>
+                  <strong>{archetype.title}</strong>
+                  <span>{archetype.yields.summary}</span>
+                  <small>{archetype.description}</small>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
         <button
           className="world-reveal-dismiss"
           onClick={() =>

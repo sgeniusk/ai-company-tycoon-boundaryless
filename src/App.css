@@ -6559,6 +6559,16 @@ p {
   padding: 10px;
 }
 
+.archetype-collection-panel {
+  background: #f7f4ec;
+  border: 2px solid #b8a879;
+  display: grid;
+  gap: 9px;
+  margin-bottom: 12px;
+  min-width: 0;
+  padding: 10px;
+}
+
 .payoff-collection-heading {
   align-items: end;
   display: grid;
@@ -6588,7 +6598,24 @@ p {
   min-width: 0;
 }
 
+.archetype-collection-grid {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
+}
+
 .payoff-collection-grid article {
+  background: #fffdf7;
+  border: 2px solid #d7c894;
+  display: grid;
+  gap: 4px;
+  min-height: 82px;
+  min-width: 0;
+  padding: 8px;
+}
+
+.archetype-collection-grid article {
   background: #fffdf7;
   border: 2px solid #d7c894;
   display: grid;
@@ -6603,7 +6630,17 @@ p {
   border-color: #d6a942;
 }
 
+.archetype-collection-grid article.discovered {
+  background: #fff8df;
+  border-color: #d6a942;
+}
+
 .payoff-collection-grid article.locked {
+  background: #ece8dc;
+  border-color: #c7bda3;
+}
+
+.archetype-collection-grid article.locked {
   background: #ece8dc;
   border-color: #c7bda3;
 }
@@ -6615,8 +6652,24 @@ p {
   overflow-wrap: anywhere;
 }
 
+.archetype-collection-grid strong {
+  color: #4f4325;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
 .payoff-collection-grid span,
 .payoff-collection-grid small {
+  color: #6c5f39;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.archetype-collection-grid span,
+.archetype-collection-grid small {
   color: #6c5f39;
   font-size: 0.66rem;
   font-weight: 900;
@@ -9694,6 +9747,7 @@ p {
   .industry-combo-grid,
   .payoff-collection-heading,
   .payoff-collection-grid,
+  .archetype-collection-grid,
   .run-spotlight-grid,
   .rival-wave-list,
   .deck-token-strip,
@@ -9784,6 +9838,10 @@ p {
 
   .payoff-collection-heading,
   .payoff-collection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .archetype-collection-grid {
     grid-template-columns: 1fr;
   }
 
@@ -10563,6 +10621,58 @@ p {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.archetype-discovery-panel {
+  background: rgba(255, 204, 91, 0.1);
+  border: 1px solid rgba(255, 204, 91, 0.5);
+  border-radius: 8px;
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+  padding: 10px;
+}
+
+.archetype-discovery-panel strong {
+  color: #fff8df;
+  display: block;
+  font-size: 0.98rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.archetype-discovery-panel span {
+  color: rgba(255, 255, 255, 0.78);
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.archetype-discovery-grid {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.archetype-discovery-grid article {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 204, 91, 0.38);
+  border-radius: 8px;
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 9px;
+}
+
+.archetype-discovery-grid small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.64rem;
+  font-weight: 800;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .world-reveal-axis {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.13);
@@ -10692,6 +10802,10 @@ p {
   }
 
   .world-reveal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .archetype-discovery-grid {
     grid-template-columns: 1fr;
   }
 }

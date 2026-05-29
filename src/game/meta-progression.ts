@@ -3,6 +3,7 @@ import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
 import type { RunModifierSelectionInput } from "./run-modifiers";
+import { getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "./tag-derivation";
 import type { ActionCheck, GameState, MetaUnlockDefinition, ResourceMap, RunRecord, StarterDeckOption } from "./types";
 import { t } from "../i18n";
 
@@ -150,6 +151,9 @@ export function resetRunWithMetaUnlocks(
   const nextStarterDeckId = starterDeck?.id ?? "balanced_founder";
   const nextState = createInitialState(runModifierSelection);
   const startingEffects = getMetaStartingResourceEffects(nextMetaIds);
+  const previousDiscoveredArchetypeIds = uniqueStrings(previousRoguelite.discoveredArchetypeIds ?? []);
+  const newlyDiscoveredArchetypeIds = getNewlyDiscoveredArchetypes(previousDiscoveredArchetypeIds, getDerivedArchetypes(nextState));
+  const discoveredArchetypeIds = uniqueStrings([...previousDiscoveredArchetypeIds, ...newlyDiscoveredArchetypeIds]);
 
   return {
     ...nextState,
@@ -159,6 +163,7 @@ export function resetRunWithMetaUnlocks(
       runNumber: previousRoguelite.runNumber + 1,
       founderInsight: availableInsight,
       unlockedMetaIds: nextMetaIds,
+      discoveredArchetypeIds,
       starterDeckId: nextStarterDeckId,
       runHistory: [createRunRecord(state, insightReward), ...(previousRoguelite.runHistory ?? [])].slice(0, 8),
     }),
@@ -167,6 +172,10 @@ export function resetRunWithMetaUnlocks(
       ...nextState.timeline,
     ].slice(0, 8),
   };
+}
+
+function uniqueStrings(values: string[]): string[] {
+  return [...new Set(values.filter((value) => typeof value === "string" && value.length > 0))];
 }
 
 function getRecommendedUnlocks(state: GameState, projectedFounderInsight: number): NextRunRecommendedUnlock[] {

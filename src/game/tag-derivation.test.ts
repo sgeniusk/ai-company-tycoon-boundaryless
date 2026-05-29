@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { derivationRules, runModifiers } from "./data";
 import { createQaScenario } from "./qa-scenarios";
 import { createInitialState } from "./simulation";
-import { getDerivedArchetypes } from "./tag-derivation";
+import { getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "./tag-derivation";
 import type { GameState } from "./types";
 
 const runModifierTagVocabulary = new Set(
@@ -93,5 +93,19 @@ describe("v0.66 tag derivation engine foundation", () => {
       founderTraitId: "engineer_founder",
     });
     expect(derivedIds).toEqual(["frontier_demo_loop", "frontier_garage", "oss_evangelist"]);
+  });
+
+  it("derives newly discovered archetype ids from a cross-run collection without mutating inputs", () => {
+    const runArchetypes = getDerivedArchetypes(
+      stateWithTags(["community_models", "demand_surge", "builder_bias", "frontier_cluster", "open_source_heaven", "market_boom"]),
+    );
+    const collection = ["frontier_garage"];
+
+    const newlyDiscovered = getNewlyDiscoveredArchetypes(collection, runArchetypes);
+
+    expect(newlyDiscovered).toEqual(["frontier_demo_loop", "oss_evangelist"]);
+    expect(collection).toEqual(["frontier_garage"]);
+    expect(runArchetypes.map((rule) => rule.id)).toEqual(["frontier_demo_loop", "frontier_garage", "oss_evangelist"]);
+    expect(getNewlyDiscoveredArchetypes(new Set(runArchetypes.map((rule) => rule.id)), runArchetypes)).toEqual([]);
   });
 });

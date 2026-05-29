@@ -92,7 +92,7 @@ export const qaScenarioIds = [
   "world-events",
 ] as const;
 
-export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation";
+export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation" | "archetype-collection";
 
 export interface QaScenario {
   id: QaScenarioId;
@@ -267,6 +267,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "태그 파생 엔진 QA",
       state: createTagDerivationScenarioState(),
       activeMenu: "company",
+    };
+  }
+
+  if (id === "archetype-collection") {
+    return {
+      id,
+      label: "아키타입 도감 QA",
+      state: createArchetypeCollectionScenarioState(),
+      activeMenu: "products",
     };
   }
 
@@ -1645,9 +1654,38 @@ function createTagDerivationScenarioState(): GameState {
   };
 }
 
+function createArchetypeCollectionScenarioState(): GameState {
+  const previousRun: GameState = {
+    ...createInitialState(),
+    month: 12,
+    status: "success",
+    roguelite: {
+      ...createInitialState().roguelite,
+      discoveredArchetypeIds: ["frontier_garage"],
+    },
+  };
+  const nextRun = resetRunWithMetaUnlocks(previousRun, [], "balanced_founder", {
+    seed: "qa-archetype-collection",
+    startCityId: "san_francisco",
+    worldLoreId: "open_source_heaven",
+    marketConditionId: "ai_boom",
+    founderTraitId: "engineer_founder",
+  });
+  const newlyDiscovered = nextRun.roguelite.discoveredArchetypeIds.filter((id) => id !== "frontier_garage");
+
+  return {
+    ...nextRun,
+    timeline: [
+      `v0.66 신규 아키타입 도감 QA: ${newlyDiscovered.join(" / ")}`,
+      ...nextRun.timeline,
+    ].slice(0, 8),
+  };
+}
+
 export function getQaScenarioId(value: string | null): QaScenarioId | undefined {
   if (value === "world-reveal") return value;
   if (value === "tag-derivation") return value;
+  if (value === "archetype-collection") return value;
   return qaScenarioIds.find((id) => id === value);
 }
 

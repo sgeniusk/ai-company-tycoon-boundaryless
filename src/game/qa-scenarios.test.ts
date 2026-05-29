@@ -9,6 +9,7 @@ import { getNextRunSetupPlan } from "./meta-progression";
 import { getPayoffCollectionEntries } from "./payoff-activation";
 import { getAiResourceVisibilityMetrics } from "./resource-visibility";
 import { runTenYearCampaignSimulation } from "./run-simulator";
+import { getDerivedArchetypes } from "./tag-derivation";
 import { getTutorialGuide } from "./tutorial-guide";
 import { getAlphaRunCompletionSummary, getAlphaRunDebriefSummary, getAlphaRunRoadmapProgress, getFirstTenMinuteProgress, getGuidanceStep } from "./guidance";
 import {
@@ -796,8 +797,20 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=difficulty-hard")?.id).toBe("difficulty-hard");
     expect(createQaScenarioFromSearch("?scenario=difficulty-reward")?.id).toBe("difficulty-reward");
     expect(createQaScenarioFromSearch("?scenario=world-events")?.id).toBe("world-events");
+    expect(createQaScenarioFromSearch("?scenario=archetype-collection")?.id).toBe("archetype-collection");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
+  });
+
+  it("builds an archetype collection scenario with previous and newly derived discoveries", () => {
+    const scenario = createQaScenario("archetype-collection");
+    const derivedIds = getDerivedArchetypes(scenario.state).map((rule) => rule.id);
+
+    expect(scenario.activeMenu).toBe("products");
+    expect(scenario.label).toContain("아키타입 도감");
+    expect(derivedIds).toEqual(["frontier_demo_loop", "frontier_garage", "oss_evangelist"]);
+    expect(scenario.state.roguelite.discoveredArchetypeIds).toEqual(["frontier_garage", "frontier_demo_loop", "oss_evangelist"]);
+    expect(scenario.state.timeline[0]).toContain("신규 아키타입");
   });
 
   it("builds a milestone payoff QA state with an unlocked achievement and near-miss annual review", () => {

@@ -152,6 +152,46 @@ describe("v0.63 run modifier foundation", () => {
     expect(nextRun.capabilities.safety).toBe(1);
   });
 
+  it("accumulates newly discovered archetypes across next-run resets without dropping roguelite meta", () => {
+    const finishedRun: GameState = {
+      ...createInitialState(),
+      month: 12,
+      status: "success",
+      roguelite: {
+        ...createInitialState().roguelite,
+        founderInsight: 7,
+        unlockedMetaIds: ["robotics_seed_memory"],
+        discoveredArchetypeIds: ["frontier_garage", "frontier_garage"],
+        runHistory: [
+          {
+            id: "run_1_12",
+            runNumber: 1,
+            endedMonth: 12,
+            status: "success",
+            score: 120,
+            bestProductName: "AI Writer",
+            insightReward: 4,
+            note: "seed",
+          },
+        ],
+      },
+    };
+
+    const nextRun = resetRunWithMetaUnlocks(finishedRun, [], "balanced_founder", {
+      seed: "qa-tag-derivation",
+      startCityId: "san_francisco",
+      worldLoreId: "open_source_heaven",
+      marketConditionId: "ai_boom",
+      founderTraitId: "engineer_founder",
+    });
+
+    expect(nextRun.roguelite.discoveredArchetypeIds).toEqual(["frontier_garage", "frontier_demo_loop", "oss_evangelist"]);
+    expect(nextRun.roguelite.unlockedMetaIds).toEqual(["robotics_seed_memory"]);
+    expect(nextRun.roguelite.founderInsight).toBeGreaterThan(7);
+    expect(nextRun.roguelite.runHistory[0]).toMatchObject({ runNumber: 1, status: "success" });
+    expect(nextRun.roguelite.runHistory[1]).toMatchObject({ note: "seed" });
+  });
+
   it("rolls a deterministic non-standard selection from a seed without changing defaults", () => {
     const first = rollRunModifierSelection("qa-world-reveal-seed");
     const second = rollRunModifierSelection("qa-world-reveal-seed");
@@ -164,9 +204,9 @@ describe("v0.63 run modifier foundation", () => {
     expect(different).not.toEqual(first);
 
     expect(createInitialState().runModifiers).toMatchObject(DEFAULT_RUN_MODIFIER_SELECTION);
-    expect(resetRunWithMetaUnlocks({ ...createInitialState(), month: 12, status: "success" }).runModifiers).toMatchObject(
-      DEFAULT_RUN_MODIFIER_SELECTION,
-    );
+    const standardReset = resetRunWithMetaUnlocks({ ...createInitialState(), month: 12, status: "success" });
+    expect(standardReset.runModifiers).toMatchObject(DEFAULT_RUN_MODIFIER_SELECTION);
+    expect(standardReset.roguelite.discoveredArchetypeIds).toEqual([]);
   });
 
   it("round-trips saved run modifiers and migrates old saves to the standard config", () => {

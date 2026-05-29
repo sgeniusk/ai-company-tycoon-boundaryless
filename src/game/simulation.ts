@@ -9,6 +9,7 @@ import {
   companyLocations,
   companyStages,
   competitors,
+  derivationRules,
   domains,
   events,
   items,
@@ -3992,6 +3993,7 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState, generat
   if (!isRecord(value)) return fallback;
 
   const unlockedMetaIds = sanitizeStringArray(value.unlockedMetaIds);
+  const discoveredArchetypeIds = uniqueStrings(sanitizeStringArray(value.discoveredArchetypeIds, derivationRules.map((rule) => rule.id)));
   const deck = hydrateStrategyDeck(value.deck, fallback.deck);
   const cardIds = strategyCards.map((card) => card.id);
 
@@ -3999,6 +4001,7 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState, generat
     runNumber: Math.max(1, Math.round(sanitizeNumber(value.runNumber, fallback.runNumber))),
     founderInsight: Math.max(0, Math.round(sanitizeNumber(value.founderInsight, fallback.founderInsight))),
     unlockedMetaIds,
+    discoveredArchetypeIds,
     starterDeckId: typeof value.starterDeckId === "string" ? value.starterDeckId : fallback.starterDeckId,
     deck,
     deckEditTokens: Math.max(0, Math.round(sanitizeNumber(value.deckEditTokens, fallback.deckEditTokens))),

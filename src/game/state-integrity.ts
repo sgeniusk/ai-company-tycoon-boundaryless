@@ -1,4 +1,15 @@
-import { annualDirectiveChoices, annualReviews, campaignShocks, companyLocations, competitors, products, resources, strategyCards, worldEvents } from "./data";
+import {
+  annualDirectiveChoices,
+  annualReviews,
+  campaignShocks,
+  companyLocations,
+  competitors,
+  derivationRules,
+  products,
+  resources,
+  strategyCards,
+  worldEvents,
+} from "./data";
 import type { GameState } from "./types";
 
 export interface StateIntegrityReport {
@@ -19,6 +30,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const annualDirectiveChoiceIds = new Set(annualDirectiveChoices.map((choice) => choice.id));
   const campaignShockIds = new Set(campaignShocks.map((shock) => shock.id));
   const worldEventIds = new Set(worldEvents.map((event) => event.id));
+  const derivationRuleIds = new Set(derivationRules.map((rule) => rule.id));
 
   for (const resourceId of Object.keys(resources)) {
     const value = state.resources[resourceId];
@@ -157,6 +169,22 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
 
   for (const cardId of state.roguelite.upgradedCardIds) {
     if (!cardIds.has(cardId)) issues.push(`upgraded strategy card "${cardId}" is unknown`);
+  }
+
+  if (!Array.isArray(state.roguelite.discoveredArchetypeIds)) {
+    issues.push("roguelite discoveredArchetypeIds must be an array");
+  } else {
+    const seenArchetypeIds = new Set<string>();
+    for (const archetypeId of state.roguelite.discoveredArchetypeIds) {
+      if (typeof archetypeId !== "string" || !archetypeId.length) {
+        issues.push("roguelite discoveredArchetypeIds must contain non-empty strings");
+      } else if (!derivationRuleIds.has(archetypeId)) {
+        issues.push(`discovered archetype "${archetypeId}" is unknown`);
+      } else if (seenArchetypeIds.has(archetypeId)) {
+        issues.push(`discovered archetype "${archetypeId}" is duplicated`);
+      }
+      seenArchetypeIds.add(archetypeId);
+    }
   }
 
   if (state.roguelite.pendingCardReward) {

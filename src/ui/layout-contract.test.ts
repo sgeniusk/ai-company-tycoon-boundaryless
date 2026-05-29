@@ -740,6 +740,21 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.world-reveal-tier\s*{[^}]*display:\s*grid/s);
   });
 
+  it("v0.66 #2 shows newly discovered archetypes in world reveal and an archetype collection grid", () => {
+    expect(worldRevealModal).toContain("getNewlyDiscoveredArchetypes");
+    expect(worldRevealModal).toContain("archetype-discovery-panel");
+    expect(worldRevealModal).toContain("신규 아키타입 발견");
+    expect(menuPanels).toContain("getArchetypeCollectionEntries");
+    expect(menuPanels).toContain("archetype-collection-panel");
+    expect(menuPanels).toContain("discoveredArchetypeIds");
+    expect(qaScenarios).toContain("archetype-collection");
+    expect(appCss).toMatch(/\.archetype-discovery-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.archetype-discovery-grid\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.archetype-collection-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.archetype-collection-grid article\s*{[^}]*min-width:\s*0/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.archetype-collection-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");

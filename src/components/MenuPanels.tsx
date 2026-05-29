@@ -41,6 +41,7 @@ import { getAiResourceVisibilityMetrics } from "../game/resource-visibility";
 import { getRivalCounterPlans, isCounterCard, getRivalCounterSignal } from "../game/rival-counters";
 import { getShareableMoments } from "../game/shareable-moments";
 import { getTenMonthArc } from "../game/ten-month-arc";
+import { getArchetypeCollectionEntries } from "../game/tag-derivation";
 import {
   createDevelopmentPuzzle,
   getDevelopmentPuzzleResolveCheck,
@@ -1347,6 +1348,10 @@ function ProductsPanel({
   const industryComboSummary = getIndustryComboSummary(gameState);
   const payoffCollectionEntries = getPayoffCollectionEntries(gameState);
   const discoveredPayoffCount = payoffCollectionEntries.filter((entry) => entry.discovered).length;
+  const archetypeCollectionEntries = getArchetypeCollectionEntries(gameState);
+  const discoveredArchetypeCount = archetypeCollectionEntries.filter((entry) =>
+    (gameState.roguelite.discoveredArchetypeIds ?? []).includes(entry.id),
+  ).length;
   const domainFilters = getProductDomainFilters(availableProducts, domains, gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "products");
   const lastCapabilityUpgrade = gameState.lastCapabilityUpgrade;
@@ -1723,6 +1728,27 @@ function ProductsPanel({
               <strong>{entry.discovered ? entry.title : "???"}</strong>
               <span>{entry.discovered ? formatEffects(entry.monthlyEffects) : `${entry.requiredDomains.length}개 산업 조건`}</span>
               <small>{entry.discovered ? entry.riskLabel ?? entry.description : "발동하면 공개"}</small>
+            </article>
+          ))}
+        </div>
+      </div>
+      <div className="archetype-collection-panel" aria-label="아키타입 도감">
+        <div className="payoff-collection-heading">
+          <div>
+            <p className="eyebrow">아키타입 도감</p>
+            <strong>
+              {discoveredArchetypeCount} / {archetypeCollectionEntries.length} 발견
+            </strong>
+          </div>
+          <span>런 태그 조합에서 한 번이라도 파생된 아키타입이 공개됩니다.</span>
+        </div>
+        <div className="archetype-collection-grid">
+          {archetypeCollectionEntries.map((entry) => (
+            <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
+              <p className="item-meta">{entry.yields.kind === "product" ? "제품 후보" : entry.yields.kind === "event" ? "이벤트 씨앗" : "보너스 씨앗"}</p>
+              <strong>{entry.discovered ? entry.title : "???"}</strong>
+              <span>{entry.discovered ? entry.yields.summary : `${entry.requires.length}개 태그 조건`}</span>
+              <small>{entry.discovered ? entry.description : "새 런 조합에서 파생되면 공개"}</small>
             </article>
           ))}
         </div>

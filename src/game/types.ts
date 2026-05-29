@@ -657,6 +657,7 @@ export interface RogueliteState {
   runNumber: number;
   founderInsight: number;
   unlockedMetaIds: string[];
+  discoveredArchetypeIds: string[];
   starterDeckId?: string;
   deck: StrategyDeckState;
   deckEditTokens: number;
