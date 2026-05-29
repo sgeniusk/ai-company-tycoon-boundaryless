@@ -16,7 +16,7 @@ const worldEventSelection = {
 describe("v0.63 yearly world events", () => {
   it("defines a conservative pool of seed-selectable yearly events", () => {
     expect(worldEvents.length).toBeGreaterThanOrEqual(10);
-    expect(worldEvents.length).toBeLessThanOrEqual(12);
+    expect(worldEvents.length).toBeLessThanOrEqual(28);
     expect(new Set(worldEvents.map((event) => event.id)).size).toBe(worldEvents.length);
 
     for (const event of worldEvents) {
@@ -58,6 +58,26 @@ describe("v0.63 yearly world events", () => {
     expect(first.length).toBeGreaterThanOrEqual(8);
     expect(first).not.toEqual(differentSeed);
     expect(first).not.toEqual(differentLore);
+  });
+
+  it("biases a new-world themed event stream into the yearly schedule", () => {
+    const chipWarSchedule = getRunWorldEventSchedule(
+      createInitialState({
+        seed: "qa-new-world-events",
+        worldLoreId: "chip_war",
+      }),
+    ).map((event) => event.id);
+    const standardSchedule = getRunWorldEventSchedule(
+      createInitialState({
+        seed: "qa-new-world-events",
+        worldLoreId: "standard",
+      }),
+    ).map((event) => event.id);
+    const chipWarEventIds = ["export_control_tightening", "regional_chip_consortium"];
+    const countChipWarEvents = (ids: string[]) => ids.filter((id) => chipWarEventIds.includes(id)).length;
+
+    expect(chipWarSchedule).toEqual(expect.arrayContaining(chipWarEventIds));
+    expect(countChipWarEvents(chipWarSchedule)).toBeGreaterThan(countChipWarEvents(standardSchedule));
   });
 
   it("applies a due world event once and dedupes through worldEventHistory", () => {

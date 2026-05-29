@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-05-30",
-  "current_feature_id": "v0.64-alpha-content-depth",
+  "current_feature_id": "v0.65-alpha-difficulty-challenge",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -237,7 +237,7 @@
       "id": "v0.64-alpha-content-depth",
       "name": "Content depth wave (roguelike variety volume)",
       "description": "Fill the replayability value chain's variety lever now that the v0.63 run-modifier system spine is complete (foundation + world tick effects + yearly events + roll/reveal). The run-modifier engine is PURE DATA-DRIVEN, so content scales with zero code change — the cheapest, highest-volume work and the user's north star ('풍성한 컨텐츠 · 무궁무진한 조합'). Decomposed into data-only blocks (fast/medium). Master plan: reports/v0_63_plus_content_roadmap.md. §5 stance: data-only is the safest expansion; default entries stay no-op so the standard 10-year run is unaffected.",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "P1",
       "dependencies": [
         "v0.63-alpha-roguelike-run-modifiers"
@@ -249,9 +249,29 @@
       ],
       "evidence": [
         "2026-05-30: Opened at v0.63 closeout. Grounded on the confirmed data-driven schema — selectOption auto-includes any new JSON entry in the seeded pool and getRunModifierMonthlyEffects sums tag_effects, so 4-axis + event content needs no code. Block #1 launched on Codex CLI (medium) in an isolated git worktree (/Users/taewookkim/dev/act-content-wave, branch v0.64-content-wave, node_modules symlinked) to run truly parallel with v0.63 #4; disjoint file ownership makes the merge conflict-free.",
-        "2026-05-30: Block #1 DONE — implemented by Codex CLI (medium) in the parallel worktree, verified + landed into main by Claude Code. world_lore 5->12, start_cities 6->11, market_conditions 4->8, founder_traits 5->9 = 9,504 combos (was 600), plus tag_effects for every new monthly-acting tag. Worktree diff was data-only (run_modifiers.json + validate-data.mjs; run-modifiers.ts/simulation.ts/types.ts UNTOUCHED — confirmed). Default entries stay zero-delta no-ops (regression-guarded in the new run-modifiers-content.test.ts). validate-data.mjs run_modifiers checks extended. Files copied into main (disjoint from #4) and the union gate re-verified by Claude Code."
+        "2026-05-30: Block #1 DONE — implemented by Codex CLI (medium) in the parallel worktree, verified + landed into main by Claude Code. world_lore 5->12, start_cities 6->11, market_conditions 4->8, founder_traits 5->9 = 9,504 combos (was 600), plus tag_effects for every new monthly-acting tag. Worktree diff was data-only (run_modifiers.json + validate-data.mjs; run-modifiers.ts/simulation.ts/types.ts UNTOUCHED — confirmed). Default entries stay zero-delta no-ops (regression-guarded in the new run-modifiers-content.test.ts). validate-data.mjs run_modifiers checks extended. Files copied into main (disjoint from #4) and the union gate re-verified by Claude Code.",
+        "2026-05-30: Block #2 DONE — implemented by Codex CLI (medium), verified by Claude Code; v0.64 CLOSED. world_events.json 12 -> 26 (14 new events, 2 per new world: agi_overhang/data_drought/chip_war/privacy_fortress/bigtech_monopoly/ai_winter_redux/robotics_boom), each themed via world_lore_tags so the v0.63 #3 selector biases them into that world's run (no selector code change). world-events.test.ts pool-size bound raised + a chip_war theming-bias test added; validate-data.mjs world_events bound updated. DATA-ONLY confirmed — world-events.ts/simulation.ts/types.ts/run_modifiers.json/run-modifiers.ts diffs all empty. Standard 10-year run still completes. Independently verified npm run harness:gate: 47 files / 472 tests. (Note: the first launch hung on a missing stdin redirect — killed clean with no partial files, relaunched with < /dev/null.)"
       ],
-      "next_step": "Block #1 landed. Next: block #2 (world-events 12->26 themed to the new worlds, handoff reports/codex-handoff/v0_64_block2_world_events_expansion.md) — data-only, must raise the block #3 pool-size test bound. Then v0.65 difficulty axis."
+      "next_step": "v0.64 CLOSED (47 files / 472 tests). Next: v0.65 difficulty/challenge axis — #1 foundation (challenge tier field + tier-scaled monthly headwind, standard tier no-op; handoff reports/codex-handoff/v0_65_block1_difficulty_foundation.md, xhigh) then #2 reward scaling + tier-select UI. Then v0.66 tag-derivation engine (decision A), v0.67 multi-ending (decision B). Master plan reports/v0_63_plus_content_roadmap.md."
+    },
+    {
+      "id": "v0.65-alpha-difficulty-challenge",
+      "name": "Difficulty / challenge tier axis (tension-relief + open challenge)",
+      "description": "The user's tension-relief lever ('긴장.해소 부분은 난이도 조정 같은걸로') and the 'open challenge' (열린 도전) part of the north star. A run takes a player-chosen challenge tier (story / standard / hard / brutal); harder tiers add a tier-scaled monthly HEADWIND (additive negative ResourceMap via the same getMonthlyStrategicEffects hook pattern as v0.60/v0.63 #2 — NOT a sign-scaling of run-modifier tag_effects, which would make boom worlds easier), and clearing a harder tier multiplies the meta-progression reward. Standard tier = zero headwind = current behavior (regression-safe). Deterministic; §5-aligned (additive, no tick rewrite). Master plan reports/v0_63_plus_content_roadmap.md.",
+      "status": "in_progress",
+      "priority": "P1",
+      "dependencies": [
+        "v0.64-alpha-content-depth"
+      ],
+      "definition_of_done": [
+        "Block #1 (foundation): data/difficulty_tiers.json (story/standard/hard/brutal — monthly_headwind ResourceMap + reward_multiplier); RunModifiersState.challengeTier (save-migrated, old saves + default = standard); getDifficultyMonthlyEffects + a 2-line getMonthlyStrategicEffects hook (standard = no-op regression guard); standard 10-year completability unchanged + hard tier still completable (run-simulator). xhigh. Handoff reports/codex-handoff/v0_65_block1_difficulty_foundation.md.",
+        "Block #2: clear-tier reward multiplier into meta-progression unlock points + run-setup tier selection UI + reveal shows the chosen tier. medium.",
+        "Each block: harness:gate passes; standard tier = current behavior; deterministic; balance changes deliberate + documented."
+      ],
+      "evidence": [
+        "2026-05-30: Opened at v0.64 closeout. Design chose additive tier-headwind over scaling run-modifier tag_effects (which mix signs, so scaling would make boom worlds easier — not 'harder'). Player-chosen tiers fit the 'open challenge' framing (take on a brutal world for bigger meta reward). Block #1 handoff written; xhigh because it adds a save-migrated RunModifiersState field + a monthly tick hook + balance."
+      ],
+      "next_step": "Launch block #1 (difficulty foundation) on Codex xhigh, verify (standard no-op regression + standard/hard 10-year completability + save round-trip), commit, then block #2 (rewards + UI)."
     },
     {
       "id": "art-intake-final-source-art",

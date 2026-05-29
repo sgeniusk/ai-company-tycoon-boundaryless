@@ -284,8 +284,8 @@ if (!runModifierTagEffects || typeof runModifierTagEffects !== "object" || Array
   }
 }
 
-if (worldEvents.length < 10 || worldEvents.length > 12) {
-  errors.push(`world_events: expected about 10 events, found ${worldEvents.length}`);
+if (worldEvents.length < 10 || worldEvents.length > 28) {
+  errors.push(`world_events: expected about 10-28 events, found ${worldEvents.length}`);
 }
 
 for (const event of worldEvents) {

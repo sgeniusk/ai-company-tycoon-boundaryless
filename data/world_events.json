@@ -151,6 +151,179 @@
         "compute": -18
       },
       "world_lore_tags": ["research_slow", "safety_first"]
+    },
+    {
+      "id": "agi_takeoff_debate",
+      "title": "AGI 임박 논쟁",
+      "description": "연구 가속 기대와 안전성 감시가 동시에 커지며 시장의 시선이 더 날카로워집니다.",
+      "trigger": "3-6년차 AGI 가속 변수",
+      "year_range": [3, 6],
+      "resource_effects": {
+        "data": 40,
+        "hype": 4,
+        "trust": -2
+      },
+      "world_lore_tags": ["research_fast", "safety_scrutiny"]
+    },
+    {
+      "id": "alignment_scramble",
+      "title": "정렬 연구 비상",
+      "description": "고객과 규제기관이 정렬 검증을 요구하며 안전 연구 수요가 급격히 늘어납니다.",
+      "trigger": "5-8년차 안전 연구 변수",
+      "year_range": [5, 8],
+      "resource_effects": {
+        "trust": 4,
+        "cash": -2200,
+        "hype": -2
+      },
+      "world_lore_tags": ["safety_scrutiny"]
+    },
+    {
+      "id": "public_data_lockdown",
+      "title": "공개 데이터 봉쇄",
+      "description": "저작권 단속이 강화되며 공개 데이터 파이프라인을 다시 점검해야 합니다.",
+      "trigger": "2-5년차 데이터 봉쇄 변수",
+      "year_range": [2, 5],
+      "resource_effects": {
+        "data": -40,
+        "cash": -1500
+      },
+      "world_lore_tags": ["data_scarce"]
+    },
+    {
+      "id": "synthetic_data_rush",
+      "title": "합성 데이터 골드러시",
+      "description": "합성 데이터 시장이 달아오르며 대체 학습 재료를 비싼 값에 확보합니다.",
+      "trigger": "4-7년차 합성 데이터 변수",
+      "year_range": [4, 7],
+      "resource_effects": {
+        "data": 35,
+        "cash": -2000
+      },
+      "world_lore_tags": ["synthetic_premium"]
+    },
+    {
+      "id": "export_control_tightening",
+      "title": "수출통제 강화",
+      "description": "고성능 칩 반출 규제가 더 빡빡해지며 컴퓨트 조달이 다시 경색됩니다.",
+      "trigger": "2-5년차 칩 수출통제 변수",
+      "year_range": [2, 5],
+      "resource_effects": {
+        "compute": -32,
+        "cash": -1800
+      },
+      "world_lore_tags": ["export_controls"]
+    },
+    {
+      "id": "regional_chip_consortium",
+      "title": "지역 칩 컨소시엄",
+      "description": "지역 공급망 동맹이 출범해 컴퓨트를 확보하지만 중립성 논란도 따라옵니다.",
+      "trigger": "5-8년차 지역 컴퓨트 변수",
+      "year_range": [5, 8],
+      "resource_effects": {
+        "compute": 30,
+        "trust": -2
+      },
+      "world_lore_tags": ["compute_regional"]
+    },
+    {
+      "id": "privacy_crackdown",
+      "title": "개인정보 단속",
+      "description": "감독기관의 단속이 강해져 데이터 수급은 줄지만 신뢰 프리미엄은 커집니다.",
+      "trigger": "3-6년차 개인정보 규제 변수",
+      "year_range": [3, 6],
+      "resource_effects": {
+        "data": -28,
+        "trust": 4
+      },
+      "world_lore_tags": ["privacy_strict"]
+    },
+    {
+      "id": "consent_data_market",
+      "title": "동의 기반 데이터 시장",
+      "description": "명시적 동의 데이터 거래소가 열려 신뢰를 지키며 학습 재료를 확보합니다.",
+      "trigger": "5-9년차 동의 경제 변수",
+      "year_range": [5, 9],
+      "resource_effects": {
+        "data": 30,
+        "cash": -1600,
+        "trust": 2
+      },
+      "world_lore_tags": ["consent_economy"]
+    },
+    {
+      "id": "platform_fee_hike",
+      "title": "플랫폼 수수료 인상",
+      "description": "거대 플랫폼이 유통 수수료를 올리며 현금과 이용자 확보 속도를 압박합니다.",
+      "trigger": "2-6년차 플랫폼세 변수",
+      "year_range": [2, 6],
+      "resource_effects": {
+        "cash": -2600,
+        "users": -200
+      },
+      "world_lore_tags": ["platform_tax"]
+    },
+    {
+      "id": "distribution_blockade",
+      "title": "유통 채널 봉쇄",
+      "description": "주요 채널 노출이 막히며 성장성과 시장 화제성이 동시에 꺾입니다.",
+      "trigger": "4-8년차 유통 장악 변수",
+      "year_range": [4, 8],
+      "resource_effects": {
+        "users": -420,
+        "hype": -3
+      },
+      "world_lore_tags": ["distribution_locked"]
+    },
+    {
+      "id": "funding_ice_age",
+      "title": "투자 빙하기",
+      "description": "AI 투자 심리가 얼어붙어 런웨이와 시장 관심을 함께 방어해야 합니다.",
+      "trigger": "2-5년차 자금 경색 변수",
+      "year_range": [2, 5],
+      "resource_effects": {
+        "cash": -3600,
+        "hype": -4
+      },
+      "world_lore_tags": ["funding_drought_world", "skeptic_market"]
+    },
+    {
+      "id": "skeptic_headlines",
+      "title": "회의론 헤드라인",
+      "description": "주요 매체가 AI 거품론을 반복 보도하며 고객과 투자자의 의심이 커집니다.",
+      "trigger": "4-7년차 회의론 보도 변수",
+      "year_range": [4, 7],
+      "resource_effects": {
+        "hype": -3,
+        "trust": -2,
+        "users": -260
+      },
+      "world_lore_tags": ["skeptic_market"]
+    },
+    {
+      "id": "embodied_demand_spike",
+      "title": "체화 AI 수요 폭발",
+      "description": "로봇과 물리 산업 고객이 몰려들며 더 큰 추론 수요를 감당해야 합니다.",
+      "trigger": "3-7년차 체화 AI 수요 변수",
+      "year_range": [3, 7],
+      "resource_effects": {
+        "users": 720,
+        "compute": 22
+      },
+      "world_lore_tags": ["embodied_demand"]
+    },
+    {
+      "id": "hardware_capital_inflow",
+      "title": "하드웨어 자본 유입",
+      "description": "설비 투자금이 들어와 인프라는 넓어지지만 시장은 실행 리스크를 주시합니다.",
+      "trigger": "5-9년차 하드웨어 자본 변수",
+      "year_range": [5, 9],
+      "resource_effects": {
+        "cash": 4000,
+        "compute": 30,
+        "trust": -1
+      },
+      "world_lore_tags": ["hardware_capital"]
     }
   ]
 }
