@@ -676,6 +676,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.deck-synergy-grid\s*{[^}]*grid-template-columns:/s);
   });
 
+  it("surfaces boundaryless industry synergies in the products console", () => {
+    expect(menuPanels).toContain("getIndustrySynergySummary");
+    expect(menuPanels).toContain("industry-synergy-panel");
+    expect(menuPanels).toContain("industry-synergy-grid");
+    expect(appCss).toMatch(/\.industry-synergy-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.industry-synergy-grid\s*{[^}]*grid-template-columns:/s);
+  });
+
   it("adds a next-run command room for roguelite restart decisions", () => {
     expect(menuPanels).toContain("getNextRunSetupPlan");
     expect(menuPanels).toContain("next-run-command-panel");

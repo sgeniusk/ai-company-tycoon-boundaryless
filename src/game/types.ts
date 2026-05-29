@@ -750,6 +750,29 @@ export interface OfficeSynergySummary {
   totalMonthlyEffects: ResourceMap;
 }
 
+export interface IndustrySynergyDefinition {
+  id: string;
+  title: string;
+  description: string;
+  required_domains: string[];
+  monthly_effects: ResourceMap;
+  tags: string[];
+}
+
+export interface IndustrySynergyStatus extends IndustrySynergyDefinition {
+  active: boolean;
+  progressLabel: string;
+  fulfilledDomains: string[];
+  missingDomains: string[];
+}
+
+export interface IndustrySynergySummary {
+  active: IndustrySynergyStatus[];
+  locked: IndustrySynergyStatus[];
+  nextCandidate?: IndustrySynergyStatus;
+  totalMonthlyEffects: ResourceMap;
+}
+
 export interface OfficeZoneDefinition {
   id: string;
   title: string;

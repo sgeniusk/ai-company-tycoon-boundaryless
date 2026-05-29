@@ -20,7 +20,7 @@ Last Updated: 2026-05-29
 
 `v0.60-alpha-boundaryless-industry-expansion` is the current milestone (selected 2026-05-29). It validates the fun of going beyond software into physical industries — 3 new domains (manufacturing, logistics, energy) on top of the existing 12, robot/manufacturing/logistics requirement wiring, 10 cross-industry synergies, and 10 high-risk/high-reward combos. ROADMAP §5 forbids mass expansion, so this stays a controlled 3-industry slice. Multi-session; decomposed into 4 blocks (see `feature_list.json`). Coding delegated to Codex CLI (gpt-5.5, xhigh); Claude Code owns the harness/contract track + per-block verification.
 
-Block status — #1 (manufacturing/logistics/energy domains + 6 gated products + boundaryless-expansion wiring + `?scenario=physical-industries`) and #2 (manufacturing + logistics capabilities completing the robot/manufacturing/logistics trio, 3 physical domains re-gated) DONE 2026-05-29 (gate 43 files / 421 tests, simulation.ts untouched in both). #3 synergies → #4 combos queued.
+Block status — #1 (3 physical domains + 6 products), #2 (manufacturing + logistics capabilities completing the robot/manufacturing/logistics trio, domains re-gated), #3 (10 cross-industry synergies in industry_synergies.json + industry-synergies.ts, effects via a minimal 2-line hook in getMonthlyStrategicEffects) DONE 2026-05-29 (gate 43 files / 425 tests). #4 high-risk/high-reward combos queued.
 
 `v0.59-alpha-resource-visibility` closed 2026-05-29 (`c89faae`, 43 files / 417 tests, derive-only). The v0.58 block detail below is older history.
 
@@ -66,14 +66,16 @@ v0.57 stacked 9 polish `#N` commits + 4 P1 polish commits + closeout commit on t
 - v0.58 closeout (645eb2c): root state files synced to mark `v0.58-alpha-market-season-strength` completed.
 - v0.59 (c89faae): `npm run harness:gate` 43 files / 417 tests, derive-only resource indicators.
 - v0.60 #1 (7ca1dba): 43 files / 420 tests. domains.json +3, products.json +6 (gated), boundaryless-expansion.ts wiring, `?scenario=physical-industries`. simulation.ts untouched.
-- v0.60 #2 (this commit): 43 files / 421 tests. capabilities.json +2 (manufacturing, logistics), domains/products re-gated to the robot/manufacturing/logistics trio. simulation.ts untouched (data-driven). Implementation by Codex CLI (gpt-5.5 xhigh); verification by Claude Code.
+- v0.60 #2 (0da778a): 43 files / 421 tests. capabilities.json +2 (manufacturing, logistics), domains/products re-gated to the robot/manufacturing/logistics trio. simulation.ts untouched (data-driven).
+- v0.60 #3 (this commit): 43 files / 425 tests. 10 cross-industry synergies (industry_synergies.json + industry-synergies.ts), effects via a minimal 2-line hook in getMonthlyStrategicEffects. Fast mode (Codex gpt-5.5 medium reasoning); verification by Claude Code.
 
 ## Recommended Next Step
 
-`v0.60` blocks #1-#2 are done and committed. Next on Claude Code's track:
+`v0.60` blocks #1-#3 are done and committed. Next on Claude Code's track:
 
-1. Hand block #3 (10 cross-industry synergies) to Codex CLI — mirror the office_synergies / deck_synergies data + derive/display pattern.
-2. Verify `npm run harness:gate`, commit block #3, then block #4 (10 high-risk/high-reward combos).
+1. Hand block #4 (10 high-risk/high-reward combos) to Codex CLI — mirror the industry-synergies pattern with a risk/volatility dimension; do NOT touch product_ideas.compatibility_rules (§5 forbids inflating that matrix).
+2. Verify `npm run harness:gate`, commit block #4, then write the v0.60 closeout.
+3. Before beta (v0.61): refresh `reports/v0_60_status_and_promo.html` status/promo report (user request 2026-05-29).
 
 ## Next Session
 

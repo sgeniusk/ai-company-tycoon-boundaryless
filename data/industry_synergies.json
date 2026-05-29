@@ -1,0 +1,84 @@
+{
+  "industry_synergies": [
+    {
+      "id": "robotics_manufacturing_cell",
+      "title": "로봇 제조 셀",
+      "description": "로봇 제품과 제조 라인이 맞물려 작은 팀도 물리 생산 실험을 반복할 수 있습니다.",
+      "required_domains": ["robotics", "manufacturing"],
+      "monthly_effects": {"automation": 2, "cash": 120},
+      "tags": ["robotics", "manufacturing", "automation"]
+    },
+    {
+      "id": "factory_energy_loop",
+      "title": "팩토리 에너지 루프",
+      "description": "제조 설비와 에너지 운영 데이터를 묶어 전력 비용과 생산 리듬을 함께 최적화합니다.",
+      "required_domains": ["manufacturing", "energy"],
+      "monthly_effects": {"compute": 4, "cash": 140},
+      "tags": ["manufacturing", "energy", "infrastructure"]
+    },
+    {
+      "id": "smart_fleet_grid",
+      "title": "스마트 플릿 그리드",
+      "description": "모빌리티 제품과 물류망을 연결해 실제 이동 데이터가 제품 개선으로 되돌아옵니다.",
+      "required_domains": ["logistics", "mobility"],
+      "monthly_effects": {"users": 120, "data": 2},
+      "tags": ["logistics", "mobility", "data"]
+    },
+    {
+      "id": "chip_model_stack",
+      "title": "칩-모델 스택",
+      "description": "파운데이션 모델과 AI 반도체 로드맵이 같은 목표를 보며 연산 효율을 끌어올립니다.",
+      "required_domains": ["foundation_models", "semiconductors"],
+      "monthly_effects": {"compute": 6, "data": 2},
+      "tags": ["model", "semiconductors", "compute"]
+    },
+    {
+      "id": "green_inference_fabric",
+      "title": "그린 추론 패브릭",
+      "description": "에너지 운영과 반도체 인프라가 맞물려 대규모 추론을 안정적으로 감당합니다.",
+      "required_domains": ["energy", "semiconductors"],
+      "monthly_effects": {"compute": 5, "trust": 1},
+      "tags": ["energy", "semiconductors", "trust"]
+    },
+    {
+      "id": "warehouse_robot_dispatch",
+      "title": "창고 로봇 배차망",
+      "description": "로봇 인력과 물류 최적화가 결합해 창고-배송 사이의 대기 시간을 줄입니다.",
+      "required_domains": ["robotics", "logistics"],
+      "monthly_effects": {"automation": 2, "users": 90},
+      "tags": ["robotics", "logistics", "operations"]
+    },
+    {
+      "id": "industrial_support_mesh",
+      "title": "산업 지원 메시",
+      "description": "고객 지원 자동화가 제조 현장 피드백을 흡수해 B2B 신뢰를 천천히 쌓습니다.",
+      "required_domains": ["customer_support", "manufacturing"],
+      "monthly_effects": {"trust": 2, "cash": 100},
+      "tags": ["support", "manufacturing", "enterprise"]
+    },
+    {
+      "id": "learning_toy_loop",
+      "title": "학습 완구 루프",
+      "description": "교육 제품과 장난감 캐릭터가 만나 어린 사용자의 반복 학습과 팬덤을 만듭니다.",
+      "required_domains": ["education", "toys"],
+      "monthly_effects": {"users": 110, "hype": 1},
+      "tags": ["education", "toys", "retention"]
+    },
+    {
+      "id": "creator_factory_pipeline",
+      "title": "크리에이터 팩토리 파이프라인",
+      "description": "크리에이터 도구의 디자인 신호가 제조 라인으로 이어져 한정판 제품 실험을 빠르게 돌립니다.",
+      "required_domains": ["creator_tools", "manufacturing"],
+      "monthly_effects": {"hype": 2, "cash": 90},
+      "tags": ["creator", "manufacturing", "hype"]
+    },
+    {
+      "id": "enterprise_energy_ops",
+      "title": "엔터프라이즈 에너지 옵스",
+      "description": "기업 자동화와 에너지 제어가 결합해 데이터센터 운영 계약의 신뢰도를 높입니다.",
+      "required_domains": ["enterprise_automation", "energy"],
+      "monthly_effects": {"trust": 2, "automation": 1},
+      "tags": ["enterprise", "energy", "operations"]
+    }
+  ]
+}

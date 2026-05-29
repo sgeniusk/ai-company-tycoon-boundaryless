@@ -13,6 +13,7 @@ import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualSt
 import { getBoundarylessExpansionGoals } from "../game/boundaryless-expansion";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
+import { getIndustrySynergySummary } from "../game/industry-synergies";
 import {
   getAgentContentRows,
   getCampaignContentPhase,
@@ -1266,6 +1267,7 @@ function ProductsPanel({
   ];
   const unlockedDomainIds = new Set(gameState.unlockedDomains);
   const boundarylessGoals = getBoundarylessExpansionGoals(gameState);
+  const industrySynergySummary = getIndustrySynergySummary(gameState);
   const domainFilters = getProductDomainFilters(availableProducts, domains, gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "products");
   const lastCapabilityUpgrade = gameState.lastCapabilityUpgrade;
@@ -1575,6 +1577,29 @@ function ProductsPanel({
               <i style={{ width: `${goal.progressPercent}%` }} />
             </article>
           ))}
+        </div>
+      </div>
+      <div className="industry-synergy-panel">
+        <div>
+          <p className="eyebrow">산업 간 시너지</p>
+          <strong>{industrySynergySummary.active.length ? `${industrySynergySummary.active.length}개 가동` : "시너지 준비 중"}</strong>
+          <span>
+            월간 효과 {Object.keys(industrySynergySummary.totalMonthlyEffects).length ? formatEffects(industrySynergySummary.totalMonthlyEffects) : "없음"}
+          </span>
+        </div>
+        <div className="industry-synergy-grid">
+          {industrySynergySummary.active.slice(0, 3).map((synergy) => (
+            <article className="active" key={synergy.id}>
+              <strong>{synergy.title}</strong>
+              <span>{formatEffects(synergy.monthly_effects)}</span>
+            </article>
+          ))}
+          {industrySynergySummary.active.length === 0 && industrySynergySummary.nextCandidate && (
+            <article>
+              <strong>다음 후보: {industrySynergySummary.nextCandidate.title}</strong>
+              <span>{industrySynergySummary.nextCandidate.progressLabel}</span>
+            </article>
+          )}
         </div>
       </div>
       {!gameState.hiredAgents.length && <p className="empty-note">먼저 에이전트 메뉴에서 첫 에이전트를 고용하면 제품 개발을 시작할 수 있습니다.</p>}

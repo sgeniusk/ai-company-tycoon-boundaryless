@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { agentTypes, capabilities, domains, products } from "./data";
+import { agentTypes, capabilities, domains, industrySynergies, products } from "./data";
 import { getBoundarylessExpansionGoals } from "./boundaryless-expansion";
-import { advanceMonth, createInitialState, getAgentHireCheck, getProductCheck, upgradeCapability } from "./simulation";
+import { getIndustrySynergySummary } from "./industry-synergies";
+import { advanceMonth, calculateMonthlyEconomy, createInitialState, getAgentHireCheck, getProductCheck, upgradeCapability } from "./simulation";
 import type { GameState } from "./types";
 
 describe("v0.12.4 boundaryless expansion direction", () => {
@@ -38,6 +39,57 @@ describe("v0.12.4 boundaryless expansion direction", () => {
 
     expect(goalIds).toEqual(expect.arrayContaining(["manufacturing", "logistics", "energy"]));
     expect(goalIds.filter((goalId) => ["manufacturing", "logistics", "energy"].includes(goalId))).toHaveLength(3);
+  });
+
+  it("defines exactly 10 cross-industry synergies for the boundaryless slice", () => {
+    expect(industrySynergies).toHaveLength(10);
+    expect(industrySynergies.map((synergy) => synergy.id)).toEqual(
+      expect.arrayContaining([
+        "robotics_manufacturing_cell",
+        "factory_energy_loop",
+        "smart_fleet_grid",
+        "chip_model_stack",
+        "enterprise_energy_ops",
+      ]),
+    );
+    expect(industrySynergies.every((synergy) => synergy.required_domains.length >= 2)).toBe(true);
+  });
+
+  it("activates industry synergies from launched products or unlocked domains", () => {
+    const state: GameState = {
+      ...createInitialState(),
+      activeProducts: ["warehouse_robot_fleet"],
+      unlockedDomains: [...createInitialState().unlockedDomains, "manufacturing"],
+    };
+    const summary = getIndustrySynergySummary(state);
+
+    expect(summary.active.map((synergy) => synergy.id)).toContain("robotics_manufacturing_cell");
+    expect(summary.totalMonthlyEffects).toMatchObject({
+      automation: 2,
+      cash: 120,
+    });
+    expect(summary.nextCandidate?.progressLabel).toContain("잠김");
+  });
+
+  it("adds active industry synergy effects through monthly strategy aggregation", () => {
+    const base = createInitialState();
+    const state: GameState = {
+      ...base,
+      activeProducts: ["warehouse_robot_fleet"],
+      unlockedDomains: [...base.unlockedDomains, "manufacturing"],
+      resources: {
+        ...base.resources,
+        cash: 50000,
+        compute: 1000,
+        data: 1000,
+      },
+    };
+    const summary = getIndustrySynergySummary(state);
+    const economy = calculateMonthlyEconomy(state);
+
+    expect(summary.active.map((synergy) => synergy.id)).toContain("robotics_manufacturing_cell");
+    expect(economy.strategyEffects?.automation).toBeGreaterThanOrEqual(summary.totalMonthlyEffects.automation ?? 0);
+    expect(economy.strategyEffects?.cash).toBeGreaterThanOrEqual(summary.totalMonthlyEffects.cash ?? 0);
   });
 
   it("wires manufacturing and logistics capabilities into physical industry gates", () => {

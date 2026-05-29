@@ -82,6 +82,7 @@ const deckSynergiesData = readJson("deck_synergies.json");
 const starterDecksData = readJson("starter_decks.json");
 const officeExpansionsData = readJson("office_expansions.json");
 const officeSynergiesData = readJson("office_synergies.json");
+const industrySynergiesData = readJson("industry_synergies.json");
 const officeZonesData = readJson("office_zones.json");
 const officeSceneData = readJson("office_scene.json");
 const officeReactionsData = readJson("office_reactions.json");
@@ -120,6 +121,7 @@ const deckSynergies = deckSynergiesData?.deck_synergies ?? [];
 const starterDecks = starterDecksData?.starter_decks ?? [];
 const officeExpansions = officeExpansionsData?.office_expansions ?? [];
 const officeSynergies = officeSynergiesData?.office_synergies ?? [];
+const industrySynergies = industrySynergiesData?.industry_synergies ?? [];
 const officeZones = officeZonesData?.office_zones ?? [];
 const officeSceneObjects = officeSceneData?.office_scene_objects ?? [];
 const officeReactions = officeReactionsData?.office_reactions ?? [];
@@ -156,6 +158,7 @@ idsAreUnique("deck_synergies", deckSynergies);
 idsAreUnique("starter_decks", starterDecks);
 idsAreUnique("office_expansions", officeExpansions);
 idsAreUnique("office_synergies", officeSynergies);
+idsAreUnique("industry_synergies", industrySynergies);
 const officeZoneIds = idsAreUnique("office_zones", officeZones);
 idsAreUnique("office_scene.office_scene_objects", officeSceneObjects);
 idsAreUnique("office_reactions", officeReactions);
@@ -370,6 +373,23 @@ for (const synergy of officeSynergies) {
   validateResourceMap(`office_synergy "${synergy.id}" monthly_effects`, synergy.monthly_effects, resourceIds);
   if (!Array.isArray(synergy.tags) || synergy.tags.length === 0) {
     errors.push(`office_synergy "${synergy.id}": tags must be a non-empty array`);
+  }
+}
+
+if (industrySynergies.length !== 10) errors.push(`industry_synergies: expected exactly 10 synergies, found ${industrySynergies.length}`);
+for (const synergy of industrySynergies) {
+  for (const field of ["title", "description", "required_domains", "monthly_effects", "tags"]) {
+    if (!(field in synergy)) errors.push(`industry_synergy "${synergy.id}": missing ${field}`);
+  }
+  if (!Array.isArray(synergy.required_domains) || synergy.required_domains.length < 2) {
+    errors.push(`industry_synergy "${synergy.id}": required_domains must include at least two domains`);
+  }
+  for (const domainId of synergy.required_domains ?? []) {
+    if (!domainIds.has(domainId)) errors.push(`industry_synergy "${synergy.id}": unknown domain "${domainId}"`);
+  }
+  validateResourceMap(`industry_synergy "${synergy.id}" monthly_effects`, synergy.monthly_effects, resourceIds);
+  if (!Array.isArray(synergy.tags) || synergy.tags.length === 0) {
+    errors.push(`industry_synergy "${synergy.id}": tags must be a non-empty array`);
   }
 }
 
