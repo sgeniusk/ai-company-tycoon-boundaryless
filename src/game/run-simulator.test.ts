@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { growthPaths } from "./data";
+import { growthPaths, products } from "./data";
+import { CAMPAIGN_FINAL_MONTH } from "./campaign";
 import {
   evaluateEndToEndCampaignCoverage,
   evaluateAlphaReadiness,
@@ -41,7 +42,7 @@ describe("v0.11 commercial balance simulation harness", () => {
   it("compresses the full 10-year campaign into annual telemetry", () => {
     const result = runTenYearCampaignSimulation("productivity_line");
 
-    expect(result.finalState.month).toBeGreaterThanOrEqual(120);
+    expect(result.finalState.month).toBeGreaterThanOrEqual(CAMPAIGN_FINAL_MONTH);
     expect(result.finalState.status).not.toBe("playing");
     expect(result.annualReviewCount).toBeGreaterThanOrEqual(10);
     expect(result.directiveChoicesMade).toBeGreaterThanOrEqual(5);
@@ -57,13 +58,51 @@ describe("v0.11 commercial balance simulation harness", () => {
     expect(result.integrity.ok).toBe(true);
   });
 
+  it("completes the full 10-year campaign for every growth path", () => {
+    const results = growthPaths.map((path) => runTenYearCampaignSimulation(path.id));
+
+    expect(results.map((result) => result.strategyId).sort()).toEqual(growthPaths.map((path) => path.id).sort());
+
+    for (const result of results) {
+      expect(result.finalState.month, result.strategyId).toBeGreaterThanOrEqual(CAMPAIGN_FINAL_MONTH);
+      expect(result.finalState.status, result.strategyId).not.toBe("failure");
+      expect(result.integrity.ok, result.strategyId).toBe(true);
+      expect(result.finale, result.strategyId).toMatchObject({ isFinal: true });
+      expect(result.annualReviewCount, result.strategyId).toBeGreaterThanOrEqual(10);
+      expect(result.yearlySnapshots, result.strategyId).toHaveLength(10);
+      expect(result.yearlySnapshots[result.yearlySnapshots.length - 1], result.strategyId).toMatchObject({
+        month: CAMPAIGN_FINAL_MONTH,
+      });
+    }
+  });
+
+  it("completes a 10-year campaign after expanding into v0.60 physical industries", () => {
+    const physicalDomainIds = ["manufacturing", "logistics", "energy"];
+    const result = runTenYearCampaignSimulation("code_vision_lab");
+    const launchedPhysicalDomains = new Set(
+      result.finalState.activeProducts
+        .map((productId) => products.find((product) => product.id === productId)?.domain)
+        .filter((domainId): domainId is string => typeof domainId === "string" && physicalDomainIds.includes(domainId)),
+    );
+
+    expect(result.finalState.month).toBeGreaterThanOrEqual(CAMPAIGN_FINAL_MONTH);
+    expect(result.finalState.status).not.toBe("failure");
+    expect(result.integrity.ok).toBe(true);
+    expect(result.finale).toMatchObject({ isFinal: true });
+    expect(result.finalState.unlockedDomains).toEqual(expect.arrayContaining(physicalDomainIds));
+    expect([...launchedPhysicalDomains].sort()).toEqual([...physicalDomainIds].sort());
+  });
+
   it("summarizes alpha readiness across commercial paths and the 10-year campaign", () => {
     const readiness = evaluateAlphaReadiness();
 
-    expect(readiness.versionTarget).toBe("v0.20-alpha");
+    expect(readiness.versionTarget).toBe("v0.61-alpha");
     expect(readiness.coveredStrategies).toBe(growthPaths.length);
     expect(readiness.gates.map((gate) => gate.id)).toEqual(
       expect.arrayContaining(["commercial_paths", "ten_year_campaign", "integrity", "ending"]),
+    );
+    expect(readiness.gates.find((gate) => gate.id === "ten_year_campaign")?.detail).toContain(
+      `${growthPaths.length}/${growthPaths.length}`,
     );
     expect(readiness.pass).toBe(true);
     expect(readiness.score).toBeGreaterThanOrEqual(70);
@@ -80,16 +119,21 @@ describe("v0.11 commercial balance simulation harness", () => {
     expect(report.recommendations[0]).toContain("보상");
   });
 
-  it("checks v0.25 end-to-end coverage across finale, deck, and office growth", () => {
-    const report = evaluateEndToEndCampaignCoverage();
+  it("checks v0.61 end-to-end coverage across finale, deck, and office growth", () => {
+    const reports = growthPaths.map((path) => ({
+      strategyId: path.id,
+      report: evaluateEndToEndCampaignCoverage(path.id),
+    }));
 
-    expect(report.versionTarget).toBe("v0.25-alpha");
-    expect(report.pass).toBe(true);
-    expect(report.finalMonth).toBeGreaterThanOrEqual(120);
-    expect(report.finalStatus).not.toBe("playing");
-    expect(report.annualReviewCount).toBeGreaterThanOrEqual(10);
-    expect(report.productCount).toBeGreaterThanOrEqual(3);
-    expect(report.officeLevel).toBeGreaterThanOrEqual(4);
-    expect(report.rewardPickCount).toBeGreaterThanOrEqual(2);
+    for (const { strategyId, report } of reports) {
+      expect(report.versionTarget).toBe("v0.61-alpha");
+      expect(report.finalMonth, strategyId).toBeGreaterThanOrEqual(CAMPAIGN_FINAL_MONTH);
+      expect(report.finalStatus, strategyId).not.toBe("playing");
+      expect(report.annualReviewCount, strategyId).toBeGreaterThanOrEqual(10);
+      expect(report.productCount, strategyId).toBeGreaterThanOrEqual(3);
+      expect(report.officeLevel, strategyId).toBeGreaterThanOrEqual(4);
+      expect(report.rewardPickCount, strategyId).toBeGreaterThanOrEqual(2);
+      expect(report.pass, strategyId).toBe(true);
+    }
   });
 });

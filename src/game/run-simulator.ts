@@ -32,6 +32,22 @@ import {
   upgradeCapability,
 } from "./simulation";
 
+const PUBLIC_ALPHA_VERSION_TARGET = "v0.61-alpha";
+const PHYSICAL_INDUSTRY_CAMPAIGN_STRATEGY_ID = "code_vision_lab";
+const PHYSICAL_INDUSTRY_CAPABILITY_TARGETS: Record<string, number> = {
+  agent: 2,
+  enterprise: 1,
+  optimization: 2,
+  robotics: 1,
+  manufacturing: 3,
+  logistics: 1,
+};
+const PHYSICAL_INDUSTRY_PRODUCT_IDS = [
+  "adaptive_factory_control_os",
+  "autonomous_fulfillment_router",
+  "data_center_load_balancer",
+];
+
 export interface CommercialSimulationResult {
   strategyId: string;
   monthsSimulated: number;
@@ -88,7 +104,7 @@ export interface AlphaReadinessGate {
 }
 
 export interface AlphaReadinessReport {
-  versionTarget: "v0.20-alpha";
+  versionTarget: typeof PUBLIC_ALPHA_VERSION_TARGET;
   pass: boolean;
   score: number;
   coveredStrategies: number;
@@ -107,7 +123,7 @@ export interface SeasonChallengeBalanceReport {
 }
 
 export interface EndToEndCampaignCoverageReport {
-  versionTarget: "v0.25-alpha";
+  versionTarget: typeof PUBLIC_ALPHA_VERSION_TARGET;
   pass: boolean;
   finalMonth: number;
   finalStatus: GameState["status"];
@@ -125,13 +141,22 @@ export function runAllCommercialSimulations(): CommercialSimulationResult[] {
 
 export function evaluateAlphaReadiness(): AlphaReadinessReport {
   const commercialResults = runAllCommercialSimulations();
-  const campaignResult = runTenYearCampaignSimulation("productivity_line");
+  const campaignResults = growthPaths.map((path) => runTenYearCampaignSimulation(path.id));
   const commercialPassCount = commercialResults.filter(
     (result) => result.integrity.ok && result.finalState.status !== "failure" && result.finalState.activeProducts.length >= 2,
   ).length;
-  const integrityOk = commercialResults.every((result) => result.integrity.ok) && campaignResult.integrity.ok;
-  const campaignComplete = campaignResult.finalState.month >= CAMPAIGN_FINAL_MONTH && campaignResult.finalState.status !== "playing";
-  const endingGoodEnough = campaignResult.finale.rank !== "D";
+  const campaignPassCount = campaignResults.filter(
+    (result) =>
+      result.finalState.month >= CAMPAIGN_FINAL_MONTH &&
+      result.finalState.status !== "failure" &&
+      result.integrity.ok &&
+      result.finale.isFinal &&
+      result.annualReviewCount >= 10,
+  ).length;
+  const integrityOk = commercialResults.every((result) => result.integrity.ok) && campaignResults.every((result) => result.integrity.ok);
+  const campaignComplete = campaignPassCount === campaignResults.length;
+  const endingPassCount = campaignResults.filter((result) => result.finale.rank !== "D").length;
+  const endingGoodEnough = endingPassCount === campaignResults.length;
   const gates: AlphaReadinessGate[] = [
     {
       id: "commercial_paths",
@@ -141,7 +166,7 @@ export function evaluateAlphaReadiness(): AlphaReadinessReport {
     {
       id: "ten_year_campaign",
       status: campaignComplete ? "pass" : "fail",
-      detail: `10년 캠페인 ${campaignResult.finalState.month}개월차 / 연간 심사 ${campaignResult.annualReviewCount}회`,
+      detail: `10년 캠페인 ${campaignPassCount}/${campaignResults.length}개 성장 경로가 ${CAMPAIGN_FINAL_MONTH}개월 완주`,
     },
     {
       id: "integrity",
@@ -151,25 +176,25 @@ export function evaluateAlphaReadiness(): AlphaReadinessReport {
     {
       id: "ending",
       status: endingGoodEnough ? "pass" : "warn",
-      detail: `10년 엔딩 ${campaignResult.finale.rank}랭크 · ${campaignResult.finale.score}점`,
+      detail: `10년 엔딩 ${endingPassCount}/${campaignResults.length}개 성장 경로 D랭크 회피`,
     },
   ];
   const score = Math.round(
     (commercialPassCount / Math.max(1, commercialResults.length)) * 40 +
-      (campaignComplete ? 25 : 0) +
+      (campaignPassCount / Math.max(1, campaignResults.length)) * 25 +
       (integrityOk ? 20 : 0) +
-      (endingGoodEnough ? 15 : 5),
+      (endingPassCount / Math.max(1, campaignResults.length)) * 15,
   );
 
   return {
-    versionTarget: "v0.20-alpha",
+    versionTarget: PUBLIC_ALPHA_VERSION_TARGET,
     pass: gates.every((gate) => gate.status !== "fail") && score >= 70,
     score,
     coveredStrategies: commercialResults.length,
     gates,
     recommendations: [
-      "v0.20에서는 브라우저 QA 스크린샷 세트를 갱신한다.",
-      "v0.20 이후에는 UI 패널 압축과 코드 스플리팅을 우선순위로 둔다.",
+      "v0.61에서는 전 성장 경로의 10년 캠페인 완주를 공개 알파 게이트로 유지한다.",
+      "v0.61 이후에는 UI 패널 압축과 코드 스플리팅을 우선순위로 둔다.",
       "경쟁사 시즌 과제의 보상/압박 수치를 플레이테스트로 재조정한다.",
     ],
   };
@@ -225,7 +250,7 @@ export function evaluateEndToEndCampaignCoverage(strategyId = "productivity_line
     result.integrity.ok;
 
   return {
-    versionTarget: "v0.25-alpha",
+    versionTarget: PUBLIC_ALPHA_VERSION_TARGET,
     pass,
     finalMonth: result.finalState.month,
     finalStatus: result.finalState.status,
@@ -235,7 +260,7 @@ export function evaluateEndToEndCampaignCoverage(strategyId = "productivity_line
     rewardPickCount,
     finaleRank: result.finale.rank,
     recommendations: [
-      "한판은 120개월 엔딩까지 자동 압축 검증한다.",
+      "전 성장 경로를 120개월 엔딩까지 자동 압축 검증한다.",
       "덱 보상 선택 수와 사무실 단계가 함께 오르는지 계속 게이트에 포함한다.",
       "다음 단계에서는 플레이어가 사무실 성장 선택을 더 명확히 체감하도록 메뉴를 압축한다.",
     ],
@@ -359,7 +384,9 @@ export function runTenYearCampaignSimulation(strategyId = "productivity_line"): 
   state = chooseGrowthPath(strategyId, resolveOpenIssues(state));
 
   while (state.month < CAMPAIGN_FINAL_MONTH && monthsSimulated < CAMPAIGN_FINAL_MONTH + 24) {
-    state = sustainLongCampaignState(applyStrategyPolicy(strategyId, chooseFirstAvailableReward(resolveOpenIssues(state))));
+    state = sustainLongCampaignState(
+      applyLongCampaignExpansionPolicy(strategyId, applyStrategyPolicy(strategyId, chooseFirstAvailableReward(resolveOpenIssues(state)))),
+    );
     state = advanceMonth(state);
     monthsSimulated += 1;
 
@@ -558,6 +585,45 @@ function sustainLongCampaignState(state: GameState): GameState {
       automation: Math.max(state.resources.automation ?? 0, 16),
     },
   };
+}
+
+function applyLongCampaignExpansionPolicy(strategyId: string, state: GameState): GameState {
+  if (state.status !== "playing") return state;
+
+  if (strategyId === PHYSICAL_INDUSTRY_CAMPAIGN_STRATEGY_ID) {
+    const physicalState = applyPhysicalIndustryCampaignPolicy(state);
+    if (physicalState !== state || !hasLaunchedPhysicalIndustryPortfolio(physicalState)) return physicalState;
+  }
+
+  return applyPortfolioExpansionPolicy(state);
+}
+
+function applyPhysicalIndustryCampaignPolicy(state: GameState): GameState {
+  for (const [capabilityId, targetLevel] of Object.entries(PHYSICAL_INDUSTRY_CAPABILITY_TARGETS)) {
+    if ((state.capabilities[capabilityId] ?? 0) >= targetLevel) continue;
+    const capability = capabilities.find((entry) => entry.id === capabilityId);
+    if (capability && getCapabilityCheck(capability, state).ok) {
+      return upgradeCapability(capability, state);
+    }
+  }
+
+  if (state.productProjects.length > 0) return state;
+
+  const product = PHYSICAL_INDUSTRY_PRODUCT_IDS.map((productId) => products.find((entry) => entry.id === productId)).find(
+    (entry) => entry && getProductProjectCheck(entry, state).ok,
+  );
+
+  return product ? startProductProject(product, state) : state;
+}
+
+function hasLaunchedPhysicalIndustryPortfolio(state: GameState): boolean {
+  return PHYSICAL_INDUSTRY_PRODUCT_IDS.every((productId) => state.activeProducts.includes(productId));
+}
+
+function applyPortfolioExpansionPolicy(state: GameState): GameState {
+  if (state.productProjects.length > 0 || state.activeProducts.length >= 3) return state;
+  const product = products.find((entry) => getProductProjectCheck(entry, state).ok);
+  return product ? startProductProject(product, state) : state;
 }
 
 function createTenYearSnapshot(state: GameState, directiveChoicesMade: number): TenYearCampaignSnapshot {
