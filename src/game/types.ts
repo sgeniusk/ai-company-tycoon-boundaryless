@@ -139,6 +139,35 @@ export interface CampaignShockDefinition {
   unlock_domain_ids: string[];
 }
 
+export interface RunModifierStartingDeltas {
+  resources: ResourceMap;
+  capabilities: CapabilityMap;
+}
+
+export interface RunModifierOptionDefinition {
+  id: string;
+  name: string;
+  description: string;
+  starting_deltas: RunModifierStartingDeltas;
+  tags: string[];
+}
+
+export interface RunModifiersDataDefinition {
+  start_cities: RunModifierOptionDefinition[];
+  world_lore: RunModifierOptionDefinition[];
+  market_conditions: RunModifierOptionDefinition[];
+  founder_traits: RunModifierOptionDefinition[];
+}
+
+export interface RunModifiersState {
+  seed: string;
+  startCityId: string;
+  worldLoreId: string;
+  marketConditionId: string;
+  founderTraitId: string;
+  tags: string[];
+}
+
 export interface EventChoiceDefinition {
   id: string;
   text: string;
@@ -1239,6 +1268,7 @@ export interface StaffIncidentResolutionLogEntry {
 export interface GameState {
   month: number;
   locationId: string;
+  runModifiers: RunModifiersState;
   resources: ResourceMap;
   capabilities: CapabilityMap;
   activeProducts: string[];

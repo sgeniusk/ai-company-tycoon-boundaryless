@@ -5,7 +5,7 @@ Last Updated: 2026-05-29
 ## Current State
 
 - Current version: `v0.61-alpha` (closed); beta prep next toward v1.0
-- Current feature: `v0.62-alpha-payoff-juice` (in progress; dopamine polish — block #1 combo/synergy activation celebration delegated to Codex CLI). Prior `v0.61-alpha-public-web-alpha` completed 2026-05-29 (437 tests). Post-1.0 vision in `reports/v0_62_design_direction.md`.
+- Current feature: `v0.63-alpha-roguelike-run-modifiers` (in progress; first post-1.0 big system, started by user decision — §5 hold lifted; block #1 foundation delegated to Codex CLI xhigh). Prior `v0.62-alpha-payoff-juice` completed 2026-05-29 (44 files / 448 tests). Design: `reports/v0_62_design_direction.md` §3.
 - Latest implementation commits: `v0.61 #1 save/load hardening` (this commit), `2f07287 v0.60 #4 + closeout`, `fba35f1 v0.60 #3`, `0da778a v0.60 #2`, `7ca1dba v0.60 #1`, `c89faae v0.59 resource visibility`
 - Current branch: `main`
 - Stack: Vite + React + TypeScript
@@ -16,7 +16,7 @@ Last Updated: 2026-05-29
 
 ## Current Objective
 
-`v0.62-alpha-payoff-juice` is the current milestone — dopamine polish that amplifies existing combo/synergy/milestone moments into payoff celebrations (§5-safe, no new systems), a pre-beta polish slice. **v0.62 COMPLETE 2026-05-29 — all 3 blocks (activation celebration, discovery+collection-lite, milestone fanfare+near-miss).** The post-1.0 vision (tag-derivation engine, roguelike run modifiers, multi-ending) is captured in `reports/v0_62_design_direction.md`. Prior `v0.61-alpha-public-web-alpha` CLOSED 2026-05-29 (public web alpha); the v0.56-v0.61 block detail below is recent history. After v0.62, beta prep (blind playtest + final art, parallel) toward v1.0.
+`v0.63-alpha-roguelike-run-modifiers` is the current milestone — the first post-1.0 big system, started early by user decision (ROADMAP §5 hold lifted for this system; design in `reports/v0_62_design_direction.md` §3). A run is seeded from start city × world-lore × market × founder, with yearly events mutating it. **Block #1 (foundation — run_modifiers.json + run-start application + GameState.runModifiers, default no-op, tick untouched) DONE 2026-05-29.** 4 blocks, coded by Codex CLI (foundation + tick at xhigh; UI at fast). Prior `v0.62-alpha-payoff-juice` CLOSED 2026-05-29 (dopamine polish); the v0.56-v0.62 detail below is recent history.
 
 v0.61 block status (recent history):
 
@@ -49,11 +49,17 @@ Recent milestone history — `v0.60-alpha-boundaryless-industry-expansion` CLOSE
 - v0.61 #4 + closeout (645eb2c era): docs only — refreshed reports/v0_60_status_and_promo.html to v0.61 + wrote reports/v0_61_public_alpha_intro.md. v0.61 milestone marked completed.
 - v0.62 #1 (29c2dc9): 44 files / 439 tests (new test file shifts the file baseline 43→44). Pure-derive combo/synergy activation celebration (payoff-activation.ts + PayoffCelebrationModal + ?scenario=payoff-juice); no GameState field, simulation.ts + save path untouched. Companion: review deck + reports/v0_62_design_direction.md (224fcb6).
 - v0.62 #2 (a115131): 44 files / 444 tests. Discovery "신규 발견!" + collection-lite + ?scenario=collection; new persisted GameState.discoveredPayoffIds (seenTutorials pattern, save round-trip + old-save migration tested); simulation.ts = initialState default + hydrate sanitizer only.
-- v0.62 #3 + closeout (this commit): 44 files / 448 tests. Milestone fanfare (achievements reuse + 2 conservative achievements) + getAnnualReviewNearMissSignal derive (pass criteria unchanged); simulation.ts/types.ts/save schema untouched. v0.62 marked completed. Codex CLI (fast/medium, re-run after a killed attempt was reverted clean); verification by Claude Code.
+- v0.62 #3 + closeout (d742c46): 44 files / 448 tests. Milestone fanfare (achievements reuse + 2 conservative achievements) + getAnnualReviewNearMissSignal derive; simulation.ts/types.ts/save schema untouched. v0.62 completed.
+- v0.63 #1 (this commit): 45 files / 454 tests. Run-modifier FOUNDATION — run_modifiers.json + run-modifiers.ts (pure) + GameState.runModifiers (save-migrated, old saves→standard); createInitialState(selection?)/resetRunWithMetaUnlocks integrate; monthly tick UNTOUCHED, default config = no regression (tested). ?scenario=run-modifiers. Codex CLI (xhigh); verification by Claude Code.
 
 ## Recommended Next Step
 
-`v0.62` is **CLOSED** (3/3 dopamine-polish blocks: payoff celebration · discovery+도감 · milestone fanfare+near-miss). The dopamine layer is in ahead of the post-1.0 vision. Next on the track:
+`v0.63` block #1 (run-modifier foundation) is done and committed (v0.62 dopamine polish closed before it). Next on the track:
+
+1. v0.63 block #2 (world-lore/market tick effects, Codex xhigh) — wire stored `runModifiers.tags` into the monthly tick (e.g. compute_expensive raises compute cost), minimal + deterministic + balance-bounded. Then #3 (yearly events) → #4 (세계 뽑기 reveal UI).
+2. Or pause v0.63 for beta prep (real-human playtest + final art) toward v1.0 — both tracks are open.
+
+(Earlier forward options, still valid:)
 
 1. Beta prep (parallel, calendar-bound) — AGY 5x done; real-human playtest + final art (resolution↑) unlock v1.0.
 2. post-1.0 big systems per `reports/v0_62_design_direction.md` — tag-derivation engine, roguelike run modifiers (도시×세계관×시장×창업자 + 연중 이벤트), multi-ending.
@@ -63,4 +69,4 @@ Recent milestone history — `v0.60-alpha-boundaryless-industry-expansion` CLOSE
 1. Read `AGENTS.md`, `feature_list.json`, and this file first.
 2. Check `git status --short`.
 3. v0.62 is closed (dopamine polish). Next is beta prep (real-human playtest + final art) or a post-1.0 system (`reports/v0_62_design_direction.md`).
-4. Run `npm run harness:gate` as the baseline (44 files / 448 tests) before changes.
+4. Run `npm run harness:gate` as the baseline (45 files / 454 tests) before changes.

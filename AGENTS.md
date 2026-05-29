@@ -30,7 +30,7 @@ Keep startup context lean:
 ## Current Source Of Truth
 
 - Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
-- Current feature: `v0.62-alpha-payoff-juice` (COMPLETED 2026-05-29; dopamine polish — all 3 blocks: activation celebration, discovery+collection, milestone fanfare+near-miss. §5-safe, 44 files / 448 tests). Next is beta prep (real-human playtest + final art) toward v1.0. Post-1.0 vision (roguelike run modifiers, tag-derivation engine, multi-ending) in reports/v0_62_design_direction.md.
+- Current feature: `v0.63-alpha-roguelike-run-modifiers` (in progress; first post-1.0 big system, started by user decision 2026-05-29 — §5 hold lifted for this system. city x world-lore x market x founder + yearly events; decomposed into blocks #1-#4, block #1 foundation delegated to Codex CLI xhigh). Prior `v0.62-alpha-payoff-juice` completed 2026-05-29 (44 files / 448 tests). Design: reports/v0_62_design_direction.md §3.
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`

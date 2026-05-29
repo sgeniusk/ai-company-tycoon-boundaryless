@@ -83,6 +83,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "payoff-juice",
       "collection",
       "milestones",
+      "run-modifiers",
     ]);
   });
 

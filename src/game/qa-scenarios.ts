@@ -84,6 +84,7 @@ export const qaScenarioIds = [
   "payoff-juice",
   "collection",
   "milestones",
+  "run-modifiers",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -180,6 +181,21 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "마일스톤 팡파레 QA",
       state: createMilestoneScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "run-modifiers") {
+    return {
+      id,
+      label: "런 모디파이어 기반 QA",
+      state: createInitialState({
+        seed: "qa-run-modifier",
+        startCityId: "tokyo",
+        worldLoreId: "bitcoin_gpu_squeeze",
+        marketConditionId: "enterprise_winter",
+        founderTraitId: "researcher_founder",
+      }),
       activeMenu: "company",
     };
   }

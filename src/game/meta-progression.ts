@@ -2,6 +2,7 @@ import { competitors, metaUnlocks, products, resources, strategyCards } from "./
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
+import type { RunModifierSelectionInput } from "./run-modifiers";
 import type { ActionCheck, GameState, MetaUnlockDefinition, ResourceMap, RunRecord, StarterDeckOption } from "./types";
 import { t } from "../i18n";
 
@@ -120,6 +121,7 @@ export function resetRunWithMetaUnlocks(
   state: GameState,
   requestedMetaUnlockIds: string[] = [],
   starterDeckId = "balanced_founder",
+  runModifierSelection?: RunModifierSelectionInput,
 ): GameState {
   const previousRoguelite = state.roguelite;
   const insightReward = getRunInsightReward(state);
@@ -144,7 +146,7 @@ export function resetRunWithMetaUnlocks(
     },
   }).find((deck) => deck.id === starterDeckId && deck.available);
   const nextStarterDeckId = starterDeck?.id ?? "balanced_founder";
-  const nextState = createInitialState();
+  const nextState = createInitialState(runModifierSelection);
   const startingEffects = getMetaStartingResourceEffects(nextMetaIds);
 
   return {

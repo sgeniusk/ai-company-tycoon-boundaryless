@@ -1,0 +1,210 @@
+{
+  "start_cities": [
+    {
+      "id": "default_city",
+      "name": "표준 시작 도시",
+      "description": "기존 차고 시작과 동일한 기준선입니다. 블록 #1 기본 런은 이 항목을 사용해 플레이 수치를 바꾸지 않습니다.",
+      "starting_deltas": {
+        "resources": {},
+        "capabilities": {}
+      },
+      "tags": ["default_city"]
+    },
+    {
+      "id": "seoul",
+      "name": "서울",
+      "description": "기업 고객과 AI 인재풀이 가까운 밀도 높은 시작지입니다.",
+      "starting_deltas": {
+        "resources": { "cash": 700, "talent": 1, "trust": 2 },
+        "capabilities": { "enterprise": 1 }
+      },
+      "tags": ["city_seoul", "enterprise_access", "talent_dense"]
+    },
+    {
+      "id": "tokyo",
+      "name": "도쿄",
+      "description": "소비자 하드웨어와 캐릭터 IP 시장 반응이 빠른 시작지입니다.",
+      "starting_deltas": {
+        "resources": { "cash": 1200, "data": 5, "talent": 1, "hype": 2 },
+        "capabilities": { "vision": 1 }
+      },
+      "tags": ["city_tokyo", "consumer_hardware", "design_market"]
+    },
+    {
+      "id": "new_york",
+      "name": "뉴욕",
+      "description": "금융과 미디어 접근성이 강하지만 신뢰 관리는 까다로운 시작지입니다.",
+      "starting_deltas": {
+        "resources": { "cash": 1800, "hype": 4, "trust": -2 },
+        "capabilities": { "enterprise": 1 }
+      },
+      "tags": ["city_new_york", "finance_market", "media_pressure"]
+    },
+    {
+      "id": "san_francisco",
+      "name": "샌프란시스코",
+      "description": "프런티어 인재와 컴퓨트 네트워크가 가깝지만 시작 비용이 높은 클러스터입니다.",
+      "starting_deltas": {
+        "resources": { "cash": -800, "compute": 20, "talent": 2, "hype": 3 },
+        "capabilities": { "code": 1 }
+      },
+      "tags": ["city_san_francisco", "frontier_cluster", "talent_expensive"]
+    },
+    {
+      "id": "texas",
+      "name": "텍사스",
+      "description": "전력과 인프라 접근성이 좋아 물리 산업 확장에 유리한 시작지입니다.",
+      "starting_deltas": {
+        "resources": { "cash": 2500, "compute": 25, "trust": -1 },
+        "capabilities": { "optimization": 1 }
+      },
+      "tags": ["city_texas", "energy_infra", "compute_infra"]
+    }
+  ],
+  "world_lore": [
+    {
+      "id": "standard",
+      "name": "표준 세계",
+      "description": "세계관 보정이 없는 기준선입니다. 기존 신규 게임과 같은 출발점입니다.",
+      "starting_deltas": {
+        "resources": {},
+        "capabilities": {}
+      },
+      "tags": ["standard_world"]
+    },
+    {
+      "id": "alphago_stall",
+      "name": "알파고 정체",
+      "description": "AI 연구 붐이 늦게 붙어 초반 연구 관심과 데이터가 부족합니다.",
+      "starting_deltas": {
+        "resources": { "data": -10, "hype": -2 },
+        "capabilities": { "language": -1 }
+      },
+      "tags": ["alphago_stall", "research_slow"]
+    },
+    {
+      "id": "bitcoin_gpu_squeeze",
+      "name": "비트코인 GPU 초고가",
+      "description": "채굴 열풍 때문에 GPU와 서버 용량 확보가 어려운 세계입니다.",
+      "starting_deltas": {
+        "resources": { "cash": -700, "compute": -45 },
+        "capabilities": {}
+      },
+      "tags": ["compute_expensive", "gpu_scarcity"]
+    },
+    {
+      "id": "open_source_heaven",
+      "name": "오픈소스 천국",
+      "description": "공개 모델과 커뮤니티 지식이 풍부해 구현 속도가 빠릅니다.",
+      "starting_deltas": {
+        "resources": { "cash": -300, "data": 30 },
+        "capabilities": { "code": 1 }
+      },
+      "tags": ["open_source_heaven", "community_models"]
+    },
+    {
+      "id": "regulatory_stronghold",
+      "name": "규제 강국",
+      "description": "규제와 심사가 강해 화제성은 낮지만 신뢰와 안전 역량을 일찍 쌓습니다.",
+      "starting_deltas": {
+        "resources": { "cash": -500, "trust": 8, "hype": -4 },
+        "capabilities": { "safety": 1 }
+      },
+      "tags": ["regulation_heavy", "safety_first"]
+    }
+  ],
+  "market_conditions": [
+    {
+      "id": "steady_market",
+      "name": "안정 시장",
+      "description": "시장 보정이 없는 기준선입니다.",
+      "starting_deltas": {
+        "resources": {},
+        "capabilities": {}
+      },
+      "tags": ["steady_market"]
+    },
+    {
+      "id": "ai_boom",
+      "name": "AI 호황",
+      "description": "초기 수요와 관심이 강하지만 경쟁도 빠르게 뜨거워질 조짐입니다.",
+      "starting_deltas": {
+        "resources": { "cash": 500, "users": 200, "hype": 8 },
+        "capabilities": {}
+      },
+      "tags": ["market_boom", "demand_surge"]
+    },
+    {
+      "id": "enterprise_winter",
+      "name": "엔터프라이즈 겨울",
+      "description": "기업 구매가 느려져 자금은 빡빡하지만 신뢰 중심 운영이 먹힙니다.",
+      "starting_deltas": {
+        "resources": { "cash": -1000, "trust": 4 },
+        "capabilities": {}
+      },
+      "tags": ["enterprise_winter", "long_sales_cycle"]
+    },
+    {
+      "id": "consumer_hype_cycle",
+      "name": "소비자 과열장",
+      "description": "소비자 관심과 초반 유입은 강하지만 평판 변동성이 큽니다.",
+      "starting_deltas": {
+        "resources": { "users": 300, "hype": 12, "trust": -3 },
+        "capabilities": {}
+      },
+      "tags": ["consumer_hype", "volatile_demand"]
+    }
+  ],
+  "founder_traits": [
+    {
+      "id": "no_founder",
+      "name": "창업자 보정 없음",
+      "description": "기존 플레이와 같은 무보정 창업자입니다.",
+      "starting_deltas": {
+        "resources": {},
+        "capabilities": {}
+      },
+      "tags": ["no_founder"]
+    },
+    {
+      "id": "engineer_founder",
+      "name": "엔지니어 창업자",
+      "description": "제품 구현과 인프라 감각이 좋아 초반 개발 효율이 높습니다.",
+      "starting_deltas": {
+        "resources": { "compute": 10, "data": 10 },
+        "capabilities": { "code": 1 }
+      },
+      "tags": ["engineer_founder", "builder_bias"]
+    },
+    {
+      "id": "marketer_founder",
+      "name": "마케터 창업자",
+      "description": "초반 화제성과 유입을 잘 만들지만 현금 소모가 빠릅니다.",
+      "starting_deltas": {
+        "resources": { "cash": -300, "users": 150, "hype": 7 },
+        "capabilities": {}
+      },
+      "tags": ["marketer_founder", "growth_bias"]
+    },
+    {
+      "id": "researcher_founder",
+      "name": "연구자 창업자",
+      "description": "논문과 실험 중심으로 시작해 언어·안전 연구 기반이 두껍습니다.",
+      "starting_deltas": {
+        "resources": { "compute": 15, "data": 40 },
+        "capabilities": { "language": 1, "safety": 1 }
+      },
+      "tags": ["research_founder", "lab_bias"]
+    },
+    {
+      "id": "capitalist_founder",
+      "name": "자본가 창업자",
+      "description": "초기 자금은 넉넉하지만 시장의 의심을 안고 출발합니다.",
+      "starting_deltas": {
+        "resources": { "cash": 3500, "trust": -2 },
+        "capabilities": {}
+      },
+      "tags": ["capitalist_founder", "fundraising_bias"]
+    }
+  ]
+}

@@ -49,6 +49,12 @@ import { getIndustryComboSummary } from "./industry-combos";
 import { getIndustrySynergySummary } from "./industry-synergies";
 import { getRenewalReleaseOptions, type ProductConcept } from "./product-ideas";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
+import {
+  applyRunModifierStartingDeltas,
+  sanitizeRunModifiersState,
+  selectRunModifierConfig,
+  type RunModifierSelectionInput,
+} from "./run-modifiers";
 import { t } from "../i18n";
 import type {
   AgentStats,
@@ -378,14 +384,16 @@ const formatMoney = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
-export function createInitialState(): GameState {
+export function createInitialState(runModifierSelection?: RunModifierSelectionInput): GameState {
   const initialResources = Object.fromEntries(
     Object.entries(resources).map(([id, resource]) => [id, resource.initial_value]),
   );
+  const runModifierConfig = selectRunModifierConfig(runModifierSelection);
 
-  return {
+  const initialState: GameState = {
     month: startingState.month,
     locationId: companyLocations[0]?.id ?? "rural_garage",
+    runModifiers: runModifierConfig,
     resources: initialResources,
     capabilities: { ...startingState.capabilities },
     activeProducts: [...startingState.active_products],
@@ -415,6 +423,8 @@ export function createInitialState(): GameState {
     timeline: ["회사는 작은 AI 생산성 도구 팀으로 시작했습니다."],
     status: "playing",
   };
+
+  return applyRunModifierStartingDeltas(initialState, runModifierConfig);
 }
 
 export function formatResource(id: string, value: number): string {
@@ -3206,6 +3216,7 @@ export function hydrateGameState(serialized: string): GameState {
     ...rawState,
     month: sanitizeNumber(rawState.month, initialState.month),
     locationId: sanitizeLocationId(rawState.locationId, initialState.locationId),
+    runModifiers: sanitizeRunModifiersState(rawState.runModifiers),
     resources: sanitizeResourceMap(rawState.resources, initialState.resources),
     capabilities: sanitizeCapabilityMap(rawState.capabilities, initialState.capabilities),
     activeProducts: hydratedActiveProducts,

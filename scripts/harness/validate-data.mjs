@@ -36,6 +36,19 @@ function validateResourceMap(label, resourceMap, resourceIds) {
   }
 }
 
+function validateCapabilityDeltaMap(label, capabilityMap, capabilityIds) {
+  for (const [capabilityId, value] of Object.entries(capabilityMap ?? {})) {
+    if (!capabilityIds.has(capabilityId)) errors.push(`${label}: unknown capability "${capabilityId}"`);
+    if (typeof value !== "number") errors.push(`${label}: capability "${capabilityId}" must be a number`);
+  }
+}
+
+function hasOnlyZeroDeltas(option) {
+  const resourceValues = Object.values(option?.starting_deltas?.resources ?? {});
+  const capabilityValues = Object.values(option?.starting_deltas?.capabilities ?? {});
+  return [...resourceValues, ...capabilityValues].every((value) => value === 0);
+}
+
 function validatePalette(label, palette, minimum = 3) {
   if (!Array.isArray(palette) || palette.length < minimum) {
     errors.push(`${label}: palette needs at least ${minimum} colors`);
@@ -68,6 +81,7 @@ const personasData = readJson("playtest_personas.json");
 const companyStagesData = readJson("company_stages.json");
 const companyLocationsData = readJson("company_locations.json");
 const campaignShocksData = readJson("campaign_shocks.json");
+const runModifiersData = readJson("run_modifiers.json");
 const agentTypesData = readJson("agent_types.json");
 const itemsData = readJson("items.json");
 const competitorsData = readJson("competitors.json");
@@ -108,6 +122,7 @@ const personas = personasData?.personas ?? [];
 const companyStages = companyStagesData?.company_stages ?? [];
 const companyLocations = companyLocationsData?.company_locations ?? [];
 const campaignShocks = campaignShocksData?.campaign_shocks ?? [];
+const runModifiers = runModifiersData ?? {};
 const agentTypes = agentTypesData?.agent_types ?? [];
 const items = itemsData?.items ?? [];
 const competitors = competitorsData?.competitors ?? [];
@@ -168,6 +183,42 @@ idsAreUnique("office_reactions", officeReactions);
 idsAreUnique("workforce_synergies", workforceSynergies);
 idsAreUnique("annual_reviews", annualReviews);
 idsAreUnique("annual_directive_choices", annualDirectiveChoices);
+
+const runModifierDimensions = [
+  ["start_cities", runModifiers.start_cities, "default_city"],
+  ["world_lore", runModifiers.world_lore, "standard"],
+  ["market_conditions", runModifiers.market_conditions, "steady_market"],
+  ["founder_traits", runModifiers.founder_traits, "no_founder"],
+];
+
+for (const [dimensionName, entries, defaultId] of runModifierDimensions) {
+  if (!Array.isArray(entries) || entries.length === 0) {
+    errors.push(`run_modifiers.${dimensionName}: expected a non-empty array`);
+    continue;
+  }
+
+  const entryIds = idsAreUnique(`run_modifiers.${dimensionName}`, entries);
+  if (!entryIds.has(defaultId)) errors.push(`run_modifiers.${dimensionName}: missing default id "${defaultId}"`);
+
+  for (const entry of entries) {
+    for (const field of ["name", "description", "starting_deltas", "tags"]) {
+      if (!(field in entry)) errors.push(`run_modifiers.${dimensionName} "${entry.id}": missing ${field}`);
+    }
+    if (!entry.starting_deltas || typeof entry.starting_deltas !== "object" || Array.isArray(entry.starting_deltas)) {
+      errors.push(`run_modifiers.${dimensionName} "${entry.id}": starting_deltas must be an object`);
+    }
+    validateResourceMap(`run_modifiers.${dimensionName} "${entry.id}" resources`, entry.starting_deltas?.resources, resourceIds);
+    validateCapabilityDeltaMap(`run_modifiers.${dimensionName} "${entry.id}" capabilities`, entry.starting_deltas?.capabilities, capabilityIds);
+    if (!Array.isArray(entry.tags) || entry.tags.length === 0 || entry.tags.some((tag) => typeof tag !== "string" || !tag.trim())) {
+      errors.push(`run_modifiers.${dimensionName} "${entry.id}": tags must be a non-empty string array`);
+    }
+  }
+
+  const defaultEntry = entries.find((entry) => entry.id === defaultId);
+  if (defaultEntry && !hasOnlyZeroDeltas(defaultEntry)) {
+    errors.push(`run_modifiers.${dimensionName} "${defaultId}": default option must have zero starting deltas`);
+  }
+}
 
 for (const [resourceId, resource] of Object.entries(resources)) {
   if (resource.id !== resourceId) errors.push(`resources: key "${resourceId}" has mismatched id "${resource.id}"`);

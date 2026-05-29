@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-05-29",
-  "current_feature_id": "v0.62-alpha-payoff-juice",
+  "current_feature_id": "v0.63-alpha-roguelike-run-modifiers",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -207,6 +207,28 @@
         "2026-05-29: v0.62 CLOSED. All 3 dopamine-polish blocks shipped (29c2dc9 activation celebration, a115131 discovery+collection, this commit milestone+near-miss). §5-safe throughout — only block #2 added a persisted field (discoveredPayoffIds, save-migrated) and only block #3 added 2 conservative achievements; no simulation tick behavior change. Tests 437 -> 448. Sets up the dopamine layer ahead of the post-1.0 roguelike + tag-engine vision."
       ],
       "next_step": "Closed. Next is beta prep (real-human playtest + final art, parallel; art resolution up) toward v1.0, or start a post-1.0 big system from reports/v0_62_design_direction.md (tag-derivation engine, roguelike run modifiers, multi-ending)."
+    },
+    {
+      "id": "v0.63-alpha-roguelike-run-modifiers",
+      "name": "Roguelike run modifiers (city x world-lore x market x founder + yearly events)",
+      "description": "First post-1.0 big system, started early by explicit user decision 2026-05-29 (option 1). This LIFTS the ROADMAP §5 'no new large systems' hold for THIS system only — it is the controlled replayability slice, exactly as v0.60's industry slice was a controlled exception to '산업군 대량 확장'. A run is seeded from start city (서울/도쿄/뉴욕/SF/텍사스...), world-lore (e.g. 알파고 정체 / 비트코인 GPU 초고가 / 오픈소스 천국 / 규제 강국), market condition, and founder trait; yearly world-events keep mutating the run. Goal: replayability — '한 판 더'. Grounded on existing company_locations (modifier shape), campaign_shocks (yearly events), and roguelite meta state. Multi-session; decomposed into blocks. Design: reports/v0_62_design_direction.md §3.",
+      "status": "in_progress",
+      "priority": "P1",
+      "dependencies": [
+        "v0.62-alpha-payoff-juice"
+      ],
+      "definition_of_done": [
+        "Block #1 (DONE 2026-05-29): run-modifier FOUNDATION. data/run_modifiers.json (global start_cities incl. tokyo/seoul/etc, world_lore incl. standard + GPU-expensive/research-slow/etc, market_conditions, founder_traits — starting deltas + tags). New pure module run-modifiers.ts (selectRunModifierConfig / applyRunModifierStartingDeltas / sanitizeRunModifiersState); createInitialState(selection?) + resetRunWithMetaUnlocks integrate it; GameState.runModifiers field save-migrated (old saves + default config = standard no-op). Monthly tick UNTOUCHED; default config regression-tested = current initial state. ?scenario=run-modifiers (Tokyo + GPU-expensive + enterprise-winter + researcher). harness:gate 45 files / 454 tests.",
+        "Block #2 (Codex xhigh): world-lore/market tick effects — stored modifier tags bite during the monthly tick (e.g. GPU-expensive world raises compute cost), wired minimally into existing cost/effect paths; deterministic; balance-bounded.",
+        "Block #3: yearly world-event mutators — extend campaign_shocks into a continuously-mutating run-event system.",
+        "Block #4: 세계 뽑기 run-setup reveal UI (dopamine, ties to v0.62 celebration) + founder/world/city selection.",
+        "Each block adds tests; npm run harness:gate passes; save round-trip preserved; default run = current behavior (no regression); balance changes deliberate + documented."
+      ],
+      "evidence": [
+        "2026-05-29: Started by user decision (option 1, roguelike run modifiers first; §5 hold lifted for this system). Investigation: company_locations.json is a Korea-centric in-run office ladder, so global start-cities are a NEW run-modifier layer reusing the cost/talent/ai-bonus delta shape; campaign_shocks.json is the block #3 yearly-event base; resetRunWithMetaUnlocks (meta-progression.ts:119) + createInitialState (App.tsx) are the run-start integration points; GameState.discoveredPayoffIds is the field-placement + save-sanitizer pattern reference. Block #1 (foundation) delegated to Codex CLI xhigh per reports/codex-handoff/v0_63_block1_run_modifier_foundation.md.",
+        "2026-05-29: Block #1 implemented by Codex CLI (xhigh) and verified by Claude Code. run-modifiers.ts isolates the logic (pure); createInitialState gained an optional selection param (default -> standard zero-delta = no regression, regression-tested) + resetRunWithMetaUnlocks passes it through; GameState.runModifiers {seed,startCityId,worldLoreId,marketConditionId,founderTraitId,tags} with sanitizeRunModifiersState hydrate (old saves -> standard). Monthly tick/cost untouched (empty in the simulation.ts diff). Independently verified npm run harness:gate: 45 files / 454 tests."
+      ],
+      "next_step": "Block #1 done. Next: block #2 (world-lore/market tick effects, Codex xhigh) — wire stored runModifiers.tags into the monthly tick (e.g. compute_expensive raises compute cost), minimal + deterministic. Then #3 (yearly events) -> #4 (reveal UI). Baseline 45 files / 454 tests."
     },
     {
       "id": "art-intake-final-source-art",
