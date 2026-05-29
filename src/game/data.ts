@@ -10,6 +10,7 @@ import companyLocationsJson from "../../data/company_locations.json";
 import campaignShocksJson from "../../data/campaign_shocks.json";
 import worldEventsJson from "../../data/world_events.json";
 import runModifiersJson from "../../data/run_modifiers.json";
+import difficultyTiersJson from "../../data/difficulty_tiers.json";
 import eventsJson from "../../data/events.json";
 import upgradesJson from "../../data/upgrades.json";
 import automationUpgradesJson from "../../data/automation_upgrades.json";
@@ -51,6 +52,7 @@ import type {
   CompetitorDefinition,
   DeckArchetypeDefinition,
   DeckSynergyDefinition,
+  DifficultyTierDefinition,
   DomainDefinition,
   EventDefinition,
   GrowthPathDefinition,
@@ -89,6 +91,7 @@ export const companyLocations = companyLocationsJson.company_locations as unknow
 export const campaignShocks = campaignShocksJson.campaign_shocks as unknown as CampaignShockDefinition[];
 export const worldEvents = worldEventsJson.world_events as unknown as WorldEventDefinition[];
 export const runModifiers = runModifiersJson as unknown as RunModifiersDataDefinition;
+export const difficultyTiers = difficultyTiersJson.difficulty_tiers as unknown as DifficultyTierDefinition[];
 export const events = eventsJson.events as unknown as EventDefinition[];
 export const upgrades = upgradesJson.upgrades as unknown as UpgradeDefinition[];
 export const automationUpgrades = automationUpgradesJson.automation_upgrades as unknown as AutomationUpgradeDefinition[];

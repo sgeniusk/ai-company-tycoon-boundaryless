@@ -1,4 +1,4 @@
-import { capabilities, resources, runModifiers } from "./data";
+import { capabilities, difficultyTiers, resources, runModifiers } from "./data";
 import type {
   CapabilityMap,
   GameState,
@@ -15,6 +15,7 @@ export const DEFAULT_RUN_MODIFIER_SELECTION = {
 } as const;
 
 const DEFAULT_RUN_MODIFIER_SEED = "standard";
+const DEFAULT_CHALLENGE_TIER_ID = "standard";
 
 export interface RunModifierSelectionInput {
   seed?: string | number;
@@ -22,6 +23,7 @@ export interface RunModifierSelectionInput {
   worldLoreId?: string;
   marketConditionId?: string;
   founderTraitId?: string;
+  challengeTierId?: string;
 }
 
 export interface RunModifierConfig extends RunModifiersState {
@@ -52,6 +54,7 @@ export function selectRunModifierConfig(input: RunModifierSelectionInput = {}): 
     return selectOption(runModifiers[dimension.key], defaultId, explicitId, seed, dimension.salt);
   });
   const [startCity, worldLore, marketCondition, founderTrait] = selected;
+  const challengeTier = selectChallengeTier(input.challengeTierId);
   const tags = uniqueStrings(selected.flatMap((option) => option.tags));
 
   return {
@@ -60,6 +63,7 @@ export function selectRunModifierConfig(input: RunModifierSelectionInput = {}): 
     worldLoreId: worldLore.id,
     marketConditionId: marketCondition.id,
     founderTraitId: founderTrait.id,
+    challengeTier,
     tags,
     startingResourceDelta: mergeMaps(selected.map((option) => option.starting_deltas.resources)),
     startingCapabilityDelta: mergeMaps(selected.map((option) => option.starting_deltas.capabilities)),
@@ -94,6 +98,12 @@ export function getRunModifierMonthlyEffects(state: GameState): ResourceMap {
   return mergeMaps(tags.map((tag) => runModifiers.tag_effects[tag] ?? {}));
 }
 
+export function getDifficultyMonthlyEffects(state: GameState): ResourceMap {
+  const tierId = selectChallengeTier(state.runModifiers?.challengeTier);
+  const tier = difficultyTiers.find((entry) => entry.id === tierId);
+  return { ...(tier?.monthly_headwind ?? {}) };
+}
+
 export function sanitizeRunModifiersState(value: unknown): RunModifiersState {
   if (!isRecord(value)) return toRunModifiersState(selectRunModifierConfig());
 
@@ -104,6 +114,7 @@ export function sanitizeRunModifiersState(value: unknown): RunModifiersState {
       worldLoreId: typeof value.worldLoreId === "string" ? value.worldLoreId : undefined,
       marketConditionId: typeof value.marketConditionId === "string" ? value.marketConditionId : undefined,
       founderTraitId: typeof value.founderTraitId === "string" ? value.founderTraitId : undefined,
+      challengeTierId: typeof value.challengeTier === "string" ? value.challengeTier : undefined,
     }),
   );
 }
@@ -115,6 +126,7 @@ function toRunModifiersState(config: RunModifierConfig): RunModifiersState {
     worldLoreId: config.worldLoreId,
     marketConditionId: config.marketConditionId,
     founderTraitId: config.founderTraitId,
+    challengeTier: config.challengeTier,
     tags: [...config.tags],
   };
 }
@@ -142,6 +154,12 @@ function selectOption(
   if (!seededPool.length) return defaultOption;
 
   return seededPool[hashSeed(`${seed}:${salt}`) % seededPool.length] ?? defaultOption;
+}
+
+function selectChallengeTier(explicitId: string | undefined): string {
+  if (explicitId && difficultyTiers.some((tier) => tier.id === explicitId)) return explicitId;
+  if (difficultyTiers.some((tier) => tier.id === DEFAULT_CHALLENGE_TIER_ID)) return DEFAULT_CHALLENGE_TIER_ID;
+  return difficultyTiers[0]?.id ?? DEFAULT_CHALLENGE_TIER_ID;
 }
 
 function hashSeed(value: string): number {

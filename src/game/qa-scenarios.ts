@@ -86,6 +86,7 @@ export const qaScenarioIds = [
   "collection",
   "milestones",
   "run-modifiers",
+  "difficulty-hard",
   "world-events",
 ] as const;
 
@@ -207,6 +208,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "세계 뽑기 리빌 QA",
       state: createInitialState(rollRunModifierSelection("qa-world-reveal")),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "difficulty-hard") {
+    return {
+      id,
+      label: "하드 난이도 QA",
+      state: createInitialState({ challengeTierId: "hard" }),
       activeMenu: "company",
     };
   }

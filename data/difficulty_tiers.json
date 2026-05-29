@@ -1,0 +1,32 @@
+{
+  "difficulty_tiers": [
+    {
+      "id": "story",
+      "name": "스토리",
+      "description": "세계 변수를 느슨하게 읽으며 회사를 키우는 입문 도전입니다.",
+      "monthly_headwind": {},
+      "reward_multiplier": 0.75
+    },
+    {
+      "id": "standard",
+      "name": "표준",
+      "description": "기존 밸런스와 동일한 기준 도전입니다. 월간 역풍이 없습니다.",
+      "monthly_headwind": {},
+      "reward_multiplier": 1
+    },
+    {
+      "id": "hard",
+      "name": "하드",
+      "description": "현금 흐름과 시장 화제성이 매달 조금씩 빠지는 긴장감 있는 도전입니다.",
+      "monthly_headwind": { "cash": -60, "hype": -1 },
+      "reward_multiplier": 1.5
+    },
+    {
+      "id": "brutal",
+      "name": "브루탈",
+      "description": "자금, 신뢰, 화제성이 동시에 압박받는 고난도 도전입니다.",
+      "monthly_headwind": { "cash": -140, "trust": -1, "hype": -1 },
+      "reward_multiplier": 2
+    }
+  ]
+}

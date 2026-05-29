@@ -52,6 +52,7 @@ import { getRenewalReleaseOptions, type ProductConcept } from "./product-ideas";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
 import {
   applyRunModifierStartingDeltas,
+  getDifficultyMonthlyEffects,
   getRunModifierMonthlyEffects,
   sanitizeRunModifiersState,
   selectRunModifierConfig,
@@ -3893,6 +3894,7 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   const industrySynergyEffects = getIndustrySynergySummary(state).totalMonthlyEffects;
   const industryComboEffects = getIndustryComboSummary(state).totalMonthlyEffects;
   const runModifierEffects = getRunModifierMonthlyEffects(state);
+  const difficultyEffects = getDifficultyMonthlyEffects(state);
   if (growthPathEffects && Object.keys(growthPathEffects).length > 0) effects.push(growthPathEffects);
   if (annualDirective?.monthlyEffects && Object.keys(annualDirective.monthlyEffects).length > 0) {
     effects.push(annualDirective.monthlyEffects);
@@ -3904,6 +3906,7 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   if (Object.keys(industrySynergyEffects).length > 0) effects.push(industrySynergyEffects);
   if (Object.keys(industryComboEffects).length > 0) effects.push(industryComboEffects);
   if (Object.keys(runModifierEffects).length > 0) effects.push(runModifierEffects);
+  if (Object.keys(difficultyEffects).length > 0) effects.push(difficultyEffects);
 
   if (effects.length === 0) return undefined;
   return effects.reduce<ResourceMap>((combined, effect) => mergeResourceDelta(combined, effect), {});

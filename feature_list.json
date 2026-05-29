@@ -269,9 +269,10 @@
         "Each block: harness:gate passes; standard tier = current behavior; deterministic; balance changes deliberate + documented."
       ],
       "evidence": [
-        "2026-05-30: Opened at v0.64 closeout. Design chose additive tier-headwind over scaling run-modifier tag_effects (which mix signs, so scaling would make boom worlds easier — not 'harder'). Player-chosen tiers fit the 'open challenge' framing (take on a brutal world for bigger meta reward). Block #1 handoff written; xhigh because it adds a save-migrated RunModifiersState field + a monthly tick hook + balance."
+        "2026-05-30: Opened at v0.64 closeout. Design chose additive tier-headwind over scaling run-modifier tag_effects (which mix signs, so scaling would make boom worlds easier — not 'harder'). Player-chosen tiers fit the 'open challenge' framing (take on a brutal world for bigger meta reward). Block #1 handoff written; xhigh because it adds a save-migrated RunModifiersState field + a monthly tick hook + balance.",
+        "2026-05-30: Block #1 DONE — implemented by Codex CLI (xhigh) and verified by Claude Code. data/difficulty_tiers.json (story/standard/hard/brutal; standard monthly_headwind {} = no-op, hard {cash:-60,hype:-1}); RunModifiersState.challengeTier added; sanitizeRunModifiersState maps missing/unknown tier -> standard (old-save migration, seenTutorials pattern); getDifficultyMonthlyEffects + a 2-line additive getMonthlyStrategicEffects hook (identical to the run-modifier hook). simulation.ts diff is exactly that hook (no other tick change); difficulty is additive headwind, NOT a sign-scale of tag_effects. run-simulator.runTenYearCampaignSimulation gained an optional runModifierSelection arg (default no-arg = standard, so the existing gate is unchanged) + a hard-tier productivity_line completability test (month 120+, non-failure, ending, integrity ok). Standard-tier no-op regression-guarded. Independently verified npm run harness:gate: 47 files / 477 tests."
       ],
-      "next_step": "Launch block #1 (difficulty foundation) on Codex xhigh, verify (standard no-op regression + standard/hard 10-year completability + save round-trip), commit, then block #2 (rewards + UI)."
+      "next_step": "Block #1 landed. Next: block #2 — clear-tier reward_multiplier into meta-progression unlock points + run-setup tier selection UI + reveal shows the chosen tier (medium). Then v0.66 tag-derivation engine (decision A), v0.67 multi-ending (decision B)."
     },
     {
       "id": "art-intake-final-source-art",

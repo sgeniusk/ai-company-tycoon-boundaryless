@@ -84,6 +84,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "collection",
       "milestones",
       "run-modifiers",
+      "difficulty-hard",
       "world-events",
     ]);
   });
@@ -791,6 +792,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=payoff-juice")?.id).toBe("payoff-juice");
     expect(createQaScenarioFromSearch("?scenario=collection")?.id).toBe("collection");
     expect(createQaScenarioFromSearch("?scenario=milestones")?.id).toBe("milestones");
+    expect(createQaScenarioFromSearch("?scenario=difficulty-hard")?.id).toBe("difficulty-hard");
     expect(createQaScenarioFromSearch("?scenario=world-events")?.id).toBe("world-events");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();

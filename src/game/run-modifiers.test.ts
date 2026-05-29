@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { runModifiers } from "./data";
+import { difficultyTiers, runModifiers } from "./data";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { createQaScenario } from "./qa-scenarios";
 import { advanceMonth, calculateMonthlyEconomy, createInitialState, hydrateGameState, serializeGameState } from "./simulation";
 import {
   DEFAULT_RUN_MODIFIER_SELECTION,
   applyRunModifierStartingDeltas,
+  getDifficultyMonthlyEffects,
   getRunModifierMonthlyEffects,
   rollRunModifierSelection,
   selectRunModifierConfig,
@@ -34,6 +35,18 @@ describe("v0.63 run modifier foundation", () => {
     expect(runModifiers.founder_traits.map((entry) => entry.id)).toEqual(
       expect.arrayContaining(["no_founder", "engineer_founder", "marketer_founder", "researcher_founder", "capitalist_founder"]),
     );
+  });
+
+  it("defines four difficulty tiers with standard as the no-op baseline", () => {
+    expect(difficultyTiers.map((tier) => tier.id)).toEqual(["story", "standard", "hard", "brutal"]);
+    expect(difficultyTiers.find((tier) => tier.id === "standard")).toMatchObject({
+      monthly_headwind: {},
+      reward_multiplier: 1,
+    });
+    expect(difficultyTiers.find((tier) => tier.id === "hard")).toMatchObject({
+      monthly_headwind: { cash: -60, hype: -1 },
+      reward_multiplier: 1.5,
+    });
   });
 
   it("applies selected starting deltas and stores the selected tag set", () => {
@@ -71,6 +84,8 @@ describe("v0.63 run modifier foundation", () => {
     const config = selectRunModifierConfig();
 
     expect(state.runModifiers).toMatchObject(DEFAULT_RUN_MODIFIER_SELECTION);
+    expect(state.runModifiers.challengeTier).toBe("standard");
+    expect(config.challengeTier).toBe("standard");
     expect(config.startingResourceDelta).toEqual({});
     expect(config.startingCapabilityDelta).toEqual({});
     expect(state.resources).toEqual({
@@ -97,6 +112,23 @@ describe("v0.63 run modifier foundation", () => {
       manufacturing: 0,
       logistics: 0,
     });
+  });
+
+  it("stores an explicit challenge tier without changing seeded run modifier selection", () => {
+    const config = selectRunModifierConfig({ ...nonDefaultSelection, challengeTierId: "hard" });
+    const seededWithoutTier = selectRunModifierConfig(nonDefaultSelection);
+
+    expect(config).toMatchObject({
+      seed: "qa-run-modifier",
+      startCityId: "tokyo",
+      worldLoreId: "bitcoin_gpu_squeeze",
+      marketConditionId: "enterprise_winter",
+      founderTraitId: "researcher_founder",
+      challengeTier: "hard",
+    });
+    expect(config.tags).toEqual(seededWithoutTier.tags);
+    expect(config.startingResourceDelta).toEqual(seededWithoutTier.startingResourceDelta);
+    expect(selectRunModifierConfig({ challengeTierId: "unknown-tier" }).challengeTier).toBe("standard");
   });
 
   it("applies a non-default run config through the next-run reset path", () => {
@@ -137,17 +169,36 @@ describe("v0.63 run modifier foundation", () => {
   });
 
   it("round-trips saved run modifiers and migrates old saves to the standard config", () => {
-    const modifiedState = createInitialState(nonDefaultSelection);
+    const modifiedState = createInitialState({ ...nonDefaultSelection, challengeTierId: "hard" });
     const hydrated = hydrateGameState(serializeGameState(modifiedState));
 
     expect(hydrated.runModifiers).toEqual(modifiedState.runModifiers);
+    expect(hydrated.runModifiers.challengeTier).toBe("hard");
     expect(hydrated.resources.compute).toBe(70);
+
+    const legacyRunModifiers: Partial<GameState["runModifiers"]> = { ...modifiedState.runModifiers };
+    delete legacyRunModifiers.challengeTier;
+    const migratedTier = hydrateGameState(
+      JSON.stringify({
+        version: 11,
+        state: { ...modifiedState, runModifiers: legacyRunModifiers },
+      }),
+    );
+
+    expect(migratedTier.runModifiers).toMatchObject({
+      startCityId: "tokyo",
+      worldLoreId: "bitcoin_gpu_squeeze",
+      marketConditionId: "enterprise_winter",
+      founderTraitId: "researcher_founder",
+      challengeTier: "standard",
+    });
 
     const legacyState: Partial<GameState> = { ...createInitialState() };
     delete legacyState.runModifiers;
     const migrated = hydrateGameState(JSON.stringify({ version: 11, state: legacyState }));
 
     expect(migrated.runModifiers).toMatchObject(DEFAULT_RUN_MODIFIER_SELECTION);
+    expect(migrated.runModifiers.challengeTier).toBe("standard");
     expect(migrated.runModifiers.tags).toEqual(expect.arrayContaining(["standard_world", "default_city", "no_founder"]));
   });
 
@@ -169,6 +220,15 @@ describe("v0.63 run modifier foundation", () => {
     expect(scenario.state.runModifiers.seed).toBe("qa-world-reveal");
     expect(scenario.state.runModifiers).not.toMatchObject(DEFAULT_RUN_MODIFIER_SELECTION);
     expect(scenario.state.runModifiers.tags.length).toBeGreaterThan(0);
+  });
+
+  it("registers a hard difficulty browser QA scenario", () => {
+    const scenario = createQaScenario("difficulty-hard");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("하드");
+    expect(scenario.state.runModifiers.challengeTier).toBe("hard");
+    expect(getDifficultyMonthlyEffects(scenario.state)).toEqual({ cash: -60, hype: -1 });
   });
 
   it("sums conservative monthly effects from active modifier tags", () => {
@@ -200,7 +260,34 @@ describe("v0.63 run modifier foundation", () => {
 
     expect(getRunModifierMonthlyEffects(noTags)).toEqual({});
     expect(getRunModifierMonthlyEffects(standard)).toEqual({});
+    expect(getDifficultyMonthlyEffects(standard)).toEqual({});
     expect(calculateMonthlyEconomy(noTags)).toEqual(calculateMonthlyEconomy(standard));
+  });
+
+  it("adds hard difficulty as an additive headwind without scaling run-modifier tag effects", () => {
+    const standardState = createInitialState(nonDefaultSelection);
+    const hardState = createInitialState({
+      ...nonDefaultSelection,
+      challengeTierId: "hard",
+    });
+    const standardEconomy = calculateMonthlyEconomy(standardState);
+    const runModifierEffects = getRunModifierMonthlyEffects(hardState);
+    const difficultyEffects = getDifficultyMonthlyEffects(hardState);
+    const economy = calculateMonthlyEconomy(hardState);
+
+    expect(runModifierEffects).toEqual({
+      compute: -12,
+      cash: -120,
+      users: -50,
+      trust: 1,
+    });
+    expect(difficultyEffects).toEqual({ cash: -60, hype: -1 });
+    expect(getRunModifierMonthlyEffects(standardState)).toEqual(runModifierEffects);
+    expect(economy.strategyEffects?.cash).toBe((standardEconomy.strategyEffects?.cash ?? 0) - 60);
+    expect(economy.strategyEffects?.hype).toBe((standardEconomy.strategyEffects?.hype ?? 0) - 1);
+    expect(economy.strategyEffects?.compute).toBe(standardEconomy.strategyEffects?.compute);
+    expect(economy.strategyEffects?.users).toBe(standardEconomy.strategyEffects?.users);
+    expect(economy.strategyEffects?.trust).toBe(standardEconomy.strategyEffects?.trust);
   });
 
   it("applies GPU-expensive pressure through the run-modifiers QA scenario monthly tick", () => {

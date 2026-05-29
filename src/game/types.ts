@@ -170,12 +170,21 @@ export interface RunModifiersDataDefinition {
   founder_traits: RunModifierOptionDefinition[];
 }
 
+export interface DifficultyTierDefinition {
+  id: string;
+  name: string;
+  description: string;
+  monthly_headwind: ResourceMap;
+  reward_multiplier: number;
+}
+
 export interface RunModifiersState {
   seed: string;
   startCityId: string;
   worldLoreId: string;
   marketConditionId: string;
   founderTraitId: string;
+  challengeTier: string;
   tags: string[];
 }
 

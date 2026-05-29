@@ -98,6 +98,7 @@ const companyLocationsData = readJson("company_locations.json");
 const campaignShocksData = readJson("campaign_shocks.json");
 const worldEventsData = readJson("world_events.json");
 const runModifiersData = readJson("run_modifiers.json");
+const difficultyTiersData = readJson("difficulty_tiers.json");
 const agentTypesData = readJson("agent_types.json");
 const itemsData = readJson("items.json");
 const competitorsData = readJson("competitors.json");
@@ -140,6 +141,7 @@ const companyLocations = companyLocationsData?.company_locations ?? [];
 const campaignShocks = campaignShocksData?.campaign_shocks ?? [];
 const worldEvents = worldEventsData?.world_events ?? [];
 const runModifiers = runModifiersData ?? {};
+const difficultyTiers = difficultyTiersData?.difficulty_tiers ?? [];
 const agentTypes = agentTypesData?.agent_types ?? [];
 const items = itemsData?.items ?? [];
 const competitors = competitorsData?.competitors ?? [];
@@ -180,6 +182,7 @@ idsAreUnique("company_stages", companyStages);
 idsAreUnique("company_locations", companyLocations);
 idsAreUnique("campaign_shocks", campaignShocks);
 idsAreUnique("world_events", worldEvents);
+const difficultyTierIds = idsAreUnique("difficulty_tiers", difficultyTiers);
 const agentTypeIds = idsAreUnique("agent_types", agentTypes);
 const itemIds = idsAreUnique("items", items);
 const competitorIds = idsAreUnique("competitors", competitors);
@@ -282,6 +285,33 @@ if (!runModifierTagEffects || typeof runModifierTagEffects !== "object" || Array
       errors.push(`run_modifiers.tag_effects "${tag}": monthly effect must include at least one non-zero resource`);
     }
   }
+}
+
+if (!Array.isArray(difficultyTiers) || difficultyTiers.length !== 4) {
+  errors.push(`difficulty_tiers: expected exactly 4 tiers, found ${Array.isArray(difficultyTiers) ? difficultyTiers.length : "non-array"}`);
+}
+for (const requiredTierId of ["story", "standard", "hard", "brutal"]) {
+  if (!difficultyTierIds.has(requiredTierId)) errors.push(`difficulty_tiers: missing required tier "${requiredTierId}"`);
+}
+for (const tier of difficultyTiers) {
+  for (const field of ["name", "description", "monthly_headwind", "reward_multiplier"]) {
+    if (!(field in tier)) errors.push(`difficulty_tiers "${tier.id}": missing ${field}`);
+  }
+  if (!tier.monthly_headwind || typeof tier.monthly_headwind !== "object" || Array.isArray(tier.monthly_headwind)) {
+    errors.push(`difficulty_tiers "${tier.id}": monthly_headwind must be a resource map object`);
+  } else {
+    validateResourceMap(`difficulty_tiers "${tier.id}" monthly_headwind`, tier.monthly_headwind, resourceIds);
+  }
+  if (typeof tier.reward_multiplier !== "number" || tier.reward_multiplier <= 0) {
+    errors.push(`difficulty_tiers "${tier.id}": reward_multiplier must be a positive number`);
+  }
+}
+const standardTier = difficultyTiers.find((tier) => tier.id === "standard");
+if (standardTier && Object.keys(standardTier.monthly_headwind ?? {}).length > 0) {
+  errors.push('difficulty_tiers "standard": monthly_headwind must stay empty');
+}
+if (standardTier && standardTier.reward_multiplier !== 1) {
+  errors.push('difficulty_tiers "standard": reward_multiplier must be 1');
 }
 
 if (worldEvents.length < 10 || worldEvents.length > 28) {

@@ -76,6 +76,18 @@ describe("v0.11 commercial balance simulation harness", () => {
     }
   });
 
+  it("keeps a hard-tier 10-year campaign completable for at least one strategy", () => {
+    const result = runTenYearCampaignSimulation("productivity_line", { challengeTierId: "hard" });
+
+    expect(result.finalState.runModifiers.challengeTier).toBe("hard");
+    expect(result.finalState.month).toBeGreaterThanOrEqual(CAMPAIGN_FINAL_MONTH);
+    expect(result.finalState.status).not.toBe("failure");
+    expect(result.integrity.ok).toBe(true);
+    expect(result.finale).toMatchObject({ isFinal: true });
+    expect(result.annualReviewCount).toBeGreaterThanOrEqual(10);
+    expect(result.yearlySnapshots).toHaveLength(10);
+  });
+
   it("completes a 10-year campaign after expanding into v0.60 physical industries", () => {
     const physicalDomainIds = ["manufacturing", "logistics", "energy"];
     const result = runTenYearCampaignSimulation("code_vision_lab");

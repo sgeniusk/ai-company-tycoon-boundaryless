@@ -6,6 +6,7 @@ import { getCompetitionSeasonChallenges } from "./competition-signals";
 import { chooseCardReward, getStrategyCardById, getStrategyCardPlayCheck, playStrategyCard } from "./deckbuilding";
 import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
+import type { RunModifierSelectionInput } from "./run-modifiers";
 import { getRunSummary, type RunSummary } from "./run-summary";
 import { validateGameStateIntegrity, type StateIntegrityReport } from "./state-integrity";
 import type { EventChoiceDefinition, GameState, ResourceMap, RivalEventChoiceDefinition } from "./types";
@@ -368,8 +369,11 @@ export function runAnnualDirectiveSimulation(strategyId = "productivity_line", t
   };
 }
 
-export function runTenYearCampaignSimulation(strategyId = "productivity_line"): TenYearCampaignSimulationResult {
-  let state = seedStarterRun();
+export function runTenYearCampaignSimulation(
+  strategyId = "productivity_line",
+  runModifierSelection?: RunModifierSelectionInput,
+): TenYearCampaignSimulationResult {
+  let state = seedStarterRun(runModifierSelection);
   let monthsSimulated = 0;
   let directiveChoicesMade = 0;
   const yearlySnapshots: TenYearCampaignSnapshot[] = [];
@@ -655,12 +659,13 @@ function pickAnnualDirectiveChoice(strategyId: string, offeredDirectiveIds: stri
   return preferredIds.find((choiceId) => offeredDirectiveIds.includes(choiceId)) ?? offeredDirectiveIds[0];
 }
 
-function seedStarterRun(): GameState {
+function seedStarterRun(runModifierSelection?: RunModifierSelectionInput): GameState {
   const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
   const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
-  if (!architect || !writingProduct) return createInitialState();
+  const initialState = createInitialState(runModifierSelection);
+  if (!architect || !writingProduct) return initialState;
 
-  const hired = hireAgent(architect, createInitialState());
+  const hired = hireAgent(architect, initialState);
   return startProductProject(writingProduct, hired);
 }
 
