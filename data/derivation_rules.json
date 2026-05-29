@@ -19,7 +19,8 @@
       "discovery_id": "discovery_compute_siege_survivor",
       "yields": {
         "kind": "bonus",
-        "summary": "컴퓨트 압박 완화 보너스 메타데이터"
+        "summary": "컴퓨트 압박 완화 보너스 메타데이터",
+        "monthly_effect": { "compute": 2 }
       }
     },
     {
@@ -29,8 +30,9 @@
       "requires": ["data_scarce", "synthetic_premium"],
       "discovery_id": "discovery_data_alchemist",
       "yields": {
-        "kind": "product",
-        "summary": "합성 데이터 기반 제품 후보 메타데이터"
+        "kind": "bonus",
+        "summary": "합성 데이터 기반 실험 보너스 메타데이터",
+        "monthly_effect": { "data": 3 }
       }
     },
     {
@@ -52,7 +54,8 @@
       "discovery_id": "discovery_frontier_garage",
       "yields": {
         "kind": "bonus",
-        "summary": "초기 프런티어 실험 보너스 메타데이터"
+        "summary": "초기 프런티어 실험 보너스 메타데이터",
+        "monthly_effect": { "compute": 3 }
       }
     },
     {
@@ -63,7 +66,8 @@
       "discovery_id": "discovery_gateway_operator",
       "yields": {
         "kind": "bonus",
-        "summary": "다시장 운영 보너스 메타데이터"
+        "summary": "다시장 운영 보너스 메타데이터",
+        "monthly_effect": { "users": 25, "cash": 20 }
       }
     },
     {
@@ -84,8 +88,9 @@
       "requires": ["consumer_hype", "growth_bias"],
       "discovery_id": "discovery_hype_machine",
       "yields": {
-        "kind": "event",
-        "summary": "소비자 확산 이벤트 메타데이터"
+        "kind": "bonus",
+        "summary": "소비자 확산 보너스 메타데이터",
+        "monthly_effect": { "users": 30, "hype": 1 }
       }
     },
     {
@@ -96,7 +101,8 @@
       "discovery_id": "discovery_lab_in_winter",
       "yields": {
         "kind": "bonus",
-        "summary": "혹한기 연구 지속 보너스 메타데이터"
+        "summary": "혹한기 연구 지속 보너스 메타데이터",
+        "monthly_effect": { "data": 2, "cash": -10 }
       }
     },
     {
@@ -118,7 +124,8 @@
       "discovery_id": "discovery_privacy_compact",
       "yields": {
         "kind": "bonus",
-        "summary": "동의 기반 신뢰 보너스 메타데이터"
+        "summary": "동의 기반 신뢰 보너스 메타데이터",
+        "monthly_effect": { "trust": 1 }
       }
     },
     {
@@ -129,7 +136,8 @@
       "discovery_id": "discovery_trust_bastion",
       "yields": {
         "kind": "bonus",
-        "summary": "규제 환경 신뢰 보너스 메타데이터"
+        "summary": "규제 환경 신뢰 보너스 메타데이터",
+        "monthly_effect": { "trust": 1 }
       }
     }
   ]

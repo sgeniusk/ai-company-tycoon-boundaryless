@@ -181,6 +181,7 @@ export interface DerivationRuleDefinition {
   yields: {
     kind: DerivationRuleYieldKind;
     summary: string;
+    monthly_effect?: ResourceMap;
   };
 }
 

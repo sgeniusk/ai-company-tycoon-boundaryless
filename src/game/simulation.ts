@@ -59,6 +59,7 @@ import {
   selectRunModifierConfig,
   type RunModifierSelectionInput,
 } from "./run-modifiers";
+import { getArchetypeMonthlyEffects } from "./tag-derivation";
 import { applyDueWorldEvents } from "./world-events";
 import { t } from "../i18n";
 import type {
@@ -3896,6 +3897,7 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   const industryComboEffects = getIndustryComboSummary(state).totalMonthlyEffects;
   const runModifierEffects = getRunModifierMonthlyEffects(state);
   const difficultyEffects = getDifficultyMonthlyEffects(state);
+  const archetypeEffects = getArchetypeMonthlyEffects(state);
   if (growthPathEffects && Object.keys(growthPathEffects).length > 0) effects.push(growthPathEffects);
   if (annualDirective?.monthlyEffects && Object.keys(annualDirective.monthlyEffects).length > 0) {
     effects.push(annualDirective.monthlyEffects);
@@ -3908,6 +3910,7 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   if (Object.keys(industryComboEffects).length > 0) effects.push(industryComboEffects);
   if (Object.keys(runModifierEffects).length > 0) effects.push(runModifierEffects);
   if (Object.keys(difficultyEffects).length > 0) effects.push(difficultyEffects);
+  if (Object.keys(archetypeEffects).length > 0) effects.push(archetypeEffects);
 
   if (effects.length === 0) return undefined;
   return effects.reduce<ResourceMap>((combined, effect) => mergeResourceDelta(combined, effect), {});

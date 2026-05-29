@@ -10,6 +10,7 @@ import {
   runScriptedCommercialSimulation,
   runTenYearCampaignSimulation,
 } from "./run-simulator";
+import { getDerivedArchetypes } from "./tag-derivation";
 
 describe("v0.11 commercial balance simulation harness", () => {
   it("runs a scripted productivity strategy through the 10-month MVP window", () => {
@@ -80,6 +81,25 @@ describe("v0.11 commercial balance simulation harness", () => {
     const result = runTenYearCampaignSimulation("productivity_line", { challengeTierId: "hard" });
 
     expect(result.finalState.runModifiers.challengeTier).toBe("hard");
+    expect(result.finalState.month).toBeGreaterThanOrEqual(CAMPAIGN_FINAL_MONTH);
+    expect(result.finalState.status).not.toBe("failure");
+    expect(result.integrity.ok).toBe(true);
+    expect(result.finale).toMatchObject({ isFinal: true });
+    expect(result.annualReviewCount).toBeGreaterThanOrEqual(10);
+    expect(result.yearlySnapshots).toHaveLength(10);
+  });
+
+  it("keeps an archetype-bearing non-standard 10-year campaign completable", () => {
+    const result = runTenYearCampaignSimulation("productivity_line", {
+      seed: "v0.66-archetype-completion",
+      startCityId: "san_francisco",
+      worldLoreId: "open_source_heaven",
+      marketConditionId: "ai_boom",
+      founderTraitId: "engineer_founder",
+    });
+    const derivedIds = getDerivedArchetypes(result.finalState).map((rule) => rule.id);
+
+    expect(derivedIds).toEqual(expect.arrayContaining(["frontier_demo_loop", "frontier_garage", "oss_evangelist"]));
     expect(result.finalState.month).toBeGreaterThanOrEqual(CAMPAIGN_FINAL_MONTH);
     expect(result.finalState.status).not.toBe("failure");
     expect(result.integrity.ok).toBe(true);

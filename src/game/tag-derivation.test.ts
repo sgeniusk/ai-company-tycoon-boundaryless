@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { derivationRules, runModifiers } from "./data";
+import { derivationRules, resources, runModifiers } from "./data";
 import { createQaScenario } from "./qa-scenarios";
-import { createInitialState } from "./simulation";
-import { getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "./tag-derivation";
-import type { GameState } from "./types";
+import { advanceMonth, calculateMonthlyEconomy, createInitialState } from "./simulation";
+import { getArchetypeMonthlyEffects, getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "./tag-derivation";
+import type { GameState, ResourceMap } from "./types";
 
 const runModifierTagVocabulary = new Set(
   [
@@ -107,5 +107,72 @@ describe("v0.66 tag derivation engine foundation", () => {
     expect(collection).toEqual(["frontier_garage"]);
     expect(runArchetypes.map((rule) => rule.id)).toEqual(["frontier_demo_loop", "frontier_garage", "oss_evangelist"]);
     expect(getNewlyDiscoveredArchetypes(new Set(runArchetypes.map((rule) => rule.id)), runArchetypes)).toEqual([]);
+  });
+
+  it("keeps every bonus monthly effect small and tied to a real resource id", () => {
+    const resourceIds = new Set(Object.keys(resources));
+
+    for (const rule of derivationRules) {
+      const monthlyEffect = rule.yields.monthly_effect;
+
+      if (rule.yields.kind === "bonus") {
+        expect(monthlyEffect, `${rule.id}.monthly_effect`).toBeTruthy();
+        expect(Object.values(monthlyEffect ?? {}).some((value) => value !== 0), `${rule.id}.monthly_effect`).toBe(true);
+      } else {
+        expect(monthlyEffect, `${rule.id}.monthly_effect`).toBeUndefined();
+      }
+
+      for (const [resourceId, amount] of Object.entries(monthlyEffect ?? {})) {
+        expect(resourceIds.has(resourceId), `${rule.id}.${resourceId}`).toBe(true);
+        expect(Math.abs(amount), `${rule.id}.${resourceId}`).toBeLessThanOrEqual(30);
+      }
+    }
+  });
+
+  it("sums monthly effects from derived bonus archetypes only", () => {
+    const effects = getArchetypeMonthlyEffects(
+      stateWithTags(["frontier_cluster", "builder_bias", "data_scarce", "synthetic_premium", "consumer_hype", "growth_bias", "funding_drought", "lab_bias"]),
+    );
+
+    expect(effects).toEqual({
+      compute: 3,
+      data: 5,
+      users: 30,
+      hype: 1,
+      cash: -10,
+    });
+  });
+
+  it("keeps the standard run as an empty archetype-effect no-op", () => {
+    expect(getArchetypeMonthlyEffects(createInitialState())).toEqual({});
+  });
+
+  it("applies archetype effects through the monthly strategic-effects hook additively", () => {
+    const state: GameState = {
+      ...createInitialState(),
+      runModifiers: {
+        ...createInitialState().runModifiers,
+        tags: ["frontier_cluster", "builder_bias"],
+      },
+    };
+    const baselineState: GameState = {
+      ...state,
+      runModifiers: {
+        ...state.runModifiers,
+        tags: [],
+      },
+    };
+    const baselineEconomy = calculateMonthlyEconomy(baselineState);
+    const economy = calculateMonthlyEconomy(state);
+    const advanced = advanceMonth(state);
+    const expectedEffects: ResourceMap = { compute: 3 };
+
+    expect(getArchetypeMonthlyEffects(state)).toEqual(expectedEffects);
+    expect(economy.strategyEffects?.compute).toBe((baselineEconomy.strategyEffects?.compute ?? 0) + expectedEffects.compute);
+    expect(economy.strategyEffects?.cash).toBe(baselineEconomy.strategyEffects?.cash);
+    expect(economy.strategyEffects?.data).toBe(baselineEconomy.strategyEffects?.data);
+    expect(economy.resourceDelta.compute).toBe(baselineEconomy.resourceDelta.compute + expectedEffects.compute);
+    expect(advanced.lastMonthReport?.strategyEffects?.compute).toBe((baselineEconomy.strategyEffects?.compute ?? 0) + expectedEffects.compute);
+    expect(advanced.resources.compute).toBe((state.resources.compute ?? 0) + economy.resourceDelta.compute);
   });
 });
