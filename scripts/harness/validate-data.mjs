@@ -49,6 +49,21 @@ function hasOnlyZeroDeltas(option) {
   return [...resourceValues, ...capabilityValues].every((value) => value === 0);
 }
 
+function hasEmptyStartingDeltas(option) {
+  const resources = option?.starting_deltas?.resources;
+  const capabilities = option?.starting_deltas?.capabilities;
+  return (
+    resources &&
+    typeof resources === "object" &&
+    !Array.isArray(resources) &&
+    Object.keys(resources).length === 0 &&
+    capabilities &&
+    typeof capabilities === "object" &&
+    !Array.isArray(capabilities) &&
+    Object.keys(capabilities).length === 0
+  );
+}
+
 function validatePalette(label, palette, minimum = 3) {
   if (!Array.isArray(palette) || palette.length < minimum) {
     errors.push(`${label}: palette needs at least ${minimum} colors`);
@@ -188,17 +203,20 @@ idsAreUnique("annual_reviews", annualReviews);
 idsAreUnique("annual_directive_choices", annualDirectiveChoices);
 
 const runModifierDimensions = [
-  ["start_cities", runModifiers.start_cities, "default_city"],
-  ["world_lore", runModifiers.world_lore, "standard"],
-  ["market_conditions", runModifiers.market_conditions, "steady_market"],
-  ["founder_traits", runModifiers.founder_traits, "no_founder"],
+  ["start_cities", runModifiers.start_cities, "default_city", 11],
+  ["world_lore", runModifiers.world_lore, "standard", 12],
+  ["market_conditions", runModifiers.market_conditions, "steady_market", 8],
+  ["founder_traits", runModifiers.founder_traits, "no_founder", 9],
 ];
 const runModifierTagIds = new Set();
 
-for (const [dimensionName, entries, defaultId] of runModifierDimensions) {
+for (const [dimensionName, entries, defaultId, expectedCount] of runModifierDimensions) {
   if (!Array.isArray(entries) || entries.length === 0) {
     errors.push(`run_modifiers.${dimensionName}: expected a non-empty array`);
     continue;
+  }
+  if (entries.length !== expectedCount) {
+    errors.push(`run_modifiers.${dimensionName}: expected ${expectedCount} entries, found ${entries.length}`);
   }
 
   const entryIds = idsAreUnique(`run_modifiers.${dimensionName}`, entries);
@@ -223,6 +241,9 @@ for (const [dimensionName, entries, defaultId] of runModifierDimensions) {
   const defaultEntry = entries.find((entry) => entry.id === defaultId);
   if (defaultEntry && !hasOnlyZeroDeltas(defaultEntry)) {
     errors.push(`run_modifiers.${dimensionName} "${defaultId}": default option must have zero starting deltas`);
+  }
+  if (defaultEntry && !hasEmptyStartingDeltas(defaultEntry)) {
+    errors.push(`run_modifiers.${dimensionName} "${defaultId}": default option starting deltas must be empty objects`);
   }
 }
 

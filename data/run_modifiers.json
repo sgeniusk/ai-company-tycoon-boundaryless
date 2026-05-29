@@ -13,7 +13,33 @@
     "enterprise_winter": { "cash": -80, "users": -30, "trust": 1 },
     "long_sales_cycle": { "cash": -40, "users": -20 },
     "consumer_hype": { "users": 80, "hype": 2 },
-    "volatile_demand": { "trust": -1 }
+    "volatile_demand": { "trust": -1 },
+    "research_fast": { "data": 3 },
+    "safety_scrutiny": { "hype": -1 },
+    "data_scarce": { "data": -3 },
+    "synthetic_premium": { "cash": -20 },
+    "export_controls": { "compute": -3 },
+    "compute_regional": { "compute": -2 },
+    "privacy_strict": { "data": -2 },
+    "consent_economy": { "trust": 1 },
+    "distribution_locked": { "users": -30 },
+    "platform_tax": { "cash": -30 },
+    "funding_drought_world": { "cash": -60 },
+    "skeptic_market": { "hype": -1 },
+    "embodied_demand": { "users": 40 },
+    "hardware_capital": { "compute": 2 },
+    "funding_drought": { "cash": -50 },
+    "disciplined_market": { "trust": 1 },
+    "distribution_easy": { "users": 60 },
+    "high_churn": { "trust": -1 },
+    "reg_crackdown": { "hype": -2 },
+    "trust_premium": { "trust": 1 },
+    "talent_war": { "cash": -40 },
+    "output_dense": { "data": 2 },
+    "domestic_scale": { "users": 50 },
+    "trust_west_penalty": { "trust": -1 },
+    "oss_culture": { "data": 2 },
+    "efficiency_bias": { "cash": 30 }
   },
   "start_cities": [
     {
@@ -75,6 +101,56 @@
         "capabilities": { "optimization": 1 }
       },
       "tags": ["city_texas", "energy_infra", "compute_infra"]
+    },
+    {
+      "id": "beijing",
+      "name": "베이징",
+      "description": "거대 내수 시장에 바로 닿지만 서방 고객 신뢰 관리는 더 까다로운 시작지입니다.",
+      "starting_deltas": {
+        "resources": { "users": 300, "cash": 600, "trust": -3 },
+        "capabilities": {}
+      },
+      "tags": ["city_beijing", "domestic_scale", "trust_west_penalty"]
+    },
+    {
+      "id": "london",
+      "name": "런던",
+      "description": "금융 고객과 규제 균형 감각을 함께 얻는 시작지입니다.",
+      "starting_deltas": {
+        "resources": { "cash": 1500, "trust": 1 },
+        "capabilities": { "safety": 1 }
+      },
+      "tags": ["city_london", "finance_market", "reg_balance"]
+    },
+    {
+      "id": "bengaluru",
+      "name": "벵갈루루",
+      "description": "저비용 인재풀과 빠른 구현 문화로 초반 팀 효율이 좋은 시작지입니다.",
+      "starting_deltas": {
+        "resources": { "talent": 2, "cash": 400 },
+        "capabilities": { "code": 1 }
+      },
+      "tags": ["city_bengaluru", "talent_cheap", "low_burn"]
+    },
+    {
+      "id": "singapore",
+      "name": "싱가포르",
+      "description": "아시아 게이트웨이와 엔터프라이즈 신뢰를 함께 노리는 시작지입니다.",
+      "starting_deltas": {
+        "resources": { "cash": 1000, "trust": 3 },
+        "capabilities": { "enterprise": 1 }
+      },
+      "tags": ["city_singapore", "gateway_market", "trust_dense"]
+    },
+    {
+      "id": "berlin",
+      "name": "베를린",
+      "description": "프라이버시와 오픈소스 문화가 강해 데이터 감각은 좋지만 화제성은 차분한 시작지입니다.",
+      "starting_deltas": {
+        "resources": { "data": 12, "hype": -2 },
+        "capabilities": { "safety": 1 }
+      },
+      "tags": ["city_berlin", "oss_culture", "privacy_culture"]
     }
   ],
   "world_lore": [
@@ -127,6 +203,76 @@
         "capabilities": { "safety": 1 }
       },
       "tags": ["regulation_heavy", "safety_first"]
+    },
+    {
+      "id": "agi_overhang",
+      "name": "AGI 임박",
+      "description": "모두가 AGI가 가까워졌다고 믿어 연구는 빨라지지만 안전 감시는 혹독합니다.",
+      "starting_deltas": {
+        "resources": { "data": 15, "hype": 4, "trust": -3 },
+        "capabilities": {}
+      },
+      "tags": ["research_fast", "safety_scrutiny"]
+    },
+    {
+      "id": "data_drought",
+      "name": "데이터 고갈",
+      "description": "공개 데이터가 고갈되고 저작권 봉쇄가 강해져 학습 재료가 귀해진 세계입니다.",
+      "starting_deltas": {
+        "resources": { "data": -25 },
+        "capabilities": {}
+      },
+      "tags": ["data_scarce", "synthetic_premium"]
+    },
+    {
+      "id": "chip_war",
+      "name": "칩 전쟁",
+      "description": "수출통제와 지역 블록화로 컴퓨트 조달이 분절된 세계입니다.",
+      "starting_deltas": {
+        "resources": { "compute": -30, "cash": -400 },
+        "capabilities": {}
+      },
+      "tags": ["export_controls", "compute_regional"]
+    },
+    {
+      "id": "privacy_fortress",
+      "name": "프라이버시 요새",
+      "description": "개인정보 철벽법이 데이터 수집을 막지만 신뢰 프리미엄을 만듭니다.",
+      "starting_deltas": {
+        "resources": { "data": -12, "trust": 6 },
+        "capabilities": {}
+      },
+      "tags": ["privacy_strict", "consent_economy"]
+    },
+    {
+      "id": "bigtech_monopoly",
+      "name": "빅테크 독점",
+      "description": "거대 플랫폼이 유통을 장악해 신규 회사는 초반 접근 비용을 치릅니다.",
+      "starting_deltas": {
+        "resources": { "users": -120, "hype": -3 },
+        "capabilities": {}
+      },
+      "tags": ["distribution_locked", "platform_tax"]
+    },
+    {
+      "id": "ai_winter_redux",
+      "name": "AI 겨울 재림",
+      "description": "투자와 관심이 얼어붙어 AI 회사가 회의론 속에서 출발하는 세계입니다.",
+      "starting_deltas": {
+        "resources": { "cash": -900, "hype": -6 },
+        "capabilities": {}
+      },
+      "tags": ["funding_drought_world", "skeptic_market"]
+    },
+    {
+      "id": "robotics_boom",
+      "name": "로보틱스 붐",
+      "description": "체화 AI 수요가 급등해 물리 산업 확장 감각이 초반부터 중요해진 세계입니다.",
+      "starting_deltas": {
+        "resources": { "compute": 18, "automation": 2 },
+        "capabilities": { "optimization": 1 }
+      },
+      "tags": ["embodied_demand", "hardware_capital"]
     }
   ],
   "market_conditions": [
@@ -169,6 +315,46 @@
         "capabilities": {}
       },
       "tags": ["consumer_hype", "volatile_demand"]
+    },
+    {
+      "id": "funding_drought",
+      "name": "투자 혹한",
+      "description": "자금 조달이 빡빡해 성장보다 운영 규율을 먼저 증명해야 하는 시장입니다.",
+      "starting_deltas": {
+        "resources": { "cash": -1200, "trust": 3 },
+        "capabilities": {}
+      },
+      "tags": ["funding_drought", "disciplined_market"]
+    },
+    {
+      "id": "platform_gold_rush",
+      "name": "플랫폼 골드러시",
+      "description": "플랫폼 유통이 열려 초반 유입은 쉽지만 이용자 이탈도 빠른 시장입니다.",
+      "starting_deltas": {
+        "resources": { "users": 350, "hype": 6, "trust": -2 },
+        "capabilities": {}
+      },
+      "tags": ["distribution_easy", "high_churn"]
+    },
+    {
+      "id": "regulation_crackdown",
+      "name": "규제 단속",
+      "description": "감독기관의 단속이 거세져 신뢰는 프리미엄이 되고 화제성은 눌립니다.",
+      "starting_deltas": {
+        "resources": { "trust": 6, "hype": -8 },
+        "capabilities": {}
+      },
+      "tags": ["reg_crackdown", "trust_premium"]
+    },
+    {
+      "id": "talent_war",
+      "name": "인재 전쟁",
+      "description": "핵심 인재 몸값은 높지만 밀도 높은 팀이 더 큰 산출을 만드는 시장입니다.",
+      "starting_deltas": {
+        "resources": { "cash": -800, "talent": 2 },
+        "capabilities": {}
+      },
+      "tags": ["talent_war", "output_dense"]
     }
   ],
   "founder_traits": [
@@ -221,6 +407,46 @@
         "capabilities": {}
       },
       "tags": ["capitalist_founder", "fundraising_bias"]
+    },
+    {
+      "id": "designer_founder",
+      "name": "디자이너 창업자",
+      "description": "UX 감각과 화제성은 강하지만 인프라 기반은 약하게 시작합니다.",
+      "starting_deltas": {
+        "resources": { "users": 120, "hype": 6, "compute": -5 },
+        "capabilities": {}
+      },
+      "tags": ["designer_founder", "ux_bias"]
+    },
+    {
+      "id": "operator_founder",
+      "name": "오퍼레이터 창업자",
+      "description": "번율 관리와 꾸준한 유입 운영에 강한 창업자입니다.",
+      "starting_deltas": {
+        "resources": { "cash": 1500, "users": 80 },
+        "capabilities": {}
+      },
+      "tags": ["operator_founder", "efficiency_bias"]
+    },
+    {
+      "id": "academic_founder",
+      "name": "아카데믹 창업자",
+      "description": "언어와 안전 연구의 깊이는 있지만 사업 현금화는 느리게 시작합니다.",
+      "starting_deltas": {
+        "resources": { "data": 45, "cash": -500 },
+        "capabilities": { "language": 1, "safety": 1 }
+      },
+      "tags": ["academic_founder", "theory_bias"]
+    },
+    {
+      "id": "serial_founder",
+      "name": "연쇄창업가",
+      "description": "자금과 네트워크를 들고 시작하지만 시장의 기대치도 함께 짊어집니다.",
+      "starting_deltas": {
+        "resources": { "cash": 2500, "trust": 3, "hype": 3 },
+        "capabilities": {}
+      },
+      "tags": ["serial_founder", "network_bias"]
     }
   ]
 }

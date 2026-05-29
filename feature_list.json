@@ -248,9 +248,10 @@
         "Each block: harness:gate passes; standard 10-year run still completes; deterministic; data-only (no tick/save change); default run = current behavior."
       ],
       "evidence": [
-        "2026-05-30: Opened at v0.63 closeout. Grounded on the confirmed data-driven schema — selectOption auto-includes any new JSON entry in the seeded pool and getRunModifierMonthlyEffects sums tag_effects, so 4-axis + event content needs no code. Block #1 launched on Codex CLI (medium) in an isolated git worktree (/Users/taewookkim/dev/act-content-wave, branch v0.64-content-wave, node_modules symlinked) to run truly parallel with v0.63 #4; disjoint file ownership makes the merge conflict-free."
+        "2026-05-30: Opened at v0.63 closeout. Grounded on the confirmed data-driven schema — selectOption auto-includes any new JSON entry in the seeded pool and getRunModifierMonthlyEffects sums tag_effects, so 4-axis + event content needs no code. Block #1 launched on Codex CLI (medium) in an isolated git worktree (/Users/taewookkim/dev/act-content-wave, branch v0.64-content-wave, node_modules symlinked) to run truly parallel with v0.63 #4; disjoint file ownership makes the merge conflict-free.",
+        "2026-05-30: Block #1 DONE — implemented by Codex CLI (medium) in the parallel worktree, verified + landed into main by Claude Code. world_lore 5->12, start_cities 6->11, market_conditions 4->8, founder_traits 5->9 = 9,504 combos (was 600), plus tag_effects for every new monthly-acting tag. Worktree diff was data-only (run_modifiers.json + validate-data.mjs; run-modifiers.ts/simulation.ts/types.ts UNTOUCHED — confirmed). Default entries stay zero-delta no-ops (regression-guarded in the new run-modifiers-content.test.ts). validate-data.mjs run_modifiers checks extended. Files copied into main (disjoint from #4) and the union gate re-verified by Claude Code."
       ],
-      "next_step": "Verify + land block #1 (content-wave worktree) into main, then run block #2 (events expansion). Both data-only; gate per block."
+      "next_step": "Block #1 landed. Next: block #2 (world-events 12->26 themed to the new worlds, handoff reports/codex-handoff/v0_64_block2_world_events_expansion.md) — data-only, must raise the block #3 pool-size test bound. Then v0.65 difficulty axis."
     },
     {
       "id": "art-intake-final-source-art",
