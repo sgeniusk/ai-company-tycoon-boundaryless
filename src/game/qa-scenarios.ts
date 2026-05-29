@@ -6,6 +6,7 @@ import { chooseCardReward, createReleaseCardReward, getStrategyCardById, playStr
 import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { runPersonaPlaytestReview } from "./persona-playtest";
+import { rollRunModifierSelection } from "./run-modifiers";
 import { evaluateAlphaReadiness, runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
 import {
   advanceMonth,
@@ -88,7 +89,7 @@ export const qaScenarioIds = [
   "world-events",
 ] as const;
 
-export type QaScenarioId = (typeof qaScenarioIds)[number];
+export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal";
 
 export interface QaScenario {
   id: QaScenarioId;
@@ -197,6 +198,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
         marketConditionId: "enterprise_winter",
         founderTraitId: "researcher_founder",
       }),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "world-reveal") {
+    return {
+      id,
+      label: "세계 뽑기 리빌 QA",
+      state: createInitialState(rollRunModifierSelection("qa-world-reveal")),
       activeMenu: "company",
     };
   }
@@ -1575,6 +1585,7 @@ function createMilestoneScenarioState(): GameState {
 }
 
 export function getQaScenarioId(value: string | null): QaScenarioId | undefined {
+  if (value === "world-reveal") return value;
   return qaScenarioIds.find((id) => id === value);
 }
 

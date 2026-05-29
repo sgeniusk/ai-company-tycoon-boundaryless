@@ -10373,14 +10373,180 @@ p {
   padding: 9px 14px;
 }
 
+.world-reveal-overlay {
+  align-items: center;
+  background: rgba(4, 8, 18, 0.78);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: fixed;
+  z-index: 1220;
+}
+
+.world-reveal-card {
+  animation: payoff-celebration-pop 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: linear-gradient(180deg, rgba(22, 31, 42, 0.98), rgba(12, 19, 30, 0.98));
+  border: 2px solid rgba(98, 205, 196, 0.68);
+  border-radius: 10px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.68), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  display: grid;
+  gap: 12px;
+  max-width: 780px;
+  min-width: 0;
+  overflow: hidden;
+  padding: 18px 20px;
+  position: relative;
+  width: 100%;
+}
+
+.world-reveal-header {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.world-reveal-pill,
+.world-reveal-seed {
+  border-radius: 4px;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  padding: 3px 7px;
+  text-transform: uppercase;
+}
+
+.world-reveal-pill {
+  background: rgba(98, 205, 196, 0.96);
+  color: #061f24;
+}
+
+.world-reveal-seed {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.82);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.world-reveal-flare {
+  animation: payoff-celebration-flare 1700ms ease-in-out infinite;
+  background: radial-gradient(circle, rgba(161, 245, 225, 0.95) 0%, rgba(98, 205, 196, 0.34) 45%, rgba(98, 205, 196, 0) 70%);
+  display: block;
+  height: 44px;
+  margin-left: auto;
+  width: 44px;
+}
+
+.world-reveal-kicker {
+  color: rgba(161, 245, 225, 0.9);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.world-reveal-title {
+  color: #f2fff9;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.world-reveal-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.world-reveal-axis {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 8px;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px;
+  transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease;
+}
+
+.world-reveal-axis.locked {
+  opacity: 0.48;
+  transform: translateY(4px);
+}
+
+.world-reveal-axis.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.world-reveal-axis.non-standard {
+  border-color: rgba(255, 204, 91, 0.72);
+  box-shadow: 0 0 18px rgba(255, 204, 91, 0.14) inset;
+}
+
+.world-reveal-axis > span {
+  color: rgba(161, 245, 225, 0.84);
+  font-size: 0.62rem;
+  font-weight: 900;
+}
+
+.world-reveal-axis strong {
+  color: #fff8df;
+  font-size: 0.98rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.world-reveal-axis p {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.42;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.world-reveal-deltas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.world-reveal-deltas em {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: #d8ffe8;
+  font-size: 0.58rem;
+  font-style: normal;
+  font-weight: 900;
+  padding: 4px 6px;
+}
+
+.world-reveal-dismiss {
+  background: rgba(98, 205, 196, 0.96);
+  border: none;
+  border-radius: 6px;
+  color: #061f24;
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 10px 14px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .payoff-celebration-card,
   .payoff-celebration-card.payoff-celebration-combo,
   .payoff-celebration-card.payoff-celebration-synergy,
   .payoff-celebration-card.payoff-celebration-discovery,
   .payoff-celebration-card.payoff-celebration-achievement,
+  .world-reveal-card,
   .annual-nearmiss-relief,
-  .payoff-celebration-flare {
+  .payoff-celebration-flare,
+  .world-reveal-flare {
     animation: none;
   }
 }
@@ -10403,12 +10569,29 @@ p {
   .payoff-celebration-title {
     font-size: 1.1rem;
   }
+
+  .world-reveal-card {
+    max-width: 100%;
+    padding: 14px 16px;
+  }
+
+  .world-reveal-title {
+    font-size: 1.16rem;
+  }
+
+  .world-reveal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 520px) {
   .annual-nearmiss-relief {
     grid-template-columns: 1fr;
     padding: 8px;
+  }
+
+  .world-reveal-grid {
+    grid-template-columns: 1fr;
   }
 }
 

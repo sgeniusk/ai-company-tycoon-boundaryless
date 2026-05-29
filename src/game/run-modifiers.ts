@@ -66,6 +66,18 @@ export function selectRunModifierConfig(input: RunModifierSelectionInput = {}): 
   };
 }
 
+export function rollRunModifierSelection(seed: string | number): RunModifierSelectionInput {
+  const config = selectRunModifierConfig({ seed });
+
+  return {
+    seed: config.seed,
+    startCityId: config.startCityId,
+    worldLoreId: config.worldLoreId,
+    marketConditionId: config.marketConditionId,
+    founderTraitId: config.founderTraitId,
+  };
+}
+
 export function applyRunModifierStartingDeltas(state: GameState, config: RunModifierConfig): GameState {
   return {
     ...state,

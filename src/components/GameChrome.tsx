@@ -21,6 +21,7 @@ import {
   type OpeningObjective,
 } from "../game/guidance";
 import { resetRunWithMetaUnlocks } from "../game/meta-progression";
+import { rollRunModifierSelection } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
@@ -90,6 +91,19 @@ import { MarketSharePanel } from "./MarketSharePanel";
 import { RivalArchetypePanel } from "./RivalArchetypePanel";
 import { BigEventModal } from "./BigEventModal";
 import { PayoffCelebrationModal } from "./PayoffCelebrationModal";
+import { WorldRevealModal } from "./WorldRevealModal";
+
+let nextRunSeedCounter = 0;
+
+function createEphemeralRunModifierSelection(source: string) {
+  nextRunSeedCounter += 1;
+  const randomPart =
+    typeof globalThis.crypto?.randomUUID === "function"
+      ? globalThis.crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  return rollRunModifierSelection(`${source}-${nextRunSeedCounter}-${randomPart}`);
+}
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
   if (!palette?.length) return {};
@@ -570,7 +584,7 @@ export function GameStage({
   };
 
   const handleStartNextRun = () => {
-    setGameState((current) => resetRunWithMetaUnlocks(current));
+    setGameState((current) => resetRunWithMetaUnlocks(current, [], "balanced_founder", createEphemeralRunModifierSelection("chrome-next-run")));
     setActiveMenu("deck");
   };
 
@@ -2042,6 +2056,7 @@ export function EventPanels({
   return (
     <>
       <BigEventModal gameState={gameState} setGameState={setGameState} locale={locale} />
+      <WorldRevealModal gameState={gameState} />
       <PayoffCelebrationModal gameState={gameState} setGameState={setGameState} />
       {primaryStaffIncident && (
         <section

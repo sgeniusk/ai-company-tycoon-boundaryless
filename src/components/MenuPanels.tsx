@@ -65,6 +65,7 @@ import {
   upgradeStrategyCard,
 } from "../game/deckbuilding";
 import { getMetaUnlockCheck, getNextRunSetupPlan, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
+import { rollRunModifierSelection } from "../game/run-modifiers";
 import {
   advanceMonth,
   buyAutomationUpgrade,
@@ -153,6 +154,18 @@ import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, itemCategoryLabel, itemTargetLabel, statLabel } from "../ui/formatters";
 import { menus, type MenuId } from "../ui/menu";
 import { CampaignShockPanel } from "./CampaignShockPanel";
+
+let menuRunSeedCounter = 0;
+
+function createEphemeralRunModifierSelection(source: string) {
+  menuRunSeedCounter += 1;
+  const randomPart =
+    typeof globalThis.crypto?.randomUUID === "function"
+      ? globalThis.crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  return rollRunModifierSelection(`${source}-${menuRunSeedCounter}-${randomPart}`);
+}
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
   if (!palette?.length) return {};
@@ -890,7 +903,16 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                   <button
                     disabled={!quickStart.affordable}
                     key={quickStart.id}
-                    onClick={() => setGameState((current) => resetRunWithMetaUnlocks(current, quickStart.unlockIds, quickStart.starterDeckId))}
+                    onClick={() =>
+                      setGameState((current) =>
+                        resetRunWithMetaUnlocks(
+                          current,
+                          quickStart.unlockIds,
+                          quickStart.starterDeckId,
+                          createEphemeralRunModifierSelection(`menu-quick-${quickStart.id}`),
+                        ),
+                      )
+                    }
                     type="button"
                   >
                     <strong>{quickStart.label}</strong>
@@ -1213,7 +1235,11 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                 </div>
                 <button
                   disabled={!option.available}
-                  onClick={() => setGameState((current) => resetRunWithMetaUnlocks(current, [], option.id))}
+                  onClick={() =>
+                    setGameState((current) =>
+                      resetRunWithMetaUnlocks(current, [], option.id, createEphemeralRunModifierSelection(`menu-deck-${option.id}`)),
+                    )
+                  }
                   type="button"
                 >
                   이 덱으로 새 런
@@ -1233,7 +1259,14 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                   <p>{unlock.description}</p>
                   <small>해금 카드: {unlockedCards.map((card) => card.name).join(", ")}</small>
                 </div>
-                <button disabled={unlocked || !check.ok} onClick={() => setGameState((current) => resetRunWithMetaUnlocks(current, [unlock.id]))}>
+                <button
+                  disabled={unlocked || !check.ok}
+                  onClick={() =>
+                    setGameState((current) =>
+                      resetRunWithMetaUnlocks(current, [unlock.id], "balanced_founder", createEphemeralRunModifierSelection(`menu-unlock-${unlock.id}`)),
+                    )
+                  }
+                >
                   {unlocked ? "해금됨" : "새 런"}
                 </button>
                 {!check.ok && !unlocked && <span>{check.reasons[0]}</span>}

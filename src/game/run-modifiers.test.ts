@@ -7,6 +7,7 @@ import {
   DEFAULT_RUN_MODIFIER_SELECTION,
   applyRunModifierStartingDeltas,
   getRunModifierMonthlyEffects,
+  rollRunModifierSelection,
   selectRunModifierConfig,
 } from "./run-modifiers";
 import type { GameState } from "./types";
@@ -118,6 +119,23 @@ describe("v0.63 run modifier foundation", () => {
     expect(nextRun.capabilities.safety).toBe(1);
   });
 
+  it("rolls a deterministic non-standard selection from a seed without changing defaults", () => {
+    const first = rollRunModifierSelection("qa-world-reveal-seed");
+    const second = rollRunModifierSelection("qa-world-reveal-seed");
+    const different = rollRunModifierSelection("qa-world-reveal-seed-2");
+
+    expect(first).toEqual(second);
+    expect(first.seed).toBe("qa-world-reveal-seed");
+    expect(selectRunModifierConfig(first)).toMatchObject(first);
+    expect(first).not.toMatchObject(DEFAULT_RUN_MODIFIER_SELECTION);
+    expect(different).not.toEqual(first);
+
+    expect(createInitialState().runModifiers).toMatchObject(DEFAULT_RUN_MODIFIER_SELECTION);
+    expect(resetRunWithMetaUnlocks({ ...createInitialState(), month: 12, status: "success" }).runModifiers).toMatchObject(
+      DEFAULT_RUN_MODIFIER_SELECTION,
+    );
+  });
+
   it("round-trips saved run modifiers and migrates old saves to the standard config", () => {
     const modifiedState = createInitialState(nonDefaultSelection);
     const hydrated = hydrateGameState(serializeGameState(modifiedState));
@@ -141,6 +159,16 @@ describe("v0.63 run modifier foundation", () => {
     expect(scenario.state.runModifiers.worldLoreId).toBe("bitcoin_gpu_squeeze");
     expect(scenario.state.runModifiers.startCityId).toBe("tokyo");
     expect(scenario.state.resources.compute).toBe(70);
+  });
+
+  it("registers a world reveal QA scenario with a rolled seed", () => {
+    const scenario = createQaScenario("world-reveal");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("세계 뽑기");
+    expect(scenario.state.runModifiers.seed).toBe("qa-world-reveal");
+    expect(scenario.state.runModifiers).not.toMatchObject(DEFAULT_RUN_MODIFIER_SELECTION);
+    expect(scenario.state.runModifiers.tags.length).toBeGreaterThan(0);
   });
 
   it("sums conservative monthly effects from active modifier tags", () => {
