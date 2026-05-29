@@ -195,15 +195,16 @@
       ],
       "definition_of_done": [
         "Block #1 (DONE 2026-05-29): high-risk combo / top synergy ACTIVATION celebration. New pure-derive helper src/game/payoff-activation.ts (getPayoffCelebrationMoments maps active combos/synergies to named moments; getNewPayoffActivationIds = set-diff) — NO GameState field, the 'previously active' set lives in React state, so the save path is untouched. PayoffCelebrationModal.tsx mirrors BigEventModal (queue + dismiss + effect summary + glow/flare + prefers-reduced-motion). ?scenario=payoff-juice demo. simulation.ts untouched. harness:gate 44 files / 439 tests (a new unit-test file shifts the long-standing 43-file baseline to 44).",
-        "Block #2: discovery moments + collection-lite — a '신규 발견!' pop when a synergy/combo first activates, plus a discovered-combos view.",
+        "Block #2 (DONE 2026-05-29): discovery moments + collection-lite. New persisted GameState.discoveredPayoffIds (mirrors seenTutorials: createInitialState [] + sanitizeStringArray hydrate, old-save migration to [], round-trip tested); first activation marks discovered + shows a '신규 발견!' celebration variant; a collection view (discovered=revealed, undiscovered=???, N/total progress) + ?scenario=collection. simulation.ts only got the initial-state default + hydrate sanitizer (no tick/balance). harness:gate 44 files / 444 tests.",
         "Block #3: milestone fanfare (first $1M, first physical industry, AGI threshold) + annual-review near-miss emphasis (barely-passed = tension/relief).",
         "Each block adds tests; npm run harness:gate passes; §5-safe (amplify existing moments, no new systems); prefers-reduced-motion + mobile 390x844 respected; no unintended simulation tick/balance changes."
       ],
       "evidence": [
         "2026-05-29: Selected after v0.61 + the design-direction review. User picked the dopamine direction (tag-derivation engine A + multi-ending/roguelike B + art-first/parallel C) and asked for payoff-juice as the immediate, §5-safe win. Block #1 (combo/synergy activation celebration) delegated to Codex CLI. The big systems (roguelike run modifiers, tag-derivation engine, multi-ending) are recorded as post-1.0 in reports/v0_62_design_direction.md.",
-        "2026-05-29: Block #1 implemented by Codex CLI (fast/medium) and verified by Claude Code. Pure-derive celebration (payoff-activation.ts) + PayoffCelebrationModal + ?scenario=payoff-juice; no GameState field, simulation.ts + save path untouched (zero balance/tick risk). Independently verified npm run harness:gate: 44 files / 439 tests."
+        "2026-05-29: Block #1 implemented by Codex CLI (fast/medium) and verified by Claude Code. Pure-derive celebration (payoff-activation.ts) + PayoffCelebrationModal + ?scenario=payoff-juice; no GameState field, simulation.ts + save path untouched (zero balance/tick risk). Independently verified npm run harness:gate: 44 files / 439 tests.",
+        "2026-05-29: Block #2 implemented by Codex CLI (fast/medium) and verified by Claude Code. Persisted GameState.discoveredPayoffIds (seenTutorials pattern) with save round-trip + old-save migration tested; discovery '신규 발견!' variant + collection-lite view + ?scenario=collection. simulation.ts diff = initialState default + hydrate sanitizer only (no tick/balance); discovery marking is a UI-driven setGameState update. Independently verified npm run harness:gate: 44 files / 444 tests."
       ],
-      "next_step": "Blocks #1 done. Next: block #2 (discovery moments + collection-lite), then #3 (milestone fanfare + annual-review near-miss). Note: harness baseline is now 44 files / 439 tests."
+      "next_step": "Blocks #1-#2 done. Next: block #3 (milestone fanfare + annual-review near-miss), then v0.62 closeout. Baseline 44 files / 444 tests."
     },
     {
       "id": "art-intake-final-source-art",

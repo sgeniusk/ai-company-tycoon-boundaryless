@@ -72,6 +72,10 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     issues.push("seenTutorials must be an array");
   }
 
+  if (!Array.isArray(state.discoveredPayoffIds)) {
+    issues.push("discoveredPayoffIds must be an array");
+  }
+
   if (!Array.isArray(state.annualReviewHistory)) {
     issues.push("annualReviewHistory must be an array");
   } else {

@@ -1269,6 +1269,7 @@ export interface GameState {
   eventHistory: string[];
   rivalEventHistory: string[];
   seenTutorials: string[];
+  discoveredPayoffIds: string[];
   recentStaffIncidentResolutions: StaffIncidentResolutionLogEntry[];
   timeline: string[];
   lastMonthReport?: MonthlyReport;

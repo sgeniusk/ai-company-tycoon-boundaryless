@@ -82,6 +82,7 @@ export const qaScenarioIds = [
   "resource-visibility",
   "physical-industries",
   "payoff-juice",
+  "collection",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -160,6 +161,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "페이오프 셀러브레이션 QA",
       state: createPayoffJuiceScenarioState(),
+      activeMenu: "products",
+    };
+  }
+
+  if (id === "collection") {
+    return {
+      id,
+      label: "페이오프 도감 QA",
+      state: createPayoffCollectionScenarioState(),
       activeMenu: "products",
     };
   }
@@ -1437,6 +1447,35 @@ function createPayoffJuiceScenarioState(): GameState {
     timeline: [
       "v0.62 페이오프 QA: 풀스택 물리 제국 조합 발동 셀러브레이션을 즉시 확인",
       ...physicalState.timeline,
+    ].slice(0, 8),
+  };
+}
+
+function createPayoffCollectionScenarioState(): GameState {
+  const initialState = createInitialState();
+
+  return {
+    ...initialState,
+    month: 30,
+    discoveredPayoffIds: [
+      "combo:full_stack_physical_empire",
+      "combo:robot_factory_subscription",
+      "synergy:robotics_manufacturing_cell",
+      "synergy:factory_energy_loop",
+    ],
+    seenTutorials: [
+      "welcome_garage",
+      "agent_hired",
+      "product_ideas",
+      "development_project",
+      "card_reward",
+      "next_run_setup",
+      "office_growth",
+      "competition_pressure",
+    ],
+    timeline: [
+      "v0.62 도감 QA: 발견된 페이오프와 잠긴 ??? 항목을 제품 패널에서 확인",
+      ...initialState.timeline,
     ].slice(0, 8),
   };
 }

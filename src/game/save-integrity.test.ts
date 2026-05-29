@@ -101,6 +101,12 @@ function createFullLateGameState(): GameState {
       { month: 96, player: 35, topRivalShare: 18, topRivalId: "competitor_ironoracle" },
     ],
     pendingChallengerEntryIds: ["competitor_toycloud", "competitor_ironoracle"],
+    discoveredPayoffIds: [
+      "combo:full_stack_physical_empire",
+      "combo:grid_scale_ai_ops",
+      "synergy:robotics_manufacturing_cell",
+      "synergy:factory_energy_loop",
+    ],
     annualReviewHistory: [
       {
         reviewId: "year_6_robotics_showcase",
@@ -243,6 +249,12 @@ describe("v0.11 save integrity and recovery", () => {
       topRivalId: "competitor_ironoracle",
     });
     expect(hydrated.pendingChallengerEntryIds).toEqual(["competitor_toycloud", "competitor_ironoracle"]);
+    expect(hydrated.discoveredPayoffIds).toEqual([
+      "combo:full_stack_physical_empire",
+      "combo:grid_scale_ai_ops",
+      "synergy:robotics_manufacturing_cell",
+      "synergy:factory_energy_loop",
+    ]);
     expect(hydrated.annualReviewHistory.map((entry) => entry.reviewId)).toEqual([
       "year_6_robotics_showcase",
       "year_7_industry_expansion_fair",
@@ -285,6 +297,26 @@ describe("v0.11 save integrity and recovery", () => {
     expect(hydrated.capabilities.manufacturing).toBe(0);
     expect(hydrated.capabilities.logistics).toBe(0);
     expect(validateGameStateIntegrity(hydrated)).toMatchObject({ ok: true, issues: [] });
+  });
+
+  it("round-trips discoveredPayoffIds and migrates old saves without the field to an empty list", () => {
+    const discoveredState: GameState = {
+      ...createInitialState(),
+      discoveredPayoffIds: ["combo:full_stack_physical_empire", "synergy:robotics_manufacturing_cell"],
+    };
+    const hydrated = hydrateGameState(serializeGameState(discoveredState));
+
+    expect(hydrated.discoveredPayoffIds).toEqual([
+      "combo:full_stack_physical_empire",
+      "synergy:robotics_manufacturing_cell",
+    ]);
+
+    const legacyState: Partial<GameState> = { ...createInitialState() };
+    delete legacyState.discoveredPayoffIds;
+    const migrated = hydrateGameState(JSON.stringify({ version: 11, state: legacyState }));
+
+    expect(migrated.discoveredPayoffIds).toEqual([]);
+    expect(validateGameStateIntegrity(migrated)).toMatchObject({ ok: true, issues: [] });
   });
 
   it("sanitizes malformed physical capability levels during hydration", () => {

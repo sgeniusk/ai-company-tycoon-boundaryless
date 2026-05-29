@@ -2042,7 +2042,7 @@ export function EventPanels({
   return (
     <>
       <BigEventModal gameState={gameState} setGameState={setGameState} locale={locale} />
-      <PayoffCelebrationModal gameState={gameState} />
+      <PayoffCelebrationModal gameState={gameState} setGameState={setGameState} />
       {primaryStaffIncident && (
         <section
           className={`event-panel staff-event-panel incident-screen-moment severity-${primaryStaffIncident.severity}`}

@@ -6,6 +6,7 @@ import { assetManifest, products } from "./data";
 import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
+import { getPayoffCollectionEntries } from "./payoff-activation";
 import { getAiResourceVisibilityMetrics } from "./resource-visibility";
 import { runTenYearCampaignSimulation } from "./run-simulator";
 import { getTutorialGuide } from "./tutorial-guide";
@@ -80,6 +81,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "resource-visibility",
       "physical-industries",
       "payoff-juice",
+      "collection",
     ]);
   });
 
@@ -784,8 +786,19 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=operations")?.id).toBe("operations");
     expect(createQaScenarioFromSearch("?scenario=office-visuals")?.id).toBe("office-visuals");
     expect(createQaScenarioFromSearch("?scenario=payoff-juice")?.id).toBe("payoff-juice");
+    expect(createQaScenarioFromSearch("?scenario=collection")?.id).toBe("collection");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
+  });
+
+  it("creates a payoff collection scenario with revealed and hidden entries", () => {
+    const scenario = createQaScenario("collection");
+    const entries = getPayoffCollectionEntries(scenario.state);
+
+    expect(scenario.activeMenu).toBe("products");
+    expect(scenario.state.discoveredPayoffIds.length).toBeGreaterThan(0);
+    expect(entries.some((entry) => entry.discovered)).toBe(true);
+    expect(entries.some((entry) => !entry.discovered)).toBe(true);
   });
 
   it("allows QA URLs to override the active menu", () => {

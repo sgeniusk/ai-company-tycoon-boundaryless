@@ -15,6 +15,7 @@ import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCom
 import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getIndustryComboSummary } from "../game/industry-combos";
 import { getIndustrySynergySummary } from "../game/industry-synergies";
+import { getPayoffCollectionEntries } from "../game/payoff-activation";
 import {
   getAgentContentRows,
   getCampaignContentPhase,
@@ -1270,6 +1271,8 @@ function ProductsPanel({
   const boundarylessGoals = getBoundarylessExpansionGoals(gameState);
   const industrySynergySummary = getIndustrySynergySummary(gameState);
   const industryComboSummary = getIndustryComboSummary(gameState);
+  const payoffCollectionEntries = getPayoffCollectionEntries(gameState);
+  const discoveredPayoffCount = payoffCollectionEntries.filter((entry) => entry.discovered).length;
   const domainFilters = getProductDomainFilters(availableProducts, domains, gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "products");
   const lastCapabilityUpgrade = gameState.lastCapabilityUpgrade;
@@ -1627,6 +1630,27 @@ function ProductsPanel({
               <small>{industryComboSummary.nextCandidate.risk_label}</small>
             </article>
           )}
+        </div>
+      </div>
+      <div className="payoff-collection-panel" aria-label="발견 도감">
+        <div className="payoff-collection-heading">
+          <div>
+            <p className="eyebrow">페이오프 도감</p>
+            <strong>
+              {discoveredPayoffCount} / {payoffCollectionEntries.length} 발견
+            </strong>
+          </div>
+          <span>처음 발동한 조합과 시너지가 공개됩니다.</span>
+        </div>
+        <div className="payoff-collection-grid">
+          {payoffCollectionEntries.map((entry) => (
+            <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
+              <p className="item-meta">{entry.kind === "combo" ? "고위험 조합" : "산업 시너지"}</p>
+              <strong>{entry.discovered ? entry.title : "???"}</strong>
+              <span>{entry.discovered ? formatEffects(entry.monthlyEffects) : `${entry.requiredDomains.length}개 산업 조건`}</span>
+              <small>{entry.discovered ? entry.riskLabel ?? entry.description : "발동하면 공개"}</small>
+            </article>
+          ))}
         </div>
       </div>
       {!gameState.hiredAgents.length && <p className="empty-note">먼저 에이전트 메뉴에서 첫 에이전트를 고용하면 제품 개발을 시작할 수 있습니다.</p>}

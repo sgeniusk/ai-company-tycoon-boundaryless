@@ -903,11 +903,13 @@ describe("v0.13.3 compact game shell layout", () => {
 
   it("v0.62 #1 keeps the payoff celebration modal mobile-safe with reduced-motion fallback", () => {
     expect(gameChrome).toContain("PayoffCelebrationModal");
-    expect(gameChrome).toContain("<PayoffCelebrationModal gameState={gameState} />");
+    expect(gameChrome).toContain("<PayoffCelebrationModal gameState={gameState} setGameState={setGameState} />");
     expect(payoffCelebrationModal).toContain("getPayoffCelebrationMoments");
     expect(payoffCelebrationModal).toContain("getNewPayoffActivationIds");
+    expect(payoffCelebrationModal).toContain("discoverActivePayoffs");
     expect(payoffCelebrationModal).toContain("payoff-celebration-overlay");
     expect(payoffCelebrationModal).toContain("payoff-celebration-card");
+    expect(payoffCelebrationModal).toContain("신규 발견!");
     expect(payoffCelebrationModal).toContain("role=\"dialog\"");
     expect(payoffCelebrationModal).toContain("scenario\") === \"payoff-juice\"");
     expect(qaScenarios).toContain("\"payoff-juice\"");
@@ -917,6 +919,24 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.payoff-celebration-card\s*{[^}]*max-width:\s*100%/s);
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.payoff-celebration-card/s);
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.payoff-celebration-flare/s);
+  });
+
+  it("v0.62 #2 keeps the payoff collection view mobile-safe at the 390x844 contract", () => {
+    expect(menuPanels).toContain("getPayoffCollectionEntries");
+    expect(menuPanels).toContain("payoff-collection-panel");
+    expect(menuPanels).toContain("payoff-collection-grid");
+    expect(menuPanels).toContain("발견");
+    expect(menuPanels).toContain("\"???\"");
+    expect(qaScenarios).toContain("\"collection\"");
+    expect(qaScenarios).toContain("discoveredPayoffIds");
+    expect(qaScenarios).toContain("activeMenu: \"products\"");
+    expect(appCss).toMatch(/--mobile-shell-width:\s*390px/s);
+    expect(appCss).toMatch(/--mobile-shell-height:\s*844px/s);
+    expect(appCss).toMatch(/\.payoff-collection-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.payoff-collection-grid\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.payoff-collection-grid article\s*{[^}]*min-width:\s*0/s);
+    expect(appCss).toMatch(/\.payoff-collection-grid strong\s*{[^}]*overflow-wrap:\s*anywhere/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.payoff-collection-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
   it("v0.58 #4 differentiates rival-counter strategy cards with a derive-only pressure badge in deck and reward UI", () => {
