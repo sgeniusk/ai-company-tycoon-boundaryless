@@ -1,4 +1,4 @@
-import { annualDirectiveChoices, annualReviews, campaignShocks, companyLocations, competitors, products, resources, strategyCards } from "./data";
+import { annualDirectiveChoices, annualReviews, campaignShocks, companyLocations, competitors, products, resources, strategyCards, worldEvents } from "./data";
 import type { GameState } from "./types";
 
 export interface StateIntegrityReport {
@@ -18,6 +18,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const annualReviewIds = new Set(annualReviews.map((review) => review.id));
   const annualDirectiveChoiceIds = new Set(annualDirectiveChoices.map((choice) => choice.id));
   const campaignShockIds = new Set(campaignShocks.map((shock) => shock.id));
+  const worldEventIds = new Set(worldEvents.map((event) => event.id));
 
   for (const resourceId of Object.keys(resources)) {
     const value = state.resources[resourceId];
@@ -92,6 +93,14 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   } else {
     for (const shockId of state.campaignShockHistory) {
       if (!campaignShockIds.has(shockId)) issues.push(`campaign shock "${shockId}" is unknown`);
+    }
+  }
+
+  if (!Array.isArray(state.worldEventHistory)) {
+    issues.push("worldEventHistory must be an array");
+  } else {
+    for (const eventId of state.worldEventHistory) {
+      if (!worldEventIds.has(eventId)) issues.push(`world event "${eventId}" is unknown`);
     }
   }
 

@@ -1,0 +1,156 @@
+{
+  "world_events": [
+    {
+      "id": "year1_open_model_release",
+      "title": "공개 모델 깜짝 공개",
+      "description": "커뮤니티가 쓸 만한 공개 모델을 내놓으며 작은 팀도 실험 속도를 올립니다.",
+      "trigger": "1-3년차 연구 생태계 변수",
+      "year_range": [1, 3],
+      "resource_effects": {
+        "data": 28,
+        "hype": 2
+      },
+      "world_lore_tags": ["open_source_heaven", "community_models"]
+    },
+    {
+      "id": "year1_local_regulator_roundtable",
+      "title": "지역 규제 라운드테이블",
+      "description": "초기 AI 기업들이 규제기관과 사전 협의 자리를 갖고 신뢰를 조금 얻습니다.",
+      "trigger": "1-3년차 신뢰 기준 변수",
+      "year_range": [1, 3],
+      "resource_effects": {
+        "trust": 3,
+        "hype": -1
+      },
+      "world_lore_tags": ["regulation_heavy", "safety_first"]
+    },
+    {
+      "id": "year2_gpu_spot_market",
+      "title": "GPU 현물가 급등",
+      "description": "단기 임대 GPU 가격이 튀며 실험 예산을 다시 조정해야 합니다.",
+      "trigger": "2-4년차 인프라 가격 변수",
+      "year_range": [2, 4],
+      "resource_effects": {
+        "cash": -2800,
+        "compute": -28,
+        "hype": 2
+      },
+      "world_lore_tags": ["compute_expensive", "gpu_scarcity"]
+    },
+    {
+      "id": "year2_enterprise_procurement_pause",
+      "title": "기업 구매 심사 정체",
+      "description": "대기업 고객이 AI 계약 심사를 늘리며 매출 인식이 잠시 느려집니다.",
+      "trigger": "2-5년차 기업 수요 변수",
+      "year_range": [2, 5],
+      "resource_effects": {
+        "cash": -2200,
+        "users": -260,
+        "trust": 2
+      },
+      "world_lore_tags": ["regulation_heavy", "safety_first"]
+    },
+    {
+      "id": "year3_consumer_demo_wave",
+      "title": "소비자 데모 열풍",
+      "description": "짧은 영상과 체험판이 확산되며 이용자와 화제성이 함께 뛴습니다.",
+      "trigger": "3-6년차 소비자 확산 변수",
+      "year_range": [3, 6],
+      "resource_effects": {
+        "users": 760,
+        "hype": 4,
+        "trust": -1
+      },
+      "world_lore_tags": ["standard_world"]
+    },
+    {
+      "id": "year4_data_cooperative",
+      "title": "데이터 협동조합 출범",
+      "description": "산업 데이터 공유 실험이 시작되어 모델 개선 재료가 늘어납니다.",
+      "trigger": "4-7년차 데이터 공급 변수",
+      "year_range": [4, 7],
+      "resource_effects": {
+        "data": 45,
+        "trust": 1
+      },
+      "world_lore_tags": ["community_models", "safety_first"]
+    },
+    {
+      "id": "year5_safety_audit_wave",
+      "title": "안전성 감사 유행",
+      "description": "투자자와 고객이 안전성 리포트를 요구하며 평판은 안정되지만 관심은 잠시 식습니다.",
+      "trigger": "5-8년차 안전 감사 변수",
+      "year_range": [5, 8],
+      "resource_effects": {
+        "trust": 4,
+        "hype": -2,
+        "cash": -1800
+      },
+      "world_lore_tags": ["regulation_heavy", "safety_first"]
+    },
+    {
+      "id": "year6_inference_efficiency_jump",
+      "title": "추론 효율화 점프",
+      "description": "새 최적화 기법이 퍼지며 같은 서버로 더 많은 요청을 처리합니다.",
+      "trigger": "6-9년차 최적화 변수",
+      "year_range": [6, 9],
+      "resource_effects": {
+        "compute": 38,
+        "automation": 2
+      },
+      "world_lore_tags": ["open_source_heaven", "community_models"]
+    },
+    {
+      "id": "year7_founder_media_cycle",
+      "title": "창업자 미디어 사이클",
+      "description": "창업자 인터뷰가 시장 기대를 키우지만 운영팀은 더 많은 문의를 처리해야 합니다.",
+      "trigger": "7-9년차 브랜드 노출 변수",
+      "year_range": [7, 9],
+      "resource_effects": {
+        "users": 520,
+        "hype": 5,
+        "automation": -1
+      },
+      "world_lore_tags": ["standard_world"]
+    },
+    {
+      "id": "year8_talent_rotation",
+      "title": "AI 인재 대이동",
+      "description": "대형 연구소와 스타트업 사이에서 인재가 이동하며 채용 기회가 열립니다.",
+      "trigger": "8-10년차 인재 시장 변수",
+      "year_range": [8, 10],
+      "resource_effects": {
+        "talent": 1,
+        "cash": -3200
+      },
+      "world_lore_tags": ["alphago_stall", "research_slow"]
+    },
+    {
+      "id": "year9_boundaryless_press",
+      "title": "경계 없는 회사 특집",
+      "description": "AI 회사의 산업 확장 사례가 조명되며 낯선 제품에도 초기 관심이 붙습니다.",
+      "trigger": "9-10년차 산업 확장 변수",
+      "year_range": [9, 10],
+      "resource_effects": {
+        "cash": 4200,
+        "users": 820,
+        "hype": 3,
+        "trust": -1
+      },
+      "world_lore_tags": ["standard_world"]
+    },
+    {
+      "id": "year10_public_benchmark_shift",
+      "title": "공개 벤치마크 재편",
+      "description": "마지막 해 공개 벤치마크가 바뀌며 신뢰와 데이터 운영 역량이 다시 평가됩니다.",
+      "trigger": "10년차 최종 평가 변수",
+      "year_range": [10, 10],
+      "resource_effects": {
+        "data": 55,
+        "trust": 2,
+        "compute": -18
+      },
+      "world_lore_tags": ["research_slow", "safety_first"]
+    }
+  ]
+}

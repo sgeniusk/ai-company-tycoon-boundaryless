@@ -85,6 +85,7 @@ export const qaScenarioIds = [
   "collection",
   "milestones",
   "run-modifiers",
+  "world-events",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -196,6 +197,24 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
         marketConditionId: "enterprise_winter",
         founderTraitId: "researcher_founder",
       }),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "world-events") {
+    let state = createInitialState({
+      seed: "qa-world-events",
+      worldLoreId: "bitcoin_gpu_squeeze",
+      marketConditionId: "enterprise_winter",
+      founderTraitId: "researcher_founder",
+    });
+    while (state.status === "playing" && state.worldEventHistory.length === 0 && state.month < 24) {
+      state = advanceMonth(state);
+    }
+    return {
+      id,
+      label: "연중 세계 이벤트 QA",
+      state,
       activeMenu: "company",
     };
   }

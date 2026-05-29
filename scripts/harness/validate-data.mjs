@@ -81,6 +81,7 @@ const personasData = readJson("playtest_personas.json");
 const companyStagesData = readJson("company_stages.json");
 const companyLocationsData = readJson("company_locations.json");
 const campaignShocksData = readJson("campaign_shocks.json");
+const worldEventsData = readJson("world_events.json");
 const runModifiersData = readJson("run_modifiers.json");
 const agentTypesData = readJson("agent_types.json");
 const itemsData = readJson("items.json");
@@ -122,6 +123,7 @@ const personas = personasData?.personas ?? [];
 const companyStages = companyStagesData?.company_stages ?? [];
 const companyLocations = companyLocationsData?.company_locations ?? [];
 const campaignShocks = campaignShocksData?.campaign_shocks ?? [];
+const worldEvents = worldEventsData?.world_events ?? [];
 const runModifiers = runModifiersData ?? {};
 const agentTypes = agentTypesData?.agent_types ?? [];
 const items = itemsData?.items ?? [];
@@ -162,6 +164,7 @@ idsAreUnique("playtest_personas", personas);
 idsAreUnique("company_stages", companyStages);
 idsAreUnique("company_locations", companyLocations);
 idsAreUnique("campaign_shocks", campaignShocks);
+idsAreUnique("world_events", worldEvents);
 const agentTypeIds = idsAreUnique("agent_types", agentTypes);
 const itemIds = idsAreUnique("items", items);
 const competitorIds = idsAreUnique("competitors", competitors);
@@ -224,6 +227,11 @@ for (const [dimensionName, entries, defaultId] of runModifierDimensions) {
 }
 
 const runModifierTagEffects = runModifiers.tag_effects;
+const worldLoreTagIds = new Set();
+for (const entry of runModifiers.world_lore ?? []) {
+  if (entry?.id) worldLoreTagIds.add(entry.id);
+  for (const tag of entry?.tags ?? []) worldLoreTagIds.add(tag);
+}
 const defaultRunModifierTags = new Set(["default_city", "standard_world", "steady_market", "no_founder"]);
 const requiredRunModifierMonthlyEffectTags = [
   "compute_expensive",
@@ -251,6 +259,48 @@ if (!runModifierTagEffects || typeof runModifierTagEffects !== "object" || Array
     validateResourceMap(`run_modifiers.tag_effects "${tag}"`, monthlyEffects, resourceIds);
     if (!Object.values(monthlyEffects).some((value) => typeof value === "number" && value !== 0)) {
       errors.push(`run_modifiers.tag_effects "${tag}": monthly effect must include at least one non-zero resource`);
+    }
+  }
+}
+
+if (worldEvents.length < 10 || worldEvents.length > 12) {
+  errors.push(`world_events: expected about 10 events, found ${worldEvents.length}`);
+}
+
+for (const event of worldEvents) {
+  for (const field of ["title", "description", "trigger", "year_range", "resource_effects"]) {
+    if (!(field in event)) errors.push(`world_events "${event.id}": missing ${field}`);
+  }
+
+  if (!Array.isArray(event.year_range) || event.year_range.length !== 2) {
+    errors.push(`world_events "${event.id}": year_range must be a [min,max] tuple`);
+  } else {
+    const [minYear, maxYear] = event.year_range;
+    if (!Number.isInteger(minYear) || !Number.isInteger(maxYear) || minYear < 1 || maxYear > 10 || minYear > maxYear) {
+      errors.push(`world_events "${event.id}": year_range must stay inside campaign years 1-10`);
+    }
+  }
+
+  if (!event.resource_effects || typeof event.resource_effects !== "object" || Array.isArray(event.resource_effects)) {
+    errors.push(`world_events "${event.id}": resource_effects must be an object`);
+  } else {
+    validateResourceMap(`world_events "${event.id}" resource_effects`, event.resource_effects, resourceIds);
+    if (!Object.values(event.resource_effects).some((value) => typeof value === "number" && value !== 0)) {
+      errors.push(`world_events "${event.id}": resource_effects must include at least one non-zero resource`);
+    }
+  }
+
+  if ("world_lore_tags" in event) {
+    if (!Array.isArray(event.world_lore_tags)) {
+      errors.push(`world_events "${event.id}": world_lore_tags must be a string array when present`);
+    } else {
+      for (const tag of event.world_lore_tags) {
+        if (typeof tag !== "string" || !tag.trim()) {
+          errors.push(`world_events "${event.id}": world_lore_tags must contain only non-empty strings`);
+        } else if (!worldLoreTagIds.has(tag)) {
+          errors.push(`world_events "${event.id}": world_lore_tags contains unknown world-lore tag "${tag}"`);
+        }
+      }
     }
   }
 }

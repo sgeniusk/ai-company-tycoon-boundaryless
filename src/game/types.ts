@@ -139,6 +139,16 @@ export interface CampaignShockDefinition {
   unlock_domain_ids: string[];
 }
 
+export interface WorldEventDefinition {
+  id: string;
+  title: string;
+  description: string;
+  trigger: string;
+  year_range: [number, number];
+  resource_effects: ResourceMap;
+  world_lore_tags?: string[];
+}
+
 export interface RunModifierStartingDeltas {
   resources: ResourceMap;
   capabilities: CapabilityMap;
@@ -1297,6 +1307,7 @@ export interface GameState {
   annualDirective?: AnnualDirectiveState;
   pendingAnnualDirectiveChoices?: PendingAnnualDirectiveChoices;
   campaignShockHistory: string[];
+  worldEventHistory: string[];
   eventHistory: string[];
   rivalEventHistory: string[];
   seenTutorials: string[];

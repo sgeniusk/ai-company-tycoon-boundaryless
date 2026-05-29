@@ -23,6 +23,7 @@ import {
   startingState,
   strategyCards,
   upgrades,
+  worldEvents,
   workforceSynergies,
   growthPaths,
 } from "./data";
@@ -56,6 +57,7 @@ import {
   selectRunModifierConfig,
   type RunModifierSelectionInput,
 } from "./run-modifiers";
+import { applyDueWorldEvents } from "./world-events";
 import { t } from "../i18n";
 import type {
   AgentStats,
@@ -416,6 +418,7 @@ export function createInitialState(runModifierSelection?: RunModifierSelectionIn
     unlockedAchievements: [],
     annualReviewHistory: [],
     campaignShockHistory: [],
+    worldEventHistory: [],
     eventHistory: [],
     rivalEventHistory: [],
     seenTutorials: [],
@@ -2935,9 +2938,10 @@ export function advanceMonth(state: GameState): GameState {
 
   const reviewedState = applyDueAnnualReview(advancedState);
   const shockedState = applyDueCampaignShocks(reviewedState);
-  const finalStatus = getNextStatus(shockedState.resources, shockedState.activeProducts.length, nextMonth);
+  const worldEventState = applyDueWorldEvents(shockedState);
+  const finalStatus = getNextStatus(worldEventState.resources, worldEventState.activeProducts.length, nextMonth);
 
-  return refreshStrategyDeckForNewMonth({ ...shockedState, status: finalStatus });
+  return refreshStrategyDeckForNewMonth({ ...worldEventState, status: finalStatus });
 }
 
 export function advanceToFirstLaunch(state: GameState, maxMonths = 6): GameState {
@@ -3245,6 +3249,7 @@ export function hydrateGameState(serialized: string): GameState {
     annualDirective: hydrateAnnualDirective(rawState.annualDirective),
     pendingAnnualDirectiveChoices: hydratePendingAnnualDirectiveChoices(rawState.pendingAnnualDirectiveChoices),
     campaignShockHistory: sanitizeStringArray(rawState.campaignShockHistory, campaignShocks.map((shock) => shock.id)),
+    worldEventHistory: sanitizeStringArray(rawState.worldEventHistory, worldEvents.map((event) => event.id)),
     eventHistory: sanitizeStringArray(rawState.eventHistory),
     rivalEventHistory: sanitizeStringArray(rawState.rivalEventHistory),
     seenTutorials: sanitizeStringArray(rawState.seenTutorials),
