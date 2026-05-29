@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { runModifiers } from "../game/data";
+import { difficultyTiers, runModifiers } from "../game/data";
 import { DEFAULT_RUN_MODIFIER_SELECTION } from "../game/run-modifiers";
 import { formatResource } from "../game/simulation";
 import type { GameState, RunModifierOptionDefinition, RunModifiersState } from "../game/types";
@@ -45,7 +45,8 @@ function isStandardRun(selection: RunModifiersState): boolean {
     selection.startCityId === DEFAULT_RUN_MODIFIER_SELECTION.startCityId &&
     selection.worldLoreId === DEFAULT_RUN_MODIFIER_SELECTION.worldLoreId &&
     selection.marketConditionId === DEFAULT_RUN_MODIFIER_SELECTION.marketConditionId &&
-    selection.founderTraitId === DEFAULT_RUN_MODIFIER_SELECTION.founderTraitId
+    selection.founderTraitId === DEFAULT_RUN_MODIFIER_SELECTION.founderTraitId &&
+    selection.challengeTier === "standard"
   );
 }
 
@@ -67,6 +68,7 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
   const [revealedCount, setRevealedCount] = useState(1);
   const selection = gameState.runModifiers;
   const axes = useMemo(() => getRevealAxes(selection), [selection]);
+  const challengeTier = difficultyTiers.find((tier) => tier.id === selection.challengeTier) ?? difficultyTiers.find((tier) => tier.id === "standard");
   const shouldShow = !isStandardRun(selection) && !dismissedSeeds.has(selection.seed);
 
   useEffect(() => {
@@ -100,6 +102,13 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
         <h2 id="world-reveal-title" className="world-reveal-title">
           이번 세계가 열렸습니다
         </h2>
+        {challengeTier && (
+          <div className={`world-reveal-tier${challengeTier.id === "standard" ? " standard" : " non-standard"}`}>
+            <span>도전 티어</span>
+            <strong>{challengeTier.name}</strong>
+            <em>보상 x{challengeTier.reward_multiplier}</em>
+          </div>
+        )}
         <div className="world-reveal-grid" aria-label="이번 런 모디파이어">
           {axes.map((axis, index) => {
             const revealed = index < revealedCount;

@@ -30,7 +30,7 @@ Keep startup context lean:
 ## Current Source Of Truth
 
 - Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
-- Current feature: `v0.65-alpha-difficulty-challenge` (in progress; player-chosen challenge tiers — tier-scaled monthly headwind + reward multiplier; the tension-relief + open-challenge lever). Prior `v0.64-alpha-content-depth` CLOSED 2026-05-30 (data-only — #1 4-axis expansion 600->9,504 combos, #2 world-events 12->26 themed; 47 files / 472 tests). `v0.63-alpha-roguelike-run-modifiers` CLOSED 2026-05-30 (4 blocks, roguelike run-modifier system). Master plan: reports/v0_63_plus_content_roadmap.md.
+- Current feature: `v0.66-alpha-tag-derivation-engine` (PLANNED — awaiting user direction before launch; the '무궁무진한 조합' centerpiece, decision A). Roguelike track shipped end-to-end 2026-05-30: `v0.63` system spine + `v0.64` content depth (9,504 combos + 26 events) + `v0.65` difficulty (challenge tiers + reward multiplier), all CLOSED. Baseline 47 files / 481 tests. Master plan: reports/v0_63_plus_content_roadmap.md.
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`

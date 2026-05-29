@@ -102,7 +102,10 @@ function createEphemeralRunModifierSelection(source: string) {
       ? globalThis.crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-  return rollRunModifierSelection(`${source}-${nextRunSeedCounter}-${randomPart}`);
+  return {
+    ...rollRunModifierSelection(`${source}-${nextRunSeedCounter}-${randomPart}`),
+    challengeTierId: "standard",
+  };
 }
 
 function assetPaletteVars(palette?: string[]): CSSProperties {

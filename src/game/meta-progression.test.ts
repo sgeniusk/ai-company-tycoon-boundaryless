@@ -1,8 +1,40 @@
 import { describe, expect, it } from "vitest";
-import { getNextRunSetupPlan, resetRunWithMetaUnlocks } from "./meta-progression";
+import { getNextRunSetupPlan, getRunInsightReward, resetRunWithMetaUnlocks } from "./meta-progression";
 import { createInitialState } from "./simulation";
 
 describe("v0.32 next-run setup plan", () => {
+  it("keeps standard difficulty run insight rewards unchanged", () => {
+    const finished = {
+      ...createInitialState({ challengeTierId: "standard" }),
+      month: 12,
+      status: "success" as const,
+      activeProducts: ["ai_writing_assistant", "meeting_summary_bot"],
+      resources: {
+        ...createInitialState().resources,
+        users: 4200,
+        trust: 70,
+      },
+    };
+
+    expect(getRunInsightReward(finished)).toBe(13);
+  });
+
+  it("rounds hard difficulty run insight rewards with the tier multiplier", () => {
+    const finished = {
+      ...createInitialState({ challengeTierId: "hard" }),
+      month: 12,
+      status: "success" as const,
+      activeProducts: ["ai_writing_assistant", "meeting_summary_bot"],
+      resources: {
+        ...createInitialState().resources,
+        users: 4200,
+        trust: 70,
+      },
+    };
+
+    expect(getRunInsightReward(finished)).toBe(20);
+  });
+
   it("turns a finished run into recommended unlocks, starter decks, and quick starts", () => {
     const finished = {
       ...createInitialState(),

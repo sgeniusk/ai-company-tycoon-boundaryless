@@ -13,6 +13,7 @@ const marketSharePanel = readFileSync(new URL("../components/MarketSharePanel.ts
 const rivalArchetypePanel = readFileSync(new URL("../components/RivalArchetypePanel.tsx", import.meta.url), "utf8");
 const bigEventModal = readFileSync(new URL("../components/BigEventModal.tsx", import.meta.url), "utf8");
 const payoffCelebrationModal = readFileSync(new URL("../components/PayoffCelebrationModal.tsx", import.meta.url), "utf8");
+const worldRevealModal = readFileSync(new URL("../components/WorldRevealModal.tsx", import.meta.url), "utf8");
 const qaScenarios = readFileSync(new URL("../game/qa-scenarios.ts", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
@@ -725,6 +726,18 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("meta-category-badge");
     expect(appCss).toMatch(/\.next-run-command-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.next-run-quick-start-grid\s*{[^}]*grid-template-columns:/s);
+  });
+
+  it("wires challenge tier choice into the next-run setup and world reveal", () => {
+    expect(menuPanels).toContain("difficultyTiers");
+    expect(menuPanels).toContain("selectedChallengeTierId");
+    expect(menuPanels).toContain("createEphemeralRunModifierSelection(`menu-quick-${quickStart.id}`, selectedChallengeTierId)");
+    expect(menuPanels).toContain("challenge-tier-choice-grid");
+    expect(gameChrome).toContain("challengeTierId: \"standard\"");
+    expect(worldRevealModal).toContain("도전 티어");
+    expect(worldRevealModal).toContain("reward_multiplier");
+    expect(appCss).toMatch(/\.challenge-tier-choice-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.world-reveal-tier\s*{[^}]*display:\s*grid/s);
   });
 
   it("surfaces campaign shock pacing inside the company console", () => {

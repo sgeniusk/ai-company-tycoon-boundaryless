@@ -87,6 +87,7 @@ export const qaScenarioIds = [
   "milestones",
   "run-modifiers",
   "difficulty-hard",
+  "difficulty-reward",
   "world-events",
 ] as const;
 
@@ -217,6 +218,26 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "하드 난이도 QA",
       state: createInitialState({ challengeTierId: "hard" }),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "difficulty-reward") {
+    return {
+      id,
+      label: "하드 난이도 보상/리빌 QA",
+      state: {
+        ...createInitialState({ seed: "qa-difficulty-reward", challengeTierId: "hard" }),
+        month: 12,
+        status: "success",
+        activeProducts: ["ai_writing_assistant", "meeting_summary_bot"],
+        resources: {
+          ...createInitialState().resources,
+          users: 4200,
+          trust: 70,
+        },
+        timeline: ["하드 티어 보상 배수/리빌 QA: 도전 티어와 보상 x1.5 표시 확인", ...createInitialState().timeline].slice(0, 8),
+      },
       activeMenu: "company",
     };
   }

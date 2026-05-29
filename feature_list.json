@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-05-30",
-  "current_feature_id": "v0.65-alpha-difficulty-challenge",
+  "current_feature_id": "v0.66-alpha-tag-derivation-engine",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -258,7 +258,7 @@
       "id": "v0.65-alpha-difficulty-challenge",
       "name": "Difficulty / challenge tier axis (tension-relief + open challenge)",
       "description": "The user's tension-relief lever ('긴장.해소 부분은 난이도 조정 같은걸로') and the 'open challenge' (열린 도전) part of the north star. A run takes a player-chosen challenge tier (story / standard / hard / brutal); harder tiers add a tier-scaled monthly HEADWIND (additive negative ResourceMap via the same getMonthlyStrategicEffects hook pattern as v0.60/v0.63 #2 — NOT a sign-scaling of run-modifier tag_effects, which would make boom worlds easier), and clearing a harder tier multiplies the meta-progression reward. Standard tier = zero headwind = current behavior (regression-safe). Deterministic; §5-aligned (additive, no tick rewrite). Master plan reports/v0_63_plus_content_roadmap.md.",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "P1",
       "dependencies": [
         "v0.64-alpha-content-depth"
@@ -270,9 +270,28 @@
       ],
       "evidence": [
         "2026-05-30: Opened at v0.64 closeout. Design chose additive tier-headwind over scaling run-modifier tag_effects (which mix signs, so scaling would make boom worlds easier — not 'harder'). Player-chosen tiers fit the 'open challenge' framing (take on a brutal world for bigger meta reward). Block #1 handoff written; xhigh because it adds a save-migrated RunModifiersState field + a monthly tick hook + balance.",
-        "2026-05-30: Block #1 DONE — implemented by Codex CLI (xhigh) and verified by Claude Code. data/difficulty_tiers.json (story/standard/hard/brutal; standard monthly_headwind {} = no-op, hard {cash:-60,hype:-1}); RunModifiersState.challengeTier added; sanitizeRunModifiersState maps missing/unknown tier -> standard (old-save migration, seenTutorials pattern); getDifficultyMonthlyEffects + a 2-line additive getMonthlyStrategicEffects hook (identical to the run-modifier hook). simulation.ts diff is exactly that hook (no other tick change); difficulty is additive headwind, NOT a sign-scale of tag_effects. run-simulator.runTenYearCampaignSimulation gained an optional runModifierSelection arg (default no-arg = standard, so the existing gate is unchanged) + a hard-tier productivity_line completability test (month 120+, non-failure, ending, integrity ok). Standard-tier no-op regression-guarded. Independently verified npm run harness:gate: 47 files / 477 tests."
+        "2026-05-30: Block #1 DONE — implemented by Codex CLI (xhigh) and verified by Claude Code. data/difficulty_tiers.json (story/standard/hard/brutal; standard monthly_headwind {} = no-op, hard {cash:-60,hype:-1}); RunModifiersState.challengeTier added; sanitizeRunModifiersState maps missing/unknown tier -> standard (old-save migration, seenTutorials pattern); getDifficultyMonthlyEffects + a 2-line additive getMonthlyStrategicEffects hook (identical to the run-modifier hook). simulation.ts diff is exactly that hook (no other tick change); difficulty is additive headwind, NOT a sign-scale of tag_effects. run-simulator.runTenYearCampaignSimulation gained an optional runModifierSelection arg (default no-arg = standard, so the existing gate is unchanged) + a hard-tier productivity_line completability test (month 120+, non-failure, ending, integrity ok). Standard-tier no-op regression-guarded. Independently verified npm run harness:gate: 47 files / 477 tests.",
+        "2026-05-30: Block #2 DONE — implemented by Codex CLI (medium) and verified by Claude Code; v0.65 CLOSED. getRunInsightReward(state) now multiplies the base founder-insight reward by the run tier reward_multiplier (Math.round) — applied centrally so resetRunWithMetaUnlocks/getNextRunSetupPlan/runHistory all reflect it; standard tier x1.0 keeps the existing reward (regression test: 13 unchanged; hard 13*1.5 -> 20). Run-setup adds a tier selector that passes challengeTierId into the resetRunWithMetaUnlocks runModifierSelection (quick-start/starter-deck/meta-unlock paths); GameChrome quick new-run passes standard explicitly. WorldRevealModal shows the chosen tier + reward multiplier. ?scenario=difficulty-reward. NO new GameState field (challengeTier already in runModifiers); simulation.ts/types.ts/save schema/data JSON diffs all empty. Independently verified npm run harness:gate: 47 files / 481 tests."
       ],
-      "next_step": "Block #1 landed. Next: block #2 — clear-tier reward_multiplier into meta-progression unlock points + run-setup tier selection UI + reveal shows the chosen tier (medium). Then v0.66 tag-derivation engine (decision A), v0.67 multi-ending (decision B)."
+      "next_step": "v0.65 CLOSED (47 files / 481 tests). The roguelike track has shipped: v0.63 system spine + v0.64 content depth + v0.65 difficulty. Next per roadmap is v0.66 tag-derivation engine (decision A — the '무궁무진한 조합' centerpiece, a large multi-block system) — CHECKPOINT with the user on direction before launching (could also prioritize v0.67 multi-ending or beta prep). Master plan reports/v0_63_plus_content_roadmap.md."
+    },
+    {
+      "id": "v0.66-alpha-tag-derivation-engine",
+      "name": "Tag-derivation engine (emergent combo discovery — decision A)",
+      "description": "The '무궁무진한 조합' centerpiece (user decision A). Today tags are a static map that just sums monthly effects. The derivation engine turns tag COMBINATIONS into emergent, DISCOVERED results — when a run accumulates a qualifying set of tags (run-modifier axes + owned industry/product tags), a hidden product/event/bonus is 'discovered' (reusing the v0.62 discoveredPayoffIds + PayoffCelebration discovery pattern). This makes the combinatorial space (9,504 start combos x derivation rules) feel effectively infinite without hand-authoring each outcome. Deterministic (seed/state-derived, no RNG). Large — decomposed into blocks; starts derive-only then expands. Master plan reports/v0_63_plus_content_roadmap.md §v0.66.",
+      "status": "planned",
+      "priority": "P1",
+      "dependencies": [
+        "v0.65-alpha-difficulty-challenge"
+      ],
+      "definition_of_done": [
+        "AWAITING USER DIRECTION (2026-05-30 checkpoint): scope/sequence to be confirmed before launch. Sketch: #1 derivation_rules.json + a pure evaluator (requires:[tags] -> yields:{unlock|event|bonus}, discovery_id) that is derive-only; #2 discovery celebration reusing v0.62 PayoffCelebration/discoveredPayoffIds; #3 wire emergent products/events; #4 balance. Alternatives the user may prioritize instead: v0.67 multi-ending (decision B), or beta prep (real-human playtest + final art).",
+        "Each block: harness:gate passes; deterministic; derive-only or additive first; standard run unaffected unless a balance change is deliberate + documented."
+      ],
+      "evidence": [
+        "2026-05-30: Opened as the roadmap default-next after v0.65 closeout, but NOT yet started — Claude Code is checkpointing with the user on direction (tag-engine vs multi-ending vs beta prep) per the stated plan to confirm before this large system. Design sketch lives in reports/v0_63_plus_content_roadmap.md."
+      ],
+      "next_step": "Confirm direction with the user. If tag-engine: write the block #1 handoff (derivation_rules.json + pure evaluator, derive-only, xhigh for the engine) and launch on Codex."
     },
     {
       "id": "art-intake-final-source-art",

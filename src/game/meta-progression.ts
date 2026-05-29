@@ -1,4 +1,4 @@
-import { competitors, metaUnlocks, products, resources, strategyCards } from "./data";
+import { competitors, difficultyTiers, metaUnlocks, products, resources, strategyCards } from "./data";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
@@ -58,8 +58,10 @@ export function getRunInsightReward(state: GameState): number {
   const trustBonus = Math.floor((state.resources.trust ?? 0) / 40);
   const monthBonus = Math.floor(state.month / 3);
   const statusBonus = state.status === "success" ? 3 : state.status === "failure" ? 1 : 0;
+  const rewardMultiplier = difficultyTiers.find((tier) => tier.id === state.runModifiers?.challengeTier)?.reward_multiplier ?? 1;
+  const baseReward = Math.max(1, 1 + monthBonus + state.activeProducts.length + userBonus + trustBonus + statusBonus);
 
-  return Math.max(1, 1 + monthBonus + state.activeProducts.length + userBonus + trustBonus + statusBonus);
+  return Math.round(baseReward * rewardMultiplier);
 }
 
 export function getMetaUnlockCheck(metaUnlockId: string, state: GameState, spendableInsight = state.roguelite.founderInsight): ActionCheck {

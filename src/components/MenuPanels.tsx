@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
-import { agentTypes, assetManifest, automationUpgrades, capabilities, companyLocations, competitors, domains, items, metaUnlocks, products, strategyCards, upgrades } from "../game/data";
+import { agentTypes, assetManifest, automationUpgrades, capabilities, companyLocations, competitors, difficultyTiers, domains, items, metaUnlocks, products, strategyCards, upgrades } from "../game/data";
 import { getAchievementStatuses } from "../game/achievements";
 import {
   chooseAnnualDirective,
@@ -157,14 +157,17 @@ import { CampaignShockPanel } from "./CampaignShockPanel";
 
 let menuRunSeedCounter = 0;
 
-function createEphemeralRunModifierSelection(source: string) {
+function createEphemeralRunModifierSelection(source: string, challengeTierId = "standard") {
   menuRunSeedCounter += 1;
   const randomPart =
     typeof globalThis.crypto?.randomUUID === "function"
       ? globalThis.crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-  return rollRunModifierSelection(`${source}-${menuRunSeedCounter}-${randomPart}`);
+  return {
+    ...rollRunModifierSelection(`${source}-${menuRunSeedCounter}-${randomPart}`),
+    challengeTierId,
+  };
 }
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
@@ -667,6 +670,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   // v0.58 #4 — 라이벌 압박 수준 derive (high/low/none). isCounterCard와 함께 strategy-card에 압박 대응 배지를 띄울지 결정.
   const rivalCounterSignal = getRivalCounterSignal(gameState);
   const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
+  const [selectedChallengeTierId, setSelectedChallengeTierId] = useState("standard");
   const deck = gameState.roguelite.deck;
   const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
   const deckCards = getDeckCardCounts(deck)
@@ -895,6 +899,32 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                 ))}
               </div>
             )}
+            <div className="challenge-tier-picker" aria-label="다음 런 도전 티어 선택">
+              <div>
+                <strong>도전 티어</strong>
+                <span>높은 티어는 월간 역풍이 붙고, 완주 보상 통찰 배수가 올라갑니다.</span>
+              </div>
+              <div className="challenge-tier-choice-grid">
+                {difficultyTiers.map((tier) => {
+                  const selected = selectedChallengeTierId === tier.id;
+                  const headwind = formatEffects(tier.monthly_headwind);
+
+                  return (
+                    <button
+                      aria-pressed={selected}
+                      className={selected ? "selected" : ""}
+                      key={tier.id}
+                      onClick={() => setSelectedChallengeTierId(tier.id)}
+                      type="button"
+                    >
+                      <strong>{tier.name}</strong>
+                      <span>보상 x{tier.reward_multiplier}</span>
+                      <small>{headwind === "변화 없음" ? "월간 역풍 없음" : `월간 ${headwind}`}</small>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <div className="next-run-quick-start-grid">
               {nextRunSetupPlan.quickStarts.map((quickStart) => {
                 const starterDeckTitle = starterDeckOptions.find((deckOption) => deckOption.id === quickStart.starterDeckId)?.title ?? quickStart.starterDeckId;
@@ -909,7 +939,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                           current,
                           quickStart.unlockIds,
                           quickStart.starterDeckId,
-                          createEphemeralRunModifierSelection(`menu-quick-${quickStart.id}`),
+                          createEphemeralRunModifierSelection(`menu-quick-${quickStart.id}`, selectedChallengeTierId),
                         ),
                       )
                     }
@@ -1237,7 +1267,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                   disabled={!option.available}
                   onClick={() =>
                     setGameState((current) =>
-                      resetRunWithMetaUnlocks(current, [], option.id, createEphemeralRunModifierSelection(`menu-deck-${option.id}`)),
+                      resetRunWithMetaUnlocks(current, [], option.id, createEphemeralRunModifierSelection(`menu-deck-${option.id}`, selectedChallengeTierId)),
                     )
                   }
                   type="button"
@@ -1263,7 +1293,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                   disabled={unlocked || !check.ok}
                   onClick={() =>
                     setGameState((current) =>
-                      resetRunWithMetaUnlocks(current, [unlock.id], "balanced_founder", createEphemeralRunModifierSelection(`menu-unlock-${unlock.id}`)),
+                      resetRunWithMetaUnlocks(current, [unlock.id], "balanced_founder", createEphemeralRunModifierSelection(`menu-unlock-${unlock.id}`, selectedChallengeTierId)),
                     )
                   }
                 >

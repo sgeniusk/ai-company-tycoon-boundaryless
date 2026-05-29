@@ -138,7 +138,7 @@ describe("v0.63 run modifier foundation", () => {
       status: "success",
     };
 
-    const nextRun = resetRunWithMetaUnlocks(finishedRun, [], "balanced_founder", nonDefaultSelection);
+    const nextRun = resetRunWithMetaUnlocks(finishedRun, [], "balanced_founder", { ...nonDefaultSelection, challengeTierId: "hard" });
 
     expect(nextRun.month).toBe(1);
     expect(nextRun.runModifiers).toMatchObject({
@@ -146,6 +146,7 @@ describe("v0.63 run modifier foundation", () => {
       worldLoreId: "bitcoin_gpu_squeeze",
       marketConditionId: "enterprise_winter",
       founderTraitId: "researcher_founder",
+      challengeTier: "hard",
     });
     expect(nextRun.resources.compute).toBe(70);
     expect(nextRun.capabilities.safety).toBe(1);
@@ -229,6 +230,16 @@ describe("v0.63 run modifier foundation", () => {
     expect(scenario.label).toContain("하드");
     expect(scenario.state.runModifiers.challengeTier).toBe("hard");
     expect(getDifficultyMonthlyEffects(scenario.state)).toEqual({ cash: -60, hype: -1 });
+  });
+
+  it("registers a hard reward and reveal browser QA scenario", () => {
+    const scenario = createQaScenario("difficulty-reward");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("보상");
+    expect(scenario.state.runModifiers.challengeTier).toBe("hard");
+    expect(scenario.state.runModifiers.seed).toBe("qa-difficulty-reward");
+    expect(scenario.state.status).toBe("success");
   });
 
   it("sums conservative monthly effects from active modifier tags", () => {
