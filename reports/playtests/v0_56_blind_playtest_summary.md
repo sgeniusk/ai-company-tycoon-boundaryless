@@ -1,7 +1,7 @@
 # v0.56 Blind Playtest Summary
 
 Status: 아트 투입 준비
-작성일: 2026-05-27
+작성일: 2026-05-29
 
 ## 판정
 

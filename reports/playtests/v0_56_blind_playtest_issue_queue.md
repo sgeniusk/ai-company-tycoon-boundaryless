@@ -1,7 +1,7 @@
 # v0.56 Blind Playtest Issue Queue
 
 Status: P1 튜닝 후보
-작성일: 2026-05-27
+작성일: 2026-05-29
 
 ## 판정
 

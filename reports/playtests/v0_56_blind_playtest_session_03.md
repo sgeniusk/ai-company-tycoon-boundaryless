@@ -15,7 +15,7 @@ Status: 완료
 - 대상: AGY agent auto-run - reward and growth loop persona (Sora Build-Variety, reward and growth loop reviewer)
 - 방식: Deterministic AGY review over reward -> reward-picked -> growth-picked -> flow -> annual-directed with fixed seed 5703. Scenario path: `?scenario=reward&seed=5703` -> `?scenario=reward-picked&seed=5703` -> `?scenario=growth-picked&seed=5703` -> `?scenario=flow&seed=5703` -> `?scenario=annual-directed&seed=5703`
 - 시작 URL: http://127.0.0.1:5201/?scenario=reward&seed=5703
-- 날짜/시간: 2026-05-27 (AGY agent auto-run)
+- 날짜/시간: 2026-05-29 (AGY agent auto-run)
 - 환경: AGY deterministic CLI review on v0.57-alpha worktree, seed 5703
 
 ## 관찰 체크포인트

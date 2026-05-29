@@ -1,7 +1,7 @@
 # v0.56 Blind Playtest Intake
 
 Status: 수신 대기
-작성일: 2026-05-27
+작성일: 2026-05-29
 
 ## 목적
 
