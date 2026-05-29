@@ -1,4 +1,20 @@
 {
+  "tag_effects": {
+    "alphago_stall": { "data": -2 },
+    "research_slow": { "data": -3, "hype": -1 },
+    "compute_expensive": { "compute": -8 },
+    "gpu_scarcity": { "compute": -4 },
+    "open_source_heaven": { "data": 4 },
+    "community_models": { "compute": 2, "data": 2 },
+    "regulation_heavy": { "hype": -1 },
+    "safety_first": { "trust": 1 },
+    "market_boom": { "cash": 100, "users": 100, "hype": 1 },
+    "demand_surge": { "users": 80 },
+    "enterprise_winter": { "cash": -80, "users": -30, "trust": 1 },
+    "long_sales_cycle": { "cash": -40, "users": -20 },
+    "consumer_hype": { "users": 80, "hype": 2 },
+    "volatile_demand": { "trust": -1 }
+  },
   "start_cities": [
     {
       "id": "default_city",

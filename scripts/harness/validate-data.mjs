@@ -190,6 +190,7 @@ const runModifierDimensions = [
   ["market_conditions", runModifiers.market_conditions, "steady_market"],
   ["founder_traits", runModifiers.founder_traits, "no_founder"],
 ];
+const runModifierTagIds = new Set();
 
 for (const [dimensionName, entries, defaultId] of runModifierDimensions) {
   if (!Array.isArray(entries) || entries.length === 0) {
@@ -211,12 +212,46 @@ for (const [dimensionName, entries, defaultId] of runModifierDimensions) {
     validateCapabilityDeltaMap(`run_modifiers.${dimensionName} "${entry.id}" capabilities`, entry.starting_deltas?.capabilities, capabilityIds);
     if (!Array.isArray(entry.tags) || entry.tags.length === 0 || entry.tags.some((tag) => typeof tag !== "string" || !tag.trim())) {
       errors.push(`run_modifiers.${dimensionName} "${entry.id}": tags must be a non-empty string array`);
+    } else {
+      for (const tag of entry.tags) runModifierTagIds.add(tag);
     }
   }
 
   const defaultEntry = entries.find((entry) => entry.id === defaultId);
   if (defaultEntry && !hasOnlyZeroDeltas(defaultEntry)) {
     errors.push(`run_modifiers.${dimensionName} "${defaultId}": default option must have zero starting deltas`);
+  }
+}
+
+const runModifierTagEffects = runModifiers.tag_effects;
+const defaultRunModifierTags = new Set(["default_city", "standard_world", "steady_market", "no_founder"]);
+const requiredRunModifierMonthlyEffectTags = [
+  "compute_expensive",
+  "gpu_scarcity",
+  "research_slow",
+  "market_boom",
+  "enterprise_winter",
+  "consumer_hype",
+];
+
+if (!runModifierTagEffects || typeof runModifierTagEffects !== "object" || Array.isArray(runModifierTagEffects)) {
+  errors.push("run_modifiers.tag_effects: expected an object");
+} else {
+  for (const tag of requiredRunModifierMonthlyEffectTags) {
+    if (!(tag in runModifierTagEffects)) errors.push(`run_modifiers.tag_effects: missing required monthly effect tag "${tag}"`);
+  }
+
+  for (const [tag, monthlyEffects] of Object.entries(runModifierTagEffects)) {
+    if (!runModifierTagIds.has(tag)) errors.push(`run_modifiers.tag_effects "${tag}": unknown run modifier tag`);
+    if (defaultRunModifierTags.has(tag)) errors.push(`run_modifiers.tag_effects "${tag}": default run tags must remain no-op`);
+    if (!monthlyEffects || typeof monthlyEffects !== "object" || Array.isArray(monthlyEffects)) {
+      errors.push(`run_modifiers.tag_effects "${tag}": monthly effect must be a resource map object`);
+      continue;
+    }
+    validateResourceMap(`run_modifiers.tag_effects "${tag}"`, monthlyEffects, resourceIds);
+    if (!Object.values(monthlyEffects).some((value) => typeof value === "number" && value !== 0)) {
+      errors.push(`run_modifiers.tag_effects "${tag}": monthly effect must include at least one non-zero resource`);
+    }
   }
 }
 

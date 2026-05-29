@@ -75,6 +75,13 @@ export function applyRunModifierStartingDeltas(state: GameState, config: RunModi
   };
 }
 
+export function getRunModifierMonthlyEffects(state: GameState): ResourceMap {
+  const tags = state.runModifiers?.tags ?? [];
+  if (tags.length === 0) return {};
+
+  return mergeMaps(tags.map((tag) => runModifiers.tag_effects[tag] ?? {}));
+}
+
 export function sanitizeRunModifiersState(value: unknown): RunModifiersState {
   if (!isRecord(value)) return toRunModifiersState(selectRunModifierConfig());
 

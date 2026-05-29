@@ -153,6 +153,7 @@ export interface RunModifierOptionDefinition {
 }
 
 export interface RunModifiersDataDefinition {
+  tag_effects: Record<string, ResourceMap>;
   start_cities: RunModifierOptionDefinition[];
   world_lore: RunModifierOptionDefinition[];
   market_conditions: RunModifierOptionDefinition[];

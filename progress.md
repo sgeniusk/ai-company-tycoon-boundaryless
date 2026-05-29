@@ -16,7 +16,7 @@ Last Updated: 2026-05-29
 
 ## Current Objective
 
-`v0.63-alpha-roguelike-run-modifiers` is the current milestone — the first post-1.0 big system, started early by user decision (ROADMAP §5 hold lifted for this system; design in `reports/v0_62_design_direction.md` §3). A run is seeded from start city × world-lore × market × founder, with yearly events mutating it. **Block #1 (foundation — run_modifiers.json + run-start application + GameState.runModifiers, default no-op, tick untouched) DONE 2026-05-29.** 4 blocks, coded by Codex CLI (foundation + tick at xhigh; UI at fast). Prior `v0.62-alpha-payoff-juice` CLOSED 2026-05-29 (dopamine polish); the v0.56-v0.62 detail below is recent history.
+`v0.63-alpha-roguelike-run-modifiers` is the current milestone — the first post-1.0 big system, started early by user decision (ROADMAP §5 hold lifted for this system; design in `reports/v0_62_design_direction.md` §3). A run is seeded from start city × world-lore × market × founder, with yearly events mutating it. **Blocks #1 (foundation) + #2 (world-lore/market tick effects) DONE 2026-05-29 — the run-modifier system is now functional end-to-end (run setup applies start deltas + worlds bite the monthly economy via a v0.60-style additive hook; standard world is a no-op).** 4 blocks, coded by Codex CLI (foundation + tick at xhigh; UI at fast). Prior `v0.62-alpha-payoff-juice` CLOSED 2026-05-29 (dopamine polish); the v0.56-v0.62 detail below is recent history.
 
 v0.61 block status (recent history):
 
@@ -50,13 +50,14 @@ Recent milestone history — `v0.60-alpha-boundaryless-industry-expansion` CLOSE
 - v0.62 #1 (29c2dc9): 44 files / 439 tests (new test file shifts the file baseline 43→44). Pure-derive combo/synergy activation celebration (payoff-activation.ts + PayoffCelebrationModal + ?scenario=payoff-juice); no GameState field, simulation.ts + save path untouched. Companion: review deck + reports/v0_62_design_direction.md (224fcb6).
 - v0.62 #2 (a115131): 44 files / 444 tests. Discovery "신규 발견!" + collection-lite + ?scenario=collection; new persisted GameState.discoveredPayoffIds (seenTutorials pattern, save round-trip + old-save migration tested); simulation.ts = initialState default + hydrate sanitizer only.
 - v0.62 #3 + closeout (d742c46): 44 files / 448 tests. Milestone fanfare (achievements reuse + 2 conservative achievements) + getAnnualReviewNearMissSignal derive; simulation.ts/types.ts/save schema untouched. v0.62 completed.
-- v0.63 #1 (this commit): 45 files / 454 tests. Run-modifier FOUNDATION — run_modifiers.json + run-modifiers.ts (pure) + GameState.runModifiers (save-migrated, old saves→standard); createInitialState(selection?)/resetRunWithMetaUnlocks integrate; monthly tick UNTOUCHED, default config = no regression (tested). ?scenario=run-modifiers. Codex CLI (xhigh); verification by Claude Code.
+- v0.63 #1 (c50fe56): 45 files / 454 tests. Run-modifier FOUNDATION — run_modifiers.json + run-modifiers.ts (pure) + GameState.runModifiers (save-migrated, old saves→standard); monthly tick UNTOUCHED, default = no regression.
+- v0.63 #2 (this commit): 45 files / 457 tests. World-lore/market tick effects — getRunModifierMonthlyEffects + a 2-line getMonthlyStrategicEffects hook (v0.60 synergy pattern); conservative tag_effects; standard-world no-op regression guard. System now functional (worlds bite). Codex CLI (xhigh); verification by Claude Code.
 
 ## Recommended Next Step
 
-`v0.63` block #1 (run-modifier foundation) is done and committed (v0.62 dopamine polish closed before it). Next on the track:
+`v0.63` blocks #1-#2 are done and committed — the run-modifier system is functional (worlds bite). Next on the track:
 
-1. v0.63 block #2 (world-lore/market tick effects, Codex xhigh) — wire stored `runModifiers.tags` into the monthly tick (e.g. compute_expensive raises compute cost), minimal + deterministic + balance-bounded. Then #3 (yearly events) → #4 (세계 뽑기 reveal UI).
+1. v0.63 block #3 (yearly world-event mutators) — extend campaign_shocks into a continuously-mutating run-event system (the "매년 변수"). Then #4 (세계 뽑기 reveal UI, fast).
 2. Or pause v0.63 for beta prep (real-human playtest + final art) toward v1.0 — both tracks are open.
 
 (Earlier forward options, still valid:)
@@ -69,4 +70,4 @@ Recent milestone history — `v0.60-alpha-boundaryless-industry-expansion` CLOSE
 1. Read `AGENTS.md`, `feature_list.json`, and this file first.
 2. Check `git status --short`.
 3. v0.62 is closed (dopamine polish). Next is beta prep (real-human playtest + final art) or a post-1.0 system (`reports/v0_62_design_direction.md`).
-4. Run `npm run harness:gate` as the baseline (45 files / 454 tests) before changes.
+4. Run `npm run harness:gate` as the baseline (45 files / 457 tests) before changes.

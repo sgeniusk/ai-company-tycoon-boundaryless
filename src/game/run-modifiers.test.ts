@@ -2,10 +2,11 @@ import { describe, expect, it } from "vitest";
 import { runModifiers } from "./data";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { createQaScenario } from "./qa-scenarios";
-import { createInitialState, hydrateGameState, serializeGameState } from "./simulation";
+import { advanceMonth, calculateMonthlyEconomy, createInitialState, hydrateGameState, serializeGameState } from "./simulation";
 import {
   DEFAULT_RUN_MODIFIER_SELECTION,
   applyRunModifierStartingDeltas,
+  getRunModifierMonthlyEffects,
   selectRunModifierConfig,
 } from "./run-modifiers";
 import type { GameState } from "./types";
@@ -140,5 +141,51 @@ describe("v0.63 run modifier foundation", () => {
     expect(scenario.state.runModifiers.worldLoreId).toBe("bitcoin_gpu_squeeze");
     expect(scenario.state.runModifiers.startCityId).toBe("tokyo");
     expect(scenario.state.resources.compute).toBe(70);
+  });
+
+  it("sums conservative monthly effects from active modifier tags", () => {
+    const state: GameState = {
+      ...createInitialState(),
+      runModifiers: {
+        ...createInitialState().runModifiers,
+        tags: ["compute_expensive", "gpu_scarcity", "market_boom"],
+      },
+    };
+
+    expect(getRunModifierMonthlyEffects(state)).toEqual({
+      compute: -12,
+      cash: 100,
+      users: 100,
+      hype: 1,
+    });
+  });
+
+  it("keeps standard worlds as a no-op in the monthly economy when tags are empty", () => {
+    const standard = createInitialState(DEFAULT_RUN_MODIFIER_SELECTION);
+    const noTags: GameState = {
+      ...standard,
+      runModifiers: {
+        ...standard.runModifiers,
+        tags: [],
+      },
+    };
+
+    expect(getRunModifierMonthlyEffects(noTags)).toEqual({});
+    expect(getRunModifierMonthlyEffects(standard)).toEqual({});
+    expect(calculateMonthlyEconomy(noTags)).toEqual(calculateMonthlyEconomy(standard));
+  });
+
+  it("applies GPU-expensive pressure through the run-modifiers QA scenario monthly tick", () => {
+    const scenario = createQaScenario("run-modifiers");
+    const effects = getRunModifierMonthlyEffects(scenario.state);
+    const economy = calculateMonthlyEconomy(scenario.state);
+    const advanced = advanceMonth(scenario.state);
+
+    expect(scenario.state.runModifiers.tags).toEqual(expect.arrayContaining(["compute_expensive", "gpu_scarcity"]));
+    expect(effects.compute).toBe(-12);
+    expect(economy.strategyEffects?.compute).toBe(effects.compute);
+    expect(economy.resourceDelta.compute).toBe(-12);
+    expect(advanced.lastMonthReport?.strategyEffects?.compute).toBe(-12);
+    expect(advanced.resources.compute).toBe(scenario.state.resources.compute - 12);
   });
 });
