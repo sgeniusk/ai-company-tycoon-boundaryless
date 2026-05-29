@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-05-29",
-  "current_feature_id": "v0.60-alpha-boundaryless-industry-expansion",
+  "current_feature_id": "v0.61-alpha-public-web-alpha",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -158,6 +158,28 @@
         "2026-05-29: v0.60 CLOSED. All 4 blocks shipped (7ca1dba domains, 0da778a capabilities, fba35f1 synergies, this commit combos). Controlled 3-industry slice held per §5. Tests grew 417 -> 428 across the milestone; the only simulation.ts touch was the additive synergy/combo monthly-effects aggregation (2 lines each, no tick behavior rewrite)."
       ],
       "next_step": "Closed. Next milestone is v0.61-alpha public web alpha candidate (save/load stability, 10-year campaign completable, tutorial flow, no UI breaks, intro copy/screenshots). Before beta, refresh reports/v0_60_status_and_promo.html (user request 2026-05-29)."
+    },
+    {
+      "id": "v0.61-alpha-public-web-alpha",
+      "name": "Public web alpha candidate (stabilization: save/load, 10-year completability, tutorial, UI, intro materials)",
+      "description": "Stabilize the accumulated v0.56-v0.60 build into a publicly testable web alpha. No new large systems (ROADMAP §5) — harden save/load migration, prove the 10-year campaign completes end-to-end, clean up the tutorial flow, remove major UI breaks, and prepare intro copy/screenshots. Investigation 2026-05-29: save/load is already mature (SAVE_VERSION 11, serializeGameState/hydrateGameState with per-field sanitizers + createRecoveryState + validateGameStateIntegrity + save-integrity.test.ts; App.tsx localStorage auto-save + offline settlement) and run-simulator.ts already simulates the 10-year campaign with alpha-readiness gates. So this milestone hardens, it does not build from scratch. Multi-session; decomposed into blocks.",
+      "status": "in_progress",
+      "priority": "P0",
+      "dependencies": [
+        "v0.60-alpha-boundaryless-industry-expansion"
+      ],
+      "definition_of_done": [
+        "Block #1 (DONE 2026-05-29): save/load migration hardening. +257 lines of tests in save-integrity.test.ts (full late-game round-trip across v0.58-v0.60 fields, legacy-save missing-field migration, malformed manufacturing/logistics capability hydration, offline settlement on a late-game state). hydrateGameState audit found a capability raw-merge gap and fixed it with a new sanitizeCapabilityMap (clamps each canonical capability to [0,max_level], defaults missing). SAVE_VERSION kept at 11 (serialized shape unchanged; migration is initialState-merge based; version-8 legacy load tested). No simulation tick changes. harness:gate 43 files / 431 tests.",
+        "Block #2: 10-year campaign completability — prove a full 120-month run completes without softlock across strategies via run-simulator; wire an alpha-readiness gate into the harness; fix any blockers.",
+        "Block #3: tutorial flow cleanup + UI-break audit (mobile 390x844 + desktop), no major breaks.",
+        "Block #4: intro copy/screenshots prep + refresh reports/v0_60_status_and_promo.html before beta (user request 2026-05-29).",
+        "Each block adds tests where applicable; npm run harness:gate passes; no simulation tick regressions."
+      ],
+      "evidence": [
+        "2026-05-29: Selected as the next milestone after the v0.60 closeout. Investigation confirmed save/load and the 10-year sim harness already exist and are mature, so v0.61 is hardening. Block #1 (save/load migration hardening) delegated to Codex CLI at xhigh reasoning (correctness-critical — player data loss is the top public-alpha risk) per reports/codex-handoff/v0_61_block1_save_load.md. Fast/medium mode reserved for the mechanical blocks (#3 tutorial, #4 intro).",
+        "2026-05-29: Block #1 implemented by Codex CLI (xhigh) and verified by Claude Code. save-integrity.test.ts +257 lines (late-game round-trip, legacy migration, malformed-capability hydration, offline settlement); simulation.ts hydrate path gains sanitizeCapabilityMap (a real raw-merge gap fix — corrupt/out-of-range capability values are now clamped) with the tick logic untouched; SAVE_VERSION kept at 11 with documented rationale. Independently verified npm run harness:gate: 43 files / 431 tests, validate:data passed, build 110 modules."
+      ],
+      "next_step": "Block #1 done. Next: block #2 (10-year completability gate, Codex xhigh) per reports/codex-handoff/v0_61_block2_ten_year_completability.md, then #3 (tutorial + UI), #4 (intro + report refresh)."
     },
     {
       "id": "art-intake-final-source-art",

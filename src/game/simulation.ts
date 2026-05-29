@@ -57,6 +57,7 @@ import type {
   AnnualDirectiveState,
   AnnualReviewHistoryEntry,
   AutomationUpgradeDefinition,
+  CapabilityMap,
   CapabilityDefinition,
   CompanyLocationDefinition,
   CompanyStageDefinition,
@@ -3205,7 +3206,7 @@ export function hydrateGameState(serialized: string): GameState {
     month: sanitizeNumber(rawState.month, initialState.month),
     locationId: sanitizeLocationId(rawState.locationId, initialState.locationId),
     resources: sanitizeResourceMap(rawState.resources, initialState.resources),
-    capabilities: { ...initialState.capabilities, ...(isRecord(rawState.capabilities) ? rawState.capabilities : {}) },
+    capabilities: sanitizeCapabilityMap(rawState.capabilities, initialState.capabilities),
     activeProducts: hydratedActiveProducts,
     generatedProducts,
     unlockedDomains: sanitizeStringArray(rawState.unlockedDomains, domains.map((domain) => domain.id), initialState.unlockedDomains),
@@ -3294,6 +3295,19 @@ function sanitizeResourceMap(value: unknown, fallback: ResourceMap): ResourceMap
     const definition = resources[resourceId];
     const nextValue = sanitizeNumber(raw[resourceId], fallbackValue);
     sanitized[resourceId] = definition ? clamp(nextValue, definition.min_value, definition.max_value) : nextValue;
+  }
+
+  return sanitized;
+}
+
+function sanitizeCapabilityMap(value: unknown, fallback: CapabilityMap): CapabilityMap {
+  const raw = isRecord(value) ? value : {};
+  const sanitized: CapabilityMap = {};
+
+  for (const capability of capabilities) {
+    const fallbackValue = fallback[capability.id] ?? 0;
+    const level = sanitizeNumber(raw[capability.id], fallbackValue);
+    sanitized[capability.id] = Math.round(clamp(level, 0, capability.max_level));
   }
 
   return sanitized;
