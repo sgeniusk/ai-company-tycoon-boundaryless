@@ -30,7 +30,7 @@ Keep startup context lean:
 ## Current Source Of Truth
 
 - Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
-- Current feature: `v0.59-alpha-resource-visibility` (completed 2026-05-29; Recursive-style derive-only AI resource indicators, coded by Codex CLI, verified by Claude Code at 43 files / 417 tests)
+- Current feature: `v0.60-alpha-boundaryless-industry-expansion` (in progress; 3 new physical industries + cross-industry synergies, decomposed into blocks #1-#4; block #1 delegated to Codex CLI). Prior `v0.59-alpha-resource-visibility` closed 2026-05-29 at 43 files / 417 tests.
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`

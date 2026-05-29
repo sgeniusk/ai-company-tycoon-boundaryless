@@ -119,6 +119,36 @@
       "market_size": "medium",
       "risk_level": "medium",
       "icon": "🧸"
+    },
+    {
+      "id": "manufacturing",
+      "name": "제조",
+      "description": "AI가 생산 라인, 품질 검사, 자동화 설비를 함께 운영하는 스마트 팩토리 시장입니다.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"robotics": 1, "optimization": 1},
+      "market_size": "large",
+      "risk_level": "high",
+      "icon": "🏗️"
+    },
+    {
+      "id": "logistics",
+      "name": "물류",
+      "description": "창고, 배송, 공급망 의사결정을 자동화해 물리 상품 흐름을 최적화하는 시장입니다.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"agent": 2, "optimization": 1},
+      "market_size": "large",
+      "risk_level": "medium",
+      "icon": "🚚"
+    },
+    {
+      "id": "energy",
+      "name": "에너지",
+      "description": "데이터센터 전력, 스마트 그리드, 수요 반응을 AI로 조율하는 기반 인프라 시장입니다.",
+      "unlocked_by_default": false,
+      "unlock_requirements": {"optimization": 2, "enterprise": 1},
+      "market_size": "huge",
+      "risk_level": "high",
+      "icon": "🔋"
     }
   ]
 }

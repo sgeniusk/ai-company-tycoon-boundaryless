@@ -5,8 +5,8 @@ Last Updated: 2026-05-29
 ## Current State
 
 - Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
-- Current feature: `v0.59-alpha-resource-visibility` (COMPLETED 2026-05-29; coded by Codex CLI gpt-5.5 xhigh, verified by Claude Code)
-- Latest implementation commits: `v0.59 resource visibility` (this commit), `645eb2c v0.58 closeout`, `72d5d3a v0.58 #4`, `8df6bde v0.58 #5`, `fb1abd6 v0.58 #3`, `f31088e v0.58 #2`
+- Current feature: `v0.60-alpha-boundaryless-industry-expansion` (in progress; block #1 of 4 delegated to Codex CLI gpt-5.5 xhigh). Prior `v0.59-alpha-resource-visibility` closed at 417 tests.
+- Latest implementation commits: `c89faae v0.59 resource visibility`, `645eb2c v0.58 closeout`, `72d5d3a v0.58 #4`, `8df6bde v0.58 #5`, `fb1abd6 v0.58 #3`
 - Current branch: `main`
 - Stack: Vite + React + TypeScript
 - Local dev: `npm run dev -- --port 5201`
@@ -18,7 +18,11 @@ Last Updated: 2026-05-29
 
 ## Current Objective
 
-`v0.59-alpha-resource-visibility` is **COMPLETE** as of 2026-05-29. It surfaces AI compute/data economics the simulation already models but never showed — active monthly compute load, monthly data generation, and compute needed before the next launch — as derive-only indicators in the research panel. Coded by Codex CLI (gpt-5.5, xhigh) per `reports/codex-handoff/v0_59_resource_visibility.md`; Claude Code owned the harness/contract track, verified `npm run harness:gate` (43 files / 417 tests), and confirmed `simulation.ts` / `types.ts` empty diff (derive-only). New pure helper `src/game/resource-visibility.ts`.
+`v0.60-alpha-boundaryless-industry-expansion` is the current milestone (selected 2026-05-29). It validates the fun of going beyond software into physical industries — 3 new domains (manufacturing, logistics, energy) on top of the existing 12, robot/manufacturing/logistics requirement wiring, 10 cross-industry synergies, and 10 high-risk/high-reward combos. ROADMAP §5 forbids mass expansion, so this stays a controlled 3-industry slice. Multi-session; decomposed into 4 blocks (see `feature_list.json`). Coding delegated to Codex CLI (gpt-5.5, xhigh); Claude Code owns the harness/contract track + per-block verification.
+
+Block status — #1 (manufacturing/logistics/energy domains + 6 gated products + boundaryless-expansion wiring + `?scenario=physical-industries`) DONE 2026-05-29 (gate 43 files / 420 tests, simulation.ts untouched). #2 requirement wiring → #3 synergies → #4 combos queued.
+
+`v0.59-alpha-resource-visibility` closed 2026-05-29 (`c89faae`, 43 files / 417 tests, derive-only). The v0.58 block detail below is older history.
 
 `v0.58-alpha-market-season-strength` is **CLOSED** as of 2026-05-29 (5 derive-only/queue-only blocks + closeout, harness:gate 43 files / 415 tests). The v0.58 block detail below is kept as recent history.
 
@@ -60,18 +64,19 @@ v0.57 stacked 9 polish `#N` commits + 4 P1 polish commits + closeout commit on t
 - v0.58 #5 (8df6bde): `npm run harness:gate` 43 files / 414 tests.
 - v0.58 #4 (72d5d3a): `npm run harness:gate` 43 files / 415 tests.
 - v0.58 closeout (645eb2c): root state files synced to mark `v0.58-alpha-market-season-strength` completed.
-- v0.59 (this commit): `npm run harness:gate` 43 files / 417 tests, validate:data passed, build 106 modules. New `src/game/resource-visibility.ts` pure helper; `simulation.ts` / `types.ts` empty diff. Implementation by Codex CLI (gpt-5.5 xhigh); verification + closeout by Claude Code.
+- v0.59 (c89faae): `npm run harness:gate` 43 files / 417 tests, derive-only resource indicators.
+- v0.60 #1 (this commit): `npm run harness:gate` 43 files / 420 tests, validate:data passed, build 106 modules. domains.json +3, products.json +6 (gated), boundaryless-expansion.ts wiring, `?scenario=physical-industries`. simulation.ts untouched. Implementation by Codex CLI (gpt-5.5 xhigh); verification by Claude Code.
 
 ## Recommended Next Step
 
-`v0.59-alpha-resource-visibility` is closed. Pick the next milestone:
+`v0.60` block #1 is done and committed. Next on Claude Code's track:
 
-- **v0.60-alpha boundaryless industry expansion** — 3 new physical industries + cross-industry synergies + high-risk/high-reward combos. Larger scope, fits the game's "boundaryless" identity.
-- **v0.57 P2 Track C Phase 2** — one mobile polish item from `reports/qa/v0_57_p2_mobile_backlog.md` (top candidate: 모바일 패널 접힘 요약 at `?scenario=office-visuals` 390×844). Smallest scope.
+1. Hand block #2 (robot/manufacturing/logistics requirement wiring) to Codex CLI — a new handoff in `reports/codex-handoff/`.
+2. Verify `npm run harness:gate`, commit block #2, then sequence #3 (10 synergies) → #4 (10 combos).
 
 ## Next Session
 
 1. Read `AGENTS.md`, `feature_list.json`, and this file first.
-2. Check `git status --short`.
-3. Pick the next milestone and update `feature_list.json` current_feature_id before touching code.
+2. Check `git status --short` — Codex may have an in-progress v0.60 block diff.
+3. If a block is open, verify `npm run harness:gate` and commit it, then hand off the next block. Otherwise continue v0.60 blocks #2-#4.
 4. Run `npm run harness:gate` as the baseline before changes.

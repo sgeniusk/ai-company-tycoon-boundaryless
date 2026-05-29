@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-05-29",
-  "current_feature_id": "v0.59-alpha-resource-visibility",
+  "current_feature_id": "v0.60-alpha-boundaryless-industry-expansion",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -130,7 +130,30 @@
         "2026-05-29: Selected as the next milestone after the v0.58 closeout (ROADMAP v0.58 후속 검토 block). Coding delegated to Codex CLI (gpt-5.5, xhigh reasoning); handoff at reports/codex-handoff/v0_59_resource_visibility.md. Claude Code runs the harness/contract track and final gate verification.",
         "2026-05-29: Implemented by Codex CLI as a derive-only feature. New pure helper src/game/resource-visibility.ts (getAiResourceVisibilityMetrics) feeds a research-panel block in MenuPanels.tsx showing monthly compute load, monthly data generated, and next-launch compute needed; ?scenario=resource-visibility lands on the research menu with 3 active products + an in-progress frontier project so all indicators are non-zero; ko/en i18n keys + App.css responsive grid + 2 new tests (layout-contract + qa-scenarios). simulation.ts and types.ts have an empty diff (no tick or model changes). Claude Code verified npm run harness:gate independently: 43 files / 417 tests, validate:data passed, build 106 modules."
       ],
-      "next_step": "Closed. Next milestone unselected. Candidates: v0.60-alpha boundaryless industry expansion; v0.57 P2 Track C Phase 2 mobile polish backlog."
+      "next_step": "Closed. Next milestone selected as v0.60-alpha-boundaryless-industry-expansion on 2026-05-29 (3 new physical industries + cross-industry synergies, decomposed into blocks #1-#4)."
+    },
+    {
+      "id": "v0.60-alpha-boundaryless-industry-expansion",
+      "name": "Boundaryless industry expansion slice (3 new physical industries + cross-industry synergies + combos)",
+      "description": "Validate the fun of expanding beyond software into physical industries (ROADMAP v0.60, renumbered from v0.59 after resource-visibility took the v0.59 number). Add 3 new physical-industry domains (manufacturing, logistics, energy) on top of the existing 12, wire robot/manufacturing/logistics requirement conditions, add 10 cross-industry synergies and 10 high-risk/high-reward combos. Controlled slice only — ROADMAP §5 forbids mass industry expansion, so this stays at exactly 3 new industries. Multi-session; decomposed into isolated blocks.",
+      "status": "in_progress",
+      "priority": "P0",
+      "dependencies": [
+        "v0.59-alpha-resource-visibility"
+      ],
+      "definition_of_done": [
+        "Block #1 (DONE 2026-05-29): 3 new physical-industry domains (manufacturing, logistics, energy) added to data/domains.json with unlock_requirements reusing existing capabilities; 6 starter products (2 per domain) gated so none are launchable at game start; new domains flow into the existing boundaryless-expansion goals + product domain filters; ?scenario=physical-industries added; tests for locked filters / QA route / boundaryless goals; harness:gate 43 files / 420 tests; simulation.ts untouched.",
+        "Block #2: robot/manufacturing/logistics requirement conditions wired for physical-industry products (new capabilities or resource prerequisites).",
+        "Block #3: 10 cross-industry synergies (data + derive/display, mirroring office_synergies / deck_synergies).",
+        "Block #4: 10 high-risk/high-reward combos (data + UI).",
+        "Each block adds at least one test; npm run harness:gate passes; no unintended simulation regressions.",
+        "Stays a controlled 3-industry slice per ROADMAP §5 (no mass expansion)."
+      ],
+      "evidence": [
+        "2026-05-29: Selected after the v0.59 closeout. ROADMAP renumbered (v0.59=resource-visibility shipped; industry slice -> v0.60; public web alpha -> v0.61). Decomposed into 4 blocks; block #1 (3 new physical-industry domains foundation) delegated to Codex CLI (gpt-5.5, xhigh) at reports/codex-handoff/v0_60_block1_physical_domains.md. Existing domain set already has 12 domains incl. robotics/mobility/semiconductors; the 3 new ones are manufacturing/logistics/energy.",
+        "2026-05-29: Block #1 implemented by Codex CLI and verified by Claude Code. domains.json +3 (manufacturing {robotics,optimization}, logistics {agent,optimization}, energy {optimization,enterprise}); products.json +6 (2 per domain, gated by capabilities + trust 55-78 so none launchable at start); new domains wired into the pre-existing src/game/boundaryless-expansion.ts goal system (expansionDomainIds + payoffByDomain); ?scenario=physical-industries lands on the products panel with the 3 domains unlocked; 3 new tests. simulation.ts untouched. Independently verified npm run harness:gate: 43 files / 420 tests, validate:data passed, build 106 modules."
+      ],
+      "next_step": "Block #1 done. Next: hand block #2 (robot/manufacturing/logistics requirement wiring) to Codex CLI, then #3 (10 cross-industry synergies), then #4 (10 high-risk/high-reward combos)."
     },
     {
       "id": "art-intake-final-source-art",

@@ -11,8 +11,8 @@ This repo is `AI Company Tycoon: Boundaryless`, a Vite + React + TypeScript brow
 ## Current Objective
 
 - Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
-- Current feature: `v0.59-alpha-resource-visibility` (completed 2026-05-29 — Recursive-style derive-only AI resource indicators in the research panel)
-- Track allocation (2026-05-29): v0.59 coded by Codex CLI (gpt-5.5, xhigh) per `reports/codex-handoff/v0_59_resource_visibility.md`; Claude Code owned the harness/contract track, gate verification, and the closeout commit.
+- Current feature: `v0.60-alpha-boundaryless-industry-expansion` (in progress — 3 new physical industries + synergies, decomposed into blocks #1-#4; block #1 delegated to Codex CLI)
+- Track allocation (2026-05-29): v0.60 coding delegated to Codex CLI (gpt-5.5, xhigh), one block at a time; block #1 handoff at `reports/codex-handoff/v0_60_block1_physical_domains.md`. Claude Code owns the harness/contract track + per-block verification + commits.
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon`.
 
 ## Validation Policy (Updated 2026-05-29)
@@ -52,9 +52,10 @@ Use targeted tests for touched code first, then run `npm run harness:gate` befor
 
 - v0.58 closed at 43 files / 415 tests via `645eb2c v0.58 closeout`.
 - Pre-v0.59 baseline (2026-05-29): `npm run harness:gate` passed with 43 files / 415 tests, data validation, and production build in 715ms.
-- v0.59 closed at 43 files / 417 tests. Coded by Codex CLI; new `src/game/resource-visibility.ts` pure helper; `simulation.ts` / `types.ts` empty diff (derive-only). Verified + committed by Claude Code.
+- v0.59 closed at `c89faae` — 43 files / 417 tests, derive-only resource indicators.
+- v0.60 in progress — block #1 (3 new physical-industry domains) delegated to Codex CLI. Baseline gate before block #1: 43 files / 417 tests.
 
 ## Next Useful Work
 
-1. Pick the next milestone — v0.60-alpha boundaryless industry expansion, or v0.57 P2 Track C Phase 2 mobile polish backlog. Update `feature_list.json` current_feature_id before coding.
-2. Run `npm run harness:gate` as the baseline (43 files / 417 tests) before changes.
+1. v0.60 block #1 verification — when Codex returns, run `npm run harness:gate`, review the additive data + UI diff, commit block #1, then hand off block #2 (requirement wiring).
+2. Sequence v0.60 blocks #2 (robot/manufacturing/logistics requirements) → #3 (10 synergies) → #4 (10 combos), one Codex handoff each.

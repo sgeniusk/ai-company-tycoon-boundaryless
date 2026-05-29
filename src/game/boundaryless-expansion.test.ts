@@ -32,6 +32,13 @@ describe("v0.12.4 boundaryless expansion direction", () => {
     );
   });
 
+  it("tracks the controlled v0.60 physical industries in boundaryless goals", () => {
+    const goalIds = getBoundarylessExpansionGoals(createInitialState()).map((goal) => goal.domainId);
+
+    expect(goalIds).toEqual(expect.arrayContaining(["manufacturing", "logistics", "energy"]));
+    expect(goalIds.filter((goalId) => ["manufacturing", "logistics", "energy"].includes(goalId))).toHaveLength(3);
+  });
+
   it("starts with a larger rival field and introduces annual strong challengers", () => {
     let state = createInitialState();
 

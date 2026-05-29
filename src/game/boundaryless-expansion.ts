@@ -13,7 +13,16 @@ export interface BoundarylessExpansionGoal {
   payoff: string;
 }
 
-const expansionDomainIds = ["semiconductors", "robotics", "mobility", "odd_industries", "toys"];
+const expansionDomainIds = [
+  "semiconductors",
+  "robotics",
+  "mobility",
+  "odd_industries",
+  "toys",
+  "manufacturing",
+  "logistics",
+  "energy",
+];
 
 const payoffByDomain: Record<string, string> = {
   semiconductors: "연산 비용을 줄이고 모델 회사의 인프라 독립을 노립니다.",
@@ -21,6 +30,9 @@ const payoffByDomain: Record<string, string> = {
   mobility: "자율주행과 차량 소프트웨어 시장의 대형 계약을 노립니다.",
   odd_industries: "AI 카페 같은 엉뚱한 소비 산업에서 화제성과 매출을 얻습니다.",
   toys: "AI 캐릭터와 교육 완구로 팬덤형 반복 수익을 만듭니다.",
+  manufacturing: "스마트 팩토리 운영과 품질 자동화로 물리 생산 시장에 진입합니다.",
+  logistics: "창고, 배송, 공급망 최적화로 AI 운영 범위를 물류망까지 넓힙니다.",
+  energy: "데이터센터 전력과 스마트 그리드 운영으로 인프라 시장을 노립니다.",
 };
 
 export function getBoundarylessExpansionGoals(state: GameState): BoundarylessExpansionGoal[] {

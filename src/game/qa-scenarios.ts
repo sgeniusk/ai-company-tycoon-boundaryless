@@ -80,6 +80,7 @@ export const qaScenarioIds = [
   "market-share",
   "big-event",
   "resource-visibility",
+  "physical-industries",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -141,6 +142,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "AI 자원 가시화 QA",
       state: createResourceVisibilityScenarioState(),
       activeMenu: "research",
+    };
+  }
+
+  if (id === "physical-industries") {
+    return {
+      id,
+      label: "물리 산업 도메인 QA",
+      state: createPhysicalIndustriesScenarioState(),
+      activeMenu: "products",
     };
   }
 
@@ -1359,6 +1369,50 @@ function createResourceVisibilityScenarioState(): GameState {
     ],
     timeline: [
       "AI 자원 가시화 QA: 연구 패널에서 월간 compute, 데이터, 다음 출시 compute를 확인",
+      ...initialState.timeline,
+    ].slice(0, 8),
+  };
+}
+
+function createPhysicalIndustriesScenarioState(): GameState {
+  const initialState = createInitialState();
+  const physicalIndustryDomainIds = ["manufacturing", "logistics", "energy"];
+
+  return {
+    ...initialState,
+    month: 24,
+    unlockedDomains: [...new Set([...initialState.unlockedDomains, ...physicalIndustryDomainIds])],
+    capabilities: {
+      ...initialState.capabilities,
+      robotics: 2,
+      agent: 2,
+      optimization: 3,
+      enterprise: 1,
+      vision: 2,
+    },
+    resources: {
+      ...initialState.resources,
+      cash: 180000,
+      compute: 1600,
+      data: 1500,
+      users: 32000,
+      trust: 84,
+      hype: 44,
+      automation: 48,
+      talent: 16,
+    },
+    seenTutorials: [
+      "welcome_garage",
+      "agent_hired",
+      "product_ideas",
+      "development_project",
+      "card_reward",
+      "next_run_setup",
+      "office_growth",
+      "competition_pressure",
+    ],
+    timeline: [
+      "v0.60 물리 산업 QA: 제조, 물류, 에너지 도메인과 시작 제품 후보를 제품 패널에서 확인",
       ...initialState.timeline,
     ].slice(0, 8),
   };

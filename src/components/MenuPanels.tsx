@@ -1253,7 +1253,17 @@ function ProductsPanel({
   const availableAgents = gameState.hiredAgents.filter((agent) => !agent.assignment);
   const defaultSelectedAgentIds = availableAgents.slice(0, 3).map((agent) => agent.id);
   const availableProducts = getAvailableProductDefinitions(gameState);
-  const expansionDomainIds = ["foundation_models", "semiconductors", "mobility", "robotics", "odd_industries", "toys"];
+  const expansionDomainIds = [
+    "foundation_models",
+    "semiconductors",
+    "mobility",
+    "robotics",
+    "odd_industries",
+    "toys",
+    "manufacturing",
+    "logistics",
+    "energy",
+  ];
   const unlockedDomainIds = new Set(gameState.unlockedDomains);
   const boundarylessGoals = getBoundarylessExpansionGoals(gameState);
   const domainFilters = getProductDomainFilters(availableProducts, domains, gameState);

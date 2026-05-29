@@ -78,6 +78,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "market-share",
       "big-event",
       "resource-visibility",
+      "physical-industries",
     ]);
   });
 
@@ -165,6 +166,21 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(metrics.monthlyDataGenerated).toBeGreaterThan(0);
     expect(metrics.nextLaunchComputeNeeded).toBeGreaterThan(0);
     expect(metrics.nextLaunchProductName).toContain("프론티어");
+  });
+
+  it("creates a physical industries scenario with the v0.60 domains unlocked for product QA", () => {
+    const scenario = createQaScenario("physical-industries");
+    const physicalIndustryDomainIds = ["manufacturing", "logistics", "energy"];
+    const physicalProducts = products.filter((product) => physicalIndustryDomainIds.includes(product.domain));
+
+    expect(scenario.activeMenu).toBe("products");
+    expect(scenario.label).toContain("물리 산업");
+    expect(scenario.state.unlockedDomains).toEqual(expect.arrayContaining(physicalIndustryDomainIds));
+    expect(scenario.state.capabilities.robotics ?? 0).toBeGreaterThanOrEqual(2);
+    expect(scenario.state.capabilities.agent ?? 0).toBeGreaterThanOrEqual(2);
+    expect(scenario.state.capabilities.optimization ?? 0).toBeGreaterThanOrEqual(3);
+    expect(physicalProducts).toHaveLength(6);
+    expect(new Set(physicalProducts.map((product) => product.domain))).toEqual(new Set(physicalIndustryDomainIds));
   });
 
   it("creates a shop guidance scenario after first release", () => {
