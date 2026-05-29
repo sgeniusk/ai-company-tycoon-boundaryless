@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { agentTypes, capabilities, domains, products } from "./data";
 import { getBoundarylessExpansionGoals } from "./boundaryless-expansion";
-import { advanceMonth, createInitialState, getAgentHireCheck, getProductCheck } from "./simulation";
+import { advanceMonth, createInitialState, getAgentHireCheck, getProductCheck, upgradeCapability } from "./simulation";
+import type { GameState } from "./types";
 
 describe("v0.12.4 boundaryless expansion direction", () => {
   it("starts from a launchable AI model before expanding into apps", () => {
@@ -37,6 +38,51 @@ describe("v0.12.4 boundaryless expansion direction", () => {
 
     expect(goalIds).toEqual(expect.arrayContaining(["manufacturing", "logistics", "energy"]));
     expect(goalIds.filter((goalId) => ["manufacturing", "logistics", "energy"].includes(goalId))).toHaveLength(3);
+  });
+
+  it("wires manufacturing and logistics capabilities into physical industry gates", () => {
+    const capabilityIds = new Set(capabilities.map((capability) => capability.id));
+    const capabilityById = new Map(capabilities.map((capability) => [capability.id, capability]));
+    const domainById = new Map(domains.map((domain) => [domain.id, domain]));
+    const initial = createInitialState();
+    const fundedState: GameState = {
+      ...initial,
+      resources: {
+        ...initial.resources,
+        cash: 500000,
+        compute: 5000,
+        data: 5000,
+        talent: 50,
+      },
+    };
+    const manufacturing = capabilityById.get("manufacturing");
+    const logistics = capabilityById.get("logistics");
+
+    expect(capabilityIds.has("manufacturing")).toBe(true);
+    expect(capabilityIds.has("logistics")).toBe(true);
+    expect(capabilityIds.has("energy")).toBe(false);
+    expect(initial.capabilities).toMatchObject({ manufacturing: 0, logistics: 0 });
+    expect(manufacturing?.unlocks_domains).toMatchObject({ "1": "manufacturing", "3": "energy" });
+    expect(logistics?.unlocks_domains).toMatchObject({ "1": "logistics" });
+    expect(domainById.get("manufacturing")?.unlock_requirements).toMatchObject({ robotics: 1, manufacturing: 1 });
+    expect(domainById.get("logistics")?.unlock_requirements).toMatchObject({ logistics: 1 });
+    expect(domainById.get("energy")?.unlock_requirements).toMatchObject({ manufacturing: 3 });
+
+    const manufacturingProducts = products.filter((product) => product.domain === "manufacturing");
+    const logisticsProducts = products.filter((product) => product.domain === "logistics");
+    const energyProducts = products.filter((product) => product.domain === "energy");
+
+    expect(manufacturingProducts.every((product) => (product.required_capabilities.manufacturing ?? 0) >= 1)).toBe(true);
+    expect(logisticsProducts.every((product) => (product.required_capabilities.logistics ?? 0) >= 1)).toBe(true);
+    expect(energyProducts.every((product) => (product.required_capabilities.manufacturing ?? 0) >= 2)).toBe(true);
+
+    const manufacturingUnlocked = upgradeCapability(manufacturing!, fundedState);
+    const logisticsUnlocked = upgradeCapability(logistics!, fundedState);
+    const energyUnlocked = [1, 2, 3].reduce<GameState>((state) => upgradeCapability(manufacturing!, state), fundedState);
+
+    expect(manufacturingUnlocked.unlockedDomains).toContain("manufacturing");
+    expect(logisticsUnlocked.unlockedDomains).toContain("logistics");
+    expect(energyUnlocked.unlockedDomains).toContain("energy");
   });
 
   it("starts with a larger rival field and introduces annual strong challengers", () => {

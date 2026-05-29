@@ -144,6 +144,36 @@
       "unlocks_domains": {"1": "robotics", "2": "odd_industries"},
       "effects_per_level": {"automation": 4},
       "icon": "🤖"
+    },
+    {
+      "id": "manufacturing",
+      "name": "제조",
+      "description": "스마트 팩토리, 생산 자동화, 품질 관리를 연결하는 물리 제조 능력입니다.",
+      "max_level": 4,
+      "upgrade_costs": [
+        {"cash": 6000, "data": 40, "talent": 1, "compute": 10},
+        {"cash": 12000, "data": 85, "talent": 2, "compute": 25},
+        {"cash": 24000, "data": 170, "talent": 3, "compute": 45},
+        {"cash": 48000, "data": 300, "talent": 4, "compute": 80}
+      ],
+      "unlocks_domains": {"1": "manufacturing", "3": "energy"},
+      "effects_per_level": {"automation": 3},
+      "icon": "🏗️"
+    },
+    {
+      "id": "logistics",
+      "name": "물류",
+      "description": "창고, 배송, 공급망 최적화를 제품화하는 물리 운영 능력입니다.",
+      "max_level": 4,
+      "upgrade_costs": [
+        {"cash": 4500, "data": 35, "talent": 1, "compute": 5},
+        {"cash": 9000, "data": 75, "talent": 2, "compute": 15},
+        {"cash": 18000, "data": 150, "talent": 3, "compute": 35},
+        {"cash": 36000, "data": 260, "talent": 4, "compute": 65}
+      ],
+      "unlocks_domains": {"1": "logistics"},
+      "effects_per_level": {"automation": 2, "data": 4},
+      "icon": "🚚"
     }
   ]
 }

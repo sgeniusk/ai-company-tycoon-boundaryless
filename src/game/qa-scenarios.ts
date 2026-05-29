@@ -1385,6 +1385,8 @@ function createPhysicalIndustriesScenarioState(): GameState {
     capabilities: {
       ...initialState.capabilities,
       robotics: 2,
+      manufacturing: 3,
+      logistics: 2,
       agent: 2,
       optimization: 3,
       enterprise: 1,

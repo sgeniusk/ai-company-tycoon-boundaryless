@@ -177,6 +177,8 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.label).toContain("물리 산업");
     expect(scenario.state.unlockedDomains).toEqual(expect.arrayContaining(physicalIndustryDomainIds));
     expect(scenario.state.capabilities.robotics ?? 0).toBeGreaterThanOrEqual(2);
+    expect(scenario.state.capabilities.manufacturing ?? 0).toBeGreaterThanOrEqual(3);
+    expect(scenario.state.capabilities.logistics ?? 0).toBeGreaterThanOrEqual(2);
     expect(scenario.state.capabilities.agent ?? 0).toBeGreaterThanOrEqual(2);
     expect(scenario.state.capabilities.optimization ?? 0).toBeGreaterThanOrEqual(3);
     expect(physicalProducts).toHaveLength(6);
