@@ -12,6 +12,7 @@ const playtestObserver = readFileSync(new URL("../game/blind-playtest-observer.t
 const marketSharePanel = readFileSync(new URL("../components/MarketSharePanel.tsx", import.meta.url), "utf8");
 const rivalArchetypePanel = readFileSync(new URL("../components/RivalArchetypePanel.tsx", import.meta.url), "utf8");
 const bigEventModal = readFileSync(new URL("../components/BigEventModal.tsx", import.meta.url), "utf8");
+const qaScenarios = readFileSync(new URL("../game/qa-scenarios.ts", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
@@ -690,6 +691,30 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("risk_label");
     expect(appCss).toMatch(/\.industry-combo-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.industry-combo-grid\s*{[^}]*grid-template-columns:/s);
+  });
+
+  it("keeps the physical-industries product console inside the 390px mobile viewport", () => {
+    expect(qaScenarios).toContain("\"physical-industries\"");
+    expect(qaScenarios).toContain("activeMenu: \"products\"");
+    expect(menuPanels).toContain("boundaryless-goal-panel");
+    expect(menuPanels).toContain("domain-filter");
+    expect(menuPanels).toContain("industry-synergy-panel");
+    expect(menuPanels).toContain("industry-combo-panel");
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.app-shell\s*{[^}]*width:\s*min\(100vw,\s*390px\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-panel\s*{[^}]*overflow:\s*auto/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.domain-filter\s*{[^}]*grid-template-columns:\s*1fr/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.boundaryless-goal-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.industry-synergy-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.industry-combo-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("prevents v0.60 industry synergy and combo cards from forcing horizontal overflow", () => {
+    expect(appCss).toMatch(
+      /\.industry-synergy-panel,\s*\.industry-combo-panel,\s*\.industry-synergy-grid,\s*\.industry-combo-grid\s*{[^}]*min-width:\s*0/s,
+    );
+    expect(appCss).toMatch(/\.industry-synergy-grid article,\s*\.industry-combo-grid article\s*{[^}]*min-width:\s*0/s);
+    expect(appCss).toMatch(/\.industry-synergy-panel strong,\s*\.industry-combo-panel strong\s*{[^}]*overflow-wrap:\s*anywhere/s);
+    expect(appCss).toMatch(/\.industry-synergy-panel span,\s*\.industry-combo-panel span,\s*\.industry-combo-panel small\s*{[^}]*overflow-wrap:\s*anywhere/s);
   });
 
   it("adds a next-run command room for roguelite restart decisions", () => {

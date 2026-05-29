@@ -27,15 +27,6 @@ const tutorialGuideRules: TutorialGuideRule[] = [
     visible: (state) => state.hiredAgents.length > 0,
   },
   {
-    id: "product_ideas",
-    helperName,
-    title: "아이디어 조합실이 열렸어요",
-    message: "소재, 제품 타입, 파격 옵션을 조합하면 앱부터 전기차, 커피 프랜차이즈까지 실제 개발 후보로 만들 수 있습니다.",
-    targetMenu: "products",
-    actionLabel: "조합 보기",
-    visible: (state, activeMenu) => activeMenu === "products" && state.hiredAgents.length > 0 && state.activeProducts.length > 0,
-  },
-  {
     id: "development_project",
     helperName,
     title: "개발 프로젝트가 돌아가요",
@@ -52,6 +43,15 @@ const tutorialGuideRules: TutorialGuideRule[] = [
     targetMenu: "deck",
     actionLabel: "보상 선택",
     visible: (state) => Boolean(state.roguelite.pendingCardReward),
+  },
+  {
+    id: "product_ideas",
+    helperName,
+    title: "아이디어 조합실이 열렸어요",
+    message: "첫 출시 이후에는 소재, 제품 타입, 파격 옵션을 조합해 앱부터 전기차, 커피 프랜차이즈까지 다음 개발 후보로 넓힐 수 있습니다.",
+    targetMenu: "products",
+    actionLabel: "조합 보기",
+    visible: (state, activeMenu) => activeMenu === "products" && state.hiredAgents.length > 0 && state.activeProducts.length > 0,
   },
   {
     id: "next_run_setup",
@@ -83,6 +83,14 @@ const tutorialGuideRules: TutorialGuideRule[] = [
       state.competitorStates.some((competitor) => competitor.claimedProducts.length > 0 || competitor.marketShare >= 18),
   },
 ];
+
+export const tutorialGuideAuditRules = tutorialGuideRules.map(({ id, title, message, targetMenu, actionLabel }) => ({
+  id,
+  title,
+  message,
+  targetMenu,
+  actionLabel,
+}));
 
 export function getTutorialGuide(state: GameState, activeMenu?: string): TutorialGuide | undefined {
   const seen = new Set(state.seenTutorials ?? []);

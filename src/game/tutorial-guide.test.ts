@@ -2,9 +2,32 @@ import { describe, expect, it } from "vitest";
 import { agentTypes, products } from "./data";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { advanceMonth, createInitialState, dismissTutorialGuide, hireAgent, hydrateGameState, serializeGameState, startProductProject } from "./simulation";
-import { getTutorialGuide } from "./tutorial-guide";
+import { getTutorialGuide, tutorialGuideAuditRules } from "./tutorial-guide";
+import { menus } from "../ui/menu";
 
 describe("v0.30 helper character tutorial guide", () => {
+  const expectedCoreLoopOrder = [
+    "welcome_garage",
+    "agent_hired",
+    "development_project",
+    "card_reward",
+    "product_ideas",
+    "next_run_setup",
+    "office_growth",
+    "competition_pressure",
+  ];
+
+  it("keeps the eight-step helper flow unique and pointed at valid menu ids", () => {
+    const menuIds = new Set(menus.map((menu) => menu.id));
+    const ruleIds = tutorialGuideAuditRules.map((rule) => rule.id);
+
+    expect(ruleIds).toEqual(expectedCoreLoopOrder);
+    expect(new Set(ruleIds).size).toBe(ruleIds.length);
+    expect(tutorialGuideAuditRules).toHaveLength(8);
+    expect(tutorialGuideAuditRules.every((rule) => menuIds.has(rule.targetMenu))).toBe(true);
+    expect(tutorialGuideAuditRules.every((rule) => rule.title.trim() && rule.message.trim() && rule.actionLabel.trim())).toBe(true);
+  });
+
   it("shows the helper once at the start and records dismissed tutorials in save state", () => {
     const initial = createInitialState();
     const guide = getTutorialGuide(initial, "company");
@@ -105,5 +128,64 @@ describe("v0.30 helper character tutorial guide", () => {
       id: "next_run_setup",
       targetMenu: "deck",
     });
+  });
+
+  it("keeps every helper rule reachable without preempting the first build-launch-reward loop", () => {
+    const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
+    const writingProduct = products.find((product) => product.id === "ai_writing_assistant");
+    if (!architect || !writingProduct) throw new Error("Missing tutorial fixture");
+
+    const initial = createInitialState();
+    expect(getTutorialGuide(initial, "company")?.id).toBe("welcome_garage");
+
+    const staffed = hireAgent(architect, {
+      ...initial,
+      seenTutorials: ["welcome_garage"],
+    });
+    expect(getTutorialGuide(staffed, "agents")?.id).toBe("agent_hired");
+
+    const started = startProductProject(writingProduct, {
+      ...staffed,
+      seenTutorials: ["welcome_garage", "agent_hired"],
+    }, [staffed.hiredAgents[0].id]);
+    expect(getTutorialGuide(started, "deck")?.id).toBe("development_project");
+
+    const released = advanceMonth(advanceMonth({
+      ...started,
+      seenTutorials: ["welcome_garage", "agent_hired", "development_project"],
+    }));
+    expect(getTutorialGuide(released, "deck")?.id).toBe("card_reward");
+
+    const postRewardComposer = {
+      ...released,
+      seenTutorials: ["welcome_garage", "agent_hired", "development_project", "card_reward"],
+      roguelite: { ...released.roguelite, pendingCardReward: undefined },
+    };
+    expect(getTutorialGuide(postRewardComposer, "products")?.id).toBe("product_ideas");
+
+    const restartReady = {
+      ...postRewardComposer,
+      month: 10,
+      seenTutorials: ["welcome_garage", "agent_hired", "development_project", "card_reward", "product_ideas"],
+    };
+    expect(getTutorialGuide(restartReady, "deck")?.id).toBe("next_run_setup");
+
+    const officeReady = {
+      ...restartReady,
+      seenTutorials: [...restartReady.seenTutorials, "next_run_setup"],
+      resources: { ...restartReady.resources, cash: 10000 },
+    };
+    expect(getTutorialGuide(officeReady, "shop")?.id).toBe("office_growth");
+
+    const competitionReady = {
+      ...officeReady,
+      seenTutorials: [...officeReady.seenTutorials, "office_growth"],
+      competitorStates: officeReady.competitorStates.map((competitor, index) =>
+        index === 0
+          ? { ...competitor, claimedProducts: ["ai_writing_assistant"], marketShare: Math.max(competitor.marketShare, 18) }
+          : competitor,
+      ),
+    };
+    expect(getTutorialGuide(competitionReady, "competition")?.id).toBe("competition_pressure");
   });
 });

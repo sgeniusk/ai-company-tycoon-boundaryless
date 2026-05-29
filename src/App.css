@@ -6489,6 +6489,29 @@ p {
   border-color: #c96d36;
 }
 
+.industry-synergy-panel,
+.industry-combo-panel,
+.industry-synergy-grid,
+.industry-combo-grid {
+  min-width: 0;
+}
+
+.industry-synergy-grid article,
+.industry-combo-grid article {
+  min-width: 0;
+}
+
+.industry-synergy-panel strong,
+.industry-combo-panel strong {
+  overflow-wrap: anywhere;
+}
+
+.industry-synergy-panel span,
+.industry-combo-panel span,
+.industry-combo-panel small {
+  overflow-wrap: anywhere;
+}
+
 .domain-filter {
   display: grid;
   gap: 7px;
@@ -9494,7 +9517,10 @@ p {
   .office-expansion-card,
   .decor-section article,
   .expansion-map,
+  .boundaryless-goal-grid,
   .domain-filter,
+  .industry-synergy-grid,
+  .industry-combo-grid,
   .run-spotlight-grid,
   .rival-wave-list,
   .deck-token-strip,
@@ -9564,6 +9590,22 @@ p {
   }
 
   .workforce-mix-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .domain-filter {
+    grid-template-columns: 1fr;
+  }
+
+  .boundaryless-goal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .industry-synergy-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .industry-combo-grid {
     grid-template-columns: 1fr;
   }
 
