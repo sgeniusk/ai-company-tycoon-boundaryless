@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Company Tycoon: Boundaryless — 개발 현황 & 강점 소개</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --bg-2: #11182e;
+    --card: #161f3a;
+    --card-2: #1c2748;
+    --ink: #eef2ff;
+    --muted: #9aa6c7;
+    --line: #283356;
+    --accent: #6d8bff;
+    --accent-2: #a779ff;
+    --good: #46d6a0;
+    --warn: #ffb454;
+    --hot: #ff6b8b;
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Pretendard", sans-serif;
+    background: radial-gradient(1200px 700px at 70% -10%, #1b2547 0%, var(--bg) 55%) no-repeat, var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 22px 90px; }
+  .eyebrow { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  section { margin-top: 64px; }
+  h2 { font-size: 26px; letter-spacing: -.01em; margin-top: 10px; }
+  h2 .num { color: var(--accent-2); font-variant-numeric: tabular-nums; margin-right: 10px; }
+  p.lead { color: var(--muted); margin-top: 10px; max-width: 70ch; }
+
+  /* Hero */
+  .hero { padding: 86px 0 26px; }
+  .badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .badge {
+    font-size: 12.5px; font-weight: 600; padding: 6px 13px; border-radius: 999px;
+    border: 1px solid var(--line); background: rgba(255,255,255,.03); color: var(--muted);
+  }
+  .badge.live { color: var(--good); border-color: rgba(70,214,160,.35); background: rgba(70,214,160,.08); }
+  .hero h1 {
+    font-size: clamp(34px, 6vw, 58px); line-height: 1.06; letter-spacing: -.03em; font-weight: 800;
+    background: linear-gradient(110deg, #fff 10%, var(--accent) 55%, var(--accent-2) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero .tag { font-size: clamp(16px, 2.4vw, 21px); color: var(--muted); margin-top: 18px; max-width: 62ch; }
+  .hero .pitch { margin-top: 18px; font-size: 16px; color: var(--ink); max-width: 64ch; }
+
+  /* Stat strip */
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 40px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 14px; }
+  .stat b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+  .stat span { font-size: 12.5px; color: var(--muted); }
+  .stat .grad { background: linear-gradient(120deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* Strength cards */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 26px; }
+  .feat {
+    background: linear-gradient(180deg, var(--card), var(--card-2));
+    border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 22px 20px;
+    position: relative; overflow: hidden;
+  }
+  .feat::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2)); opacity: .8;
+  }
+  .feat .ico { font-size: 26px; }
+  .feat h3 { font-size: 17.5px; margin: 12px 0 7px; letter-spacing: -.01em; }
+  .feat p { font-size: 14px; color: var(--muted); }
+  .feat .ver { display: inline-block; margin-top: 12px; font-size: 11.5px; font-weight: 700; color: var(--accent); letter-spacing: .04em; }
+
+  /* Status list */
+  .status { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 22px; margin-top: 24px; }
+  .status .row { display: flex; gap: 16px; padding: 15px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .status .row:last-child { border-bottom: none; }
+  .status .v { font-weight: 800; color: var(--accent); min-width: 116px; font-variant-numeric: tabular-nums; }
+  .status .d { color: var(--muted); font-size: 14.5px; }
+  .status .d b { color: var(--ink); font-weight: 600; }
+  .chip { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; margin-left: 8px; }
+  .chip.done { background: rgba(70,214,160,.14); color: var(--good); }
+  .chip.now { background: rgba(167,121,255,.16); color: var(--accent-2); }
+
+  /* Roadmap timeline */
+  .road { margin-top: 26px; border-left: 2px solid var(--line); padding-left: 26px; }
+  .road .step { position: relative; padding: 4px 0 26px; }
+  .road .step::before {
+    content: ""; position: absolute; left: -34px; top: 6px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent);
+  }
+  .road .step.done::before { background: var(--good); border-color: var(--good); }
+  .road .step.now::before { background: var(--accent-2); border-color: var(--accent-2); box-shadow: 0 0 0 5px rgba(167,121,255,.18); }
+  .road .step.future::before { border-color: var(--muted); }
+  .road h4 { font-size: 16.5px; }
+  .road h4 .when { font-size: 12.5px; font-weight: 600; color: var(--muted); margin-left: 8px; }
+  .road p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+  /* Release table */
+  table { width: 100%; border-collapse: collapse; margin-top: 22px; font-size: 14.5px; }
+  th, td { text-align: left; padding: 13px 14px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+  td b { color: var(--ink); }
+  td .grad { background: linear-gradient(120deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; }
+  .estimate {
+    margin-top: 26px; background: linear-gradient(135deg, rgba(109,139,255,.12), rgba(167,121,255,.10));
+    border: 1px solid rgba(109,139,255,.3); border-radius: var(--radius); padding: 26px;
+  }
+  .estimate .big { font-size: clamp(28px, 5vw, 40px); font-weight: 800; letter-spacing: -.02em; }
+  .estimate .big .grad { background: linear-gradient(120deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .estimate p { color: var(--muted); margin-top: 10px; font-size: 14.5px; max-width: 72ch; }
+  .note { font-size: 13px; color: var(--muted); margin-top: 14px; padding-left: 16px; border-left: 2px solid var(--line); }
+
+  footer { margin-top: 70px; padding-top: 26px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  footer b { color: var(--ink); }
+  a { color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .grid { grid-template-columns: 1fr; }
+    .status .row { flex-direction: column; gap: 4px; }
+    .status .v { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="badge-row">
+      <span class="badge live">● 활발히 개발 중</span>
+      <span class="badge">현재 버전 v0.60-alpha</span>
+      <span class="badge">브라우저 플레이 · 설치 불필요</span>
+      <span class="badge">한국어 · English</span>
+    </div>
+    <h1>AI Company Tycoon:<br />Boundaryless</h1>
+    <p class="tag">차고에서 시작한 AI 스타트업을 10년에 걸쳐 세계적 AI 기업으로 키우는 전략 경영 시뮬레이션. 소프트웨어를 넘어 물리 산업까지, 경계 없이 확장한다.</p>
+    <p class="pitch">제품을 만들고, 능력을 연구하고, 전략 카드 덱을 짜고, 살아 움직이는 경쟁사와 싸우며 시장을 장악하세요. 모든 선택이 다음 10년을 바꿉니다.</p>
+
+    <div class="stats">
+      <div class="stat"><b class="grad">10년</b><span>풀 캠페인 길이</span></div>
+      <div class="stat"><b class="grad">15</b><span>진출 가능 산업</span></div>
+      <div class="stat"><b class="grad">36+</b><span>제품 라인업</span></div>
+      <div class="stat"><b class="grad">420</b><span>자동화 테스트</span></div>
+      <div class="stat"><b class="grad">&lt;1초</b><span>프로덕션 빌드</span></div>
+    </div>
+  </header>
+
+  <!-- 현재 상태 -->
+  <section id="status">
+    <span class="eyebrow">현재 상태</span>
+    <h2>지금 어디까지 왔나</h2>
+    <p class="lead">v0.56에서 플레이 가능한 코어 슬라이스를 잠근 뒤, 한 달도 안 되는 기간에 재미·경쟁·자원·산업 축을 차례로 강화하며 알파를 빠르게 완성해 가고 있다. 매 마일스톤은 전체 검증 게이트(테스트 + 데이터 검증 + 프로덕션 빌드)를 통과한 뒤에만 닫힌다.</p>
+    <div class="status">
+      <div class="row"><span class="v">v0.56</span><span class="d"><b>플레이테스트 슬라이스 잠금</b> — 첫 출시 → 카드 효과 → 보상/성장 → 라이벌/직원 사건 → 연간 심사까지 끊김 없는 코어 루프 확정<span class="chip done">완료</span></span></div>
+      <div class="row"><span class="v">v0.57</span><span class="d"><b>코어 재미 개선</b> — 출시 임팩트 연출, 카드 인과 시각화, 보상 희귀도 차등, 2년차 온보딩 흐름 (9 + 4 폴리시)<span class="chip done">완료</span></span></div>
+      <div class="row"><span class="v">v0.58</span><span class="d"><b>시장/경쟁사 시즌 강화</b> — 시장 점유율 시각화, 라이벌 성향·약점, 대응 카드, 대형 사건 팝업 (5블록)<span class="chip done">완료</span></span></div>
+      <div class="row"><span class="v">v0.59</span><span class="d"><b>AI 자원 가시화</b> — 월간 compute 부하·데이터 생성·다음 출시 필요 연산을 연구 패널에 표시<span class="chip done">완료</span></span></div>
+      <div class="row"><span class="v">v0.60</span><span class="d"><b>경계 없는 산업 확장</b> — 제조·물류·에너지 등 물리 산업 진출 (4블록 중 진행 중)<span class="chip now">진행 중</span></span></div>
+    </div>
+  </section>
+
+  <!-- 게임의 강점 -->
+  <section id="strengths">
+    <span class="eyebrow">게임의 강점</span>
+    <h2>왜 이 게임인가</h2>
+    <p class="lead">단순한 숫자 키우기가 아니다. 살아 있는 경쟁, 전략적 선택, 그리고 "AI 회사가 어디까지 갈 수 있는가"라는 질문을 플레이로 풀어낸다.</p>
+    <div class="grid">
+      <article class="feat">
+        <div class="ico">📈</div>
+        <h3>살아 움직이는 시장과 경쟁사</h3>
+        <p>13개 경쟁사가 성향과 약점을 가지고 시장 점유율을 두고 다툰다. 도전자 등장은 대형 사건 팝업으로 알리고, 압박이 커지면 "대응 카드" 필요가 덱에 직접 드러난다.</p>
+        <span class="ver">v0.58</span>
+      </article>
+      <article class="feat">
+        <div class="ico">🃏</div>
+        <h3>전략 카드 덱빌딩</h3>
+        <p>희귀도(스타터→에픽)와 시너지, 아키타입을 갖춘 전략 카드로 회사 운영을 설계한다. 카드 → 효과의 인과가 출시·보상 화면에서 시각적으로 이어진다.</p>
+        <span class="ver">코어 시스템</span>
+      </article>
+      <article class="feat">
+        <div class="ico">🗓️</div>
+        <h3>10년 캠페인과 연간 심사</h3>
+        <p>매년 연간 심사와 지시 선택으로 다음 해 전략이 갈린다. 캠페인 충격 이벤트와 런 간 메타 진행이 장기 아크에 긴장감을 만든다.</p>
+        <span class="ver">코어 시스템</span>
+      </article>
+      <article class="feat">
+        <div class="ico">⚡</div>
+        <h3>진짜 AI 자원 경제</h3>
+        <p>연산(compute)·데이터·인재가 단순 재화가 아니라 서로 맞물린 경제다. 월간 연산 부하와 다음 출시 필요 연산을 가시화해 "왜 GPU가 부족한가"를 체감하게 한다.</p>
+        <span class="ver">v0.59</span>
+      </article>
+      <article class="feat">
+        <div class="ico">🌐</div>
+        <h3>경계 없는 산업 확장</h3>
+        <p>파운데이션 모델에서 시작해 개발자 도구, 로봇, 모빌리티, 반도체를 거쳐 제조·물류·에너지 같은 물리 산업까지. AI 회사가 현실 세계로 확장하는 서사를 플레이한다.</p>
+        <span class="ver">v0.60</span>
+      </article>
+      <article class="feat">
+        <div class="ico">✨</div>
+        <h3>손맛 있는 폴리시</h3>
+        <p>첫 출시 등장 연출, 보상 희귀도 차등(레어 블루·에픽 퍼플골드), 출시 진행 미터, 사무실 비주얼까지. 첫 30분 경험을 다듬는 데 집중했다.</p>
+        <span class="ver">v0.57</span>
+      </article>
+      <article class="feat">
+        <div class="ico">📱</div>
+        <h3>어디서나, 누구나</h3>
+        <p>브라우저에서 바로 실행되고 설치가 필요 없다. 한국어·영어를 모두 지원하고, 모바일 390×844 레이아웃과 모션 감소 설정까지 테스트로 보장한다.</p>
+        <span class="ver">접근성</span>
+      </article>
+      <article class="feat">
+        <div class="ico">🧪</div>
+        <h3>데이터 주도 · 검증된 품질</h3>
+        <p>제품·도메인·능력·카드·시너지가 40여 개 JSON 콘텐츠로 분리돼 빠르게 확장된다. 420개 자동화 테스트와 데이터 무결성 게이트가 매 변경을 지킨다.</p>
+        <span class="ver">엔지니어링</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- 개발 방향 -->
+  <section id="direction">
+    <span class="eyebrow">개발 방향</span>
+    <h2>여기서 어디로 가나</h2>
+    <p class="lead">남은 길은 명확하다. 산업 확장을 마무리하고, 공개 가능한 안정 빌드를 만든 뒤, 외부 피드백과 최종 아트를 거쳐 정식 출시로 향한다.</p>
+    <div class="road">
+      <div class="step now">
+        <h4>v0.60 · 경계 없는 산업 확장 슬라이스 <span class="when">진행 중</span></h4>
+        <p>물리 산업 3개(제조·물류·에너지) 추가 → 로봇/제조/물류 요구 조건 배선 → 산업 간 시너지 10개 → 고위험·대박 조합 10개. 4블록 중 1블록 완료, 2블록 진행 중.</p>
+      </div>
+      <div class="step future">
+        <h4>v0.61 · 공개 웹 알파 후보 <span class="when">다음</span></h4>
+        <p>저장/불러오기 안정성, 10년 캠페인 1회 완주 가능, 튜토리얼 흐름 정리, 주요 UI 깨짐 제거, 소개 문구·스크린샷 준비. 외부에 처음 공개하는 빌드.</p>
+      </div>
+      <div class="step future">
+        <h4>베타 · 외부 피드백 & 최종 아트 <span class="when">그 다음</span></h4>
+        <p>AGY 에이전트 5회 + 실제 사람 블라인드 플레이테스트로 P0/P1을 닫고, 최종 캐릭터·오브젝트·배경 소스 아트를 투입한다. 밸런스와 완성도를 다듬는 단계.</p>
+      </div>
+      <div class="step future">
+        <h4>v1.0 · 정식 출시 <span class="when">목표</span></h4>
+        <p>안정적인 10년 캠페인, 완성된 비주얼, 정리된 온보딩. 누구나 끝까지 플레이할 수 있는 공개 릴리스.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 정식출시 예측 -->
+  <section id="release">
+    <span class="eyebrow">정식 출시 예측</span>
+    <h2>언제 나오나</h2>
+    <p class="lead">코드 개발 속도는 매우 빠르다(최근 약 나흘에 알파 마일스톤 4개). 다만 정식 출시는 코드뿐 아니라 최종 아트 투입과 실제 사람 플레이테스트 같은 달력에 묶인 게이트가 좌우한다. 아래는 가정에 따른 시나리오 예측이다.</p>
+    <table>
+      <thead>
+        <tr><th>시나리오</th><th>공개 웹 알파 (v0.61)</th><th>정식 출시 (v1.0)</th><th>핵심 가정</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>빠름</b></td><td>~2주</td><td><span class="grad">~6~8주</span></td><td>현재 burst 속도 유지, 아트·플레이테스트 병렬 진행</td></tr>
+        <tr><td><b>현실적</b></td><td>~3~4주</td><td><span class="grad">~2.5~4개월</span></td><td>꾸준한 개발 + 1~2회 플레이테스트 사이클 + 아트 수급</td></tr>
+        <tr><td><b>신중</b></td><td>~6주</td><td><span class="grad">~5~6개월</span></td><td>밸런스 재작업, 아트 외주 지연, 베타 피드백 반영 라운드 다수</td></tr>
+      </tbody>
+    </table>
+    <div class="estimate">
+      <div class="big">정식 출시 <span class="grad">약 3~4개월 내</span> (현실적 기준)</div>
+      <p>현재 알파는 코어 루프·경쟁·자원·산업 축이 대부분 자리 잡아 기능적으로 약 80% 지점에 있다. 남은 핵심은 산업 확장 마무리(v0.60), 공개용 안정화(v0.61), 그리고 베타 단계의 최종 아트·플레이테스트다.</p>
+      <p class="note">이 예측은 약속이 아니라 현재 로드맵·속도·게이트에 기반한 추정이다. 정식 출시 시점을 가장 크게 좌우하는 변수는 최종 소스 아트 수급과 실제 사람 블라인드 플레이테스트 사이클이며, 이 둘은 코드 속도와 독립적으로 움직인다.</p>
+    </div>
+  </section>
+
+  <!-- 어떻게 만들어지나 -->
+  <section id="how">
+    <span class="eyebrow">어떻게 만들어지나</span>
+    <h2>검증 우선, 이중 에이전트 개발</h2>
+    <p class="lead">구현은 Codex(gpt-5.5)가, 검증·계약·게이트는 Claude Code가 맡는 이중 트랙으로 개발한다. 모든 기능은 derive-only 또는 격리 블록으로 쪼개고, 전체 검증 게이트(43개 파일 · 420개 테스트 · 데이터 검증 · 프로덕션 빌드)를 통과해야만 커밋된다. 빠른 속도와 회귀 방지를 동시에 잡는 구조다.</p>
+  </section>
+
+  <footer>
+    <p><b>AI Company Tycoon: Boundaryless</b> · 개발 현황 & 강점 소개</p>
+    <p>기준 시점 2026-05-29 · 현재 버전 v0.60-alpha · 스택 Vite + React + TypeScript</p>
+    <p>근거 — feature_list.json 마일스톤 이력, npm run harness:gate (43 files / 420 tests), docs/ROADMAP.md. 출시 예측은 추정치이며 변동될 수 있다.</p>
+  </footer>
+
+</div>
+</body>
+</html>
