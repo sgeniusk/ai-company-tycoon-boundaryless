@@ -773,6 +773,30 @@ export interface IndustrySynergySummary {
   totalMonthlyEffects: ResourceMap;
 }
 
+export interface IndustryComboDefinition {
+  id: string;
+  title: string;
+  description: string;
+  required_domains: string[];
+  monthly_effects: ResourceMap;
+  risk_label: string;
+  tags: string[];
+}
+
+export interface IndustryComboStatus extends IndustryComboDefinition {
+  active: boolean;
+  progressLabel: string;
+  fulfilledDomains: string[];
+  missingDomains: string[];
+}
+
+export interface IndustryComboSummary {
+  active: IndustryComboStatus[];
+  locked: IndustryComboStatus[];
+  nextCandidate?: IndustryComboStatus;
+  totalMonthlyEffects: ResourceMap;
+}
+
 export interface OfficeZoneDefinition {
   id: string;
   title: string;

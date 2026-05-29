@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { agentTypes, capabilities, domains, industrySynergies, products } from "./data";
+import { agentTypes, capabilities, domains, industryCombos, industrySynergies, products } from "./data";
 import { getBoundarylessExpansionGoals } from "./boundaryless-expansion";
+import { getIndustryComboSummary } from "./industry-combos";
 import { getIndustrySynergySummary } from "./industry-synergies";
 import { advanceMonth, calculateMonthlyEconomy, createInitialState, getAgentHireCheck, getProductCheck, upgradeCapability } from "./simulation";
 import type { GameState } from "./types";
@@ -90,6 +91,49 @@ describe("v0.12.4 boundaryless expansion direction", () => {
     expect(summary.active.map((synergy) => synergy.id)).toContain("robotics_manufacturing_cell");
     expect(economy.strategyEffects?.automation).toBeGreaterThanOrEqual(summary.totalMonthlyEffects.automation ?? 0);
     expect(economy.strategyEffects?.cash).toBeGreaterThanOrEqual(summary.totalMonthlyEffects.cash ?? 0);
+  });
+
+  it("defines exactly 10 high-risk industry combos with downside labels", () => {
+    expect(industryCombos).toHaveLength(10);
+    expect(industryCombos.map((combo) => combo.id)).toEqual(
+      expect.arrayContaining([
+        "full_stack_physical_empire",
+        "autonomous_mobility_bet",
+        "vertical_infra_foundry",
+        "semiconductor_robotics_fab",
+      ]),
+    );
+    expect(industryCombos.every((combo) => combo.required_domains.length >= 2 && combo.required_domains.length <= 3)).toBe(true);
+    expect(industryCombos.every((combo) => combo.risk_label.trim().length > 0)).toBe(true);
+    expect(industryCombos.every((combo) => Object.values(combo.monthly_effects).some((value) => value < 0))).toBe(true);
+  });
+
+  it("applies active high-risk combo effects through the same monthly strategy aggregation", () => {
+    const base = createInitialState();
+    const state: GameState = {
+      ...base,
+      activeProducts: ["warehouse_robot_fleet"],
+      unlockedDomains: [...base.unlockedDomains, "manufacturing"],
+      resources: {
+        ...base.resources,
+        cash: 50000,
+        compute: 1000,
+        data: 1000,
+      },
+    };
+    const summary = getIndustryComboSummary(state);
+    const economy = calculateMonthlyEconomy(state);
+
+    expect(summary.active.map((combo) => combo.id)).toContain("robot_factory_subscription");
+    expect(summary.active.find((combo) => combo.id === "robot_factory_subscription")?.risk_label).toContain("연산");
+    expect(summary.totalMonthlyEffects).toMatchObject({
+      cash: 560,
+      automation: 6,
+      users: 260,
+      compute: -22,
+    });
+    expect(economy.strategyEffects?.cash).toBeGreaterThanOrEqual((summary.totalMonthlyEffects.cash ?? 0) + 120);
+    expect(economy.strategyEffects?.compute).toBeLessThan(0);
   });
 
   it("wires manufacturing and logistics capabilities into physical industry gates", () => {

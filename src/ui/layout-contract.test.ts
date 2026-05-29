@@ -684,6 +684,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.industry-synergy-grid\s*{[^}]*grid-template-columns:/s);
   });
 
+  it("surfaces high-risk industry combos with risk labels in the products console", () => {
+    expect(menuPanels).toContain("getIndustryComboSummary");
+    expect(menuPanels).toContain("industry-combo-panel");
+    expect(menuPanels).toContain("risk_label");
+    expect(appCss).toMatch(/\.industry-combo-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.industry-combo-grid\s*{[^}]*grid-template-columns:/s);
+  });
+
   it("adds a next-run command room for roguelite restart decisions", () => {
     expect(menuPanels).toContain("getNextRunSetupPlan");
     expect(menuPanels).toContain("next-run-command-panel");

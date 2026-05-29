@@ -13,6 +13,7 @@ import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualSt
 import { getBoundarylessExpansionGoals } from "../game/boundaryless-expansion";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
+import { getIndustryComboSummary } from "../game/industry-combos";
 import { getIndustrySynergySummary } from "../game/industry-synergies";
 import {
   getAgentContentRows,
@@ -1268,6 +1269,7 @@ function ProductsPanel({
   const unlockedDomainIds = new Set(gameState.unlockedDomains);
   const boundarylessGoals = getBoundarylessExpansionGoals(gameState);
   const industrySynergySummary = getIndustrySynergySummary(gameState);
+  const industryComboSummary = getIndustryComboSummary(gameState);
   const domainFilters = getProductDomainFilters(availableProducts, domains, gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "products");
   const lastCapabilityUpgrade = gameState.lastCapabilityUpgrade;
@@ -1598,6 +1600,31 @@ function ProductsPanel({
             <article>
               <strong>다음 후보: {industrySynergySummary.nextCandidate.title}</strong>
               <span>{industrySynergySummary.nextCandidate.progressLabel}</span>
+            </article>
+          )}
+        </div>
+      </div>
+      <div className="industry-combo-panel">
+        <div>
+          <p className="eyebrow">고위험 산업 조합</p>
+          <strong>{industryComboSummary.active.length ? `${industryComboSummary.active.length}개 가동` : "조합 준비 중"}</strong>
+          <span>
+            월간 효과 {Object.keys(industryComboSummary.totalMonthlyEffects).length ? formatEffects(industryComboSummary.totalMonthlyEffects) : "없음"}
+          </span>
+        </div>
+        <div className="industry-combo-grid">
+          {industryComboSummary.active.slice(0, 3).map((combo) => (
+            <article className="active" key={combo.id}>
+              <strong>{combo.title}</strong>
+              <span>{formatEffects(combo.monthly_effects)}</span>
+              <small>{combo.risk_label}</small>
+            </article>
+          ))}
+          {industryComboSummary.active.length === 0 && industryComboSummary.nextCandidate && (
+            <article>
+              <strong>다음 후보: {industryComboSummary.nextCandidate.title}</strong>
+              <span>{industryComboSummary.nextCandidate.progressLabel}</span>
+              <small>{industryComboSummary.nextCandidate.risk_label}</small>
             </article>
           )}
         </div>

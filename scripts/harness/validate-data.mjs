@@ -83,6 +83,7 @@ const starterDecksData = readJson("starter_decks.json");
 const officeExpansionsData = readJson("office_expansions.json");
 const officeSynergiesData = readJson("office_synergies.json");
 const industrySynergiesData = readJson("industry_synergies.json");
+const industryCombosData = readJson("industry_combos.json");
 const officeZonesData = readJson("office_zones.json");
 const officeSceneData = readJson("office_scene.json");
 const officeReactionsData = readJson("office_reactions.json");
@@ -122,6 +123,7 @@ const starterDecks = starterDecksData?.starter_decks ?? [];
 const officeExpansions = officeExpansionsData?.office_expansions ?? [];
 const officeSynergies = officeSynergiesData?.office_synergies ?? [];
 const industrySynergies = industrySynergiesData?.industry_synergies ?? [];
+const industryCombos = industryCombosData?.industry_combos ?? [];
 const officeZones = officeZonesData?.office_zones ?? [];
 const officeSceneObjects = officeSceneData?.office_scene_objects ?? [];
 const officeReactions = officeReactionsData?.office_reactions ?? [];
@@ -159,6 +161,7 @@ idsAreUnique("starter_decks", starterDecks);
 idsAreUnique("office_expansions", officeExpansions);
 idsAreUnique("office_synergies", officeSynergies);
 idsAreUnique("industry_synergies", industrySynergies);
+idsAreUnique("industry_combos", industryCombos);
 const officeZoneIds = idsAreUnique("office_zones", officeZones);
 idsAreUnique("office_scene.office_scene_objects", officeSceneObjects);
 idsAreUnique("office_reactions", officeReactions);
@@ -390,6 +393,29 @@ for (const synergy of industrySynergies) {
   validateResourceMap(`industry_synergy "${synergy.id}" monthly_effects`, synergy.monthly_effects, resourceIds);
   if (!Array.isArray(synergy.tags) || synergy.tags.length === 0) {
     errors.push(`industry_synergy "${synergy.id}": tags must be a non-empty array`);
+  }
+}
+
+if (industryCombos.length !== 10) errors.push(`industry_combos: expected exactly 10 combos, found ${industryCombos.length}`);
+for (const combo of industryCombos) {
+  for (const field of ["title", "description", "required_domains", "monthly_effects", "risk_label", "tags"]) {
+    if (!(field in combo)) errors.push(`industry_combo "${combo.id}": missing ${field}`);
+  }
+  if (!Array.isArray(combo.required_domains) || combo.required_domains.length < 2 || combo.required_domains.length > 3) {
+    errors.push(`industry_combo "${combo.id}": required_domains must include two or three domains`);
+  }
+  for (const domainId of combo.required_domains ?? []) {
+    if (!domainIds.has(domainId)) errors.push(`industry_combo "${combo.id}": unknown domain "${domainId}"`);
+  }
+  validateResourceMap(`industry_combo "${combo.id}" monthly_effects`, combo.monthly_effects, resourceIds);
+  if (!Object.values(combo.monthly_effects ?? {}).some((value) => typeof value === "number" && value < 0)) {
+    errors.push(`industry_combo "${combo.id}": monthly_effects must include at least one negative downside`);
+  }
+  if (typeof combo.risk_label !== "string" || combo.risk_label.trim().length === 0) {
+    errors.push(`industry_combo "${combo.id}": risk_label must be a non-empty string`);
+  }
+  if (!Array.isArray(combo.tags) || combo.tags.length === 0) {
+    errors.push(`industry_combo "${combo.id}": tags must be a non-empty array`);
   }
 }
 

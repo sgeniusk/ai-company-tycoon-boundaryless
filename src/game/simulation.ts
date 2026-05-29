@@ -45,6 +45,7 @@ import {
 } from "./deckbuilding";
 import { createDevelopmentPuzzle, getDevelopmentPuzzleResolveCheck, getDevelopmentPuzzleSelectionLimit } from "./development-puzzle";
 import { createReleaseGrowthPaths } from "./growth-paths";
+import { getIndustryComboSummary } from "./industry-combos";
 import { getIndustrySynergySummary } from "./industry-synergies";
 import { getRenewalReleaseOptions, type ProductConcept } from "./product-ideas";
 import { createMarketReaction, createReleaseHeadline } from "./release-flavor";
@@ -3857,6 +3858,7 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   const officeZoneEffects = getOfficeZonePlan(state).totalMonthlyEffects;
   const deckSynergyEffects = getDeckSynergyMonthlyEffects(state);
   const industrySynergyEffects = getIndustrySynergySummary(state).totalMonthlyEffects;
+  const industryComboEffects = getIndustryComboSummary(state).totalMonthlyEffects;
   if (growthPathEffects && Object.keys(growthPathEffects).length > 0) effects.push(growthPathEffects);
   if (annualDirective?.monthlyEffects && Object.keys(annualDirective.monthlyEffects).length > 0) {
     effects.push(annualDirective.monthlyEffects);
@@ -3866,6 +3868,7 @@ function getMonthlyStrategicEffects(state: GameState): ResourceMap | undefined {
   if (Object.keys(officeZoneEffects).length > 0) effects.push(officeZoneEffects);
   if (Object.keys(deckSynergyEffects).length > 0) effects.push(deckSynergyEffects);
   if (Object.keys(industrySynergyEffects).length > 0) effects.push(industrySynergyEffects);
+  if (Object.keys(industryComboEffects).length > 0) effects.push(industryComboEffects);
 
   if (effects.length === 0) return undefined;
   return effects.reduce<ResourceMap>((combined, effect) => mergeResourceDelta(combined, effect), {});

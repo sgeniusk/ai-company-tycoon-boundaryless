@@ -1,0 +1,94 @@
+{
+  "industry_combos": [
+    {
+      "id": "full_stack_physical_empire",
+      "title": "풀스택 물리 제국",
+      "description": "제조, 물류, 에너지 운영을 한 덩어리로 묶어 거대한 하드웨어 사업을 직접 굴립니다.",
+      "required_domains": ["manufacturing", "logistics", "energy"],
+      "monthly_effects": {"cash": 900, "users": 420, "automation": 4, "trust": -4},
+      "risk_label": "공급망 사고가 나면 브랜드 신뢰가 크게 흔들립니다.",
+      "tags": ["manufacturing", "logistics", "energy", "high_reward"]
+    },
+    {
+      "id": "autonomous_mobility_bet",
+      "title": "자율 모빌리티 베팅",
+      "description": "로봇 제어와 모빌리티 제품을 결합해 실제 도로와 창고를 동시에 공략합니다.",
+      "required_domains": ["robotics", "mobility", "logistics"],
+      "monthly_effects": {"users": 620, "cash": 520, "data": 7, "trust": -5},
+      "risk_label": "안전 검증 부담 때문에 작은 사고도 여론 리스크가 됩니다.",
+      "tags": ["robotics", "mobility", "logistics", "safety_risk"]
+    },
+    {
+      "id": "vertical_infra_foundry",
+      "title": "수직계열 인프라 파운드리",
+      "description": "반도체, 에너지, 파운데이션 모델을 수직 통합해 자체 추론 인프라를 만듭니다.",
+      "required_domains": ["semiconductors", "energy", "foundation_models"],
+      "monthly_effects": {"compute": 34, "cash": 640, "hype": 4, "automation": -3},
+      "risk_label": "인프라 집중도가 높아 운영 병목이 자동화 효율을 깎습니다.",
+      "tags": ["semiconductors", "energy", "foundation_models", "infrastructure"]
+    },
+    {
+      "id": "robot_factory_subscription",
+      "title": "로봇 공장 구독망",
+      "description": "로봇 제품과 제조 현장을 구독형 자동화 패키지로 팔아 장기 매출을 만듭니다.",
+      "required_domains": ["robotics", "manufacturing"],
+      "monthly_effects": {"cash": 560, "automation": 6, "users": 260, "compute": -22},
+      "risk_label": "현장 로봇 관제 비용이 매달 연산 자원을 압박합니다.",
+      "tags": ["robotics", "manufacturing", "subscription"]
+    },
+    {
+      "id": "grid_scale_ai_ops",
+      "title": "그리드 스케일 AI 옵스",
+      "description": "엔터프라이즈 자동화와 에너지 제어를 묶어 대형 전력 운영 계약을 따냅니다.",
+      "required_domains": ["enterprise_automation", "energy"],
+      "monthly_effects": {"cash": 610, "trust": 5, "automation": 3, "data": -6},
+      "risk_label": "보수적인 고객 요구로 운영 데이터 여유분이 빠르게 줄어듭니다.",
+      "tags": ["enterprise", "energy", "operations"]
+    },
+    {
+      "id": "creator_microfactory_drop",
+      "title": "크리에이터 마이크로팩토리 드롭",
+      "description": "크리에이터 도구의 수요 신호를 제조 라인에 바로 연결해 한정판 물리 제품을 쏟아냅니다.",
+      "required_domains": ["creator_tools", "manufacturing", "logistics"],
+      "monthly_effects": {"hype": 8, "cash": 470, "users": 360, "trust": -3},
+      "risk_label": "품질 편차가 커지면 팬덤의 신뢰가 즉시 손상됩니다.",
+      "tags": ["creator", "manufacturing", "logistics", "hype"]
+    },
+    {
+      "id": "industrial_learning_network",
+      "title": "산업 학습 네트워크",
+      "description": "교육 제품과 제조 현장 훈련 데이터를 결합해 산업 인력 재교육 시장을 장악합니다.",
+      "required_domains": ["education", "manufacturing", "robotics"],
+      "monthly_effects": {"users": 540, "trust": 4, "data": 6, "cash": -180},
+      "risk_label": "현장 커리큘럼 운영비가 고정 현금 지출로 남습니다.",
+      "tags": ["education", "manufacturing", "robotics", "training"]
+    },
+    {
+      "id": "toy_robot_supply_frenzy",
+      "title": "토이 로봇 공급 열풍",
+      "description": "장난감 캐릭터 IP와 로봇 공급망을 묶어 폭발적인 소비자 수요를 노립니다.",
+      "required_domains": ["toys", "robotics", "logistics"],
+      "monthly_effects": {"users": 580, "hype": 7, "cash": 430, "trust": -4},
+      "risk_label": "아동용 제품 안전 논란이 생기면 신뢰 손실이 큽니다.",
+      "tags": ["toys", "robotics", "logistics", "consumer"]
+    },
+    {
+      "id": "semiconductor_robotics_fab",
+      "title": "반도체 로봇 팹",
+      "description": "칩 설계와 로봇 제조 자동화를 결합해 고부가가치 팹 운영으로 뛰어듭니다.",
+      "required_domains": ["semiconductors", "robotics", "manufacturing"],
+      "monthly_effects": {"cash": 820, "compute": 18, "automation": 5, "talent": -3},
+      "risk_label": "전문 인력 소모가 커져 채용 파이프라인이 계속 압박받습니다.",
+      "tags": ["semiconductors", "robotics", "manufacturing", "fab"]
+    },
+    {
+      "id": "odd_industry_energy_platform",
+      "title": "엉뚱한 에너지 플랫폼",
+      "description": "기묘한 소비 산업 실험을 에너지 운영과 묶어 대중적 화제성과 신규 매출을 동시에 노립니다.",
+      "required_domains": ["odd_industries", "energy", "logistics"],
+      "monthly_effects": {"hype": 9, "cash": 500, "users": 330, "compute": -18},
+      "risk_label": "예측 불가능한 현장 운영 때문에 매달 연산 여유를 태웁니다.",
+      "tags": ["odd_industries", "energy", "logistics", "volatile"]
+    }
+  ]
+}
