@@ -4,6 +4,14 @@ import type { AchievementConditionDefinition, AchievementStatus, GameState, Reso
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
+export interface AchievementCelebrationMoment {
+  id: string;
+  kind: "achievement";
+  title: string;
+  description: string;
+  reward: ResourceMap;
+}
+
 export function getAchievementStatuses(state: GameState): AchievementStatus[] {
   const unlocked = new Set(state.unlockedAchievements ?? []);
 
@@ -41,6 +49,25 @@ export function applyAchievementUnlocks(state: GameState): GameState {
       ...state.timeline,
     ].slice(0, 10),
   };
+}
+
+export function getAchievementCelebrationMoments(state: GameState): AchievementCelebrationMoment[] {
+  const unlocked = new Set(state.unlockedAchievements ?? []);
+  return [...achievements]
+    .sort((a, b) => a.order - b.order)
+    .filter((achievement) => unlocked.has(achievement.id))
+    .map((achievement) => ({
+      id: `achievement:${achievement.id}`,
+      kind: "achievement",
+      title: achievement.title,
+      description: achievement.description,
+      reward: achievement.reward,
+    }));
+}
+
+export function getNewAchievementUnlockIds(previousUnlockedIds: Iterable<string>, currentUnlockedIds: Iterable<string>): string[] {
+  const previous = new Set(previousUnlockedIds);
+  return [...currentUnlockedIds].filter((id) => !previous.has(id));
 }
 
 function achievementConditionMet(condition: AchievementConditionDefinition, state: GameState): boolean {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { agentTypes, capabilities, products } from "./data";
-import { getAchievementStatuses } from "./achievements";
+import { getAchievementStatuses, getNewAchievementUnlockIds } from "./achievements";
 import {
   advanceMonth,
   createInitialState,
@@ -12,6 +12,12 @@ import {
 } from "./simulation";
 
 describe("v0.11 commercial run achievements", () => {
+  it("detects newly unlocked achievements from a previous UI snapshot", () => {
+    expect(
+      getNewAchievementUnlockIds(["first_release"], ["first_release", "two_product_company", "market_foothold"]),
+    ).toEqual(["two_product_company", "market_foothold"]);
+  });
+
   it("unlocks and rewards the first shipped product objective once", () => {
     const architect = agentTypes.find((agent) => agent.id === "prompt_architect");
     const writingProduct = products.find((product) => product.id === "ai_writing_assistant");

@@ -83,6 +83,7 @@ export const qaScenarioIds = [
   "physical-industries",
   "payoff-juice",
   "collection",
+  "milestones",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -171,6 +172,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "페이오프 도감 QA",
       state: createPayoffCollectionScenarioState(),
       activeMenu: "products",
+    };
+  }
+
+  if (id === "milestones") {
+    return {
+      id,
+      label: "마일스톤 팡파레 QA",
+      state: createMilestoneScenarioState(),
+      activeMenu: "company",
     };
   }
 
@@ -1475,6 +1485,55 @@ function createPayoffCollectionScenarioState(): GameState {
     ],
     timeline: [
       "v0.62 도감 QA: 발견된 페이오프와 잠긴 ??? 항목을 제품 패널에서 확인",
+      ...initialState.timeline,
+    ].slice(0, 8),
+  };
+}
+
+function createMilestoneScenarioState(): GameState {
+  const initialState = createInitialState();
+  const reviewReward = { cash: 3500, trust: 4, hype: 6 };
+
+  return {
+    ...initialState,
+    month: 12,
+    activeProducts: ["foundation_model_v0"],
+    productLevels: {
+      ...initialState.productLevels,
+      foundation_model_v0: 1,
+    },
+    resources: {
+      ...initialState.resources,
+      cash: 5500,
+      users: 820,
+      trust: 34,
+      hype: 12,
+    },
+    unlockedAchievements: ["first_release"],
+    annualReviewHistory: [
+      {
+        reviewId: "year_1_local_demo_day",
+        year: 1,
+        month: 12,
+        passed: true,
+        score: 100,
+        title: "지역 AI 데모데이",
+        summary: "지역 AI 데모데이 통과: 첫 심사를 간발의 차로 넘겼습니다.",
+        reward: reviewReward,
+      },
+    ],
+    seenTutorials: [
+      "welcome_garage",
+      "agent_hired",
+      "product_ideas",
+      "development_project",
+      "card_reward",
+      "next_run_setup",
+      "office_growth",
+      "competition_pressure",
+    ],
+    timeline: [
+      "v0.62 마일스톤 QA: 업적 팡파레와 연간 심사 near-miss relief를 회사 패널에서 확인",
       ...initialState.timeline,
     ].slice(0, 8),
   };

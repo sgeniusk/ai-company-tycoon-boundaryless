@@ -82,6 +82,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "physical-industries",
       "payoff-juice",
       "collection",
+      "milestones",
     ]);
   });
 
@@ -787,8 +788,20 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=office-visuals")?.id).toBe("office-visuals");
     expect(createQaScenarioFromSearch("?scenario=payoff-juice")?.id).toBe("payoff-juice");
     expect(createQaScenarioFromSearch("?scenario=collection")?.id).toBe("collection");
+    expect(createQaScenarioFromSearch("?scenario=milestones")?.id).toBe("milestones");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
+  });
+
+  it("builds a milestone payoff QA state with an unlocked achievement and near-miss annual review", () => {
+    const scenario = createQaScenario("milestones");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.state.unlockedAchievements.length).toBeGreaterThan(0);
+    expect(scenario.state.annualReviewHistory[0]).toMatchObject({
+      reviewId: "year_1_local_demo_day",
+      passed: true,
+    });
   });
 
   it("creates a payoff collection scenario with revealed and hidden entries", () => {

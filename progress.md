@@ -16,7 +16,7 @@ Last Updated: 2026-05-29
 
 ## Current Objective
 
-`v0.62-alpha-payoff-juice` is the current milestone — dopamine polish that amplifies existing combo/synergy/milestone moments into payoff celebrations (§5-safe, no new systems), a pre-beta polish slice. **Blocks #1 (activation celebration) + #2 (discovery + collection-lite) DONE 2026-05-29.** The post-1.0 vision (tag-derivation engine, roguelike run modifiers, multi-ending) is captured in `reports/v0_62_design_direction.md`. Prior `v0.61-alpha-public-web-alpha` CLOSED 2026-05-29 (public web alpha); the v0.56-v0.61 block detail below is recent history. After v0.62, beta prep (blind playtest + final art, parallel) toward v1.0.
+`v0.62-alpha-payoff-juice` is the current milestone — dopamine polish that amplifies existing combo/synergy/milestone moments into payoff celebrations (§5-safe, no new systems), a pre-beta polish slice. **v0.62 COMPLETE 2026-05-29 — all 3 blocks (activation celebration, discovery+collection-lite, milestone fanfare+near-miss).** The post-1.0 vision (tag-derivation engine, roguelike run modifiers, multi-ending) is captured in `reports/v0_62_design_direction.md`. Prior `v0.61-alpha-public-web-alpha` CLOSED 2026-05-29 (public web alpha); the v0.56-v0.61 block detail below is recent history. After v0.62, beta prep (blind playtest + final art, parallel) toward v1.0.
 
 v0.61 block status (recent history):
 
@@ -48,19 +48,19 @@ Recent milestone history — `v0.60-alpha-boundaryless-industry-expansion` CLOSE
 - v0.61 #3 (6b3e8de): 43 files / 437 tests. tutorial reorder + audit invariants; mobile 390x844 contracts for v0.60 UI + minimal App.css fix. Codex CLI (fast/medium).
 - v0.61 #4 + closeout (645eb2c era): docs only — refreshed reports/v0_60_status_and_promo.html to v0.61 + wrote reports/v0_61_public_alpha_intro.md. v0.61 milestone marked completed.
 - v0.62 #1 (29c2dc9): 44 files / 439 tests (new test file shifts the file baseline 43→44). Pure-derive combo/synergy activation celebration (payoff-activation.ts + PayoffCelebrationModal + ?scenario=payoff-juice); no GameState field, simulation.ts + save path untouched. Companion: review deck + reports/v0_62_design_direction.md (224fcb6).
-- v0.62 #2 (this commit): 44 files / 444 tests. Discovery "신규 발견!" + collection-lite + ?scenario=collection; new persisted GameState.discoveredPayoffIds (seenTutorials pattern, save round-trip + old-save migration tested); simulation.ts = initialState default + hydrate sanitizer only (no tick/balance). Codex CLI (fast/medium); verification by Claude Code.
+- v0.62 #2 (a115131): 44 files / 444 tests. Discovery "신규 발견!" + collection-lite + ?scenario=collection; new persisted GameState.discoveredPayoffIds (seenTutorials pattern, save round-trip + old-save migration tested); simulation.ts = initialState default + hydrate sanitizer only.
+- v0.62 #3 + closeout (this commit): 44 files / 448 tests. Milestone fanfare (achievements reuse + 2 conservative achievements) + getAnnualReviewNearMissSignal derive (pass criteria unchanged); simulation.ts/types.ts/save schema untouched. v0.62 marked completed. Codex CLI (fast/medium, re-run after a killed attempt was reverted clean); verification by Claude Code.
 
 ## Recommended Next Step
 
-`v0.62` blocks #1-#2 are done and committed. Next on the track:
+`v0.62` is **CLOSED** (3/3 dopamine-polish blocks: payoff celebration · discovery+도감 · milestone fanfare+near-miss). The dopamine layer is in ahead of the post-1.0 vision. Next on the track:
 
-1. v0.62 block #3 — milestone fanfare (first $1M, first physical industry, AGI threshold) + annual-review near-miss emphasis (barely-passed = tension/relief). §5-safe polish. Then v0.62 closeout.
-2. Beta prep (parallel, calendar-bound) — AGY 5x done; real-human playtest + final art (resolution↑) unlock v1.0.
-3. post-1.0 big systems per `reports/v0_62_design_direction.md` — tag-derivation engine, roguelike run modifiers (도시×세계관×시장×창업자 + 연중 이벤트), multi-ending.
+1. Beta prep (parallel, calendar-bound) — AGY 5x done; real-human playtest + final art (resolution↑) unlock v1.0.
+2. post-1.0 big systems per `reports/v0_62_design_direction.md` — tag-derivation engine, roguelike run modifiers (도시×세계관×시장×창업자 + 연중 이벤트), multi-ending.
 
 ## Next Session
 
 1. Read `AGENTS.md`, `feature_list.json`, and this file first.
 2. Check `git status --short`.
-3. v0.62 #1 done; continue v0.62 #2 (discovery + collection) → #3 (milestone fanfare), or proceed to beta prep / post-1.0 systems (`reports/v0_62_design_direction.md`).
-4. Run `npm run harness:gate` as the baseline (44 files / 444 tests) before changes.
+3. v0.62 is closed (dopamine polish). Next is beta prep (real-human playtest + final art) or a post-1.0 system (`reports/v0_62_design_direction.md`).
+4. Run `npm run harness:gate` as the baseline (44 files / 448 tests) before changes.

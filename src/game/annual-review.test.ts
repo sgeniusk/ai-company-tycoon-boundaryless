@@ -5,6 +5,7 @@ import {
   getAnnualReviewForMonth,
   getActiveAnnualDirective,
   getAnnualDirectiveChoiceRows,
+  getAnnualReviewNearMissSignal,
   getAnnualReviewProgress,
   getCurrentAnnualReview,
   getDueAnnualReviewResult,
@@ -50,6 +51,42 @@ describe("v0.14.5 annual directive choices", () => {
 
     expect(result?.passed).toBe(true);
     expect(result?.reward.cash).toBeGreaterThan(0);
+  });
+
+  it("derives near-miss relief from the latest annual review history without storing a new field", () => {
+    const reviewedState: GameState = {
+      ...createInitialState(),
+      month: 12,
+      activeProducts: ["foundation_model_v0"],
+      resources: {
+        ...createInitialState().resources,
+        cash: 5500,
+        users: 820,
+        trust: 34,
+        hype: 12,
+      },
+      annualReviewHistory: [
+        {
+          reviewId: "year_1_local_demo_day",
+          year: 1,
+          month: 12,
+          passed: true,
+          score: 100,
+          title: "지역 AI 데모데이",
+          summary: "지역 AI 데모데이 통과: QA",
+          reward: { cash: 3500, trust: 4, hype: 6 },
+        },
+      ],
+    };
+
+    const signal = getAnnualReviewNearMissSignal(reviewedState.annualReviewHistory[0], reviewedState);
+
+    expect(signal).toMatchObject({
+      tone: "relief",
+      marginPercent: 0,
+      requirementLabel: "출시 제품",
+    });
+    expect(signal?.copy).toContain("아슬아슬");
   });
 
   it("applies annual review rewards and records history when advancing into month 12", () => {

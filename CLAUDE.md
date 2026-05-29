@@ -11,7 +11,7 @@ This repo is `AI Company Tycoon: Boundaryless`, a Vite + React + TypeScript brow
 ## Current Objective
 
 - Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
-- Current feature: `v0.61-alpha-public-web-alpha` (COMPLETED 2026-05-29 — stabilization, all 4 blocks: save/load hardening, all-strategy 10-year completability, tutorial + mobile UI, intro materials). Next is beta prep toward v1.0.
+- Current feature: `v0.62-alpha-payoff-juice` (COMPLETED 2026-05-29 — dopamine polish, all 3 blocks: activation celebration, discovery+collection, milestone fanfare+near-miss; §5-safe, 44 files / 448 tests). Next is beta prep toward v1.0. Post-1.0 vision in `reports/v0_62_design_direction.md`.
 - Track allocation (2026-05-29): v0.61 — Codex CLI coded blocks #1 save/load + #2 completability (xhigh) and #3 tutorial/UI (fast/medium); Claude Code owned the harness/contract track, per-block verification, commits, and the docs block #4 directly. Handoffs in `reports/codex-handoff/v0_61_block*.md`.
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon`.
 
@@ -55,9 +55,10 @@ Use targeted tests for touched code first, then run `npm run harness:gate` befor
 - v0.59 closed at `c89faae` — 43 files / 417 tests, derive-only resource indicators.
 - v0.60 closed 2026-05-29 — 4 blocks (`7ca1dba` / `0da778a` / `fba35f1` + #4 closeout), 43 files / 428 tests. Only `simulation.ts` touch was 2 additive synergy/combo aggregation hooks.
 - v0.61 closed 2026-05-29 — stabilization, 4 blocks (`60bf736` save/load / `4dda739` 10-year completability / `6b3e8de` tutorial+UI / #4 docs closeout), 43 files / 437 tests. No tick/balance changes.
+- v0.62 closed 2026-05-29 — dopamine polish, 3 blocks (`29c2dc9` activation celebration / `a115131` discovery+collection / #3 milestone+near-miss closeout), 44 files / 448 tests. §5-safe (block #2 added a save-migrated field, block #3 added 2 conservative achievements; no tick behavior change).
 
 ## Next Useful Work
 
-1. Beta prep — run the AGY 5x + real-human blind playtest cycles and import final source art (the calendar-bound gates that unlock v1.0). `reports/v0_61_public_alpha_intro.md` has the intro copy + screenshot shot-list (manual capture).
-2. Optional post-1.0 depth idea (user raised 2026-05-29): tag-driven emergent combination engine + run modifiers, to make synergies/combos open-ended instead of hand-authored.
-3. Run `npm run harness:gate` baseline (43 files / 437 tests) before changes.
+1. Beta prep (parallel) — real-human blind playtest + final source art (resolution up; AGY 5x already done). Calendar-bound gates toward v1.0. `reports/v0_61_public_alpha_intro.md` has the shot-list.
+2. post-1.0 big systems per `reports/v0_62_design_direction.md` — tag-derivation engine, roguelike run modifiers (city x world-lore x market x founder + yearly events), multi-ending.
+3. Run `npm run harness:gate` baseline (44 files / 448 tests) before changes.

@@ -939,6 +939,21 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.payoff-collection-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.62 #3 keeps milestone fanfare and annual near-miss relief mobile-safe at 390x844", () => {
+    expect(payoffCelebrationModal).toContain("getAchievementCelebrationMoments");
+    expect(payoffCelebrationModal).toContain("getNewAchievementUnlockIds");
+    expect(payoffCelebrationModal).toContain("scenario\") === \"milestones\"");
+    expect(payoffCelebrationModal).toContain("마일스톤 달성");
+    expect(menuPanels).toContain("getAnnualReviewNearMissSignal");
+    expect(menuPanels).toContain("annual-nearmiss-relief");
+    expect(qaScenarios).toContain("\"milestones\"");
+    expect(appCss).toMatch(/\.payoff-celebration-card\.payoff-celebration-achievement\s*{/s);
+    expect(appCss).toMatch(/\.annual-nearmiss-relief\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.annual-nearmiss-relief\s+strong\s*{[^}]*overflow-wrap:\s*anywhere/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.annual-nearmiss-relief\s*{[^}]*grid-template-columns:\s*1fr/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.annual-nearmiss-relief/s);
+  });
+
   it("v0.58 #4 differentiates rival-counter strategy cards with a derive-only pressure badge in deck and reward UI", () => {
     expect(menuPanels).toContain("isCounterCard");
     expect(menuPanels).toContain("getRivalCounterSignal");

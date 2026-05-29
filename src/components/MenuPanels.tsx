@@ -5,6 +5,7 @@ import {
   chooseAnnualDirective,
   getActiveAnnualDirective,
   getAnnualDirectiveChoiceRows,
+  getAnnualReviewNearMissSignal,
   getAnnualReviewCountdown,
   getAnnualReviewProgress,
   getCurrentAnnualReview,
@@ -204,6 +205,7 @@ export function renderMenuContent(
     const annualReviewProgress = getAnnualReviewProgress(annualReview, gameState);
     const annualReviewCountdown = getAnnualReviewCountdown(gameState);
     const recentAnnualReview = gameState.annualReviewHistory[0];
+    const annualReviewNearMiss = getAnnualReviewNearMissSignal(recentAnnualReview, gameState);
     const annualDirective = getActiveAnnualDirective(gameState);
     const annualDirectiveChoices = getAnnualDirectiveChoiceRows(gameState);
     const annualStrategyAdvice = getAnnualStrategyAdvice(gameState);
@@ -325,6 +327,15 @@ export function renderMenuContent(
               <div className={recentAnnualReview.passed ? "annual-history passed" : "annual-history"}>
                 <strong>최근 결과: {recentAnnualReview.passed ? "통과" : "미달"} · {recentAnnualReview.score}점</strong>
                 <span>{recentAnnualReview.summary}</span>
+              </div>
+            )}
+            {annualReviewNearMiss && (
+              <div className={`annual-nearmiss-relief annual-nearmiss-${annualReviewNearMiss.tone}`} aria-label="연간 심사 near-miss">
+                <strong>{annualReviewNearMiss.title}</strong>
+                <span>{annualReviewNearMiss.copy}</span>
+                <small>
+                  최박빙 조건 {annualReviewNearMiss.requirementLabel} · {annualReviewNearMiss.currentLabel} / {annualReviewNearMiss.targetLabel} · 여유 {annualReviewNearMiss.marginPercent}%
+                </small>
               </div>
             )}
             {annualDirective && (

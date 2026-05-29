@@ -89,6 +89,32 @@
         "trust": 3,
         "data": 12
       }
+    },
+    {
+      "id": "first_major_war_chest",
+      "order": 8,
+      "title": "첫 대형 전쟁자금",
+      "description": "현금 100만을 돌파해 큰 확장 한 번을 버틸 체력을 증명합니다.",
+      "condition": {
+        "min_cash": 1000000
+      },
+      "reward": {
+        "cash": 15000,
+        "hype": 5
+      }
+    },
+    {
+      "id": "agi_threshold_lab",
+      "order": 9,
+      "title": "AGI 임계 연구실",
+      "description": "누적 연구 업그레이드를 크게 쌓아 범용 AI 문턱에 다가갑니다.",
+      "condition": {
+        "min_capability_upgrades": 18
+      },
+      "reward": {
+        "compute": 80,
+        "data": 60
+      }
     }
   ]
 }

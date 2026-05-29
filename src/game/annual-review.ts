@@ -39,6 +39,16 @@ export interface AnnualDirectiveChoiceRow extends AnnualDirectiveChoiceDefinitio
   selected: boolean;
 }
 
+export interface AnnualReviewNearMissSignal {
+  tone: "relief" | "recovery";
+  marginPercent: number;
+  requirementLabel: string;
+  currentLabel: string;
+  targetLabel: string;
+  title: string;
+  copy: string;
+}
+
 export function getAnnualReviewForMonth(month: number): AnnualReviewDefinition | undefined {
   return annualReviews.find((review) => month <= review.month) ?? annualReviews[annualReviews.length - 1];
 }
@@ -68,6 +78,50 @@ export function getAnnualReviewProgress(review: AnnualReviewDefinition, state: G
     completed,
     total: items.length,
     progressPercent: Math.round((completed / Math.max(1, items.length)) * 100),
+  };
+}
+
+export function getAnnualReviewNearMissSignal(
+  entry: AnnualReviewHistoryEntry | undefined,
+  state: GameState,
+): AnnualReviewNearMissSignal | undefined {
+  if (!entry) return undefined;
+  const review = annualReviews.find((candidate) => candidate.id === entry.reviewId);
+  if (!review) return undefined;
+
+  const evaluatedState = {
+    ...state,
+    resources: subtractReviewReward(state.resources, entry.reward),
+  };
+  const margins = Object.entries(review.requirements)
+    .map(([requirement, target]) => {
+      const current = getRequirementCurrentValue(requirement, evaluatedState);
+      const safeTarget = Math.max(1, target);
+      return {
+        requirement,
+        current,
+        target,
+        marginPercent: Math.round(((current - target) / safeTarget) * 100),
+      };
+    })
+    .sort((left, right) => left.marginPercent - right.marginPercent);
+  const narrowest = margins[0];
+  if (!narrowest) return undefined;
+
+  const isBarelyPassed = entry.passed && narrowest.marginPercent <= 10;
+  const isNearRecovery = !entry.passed && narrowest.marginPercent >= -15;
+  if (!isBarelyPassed && !isNearRecovery) return undefined;
+
+  return {
+    tone: entry.passed ? "relief" : "recovery",
+    marginPercent: narrowest.marginPercent,
+    requirementLabel: getRequirementLabel(narrowest.requirement),
+    currentLabel: formatRequirementValue(narrowest.requirement, narrowest.current),
+    targetLabel: formatRequirementValue(narrowest.requirement, narrowest.target),
+    title: entry.passed ? "아슬아슬 통과" : "회복 플랜 발동",
+    copy: entry.passed
+      ? "마지막 조건을 아슬아슬하게 넘기며 긴장이 보상으로 바뀌었습니다."
+      : "기준에 거의 닿았습니다. 회복 지시로 다음 해 반등 루트를 열었습니다.",
   };
 }
 
@@ -250,6 +304,14 @@ function applyReviewReward(resourcesBefore: ResourceMap, reward: ResourceMap): R
     nextResources[resourceId] = definition ? Math.max(definition.min_value, Math.min(definition.max_value, nextValue)) : nextValue;
   }
   return nextResources;
+}
+
+function subtractReviewReward(resourcesAfter: ResourceMap, reward: ResourceMap): ResourceMap {
+  const previousResources = { ...resourcesAfter };
+  for (const [resourceId, value] of Object.entries(reward)) {
+    previousResources[resourceId] = (previousResources[resourceId] ?? 0) - value;
+  }
+  return previousResources;
 }
 
 function getRequirementCurrentValue(requirement: string, state: GameState): number {

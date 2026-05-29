@@ -1,6 +1,11 @@
 // v0.62 — combo/synergy celebration queue stays local; first-ever discovery ids persist in GameState.
 import { useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import {
+  getAchievementCelebrationMoments,
+  getNewAchievementUnlockIds,
+  type AchievementCelebrationMoment,
+} from "../game/achievements";
+import {
   discoverActivePayoffs,
   getNewPayoffActivationIds,
   getNewPayoffDiscoveryIds,
@@ -10,8 +15,16 @@ import {
 import { formatResource } from "../game/simulation";
 import type { GameState } from "../game/types";
 
-function getEffectEntries(moment: PayoffCelebrationMoment): [string, number][] {
-  return Object.entries(moment.monthlyEffects).filter(([, amount]) => amount !== 0);
+type CelebrationMoment = PayoffCelebrationMoment | AchievementCelebrationMoment;
+
+function getEffectEntries(moment: CelebrationMoment): [string, number][] {
+  const effects = moment.kind === "achievement" ? moment.reward : moment.monthlyEffects;
+  return Object.entries(effects).filter(([, amount]) => amount !== 0);
+}
+
+function getScenario(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  return new URLSearchParams(window.location.search).get("scenario") ?? undefined;
 }
 
 function isPayoffJuiceScenario(): boolean {
@@ -19,9 +32,14 @@ function isPayoffJuiceScenario(): boolean {
   return new URLSearchParams(window.location.search).get("scenario") === "payoff-juice";
 }
 
+function isMilestonesScenario(): boolean {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).get("scenario") === "milestones";
+}
+
 type PayoffCelebrationQueueEntry = {
   id: string;
-  variant: "activation" | "discovery";
+  variant: "activation" | "discovery" | "achievement";
 };
 
 function appendQueueEntries(current: PayoffCelebrationQueueEntry[], next: PayoffCelebrationQueueEntry[]): PayoffCelebrationQueueEntry[] {
@@ -43,17 +61,22 @@ export function PayoffCelebrationModal({
   setGameState: Dispatch<SetStateAction<GameState>>;
 }) {
   const moments = useMemo(() => getPayoffCelebrationMoments(gameState), [gameState]);
-  const momentById = useMemo(() => new Map(moments.map((moment) => [moment.id, moment])), [moments]);
+  const achievementMoments = useMemo(() => getAchievementCelebrationMoments(gameState), [gameState]);
+  const allMoments = useMemo(() => [...moments, ...achievementMoments], [moments, achievementMoments]);
+  const momentById = useMemo(() => new Map(allMoments.map((moment) => [moment.id, moment])), [allMoments]);
   const activeIds = useMemo(() => moments.map((moment) => moment.id), [moments]);
+  const unlockedAchievementIds = useMemo(() => gameState.unlockedAchievements ?? [], [gameState.unlockedAchievements]);
   const discoveryIds = useMemo(
     () => getNewPayoffDiscoveryIds(gameState.discoveredPayoffIds ?? [], moments),
     [gameState.discoveredPayoffIds, moments],
   );
   const discoveryIdSet = useMemo(() => new Set(discoveryIds), [discoveryIds]);
-  const scenarioSeedId = isPayoffJuiceScenario() ? activeIds[0] : undefined;
+  const scenario = getScenario();
+  const scenarioSeedId = isPayoffJuiceScenario() ? activeIds[0] : isMilestonesScenario() ? achievementMoments[0]?.id : undefined;
   const previousActiveIdsRef = useRef<Set<string> | undefined>(undefined);
+  const previousAchievementIdsRef = useRef<Set<string> | undefined>(undefined);
   const [queue, setQueue] = useState<PayoffCelebrationQueueEntry[]>(() =>
-    scenarioSeedId ? [{ id: scenarioSeedId, variant: "discovery" }] : [],
+    scenarioSeedId ? [{ id: scenarioSeedId, variant: scenario === "milestones" ? "achievement" : "discovery" }] : [],
   );
 
   useEffect(() => {
@@ -88,21 +111,41 @@ export function PayoffCelebrationModal({
     previousActiveIdsRef.current = new Set(activeIds);
   }, [activeIds, discoveryIdSet]);
 
+  useEffect(() => {
+    const previousAchievementIds = previousAchievementIdsRef.current;
+    if (!previousAchievementIds) {
+      previousAchievementIdsRef.current = new Set(unlockedAchievementIds);
+      return;
+    }
+
+    const newlyUnlockedIds = getNewAchievementUnlockIds(previousAchievementIds, unlockedAchievementIds);
+    if (newlyUnlockedIds.length > 0) {
+      setQueue((current) =>
+        appendQueueEntries(
+          current,
+          newlyUnlockedIds.map((id) => ({ id: `achievement:${id}`, variant: "achievement" })),
+        ),
+      );
+    }
+    previousAchievementIdsRef.current = new Set(unlockedAchievementIds);
+  }, [unlockedAchievementIds]);
+
   const currentEntry = queue[0];
   const moment = currentEntry ? momentById.get(currentEntry.id) : undefined;
   if (!moment) return null;
 
   const remaining = queue.length;
   const effectEntries = getEffectEntries(moment);
-  const tone = moment.kind === "combo" ? "combo" : "synergy";
+  const tone = moment.kind === "achievement" ? "achievement" : moment.kind === "combo" ? "combo" : "synergy";
   const isDiscovery = currentEntry.variant === "discovery";
+  const isAchievement = currentEntry.variant === "achievement";
 
   return (
     <div className="payoff-celebration-overlay" role="dialog" aria-modal="true" aria-labelledby="payoff-celebration-title">
       <div className={`payoff-celebration-card payoff-celebration-${tone}${isDiscovery ? " payoff-celebration-discovery" : ""}`}>
         <header className="payoff-celebration-header">
           <span className="payoff-celebration-pill">
-            {isDiscovery ? "신규 발견!" : moment.kind === "combo" ? "고위험 조합 발동" : "산업 시너지 발동"}
+            {isAchievement ? "마일스톤 달성" : isDiscovery ? "신규 발견!" : moment.kind === "combo" ? "고위험 조합 발동" : "산업 시너지 발동"}
           </span>
           {remaining > 1 && (
             <span className="payoff-celebration-queue" aria-label={`대기 셀러브레이션 ${remaining - 1}건 더`}>
@@ -111,12 +154,12 @@ export function PayoffCelebrationModal({
           )}
           <i className="payoff-celebration-flare" aria-hidden="true" />
         </header>
-        <p className="payoff-celebration-kicker">{isDiscovery ? "Discovery unlocked" : "Boundaryless payoff"}</p>
+        <p className="payoff-celebration-kicker">{isAchievement ? "Milestone fanfare" : isDiscovery ? "Discovery unlocked" : "Boundaryless payoff"}</p>
         <h2 id="payoff-celebration-title" className="payoff-celebration-title">
-          『{moment.title}』 {isDiscovery ? "발견!" : "발동!"}
+          『{moment.title}』 {isAchievement ? "달성!" : isDiscovery ? "발견!" : "발동!"}
         </h2>
-        <p className="payoff-celebration-copy">{moment.riskLabel ?? moment.description}</p>
-        <div className="payoff-celebration-effects" aria-label="월간 효과 요약">
+        <p className="payoff-celebration-copy">{moment.kind === "achievement" ? moment.description : moment.riskLabel ?? moment.description}</p>
+        <div className="payoff-celebration-effects" aria-label={isAchievement ? "업적 보상 요약" : "월간 효과 요약"}>
           {effectEntries.map(([resourceId, amount]) => (
             <span className={amount >= 0 ? "positive" : "negative"} key={resourceId}>
               {amount >= 0 ? "+" : ""}
