@@ -79,6 +79,7 @@ export const qaScenarioIds = [
   "office-visuals",
   "market-share",
   "big-event",
+  "resource-visibility",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -131,6 +132,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "대형 사건 팝업 QA",
       state: bigEventState,
       activeMenu: "company",
+    };
+  }
+
+  if (id === "resource-visibility") {
+    return {
+      id,
+      label: "AI 자원 가시화 QA",
+      state: createResourceVisibilityScenarioState(),
+      activeMenu: "research",
     };
   }
 
@@ -1297,6 +1307,61 @@ function createCampaignShockScenarioState(): GameState {
   };
 
   return applyDueCampaignShocks(shockReady);
+}
+
+function createResourceVisibilityScenarioState(): GameState {
+  const initialState = createInitialState();
+
+  return {
+    ...initialState,
+    month: 18,
+    activeProducts: ["foundation_model_v0", "ai_writing_assistant", "ai_coding_assistant"],
+    productLevels: {
+      foundation_model_v0: 2,
+      ai_writing_assistant: 2,
+      ai_coding_assistant: 1,
+    },
+    productProjects: [
+      {
+        id: "qa_frontier_reasoning_model",
+        productId: "frontier_reasoning_model",
+        progress: 72,
+        quality: 68,
+        assignedAgentIds: [],
+        startedMonth: 17,
+      },
+    ],
+    resources: {
+      ...initialState.resources,
+      cash: 72000,
+      compute: 280,
+      data: 760,
+      users: 24000,
+      trust: 76,
+      hype: 38,
+      automation: 22,
+    },
+    capabilities: {
+      ...initialState.capabilities,
+      language: 3,
+      code: 2,
+      optimization: 1,
+    },
+    seenTutorials: [
+      "welcome_garage",
+      "agent_hired",
+      "product_ideas",
+      "development_project",
+      "card_reward",
+      "next_run_setup",
+      "office_growth",
+      "competition_pressure",
+    ],
+    timeline: [
+      "AI 자원 가시화 QA: 연구 패널에서 월간 compute, 데이터, 다음 출시 compute를 확인",
+      ...initialState.timeline,
+    ].slice(0, 8),
+  };
 }
 
 export function getQaScenarioId(value: string | null): QaScenarioId | undefined {

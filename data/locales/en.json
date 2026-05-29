@@ -68,5 +68,17 @@
   "ui.playerCompany": "Our Company",
   "ui.competition": "Competition",
   "ui.marketShare": "Market Share",
-  "ui.claimedProducts": "Claimed Products"
+  "ui.claimedProducts": "Claimed Products",
+  "ui.resourceVisibility.aria": "AI resource visibility",
+  "ui.resourceVisibility.eyebrow": "Resource visibility",
+  "ui.resourceVisibility.title": "AI Resource Flow",
+  "ui.resourceVisibility.activeProducts": "Active products",
+  "ui.resourceVisibility.monthlyComputeLoad": "Monthly compute load",
+  "ui.resourceVisibility.monthlyDataGenerated": "Monthly data generated",
+  "ui.resourceVisibility.nextLaunchComputeNeeded": "Compute needed before next launch",
+  "ui.resourceVisibility.computeUnit": "compute / month",
+  "ui.resourceVisibility.dataUnit": "data / month",
+  "ui.resourceVisibility.sourceProducts": "Based on launched products",
+  "ui.resourceVisibility.noActiveProducts": "No launched products",
+  "ui.resourceVisibility.noLaunchQueued": "No launch queued"
 }

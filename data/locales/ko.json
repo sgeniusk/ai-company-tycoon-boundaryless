@@ -68,5 +68,17 @@
   "ui.playerCompany": "우리 회사",
   "ui.competition": "경쟁",
   "ui.marketShare": "시장 점유",
-  "ui.claimedProducts": "선점 제품"
+  "ui.claimedProducts": "선점 제품",
+  "ui.resourceVisibility.aria": "AI 자원 가시화",
+  "ui.resourceVisibility.eyebrow": "자원 가시화",
+  "ui.resourceVisibility.title": "AI 자원 흐름",
+  "ui.resourceVisibility.activeProducts": "활성 제품",
+  "ui.resourceVisibility.monthlyComputeLoad": "월간 compute 부하",
+  "ui.resourceVisibility.monthlyDataGenerated": "월간 데이터 생성",
+  "ui.resourceVisibility.nextLaunchComputeNeeded": "다음 출시 필요 compute",
+  "ui.resourceVisibility.computeUnit": "compute / 월",
+  "ui.resourceVisibility.dataUnit": "data / 월",
+  "ui.resourceVisibility.sourceProducts": "출시 제품 기준",
+  "ui.resourceVisibility.noActiveProducts": "출시 제품 없음",
+  "ui.resourceVisibility.noLaunchQueued": "출시 대기 없음"
 }

@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-05-29",
-  "current_feature_id": "v0.58-alpha-market-season-strength",
+  "current_feature_id": "v0.59-alpha-resource-visibility",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -107,7 +107,30 @@
         "2026-05-29: v0.58 #4 response card differentiation shipped at 72d5d3a. Exported isCounterCard (tags.counter or rival_*_delta effects) + new getRivalCounterSignal(state) deriving high/low/none from getRivalCounterPlans severity. MenuPanels.tsx DeckPanel computes the signal once, then injects a '압박 대응' badge + glow on counter cards in both hand and reward-choice UI; high tier pulses (with prefers-reduced-motion fallback). Derive-only; no state model changes. npm run harness:gate passed 43 files / 415 tests.",
         "2026-05-29: v0.58 closeout — milestone marked completed. All 5 functional DoD bullets done across 9a5d493 / f31088e / fb1abd6 / 72d5d3a / 8df6bde + this closeout commit. No simulation tick behavior changes; #2 added marketShareHistory as derive-only history and #5 added pendingChallengerEntryIds as a UI signal queue, both with save migrations. Final harness:gate state: 43 files / 415 tests / production build under 800ms."
       ],
-      "next_step": "Closed. Next milestone unselected. Candidates: (a) Recursive-inspired AI resource visualization (docs/ROADMAP.md v0.58 후속 검토 block), (b) v0.59-alpha boundaryless industry expansion (3 new physical industries + cross-industry synergies), (c) v0.57 P2 Track C Phase 2 (pick one mobile polish backlog item to implement)."
+      "next_step": "Closed. Next milestone selected as v0.59-alpha-resource-visibility on 2026-05-29 (Recursive-style derive-only resource indicators)."
+    },
+    {
+      "id": "v0.59-alpha-resource-visibility",
+      "name": "AI resource visibility (Recursive-style derive-only research panel indicators)",
+      "description": "Surface AI compute/data economics that the simulation already models but never shows: active monthly compute load, monthly data generation, and compute needed before the next launch. Derive-only indicators in the research panel from data/products.json compute_per_1000_users and data_generated_per_month plus active GameState — no simulation tick changes and no GameState model changes.",
+      "status": "completed",
+      "priority": "P1",
+      "dependencies": [
+        "v0.58-alpha-market-season-strength"
+      ],
+      "definition_of_done": [
+        "Research panel shows derive-only resource indicators: active monthly compute load, monthly data generated, and compute needed before the next launch.",
+        "All values derive from existing GameState + data/products.json; no simulation.ts tick changes and no GameState model changes.",
+        "New ?scenario=resource-visibility QA route lands on the research panel with active products so the indicators are non-zero.",
+        "One layout-contract it block added (target 43 files / 416 tests).",
+        "Mobile 390x844 stays unbroken.",
+        "npm run harness:gate passes."
+      ],
+      "evidence": [
+        "2026-05-29: Selected as the next milestone after the v0.58 closeout (ROADMAP v0.58 후속 검토 block). Coding delegated to Codex CLI (gpt-5.5, xhigh reasoning); handoff at reports/codex-handoff/v0_59_resource_visibility.md. Claude Code runs the harness/contract track and final gate verification.",
+        "2026-05-29: Implemented by Codex CLI as a derive-only feature. New pure helper src/game/resource-visibility.ts (getAiResourceVisibilityMetrics) feeds a research-panel block in MenuPanels.tsx showing monthly compute load, monthly data generated, and next-launch compute needed; ?scenario=resource-visibility lands on the research menu with 3 active products + an in-progress frontier project so all indicators are non-zero; ko/en i18n keys + App.css responsive grid + 2 new tests (layout-contract + qa-scenarios). simulation.ts and types.ts have an empty diff (no tick or model changes). Claude Code verified npm run harness:gate independently: 43 files / 417 tests, validate:data passed, build 106 modules."
+      ],
+      "next_step": "Closed. Next milestone unselected. Candidates: v0.60-alpha boundaryless industry expansion; v0.57 P2 Track C Phase 2 mobile polish backlog."
     },
     {
       "id": "art-intake-final-source-art",

@@ -33,6 +33,7 @@ import {
   productIdeaTypes,
 } from "../game/product-ideas";
 import { ALL_PRODUCT_DOMAIN_FILTER_ID, getProductDomainFilters, getProductsByDomainFilter } from "../game/product-filters";
+import { getAiResourceVisibilityMetrics } from "../game/resource-visibility";
 import { getRivalCounterPlans, isCounterCard, getRivalCounterSignal } from "../game/rival-counters";
 import { getShareableMoments } from "../game/shareable-moments";
 import { getTenMonthArc } from "../game/ten-month-arc";
@@ -621,7 +622,7 @@ export function renderMenuContent(
   }
 
   if (activeMenu === "research") {
-    return <ResearchPanel gameState={gameState} setGameState={setGameState} setActiveMenu={setActiveMenu} />;
+    return <ResearchPanel gameState={gameState} setGameState={setGameState} locale={locale} setActiveMenu={setActiveMenu} />;
   }
 
   if (activeMenu === "shop") {
@@ -2244,10 +2245,12 @@ function AgentCard({
 
 function ResearchPanel({
   gameState,
+  locale,
   setGameState,
   setActiveMenu,
 }: {
   gameState: GameState;
+  locale: LocaleCode;
   setGameState: Dispatch<SetStateAction<GameState>>;
   setActiveMenu?: Dispatch<SetStateAction<MenuId>>;
 }) {
@@ -2258,9 +2261,13 @@ function ResearchPanel({
   const shouldShowResearchCompletion = Boolean(lastCapabilityUpgrade && lastCapabilityUpgrade.month === gameState.month);
   const completionProducts = lastCapabilityUpgrade ? getResearchCompletionProducts(lastCapabilityUpgrade, gameState) : [];
   const productCandidateRequirement = getProductCandidateRequirement(gameState);
+  const resourceVisibility = getAiResourceVisibilityMetrics(gameState, getAvailableProductDefinitions(gameState));
   const orderedCapabilities = prioritizeAnnualStrategyFocus(capabilities.map((capability) => capability.id), strategyFocus)
     .map((capabilityId) => capabilities.find((capability) => capability.id === capabilityId))
     .filter((capability): capability is NonNullable<typeof capability> => Boolean(capability));
+  const formatMetric = (value: number) => new Intl.NumberFormat(locale === "ko" ? "ko-KR" : "en-US", {
+    maximumFractionDigits: value >= 100 ? 0 : 1,
+  }).format(value);
 
   return (
     <section className="panel">
@@ -2268,6 +2275,38 @@ function ResearchPanel({
         <h2>AI 연구</h2>
         <p>재사용 가능한 능력이 새 시장을 엽니다.</p>
       </div>
+      <section className="ai-resource-visibility-panel" aria-label={t("ui.resourceVisibility.aria", locale)}>
+        <header>
+          <div>
+            <p className="eyebrow">{t("ui.resourceVisibility.eyebrow", locale)}</p>
+            <strong>{t("ui.resourceVisibility.title", locale)}</strong>
+          </div>
+          <span>{t("ui.resourceVisibility.activeProducts", locale)} {resourceVisibility.activeProductCount}</span>
+        </header>
+        <div className="ai-resource-visibility-grid">
+          <article>
+            <span>{t("ui.resourceVisibility.monthlyComputeLoad", locale)}</span>
+            <strong>{formatMetric(resourceVisibility.monthlyComputeLoad)}</strong>
+            <small>{t("ui.resourceVisibility.computeUnit", locale)}</small>
+          </article>
+          <article>
+            <span>{t("ui.resourceVisibility.monthlyDataGenerated", locale)}</span>
+            <strong>{formatMetric(resourceVisibility.monthlyDataGenerated)}</strong>
+            <small>{t("ui.resourceVisibility.dataUnit", locale)}</small>
+          </article>
+          <article>
+            <span>{t("ui.resourceVisibility.nextLaunchComputeNeeded", locale)}</span>
+            <strong>{formatMetric(resourceVisibility.nextLaunchComputeNeeded)}</strong>
+            <small>{resourceVisibility.nextLaunchProductName ?? t("ui.resourceVisibility.noLaunchQueued", locale)}</small>
+          </article>
+        </div>
+        <p>
+          {t("ui.resourceVisibility.sourceProducts", locale)}{" "}
+          {resourceVisibility.activeProductNames.length
+            ? resourceVisibility.activeProductNames.slice(0, 3).join(" / ")
+            : t("ui.resourceVisibility.noActiveProducts", locale)}
+        </p>
+      </section>
       {shouldShowResearchCompletion && lastCapabilityUpgrade && (
         <div className="research-completion-ribbon" aria-label="연구 완료">
           <div>

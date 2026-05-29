@@ -5365,6 +5365,76 @@ p {
   padding: 7px 10px;
 }
 
+.ai-resource-visibility-panel {
+  background: #f3f0e5;
+  border: 2px solid #71664e;
+  color: #302a1c;
+  display: grid;
+  gap: 8px;
+  padding: 9px;
+}
+
+.ai-resource-visibility-panel header {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.ai-resource-visibility-panel header > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ai-resource-visibility-panel .eyebrow {
+  color: #665931;
+  margin: 0;
+}
+
+.ai-resource-visibility-panel header strong {
+  color: #272315;
+  font-size: 0.82rem;
+}
+
+.ai-resource-visibility-panel header span,
+.ai-resource-visibility-panel p {
+  color: #544a32;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.ai-resource-visibility-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ai-resource-visibility-grid article {
+  background: #fffdf7;
+  border: 1px solid rgba(113, 102, 78, 0.42);
+  display: grid;
+  gap: 3px;
+  min-height: 64px;
+  min-width: 0;
+  padding: 7px;
+}
+
+.ai-resource-visibility-grid span,
+.ai-resource-visibility-grid small {
+  color: #5b4e33;
+  font-size: 0.58rem;
+  font-weight: 900;
+  line-height: 1.22;
+}
+
+.ai-resource-visibility-grid strong {
+  color: #182f52;
+  font-size: 1rem;
+}
+
 .product-candidate-requirement-launchpad {
   align-items: center;
   background: #fff5df;
@@ -9341,6 +9411,7 @@ p {
   .annual-directive-actions,
   .year-two-kickoff-grid,
   .annual-research-launchpad,
+  .ai-resource-visibility-grid,
   .product-candidate-requirement-launchpad,
   .first-hire-fast-start,
   .first-project-fast-start,

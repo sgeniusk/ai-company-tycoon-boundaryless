@@ -4,20 +4,23 @@ Last Updated: 2026-05-29
 
 ## Current State
 
-- Current version: `v0.57-alpha` (entering `v0.58-alpha`)
-- Current feature: `v0.58-alpha-market-season-strength` (CLOSED 2026-05-29; next milestone unselected)
-- Latest implementation commits: `v0.58 closeout` (this commit), `72d5d3a v0.58 #4`, `8df6bde v0.58 #5`, `fb1abd6 v0.58 #3`, `f31088e v0.58 #2`, `9a5d493 v0.58 #1`
+- Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
+- Current feature: `v0.59-alpha-resource-visibility` (COMPLETED 2026-05-29; coded by Codex CLI gpt-5.5 xhigh, verified by Claude Code)
+- Latest implementation commits: `v0.59 resource visibility` (this commit), `645eb2c v0.58 closeout`, `72d5d3a v0.58 #4`, `8df6bde v0.58 #5`, `fb1abd6 v0.58 #3`, `f31088e v0.58 #2`
 - Current branch: `main`
 - Stack: Vite + React + TypeScript
 - Local dev: `npm run dev -- --port 5201`
 - Main QA route: `http://127.0.0.1:5201/?scenario=office-visuals`
 - Market share QA route: `http://127.0.0.1:5201/?scenario=market-share`
 - Big event QA route: `http://127.0.0.1:5201/?scenario=big-event`
+- Resource visibility QA route (v0.59, in progress): `http://127.0.0.1:5201/?scenario=resource-visibility`
 - Full verification gate: `npm run harness:gate`
 
 ## Current Objective
 
-`v0.58-alpha-market-season-strength` is **CLOSED** as of 2026-05-29. All 5 functional DoD bullets shipped as derive-only / queue-only blocks with no simulation tick behavior changes. The next milestone is unselected — pick one in the next session.
+`v0.59-alpha-resource-visibility` is **COMPLETE** as of 2026-05-29. It surfaces AI compute/data economics the simulation already models but never showed — active monthly compute load, monthly data generation, and compute needed before the next launch — as derive-only indicators in the research panel. Coded by Codex CLI (gpt-5.5, xhigh) per `reports/codex-handoff/v0_59_resource_visibility.md`; Claude Code owned the harness/contract track, verified `npm run harness:gate` (43 files / 417 tests), and confirmed `simulation.ts` / `types.ts` empty diff (derive-only). New pure helper `src/game/resource-visibility.ts`.
+
+`v0.58-alpha-market-season-strength` is **CLOSED** as of 2026-05-29 (5 derive-only/queue-only blocks + closeout, harness:gate 43 files / 415 tests). The v0.58 block detail below is kept as recent history.
 
 v0.58 block status (2026-05-29):
 
@@ -56,19 +59,19 @@ v0.57 stacked 9 polish `#N` commits + 4 P1 polish commits + closeout commit on t
 - v0.58 #3 (fb1abd6): `npm run harness:gate` 43 files / 413 tests.
 - v0.58 #5 (8df6bde): `npm run harness:gate` 43 files / 414 tests.
 - v0.58 #4 (72d5d3a): `npm run harness:gate` 43 files / 415 tests.
-- v0.58 closeout (this commit): root state files synced to mark `v0.58-alpha-market-season-strength` completed and the next milestone unselected.
+- v0.58 closeout (645eb2c): root state files synced to mark `v0.58-alpha-market-season-strength` completed.
+- v0.59 (this commit): `npm run harness:gate` 43 files / 417 tests, validate:data passed, build 106 modules. New `src/game/resource-visibility.ts` pure helper; `simulation.ts` / `types.ts` empty diff. Implementation by Codex CLI (gpt-5.5 xhigh); verification + closeout by Claude Code.
 
 ## Recommended Next Step
 
-Pick the next milestone (current feature) in the next session. Candidates:
+`v0.59-alpha-resource-visibility` is closed. Pick the next milestone:
 
-- **Recursive-inspired AI resource visualization** — `docs/ROADMAP.md` v0.58 후속 검토 block. Surface derive-only GPU hours, data freshness, next-launch compute requirement in the research panel. Optional 10-year campaign mega gauge. Small scope, fast win.
-- **v0.59-alpha boundaryless industry expansion** — 3 new physical industries + robotics/manufacturing/logistics requirements + 10 cross-industry synergies + 10 high-risk/high-reward combos. Larger scope, fits the game's "boundaryless" identity.
-- **v0.57 P2 Track C Phase 2** — pick one item from `reports/qa/v0_57_p2_mobile_backlog.md` 손댈 후보 (top candidate: 모바일 패널 접힘 요약 at `?scenario=office-visuals` 390×844). Smallest scope; clears mobile polish backlog.
+- **v0.60-alpha boundaryless industry expansion** — 3 new physical industries + cross-industry synergies + high-risk/high-reward combos. Larger scope, fits the game's "boundaryless" identity.
+- **v0.57 P2 Track C Phase 2** — one mobile polish item from `reports/qa/v0_57_p2_mobile_backlog.md` (top candidate: 모바일 패널 접힘 요약 at `?scenario=office-visuals` 390×844). Smallest scope.
 
 ## Next Session
 
 1. Read `AGENTS.md`, `feature_list.json`, and this file first.
 2. Check `git status --short`.
-3. Pick the next current_feature_id from the candidate list above and update `feature_list.json` before touching code.
+3. Pick the next milestone and update `feature_list.json` current_feature_id before touching code.
 4. Run `npm run harness:gate` as the baseline before changes.

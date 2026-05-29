@@ -29,8 +29,8 @@ Keep startup context lean:
 
 ## Current Source Of Truth
 
-- Current version: `v0.57-alpha`
-- Current feature: `v0.57-alpha-core-fun-polish` (completed; next milestone unselected)
+- Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
+- Current feature: `v0.59-alpha-resource-visibility` (completed 2026-05-29; Recursive-style derive-only AI resource indicators, coded by Codex CLI, verified by Claude Code at 43 files / 417 tests)
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`
@@ -43,11 +43,12 @@ Keep startup context lean:
 - Restart log: `progress.md`
 - Human-readable handoff: `docs/SESSION_HANDOFF.md` and root `session-handoff.md`
 
-## Validation Policy (Updated 2026-05-26)
+## Validation Policy (Updated 2026-05-29)
 
-- v0.56 blind playtest slice is closed (validation policy upgrade 2026-05-26). AGY 5x agent review and 5x real human blind sessions are P2 follow-up tracks, not v0.57 blockers.
+- v0.56 blind playtest slice is closed (validation policy upgrade 2026-05-26). AGY 5x agent review and 5x real human blind sessions are P2 follow-up tracks, not milestone blockers.
 - v0.57 core fun polish (`v0.57-alpha-core-fun-polish`) closed 2026-05-27 via 9 `#N` commits + 4 P1 polish commits; harness:gate carried 43 files / 410 tests at closure.
-- Final art request still requires `qa:asset-handoff` to report `AGY 발송 가능`, which is gated by the P2 follow-up tracks.
+- v0.58 market season strength (`v0.58-alpha-market-season-strength`) closed 2026-05-29 across 5 derive-only/queue-only blocks + a closeout commit; harness:gate carried 43 files / 415 tests at closure.
+- AGY 5x agent review automation (v0.57 P2 Track B, commit `91788a2`) landed, so `npm run qa:asset-handoff` now reports `AGY 발송 가능` and final source art intake is unlocked.
 - Coding agents downstream of this contract (Claude Code as harness, Codex CLI for parallel implementation, AGY CLI for art/playtest) share this validation contract.
 
 ## Verification Commands

@@ -6,6 +6,7 @@ import { assetManifest, products } from "./data";
 import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
+import { getAiResourceVisibilityMetrics } from "./resource-visibility";
 import { runTenYearCampaignSimulation } from "./run-simulator";
 import { getTutorialGuide } from "./tutorial-guide";
 import { getAlphaRunCompletionSummary, getAlphaRunDebriefSummary, getAlphaRunRoadmapProgress, getFirstTenMinuteProgress, getGuidanceStep } from "./guidance";
@@ -76,6 +77,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "office-visuals",
       "market-share",
       "big-event",
+      "resource-visibility",
     ]);
   });
 
@@ -150,6 +152,19 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.lastRelease?.productId).toBe("ai_writing_assistant");
     expect(scenario.state.lastRelease?.expansionHint).toContain("회의");
     expect(scenario.state.lastRelease?.growthPaths).toHaveLength(3);
+  });
+
+  it("creates a resource visibility scenario with non-zero research indicators", () => {
+    const scenario = createQaScenario("resource-visibility");
+    const metrics = getAiResourceVisibilityMetrics(scenario.state, products);
+
+    expect(scenario.activeMenu).toBe("research");
+    expect(scenario.label).toContain("자원 가시화");
+    expect(metrics.activeProductCount).toBeGreaterThanOrEqual(3);
+    expect(metrics.monthlyComputeLoad).toBeGreaterThan(0);
+    expect(metrics.monthlyDataGenerated).toBeGreaterThan(0);
+    expect(metrics.nextLaunchComputeNeeded).toBeGreaterThan(0);
+    expect(metrics.nextLaunchProductName).toContain("프론티어");
   });
 
   it("creates a shop guidance scenario after first release", () => {
