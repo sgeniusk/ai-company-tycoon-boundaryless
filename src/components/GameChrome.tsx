@@ -89,6 +89,7 @@ import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
 import { MarketSharePanel } from "./MarketSharePanel";
 import { RivalArchetypePanel } from "./RivalArchetypePanel";
 import { BigEventModal } from "./BigEventModal";
+import { PayoffCelebrationModal } from "./PayoffCelebrationModal";
 
 function assetPaletteVars(palette?: string[]): CSSProperties {
   if (!palette?.length) return {};
@@ -2041,6 +2042,7 @@ export function EventPanels({
   return (
     <>
       <BigEventModal gameState={gameState} setGameState={setGameState} locale={locale} />
+      <PayoffCelebrationModal gameState={gameState} />
       {primaryStaffIncident && (
         <section
           className={`event-panel staff-event-panel incident-screen-moment severity-${primaryStaffIncident.severity}`}

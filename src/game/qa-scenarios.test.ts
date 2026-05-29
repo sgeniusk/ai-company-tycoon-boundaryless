@@ -79,6 +79,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "big-event",
       "resource-visibility",
       "physical-industries",
+      "payoff-juice",
     ]);
   });
 
@@ -782,6 +783,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=launch-impact")?.id).toBe("launch-impact");
     expect(createQaScenarioFromSearch("?scenario=operations")?.id).toBe("operations");
     expect(createQaScenarioFromSearch("?scenario=office-visuals")?.id).toBe("office-visuals");
+    expect(createQaScenarioFromSearch("?scenario=payoff-juice")?.id).toBe("payoff-juice");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });

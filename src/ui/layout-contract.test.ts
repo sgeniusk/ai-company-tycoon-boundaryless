@@ -12,6 +12,7 @@ const playtestObserver = readFileSync(new URL("../game/blind-playtest-observer.t
 const marketSharePanel = readFileSync(new URL("../components/MarketSharePanel.tsx", import.meta.url), "utf8");
 const rivalArchetypePanel = readFileSync(new URL("../components/RivalArchetypePanel.tsx", import.meta.url), "utf8");
 const bigEventModal = readFileSync(new URL("../components/BigEventModal.tsx", import.meta.url), "utf8");
+const payoffCelebrationModal = readFileSync(new URL("../components/PayoffCelebrationModal.tsx", import.meta.url), "utf8");
 const qaScenarios = readFileSync(new URL("../game/qa-scenarios.ts", import.meta.url), "utf8");
 
 describe("v0.13.3 compact game shell layout", () => {
@@ -898,6 +899,24 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.big-event-dismiss\s*{[^}]*cursor:\s*pointer/s);
     expect(appCss).toMatch(/@keyframes\s+big-event-pop-in/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.big-event-card/s);
+  });
+
+  it("v0.62 #1 keeps the payoff celebration modal mobile-safe with reduced-motion fallback", () => {
+    expect(gameChrome).toContain("PayoffCelebrationModal");
+    expect(gameChrome).toContain("<PayoffCelebrationModal gameState={gameState} />");
+    expect(payoffCelebrationModal).toContain("getPayoffCelebrationMoments");
+    expect(payoffCelebrationModal).toContain("getNewPayoffActivationIds");
+    expect(payoffCelebrationModal).toContain("payoff-celebration-overlay");
+    expect(payoffCelebrationModal).toContain("payoff-celebration-card");
+    expect(payoffCelebrationModal).toContain("role=\"dialog\"");
+    expect(payoffCelebrationModal).toContain("scenario\") === \"payoff-juice\"");
+    expect(qaScenarios).toContain("\"payoff-juice\"");
+    expect(appCss).toMatch(/\.payoff-celebration-overlay\s*{[^}]*position:\s*fixed/s);
+    expect(appCss).toMatch(/\.payoff-celebration-card\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.payoff-celebration-card\.payoff-celebration-combo\s*{[^}]*animation:\s*payoff-celebration-pop/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.payoff-celebration-card\s*{[^}]*max-width:\s*100%/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.payoff-celebration-card/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.payoff-celebration-flare/s);
   });
 
   it("v0.58 #4 differentiates rival-counter strategy cards with a derive-only pressure badge in deck and reward UI", () => {

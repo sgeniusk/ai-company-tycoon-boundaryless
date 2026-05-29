@@ -10083,6 +10083,165 @@ p {
   background: rgba(255, 110, 90, 1);
 }
 
+.payoff-celebration-overlay {
+  align-items: center;
+  background: rgba(7, 8, 16, 0.74);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: fixed;
+  z-index: 1210;
+}
+
+.payoff-celebration-card {
+  background: linear-gradient(180deg, rgba(31, 28, 40, 0.98), rgba(18, 22, 34, 0.98));
+  border: 2px solid rgba(255, 180, 58, 0.58);
+  border-radius: 10px;
+  box-shadow: 0 20px 58px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  display: grid;
+  gap: 10px;
+  max-width: 480px;
+  min-width: 0;
+  overflow: hidden;
+  padding: 18px 20px;
+  position: relative;
+  width: 100%;
+}
+
+.payoff-celebration-card.payoff-celebration-combo {
+  animation: payoff-celebration-pop 360ms cubic-bezier(0.22, 1, 0.36, 1), reward-rarity-epic-pulse 1800ms ease-in-out infinite;
+  border-color: rgba(255, 118, 52, 0.82);
+  box-shadow: 0 20px 58px rgba(111, 34, 12, 0.48), 0 0 0 1px rgba(255, 118, 52, 0.2) inset;
+}
+
+.payoff-celebration-card.payoff-celebration-synergy {
+  animation: payoff-celebration-pop 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  border-color: rgba(155, 191, 119, 0.78);
+}
+
+@keyframes payoff-celebration-pop {
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.payoff-celebration-header {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.payoff-celebration-pill,
+.payoff-celebration-queue {
+  border-radius: 4px;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  padding: 3px 7px;
+  text-transform: uppercase;
+}
+
+.payoff-celebration-pill {
+  background: rgba(255, 180, 58, 0.94);
+  color: #25190a;
+}
+
+.payoff-celebration-synergy .payoff-celebration-pill {
+  background: rgba(155, 191, 119, 0.94);
+  color: #182910;
+}
+
+.payoff-celebration-queue {
+  background: rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.payoff-celebration-flare {
+  animation: payoff-celebration-flare 1600ms ease-in-out infinite;
+  background: radial-gradient(circle, rgba(255, 222, 143, 0.95) 0%, rgba(255, 118, 52, 0.35) 42%, rgba(255, 118, 52, 0) 68%);
+  display: block;
+  height: 42px;
+  margin-left: auto;
+  width: 42px;
+}
+
+@keyframes payoff-celebration-flare {
+  0%, 100% { opacity: 0.65; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+
+.payoff-celebration-kicker {
+  color: rgba(255, 210, 150, 0.9);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.payoff-celebration-title {
+  color: #fff7e6;
+  font-size: 1.36rem;
+  line-height: 1.18;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.payoff-celebration-copy {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.45;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.payoff-celebration-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.payoff-celebration-effects span {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.66rem;
+  font-weight: 900;
+  padding: 5px 8px;
+}
+
+.payoff-celebration-effects span.positive {
+  color: #c7f5a8;
+}
+
+.payoff-celebration-effects span.negative {
+  color: #ffb29d;
+}
+
+.payoff-celebration-dismiss {
+  background: rgba(255, 180, 58, 0.94);
+  border: none;
+  border-radius: 6px;
+  color: #25190a;
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 900;
+  padding: 9px 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .payoff-celebration-card,
+  .payoff-celebration-card.payoff-celebration-combo,
+  .payoff-celebration-card.payoff-celebration-synergy,
+  .payoff-celebration-flare {
+    animation: none;
+  }
+}
+
 @media (max-width: 700px) {
   .big-event-card {
     max-width: 100%;
@@ -10091,6 +10250,15 @@ p {
 
   .big-event-name {
     font-size: 1.12rem;
+  }
+
+  .payoff-celebration-card {
+    max-width: 100%;
+    padding: 14px 16px;
+  }
+
+  .payoff-celebration-title {
+    font-size: 1.1rem;
   }
 }
 

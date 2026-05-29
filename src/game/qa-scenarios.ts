@@ -81,6 +81,7 @@ export const qaScenarioIds = [
   "big-event",
   "resource-visibility",
   "physical-industries",
+  "payoff-juice",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number];
@@ -150,6 +151,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "물리 산업 도메인 QA",
       state: createPhysicalIndustriesScenarioState(),
+      activeMenu: "products",
+    };
+  }
+
+  if (id === "payoff-juice") {
+    return {
+      id,
+      label: "페이오프 셀러브레이션 QA",
+      state: createPayoffJuiceScenarioState(),
       activeMenu: "products",
     };
   }
@@ -1416,6 +1426,17 @@ function createPhysicalIndustriesScenarioState(): GameState {
     timeline: [
       "v0.60 물리 산업 QA: 제조, 물류, 에너지 도메인과 시작 제품 후보를 제품 패널에서 확인",
       ...initialState.timeline,
+    ].slice(0, 8),
+  };
+}
+
+function createPayoffJuiceScenarioState(): GameState {
+  const physicalState = createPhysicalIndustriesScenarioState();
+  return {
+    ...physicalState,
+    timeline: [
+      "v0.62 페이오프 QA: 풀스택 물리 제국 조합 발동 셀러브레이션을 즉시 확인",
+      ...physicalState.timeline,
     ].slice(0, 8),
   };
 }
