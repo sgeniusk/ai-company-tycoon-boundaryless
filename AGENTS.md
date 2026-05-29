@@ -30,7 +30,7 @@ Keep startup context lean:
 ## Current Source Of Truth
 
 - Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
-- Current feature: `v0.61-alpha-public-web-alpha` (in progress; stabilization — save/load hardening, 10-year completability, tutorial, UI, intro materials; decomposed into blocks #1-#4, block #1 delegated to Codex CLI xhigh). Prior `v0.60-alpha-boundaryless-industry-expansion` completed 2026-05-29 at 43 files / 428 tests.
+- Current feature: `v0.61-alpha-public-web-alpha` (COMPLETED 2026-05-29; stabilization — all 4 blocks: save/load hardening, all-strategy 10-year completability, tutorial + mobile UI contracts, intro materials. 43 files / 437 tests). Next is beta prep (blind playtest + final art) toward v1.0.
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`
