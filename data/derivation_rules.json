@@ -1,0 +1,136 @@
+{
+  "derivation_rules": [
+    {
+      "id": "chip_war_localizer",
+      "title": "칩 전쟁 현지화팀",
+      "description": "수출 통제와 지역 컴퓨트 장벽을 제품 설계 제약으로 받아들이고, 작은 팀의 하드웨어 선택지를 빠르게 좁힙니다.",
+      "requires": ["export_controls", "compute_regional", "builder_bias"],
+      "discovery_id": "discovery_chip_war_localizer",
+      "yields": {
+        "kind": "product",
+        "summary": "지역 컴퓨트 제약에 맞춘 제품 후보 메타데이터"
+      }
+    },
+    {
+      "id": "compute_siege_survivor",
+      "title": "컴퓨트 포위 생존자",
+      "description": "GPU가 비싸고 부족한 세계에서도 운영 효율을 집요하게 깎아 실험 리듬을 유지합니다.",
+      "requires": ["compute_expensive", "efficiency_bias"],
+      "discovery_id": "discovery_compute_siege_survivor",
+      "yields": {
+        "kind": "bonus",
+        "summary": "컴퓨트 압박 완화 보너스 메타데이터"
+      }
+    },
+    {
+      "id": "data_alchemist",
+      "title": "데이터 연금술사",
+      "description": "실데이터가 메마른 환경에서 합성 데이터의 프리미엄을 실험 재료로 바꾸는 팀입니다.",
+      "requires": ["data_scarce", "synthetic_premium"],
+      "discovery_id": "discovery_data_alchemist",
+      "yields": {
+        "kind": "product",
+        "summary": "합성 데이터 기반 제품 후보 메타데이터"
+      }
+    },
+    {
+      "id": "frontier_demo_loop",
+      "title": "프런티어 데모 루프",
+      "description": "프런티어 인재 밀도와 수요 급등이 만나, 짧은 데모를 계속 밀어붙이는 발견 루프가 생깁니다.",
+      "requires": ["frontier_cluster", "demand_surge", "builder_bias"],
+      "discovery_id": "discovery_frontier_demo_loop",
+      "yields": {
+        "kind": "event",
+        "summary": "데모 확산 이벤트 메타데이터"
+      }
+    },
+    {
+      "id": "frontier_garage",
+      "title": "프런티어 차고",
+      "description": "프런티어 클러스터의 밀도와 빌더 성향이 맞물려 작은 차고에서도 모델 실험 속도가 붙습니다.",
+      "requires": ["frontier_cluster", "builder_bias"],
+      "discovery_id": "discovery_frontier_garage",
+      "yields": {
+        "kind": "bonus",
+        "summary": "초기 프런티어 실험 보너스 메타데이터"
+      }
+    },
+    {
+      "id": "gateway_operator",
+      "title": "게이트웨이 오퍼레이터",
+      "description": "지역 관문 시장과 운영 효율 성향이 결합해 작은 팀도 여러 시장의 입구를 동시에 관리합니다.",
+      "requires": ["gateway_market", "efficiency_bias"],
+      "discovery_id": "discovery_gateway_operator",
+      "yields": {
+        "kind": "bonus",
+        "summary": "다시장 운영 보너스 메타데이터"
+      }
+    },
+    {
+      "id": "hardware_frontier",
+      "title": "하드웨어 프런티어",
+      "description": "현실 세계 수요와 하드웨어 자본, 컴퓨트 인프라가 한 줄로 이어지며 물리 AI의 발판이 생깁니다.",
+      "requires": ["embodied_demand", "hardware_capital", "compute_infra"],
+      "discovery_id": "discovery_hardware_frontier",
+      "yields": {
+        "kind": "product",
+        "summary": "물리 AI 제품 후보 메타데이터"
+      }
+    },
+    {
+      "id": "hype_machine",
+      "title": "하이프 머신",
+      "description": "소비자 관심이 과열된 시장에서 성장형 창업자가 데모와 메시지를 빠르게 증폭합니다.",
+      "requires": ["consumer_hype", "growth_bias"],
+      "discovery_id": "discovery_hype_machine",
+      "yields": {
+        "kind": "event",
+        "summary": "소비자 확산 이벤트 메타데이터"
+      }
+    },
+    {
+      "id": "lab_in_winter",
+      "title": "혹한기 연구소",
+      "description": "투자가 마른 시장에서도 연구 성향의 팀은 긴 호흡의 실험 문화를 유지합니다.",
+      "requires": ["funding_drought", "lab_bias"],
+      "discovery_id": "discovery_lab_in_winter",
+      "yields": {
+        "kind": "bonus",
+        "summary": "혹한기 연구 지속 보너스 메타데이터"
+      }
+    },
+    {
+      "id": "oss_evangelist",
+      "title": "오픈소스 전도사",
+      "description": "오픈소스 천국과 커뮤니티 모델 생태계, 빌더 성향이 합쳐져 공개 실험을 성장 엔진으로 삼습니다.",
+      "requires": ["open_source_heaven", "community_models", "builder_bias"],
+      "discovery_id": "discovery_oss_evangelist",
+      "yields": {
+        "kind": "event",
+        "summary": "커뮤니티 공개 실험 이벤트 메타데이터"
+      }
+    },
+    {
+      "id": "privacy_compact",
+      "title": "프라이버시 협약",
+      "description": "엄격한 프라이버시와 동의 경제, 신뢰 프리미엄이 만나 데이터 접근 자체가 브랜드가 됩니다.",
+      "requires": ["privacy_strict", "consent_economy", "trust_premium"],
+      "discovery_id": "discovery_privacy_compact",
+      "yields": {
+        "kind": "bonus",
+        "summary": "동의 기반 신뢰 보너스 메타데이터"
+      }
+    },
+    {
+      "id": "trust_bastion",
+      "title": "신뢰 요새",
+      "description": "강한 규제와 신뢰 프리미엄이 맞물려 느리지만 단단한 안전 중심 브랜드가 파생됩니다.",
+      "requires": ["regulation_heavy", "trust_premium"],
+      "discovery_id": "discovery_trust_bastion",
+      "yields": {
+        "kind": "bonus",
+        "summary": "규제 환경 신뢰 보너스 메타데이터"
+      }
+    }
+  ]
+}

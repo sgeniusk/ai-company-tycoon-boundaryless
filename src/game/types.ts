@@ -170,6 +170,20 @@ export interface RunModifiersDataDefinition {
   founder_traits: RunModifierOptionDefinition[];
 }
 
+export type DerivationRuleYieldKind = "bonus" | "event" | "product";
+
+export interface DerivationRuleDefinition {
+  id: string;
+  title: string;
+  description: string;
+  requires: string[];
+  discovery_id: string;
+  yields: {
+    kind: DerivationRuleYieldKind;
+    summary: string;
+  };
+}
+
 export interface DifficultyTierDefinition {
   id: string;
   name: string;

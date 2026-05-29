@@ -8,6 +8,7 @@ import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { runPersonaPlaytestReview } from "./persona-playtest";
 import { rollRunModifierSelection } from "./run-modifiers";
 import { evaluateAlphaReadiness, runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
+import { getDerivedArchetypes } from "./tag-derivation";
 import {
   advanceMonth,
   advanceToFirstAnnualReview,
@@ -91,7 +92,7 @@ export const qaScenarioIds = [
   "world-events",
 ] as const;
 
-export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal";
+export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation";
 
 export interface QaScenario {
   id: QaScenarioId;
@@ -256,6 +257,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "연중 세계 이벤트 QA",
       state,
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "tag-derivation") {
+    return {
+      id,
+      label: "태그 파생 엔진 QA",
+      state: createTagDerivationScenarioState(),
       activeMenu: "company",
     };
   }
@@ -1615,8 +1625,29 @@ function createMilestoneScenarioState(): GameState {
   };
 }
 
+function createTagDerivationScenarioState(): GameState {
+  const state = createInitialState({
+    seed: "qa-tag-derivation",
+    startCityId: "san_francisco",
+    worldLoreId: "open_source_heaven",
+    marketConditionId: "ai_boom",
+    founderTraitId: "engineer_founder",
+  });
+  const derived = getDerivedArchetypes(state);
+
+  return {
+    ...state,
+    timeline: [
+      `v0.66 태그 파생 QA: ${derived.map((rule) => rule.title).join(" / ")}`,
+      `태그 조합: ${state.runModifiers.tags.join(", ")}`,
+      ...state.timeline,
+    ].slice(0, 8),
+  };
+}
+
 export function getQaScenarioId(value: string | null): QaScenarioId | undefined {
   if (value === "world-reveal") return value;
+  if (value === "tag-derivation") return value;
   return qaScenarioIds.find((id) => id === value);
 }
 

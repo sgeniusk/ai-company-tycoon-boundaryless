@@ -279,19 +279,23 @@
       "id": "v0.66-alpha-tag-derivation-engine",
       "name": "Tag-derivation engine (emergent combo discovery — decision A)",
       "description": "The '무궁무진한 조합' centerpiece (user decision A). Today tags are a static map that just sums monthly effects. The derivation engine turns tag COMBINATIONS into emergent, DISCOVERED results — when a run accumulates a qualifying set of tags (run-modifier axes + owned industry/product tags), a hidden product/event/bonus is 'discovered' (reusing the v0.62 discoveredPayoffIds + PayoffCelebration discovery pattern). This makes the combinatorial space (9,504 start combos x derivation rules) feel effectively infinite without hand-authoring each outcome. Deterministic (seed/state-derived, no RNG). Large — decomposed into blocks; starts derive-only then expands. Master plan reports/v0_63_plus_content_roadmap.md §v0.66.",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependencies": [
         "v0.65-alpha-difficulty-challenge"
       ],
       "definition_of_done": [
-        "AWAITING USER DIRECTION (2026-05-30 checkpoint): scope/sequence to be confirmed before launch. Sketch: #1 derivation_rules.json + a pure evaluator (requires:[tags] -> yields:{unlock|event|bonus}, discovery_id) that is derive-only; #2 discovery celebration reusing v0.62 PayoffCelebration/discoveredPayoffIds; #3 wire emergent products/events; #4 balance. Alternatives the user may prioritize instead: v0.67 multi-ending (decision B), or beta prep (real-human playtest + final art).",
+        "Block #1 (foundation, DERIVE-ONLY): data/derivation_rules.json (~12 archetype rules — requires:[run-modifier tags] -> yields metadata + discovery_id + Korean title/description) + a pure getDerivedArchetypes(state) evaluator in new tag-derivation.ts + DerivationRuleDefinition type. No GameState field, no tick/save change, no effect application yet. ?scenario=tag-derivation + tests (matching/determinism/tag-vocab validity/spam guard). xhigh. Handoff reports/codex-handoff/v0_66_block1_tag_derivation_engine.md.",
+        "Block #2: discovery celebration + persistence — reuse v0.62 PayoffCelebrationModal + the discoveredPayoffIds pattern (new or extended persisted id list) so a newly-derived archetype fires a '발견!' moment + collection entry.",
+        "Block #3: emergent effects — wire rule yields into real bonuses/events/products via an additive hook (§5-style), deterministic.",
+        "Block #4: balance — check effect magnitudes vs 10-year completability + difficulty tiers.",
         "Each block: harness:gate passes; deterministic; derive-only or additive first; standard run unaffected unless a balance change is deliberate + documented."
       ],
       "evidence": [
-        "2026-05-30: Opened as the roadmap default-next after v0.65 closeout, but NOT yet started — Claude Code is checkpointing with the user on direction (tag-engine vs multi-ending vs beta prep) per the stated plan to confirm before this large system. Design sketch lives in reports/v0_63_plus_content_roadmap.md."
+        "2026-05-30: User confirmed decision A (tag-derivation engine) at the post-v0.65 checkpoint over multi-ending / beta prep. Decomposed into 4 blocks (engine -> discovery -> effects -> balance). Block #1 (derive-only pure engine, grounded on the real run-modifier tag vocabulary) handed off (reports/codex-handoff/v0_66_block1_tag_derivation_engine.md) and launched on Codex CLI xhigh.",
+        "2026-05-30: Block #1 DONE — implemented by Codex CLI (xhigh) and verified by Claude Code. data/derivation_rules.json (~12 archetype rules, requires:[run-modifier tags] -> yields metadata + discovery_id + Korean title/desc) + DerivationRuleDefinition type + new pure tag-derivation.ts (getDerivedArchetypes(state):DerivationRuleDefinition[] returning rules whose requires all match state.runModifiers.tags, sorted by id; runHasTags helper). ?scenario=tag-derivation + tests (count/id-uniqueness/tag-vocab validity typo guard/known-combo match/determinism/spam guard). DERIVE-ONLY proven: git diff --exit-code on simulation.ts/App.tsx/state-integrity.ts/save-integrity.test.ts returned empty — no GameState field, no tick, no save, no effect application (yields is metadata only). Independently verified npm run harness:gate: 48 files / 488 tests."
       ],
-      "next_step": "Confirm direction with the user. If tag-engine: write the block #1 handoff (derivation_rules.json + pure evaluator, derive-only, xhigh for the engine) and launch on Codex."
+      "next_step": "Block #1 (engine) landed. Next: block #2 — discovery celebration + persistence (reuse v0.62 PayoffCelebrationModal + a persisted discovered-archetype id list) so a newly-derived archetype fires a '발견!' moment + collection entry. Then #3 emergent effects (additive), #4 balance."
     },
     {
       "id": "art-intake-final-source-art",
