@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content="Kami" />
+<title>AI Company Tycoon: Boundaryless — 게임 디자인 리뷰</title>
+<style>
+  :root{
+    --parchment:#f5f4ed; --ivory:#faf9f5; --brand:#1B365D; --ink:#141413;
+    --warm:#3d3d3a; --olive:#504e49; --stone:#6b6a64; --border:#e8e6dc;
+    --rec:#1B365D; --flag:#9a6b1f;
+    --serif:"Nanum Myeongjo","AppleMyungjo","Source Han Serif K","Source Han Serif KR",Georgia,"Apple SD Gothic Neo",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--parchment);font-family:var(--serif);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;padding:28px 0 60px}
+  .deck{max-width:1080px;margin:0 auto;padding:0 20px}
+  .slide{
+    position:relative;background:var(--ivory);border:1px solid var(--border);
+    border-radius:6px;aspect-ratio:16/9;padding:46px 52px;margin:0 auto 26px;
+    box-shadow:0 8px 30px rgba(20,20,19,.08);overflow:hidden;display:flex;flex-direction:column;
+  }
+  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--brand);font-weight:700;margin-bottom:14px}
+  .rule{width:46px;height:2px;background:var(--brand);margin:6px 0 20px}
+  h1{font-size:clamp(30px,4.4vw,46px);line-height:1.14;color:var(--ink);font-weight:700;letter-spacing:-.01em}
+  h2{font-size:clamp(24px,3.2vw,33px);line-height:1.2;color:var(--ink);font-weight:700;letter-spacing:-.01em}
+  h3{font-size:18px;color:var(--ink);font-weight:700}
+  p{color:var(--warm)}
+  .sub{color:var(--olive);font-size:clamp(15px,1.8vw,19px);margin-top:14px;max-width:62ch}
+  .pg{position:absolute;right:20px;bottom:14px;font-size:11px;color:var(--stone);letter-spacing:.04em}
+  .foot{position:absolute;left:52px;bottom:16px;font-size:11px;color:var(--stone)}
+  .lead{color:var(--olive);font-size:16px;margin-top:10px;max-width:64ch}
+  ul{list-style:none;margin-top:6px}
+  li{padding:7px 0 7px 20px;position:relative;color:var(--warm);font-size:15.5px}
+  li::before{content:"";position:absolute;left:2px;top:15px;width:6px;height:6px;background:var(--brand);border-radius:50%}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:8px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px}
+  .card{background:#fff;border:1px solid var(--border);border-radius:6px;padding:16px 18px}
+  .card h3{margin-bottom:5px}
+  .card p{font-size:13.5px;color:var(--olive);line-height:1.5}
+  .card .ico{font-size:20px}
+  .tag{display:inline-block;font-size:11px;color:var(--brand);font-weight:700;letter-spacing:.05em;margin-top:8px}
+  /* cover */
+  .cover{justify-content:center;text-align:center;align-items:center}
+  .cover .rule{margin:22px auto}
+  .cover .meta{font-size:13px;color:var(--stone);margin-top:30px;letter-spacing:.03em}
+  /* toc */
+  .toc-row{display:flex;gap:20px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--border)}
+  .toc-row:last-child{border-bottom:none}
+  .toc-num{font-size:24px;color:var(--brand);font-weight:700;min-width:42px}
+  .toc-t{font-size:20px;color:var(--ink)}
+  .toc-d{font-size:13px;color:var(--stone);margin-left:auto}
+  /* metrics */
+  .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:18px}
+  .metric{text-align:center;background:#fff;border:1px solid var(--border);border-radius:6px;padding:18px 8px}
+  .metric b{display:block;font-size:30px;color:var(--brand);font-weight:700;letter-spacing:-.02em}
+  .metric span{font-size:12px;color:var(--olive)}
+  /* timeline */
+  .tl{border-left:2px solid var(--border);margin:12px 0 0 8px;padding-left:22px}
+  .tl .step{position:relative;padding:6px 0 14px}
+  .tl .step::before{content:"";position:absolute;left:-29px;top:11px;width:11px;height:11px;border-radius:50%;background:var(--brand)}
+  .tl h3{font-size:16px}
+  .tl p{font-size:13.5px;color:var(--olive)}
+  .tl .yr{font-size:12px;color:var(--brand);font-weight:700;letter-spacing:.04em}
+  /* pipeline */
+  .pipe{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:14px}
+  .pstep{background:#fff;border:1px solid var(--border);border-radius:6px;padding:12px 10px}
+  .pstep .n{font-size:22px;color:var(--brand);font-weight:700}
+  .pstep h3{font-size:14px;margin:3px 0}
+  .pstep p{font-size:11.5px;color:var(--olive);line-height:1.4}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .chip{font-size:12.5px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:5px 12px;color:var(--warm)}
+  .chip b{color:var(--brand)}
+  /* decision */
+  .qbox{background:#fff;border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:6px;padding:13px 16px;margin:4px 0 14px}
+  .qbox b{color:var(--ink)}
+  .opt{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:6px;padding:12px 15px;margin-bottom:9px}
+  .cb{font-size:19px;color:var(--brand);line-height:1.2;flex-shrink:0}
+  .opt .ot{font-size:15px;color:var(--ink);font-weight:700}
+  .opt p{font-size:13px;color:var(--olive);margin-top:2px;line-height:1.45}
+  .rec{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:#fff;background:var(--rec);border-radius:4px;padding:1px 7px;margin-left:7px;vertical-align:middle}
+  .flag{display:inline-block;font-size:10.5px;font-weight:700;color:var(--flag);border:1px solid var(--flag);border-radius:4px;padding:0 6px;margin-left:7px}
+  .blank{border-style:dashed;color:var(--stone)}
+  .blank .ot{color:var(--stone)}
+  .writeline{border-bottom:1px dashed var(--border);height:18px;margin-top:8px}
+  .note{font-size:12px;color:var(--stone);border-left:2px solid var(--border);padding-left:12px;margin-top:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
+  @media print{
+    @page{size:297mm 167mm;margin:0}
+    body{background:#fff;padding:0}
+    .deck{max-width:none;padding:0}
+    .slide{margin:0;border-radius:0;border:none;box-shadow:none;aspect-ratio:auto;width:297mm;height:167mm;page-break-after:always}
+  }
+  @media (max-width:720px){
+    .slide{aspect-ratio:auto;padding:28px 24px}
+    .metrics{grid-template-columns:repeat(2,1fr)} .grid4,.grid3,.grid2,.pipe{grid-template-columns:1fr 1fr} .two{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 COVER -->
+  <section class="slide cover">
+    <div class="eyebrow">게임 디자인 리뷰 · 2026.05</div>
+    <h1>AI Company Tycoon:<br/>Boundaryless</h1>
+    <div class="rule"></div>
+    <p class="sub">시나리오 · 진행 방식 · 재미 요소 — 그리고 당신이 정할 결정 포인트</p>
+    <div class="meta">현재 v0.61-alpha 공개 웹 알파 · 작성 김태욱 · 이중 트랙 개발 (Codex 코딩 + Claude 하네스)</div>
+  </section>
+
+  <!-- 2 TOC -->
+  <section class="slide">
+    <div class="eyebrow">목차</div>
+    <h2>오늘 검토할 것</h2>
+    <div class="rule"></div>
+    <div style="margin-top:6px">
+      <div class="toc-row"><span class="toc-num">01</span><span class="toc-t">시나리오 · 세계관</span><span class="toc-d">무엇을 플레이하는가</span></div>
+      <div class="toc-row"><span class="toc-num">02</span><span class="toc-t">진행 방식 · 코어 루프</span><span class="toc-d">어떻게 플레이하는가</span></div>
+      <div class="toc-row"><span class="toc-num">03</span><span class="toc-t">재미 요소</span><span class="toc-d">왜 계속하게 되는가</span></div>
+      <div class="toc-row"><span class="toc-num">04</span><span class="toc-t">결정 포인트</span><span class="toc-d">당신이 고르거나 추가할 것 ☐</span></div>
+    </div>
+    <div class="pg">02</div>
+  </section>
+
+  <!-- 3 SNAPSHOT -->
+  <section class="slide">
+    <div class="eyebrow">한눈에</div>
+    <h2>지금 게임은 어디까지 와 있나</h2>
+    <div class="rule"></div>
+    <div class="metrics">
+      <div class="metric"><b>10년</b><span>풀 캠페인</span></div>
+      <div class="metric"><b>15</b><span>진출 산업</span></div>
+      <div class="metric"><b>36+</b><span>제품</span></div>
+      <div class="metric"><b>437</b><span>자동화 테스트</span></div>
+      <div class="metric"><b>v0.61</b><span>공개 웹 알파</span></div>
+    </div>
+    <p class="lead">코어 루프 · 경쟁 · 자원 · 산업 축이 자리 잡아 기능적으로 약 90% 지점. 공개 알파의 가장 위험한 두 축(저장 무손실 · 전 전략 10년 완주)은 테스트로 증명됨. 남은 건 베타(플레이테스트·최종 아트)와 — 오늘 검토할 — 깊이/리플레이성 결정.</p>
+    <div class="pg">03</div>
+  </section>
+
+  <!-- 4 WORLD -->
+  <section class="slide">
+    <div class="eyebrow">01 · 시나리오 · 세계관</div>
+    <h2>차고에서 시작해, 경계 없이 확장한다</h2>
+    <div class="rule"></div>
+    <p class="lead">강원 산골 차고에서 사람과 AI 에이전트를 한 팀으로 묶어 첫 제품을 출시하고, 10년에 걸쳐 세계적 AI 기업으로 키운다. 소프트웨어를 넘어 물리 산업까지 — "경계 없는" 확장이 정체성.</p>
+    <div class="grid3" style="margin-top:18px">
+      <div class="card"><div class="ico">🚗</div><h3>차고 스타트업</h3><p>사람 + AI 에이전트 혼합 팀, 첫 제품 출시가 첫 목표</p></div>
+      <div class="card"><div class="ico">🌐</div><h3>경계 없는 확장</h3><p>파운데이션 모델 → 로봇·모빌리티·반도체 → 제조·물류·에너지</p></div>
+      <div class="card"><div class="ico">📈</div><h3>살아있는 시장</h3><p>13개 경쟁사가 성향·약점을 갖고 점유율을 두고 다툼</p></div>
+    </div>
+    <div class="pg">04</div>
+  </section>
+
+  <!-- 5 NARRATIVE ARC -->
+  <section class="slide">
+    <div class="eyebrow">01 · 시나리오</div>
+    <h2>10년 서사 아크</h2>
+    <div class="rule"></div>
+    <div class="tl">
+      <div class="step"><span class="yr">1~2년차</span><h3>차고 · 첫 출시</h3><p>첫 팀원 채용, 파운데이션 모델/생산성 도구로 첫 시장 반응 확보</p></div>
+      <div class="step"><span class="yr">3~5년차</span><h3>소프트웨어 도메인 확장</h3><p>개발자 도구·크리에이터·교육·기업 자동화로 능력 트리 확장</p></div>
+      <div class="step"><span class="yr">6~8년차</span><h3>물리 세계 진출</h3><p>반도체·로봇·모빌리티, 이어 제조·물류·에너지까지 경계 돌파</p></div>
+      <div class="step"><span class="yr">9~10년차</span><h3>피날레</h3><p>연간 심사 누적 → 회사 별점·엔딩 랭크로 10년 캠페인 마무리</p></div>
+    </div>
+    <div class="note">현재 엔딩은 점수·별점 기반 단일 finale. → 결정 포인트에서 "멀티 엔딩/회사 정체성 분기"를 다룸.</div>
+    <div class="pg">05</div>
+  </section>
+
+  <!-- 6 CORE LOOP -->
+  <section class="slide">
+    <div class="eyebrow">02 · 진행 방식</div>
+    <h2>코어 루프 — 한 달의 리듬</h2>
+    <div class="rule"></div>
+    <div class="pipe">
+      <div class="pstep"><div class="n">01</div><h3>채용</h3><p>사람·AI·로봇 팀 구성</p></div>
+      <div class="pstep"><div class="n">02</div><h3>제품</h3><p>아이디어 조합 → 개발</p></div>
+      <div class="pstep"><div class="n">03</div><h3>연구</h3><p>능력 레벨업·도메인 해금</p></div>
+      <div class="pstep"><div class="n">04</div><h3>덱</h3><p>전략 카드·개발 퍼즐</p></div>
+      <div class="pstep"><div class="n">05</div><h3>출시</h3><p>시장 반응·보상 카드</p></div>
+      <div class="pstep"><div class="n">06</div><h3>대응</h3><p>경쟁·사건에 카드로 대응</p></div>
+    </div>
+    <p class="lead" style="margin-top:16px">매 달(틱)마다 이 루프가 돌고, 출시 점수와 선택이 다음 달·다음 해의 전략을 바꾼다. 가이드 "미나"가 첫 흐름을 안내.</p>
+    <div class="pg">06</div>
+  </section>
+
+  <!-- 7 TIME STRUCTURE -->
+  <section class="slide">
+    <div class="eyebrow">02 · 진행 방식</div>
+    <h2>네 겹의 시간 구조</h2>
+    <div class="rule"></div>
+    <div class="grid4">
+      <div class="card"><h3>월간 틱</h3><p>자원 정산, 제품·연구 진행, 경쟁사 이동</p><span class="tag">초 단위</span></div>
+      <div class="card"><h3>연간 심사</h3><p>목표 달성 평가 → 다음 해 지시 선택·보너스</p><span class="tag">12개월마다</span></div>
+      <div class="card"><h3>10년 캠페인</h3><p>120개월 아크, 캠페인 충격 이벤트, 피날레</p><span class="tag">한 판</span></div>
+      <div class="card"><h3>런 간 메타</h3><p>해금·시작 덱·빠른 시작으로 다음 창업 강화</p><span class="tag">로그라이트</span></div>
+    </div>
+    <p class="lead" style="margin-top:16px">짧은 호흡(월)과 긴 호흡(10년·런 간)이 겹쳐 "한 판 더" 동기를 만든다.</p>
+    <div class="pg">07</div>
+  </section>
+
+  <!-- 8 RESOURCE ECONOMY -->
+  <section class="slide">
+    <div class="eyebrow">02 · 진행 방식</div>
+    <h2>맞물린 AI 자원 경제</h2>
+    <div class="rule"></div>
+    <div class="two">
+      <div>
+        <h3>자원 (서로 맞물림)</h3>
+        <div class="chips">
+          <span class="chip"><b>cash</b> 현금</span><span class="chip"><b>compute</b> 연산</span>
+          <span class="chip"><b>data</b> 데이터</span><span class="chip"><b>talent</b> 인재</span>
+          <span class="chip"><b>trust</b> 신뢰</span><span class="chip"><b>hype</b> 화제성</span>
+          <span class="chip"><b>automation</b> 자동화</span>
+        </div>
+        <p class="lead" style="margin-top:12px">연산·데이터가 단순 재화가 아니라 제품 성장과 맞물린 경제. v0.59에서 월간 연산 부하·다음 출시 필요 연산을 가시화.</p>
+      </div>
+      <div>
+        <h3>능력 12종 (도메인 해금)</h3>
+        <div class="chips">
+          <span class="chip">언어</span><span class="chip">코드</span><span class="chip">비전</span><span class="chip">오디오</span>
+          <span class="chip">비디오</span><span class="chip">에이전트</span><span class="chip">엔터프라이즈</span><span class="chip">안전</span>
+          <span class="chip">최적화</span><span class="chip">로봇공학</span><span class="chip"><b>제조</b></span><span class="chip"><b>물류</b></span>
+        </div>
+        <p class="lead" style="margin-top:12px">능력 레벨이 새 산업 도메인을 연다. 제조·물류는 v0.60에서 물리 산업용으로 신설.</p>
+      </div>
+    </div>
+    <div class="pg">08</div>
+  </section>
+
+  <!-- 9 BOUNDARYLESS EXPANSION -->
+  <section class="slide">
+    <div class="eyebrow">02 · 진행 방식</div>
+    <h2>경계 없는 산업 확장 (v0.60)</h2>
+    <div class="rule"></div>
+    <div class="grid3">
+      <div class="card"><h3>15개 도메인</h3><p>파운데이션 모델 · 개발자 도구 · 반도체 · 로봇 · 모빌리티 · 제조 · 물류 · 에너지 등</p></div>
+      <div class="card"><h3>산업 간 시너지 10</h3><p>로봇+제조, 제조+에너지 등 — 동시 진출 시 월간 보너스</p></div>
+      <div class="card"><h3>고위험·대박 조합 10</h3><p>큰 보상 + 명시적 downside(신뢰·연산 등) + 위험 라벨, RNG 없이 결정론적</p></div>
+    </div>
+    <p class="lead" style="margin-top:16px">"AI 회사가 현실 세계로 확장하는 서사"를 시너지·조합으로 게임화. 단 통제된 슬라이스(신규 산업 정확히 3개)로 제한해 밸런스 유지.</p>
+    <div class="pg">09</div>
+  </section>
+
+  <!-- 10 FUN HOOKS -->
+  <section class="slide">
+    <div class="eyebrow">03 · 재미 요소</div>
+    <h2>핵심 후크 네 가지</h2>
+    <div class="rule"></div>
+    <div class="grid2">
+      <div class="card"><div class="ico">📈</div><h3>살아 움직이는 경쟁</h3><p>점유율 시각화, 라이벌 성향·약점, 도전자 등장 팝업, "압박 대응" 카드 신호</p></div>
+      <div class="card"><div class="ico">🃏</div><h3>전략 카드 덱빌딩</h3><p>희귀도·시너지·아키타입, 카드 → 효과 인과 시각화</p></div>
+      <div class="card"><div class="ico">⚡</div><h3>진짜 자원 경제</h3><p>"왜 GPU가 부족한가"를 체감하는 맞물린 경제</p></div>
+      <div class="card"><div class="ico">🌐</div><h3>경계 없는 확장</h3><p>소프트웨어 → 물리 산업, 회사가 현실로 뻗어나가는 서사</p></div>
+    </div>
+    <div class="pg">10</div>
+  </section>
+
+  <!-- 11 POLISH -->
+  <section class="slide">
+    <div class="eyebrow">03 · 재미 요소</div>
+    <h2>손맛 — 첫 30분을 다듬다</h2>
+    <div class="rule"></div>
+    <ul>
+      <li>첫 출시 등장 연출과 빛나는 결과 리본</li>
+      <li>보상 카드 희귀도 차등 — 레어 블루 글로우, 에픽 퍼플골드 펄스</li>
+      <li>2년차 킥오프 진입 애니메이션 + 다음 30분 흐름 안내 화살표</li>
+      <li>출시 진행 미터, 사무실 비주얼, 경쟁/직원 사건 화면 모먼트</li>
+      <li>접근성 — 브라우저 즉시 실행, 한국어·영어, 모바일 390×844, 모션 감소 지원</li>
+    </ul>
+    <div class="pg">11</div>
+  </section>
+
+  <!-- 12 HONEST DIAGNOSIS -->
+  <section class="slide">
+    <div class="eyebrow">03 · 재미 요소 · 정직한 진단</div>
+    <h2>어디가 아직 얇은가</h2>
+    <div class="rule"></div>
+    <div class="grid3">
+      <div class="card"><h3>리플레이성</h3><p>시너지·조합이 손으로 적은 10+10 고정. 판마다 새로운 조합 발견의 폭이 제한적</p></div>
+      <div class="card"><h3>내러티브 깊이</h3><p>엔딩이 점수·별점 단일. 회사 정체성·서사 분기가 약함</p></div>
+      <div class="card"><h3>변수의 다양성</h3><p>런마다 시장·사건이 비슷. 로그라이크식 변형(모디파이어)이 없음</p></div>
+    </div>
+    <p class="lead" style="margin-top:16px">→ 다음 04 섹션은 이 빈 곳을 메우기 위해 <b>당신이 정해야 할 결정</b>들이다. 각 슬라이드의 ☐에 표시하거나 직접 적어 주세요.</p>
+    <div class="pg">12</div>
+  </section>
+
+  <!-- 13 DECISIONS OVERVIEW -->
+  <section class="slide">
+    <div class="eyebrow">04 · 결정 포인트</div>
+    <h2>당신이 정할 것 — 한눈에</h2>
+    <div class="rule"></div>
+    <ul>
+      <li><b>A.</b> "무궁무진한 조합" 엔진 — 어떤 레버로, 언제? <span class="flag">보류 중</span></li>
+      <li><b>B.</b> 리플레이성·내러티브 깊이 — 다음 깊이 축은?</li>
+      <li><b>C.</b> 베타 게이트 — 플레이테스트·최종 아트 순서와 아트 방향</li>
+      <li><b>D.</b> 자유 추가 — 당신의 새 아이디어 칸</li>
+    </ul>
+    <div class="note">각 결정 슬라이드에서 ☐를 채우거나 "기타" 칸에 적으면, 그대로 다음 개발 마일스톤으로 옮기겠습니다.</div>
+    <div class="pg">13</div>
+  </section>
+
+  <!-- 14 DECISION A -->
+  <section class="slide">
+    <div class="eyebrow">04 · 결정 A</div>
+    <h2>"무궁무진한 조합" 엔진</h2>
+    <div class="rule"></div>
+    <div class="qbox"><b>질문.</b> 손으로 적는 시너지/조합을 "태그에서 계산"으로 바꿔 사실상 무한히 늘릴 것인가? 늘린다면 어떤 레버를 먼저?</div>
+    <div class="opt"><span class="cb">☐</span><div><span class="ot">태그 기반 파생 엔진</span><span class="rec">추천 레버</span><p>도메인·제품·카드의 태그 관계에서 시너지/조합을 계산 → 콘텐츠 추가 시 조합이 자동 증식</p></div></div>
+    <div class="opt"><span class="cb">☐</span><div><span class="ot">런 모디파이어 / 뮤테이터</span><p>그 해 규제 강화·컴퓨트 붐 등 전역 변형 → "조합 × 상황"으로 체감상 무한</p></div></div>
+    <div class="opt"><span class="cb">☐</span><div><span class="ot">제품 아이디어 4번째 축 추가</span><p>현재 주제×유형×파격 = 5,184 → 축 하나로 ×N 증가 (단 §5 "조합 수 추가" 경계와 충돌)</p></div></div>
+    <div class="note">타이밍 — ☐ v1.0 이후 별도 마일스톤(추천, 코어 검증 후) · ☐ 베타 중 실험 브랜치 · ☐ 더 보류. 지금은 ROADMAP §5가 대량 확장을 경계.</div>
+    <div class="pg">14</div>
+  </section>
+
+  <!-- 15 DECISION B -->
+  <section class="slide">
+    <div class="eyebrow">04 · 결정 B</div>
+    <h2>리플레이성 · 내러티브 깊이</h2>
+    <div class="rule"></div>
+    <div class="qbox"><b>질문.</b> "한 판 더"를 만드는 다음 깊이 축은? (복수 선택 가능)</div>
+    <div class="two">
+      <div>
+        <div class="opt"><span class="cb">☐</span><div><span class="ot">멀티 엔딩 · 회사 정체성 분기</span><span class="rec">추천</span><p>10년 선택이 서로 다른 엔딩/정체성으로 수렴</p></div></div>
+        <div class="opt"><span class="cb">☐</span><div><span class="ot">로그라이크 런 모디파이어</span><p>판마다 다른 시작 조건·시장·변형</p></div></div>
+      </div>
+      <div>
+        <div class="opt"><span class="cb">☐</span><div><span class="ot">시드 기반 절차적 런</span><p>같은 시드 공유·도전 모드</p></div></div>
+        <div class="opt"><span class="cb">☐</span><div><span class="ot">카드 간 콤보 심화</span><p>플레이어가 직접 표현하는 전략 폭 확장</p></div></div>
+      </div>
+    </div>
+    <div class="note">우선순위를 1·2·3으로 적어주셔도 됩니다. 추천은 멀티 엔딩 → 런 모디파이어 순.</div>
+    <div class="pg">15</div>
+  </section>
+
+  <!-- 16 DECISION C -->
+  <section class="slide">
+    <div class="eyebrow">04 · 결정 C</div>
+    <h2>베타 게이트 · 아트 방향</h2>
+    <div class="rule"></div>
+    <div class="two">
+      <div>
+        <h3>진행 순서</h3>
+        <div class="opt"><span class="cb">☐</span><div><span class="ot">실제 사람 플레이테스트 먼저</span><span class="rec">추천</span><p>재미 검증 후 아트 투자 — 리스크 최소</p></div></div>
+        <div class="opt"><span class="cb">☐</span><div><span class="ot">최종 아트 먼저</span><p>비주얼 완성도로 첫인상 강화</p></div></div>
+        <div class="opt"><span class="cb">☐</span><div><span class="ot">병렬 진행</span><p>가장 빠르지만 손실 위험</p></div></div>
+      </div>
+      <div>
+        <h3>아트 방향</h3>
+        <div class="opt"><span class="cb">☐</span><div><span class="ot">현재 픽셀/아이소메트릭 유지</span><span class="rec">추천</span><p>이미 파이프라인·매니페스트 구축됨</p></div></div>
+        <div class="opt"><span class="cb">☐</span><div><span class="ot">스타일 재설정</span><p>차별화되지만 일정·비용 증가</p></div></div>
+        <div class="opt blank"><span class="cb">☐</span><div><span class="ot">기타 ____________</span></div></div>
+      </div>
+    </div>
+    <div class="note">현재 <b>AGY 발송 가능</b> 상태 — AGY 5x 에이전트 리뷰 5/5 완료, 최종 아트 요청 게이트는 열려 있음.</div>
+    <div class="pg">16</div>
+  </section>
+
+  <!-- 17 DECISION D — FREE ADD -->
+  <section class="slide">
+    <div class="eyebrow">04 · 결정 D</div>
+    <h2>당신의 아이디어 칸</h2>
+    <div class="rule"></div>
+    <div class="qbox"><b>자유 추가.</b> 위에 없는 새 아이디어·시스템·콘텐츠를 적어주세요. 적힌 만큼 다음 마일스톤 후보로 옮깁니다.</div>
+    <div class="opt blank"><span class="cb">☐</span><div style="flex:1"><span class="ot">아이디어 1</span><div class="writeline"></div></div></div>
+    <div class="opt blank"><span class="cb">☐</span><div style="flex:1"><span class="ot">아이디어 2</span><div class="writeline"></div></div></div>
+    <div class="opt blank"><span class="cb">☐</span><div style="flex:1"><span class="ot">아이디어 3</span><div class="writeline"></div></div></div>
+    <div class="note">예 — 멀티플레이/리더보드, 시즌제, 실제 AI 뉴스 연동 이벤트, 모드 지원, 수익화 모델 등 무엇이든.</div>
+    <div class="pg">17</div>
+  </section>
+
+  <!-- 18 DECIDED -->
+  <section class="slide">
+    <div class="eyebrow">확정 방향 · 2026-05-29</div>
+    <h2>이렇게 정했습니다</h2>
+    <div class="rule"></div>
+    <div class="grid3">
+      <div class="card"><h3>A · 무궁무진 조합</h3><p><b>태그 기반 파생 엔진</b> — 조합을 열거하지 말고 태그에서 계산 (발견 도파민). post-1.0</p></div>
+      <div class="card"><h3>B · 리플레이성</h3><p><b>멀티 엔딩 + 로그라이크 런</b> — 도시×세계관×시장×창업자 + 연중 이벤트. post-1.0</p></div>
+      <div class="card"><h3>C · 베타·아트</h3><p><b>아트+플레이테스트 병렬</b> — 픽셀 방향 유지 + 해상도 상향</p></div>
+    </div>
+    <div style="margin-top:16px"><h3 style="margin-bottom:8px">도파민 = 발견 × 변주 × 페이오프 × 긴장-해소</h3>
+      <div class="chips">
+        <span class="chip"><b>발견</b> 태그 엔진+도감</span><span class="chip"><b>변주</b> 로그라이크 런</span>
+        <span class="chip"><b>페이오프</b> 발동 연출 ← v0.62</span><span class="chip"><b>긴장</b> 난이도 조정+near-miss</span>
+      </div>
+    </div>
+    <div class="note">시퀀싱 — v0.62 페이오프 연출(지금, §5-safe) → 베타(아트+플레이테스트 병렬) → v1.0 → post-1.0(로그라이크·태그엔진·멀티엔딩). 상세 <b>reports/v0_62_design_direction.md</b></div>
+    <div class="pg">18</div>
+  </section>
+
+  <!-- 19 CLOSING -->
+  <section class="slide cover">
+    <div class="eyebrow">다음 액션</div>
+    <h1>표시해 주시면,<br/>그대로 옮깁니다</h1>
+    <div class="rule"></div>
+    <p class="sub">A~D의 ☐를 채우거나 칸을 적어 알려주세요. 고른 항목을 feature_list 마일스톤으로 분해해 이중 트랙으로 진행하겠습니다.</p>
+    <div class="meta">AI Company Tycoon: Boundaryless · v0.61-alpha · 2026.05 · kami 스타일 디자인 리뷰</div>
+    <div class="foot">인쇄 시 Cmd+P → 가로 PDF</div>
+  </section>
+
+</div>
+</body>
+</html>
