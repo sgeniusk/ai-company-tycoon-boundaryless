@@ -226,7 +226,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("check.complete ? \"complete\" : \"partial\"");
     expect(gameChrome).toContain("결과 전용 {summary.resultOnlyTotal}");
     expect(gameChrome).toContain("베타 준비 체크");
-    expect(gameChrome).toContain("준비도 {summary.readinessPercent}%");
+    expect(gameChrome).toContain("준비도 {summary.readinessPercent}% · {summary.statusLabel}");
     expect(betaReadinessSource).toContain("v0.67 멀티 엔딩 준비도");
     expect(betaReadinessSource).toContain("reward_pool");
     expect(betaReadinessSource).toContain("도감 보상");

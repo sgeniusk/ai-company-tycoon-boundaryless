@@ -2008,7 +2008,7 @@ function BetaReadinessPanel({
       <div className="beta-readiness-heading">
         <strong>베타 준비 체크</strong>
         <span>{summary.title}</span>
-        <b>준비도 {summary.readinessPercent}%</b>
+        <b>준비도 {summary.readinessPercent}% · {summary.statusLabel}</b>
       </div>
       <div className="beta-readiness-grid">
         <span>

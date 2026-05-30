@@ -39,6 +39,7 @@ describe("beta readiness summary", () => {
     });
     expect(summary.completeCheckCount).toBe(summary.totalCheckCount);
     expect(summary.readinessPercent).toBe(100);
+    expect(summary.statusLabel).toBe("준비 완료");
   });
 
   it("keeps the target replay check complete when every replayable ending is discovered", () => {

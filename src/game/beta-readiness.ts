@@ -41,6 +41,7 @@ export interface BetaReadinessSummary {
   completeCheckCount: number;
   totalCheckCount: number;
   readinessPercent: number;
+  statusLabel: string;
 }
 
 const minimumBetaEndingRoutes = 24;
@@ -93,6 +94,7 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     },
   ];
   const completeCheckCount = checks.filter((check) => check.complete).length;
+  const statusLabel = completeCheckCount === checks.length ? "준비 완료" : "점검 필요";
 
   return {
     title: "v0.67 멀티 엔딩 준비도",
@@ -119,5 +121,6 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     completeCheckCount,
     totalCheckCount: checks.length,
     readinessPercent: checks.length ? Math.round((completeCheckCount / checks.length) * 100) : 100,
+    statusLabel,
   };
 }
