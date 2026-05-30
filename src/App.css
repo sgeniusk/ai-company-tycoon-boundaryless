@@ -8972,6 +8972,27 @@ p {
   grid-column: 1 / -1;
 }
 
+.ending-nudge-unlocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.ending-nudge-unlocks strong,
+.ending-nudge-unlocks span {
+  background: #fffdf7;
+  border: 2px solid currentColor;
+  color: inherit;
+  font-size: 0.64rem;
+  font-weight: 900;
+  line-height: 1.2;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 4px 6px;
+}
+
 .challenge-tier-picker {
   background: #fffdf7;
   border: 2px solid #b6ccdc;

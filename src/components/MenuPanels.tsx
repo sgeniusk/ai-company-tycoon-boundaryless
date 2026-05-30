@@ -1015,6 +1015,14 @@ function DeckPanel({
                 </div>
                 <em>{nextRunSetupPlan.endingNudge.rewardLabel}</em>
                 <small>{nextRunSetupPlan.endingNudge.description}</small>
+                {nextRunSetupPlan.endingNudge.recommendedUnlockLabels.length > 0 && (
+                  <div className="ending-nudge-unlocks" aria-label="엔딩 추천 해금">
+                    <strong>추천 해금</strong>
+                    {nextRunSetupPlan.endingNudge.recommendedUnlockLabels.map((label) => (
+                      <span key={label}>{label}</span>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
             {nextRunSetupPlan.recoveryWarnings.length > 0 && (

@@ -5,7 +5,7 @@ import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingR
 import { createInitialState } from "./simulation";
 import type { RunModifierSelectionInput } from "./run-modifiers";
 import { getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "./tag-derivation";
-import type { ActionCheck, GameState, MetaUnlockDefinition, ResourceMap, RunRecord, StarterDeckOption } from "./types";
+import type { ActionCheck, EndingConditionDefinition, GameState, MetaUnlockDefinition, ResourceMap, RunRecord, StarterDeckOption } from "./types";
 import { t } from "../i18n";
 
 export interface MetaUnlockStatus extends MetaUnlockDefinition {
@@ -43,6 +43,7 @@ export interface NextRunEndingNudge {
   title: string;
   newlyDiscovered: boolean;
   rewardLabel: string;
+  recommendedUnlockLabels: string[];
   statusLabel: string;
   description: string;
 }
@@ -209,6 +210,7 @@ function getNextRunEndingNudge(state: GameState): NextRunEndingNudge | undefined
     title: discovery.title,
     newlyDiscovered,
     rewardLabel: discovery.rewardLabel,
+    recommendedUnlockLabels: getEndingNudgeUnlockLabels(discovery.condition, state),
     statusLabel: discovery.rewardStatusLabel,
     description: createEndingNudgeDescription(discovery.title, discovery.rewardLabel, discovery.condition.fallback === true, newlyDiscovered),
   };
@@ -223,6 +225,75 @@ function createEndingNudgeDescription(title: string, rewardLabel: string, result
 
   if (newlyDiscovered) return `${title} 보상 ${rewardLabel}이 다음 런 해금 후보에 반영됩니다.`;
   return `${title}은 이미 도감에 있어 이번 런은 기록만 갱신됩니다.`;
+}
+
+function getEndingNudgeUnlockLabels(condition: EndingConditionDefinition, state: GameState): string[] {
+  if (condition.fallback === true) return [];
+
+  const targetTags = getEndingNudgeUnlockTags(condition);
+  if (targetTags.size === 0) return [];
+
+  return metaUnlocks
+    .filter((unlock) => !state.roguelite.unlockedMetaIds.includes(unlock.id))
+    .map((unlock) => ({
+      unlock,
+      score: unlock.tags.filter((tag) => targetTags.has(tag)).length,
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort((first, second) => second.score - first.score || first.unlock.cost - second.unlock.cost || first.unlock.id.localeCompare(second.unlock.id))
+    .slice(0, 2)
+    .map(({ unlock }) => unlock.title);
+}
+
+function getEndingNudgeUnlockTags(condition: EndingConditionDefinition): Set<string> {
+  const tags = new Set<string>();
+  const marketIds = new Set(condition.market_condition_ids ?? []);
+  const worldIds = new Set(condition.world_lore_ids ?? []);
+  const founderIds = new Set(condition.founder_trait_ids ?? []);
+  const growthPathIds = new Set(condition.growth_path_ids ?? []);
+  const resources = condition.min_resources ?? {};
+
+  if (
+    marketIds.has("ai_boom") ||
+    marketIds.has("consumer_hype_cycle") ||
+    worldIds.has("open_source_heaven") ||
+    founderIds.has("marketer_founder") ||
+    founderIds.has("serial_founder") ||
+    (resources.hype ?? 0) >= 70
+  ) {
+    tags.add("growth");
+  }
+
+  if (
+    marketIds.has("regulation_crackdown") ||
+    marketIds.has("enterprise_winter") ||
+    worldIds.has("privacy_fortress") ||
+    worldIds.has("regulatory_stronghold") ||
+    growthPathIds.has("trust_enterprise") ||
+    (resources.trust ?? 0) >= 88
+  ) {
+    tags.add("safety");
+    tags.add("quality");
+    tags.add("enterprise");
+  }
+
+  if (worldIds.has("chip_war") || worldIds.has("bitcoin_gpu_squeeze") || growthPathIds.has("code_vision_lab") || (resources.compute ?? 0) >= 280) {
+    tags.add("compute");
+    tags.add("hardware");
+    tags.add("research");
+  }
+
+  if (worldIds.has("robotics_boom") || (resources.automation ?? 0) >= 68 || marketIds.has("steady_market")) {
+    tags.add("automation");
+    tags.add("ops");
+  }
+
+  if (worldIds.has("data_drought") || (resources.data ?? 0) >= 240) {
+    tags.add("data");
+    tags.add("quality");
+  }
+
+  return tags;
 }
 
 function uniqueStrings(values: string[]): string[] {
