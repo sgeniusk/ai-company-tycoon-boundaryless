@@ -28,6 +28,7 @@ describe("beta readiness summary", () => {
       "route_coverage",
       "target_replay",
       "route_quick_start",
+      "result_route_start",
     ]);
     expect(summary.checks.find((check) => check.id === "ending_routes")).toMatchObject({
       detail: "24 결말 · 23 목표 · 1 결과 전용",
@@ -40,6 +41,11 @@ describe("beta readiness summary", () => {
     });
     expect(summary.checks.find((check) => check.id === "route_quick_start")).toMatchObject({
       label: "원클릭 목표 런",
+      complete: true,
+    });
+    expect(summary.checks.find((check) => check.id === "result_route_start")).toMatchObject({
+      label: "결과 목표 런",
+      detail: "샌프란시스코 / 오픈소스 천국 / 엔지니어 창업자",
       complete: true,
     });
     expect(summary.completeCheckCount).toBe(summary.totalCheckCount);
@@ -66,6 +72,10 @@ describe("beta readiness summary", () => {
       detail: "모든 목표 엔딩 발견",
     });
     expect(summary.checks.find((check) => check.id === "route_quick_start")).toMatchObject({
+      complete: true,
+      detail: "모든 목표 엔딩 발견",
+    });
+    expect(summary.checks.find((check) => check.id === "result_route_start")).toMatchObject({
       complete: true,
       detail: "모든 목표 엔딩 발견",
     });

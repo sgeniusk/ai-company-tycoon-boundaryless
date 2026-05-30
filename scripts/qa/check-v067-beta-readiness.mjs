@@ -271,6 +271,20 @@ const baseChecks = [
       appCssSource.includes(".ending-route-quickstart-badge") &&
       betaReadinessSource.includes("route_quick_start"),
   },
+  {
+    id: "result_route_action",
+    label: "결과 화면 Route Start",
+    detail: "finale result target route",
+    complete:
+      gameChromeSource.includes("getNextRunSetupPlan") &&
+      gameChromeSource.includes("endingRouteQuickStart") &&
+      gameChromeSource.includes("handleStartEndingRouteRun") &&
+      gameChromeSource.includes("ending-route-result-action") &&
+      gameChromeSource.includes("routeQuickStart.runModifierSelection") &&
+      gameChromeSource.includes("엔딩 목표 런으로 새 런") &&
+      appCssSource.includes(".ending-route-result-action") &&
+      betaReadinessSource.includes("result_route_start"),
+  },
 ];
 
 function createResult(checks) {

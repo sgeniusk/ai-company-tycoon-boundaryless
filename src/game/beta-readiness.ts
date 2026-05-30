@@ -10,7 +10,14 @@ export interface BetaReadinessAxisSummary extends EndingAxisCoverageSummary {
 }
 
 export interface BetaReadinessCheck {
-  id: "ending_routes" | "reward_pool" | "unlock_guidance" | "route_coverage" | "target_replay" | "route_quick_start";
+  id:
+    | "ending_routes"
+    | "reward_pool"
+    | "unlock_guidance"
+    | "route_coverage"
+    | "target_replay"
+    | "route_quick_start"
+    | "result_route_start";
   label: string;
   detail: string;
   complete: boolean;
@@ -97,6 +104,12 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     {
       id: "route_quick_start",
       label: "원클릭 목표 런",
+      detail: nextTargetRouteLabel,
+      complete: Boolean(endingCollectionSummary.nextReplayPlan?.selection?.seed) || endingCollectionSummary.lockedReplayableCount === 0,
+    },
+    {
+      id: "result_route_start",
+      label: "결과 목표 런",
       detail: nextTargetRouteLabel,
       complete: Boolean(endingCollectionSummary.nextReplayPlan?.selection?.seed) || endingCollectionSummary.lockedReplayableCount === 0,
     },
