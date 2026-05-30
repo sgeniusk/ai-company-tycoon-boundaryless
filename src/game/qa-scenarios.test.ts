@@ -88,6 +88,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "difficulty-hard",
       "difficulty-reward",
       "world-events",
+      "ending-replay",
     ]);
   });
 
@@ -798,6 +799,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=difficulty-reward")?.id).toBe("difficulty-reward");
     expect(createQaScenarioFromSearch("?scenario=world-events")?.id).toBe("world-events");
     expect(createQaScenarioFromSearch("?scenario=archetype-collection")?.id).toBe("archetype-collection");
+    expect(createQaScenarioFromSearch("?scenario=ending-replay")?.id).toBe("ending-replay");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
@@ -832,6 +834,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.discoveredPayoffIds.length).toBeGreaterThan(0);
     expect(entries.some((entry) => entry.discovered)).toBe(true);
     expect(entries.some((entry) => !entry.discovered)).toBe(true);
+  });
+
+  it("builds an ending replay scenario with discovered endings and target plans", () => {
+    const scenario = createQaScenario("ending-replay");
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("엔딩 목표");
+    expect(scenario.state.roguelite.discoveredEndingIds).toEqual(
+      expect.arrayContaining(["standard_platform_compounder", "privacy_trust_bastion"]),
+    );
   });
 
   it("allows QA URLs to override the active menu", () => {

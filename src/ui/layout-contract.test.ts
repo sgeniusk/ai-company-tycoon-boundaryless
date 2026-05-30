@@ -775,6 +775,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-target-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #4 lets the ending codex seed target replay runs", () => {
+    expect(menuPanels).toContain("getEndingReplayPlans");
+    expect(menuPanels).toContain("ending-replay-panel");
+    expect(menuPanels).toContain("목표 런");
+    expect(menuPanels).toContain("plan.selection");
+    expect(qaScenarios).toContain("ending-replay");
+    expect(appCss).toMatch(/\.ending-replay-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-replay-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-replay-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");

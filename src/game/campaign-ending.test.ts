@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { campaignEndings, products } from "./data";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
-import { getCampaignEnding, getEndingCollectionEntries, getEndingTargetPlans } from "./campaign-ending";
+import { getCampaignEnding, getEndingCollectionEntries, getEndingReplayPlans, getEndingTargetPlans } from "./campaign-ending";
 import { runTenYearCampaignSimulation } from "./run-simulator";
 import { createInitialState } from "./simulation";
 import type { GameState, RunModifiersState } from "./types";
@@ -422,5 +422,36 @@ describe("v0.67 campaign ending selector", () => {
       ]),
     );
     expect(plans.map((plan) => plan.id)).not.toContain("privacy_trust_bastion");
+  });
+
+  it("builds deterministic replay plans that can seed a target ending run", () => {
+    const state = {
+      ...createInitialState(),
+      roguelite: {
+        ...createInitialState().roguelite,
+        discoveredEndingIds: ["frontier_demo_empire"],
+      },
+    };
+    const plans = getEndingReplayPlans(state, 12);
+    const privacyPlan = plans.find((plan) => plan.id === "privacy_trust_bastion");
+
+    expect(plans[0]).toMatchObject({
+      id: "agi_safety_accord",
+      discovered: false,
+    });
+    expect(privacyPlan).toMatchObject({
+      discovered: false,
+      selection: {
+        seed: "ending:privacy_trust_bastion",
+        worldLoreId: "privacy_fortress",
+        marketConditionId: "regulation_crackdown",
+        founderTraitId: "researcher_founder",
+        challengeTierId: "standard",
+      },
+    });
+    expect(privacyPlan?.targetLabels).toEqual(
+      expect.arrayContaining(["프라이버시 요새", "규제 단속", "연구자 창업자", "신뢰 기반 엔터프라이즈"]),
+    );
+    expect(plans.find((plan) => plan.id === "frontier_demo_empire")?.discovered).toBe(true);
   });
 });

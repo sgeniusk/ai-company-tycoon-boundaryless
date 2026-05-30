@@ -6632,6 +6632,16 @@ p {
   padding: 10px;
 }
 
+.ending-replay-panel {
+  background: #f4fbec;
+  border: 2px solid #9fbe72;
+  display: grid;
+  gap: 9px;
+  margin-bottom: 10px;
+  min-width: 0;
+  padding: 10px;
+}
+
 .payoff-collection-heading {
   align-items: end;
   display: grid;
@@ -6675,6 +6685,13 @@ p {
   min-width: 0;
 }
 
+.ending-replay-grid {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
 .payoff-collection-grid article {
   background: #fffdf7;
   border: 2px solid #d7c894;
@@ -6705,6 +6722,17 @@ p {
   padding: 8px;
 }
 
+.ending-replay-grid article {
+  align-content: start;
+  background: #fffdf7;
+  border: 2px solid #b9d0e6;
+  display: grid;
+  gap: 7px;
+  min-height: 124px;
+  min-width: 0;
+  padding: 8px;
+}
+
 .payoff-collection-grid article.discovered {
   background: #fff8df;
   border-color: #d6a942;
@@ -6716,6 +6744,11 @@ p {
 }
 
 .ending-collection-grid article.discovered {
+  background: #eff9ea;
+  border-color: var(--green);
+}
+
+.ending-replay-grid article.discovered {
   background: #eff9ea;
   border-color: var(--green);
 }
@@ -6735,6 +6768,11 @@ p {
   border-color: #b9c3ce;
 }
 
+.ending-replay-grid article.locked {
+  background: #fffdf7;
+  border-color: #9fbe72;
+}
+
 .payoff-collection-grid strong {
   color: #4f4325;
   font-size: 0.78rem;
@@ -6750,6 +6788,13 @@ p {
 }
 
 .ending-collection-grid strong {
+  color: #263f52;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.ending-replay-grid strong {
   color: #263f52;
   font-size: 0.78rem;
   line-height: 1.2;
@@ -6781,6 +6826,19 @@ p {
   font-weight: 900;
   line-height: 1.3;
   overflow-wrap: anywhere;
+}
+
+.ending-replay-grid span,
+.ending-replay-grid small {
+  color: #516579;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.ending-replay-grid button {
+  align-self: end;
 }
 
 .domain-filter {
@@ -9855,6 +9913,7 @@ p {
   .payoff-collection-grid,
   .archetype-collection-grid,
   .ending-collection-grid,
+  .ending-replay-grid,
   .run-spotlight-grid,
   .rival-wave-list,
   .deck-token-strip,
@@ -9958,6 +10017,10 @@ p {
   }
 
   .ending-collection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ending-replay-grid {
     grid-template-columns: 1fr;
   }
 

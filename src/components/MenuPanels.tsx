@@ -13,7 +13,7 @@ import {
 import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
 import { getBoundarylessExpansionGoals } from "../game/boundaryless-expansion";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
-import { getEndingCollectionEntries, getEndingTargetPlans } from "../game/campaign-ending";
+import { getEndingCollectionEntries, getEndingReplayPlans, getEndingTargetPlans } from "../game/campaign-ending";
 import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getIndustryComboSummary } from "../game/industry-combos";
 import { getIndustrySynergySummary } from "../game/industry-synergies";
@@ -736,6 +736,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const starterDeckOptions = getAvailableStarterDecks(gameState);
   const nextRunSetupPlan = getNextRunSetupPlan(gameState);
   const endingCollectionEntries = getEndingCollectionEntries(gameState);
+  const endingReplayPlans = getEndingReplayPlans(gameState, 3);
   const discoveredEndingCount = endingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
   const shouldShowNextRunSetup =
     gameState.month >= 10 || gameState.status !== "playing" || gameState.roguelite.runHistory.length > 0;
@@ -1296,6 +1297,33 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                 <p className="item-meta">통찰 보너스 +{entry.meta_reward_bonus}</p>
                 <strong>{entry.discovered ? entry.title : "미발견 엔딩"}</strong>
                 <span>{entry.discovered ? entry.flavor : "10년 캠페인 결과에서 조건을 만족하면 공개됩니다."}</span>
+              </article>
+            ))}
+          </div>
+        </div>
+        <div className="ending-replay-panel" aria-label="엔딩 목표 런">
+          <div className="payoff-collection-heading">
+            <strong>엔딩 목표 런</strong>
+            <span>조건 기반 추천 {endingReplayPlans.length}개</span>
+          </div>
+          <div className="ending-replay-grid">
+            {endingReplayPlans.map((plan) => (
+              <article className={plan.discovered ? "discovered" : "locked"} key={plan.id}>
+                <div>
+                  <p className="item-meta">{plan.discovered ? "발견 완료" : "미발견 목표"} · 통찰 보너스 +{plan.meta_reward_bonus}</p>
+                  <strong>{plan.title}</strong>
+                  <span>{plan.targetLabels.slice(0, 5).join(" / ")}</span>
+                </div>
+                <button
+                  onClick={() =>
+                    setGameState((current) =>
+                      resetRunWithMetaUnlocks(current, [], current.roguelite.starterDeckId ?? "balanced_founder", plan.selection),
+                    )
+                  }
+                  type="button"
+                >
+                  목표 런
+                </button>
               </article>
             ))}
           </div>

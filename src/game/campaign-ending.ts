@@ -1,4 +1,5 @@
-import { campaignEndings, difficultyTiers, growthPaths, runModifiers } from "./data";
+import { campaignEndings, derivationRules, difficultyTiers, growthPaths, runModifiers } from "./data";
+import { DEFAULT_RUN_MODIFIER_SELECTION, type RunModifierSelectionInput } from "./run-modifiers";
 import { getDerivedArchetypes } from "./tag-derivation";
 import type { EndingConditionDefinition, EndingDefinition, GameState, ResourceMap } from "./types";
 
@@ -25,6 +26,12 @@ export interface EndingTargetPlan extends EndingDefinition {
   requirements: EndingRequirementProgress[];
 }
 
+export interface EndingReplayPlan extends EndingDefinition {
+  discovered: boolean;
+  selection: RunModifierSelectionInput;
+  targetLabels: string[];
+}
+
 export function getCampaignEnding(finalState: GameState): EndingDefinition {
   const matches = campaignEndings
     .map((ending, index) => ({ ending, index }))
@@ -48,6 +55,21 @@ export function getEndingTargetPlans(state: GameState, limit = 3): EndingTargetP
   );
 
   return rankedPlans.slice(0, Math.max(1, limit));
+}
+
+export function getEndingReplayPlans(state: Pick<GameState, "roguelite">, limit = 3): EndingReplayPlan[] {
+  const discoveredIds = new Set(state.roguelite.discoveredEndingIds ?? []);
+
+  return campaignEndings
+    .filter((ending) => ending.condition.fallback !== true)
+    .map((ending) => createEndingReplayPlan(ending, discoveredIds))
+    .sort(
+      (first, second) =>
+        Number(first.discovered) - Number(second.discovered) ||
+        second.priority - first.priority ||
+        first.id.localeCompare(second.id),
+    )
+    .slice(0, Math.max(1, limit));
 }
 
 export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">): EndingCollectionEntry[] {
@@ -81,6 +103,138 @@ function createEndingTargetPlan(ending: EndingDefinition, state: GameState): End
     blockers,
     requirements,
   };
+}
+
+function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<string>): EndingReplayPlan {
+  const selection = createReplaySelection(ending);
+
+  return {
+    ...ending,
+    discovered: discoveredIds.has(ending.id),
+    selection,
+    targetLabels: getReplayTargetLabels(ending.condition, selection),
+  };
+}
+
+function createReplaySelection(ending: EndingDefinition): RunModifierSelectionInput {
+  const condition = ending.condition;
+  const explicitDimensions = new Set<string>();
+  const selection: RunModifierSelectionInput = {
+    seed: `ending:${ending.id}`,
+    startCityId: firstConditionId(condition.start_city_ids, DEFAULT_RUN_MODIFIER_SELECTION.startCityId, explicitDimensions, "startCityId"),
+    worldLoreId: firstConditionId(condition.world_lore_ids, DEFAULT_RUN_MODIFIER_SELECTION.worldLoreId, explicitDimensions, "worldLoreId"),
+    marketConditionId: firstConditionId(condition.market_condition_ids, DEFAULT_RUN_MODIFIER_SELECTION.marketConditionId, explicitDimensions, "marketConditionId"),
+    founderTraitId: firstConditionId(condition.founder_trait_ids, getReplayFounderTraitId(condition), explicitDimensions, "founderTraitId"),
+    challengeTierId: condition.challenge_tier_ids?.[0] ?? "standard",
+  };
+
+  return improveReplaySelectionForArchetypes(selection, condition, explicitDimensions);
+}
+
+function firstConditionId(ids: string[] | undefined, fallback: string, explicitDimensions: Set<string>, dimension: string): string {
+  if (ids?.length) {
+    explicitDimensions.add(dimension);
+    return ids[0];
+  }
+
+  return fallback;
+}
+
+function getReplayFounderTraitId(condition: EndingConditionDefinition): string {
+  if (condition.growth_path_ids?.includes("trust_enterprise")) return "researcher_founder";
+  if (condition.growth_path_ids?.includes("code_vision_lab")) return "engineer_founder";
+  if (condition.archetype_ids?.some((id) => ["data_alchemist", "lab_in_winter"].includes(id))) return "researcher_founder";
+  if (condition.archetype_ids?.includes("compute_siege_survivor")) return "operator_founder";
+  return DEFAULT_RUN_MODIFIER_SELECTION.founderTraitId;
+}
+
+function improveReplaySelectionForArchetypes(
+  selection: RunModifierSelectionInput,
+  condition: EndingConditionDefinition,
+  explicitDimensions: Set<string>,
+): RunModifierSelectionInput {
+  if (!condition.archetype_ids?.length) return selection;
+
+  const requiredTags = new Set(
+    condition.archetype_ids.flatMap((archetypeId) => derivationRules.find((rule) => rule.id === archetypeId)?.requires ?? []),
+  );
+  if (requiredTags.size === 0) return selection;
+
+  const nextSelection = { ...selection };
+  const replayDimensions = [
+    { key: "start_cities" as const, selectionKey: "startCityId" as const },
+    { key: "world_lore" as const, selectionKey: "worldLoreId" as const },
+    { key: "market_conditions" as const, selectionKey: "marketConditionId" as const },
+    { key: "founder_traits" as const, selectionKey: "founderTraitId" as const },
+  ];
+
+  for (const dimension of replayDimensions) {
+    if (explicitDimensions.has(dimension.selectionKey)) continue;
+    const selectedTags = getReplaySelectionTags(nextSelection);
+    const missingTags = [...requiredTags].filter((tag) => !selectedTags.has(tag));
+    if (missingTags.length === 0) break;
+
+    const currentId = nextSelection[dimension.selectionKey];
+    const bestOption = runModifiers[dimension.key]
+      .map((option, index) => ({
+        option,
+        index,
+        score: option.tags.filter((tag) => missingTags.includes(tag)).length,
+      }))
+      .sort((first, second) => second.score - first.score || first.index - second.index)[0];
+
+    if (bestOption && bestOption.score > 0 && bestOption.option.id !== currentId) {
+      nextSelection[dimension.selectionKey] = bestOption.option.id;
+    }
+  }
+
+  return nextSelection;
+}
+
+function getReplaySelectionTags(selection: RunModifierSelectionInput): Set<string> {
+  const entries = [
+    runModifiers.start_cities.find((entry) => entry.id === selection.startCityId),
+    runModifiers.world_lore.find((entry) => entry.id === selection.worldLoreId),
+    runModifiers.market_conditions.find((entry) => entry.id === selection.marketConditionId),
+    runModifiers.founder_traits.find((entry) => entry.id === selection.founderTraitId),
+  ];
+
+  return new Set(entries.flatMap((entry) => entry?.tags ?? []));
+}
+
+function getReplayTargetLabels(condition: EndingConditionDefinition, selection: RunModifierSelectionInput): string[] {
+  const labels: string[] = [];
+
+  pushReplayLabel(labels, selection.startCityId, getRunModifierName("start_cities"), DEFAULT_RUN_MODIFIER_SELECTION.startCityId, condition.start_city_ids);
+  pushReplayLabel(labels, selection.worldLoreId, getRunModifierName("world_lore"), DEFAULT_RUN_MODIFIER_SELECTION.worldLoreId, condition.world_lore_ids);
+  pushReplayLabel(labels, selection.marketConditionId, getRunModifierName("market_conditions"), DEFAULT_RUN_MODIFIER_SELECTION.marketConditionId, condition.market_condition_ids);
+  pushReplayLabel(labels, selection.founderTraitId, getRunModifierName("founder_traits"), DEFAULT_RUN_MODIFIER_SELECTION.founderTraitId, condition.founder_trait_ids);
+  pushReplayLabel(labels, selection.challengeTierId, getDifficultyName, "standard", condition.challenge_tier_ids);
+
+  for (const growthPathId of condition.growth_path_ids ?? []) {
+    pushUnique(labels, getGrowthPathName(growthPathId));
+  }
+  for (const archetypeId of condition.archetype_ids ?? []) {
+    pushUnique(labels, getArchetypeName(archetypeId));
+  }
+
+  return labels;
+}
+
+function pushReplayLabel(
+  labels: string[],
+  id: string | undefined,
+  nameForId: (id: string) => string,
+  defaultId: string,
+  targetIds: string[] | undefined,
+) {
+  if (!id) return;
+  if (id === defaultId && !targetIds?.length) return;
+  pushUnique(labels, nameForId(id));
+}
+
+function pushUnique(values: string[], value: string) {
+  if (!values.includes(value)) values.push(value);
 }
 
 function getEndingRequirementProgress(condition: EndingConditionDefinition, state: GameState): EndingRequirementProgress[] {
@@ -252,6 +406,10 @@ function getDifficultyName(id: string): string {
 
 function getGrowthPathName(id: string): string {
   return growthPaths.find((path) => path.id === id)?.title ?? id;
+}
+
+function getArchetypeName(id: string): string {
+  return derivationRules.find((rule) => rule.id === id)?.title ?? id;
 }
 
 function statusLabel(status: NonNullable<EndingConditionDefinition["status"]>): string {

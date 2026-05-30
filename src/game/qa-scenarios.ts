@@ -90,6 +90,7 @@ export const qaScenarioIds = [
   "difficulty-hard",
   "difficulty-reward",
   "world-events",
+  "ending-replay",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation" | "archetype-collection";
@@ -276,6 +277,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "아키타입 도감 QA",
       state: createArchetypeCollectionScenarioState(),
       activeMenu: "products",
+    };
+  }
+
+  if (id === "ending-replay") {
+    return {
+      id,
+      label: "엔딩 목표 재시작 QA",
+      state: createEndingReplayScenarioState(),
+      activeMenu: "deck",
     };
   }
 
@@ -1861,6 +1871,48 @@ function createNextRunState(): GameState {
   return {
     ...nextRunState,
     timeline: ["새 런 진입 QA: 덱 메뉴에서 최근 런 기록과 메타 해금 후보 확인", ...nextRunState.timeline].slice(0, 8),
+  };
+}
+
+function createEndingReplayScenarioState(): GameState {
+  const state = createInitialState({
+    seed: "qa-ending-replay",
+    worldLoreId: "privacy_fortress",
+    marketConditionId: "regulation_crackdown",
+    founderTraitId: "researcher_founder",
+  });
+
+  return {
+    ...state,
+    month: 24,
+    resources: {
+      ...state.resources,
+      cash: Math.max(state.resources.cash ?? 0, 42000),
+      users: Math.max(state.resources.users ?? 0, 12000),
+      trust: Math.max(state.resources.trust ?? 0, 76),
+      automation: Math.max(state.resources.automation ?? 0, 32),
+    },
+    roguelite: {
+      ...state.roguelite,
+      founderInsight: 18,
+      discoveredEndingIds: ["standard_platform_compounder", "privacy_trust_bastion"],
+      runHistory: [
+        {
+          id: "qa_ending_replay_1",
+          runNumber: 1,
+          endedMonth: 120,
+          status: "success",
+          score: 92,
+          campaignRank: "S",
+          endingId: "privacy_trust_bastion",
+          endingName: "프라이버시 신뢰 요새",
+          survivedYears: 10,
+          insightReward: 12,
+          note: "엔딩 목표 QA 기록",
+        },
+      ],
+    },
+    timeline: ["엔딩 목표 재시작 QA: 도감에서 다음 목표 런을 고르는 상태", ...state.timeline].slice(0, 8),
   };
 }
 
