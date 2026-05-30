@@ -1492,7 +1492,7 @@ function DeckPanel({
           {activeEndingReplayBrief && (
             <div className="ending-replay-active-summary" aria-label="현재 목표 엔딩 진행">
               <div>
-                <p className="item-meta">현재 목표 진행</p>
+                <p className="item-meta">현재 목표 진행 · {activeEndingReplayBrief.rewardStatusLabel}</p>
                 <strong>{activeEndingReplayBrief.title}</strong>
                 <span>
                   조건 {activeEndingReplayBrief.matchedRequirements}/{activeEndingReplayBrief.totalRequirements} · {activeEndingReplayBrief.progressPercent}%

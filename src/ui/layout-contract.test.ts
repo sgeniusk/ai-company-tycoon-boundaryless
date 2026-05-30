@@ -897,7 +897,8 @@ describe("v0.13.3 compact game shell layout", () => {
 
   it("v0.67 #17 summarizes active ending replay actions in the deck panel", () => {
     expect(menuPanels).toContain("ending-replay-active-summary");
-    expect(menuPanels).toContain("현재 목표 진행");
+    expect(menuPanels).toContain("현재 목표 진행 ·");
+    expect(menuPanels).toContain("activeEndingReplayBrief.rewardStatusLabel");
     expect(menuPanels).toContain("activeEndingReplayBrief.nextRequirements.slice(0, 3)");
     expect(menuPanels).toContain("requirement.actionLabel");
     expect(menuPanels).toContain("setActiveMenu?.(requirement.targetMenu)");
