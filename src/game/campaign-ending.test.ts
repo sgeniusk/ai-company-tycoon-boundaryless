@@ -7,6 +7,7 @@ import {
   getCampaignEnding,
   getCampaignEndingDiscovery,
   getCampaignEndingReport,
+  getEndingAxisCoverageSummary,
   getEndingCollectionSummary,
   getEndingCollectionEntries,
   getEndingCollectionProgressEntries,
@@ -890,6 +891,15 @@ describe("v0.67 campaign ending selector", () => {
         challengeTierId: "standard",
       },
     });
+  });
+
+  it("summarizes campaign ending route coverage across run modifier axes", () => {
+    expect(getEndingAxisCoverageSummary()).toEqual([
+      { id: "start_cities", label: "도시", covered: 11, total: 11, complete: true, missingLabels: [] },
+      { id: "world_lore", label: "세계", covered: 12, total: 12, complete: true, missingLabels: [] },
+      { id: "market_conditions", label: "시장", covered: 8, total: 8, complete: true, missingLabels: [] },
+      { id: "founder_traits", label: "창업자", covered: 9, total: 9, complete: true, missingLabels: [] },
+    ]);
   });
 
   it("does not recommend a replay target when every replayable ending is already discovered", () => {

@@ -67,6 +67,15 @@ export interface EndingCollectionSummary {
   nextReplayPlan?: EndingReplayPlan;
 }
 
+export interface EndingAxisCoverageSummary {
+  id: string;
+  label: string;
+  covered: number;
+  total: number;
+  complete: boolean;
+  missingLabels: string[];
+}
+
 export interface CampaignEndingDiscovery extends EndingDefinition {
   alreadyDiscovered: boolean;
   codexApplyLabel: string;
@@ -348,6 +357,33 @@ export function getEndingCollectionSummary(state: Pick<GameState, "roguelite">):
     completionPercent: entries.length ? Math.round((discoveredCount / entries.length) * 100) : 100,
     nextReplayPlan: replayPlans.find((plan) => !plan.discovered),
   };
+}
+
+export function getEndingAxisCoverageSummary(): EndingAxisCoverageSummary[] {
+  const dimensions = [
+    { id: "start_cities", label: "도시", conditionField: "start_city_ids" as const, options: runModifiers.start_cities },
+    { id: "world_lore", label: "세계", conditionField: "world_lore_ids" as const, options: runModifiers.world_lore },
+    { id: "market_conditions", label: "시장", conditionField: "market_condition_ids" as const, options: runModifiers.market_conditions },
+    { id: "founder_traits", label: "창업자", conditionField: "founder_trait_ids" as const, options: runModifiers.founder_traits },
+  ];
+
+  return dimensions.map((dimension) => {
+    const coveredIds = new Set<string>();
+    for (const ending of campaignEndings) {
+      for (const id of ending.condition[dimension.conditionField] ?? []) coveredIds.add(id);
+    }
+
+    const missingLabels = dimension.options.filter((option) => !coveredIds.has(option.id)).map((option) => option.name);
+
+    return {
+      id: dimension.id,
+      label: dimension.label,
+      covered: dimension.options.length - missingLabels.length,
+      total: dimension.options.length,
+      complete: missingLabels.length === 0,
+      missingLabels,
+    };
+  });
 }
 
 function getTotalEndingRewardBonus(): number {

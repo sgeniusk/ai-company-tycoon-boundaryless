@@ -15,6 +15,7 @@ import { getBoundarylessExpansionGoals } from "../game/boundaryless-expansion";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
 import {
   getActiveEndingReplayBrief,
+  getEndingAxisCoverageSummary,
   getEndingCollectionEntries,
   getEndingCollectionProgressEntries,
   getEndingCollectionSummary,
@@ -783,6 +784,7 @@ function DeckPanel({
   const baseEndingCollectionEntries = getEndingCollectionEntries(gameState);
   const endingCollectionEntries = getEndingCollectionProgressEntries(gameState);
   const endingCollectionSummary = getEndingCollectionSummary(gameState);
+  const endingAxisCoverageSummary = getEndingAxisCoverageSummary();
   const endingReplayPlans = getEndingReplayPlans(gameState, 3);
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
   const discoveredEndingCount = baseEndingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
@@ -1419,6 +1421,16 @@ function DeckPanel({
                 <small>모든 목표 엔딩 발견</small>
               </span>
             )}
+          </div>
+          <div className="ending-axis-coverage" aria-label="엔딩 루트 커버리지">
+            {endingAxisCoverageSummary.map((axis) => (
+              <span className={axis.complete ? "complete" : "partial"} key={axis.id}>
+                <strong>{axis.label}</strong>
+                <small>
+                  {axis.covered}/{axis.total} 루트 커버리지{axis.complete ? " · 전체 커버" : ` · 남은 ${axis.missingLabels.slice(0, 2).join(" / ")}`}
+                </small>
+              </span>
+            ))}
           </div>
           <div className="ending-collection-filter" aria-label="엔딩 도감 필터">
             {endingCollectionFilterOptions.map((option) => (

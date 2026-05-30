@@ -774,8 +774,11 @@ describe("v0.13.3 compact game shell layout", () => {
   it("v0.67 #2 shows ending discovery as a roguelite collection", () => {
     expect(menuPanels).toContain("getEndingCollectionEntries");
     expect(menuPanels).toContain("getEndingCollectionSummary");
+    expect(menuPanels).toContain("getEndingAxisCoverageSummary");
     expect(menuPanels).toContain("ending-collection-panel");
     expect(menuPanels).toContain("ending-collection-summary");
+    expect(menuPanels).toContain("ending-axis-coverage");
+    expect(menuPanels).toContain("루트 커버리지");
     expect(menuPanels).toContain("discoveredEndingIds");
     expect(menuPanels).toContain("엔딩 도감");
     expect(menuPanels).toContain("남은 목표");
@@ -800,6 +803,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("현재 목표 런");
     expect(appCss).toMatch(/\.ending-collection-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-collection-summary\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.ending-axis-coverage\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.ending-collection-summary button\s*{[^}]*text-align:\s*left/s);
     expect(appCss).toMatch(/\.ending-collection-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.ending-collection-run-button\s*{[^}]*align-self:\s*end/s);
