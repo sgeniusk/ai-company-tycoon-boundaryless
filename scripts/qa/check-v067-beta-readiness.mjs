@@ -27,6 +27,7 @@ const simulationSource = readSource("src/game/simulation.ts");
 const stateIntegritySource = readSource("src/game/state-integrity.ts");
 const metaProgressionSource = readSource("src/game/meta-progression.ts");
 const deckbuildingSource = readSource("src/game/deckbuilding.ts");
+const runSimulatorSource = readSource("src/game/run-simulator.ts");
 
 const routeDimensions = [
   { id: "start_cities", label: "도시", dataKey: "start_cities", conditionField: "start_city_ids" },
@@ -219,6 +220,15 @@ const baseChecks = [
       stateIntegritySource.includes("run history campaignRank") &&
       metaProgressionSource.includes("sanitizeCampaignEndingIds") &&
       deckbuildingSource.includes("uniqueKnownStrings"),
+  },
+  {
+    id: "long_run_ending_telemetry",
+    label: "장기 하네스 엔딩 텔레메트리",
+    detail: "10-year ending discovery",
+    complete:
+      runSimulatorSource.includes("getCampaignEndingDiscovery") &&
+      runSimulatorSource.includes("endingDiscovery: ReturnType") &&
+      runSimulatorSource.includes("endingDiscovery,"),
   },
 ];
 

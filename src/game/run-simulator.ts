@@ -2,6 +2,7 @@ import { agentTypes, capabilities, growthPaths, items, officeExpansions, product
 import { chooseAnnualDirective } from "./annual-review";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale, getCompanyStarRating, getCurrentLocation } from "./campaign";
 import { getCampaignShockById } from "./campaign-shocks";
+import { getCampaignEndingDiscovery } from "./campaign-ending";
 import { getCompetitionSeasonChallenges } from "./competition-signals";
 import { chooseCardReward, getStrategyCardById, getStrategyCardPlayCheck, playStrategyCard } from "./deckbuilding";
 import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
@@ -96,6 +97,7 @@ export interface TenYearCampaignSimulationResult extends AnnualDirectiveSimulati
   yearlySnapshots: TenYearCampaignSnapshot[];
   milestones: TenYearCampaignMilestone[];
   finale: ReturnType<typeof getCampaignFinale>;
+  endingDiscovery: ReturnType<typeof getCampaignEndingDiscovery>;
 }
 
 export interface AlphaReadinessGate {
@@ -471,6 +473,7 @@ export function runTenYearCampaignSimulation(
   }
 
   const finale = getCampaignFinale(state);
+  const endingDiscovery = getCampaignEndingDiscovery(state);
   milestones.push({
     type: "ending",
     month: state.month,
@@ -490,6 +493,7 @@ export function runTenYearCampaignSimulation(
     yearlySnapshots,
     milestones,
     finale,
+    endingDiscovery,
   };
 }
 

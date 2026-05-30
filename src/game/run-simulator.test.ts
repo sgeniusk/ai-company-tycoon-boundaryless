@@ -78,6 +78,25 @@ describe("v0.11 commercial balance simulation harness", () => {
     expect(result.integrity.ok).toBe(true);
   });
 
+  it("exposes final ending discovery telemetry from the 10-year harness", () => {
+    const result = runTenYearCampaignSimulation("productivity_line");
+
+    expect(result.endingDiscovery).toMatchObject({
+      id: "standard_platform_compounder",
+      title: "표준 세계의 복리 플랫폼",
+      alreadyDiscovered: false,
+      discoveredCountBeforeRun: 0,
+      discoveredCountAfterRun: 1,
+      rewardDeltaLabel: "+2 통찰",
+      rewardStatusLabel: "+2 통찰 신규 도감 보상",
+    });
+    expect(result.endingDiscovery.rewardCompletionPercentAfterRun).toBeGreaterThan(0);
+    expect(result.finale).toMatchObject({
+      endingId: result.endingDiscovery.id,
+      endingName: result.endingDiscovery.title,
+    });
+  });
+
   it("completes the full 10-year campaign for every growth path", () => {
     const results = growthPaths.map((path) => runTenYearCampaignSimulation(path.id));
 
