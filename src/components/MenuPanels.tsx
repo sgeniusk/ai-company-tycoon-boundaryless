@@ -1442,15 +1442,20 @@ function DeckPanel({
                   {replaySelection && (
                     <button
                       className="ending-collection-run-button"
-                      disabled={isActiveTargetRun}
-                      onClick={() =>
+                      disabled={isActiveTargetRun && !setActiveMenu}
+                      onClick={() => {
+                        if (isActiveTargetRun) {
+                          setActiveMenu?.("company");
+                          return;
+                        }
+
                         setGameState((current) =>
                           resetRunWithMetaUnlocks(current, [], current.roguelite.starterDeckId ?? "balanced_founder", replaySelection),
-                        )
-                      }
+                        );
+                      }}
                       type="button"
                     >
-                      {isActiveTargetRun ? "현재 목표 런" : "도감 목표 런"}
+                      {isActiveTargetRun ? "현재 목표 확인" : "도감 목표 런"}
                     </button>
                   )}
                 </article>

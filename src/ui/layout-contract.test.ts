@@ -811,6 +811,13 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-sort\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #28 lets the active codex target jump to the company checklist", () => {
+    expect(menuPanels).toContain('{isActiveTargetRun ? "현재 목표 확인" : "도감 목표 런"}');
+    expect(menuPanels).toContain("setActiveMenu?.(\"company\")");
+    expect(menuPanels).toContain("disabled={isActiveTargetRun && !setActiveMenu}");
+    expect(menuPanels).toContain("if (isActiveTargetRun)");
+  });
+
   it("v0.67 #3 surfaces current-run ending targets in the company console", () => {
     expect(menuPanels).toContain("getEndingTargetPlans");
     expect(menuPanels).toContain("ending-target-panel");
