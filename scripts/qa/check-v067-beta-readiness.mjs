@@ -156,7 +156,7 @@ const routeAxisCount = axes.filter((axis) => axis.complete).length;
 const routeAxisTotal = axes.length;
 const routeOptionCount = axes.reduce((total, axis) => total + axis.covered, 0);
 const routeOptionTotal = axes.reduce((total, axis) => total + axis.total, 0);
-const requiredScenarios = ["beta-readiness", "beta-readiness-complete"];
+const requiredScenarios = ["beta-readiness", "beta-readiness-complete", "ten-year-next-run"];
 const scenarios = requiredScenarios.filter(hasQaScenario);
 
 const baseChecks = [

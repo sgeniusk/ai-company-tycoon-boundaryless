@@ -9,7 +9,7 @@ Status: PASS
 - Readiness: 13/13 checks (100%)
 - Unlock guidance: 23/23
 - Route coverage: 4/4 axes / 40/40 options
-- QA scenarios: beta-readiness, beta-readiness-complete
+- QA scenarios: beta-readiness, beta-readiness-complete, ten-year-next-run
 
 ## Checks
 
@@ -19,7 +19,7 @@ Status: PASS
 | 도감 보상 | 81 통찰 | PASS |
 | 해금 안내 | 23/23 | PASS |
 | 루트 커버리지 | 4/4 축 · 40/40 옵션 | PASS |
-| QA 시나리오 | beta-readiness / beta-readiness-complete | PASS |
+| QA 시나리오 | beta-readiness / beta-readiness-complete / ten-year-next-run | PASS |
 | 게임 내 가이드 | status badge + checklist | PASS |
 | 파생 전용 셀렉터 | collection + axis summary reuse | PASS |
 | 메타 상태 무결성 | hydrate + integrity + reset | PASS |

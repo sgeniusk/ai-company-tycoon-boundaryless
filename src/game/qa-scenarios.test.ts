@@ -74,6 +74,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "reward-bias",
       "annual-strategy",
       "ten-year-sim",
+      "ten-year-next-run",
       "campaign-shock",
       "foundation",
       "commercial",
@@ -755,6 +756,23 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.status).not.toBe("playing");
   });
 
+  it("creates a ten-year next-run scenario after ending carryover", () => {
+    const scenario = createQaScenario("ten-year-next-run");
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("10년 엔딩 다음 런");
+    expect(scenario.state.month).toBe(1);
+    expect(scenario.state.status).toBe("playing");
+    expect(scenario.state.roguelite.runNumber).toBe(2);
+    expect(scenario.state.roguelite.discoveredEndingIds).toContain("standard_platform_compounder");
+    expect(scenario.state.roguelite.runHistory[0]).toMatchObject({
+      endingId: "standard_platform_compounder",
+      endingName: "표준 세계의 복리 플랫폼",
+      survivedYears: 10,
+    });
+    expect(scenario.state.timeline[0]).toContain("표준 세계의 복리 플랫폼");
+  });
+
   it("creates a campaign shock scenario for v0.33 pacing QA", () => {
     const scenario = createQaScenario("campaign-shock");
 
@@ -804,6 +822,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=reward-bias")?.id).toBe("reward-bias");
     expect(createQaScenarioFromSearch("?scenario=annual-strategy")?.id).toBe("annual-strategy");
     expect(createQaScenarioFromSearch("?scenario=ten-year-sim")?.id).toBe("ten-year-sim");
+    expect(createQaScenarioFromSearch("?scenario=ten-year-next-run")?.id).toBe("ten-year-next-run");
     expect(createQaScenarioFromSearch("?scenario=campaign-shock")?.id).toBe("campaign-shock");
     expect(createQaScenarioFromSearch("?scenario=foundation")?.id).toBe("foundation");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");

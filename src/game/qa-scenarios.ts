@@ -67,6 +67,7 @@ export const qaScenarioIds = [
   "reward-bias",
   "annual-strategy",
   "ten-year-sim",
+  "ten-year-next-run",
   "campaign-shock",
   "foundation",
   "commercial",
@@ -793,6 +794,22 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
         ].slice(0, 8),
       },
       activeMenu: "company",
+    };
+  }
+
+  if (id === "ten-year-next-run") {
+    const result = runTenYearCampaignSimulation("productivity_line");
+    return {
+      id,
+      label: "10년 엔딩 다음 런 QA",
+      state: {
+        ...result.nextRunPreview,
+        timeline: [
+          `10년 엔딩 다음 런 QA: ${result.endingDiscovery.title} 기록과 ${result.endingDiscovery.rewardDeltaLabel} 반영 확인`,
+          ...result.nextRunPreview.timeline,
+        ].slice(0, 8),
+      },
+      activeMenu: "deck",
     };
   }
 
