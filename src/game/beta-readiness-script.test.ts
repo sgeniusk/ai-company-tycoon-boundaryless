@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
@@ -36,6 +37,14 @@ function runBetaReadinessQaCheck(): BetaReadinessQaResult {
 }
 
 describe("beta readiness QA script", () => {
+  it("includes the no-write beta readiness check in the main harness gate", () => {
+    const packageJson = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as {
+      scripts: Record<string, string>;
+    };
+
+    expect(packageJson.scripts["harness:gate"]).toContain("npm run qa:beta-readiness:check");
+  });
+
   it("reports the ending codex, reward, route, and scenario readiness gates", () => {
     const result = runBetaReadinessQa();
 
