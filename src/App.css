@@ -3091,6 +3091,17 @@ p {
   justify-content: space-between;
 }
 
+.beta-readiness-heading b {
+  background: #e5f4dd;
+  border: 1px solid var(--green);
+  color: #284f38;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
 .beta-readiness-panel strong {
   color: #284f38;
   font-size: 0.78rem;

@@ -225,6 +225,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("summary.checks.map");
     expect(gameChrome).toContain("check.complete ? \"complete\" : \"partial\"");
     expect(gameChrome).toContain("베타 준비 체크");
+    expect(gameChrome).toContain("준비도 {summary.readinessPercent}%");
     expect(betaReadinessSource).toContain("v0.67 멀티 엔딩 준비도");
     expect(gameChrome).toContain("summary.unlockHintCoveragePercent");
     expect(gameChrome).toContain("summary.codexStatusLabel");
@@ -232,6 +233,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("해금 안내");
     expect(gameChrome).toContain("다음 도감 목표");
     expect(appCss).toMatch(/\.beta-readiness-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.beta-readiness-heading b\s*{[^}]*background:/s);
     expect(appCss).toMatch(/\.beta-readiness-grid\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.beta-readiness-check-list\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.beta-readiness-check-list\s*>\s*span\.complete\s*{[^}]*border-color:/s);
