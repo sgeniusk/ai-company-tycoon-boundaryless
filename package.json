@@ -28,6 +28,7 @@
     "qa:art-gate": "npm run qa:blind-summary && npm run qa:blind-issues && node scripts/qa/check-v056-art-intake-gate.mjs",
     "qa:asset-handoff": "npm run qa:art-gate && node scripts/qa/prepare-v056-final-art-handoff.mjs",
     "qa:agy-review": "node scripts/qa/run-v057-agy-agent-review.mjs",
+    "qa:beta-readiness": "node scripts/qa/check-v067-beta-readiness.mjs",
     "harness:gate": "npm test -- --maxWorkers=1 && npm run validate:data && npm run build"
   },
   "dependencies": {
