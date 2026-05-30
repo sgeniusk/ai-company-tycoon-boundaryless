@@ -754,6 +754,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const nextRunSetupPlan = getNextRunSetupPlan(gameState);
   const endingCollectionEntries = getEndingCollectionEntries(gameState);
   const endingReplayPlans = getEndingReplayPlans(gameState, 3);
+  const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
   const discoveredEndingCount = endingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
   const shouldShowNextRunSetup =
     gameState.month >= 10 || gameState.status !== "playing" || gameState.roguelite.runHistory.length > 0;
@@ -1311,6 +1312,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
           <div className="ending-collection-grid">
             {endingCollectionEntries.map((entry) => {
               const replaySelection = entry.selection;
+              const isActiveTargetRun = activeEndingReplayBrief?.id === entry.id;
 
               return (
                 <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
@@ -1321,6 +1323,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                   {replaySelection && (
                     <button
                       className="ending-collection-run-button"
+                      disabled={isActiveTargetRun}
                       onClick={() =>
                         setGameState((current) =>
                           resetRunWithMetaUnlocks(current, [], current.roguelite.starterDeckId ?? "balanced_founder", replaySelection),
@@ -1328,7 +1331,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                       }
                       type="button"
                     >
-                      도감 목표 런
+                      {isActiveTargetRun ? "현재 목표 런" : "도감 목표 런"}
                     </button>
                   )}
                 </article>
