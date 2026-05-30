@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./qa-scenarios";
 import { getAnnualDirectiveChoiceRows } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
+import { getActiveEndingReplayBrief } from "./campaign-ending";
 import { assetManifest, products } from "./data";
 import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
@@ -90,6 +91,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "world-events",
       "ending-replay",
       "ending-replay-active",
+      "ending-replay-known",
       "ending-replay-final",
     ]);
   });
@@ -803,6 +805,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=archetype-collection")?.id).toBe("archetype-collection");
     expect(createQaScenarioFromSearch("?scenario=ending-replay")?.id).toBe("ending-replay");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-active")?.id).toBe("ending-replay-active");
+    expect(createQaScenarioFromSearch("?scenario=ending-replay-known")?.id).toBe("ending-replay-known");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
@@ -857,6 +860,23 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.runModifiers.seed).toBe("ending:privacy_trust_bastion");
     expect(scenario.state.runModifiers.worldLoreId).toBe("privacy_fortress");
     expect(scenario.state.runModifiers.marketConditionId).toBe("regulation_crackdown");
+  });
+
+  it("builds an already-discovered ending replay target scenario for repeat-run QA", () => {
+    const scenario = createQaScenario("ending-replay-known");
+    const brief = getActiveEndingReplayBrief(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("발견 완료");
+    expect(scenario.state.runModifiers.seed).toBe("ending:privacy_trust_bastion");
+    expect(scenario.state.roguelite.discoveredEndingIds).toEqual(
+      expect.arrayContaining(["standard_platform_compounder", "privacy_trust_bastion"]),
+    );
+    expect(brief).toMatchObject({
+      id: "privacy_trust_bastion",
+      alreadyDiscovered: true,
+      rewardProgressLabel: expect.stringContaining("발견 완료"),
+    });
   });
 
   it("builds a final active ending replay scenario for the target result panel", () => {

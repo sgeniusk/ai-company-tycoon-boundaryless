@@ -92,6 +92,7 @@ export const qaScenarioIds = [
   "world-events",
   "ending-replay",
   "ending-replay-active",
+  "ending-replay-known",
   "ending-replay-final",
 ] as const;
 
@@ -296,6 +297,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "목표 엔딩 런 브리핑 QA",
       state: createActiveEndingReplayScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-replay-known") {
+    return {
+      id,
+      label: "발견 완료 목표 엔딩 런 QA",
+      state: createKnownEndingReplayScenarioState(),
       activeMenu: "company",
     };
   }
@@ -1952,6 +1962,19 @@ function createActiveEndingReplayScenarioState(): GameState {
       discoveredEndingIds: ["standard_platform_compounder"],
     },
     timeline: ["목표 엔딩 런 QA: 프라이버시 신뢰 요새를 향한 초반 브리핑 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createKnownEndingReplayScenarioState(): GameState {
+  const state = createActiveEndingReplayScenarioState();
+
+  return {
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: [...new Set([...state.roguelite.discoveredEndingIds, "privacy_trust_bastion"])],
+    },
+    timeline: ["발견 완료 목표 엔딩 QA: 이미 도감에 있는 프라이버시 신뢰 요새 반복 목표 표시 확인", ...state.timeline].slice(0, 8),
   };
 }
 
