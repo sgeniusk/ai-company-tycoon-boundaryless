@@ -61,7 +61,7 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     {
       id: "ending_routes",
       label: "엔딩 루트",
-      detail: `${endingCollectionSummary.totalCount} 결말 · ${endingCollectionSummary.replayableCount} 목표`,
+      detail: `${endingCollectionSummary.totalCount} 결말 · ${endingCollectionSummary.replayableCount} 목표 · ${resultOnlyTotal} 결과 전용`,
       complete: endingCollectionSummary.totalCount >= minimumBetaEndingRoutes && endingCollectionSummary.replayableCount > 0,
     },
     {

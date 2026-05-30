@@ -28,6 +28,10 @@ describe("beta readiness summary", () => {
       "route_coverage",
       "target_replay",
     ]);
+    expect(summary.checks.find((check) => check.id === "ending_routes")).toMatchObject({
+      detail: "24 결말 · 23 목표 · 1 결과 전용",
+      complete: true,
+    });
     expect(summary.checks.find((check) => check.id === "reward_pool")).toMatchObject({
       label: "도감 보상",
       detail: `0/${totalRewardBonus} 통찰 · 목표 엔딩 23개 남음`,
