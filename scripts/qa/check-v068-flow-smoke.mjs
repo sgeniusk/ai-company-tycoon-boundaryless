@@ -259,7 +259,9 @@ function printSummary(result) {
   console.log(`Status: ${result.status.toUpperCase()}`);
   console.log(`Version: ${result.version}`);
   console.log(`Routes: ${result.passedRoutes}/${result.totalRoutes}`);
-  console.log(`Report: ${result.reportPath}`);
+  const reportStatusLabel =
+    result.reportFresh === false ? "Report: FAIL" : result.reportFresh === true ? "Report: PASS" : `Report: ${result.reportPath}`;
+  console.log(reportStatusLabel);
   for (const route of result.routes) {
     console.log(`- ${route.id}: ${route.status.toUpperCase()} (${route.domBytes} bytes)`);
   }
@@ -278,6 +280,7 @@ async function main() {
 
   const baseArg = getArg("--base");
   const port = Number(getArg("--port") ?? defaultPort);
+  const checkReport = hasArg("--check");
   let server;
   const baseUrl = baseArg ? normalizeBaseUrl(baseArg) : `http://${defaultHost}:${port}/`;
 
@@ -292,9 +295,10 @@ async function main() {
       inspectedRoutes.push(await inspectRoute(chromePath, baseUrl, route));
     }
     const passedRoutes = inspectedRoutes.filter((route) => route.status === "pass").length;
+    const routeStatus = passedRoutes === inspectedRoutes.length ? "pass" : "fail";
     const result = {
       version,
-      status: passedRoutes === inspectedRoutes.length ? "pass" : "fail",
+      status: routeStatus,
       baseUrl,
       chromePath,
       reportPath,
@@ -302,11 +306,15 @@ async function main() {
       passedRoutes,
       routes: inspectedRoutes,
     };
+    const generatedReport = createReport(result);
+    const outputPath = resolveProjectPath(reportPath);
 
-    if (!hasArg("--no-write")) {
-      const outputPath = resolveProjectPath(reportPath);
+    if (checkReport) {
+      result.reportFresh = fs.existsSync(outputPath) && fs.readFileSync(outputPath, "utf8") === generatedReport;
+      if (!result.reportFresh) result.status = "fail";
+    } else if (!hasArg("--no-write")) {
       fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-      fs.writeFileSync(outputPath, createReport(result));
+      fs.writeFileSync(outputPath, generatedReport);
     }
 
     if (hasArg("--json")) {

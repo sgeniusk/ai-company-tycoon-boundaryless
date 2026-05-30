@@ -32,6 +32,7 @@ describe("v0.68 browser flow smoke QA script", () => {
     };
 
     expect(packageJson.scripts["qa:v068-flow-smoke"]).toBe("node scripts/qa/check-v068-flow-smoke.mjs");
+    expect(packageJson.scripts["qa:v068-flow-smoke:check"]).toBe("node scripts/qa/check-v068-flow-smoke.mjs --check");
     expect(packageJson.scripts["harness:gate"]).not.toContain("qa:v068-flow-smoke");
   });
 
@@ -69,7 +70,9 @@ describe("v0.68 browser flow smoke QA script", () => {
 
     expect(source).toContain("--dump-dom");
     expect(source).toContain("--virtual-time-budget=8000");
+    expect(source).toContain("--check");
     expect(source).toContain("reports/qa/v0_68_flow_smoke.md");
+    expect(source).toContain("Report: FAIL");
     expect(source).toContain("npm run qa:v068-flow-smoke");
   });
 });
