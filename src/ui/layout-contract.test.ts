@@ -766,6 +766,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("다음 추천 목표");
     expect(menuPanels).toContain("endingCollectionSummary.nextReplayPlan");
     expect(menuPanels).toContain("모든 목표 엔딩 발견");
+    expect(qaScenarios).toContain("ending-replay-complete");
     expect(menuPanels).toContain("entry.targetLabels");
     expect(menuPanels).toContain("entry.selection");
     expect(menuPanels).toContain("도감 목표 런");

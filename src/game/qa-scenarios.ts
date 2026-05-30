@@ -1,4 +1,4 @@
-import { agentTypes, capabilities, items, officeExpansions, products, rivalEvents } from "./data";
+import { agentTypes, campaignEndings, capabilities, items, officeExpansions, products, rivalEvents } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
 import { applyDueCampaignShocks } from "./campaign-shocks";
@@ -93,6 +93,7 @@ export const qaScenarioIds = [
   "ending-replay",
   "ending-replay-active",
   "ending-replay-known",
+  "ending-replay-complete",
   "ending-replay-final",
 ] as const;
 
@@ -307,6 +308,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "발견 완료 목표 엔딩 런 QA",
       state: createKnownEndingReplayScenarioState(),
       activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-replay-complete") {
+    return {
+      id,
+      label: "목표 엔딩 완료 도감 QA",
+      state: createCompleteEndingReplayScenarioState(),
+      activeMenu: "deck",
     };
   }
 
@@ -1975,6 +1985,20 @@ function createKnownEndingReplayScenarioState(): GameState {
       discoveredEndingIds: [...new Set([...state.roguelite.discoveredEndingIds, "privacy_trust_bastion"])],
     },
     timeline: ["발견 완료 목표 엔딩 QA: 이미 도감에 있는 프라이버시 신뢰 요새 반복 목표 표시 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createCompleteEndingReplayScenarioState(): GameState {
+  const state = createEndingReplayScenarioState();
+  const replayableEndingIds = campaignEndings.filter((ending) => ending.condition.fallback !== true).map((ending) => ending.id);
+
+  return {
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: replayableEndingIds,
+    },
+    timeline: ["목표 엔딩 완료 도감 QA: 모든 재도전 가능한 엔딩 발견 상태 확인", ...state.timeline].slice(0, 8),
   };
 }
 

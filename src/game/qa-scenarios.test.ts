@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./qa-scenarios";
 import { getAnnualDirectiveChoiceRows } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
-import { getActiveEndingReplayBrief } from "./campaign-ending";
-import { assetManifest, products } from "./data";
+import { getActiveEndingReplayBrief, getEndingCollectionSummary } from "./campaign-ending";
+import { assetManifest, campaignEndings, products } from "./data";
 import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
 import { getNextRunSetupPlan } from "./meta-progression";
@@ -92,6 +92,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "ending-replay",
       "ending-replay-active",
       "ending-replay-known",
+      "ending-replay-complete",
       "ending-replay-final",
     ]);
   });
@@ -806,6 +807,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=ending-replay")?.id).toBe("ending-replay");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-active")?.id).toBe("ending-replay-active");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-known")?.id).toBe("ending-replay-known");
+    expect(createQaScenarioFromSearch("?scenario=ending-replay-complete")?.id).toBe("ending-replay-complete");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
@@ -877,6 +879,18 @@ describe("alpha v0.9.3 QA scenarios", () => {
       alreadyDiscovered: true,
       rewardProgressLabel: expect.stringContaining("발견 완료"),
     });
+  });
+
+  it("builds a completed ending codex scenario without another target recommendation", () => {
+    const scenario = createQaScenario("ending-replay-complete");
+    const replayableEndingIds = campaignEndings.filter((ending) => ending.condition.fallback !== true).map((ending) => ending.id);
+    const summary = getEndingCollectionSummary(scenario.state);
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("목표 엔딩 완료");
+    expect(scenario.state.roguelite.discoveredEndingIds).toEqual(expect.arrayContaining(replayableEndingIds));
+    expect(summary.nextReplayPlan).toBeUndefined();
+    expect(summary.discoveredCount).toBeGreaterThanOrEqual(replayableEndingIds.length);
   });
 
   it("builds a final active ending replay scenario for the target result panel", () => {
