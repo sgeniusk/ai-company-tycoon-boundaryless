@@ -787,9 +787,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("목표 런");
     expect(menuPanels).toContain("plan.selection");
     expect(menuPanels).toContain("plan.openingMoves");
+    expect(menuPanels).toContain("setActiveMenu={setActiveMenu}");
+    expect(menuPanels).toContain("activeEndingReplayBrief?.id === plan.id");
+    expect(menuPanels).toContain("ending-replay-active-card");
+    expect(menuPanels).toContain("현재 목표 확인");
+    expect(menuPanels).toContain("setActiveMenu?.(\"company\")");
     expect(qaScenarios).toContain("ending-replay");
     expect(appCss).toMatch(/\.ending-replay-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-replay-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.ending-replay-grid article\.ending-replay-active-card\s*{[^}]*border-color:\s*var\(--green\)/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-replay-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 

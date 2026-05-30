@@ -6952,6 +6952,12 @@ p {
   border-color: #9fbe72;
 }
 
+.ending-replay-grid article.ending-replay-active-card {
+  background: #f4fbec;
+  border-color: var(--green);
+  box-shadow: inset 0 0 0 1px rgba(62, 126, 61, 0.18);
+}
+
 .payoff-collection-grid strong {
   color: #4f4325;
   font-size: 0.78rem;
@@ -7014,6 +7020,10 @@ p {
   font-weight: 900;
   line-height: 1.3;
   overflow-wrap: anywhere;
+}
+
+.ending-replay-grid .ending-replay-active-note {
+  color: var(--green-dark);
 }
 
 .ending-collection-run-button {

@@ -705,7 +705,7 @@ export function renderMenuContent(
   }
 
   if (activeMenu === "deck") {
-    return <DeckPanel gameState={gameState} setGameState={setGameState} />;
+    return <DeckPanel gameState={gameState} setGameState={setGameState} setActiveMenu={setActiveMenu} />;
   }
 
   if (activeMenu === "agents") {
@@ -727,7 +727,15 @@ export function renderMenuContent(
   return <TimelinePanel gameState={gameState} />;
 }
 
-function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+function DeckPanel({
+  gameState,
+  setGameState,
+  setActiveMenu,
+}: {
+  gameState: GameState;
+  setGameState: Dispatch<SetStateAction<GameState>>;
+  setActiveMenu?: Dispatch<SetStateAction<MenuId>>;
+}) {
   // v0.58 #4 — 라이벌 압박 수준 derive (high/low/none). isCounterCard와 함께 strategy-card에 압박 대응 배지를 띄울지 결정.
   const rivalCounterSignal = getRivalCounterSignal(gameState);
   const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
@@ -1358,26 +1366,40 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             <span>조건 기반 추천 {endingReplayPlans.length}개</span>
           </div>
           <div className="ending-replay-grid">
-            {endingReplayPlans.map((plan) => (
-              <article className={plan.discovered ? "discovered" : "locked"} key={plan.id}>
-                <div>
-                  <p className="item-meta">{plan.discovered ? "발견 완료" : "미발견 목표"} · 통찰 보너스 +{plan.meta_reward_bonus}</p>
-                  <strong>{plan.title}</strong>
-                  <span>{plan.targetLabels.slice(0, 5).join(" / ")}</span>
-                  <small>{plan.openingMoves.slice(0, 2).join(" / ")}</small>
-                </div>
-                <button
-                  onClick={() =>
-                    setGameState((current) =>
-                      resetRunWithMetaUnlocks(current, [], current.roguelite.starterDeckId ?? "balanced_founder", plan.selection),
-                    )
-                  }
-                  type="button"
-                >
-                  목표 런
-                </button>
-              </article>
-            ))}
+            {endingReplayPlans.map((plan) => {
+              const isActiveTargetRun = activeEndingReplayBrief?.id === plan.id;
+              const className = [plan.discovered ? "discovered" : "locked", isActiveTargetRun ? "ending-replay-active-card" : ""]
+                .filter(Boolean)
+                .join(" ");
+
+              return (
+                <article className={className} key={plan.id}>
+                  <div>
+                    <p className="item-meta">{plan.discovered ? "발견 완료" : "미발견 목표"} · 통찰 보너스 +{plan.meta_reward_bonus}</p>
+                    <strong>{plan.title}</strong>
+                    <span>{plan.targetLabels.slice(0, 5).join(" / ")}</span>
+                    <small>{plan.openingMoves.slice(0, 2).join(" / ")}</small>
+                    {isActiveTargetRun && <small className="ending-replay-active-note">현재 목표 런 · 회사 체크리스트에서 다음 행동 확인</small>}
+                  </div>
+                  <button
+                    disabled={isActiveTargetRun && !setActiveMenu}
+                    onClick={() => {
+                      if (isActiveTargetRun) {
+                        setActiveMenu?.("company");
+                        return;
+                      }
+
+                      setGameState((current) =>
+                        resetRunWithMetaUnlocks(current, [], current.roguelite.starterDeckId ?? "balanced_founder", plan.selection),
+                      );
+                    }}
+                    type="button"
+                  >
+                    {isActiveTargetRun ? "현재 목표 확인" : "목표 런"}
+                  </button>
+                </article>
+              );
+            })}
           </div>
         </div>
         <div className="meta-unlock-list">
