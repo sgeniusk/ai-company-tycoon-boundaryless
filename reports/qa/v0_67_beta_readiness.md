@@ -6,7 +6,7 @@ Status: PASS
 
 - Endings: 24 total / 23 replayable / 1 result-only fallback
 - Codex rewards: 81 total insight
-- Readiness: 7/7 checks (100%)
+- Readiness: 8/8 checks (100%)
 - Unlock guidance: 23/23
 - Route coverage: 4/4 axes / 40/40 options
 - QA scenarios: beta-readiness, beta-readiness-complete
@@ -22,6 +22,7 @@ Status: PASS
 | QA 시나리오 | beta-readiness / beta-readiness-complete | PASS |
 | 게임 내 가이드 | status badge + checklist | PASS |
 | 파생 전용 셀렉터 | collection + axis summary reuse | PASS |
+| 리포트 최신성 | reports/qa/v0_67_beta_readiness.md | PASS |
 
 ## Axis Coverage
 

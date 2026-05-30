@@ -154,7 +154,7 @@ const routeOptionTotal = axes.reduce((total, axis) => total + axis.total, 0);
 const requiredScenarios = ["beta-readiness", "beta-readiness-complete"];
 const scenarios = requiredScenarios.filter(hasQaScenario);
 
-const checks = [
+const baseChecks = [
   {
     id: "ending_routes",
     label: "엔딩 루트",
@@ -203,37 +203,41 @@ const checks = [
   },
 ];
 
-const status = checks.every((check) => check.complete) ? "pass" : "fail";
-const completeCheckCount = checks.filter((check) => check.complete).length;
-const totalCheckCount = checks.length;
-const readinessPercent = totalCheckCount ? Math.round((completeCheckCount / totalCheckCount) * 100) : 100;
-const result = {
-  status,
-  endingTotal: endings.length,
-  replayableTotal: replayableEndings.length,
-  fallbackTotal: fallbackEndings.length,
-  rewardTotal,
-  completeCheckCount,
-  totalCheckCount,
-  readinessPercent,
-  unlockHintCount,
-  unlockHintEligibleCount: unlockHintEligibleEndings.length,
-  unlockHintLabel: `${unlockHintCount}/${unlockHintEligibleEndings.length}`,
-  routeAxisCount,
-  routeAxisTotal,
-  routeAxisLabel: `${routeAxisCount}/${routeAxisTotal}`,
-  routeOptionCount,
-  routeOptionTotal,
-  routeOptionLabel: `${routeOptionCount}/${routeOptionTotal}`,
-  scenarios,
-  axes,
-  checks,
-  reportPath: path.relative(root, reportPath),
-};
+function createResult(checks) {
+  const status = checks.every((check) => check.complete) ? "pass" : "fail";
+  const completeCheckCount = checks.filter((check) => check.complete).length;
+  const totalCheckCount = checks.length;
+  const readinessPercent = totalCheckCount ? Math.round((completeCheckCount / totalCheckCount) * 100) : 100;
 
-const markdown = `# v0.67 Beta Readiness QA
+  return {
+    status,
+    endingTotal: endings.length,
+    replayableTotal: replayableEndings.length,
+    fallbackTotal: fallbackEndings.length,
+    rewardTotal,
+    completeCheckCount,
+    totalCheckCount,
+    readinessPercent,
+    unlockHintCount,
+    unlockHintEligibleCount: unlockHintEligibleEndings.length,
+    unlockHintLabel: `${unlockHintCount}/${unlockHintEligibleEndings.length}`,
+    routeAxisCount,
+    routeAxisTotal,
+    routeAxisLabel: `${routeAxisCount}/${routeAxisTotal}`,
+    routeOptionCount,
+    routeOptionTotal,
+    routeOptionLabel: `${routeOptionCount}/${routeOptionTotal}`,
+    scenarios,
+    axes,
+    checks,
+    reportPath: path.relative(root, reportPath),
+  };
+}
 
-Status: ${status === "pass" ? "PASS" : "FAIL"}
+function renderMarkdown(result) {
+  return `# v0.67 Beta Readiness QA
+
+Status: ${result.status === "pass" ? "PASS" : "FAIL"}
 
 ## Summary
 
@@ -248,14 +252,39 @@ Status: ${status === "pass" ? "PASS" : "FAIL"}
 
 | Check | Detail | Status |
 |---|---|---|
-${checks.map((check) => `| ${check.label} | ${check.detail} | ${check.complete ? "PASS" : "FAIL"} |`).join("\n")}
+${result.checks.map((check) => `| ${check.label} | ${check.detail} | ${check.complete ? "PASS" : "FAIL"} |`).join("\n")}
 
 ## Axis Coverage
 
 | Axis | Coverage | Missing |
 |---|---:|---|
-${axes.map((axis) => `| ${axis.label} | ${axis.covered}/${axis.total} | ${axis.missingLabels.length ? axis.missingLabels.join(", ") : "-"} |`).join("\n")}
+${result.axes.map((axis) => `| ${axis.label} | ${axis.covered}/${axis.total} | ${axis.missingLabels.length ? axis.missingLabels.join(", ") : "-"} |`).join("\n")}
 `;
+}
+
+const reportCheckDetail = path.relative(root, reportPath);
+const expectedFreshResult = createResult([
+  ...baseChecks,
+  {
+    id: "report_fresh",
+    label: "리포트 최신성",
+    detail: reportCheckDetail,
+    complete: true,
+  },
+]);
+const expectedFreshMarkdown = renderMarkdown(expectedFreshResult);
+const reportFresh = fs.existsSync(reportPath) && fs.readFileSync(reportPath, "utf8") === expectedFreshMarkdown;
+const checks = [
+  ...baseChecks,
+  {
+    id: "report_fresh",
+    label: "리포트 최신성",
+    detail: reportCheckDetail,
+    complete: noWrite ? reportFresh : true,
+  },
+];
+const result = createResult(checks);
+const markdown = renderMarkdown(result);
 
 if (!noWrite) {
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });
@@ -266,12 +295,13 @@ if (jsonMode) {
   console.log(JSON.stringify(result));
 } else {
   if (!noWrite) console.log(`Wrote ${path.relative(root, reportPath)}`);
-  console.log(`Status: ${status.toUpperCase()}`);
+  console.log(`Status: ${result.status.toUpperCase()}`);
   console.log(`Endings: ${result.endingTotal} total / ${result.replayableTotal} replayable`);
   console.log(`Readiness: ${result.completeCheckCount}/${result.totalCheckCount} checks (${result.readinessPercent}%)`);
   console.log(`Unlock guidance: ${result.unlockHintLabel}`);
   console.log(`Route coverage: ${result.routeAxisLabel} axes / ${result.routeOptionLabel} options`);
   console.log(`Guide: ${checks.find((check) => check.id === "in_game_guide")?.complete ? "PASS" : "FAIL"}`);
+  console.log(`Report: ${checks.find((check) => check.id === "report_fresh")?.complete ? "PASS" : "FAIL"}`);
 }
 
-if (status !== "pass") process.exitCode = 1;
+if (result.status !== "pass") process.exitCode = 1;

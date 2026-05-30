@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
@@ -63,10 +63,14 @@ describe("beta readiness QA script", () => {
     expect(result.routeOptionLabel).toBe("40/40");
     expect(result.scenarios).toEqual(expect.arrayContaining(["beta-readiness", "beta-readiness-complete"]));
     expect(result.completeCheckCount).toBe(result.totalCheckCount);
-    expect(result.totalCheckCount).toBe(7);
+    expect(result.totalCheckCount).toBe(8);
     expect(result.readinessPercent).toBe(100);
     expect(result.checks.find((check) => check.id === "in_game_guide")).toMatchObject({
       label: "게임 내 가이드",
+      complete: true,
+    });
+    expect(result.checks.find((check) => check.id === "report_fresh")).toMatchObject({
+      label: "리포트 최신성",
       complete: true,
     });
   });
@@ -75,14 +79,35 @@ describe("beta readiness QA script", () => {
     const result = runBetaReadinessQaCheck();
 
     expect(result.status).toBe("pass");
-    expect(result.totalCheckCount).toBe(7);
+    expect(result.totalCheckCount).toBe(8);
     expect(result.readinessPercent).toBe(100);
   });
 
   it("prints readiness and guide status in the no-write beta readiness check", () => {
     const output = runBetaReadinessQaCheckText();
 
-    expect(output).toContain("Readiness: 7/7 checks (100%)");
+    expect(output).toContain("Readiness: 8/8 checks (100%)");
     expect(output).toContain("Guide: PASS");
+    expect(output).toContain("Report: PASS");
+  });
+
+  it("fails the no-write beta readiness check when the committed report is stale", () => {
+    const reportPath = fileURLToPath(new URL("../../reports/qa/v0_67_beta_readiness.md", import.meta.url));
+    const originalReport = readFileSync(reportPath, "utf8");
+    let failedOutput = "";
+
+    try {
+      writeFileSync(reportPath, `${originalReport}\nSTALE\n`);
+      execFileSync("npm", ["run", "--silent", "qa:beta-readiness:check"], {
+        cwd: rootDir,
+      });
+    } catch (error) {
+      const output = error as { stdout?: { toString: () => string }; stderr?: { toString: () => string } };
+      failedOutput = `${output.stdout?.toString() ?? ""}${output.stderr?.toString() ?? ""}`;
+    } finally {
+      writeFileSync(reportPath, originalReport);
+    }
+
+    expect(failedOutput).toContain("Report: FAIL");
   });
 });
