@@ -194,13 +194,15 @@ function getRunEndingSpotlight(state: GameState): RunSpotlightEnding | undefined
     flavor: ending.flavor,
     metaRewardBonus: ending.meta_reward_bonus,
     newlyDiscovered,
-    rewardStatusLabel: getEndingRewardStatusLabel(ending.meta_reward_bonus, newlyDiscovered),
+    rewardStatusLabel: getEndingRewardStatusLabel(ending.meta_reward_bonus, newlyDiscovered, ending.condition.fallback === true),
   };
 }
 
-function getEndingRewardStatusLabel(metaRewardBonus: number, newlyDiscovered: boolean): string {
+function getEndingRewardStatusLabel(metaRewardBonus: number, newlyDiscovered: boolean, resultOnly: boolean): string {
   const runRewardLabel = metaRewardBonus > 0 ? `엔딩 보너스 +${metaRewardBonus} 통찰` : "엔딩 보너스 없음";
-  return newlyDiscovered ? `${runRewardLabel} · 신규 도감 보상` : `${runRewardLabel} · 도감 보상 수집 완료`;
+  if (!newlyDiscovered) return `${runRewardLabel} · 도감 보상 수집 완료`;
+  if (resultOnly || metaRewardBonus <= 0) return `${runRewardLabel} · 결과 전용 기록`;
+  return `${runRewardLabel} · 신규 도감 보상`;
 }
 
 function getBestProduct(state: GameState): RunSpotlightProduct | undefined {

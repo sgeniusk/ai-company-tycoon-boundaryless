@@ -234,4 +234,36 @@ describe("v0.11 commercial run summary", () => {
       }).spotlight.ending?.rewardStatusLabel,
     ).toBe("엔딩 보너스 +2 통찰 · 도감 보상 수집 완료");
   });
+
+  it("labels result-only final endings as records in the run summary spotlight", () => {
+    const initial = createInitialState();
+    const fallbackFinal = {
+      ...initial,
+      month: 120,
+      status: "failure" as const,
+      activeProducts: [],
+      resources: {
+        ...initial.resources,
+        cash: -10000,
+        trust: 12,
+        users: 5000,
+      },
+    };
+
+    expect(getRunSummary(fallbackFinal).spotlight.ending).toMatchObject({
+      id: "garage_restart",
+      metaRewardBonus: 0,
+      newlyDiscovered: true,
+      rewardStatusLabel: "엔딩 보너스 없음 · 결과 전용 기록",
+    });
+    expect(
+      getRunSummary({
+        ...fallbackFinal,
+        roguelite: {
+          ...fallbackFinal.roguelite,
+          discoveredEndingIds: ["garage_restart"],
+        },
+      }).spotlight.ending?.rewardStatusLabel,
+    ).toBe("엔딩 보너스 없음 · 도감 보상 수집 완료");
+  });
 });
