@@ -203,6 +203,11 @@ p {
   color: #6c3d12;
 }
 
+.status-pill.ending-target-pill {
+  background: #f4fbec;
+  color: var(--green-dark);
+}
+
 .competitor-hud-strip {
   align-items: center;
   display: flex;

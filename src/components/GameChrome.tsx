@@ -24,7 +24,7 @@ import { resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { rollRunModifierSelection } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
-import { getCampaignEndingReport, getEndingNearMisses } from "../game/campaign-ending";
+import { getActiveEndingReplayBrief, getCampaignEndingReport, getEndingNearMisses } from "../game/campaign-ending";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
   advanceToFirstAnnualReview,
@@ -275,6 +275,7 @@ export function TopBar({
   const calendar = getCampaignCalendar(gameState);
   const phase = getDayPhase(gameState);
   const location = getCurrentLocation(gameState);
+  const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
 
   return (
     <section className="top-bar" aria-label="회사 상태">
@@ -294,6 +295,11 @@ export function TopBar({
           <span className="status-pill">런 {gameState.roguelite.runNumber}</span>
           <span className="status-pill">통찰 {gameState.roguelite.founderInsight}</span>
           <span className="status-pill">점유 {getPlayerMarketShare(gameState)}%</span>
+          {activeEndingReplayBrief && (
+            <span className="status-pill ending-target-pill">
+              목표 엔딩 {activeEndingReplayBrief.progressPercent}%
+            </span>
+          )}
           {qaScenarioLabel && <span className="status-pill qa-pill">{qaScenarioLabel}</span>}
           <button className="locale-toggle" onClick={onToggleLocale}>
             {locale.toUpperCase()}
