@@ -98,13 +98,9 @@ let nextRunSeedCounter = 0;
 
 function createEphemeralRunModifierSelection(source: string) {
   nextRunSeedCounter += 1;
-  const randomPart =
-    typeof globalThis.crypto?.randomUUID === "function"
-      ? globalThis.crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
   return {
-    ...rollRunModifierSelection(`${source}-${nextRunSeedCounter}-${randomPart}`),
+    ...rollRunModifierSelection(`${source}-${nextRunSeedCounter}`),
     challengeTierId: "standard",
   };
 }

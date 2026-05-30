@@ -741,6 +741,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.world-reveal-tier\s*{[^}]*display:\s*grid/s);
   });
 
+  it("keeps UI restart seeds deterministic", () => {
+    const restartSeedSources = `${gameChrome}\n${menuPanels}`;
+
+    expect(restartSeedSources).not.toContain("Math.random");
+    expect(restartSeedSources).not.toContain("Date.now");
+    expect(restartSeedSources).not.toContain("randomUUID");
+    expect(gameChrome).toContain("rollRunModifierSelection(`${source}-${nextRunSeedCounter}`)");
+    expect(menuPanels).toContain("rollRunModifierSelection(`${source}-${menuRunSeedCounter}`)");
+  });
+
   it("v0.66 #2 shows newly discovered archetypes in world reveal and an archetype collection grid", () => {
     expect(worldRevealModal).toContain("getNewlyDiscoveredArchetypes");
     expect(worldRevealModal).toContain("archetype-discovery-panel");
