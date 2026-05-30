@@ -1,10 +1,11 @@
-import { campaignEndings, derivationRules, difficultyTiers, growthPaths, runModifiers } from "./data";
+import { campaignEndings, derivationRules, difficultyTiers, growthPaths, metaUnlocks, runModifiers } from "./data";
 import { DEFAULT_RUN_MODIFIER_SELECTION, type RunModifierSelectionInput } from "./run-modifiers";
 import { getDerivedArchetypes } from "./tag-derivation";
 import type { EndingConditionDefinition, EndingDefinition, GameState, ResourceMap } from "./types";
 
 export interface EndingCollectionEntry extends EndingDefinition {
   discovered: boolean;
+  recommendedUnlockLabels: string[];
   rewardStatusLabel: string;
   targetLabels: string[];
   selection?: RunModifierSelectionInput;
@@ -292,6 +293,7 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
       return {
         ...ending,
         discovered: discoveredIds.has(ending.id),
+        recommendedUnlockLabels: getEndingRouteUnlockLabels(ending.condition, state),
         rewardStatusLabel: getEndingCollectionRewardStatusLabel(ending.meta_reward_bonus, discoveredIds.has(ending.id), ending.condition.fallback === true),
         targetLabels: selection ? getReplayTargetLabels(ending.condition, selection) : [],
         selection,
@@ -304,6 +306,75 @@ function getEndingCollectionRewardStatusLabel(metaRewardBonus: number, discovere
   if (discovered) return finalOnly ? "결과 전용 기록 수집 완료" : getCollectedReplayableEndingRewardStatusLabel();
   if (metaRewardBonus > 0) return `+${metaRewardBonus} 통찰 도감 보상`;
   return finalOnly ? "결과 전용 기록" : "도감 보상 없음";
+}
+
+export function getEndingRouteUnlockLabels(condition: EndingConditionDefinition, state: Pick<GameState, "roguelite">): string[] {
+  if (condition.fallback === true) return [];
+
+  const targetTags = getEndingRouteUnlockTags(condition);
+  if (targetTags.size === 0) return [];
+
+  return metaUnlocks
+    .filter((unlock) => !state.roguelite.unlockedMetaIds.includes(unlock.id))
+    .map((unlock) => ({
+      unlock,
+      score: unlock.tags.filter((tag) => targetTags.has(tag)).length,
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort((first, second) => second.score - first.score || first.unlock.cost - second.unlock.cost || first.unlock.id.localeCompare(second.unlock.id))
+    .slice(0, 2)
+    .map(({ unlock }) => unlock.title);
+}
+
+function getEndingRouteUnlockTags(condition: EndingConditionDefinition): Set<string> {
+  const tags = new Set<string>();
+  const marketIds = new Set(condition.market_condition_ids ?? []);
+  const worldIds = new Set(condition.world_lore_ids ?? []);
+  const founderIds = new Set(condition.founder_trait_ids ?? []);
+  const growthPathIds = new Set(condition.growth_path_ids ?? []);
+  const resources = condition.min_resources ?? {};
+
+  if (
+    marketIds.has("ai_boom") ||
+    marketIds.has("consumer_hype_cycle") ||
+    worldIds.has("open_source_heaven") ||
+    founderIds.has("marketer_founder") ||
+    founderIds.has("serial_founder") ||
+    (resources.hype ?? 0) >= 70
+  ) {
+    tags.add("growth");
+  }
+
+  if (
+    marketIds.has("regulation_crackdown") ||
+    marketIds.has("enterprise_winter") ||
+    worldIds.has("privacy_fortress") ||
+    worldIds.has("regulatory_stronghold") ||
+    growthPathIds.has("trust_enterprise") ||
+    (resources.trust ?? 0) >= 88
+  ) {
+    tags.add("safety");
+    tags.add("quality");
+    tags.add("enterprise");
+  }
+
+  if (worldIds.has("chip_war") || worldIds.has("bitcoin_gpu_squeeze") || growthPathIds.has("code_vision_lab") || (resources.compute ?? 0) >= 280) {
+    tags.add("compute");
+    tags.add("hardware");
+    tags.add("research");
+  }
+
+  if (worldIds.has("robotics_boom") || (resources.automation ?? 0) >= 68 || marketIds.has("steady_market")) {
+    tags.add("automation");
+    tags.add("ops");
+  }
+
+  if (worldIds.has("data_drought") || (resources.data ?? 0) >= 240) {
+    tags.add("data");
+    tags.add("quality");
+  }
+
+  return tags;
 }
 
 export function getEndingCollectionProgressEntries(state: GameState): EndingCollectionProgressEntry[] {

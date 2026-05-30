@@ -7186,6 +7186,34 @@ p {
   overflow-wrap: anywhere;
 }
 
+.ending-collection-unlock-hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+}
+
+.ending-collection-unlock-hints strong {
+  background: #eff7ed;
+  border: 1px solid #86b86f;
+  color: #2f4d29;
+  font-size: 0.62rem;
+  line-height: 1.2;
+  padding: 3px 5px;
+}
+
+.ending-collection-unlock-hints span {
+  background: #fffdf7;
+  border: 1px solid #86b86f;
+  color: #2f4d29;
+  font-size: 0.62rem;
+  font-weight: 900;
+  line-height: 1.2;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 3px 5px;
+}
+
 .ending-collection-empty {
   background: #fffdf7;
   border: 2px dashed #b9d0e6;

@@ -13,6 +13,7 @@ import {
   getEndingCollectionProgressEntries,
   getEndingNearMisses,
   getEndingReplayPlans,
+  getEndingRouteUnlockLabels,
   getEndingTargetPlans,
 } from "./campaign-ending";
 import { runTenYearCampaignSimulation } from "./run-simulator";
@@ -855,6 +856,36 @@ describe("v0.67 campaign ending selector", () => {
       worldLoreId: "open_source_heaven",
       founderTraitId: "engineer_founder",
       challengeTierId: "standard",
+    });
+  });
+
+  it("reuses ending route unlock recommendations in the ending collection", () => {
+    const state = createInitialState({
+      seed: "ending:san_francisco_ai_boom_launchpad",
+      startCityId: "san_francisco",
+      worldLoreId: "open_source_heaven",
+      marketConditionId: "ai_boom",
+      founderTraitId: "serial_founder",
+    });
+    const sanFranciscoEnding = campaignEndings.find((ending) => ending.id === "san_francisco_ai_boom_launchpad");
+    const entries = getEndingCollectionEntries(state);
+
+    expect(sanFranciscoEnding).toBeDefined();
+    expect(getEndingRouteUnlockLabels(sanFranciscoEnding!.condition, state)).toEqual(["런칭 플레이북", "경계 없는 브랜드 기억"]);
+    expect(
+      getEndingRouteUnlockLabels(sanFranciscoEnding!.condition, {
+        ...state,
+        roguelite: {
+          ...state.roguelite,
+          unlockedMetaIds: ["launch_playbook"],
+        },
+      }),
+    ).toEqual(["경계 없는 브랜드 기억"]);
+    expect(entries.find((entry) => entry.id === "san_francisco_ai_boom_launchpad")).toMatchObject({
+      recommendedUnlockLabels: ["런칭 플레이북", "경계 없는 브랜드 기억"],
+    });
+    expect(entries.find((entry) => entry.id === "garage_restart")).toMatchObject({
+      recommendedUnlockLabels: [],
     });
   });
 

@@ -1492,6 +1492,14 @@ function DeckPanel({
                     <small>다음 조건: {entry.nextRequirementLabel}</small>
                   </div>
                   {entry.targetLabels.length > 0 && <small>목표 힌트: {entry.targetLabels.slice(0, 4).join(" / ")}</small>}
+                  {entry.recommendedUnlockLabels.length > 0 && (
+                    <div className="ending-collection-unlock-hints" aria-label="엔딩 추천 해금">
+                      <strong>추천 해금</strong>
+                      {entry.recommendedUnlockLabels.map((label) => (
+                        <span key={label}>{label}</span>
+                      ))}
+                    </div>
+                  )}
                   {replaySelection && (
                     <button
                       className="ending-collection-run-button"

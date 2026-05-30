@@ -832,6 +832,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-filter\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #72 surfaces ending route unlock hints in the codex", () => {
+    expect(campaignEndingSource).toContain("getEndingRouteUnlockLabels");
+    expect(campaignEndingSource).toContain("recommendedUnlockLabels");
+    expect(menuPanels).toContain("ending-collection-unlock-hints");
+    expect(menuPanels).toContain("entry.recommendedUnlockLabels");
+    expect(menuPanels).toContain("추천 해금");
+    expect(appCss).toMatch(/\.ending-collection-unlock-hints\s*{[^}]*display:\s*flex/s);
+    expect(appCss).toMatch(/\.ending-collection-unlock-hints span\s*{[^}]*overflow-wrap:\s*anywhere/s);
+  });
+
   it("v0.67 #26 annotates the ending codex with current-run progress", () => {
     expect(menuPanels).toContain("getEndingCollectionProgressEntries");
     expect(menuPanels).toContain("ending-collection-progress");
