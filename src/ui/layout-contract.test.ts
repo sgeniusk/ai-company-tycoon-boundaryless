@@ -841,6 +841,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.status-pill\.ending-target-pill\s*{[^}]*background:\s*#f4fbec/s);
   });
 
+  it("v0.67 #19 summarizes target ending runs in the final results", () => {
+    expect(gameChrome).toContain("ending-target-result-panel");
+    expect(gameChrome).toContain("목표 엔딩 결과");
+    expect(gameChrome).toContain("activeEndingReplayBrief.complete");
+    expect(gameChrome).toContain("activeEndingReplayBrief.selection");
+    expect(gameChrome).toContain("목표 다시 도전");
+    expect(appCss).toMatch(/\.ending-target-result-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-target-result-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-target-result-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("v0.67 #7 lets final results restart from near-missed endings", () => {
     expect(gameChrome).toContain("getEndingNearMisses");
     expect(gameChrome).toContain("ending-nearmiss-panel");

@@ -434,6 +434,11 @@ export function GameStage({
   const calendar = getCampaignCalendar(gameState);
   const finale = getCampaignFinale(gameState);
   const endingReport = finale.isFinal ? getCampaignEndingReport(gameState) : undefined;
+  const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
+  const missingActiveEndingRequirements = activeEndingReplayBrief?.requirements.filter((requirement) => !requirement.complete).slice(0, 3) ?? [];
+  const activeEndingResultRequirements = missingActiveEndingRequirements.length
+    ? missingActiveEndingRequirements
+    : activeEndingReplayBrief?.requirements.slice(0, 2) ?? [];
   const stageProgress = getCompanyStageProgress(gameState);
   const phase = getDayPhase(gameState);
   const location = getCurrentLocation(gameState);
@@ -950,6 +955,52 @@ export function GameStage({
                   </div>
                   <h2>{finale.title}</h2>
                   <p>{finale.verdict}</p>
+                  {activeEndingReplayBrief && (
+                    <div
+                      className={`ending-target-result-panel ${activeEndingReplayBrief.complete ? "complete" : "missed"}`}
+                      aria-label="목표 엔딩 결과"
+                    >
+                      <div>
+                        <strong>목표 엔딩 결과</strong>
+                        <span>
+                          {activeEndingReplayBrief.complete ? "목표 달성" : "목표 미달"} · 조건{" "}
+                          {activeEndingReplayBrief.matchedRequirements}/{activeEndingReplayBrief.totalRequirements} ·{" "}
+                          {activeEndingReplayBrief.progressPercent}%
+                        </span>
+                      </div>
+                      <div className="ending-target-result-grid">
+                        <span>
+                          <strong>{activeEndingReplayBrief.title}</strong>
+                          <small>{activeEndingReplayBrief.targetLabels.slice(0, 4).join(" / ")}</small>
+                        </span>
+                        {activeEndingResultRequirements.map((requirement) => (
+                          <span className={requirement.complete ? "complete" : "missing"} key={requirement.id}>
+                            <strong>{requirement.label}</strong>
+                            <small>{requirement.currentLabel} / {requirement.targetLabel}</small>
+                          </span>
+                        ))}
+                      </div>
+                      {!activeEndingReplayBrief.complete ? (
+                        <button
+                          onClick={() =>
+                            setGameState((current) =>
+                              resetRunWithMetaUnlocks(
+                                current,
+                                [],
+                                current.roguelite.starterDeckId ?? "balanced_founder",
+                                activeEndingReplayBrief.selection,
+                              ),
+                            )
+                          }
+                          type="button"
+                        >
+                          목표 다시 도전
+                        </button>
+                      ) : (
+                        <small>{activeEndingReplayBrief.rewardLabel}이 다음 런 메타 보상에 반영됩니다.</small>
+                      )}
+                    </div>
+                  )}
                   {endingReport && (
                     <div className="ending-report-panel" aria-label="엔딩 조건 리포트">
                       <div>

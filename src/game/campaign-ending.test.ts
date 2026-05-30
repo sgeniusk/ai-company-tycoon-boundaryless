@@ -507,6 +507,13 @@ describe("v0.67 campaign ending selector", () => {
       title: "프라이버시 신뢰 요새",
       progressPercent: expect.any(Number),
       rewardLabel: "완주 보너스 +4 통찰",
+      selection: {
+        seed: "ending:privacy_trust_bastion",
+        worldLoreId: "privacy_fortress",
+        marketConditionId: "regulation_crackdown",
+        founderTraitId: "researcher_founder",
+        challengeTierId: "standard",
+      },
     });
     expect(brief?.targetLabels).toEqual(
       expect.arrayContaining(["프라이버시 요새", "규제 단속", "연구자 창업자", "신뢰 기반 엔터프라이즈"]),

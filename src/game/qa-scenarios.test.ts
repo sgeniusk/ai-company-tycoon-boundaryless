@@ -90,6 +90,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "world-events",
       "ending-replay",
       "ending-replay-active",
+      "ending-replay-final",
     ]);
   });
 
@@ -856,6 +857,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.runModifiers.seed).toBe("ending:privacy_trust_bastion");
     expect(scenario.state.runModifiers.worldLoreId).toBe("privacy_fortress");
     expect(scenario.state.runModifiers.marketConditionId).toBe("regulation_crackdown");
+  });
+
+  it("builds a final active ending replay scenario for the target result panel", () => {
+    const scenario = createQaScenario("ending-replay-final");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("목표 엔딩 결과");
+    expect(scenario.state.month).toBe(120);
+    expect(scenario.state.status).toBe("success");
+    expect(scenario.state.runModifiers.seed).toBe("ending:privacy_trust_bastion");
   });
 
   it("allows QA URLs to override the active menu", () => {

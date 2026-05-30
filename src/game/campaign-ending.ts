@@ -44,6 +44,7 @@ export interface EndingReplayPlan extends EndingDefinition {
 
 export interface ActiveEndingReplayBrief extends EndingTargetPlan {
   seed: string;
+  selection: RunModifierSelectionInput;
   targetLabels: string[];
   openingMoves: string[];
   nextRequirements: EndingReplayRequirementPrompt[];
@@ -109,11 +110,13 @@ export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplay
   if (!ending) return undefined;
 
   const plan = createEndingTargetPlan(ending, state);
+  const selection = createReplaySelection(ending);
 
   return {
     ...plan,
     seed: state.runModifiers.seed,
-    targetLabels: getReplayTargetLabels(ending.condition, createReplaySelection(ending)),
+    selection,
+    targetLabels: getReplayTargetLabels(ending.condition, selection),
     openingMoves: getReplayOpeningMoves(ending.condition),
     nextRequirements: getReplayNextRequirements(plan.requirements),
     rewardLabel: `완주 보너스 +${ending.meta_reward_bonus} 통찰`,

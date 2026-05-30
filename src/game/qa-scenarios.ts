@@ -92,6 +92,7 @@ export const qaScenarioIds = [
   "world-events",
   "ending-replay",
   "ending-replay-active",
+  "ending-replay-final",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation" | "archetype-collection";
@@ -295,6 +296,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "목표 엔딩 런 브리핑 QA",
       state: createActiveEndingReplayScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-replay-final") {
+    return {
+      id,
+      label: "목표 엔딩 결과 QA",
+      state: createFinalActiveEndingReplayScenarioState(),
       activeMenu: "company",
     };
   }
@@ -1942,6 +1952,48 @@ function createActiveEndingReplayScenarioState(): GameState {
       discoveredEndingIds: ["standard_platform_compounder"],
     },
     timeline: ["목표 엔딩 런 QA: 프라이버시 신뢰 요새를 향한 초반 브리핑 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createFinalActiveEndingReplayScenarioState(): GameState {
+  const state = createInitialState({
+    seed: "ending:privacy_trust_bastion",
+    worldLoreId: "privacy_fortress",
+    marketConditionId: "regulation_crackdown",
+    founderTraitId: "researcher_founder",
+  });
+  const activeProductIds = products.slice(0, 5).map((product) => product.id);
+
+  return {
+    ...state,
+    activeProducts: activeProductIds,
+    chosenGrowthPath: {
+      id: "trust_enterprise",
+      title: "신뢰 기반 엔터프라이즈",
+      month: 4,
+      bonusDescription: "QA 목표 엔딩 결과",
+      effects: {},
+      monthlyEffects: {},
+    },
+    month: 120,
+    productLevels: Object.fromEntries(activeProductIds.map((productId) => [productId, 2])),
+    resources: {
+      ...state.resources,
+      automation: 68,
+      cash: 280000,
+      compute: 260,
+      data: 180,
+      hype: 48,
+      talent: 18,
+      trust: 82,
+      users: 180000,
+    },
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: ["standard_platform_compounder"],
+    },
+    status: "success",
+    timeline: ["목표 엔딩 결과 QA: 프라이버시 신뢰 요새를 노렸지만 일부 조건이 부족한 최종 화면", ...state.timeline].slice(0, 8),
   };
 }
 
