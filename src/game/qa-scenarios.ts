@@ -91,6 +91,7 @@ export const qaScenarioIds = [
   "difficulty-reward",
   "world-events",
   "beta-readiness",
+  "beta-readiness-complete",
   "ending-replay",
   "ending-replay-active",
   "ending-replay-known",
@@ -297,6 +298,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "베타 준비 체크 QA",
       state: createBetaReadinessScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "beta-readiness-complete") {
+    return {
+      id,
+      label: "베타 준비 완료 도감 QA",
+      state: createCompleteBetaReadinessScenarioState(),
       activeMenu: "company",
     };
   }
@@ -2001,6 +2011,21 @@ function createBetaReadinessScenarioState(): GameState {
     ...state,
     seenTutorials: [...new Set([...postReleaseSeenTutorials, ...(state.seenTutorials ?? [])])],
     timeline: ["베타 준비 체크 QA: v0.67 멀티 엔딩 준비도와 해금 안내 100% 패널 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createCompleteBetaReadinessScenarioState(): GameState {
+  const state = createBetaReadinessScenarioState();
+  const replayableEndingIds = campaignEndings.filter((ending) => ending.condition.fallback !== true).map((ending) => ending.id);
+
+  return {
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      founderInsight: Math.max(state.roguelite.founderInsight, 81),
+      discoveredEndingIds: replayableEndingIds,
+    },
+    timeline: ["베타 준비 완료 도감 QA: 모든 목표 엔딩 발견 상태와 다음 목표 없음 문구 확인", ...state.timeline].slice(0, 8),
   };
 }
 

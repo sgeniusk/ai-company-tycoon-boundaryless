@@ -17,6 +17,7 @@ import { getNextRunSetupPlan } from "./meta-progression";
 import { getPayoffCollectionEntries } from "./payoff-activation";
 import { getAiResourceVisibilityMetrics } from "./resource-visibility";
 import { runTenYearCampaignSimulation } from "./run-simulator";
+import { getBetaReadinessSummary } from "./beta-readiness";
 import { getDerivedArchetypes } from "./tag-derivation";
 import { getTutorialGuide } from "./tutorial-guide";
 import { getAlphaRunCompletionSummary, getAlphaRunDebriefSummary, getAlphaRunRoadmapProgress, getFirstTenMinuteProgress, getGuidanceStep } from "./guidance";
@@ -97,6 +98,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "difficulty-reward",
       "world-events",
       "beta-readiness",
+      "beta-readiness-complete",
       "ending-replay",
       "ending-replay-active",
       "ending-replay-known",
@@ -819,6 +821,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=difficulty-reward")?.id).toBe("difficulty-reward");
     expect(createQaScenarioFromSearch("?scenario=world-events")?.id).toBe("world-events");
     expect(createQaScenarioFromSearch("?scenario=beta-readiness")?.id).toBe("beta-readiness");
+    expect(createQaScenarioFromSearch("?scenario=beta-readiness-complete")?.id).toBe("beta-readiness-complete");
     expect(createQaScenarioFromSearch("?scenario=archetype-collection")?.id).toBe("archetype-collection");
     expect(createQaScenarioFromSearch("?scenario=ending-replay")?.id).toBe("ending-replay");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-active")?.id).toBe("ending-replay-active");
@@ -888,6 +891,18 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(summary.unlockHintCount).toBe(summary.unlockHintEligibleCount);
     expect(summary.unlockHintCoveragePercent).toBe(100);
     expect(axisCoverage.every((axis) => axis.complete)).toBe(true);
+  });
+
+  it("builds a complete beta readiness guide scenario with no remaining target ending", () => {
+    const scenario = createQaScenario("beta-readiness-complete");
+    const replayableEndingIds = campaignEndings.filter((ending) => ending.condition.fallback !== true).map((ending) => ending.id);
+    const summary = getBetaReadinessSummary(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("베타 준비 완료");
+    expect(scenario.state.roguelite.discoveredEndingIds).toEqual(expect.arrayContaining(replayableEndingIds));
+    expect(summary.nextTargetLabel).toBe("모든 목표 엔딩 발견");
+    expect(summary.lockedReplayableLabel).toBe("목표 엔딩 0개 남음");
   });
 
   it("builds an active ending replay target scenario for the company brief", () => {
