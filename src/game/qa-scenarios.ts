@@ -95,6 +95,7 @@ export const qaScenarioIds = [
   "ending-replay-known",
   "ending-replay-complete",
   "ending-replay-final",
+  "ending-fallback-final",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation" | "archetype-collection";
@@ -325,6 +326,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "목표 엔딩 결과 QA",
       state: createFinalActiveEndingReplayScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-fallback-final") {
+    return {
+      id,
+      label: "결과 전용 엔딩 QA",
+      state: createFallbackEndingFinalScenarioState(),
       activeMenu: "company",
     };
   }
@@ -2041,6 +2051,38 @@ function createFinalActiveEndingReplayScenarioState(): GameState {
     },
     status: "success",
     timeline: ["목표 엔딩 결과 QA: 프라이버시 신뢰 요새를 노렸지만 일부 조건이 부족한 최종 화면", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createFallbackEndingFinalScenarioState(): GameState {
+  const state = createInitialState({
+    seed: "qa-ending-fallback-final",
+    worldLoreId: "standard",
+    founderTraitId: "no_founder",
+  });
+
+  return {
+    ...state,
+    activeProducts: products.slice(0, 2).map((product) => product.id),
+    month: 120,
+    resources: {
+      ...state.resources,
+      automation: 8,
+      cash: -12000,
+      compute: 20,
+      data: 16,
+      hype: 4,
+      talent: 3,
+      trust: 24,
+      users: 9000,
+    },
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: ["standard_platform_compounder"],
+      founderInsight: 8,
+    },
+    status: "failure",
+    timeline: ["결과 전용 엔딩 QA: 10년 최종 결과에서 다시 차고로 fallback 엔딩 공개 확인", ...state.timeline].slice(0, 8),
   };
 }
 

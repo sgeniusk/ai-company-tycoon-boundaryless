@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./qa-scenarios";
 import { getAnnualDirectiveChoiceRows } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
-import { getActiveEndingReplayBrief, getEndingCollectionSummary } from "./campaign-ending";
+import { getActiveEndingReplayBrief, getCampaignEnding, getCampaignEndingDiscovery, getEndingCollectionSummary } from "./campaign-ending";
 import { assetManifest, campaignEndings, products } from "./data";
 import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
@@ -94,6 +94,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "ending-replay-known",
       "ending-replay-complete",
       "ending-replay-final",
+      "ending-fallback-final",
     ]);
   });
 
@@ -808,6 +809,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=ending-replay-active")?.id).toBe("ending-replay-active");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-known")?.id).toBe("ending-replay-known");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-complete")?.id).toBe("ending-replay-complete");
+    expect(createQaScenarioFromSearch("?scenario=ending-fallback-final")?.id).toBe("ending-fallback-final");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
@@ -901,6 +903,22 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.month).toBe(120);
     expect(scenario.state.status).toBe("success");
     expect(scenario.state.runModifiers.seed).toBe("ending:privacy_trust_bastion");
+  });
+
+  it("builds a fallback final ending scenario for the result-only codex branch", () => {
+    const scenario = createQaScenario("ending-fallback-final");
+    const discovery = getCampaignEndingDiscovery(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("결과 전용");
+    expect(scenario.state.month).toBe(120);
+    expect(scenario.state.status).toBe("failure");
+    expect(getCampaignEnding(scenario.state).id).toBe("garage_restart");
+    expect(discovery).toMatchObject({
+      id: "garage_restart",
+      title: "다시 차고로",
+      rewardLabel: "+0 통찰",
+    });
   });
 
   it("allows QA URLs to override the active menu", () => {
