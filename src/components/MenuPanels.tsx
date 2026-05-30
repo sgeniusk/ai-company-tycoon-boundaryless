@@ -1314,6 +1314,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                 <p className="item-meta">통찰 보너스 +{entry.meta_reward_bonus}</p>
                 <strong>{entry.discovered ? entry.title : "미발견 엔딩"}</strong>
                 <span>{entry.discovered ? entry.flavor : "10년 캠페인 결과에서 조건을 만족하면 공개됩니다."}</span>
+                {entry.targetLabels.length > 0 && <small>목표 힌트: {entry.targetLabels.slice(0, 4).join(" / ")}</small>}
               </article>
             ))}
           </div>

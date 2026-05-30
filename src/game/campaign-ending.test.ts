@@ -413,6 +413,9 @@ describe("v0.67 campaign ending selector", () => {
       title: "프런티어 데모 제국",
       discovered: false,
     });
+    expect(entries.find((entry) => entry.id === "frontier_demo_empire")?.targetLabels).toEqual(
+      expect.arrayContaining(["오픈소스 천국", "엔지니어 창업자", "코드/비전 연구소", "프런티어 차고"]),
+    );
   });
 
   it("ranks feasible ending targets for the current run and explains missing requirements", () => {
