@@ -101,6 +101,8 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "ending-replay-complete",
       "ending-replay-final",
       "ending-replay-known-final",
+      "ending-san-francisco-final",
+      "ending-steady-operator-final",
       "ending-fallback-final",
       "ending-fallback-known-final",
       "ending-nearmiss-final",
@@ -820,6 +822,8 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=ending-replay-known")?.id).toBe("ending-replay-known");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-complete")?.id).toBe("ending-replay-complete");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-known-final")?.id).toBe("ending-replay-known-final");
+    expect(createQaScenarioFromSearch("?scenario=ending-san-francisco-final")?.id).toBe("ending-san-francisco-final");
+    expect(createQaScenarioFromSearch("?scenario=ending-steady-operator-final")?.id).toBe("ending-steady-operator-final");
     expect(createQaScenarioFromSearch("?scenario=ending-fallback-final")?.id).toBe("ending-fallback-final");
     expect(createQaScenarioFromSearch("?scenario=ending-fallback-known-final")?.id).toBe("ending-fallback-known-final");
     expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-final")?.id).toBe("ending-nearmiss-final");
@@ -947,6 +951,53 @@ describe("alpha v0.9.3 QA scenarios", () => {
       rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
       rewardDeltaDescription: "이미 획득한 도감 보상입니다.",
+    });
+  });
+
+  it("builds a final San Francisco AI boom ending scenario for browser QA", () => {
+    const scenario = createQaScenario("ending-san-francisco-final");
+    const discovery = getCampaignEndingDiscovery(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("샌프란시스코");
+    expect(scenario.state.month).toBe(120);
+    expect(scenario.state.status).toBe("success");
+    expect(scenario.state.runModifiers).toMatchObject({
+      seed: "ending:san_francisco_ai_boom_launchpad",
+      startCityId: "san_francisco",
+      worldLoreId: "open_source_heaven",
+      marketConditionId: "ai_boom",
+      founderTraitId: "serial_founder",
+    });
+    expect(getCampaignEnding(scenario.state).id).toBe("san_francisco_ai_boom_launchpad");
+    expect(discovery).toMatchObject({
+      id: "san_francisco_ai_boom_launchpad",
+      title: "샌프란시스코 AI 붐 런치패드",
+      rewardLabel: "+4 통찰",
+      rewardStatusLabel: "+4 통찰 신규 도감 보상",
+    });
+  });
+
+  it("builds a final steady-market operator ending scenario for browser QA", () => {
+    const scenario = createQaScenario("ending-steady-operator-final");
+    const discovery = getCampaignEndingDiscovery(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("꾸준한 운영");
+    expect(scenario.state.month).toBe(120);
+    expect(scenario.state.status).toBe("success");
+    expect(scenario.state.runModifiers).toMatchObject({
+      seed: "ending:steady_operator_compounder",
+      startCityId: "default_city",
+      marketConditionId: "steady_market",
+      founderTraitId: "operator_founder",
+    });
+    expect(getCampaignEnding(scenario.state).id).toBe("steady_operator_compounder");
+    expect(discovery).toMatchObject({
+      id: "steady_operator_compounder",
+      title: "꾸준한 운영 복리 회사",
+      rewardLabel: "+3 통찰",
+      rewardStatusLabel: "+3 통찰 신규 도감 보상",
     });
   });
 

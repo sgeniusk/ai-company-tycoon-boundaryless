@@ -96,6 +96,8 @@ export const qaScenarioIds = [
   "ending-replay-complete",
   "ending-replay-final",
   "ending-replay-known-final",
+  "ending-san-francisco-final",
+  "ending-steady-operator-final",
   "ending-fallback-final",
   "ending-fallback-known-final",
   "ending-nearmiss-final",
@@ -339,6 +341,24 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "반복 목표 엔딩 결과 QA",
       state: createKnownFinalActiveEndingReplayScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-san-francisco-final") {
+    return {
+      id,
+      label: "샌프란시스코 AI 붐 엔딩 QA",
+      state: createSanFranciscoAiBoomEndingFinalScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-steady-operator-final") {
+    return {
+      id,
+      label: "꾸준한 운영 복리 엔딩 QA",
+      state: createSteadyOperatorEndingFinalScenarioState(),
       activeMenu: "company",
     };
   }
@@ -2111,6 +2131,93 @@ function createKnownFinalActiveEndingReplayScenarioState(): GameState {
       discoveredEndingIds: [...new Set([...state.roguelite.discoveredEndingIds, "privacy_trust_bastion"])],
     },
     timeline: ["반복 목표 엔딩 결과 QA: 이미 발견한 프라이버시 신뢰 요새 완주 문구 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createSanFranciscoAiBoomEndingFinalScenarioState(): GameState {
+  const state = createInitialState({
+    seed: "ending:san_francisco_ai_boom_launchpad",
+    startCityId: "san_francisco",
+    worldLoreId: "open_source_heaven",
+    marketConditionId: "ai_boom",
+    founderTraitId: "serial_founder",
+  });
+  const activeProductIds = products.slice(0, 6).map((product) => product.id);
+
+  return {
+    ...state,
+    activeProducts: activeProductIds,
+    chosenGrowthPath: {
+      id: "productivity_line",
+      title: "생산성 제품 라인 확장",
+      month: 4,
+      bonusDescription: "QA 샌프란시스코 AI 붐 엔딩",
+      effects: {},
+      monthlyEffects: {},
+    },
+    month: 120,
+    productLevels: Object.fromEntries(activeProductIds.map((productId) => [productId, 2])),
+    resources: {
+      ...state.resources,
+      automation: 64,
+      cash: 280000,
+      compute: 290,
+      data: 220,
+      hype: 82,
+      talent: 20,
+      trust: 70,
+      users: 260000,
+    },
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: ["standard_platform_compounder"],
+      founderInsight: 14,
+    },
+    status: "success",
+    timeline: ["샌프란시스코 AI 붐 엔딩 QA: 새 런치패드 엔딩 최종 결과와 +4 통찰 보상 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createSteadyOperatorEndingFinalScenarioState(): GameState {
+  const state = createInitialState({
+    seed: "ending:steady_operator_compounder",
+    startCityId: "default_city",
+    marketConditionId: "steady_market",
+    founderTraitId: "operator_founder",
+  });
+  const activeProductIds = products.slice(0, 4).map((product) => product.id);
+
+  return {
+    ...state,
+    activeProducts: activeProductIds,
+    chosenGrowthPath: {
+      id: "productivity_line",
+      title: "생산성 제품 라인 확장",
+      month: 4,
+      bonusDescription: "QA 꾸준한 운영 복리 엔딩",
+      effects: {},
+      monthlyEffects: {},
+    },
+    month: 120,
+    productLevels: Object.fromEntries(activeProductIds.map((productId) => [productId, 2])),
+    resources: {
+      ...state.resources,
+      automation: 72,
+      cash: 190000,
+      compute: 170,
+      data: 150,
+      hype: 36,
+      talent: 16,
+      trust: 72,
+      users: 150000,
+    },
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: ["standard_platform_compounder"],
+      founderInsight: 12,
+    },
+    status: "success",
+    timeline: ["꾸준한 운영 복리 엔딩 QA: steady market 운영자 최종 결과와 +3 통찰 보상 확인", ...state.timeline].slice(0, 8),
   };
 }
 
