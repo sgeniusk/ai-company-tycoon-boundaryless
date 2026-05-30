@@ -96,6 +96,7 @@ export const qaScenarioIds = [
   "ending-replay-complete",
   "ending-replay-final",
   "ending-fallback-final",
+  "ending-nearmiss-final",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation" | "archetype-collection";
@@ -335,6 +336,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "결과 전용 엔딩 QA",
       state: createFallbackEndingFinalScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-nearmiss-final") {
+    return {
+      id,
+      label: "아쉬운 엔딩 재도전 QA",
+      state: createEndingNearMissFinalScenarioState(),
       activeMenu: "company",
     };
   }
@@ -2083,6 +2093,49 @@ function createFallbackEndingFinalScenarioState(): GameState {
     },
     status: "failure",
     timeline: ["결과 전용 엔딩 QA: 10년 최종 결과에서 다시 차고로 fallback 엔딩 공개 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createEndingNearMissFinalScenarioState(): GameState {
+  const state = createInitialState({
+    seed: "qa-ending-nearmiss-final",
+    worldLoreId: "agi_overhang",
+    marketConditionId: "regulation_crackdown",
+    founderTraitId: "researcher_founder",
+  });
+  const activeProductIds = products.slice(0, 5).map((product) => product.id);
+
+  return {
+    ...state,
+    activeProducts: activeProductIds,
+    chosenGrowthPath: {
+      id: "trust_enterprise",
+      title: "신뢰 기반 엔터프라이즈",
+      month: 4,
+      bonusDescription: "QA 아쉬운 엔딩 결과",
+      effects: {},
+      monthlyEffects: {},
+    },
+    month: 120,
+    productLevels: Object.fromEntries(activeProductIds.map((productId) => [productId, 2])),
+    resources: {
+      ...state.resources,
+      automation: 76,
+      cash: 420000,
+      compute: 340,
+      data: 320,
+      hype: 58,
+      talent: 22,
+      trust: 88,
+      users: 260000,
+    },
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: ["standard_platform_compounder"],
+      founderInsight: 16,
+    },
+    status: "success",
+    timeline: ["아쉬운 엔딩 QA: AGI 안전 협정에 신뢰 4가 부족한 최종 결과와 즉시 재도전 버튼 확인", ...state.timeline].slice(0, 8),
   };
 }
 

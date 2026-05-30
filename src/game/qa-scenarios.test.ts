@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest";
 import { createQaScenario, createQaScenarioFromSearch, qaScenarioIds } from "./qa-scenarios";
 import { getAnnualDirectiveChoiceRows } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
-import { getActiveEndingReplayBrief, getCampaignEnding, getCampaignEndingDiscovery, getEndingCollectionSummary } from "./campaign-ending";
+import {
+  getActiveEndingReplayBrief,
+  getCampaignEnding,
+  getCampaignEndingDiscovery,
+  getEndingCollectionSummary,
+  getEndingNearMisses,
+} from "./campaign-ending";
 import { assetManifest, campaignEndings, products } from "./data";
 import { getFoundationSnapshot } from "./content-foundation";
 import { getDeckSynergySummary } from "./deckbuilding";
@@ -95,6 +101,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "ending-replay-complete",
       "ending-replay-final",
       "ending-fallback-final",
+      "ending-nearmiss-final",
     ]);
   });
 
@@ -810,6 +817,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=ending-replay-known")?.id).toBe("ending-replay-known");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-complete")?.id).toBe("ending-replay-complete");
     expect(createQaScenarioFromSearch("?scenario=ending-fallback-final")?.id).toBe("ending-fallback-final");
+    expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-final")?.id).toBe("ending-nearmiss-final");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
@@ -919,6 +927,27 @@ describe("alpha v0.9.3 QA scenarios", () => {
       title: "다시 차고로",
       rewardLabel: "+0 통찰",
     });
+  });
+
+  it("builds a final near-miss scenario for immediate ending rematch QA", () => {
+    const scenario = createQaScenario("ending-nearmiss-final");
+    const nearMisses = getEndingNearMisses(scenario.state, 3);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("아쉬운 엔딩");
+    expect(scenario.state.month).toBe(120);
+    expect(scenario.state.status).toBe("success");
+    expect(nearMisses[0]).toMatchObject({
+      id: "agi_safety_accord",
+      title: "AGI 안전 협정",
+      rewardLabel: "+5 통찰",
+      replaySelection: {
+        seed: "ending:agi_safety_accord",
+        worldLoreId: "agi_overhang",
+        marketConditionId: "regulation_crackdown",
+      },
+    });
+    expect(nearMisses[0].missingLabels).toContain("신뢰");
   });
 
   it("allows QA URLs to override the active menu", () => {
