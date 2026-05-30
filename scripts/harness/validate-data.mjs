@@ -334,12 +334,20 @@ const endingReferenceSets = {
   archetype_ids: derivationRuleIds,
 };
 let fallbackEndingCount = 0;
+const endingPriorities = new Set();
+const finalEndingEntry = campaignEndings[campaignEndings.length - 1];
 
 for (const ending of campaignEndings) {
   for (const field of ["title", "flavor", "priority", "meta_reward_bonus", "condition"]) {
     if (!(field in ending)) errors.push(`ending "${ending.id}": missing ${field}`);
   }
-  if (typeof ending.priority !== "number") errors.push(`ending "${ending.id}": priority must be numeric`);
+  if (typeof ending.priority !== "number") {
+    errors.push(`ending "${ending.id}": priority must be numeric`);
+  } else if (endingPriorities.has(ending.priority)) {
+    errors.push(`ending "${ending.id}": priority must be unique`);
+  } else {
+    endingPriorities.add(ending.priority);
+  }
   if (typeof ending.meta_reward_bonus !== "number" || ending.meta_reward_bonus < 0 || ending.meta_reward_bonus > 5) {
     errors.push(`ending "${ending.id}": meta_reward_bonus must be a number from 0 to 5`);
   }
@@ -355,7 +363,16 @@ for (const ending of campaignEndings) {
     errors.push(`ending "${ending.id}": condition must be an object`);
     continue;
   }
-  if (condition.fallback === true) fallbackEndingCount += 1;
+  if (condition.fallback === true) {
+    fallbackEndingCount += 1;
+    if (ending !== finalEndingEntry) errors.push(`ending "${ending.id}": fallback ending must be the final entry`);
+    if (ending.priority !== 0) errors.push(`ending "${ending.id}": fallback ending priority must be 0`);
+    if (ending.meta_reward_bonus !== 0) errors.push(`ending "${ending.id}": fallback ending meta_reward_bonus must be 0`);
+  } else {
+    if (condition.status !== "success") errors.push(`ending "${ending.id}": non-fallback ending must require status success`);
+    if (condition.min_month !== 120) errors.push(`ending "${ending.id}": non-fallback ending must require min_month 120`);
+    if (ending.meta_reward_bonus <= 0) errors.push(`ending "${ending.id}": non-fallback ending meta_reward_bonus must be positive`);
+  }
   if ("status" in condition && !["playing", "success", "failure", "any"].includes(condition.status)) {
     errors.push(`ending "${ending.id}": unknown status condition "${condition.status}"`);
   }

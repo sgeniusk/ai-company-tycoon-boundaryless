@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { campaignEndings, products } from "./data";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
 import {
@@ -13,6 +14,8 @@ import {
 import { runTenYearCampaignSimulation } from "./run-simulator";
 import { createInitialState } from "./simulation";
 import type { GameState, RunModifiersState } from "./types";
+
+const validateDataSource = readFileSync(new URL("../../scripts/harness/validate-data.mjs", import.meta.url), "utf8");
 
 function finalStateFor(selection: Partial<RunModifiersState>, overrides: Partial<GameState> = {}): GameState {
   const selectedSeed =
@@ -337,6 +340,13 @@ describe("v0.67 campaign ending selector", () => {
     for (const ending of campaignEndings) {
       expect(getCampaignEnding(endingFixtures[ending.id]).id).toBe(ending.id);
     }
+  });
+
+  it("guards replay-safe ending data invariants in validate:data", () => {
+    expect(validateDataSource).toContain("priority must be unique");
+    expect(validateDataSource).toContain("fallback ending must be the final entry");
+    expect(validateDataSource).toContain("non-fallback ending must require status success");
+    expect(validateDataSource).toContain("non-fallback ending must require min_month 120");
   });
 
   it("picks the highest-priority matching ending deterministically", () => {
