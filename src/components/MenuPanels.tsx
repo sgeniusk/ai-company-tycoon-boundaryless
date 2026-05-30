@@ -1375,6 +1375,12 @@ function DeckPanel({
               <strong>{endingCollectionSummary.lockedCount}</strong>
               <small>남은 엔딩</small>
             </span>
+            <span>
+              <strong>
+                {endingCollectionSummary.discoveredRewardBonus}/{endingCollectionSummary.totalRewardBonus}
+              </strong>
+              <small>통찰 보상 · 남은 보상 {endingCollectionSummary.lockedRewardBonus}</small>
+            </span>
             {endingCollectionSummary.nextReplayPlan && (
               <button
                 disabled={activeEndingReplayBrief?.id === endingCollectionSummary.nextReplayPlan.id}

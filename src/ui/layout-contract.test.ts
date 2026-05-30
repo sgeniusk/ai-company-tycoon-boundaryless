@@ -818,6 +818,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("if (isActiveTargetRun)");
   });
 
+  it("v0.67 #30 shows ending codex reward totals", () => {
+    expect(menuPanels).toContain("endingCollectionSummary.discoveredRewardBonus");
+    expect(menuPanels).toContain("endingCollectionSummary.totalRewardBonus");
+    expect(menuPanels).toContain("통찰 보상");
+    expect(menuPanels).toContain("남은 보상");
+    expect(appCss).toMatch(/\.ending-collection-summary\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+  });
+
   it("v0.67 #3 surfaces current-run ending targets in the company console", () => {
     expect(menuPanels).toContain("getEndingTargetPlans");
     expect(menuPanels).toContain("ending-target-panel");

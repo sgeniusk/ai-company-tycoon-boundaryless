@@ -750,6 +750,9 @@ describe("v0.67 campaign ending selector", () => {
       totalCount: campaignEndings.length,
       lockedCount: campaignEndings.length - 1,
       completionPercent: Math.round((1 / campaignEndings.length) * 100),
+      discoveredRewardBonus: 5,
+      lockedRewardBonus: campaignEndings.reduce((total, ending) => total + ending.meta_reward_bonus, 0) - 5,
+      totalRewardBonus: campaignEndings.reduce((total, ending) => total + ending.meta_reward_bonus, 0),
     });
     expect(summary.nextReplayPlan).toMatchObject({
       id: "agi_safety_accord",
