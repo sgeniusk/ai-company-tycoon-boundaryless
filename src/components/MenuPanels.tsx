@@ -16,6 +16,7 @@ import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCom
 import {
   getActiveEndingReplayBrief,
   getEndingCollectionEntries,
+  getEndingCollectionProgressEntries,
   getEndingCollectionSummary,
   getEndingReplayPlans,
   getEndingTargetPlans,
@@ -780,11 +781,12 @@ function DeckPanel({
   const deckSynergySummary = getDeckSynergySummary(gameState);
   const starterDeckOptions = getAvailableStarterDecks(gameState);
   const nextRunSetupPlan = getNextRunSetupPlan(gameState);
-  const endingCollectionEntries = getEndingCollectionEntries(gameState);
+  const baseEndingCollectionEntries = getEndingCollectionEntries(gameState);
+  const endingCollectionEntries = getEndingCollectionProgressEntries(gameState);
   const endingCollectionSummary = getEndingCollectionSummary(gameState);
   const endingReplayPlans = getEndingReplayPlans(gameState, 3);
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
-  const discoveredEndingCount = endingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
+  const discoveredEndingCount = baseEndingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
   const endingCollectionFilterOptions = [
     { id: "all", label: "전체", count: endingCollectionEntries.length },
     { id: "locked", label: "미발견", count: endingCollectionSummary.lockedCount },
@@ -1403,6 +1405,11 @@ function DeckPanel({
                   <p className="item-meta">통찰 보너스 +{entry.meta_reward_bonus}</p>
                   <strong>{entry.discovered ? entry.title : "미발견 엔딩"}</strong>
                   <span>{entry.discovered ? entry.flavor : "10년 캠페인 결과에서 조건을 만족하면 공개됩니다."}</span>
+                  <div className="ending-collection-progress" aria-label="엔딩 현재 런 진행">
+                    <strong>현재 런 {entry.progressPercent}%</strong>
+                    <span>조건 {entry.matchedRequirements}/{entry.totalRequirements}</span>
+                    <small>다음 조건: {entry.nextRequirementLabel}</small>
+                  </div>
                   {entry.targetLabels.length > 0 && <small>목표 힌트: {entry.targetLabels.slice(0, 4).join(" / ")}</small>}
                   {replaySelection && (
                     <button

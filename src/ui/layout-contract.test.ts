@@ -791,6 +791,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-filter\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #26 annotates the ending codex with current-run progress", () => {
+    expect(menuPanels).toContain("getEndingCollectionProgressEntries");
+    expect(menuPanels).toContain("ending-collection-progress");
+    expect(menuPanels).toContain("entry.nextRequirementLabel");
+    expect(menuPanels).toContain("현재 런");
+    expect(appCss).toMatch(/\.ending-collection-progress\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-collection-progress strong\s*{[^}]*overflow-wrap:\s*anywhere/s);
+  });
+
   it("v0.67 #3 surfaces current-run ending targets in the company console", () => {
     expect(menuPanels).toContain("getEndingTargetPlans");
     expect(menuPanels).toContain("ending-target-panel");

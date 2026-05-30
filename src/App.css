@@ -7099,6 +7099,31 @@ p {
   padding: 8px;
 }
 
+.ending-collection-progress {
+  background: rgba(255, 253, 247, 0.72);
+  border: 1px solid rgba(127, 167, 206, 0.58);
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 6px;
+}
+
+.ending-collection-progress strong {
+  color: #263f52;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.ending-collection-progress span,
+.ending-collection-progress small {
+  color: #516579;
+  font-size: 0.64rem;
+  font-weight: 900;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .ending-collection-empty {
   background: #fffdf7;
   border: 2px dashed #b9d0e6;

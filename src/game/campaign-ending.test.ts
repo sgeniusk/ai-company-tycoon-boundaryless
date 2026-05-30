@@ -9,6 +9,7 @@ import {
   getCampaignEndingReport,
   getEndingCollectionSummary,
   getEndingCollectionEntries,
+  getEndingCollectionProgressEntries,
   getEndingNearMisses,
   getEndingReplayPlans,
   getEndingTargetPlans,
@@ -627,6 +628,47 @@ describe("v0.67 campaign ending selector", () => {
         challengeTierId: "standard",
       },
     });
+  });
+
+  it("annotates ending collection entries with current-run progress and the next missing condition", () => {
+    const state = finalStateFor(
+      {
+        worldLoreId: "agi_overhang",
+        marketConditionId: "regulation_crackdown",
+        founderTraitId: "researcher_founder",
+      },
+      {
+        chosenGrowthPath: {
+          id: "trust_enterprise",
+          title: "신뢰 기반 엔터프라이즈",
+          month: 4,
+          bonusDescription: "test fixture",
+          effects: {},
+          monthlyEffects: {},
+        },
+        resources: {
+          ...createInitialState().resources,
+          cash: 420000,
+          users: 260000,
+          compute: 340,
+          data: 320,
+          talent: 22,
+          trust: 40,
+          hype: 58,
+          automation: 76,
+        },
+      },
+    );
+    const progressEntry = getEndingCollectionProgressEntries(state).find((entry) => entry.id === "agi_safety_accord");
+
+    expect(progressEntry).toMatchObject({
+      id: "agi_safety_accord",
+      discovered: false,
+      matchedRequirements: 12,
+      totalRequirements: 13,
+      nextRequirementLabel: "신뢰 40/92",
+    });
+    expect(progressEntry?.progressPercent).toBeLessThan(100);
   });
 
   it("ranks feasible ending targets for the current run and explains missing requirements", () => {

@@ -9,6 +9,13 @@ export interface EndingCollectionEntry extends EndingDefinition {
   selection?: RunModifierSelectionInput;
 }
 
+export interface EndingCollectionProgressEntry extends EndingCollectionEntry {
+  matchedRequirements: number;
+  nextRequirementLabel: string;
+  progressPercent: number;
+  totalRequirements: number;
+}
+
 export interface EndingRequirementProgress {
   id: string;
   label: string;
@@ -191,6 +198,33 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
     .sort((first, second) => Number(second.discovered) - Number(first.discovered) || second.priority - first.priority || first.id.localeCompare(second.id));
 }
 
+export function getEndingCollectionProgressEntries(state: GameState): EndingCollectionProgressEntry[] {
+  return getEndingCollectionEntries(state).map((entry) => {
+    if (entry.condition.fallback === true) {
+      const fallbackComplete = state.status === "failure" || (state.month >= 120 && getCampaignEnding(state).id === entry.id);
+
+      return {
+        ...entry,
+        matchedRequirements: fallbackComplete ? 1 : 0,
+        nextRequirementLabel: fallbackComplete ? "결과 공개" : "최종 결과에서 공개",
+        progressPercent: fallbackComplete ? 100 : 0,
+        totalRequirements: 1,
+      };
+    }
+
+    const plan = createEndingTargetPlan(entry, state);
+    const nextRequirement = getNextCollectionRequirement(plan.requirements);
+
+    return {
+      ...entry,
+      matchedRequirements: plan.matchedRequirements,
+      nextRequirementLabel: nextRequirement ? formatCollectionRequirementLabel(nextRequirement) : "조건 충족",
+      progressPercent: plan.complete ? 100 : Math.min(99, plan.progressPercent),
+      totalRequirements: plan.totalRequirements,
+    };
+  });
+}
+
 export function getEndingCollectionSummary(state: Pick<GameState, "roguelite">): EndingCollectionSummary {
   const entries = getEndingCollectionEntries(state);
   const discoveredCount = entries.filter((entry) => entry.discovered).length;
@@ -251,6 +285,17 @@ function createEndingNearMissPlan(ending: EndingDefinition, state: GameState): E
     rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
     targetLabels: getReplayTargetLabels(ending.condition, replaySelection),
   };
+}
+
+function getNextCollectionRequirement(requirements: EndingRequirementProgress[]): EndingRequirementProgress | undefined {
+  return (
+    requirements.find((requirement) => !requirement.complete && requirement.id !== "status" && requirement.id !== "min_month") ??
+    requirements.find((requirement) => !requirement.complete)
+  );
+}
+
+function formatCollectionRequirementLabel(requirement: EndingRequirementProgress): string {
+  return `${requirement.label} ${requirement.currentLabel}/${requirement.targetLabel}`;
 }
 
 function getReplayEndingFromSeed(seed: string): EndingDefinition | undefined {
