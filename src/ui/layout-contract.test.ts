@@ -809,10 +809,15 @@ describe("v0.13.3 compact game shell layout", () => {
 
   it("v0.67 #24 filters the expanded ending codex", () => {
     expect(menuPanels).toContain("endingCollectionFilter");
+    expect(menuPanels).toContain('useState<"all" | "locked" | "discovered" | "reward" | "finalOnly">');
     expect(menuPanels).toContain("filteredEndingCollectionEntries");
     expect(menuPanels).toContain("ending-collection-filter");
     expect(menuPanels).toContain("미발견");
     expect(menuPanels).toContain("발견 완료");
+    expect(menuPanels).toContain("보상 남음");
+    expect(menuPanels).toContain("결과 전용");
+    expect(menuPanels).toContain('endingCollectionFilter === "reward"');
+    expect(menuPanels).toContain('endingCollectionFilter === "finalOnly"');
     expect(menuPanels).toContain("setEndingCollectionFilter");
     expect(appCss).toMatch(/\.ending-collection-filter\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.ending-collection-filter button\.active\s*{[^}]*background:/s);
