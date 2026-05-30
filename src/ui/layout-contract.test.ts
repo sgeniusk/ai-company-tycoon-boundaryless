@@ -844,6 +844,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("ending-target-panel");
     expect(menuPanels).toContain("엔딩 목표");
     expect(menuPanels).toContain("progressPercent");
+    expect(menuPanels).toContain("완성 조건 충족 · ${plan.rewardStatusLabel}");
+    expect(menuPanels).not.toContain("통찰 보너스 +${plan.meta_reward_bonus}");
     expect(appCss).toMatch(/\.ending-target-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-target-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-target-grid\s*{[^}]*grid-template-columns:\s*1fr/s);

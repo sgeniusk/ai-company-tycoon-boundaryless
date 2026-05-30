@@ -904,6 +904,34 @@ describe("v0.67 campaign ending selector", () => {
     expect(plans.map((plan) => plan.id)).not.toContain("privacy_trust_bastion");
   });
 
+  it("labels current-run ending target rewards by collection state", () => {
+    const undiscoveredState: GameState = {
+      ...endingFixtures.frontier_demo_empire,
+      roguelite: {
+        ...endingFixtures.frontier_demo_empire.roguelite,
+        discoveredEndingIds: [],
+      },
+    };
+    const discoveredState: GameState = {
+      ...endingFixtures.frontier_demo_empire,
+      roguelite: {
+        ...endingFixtures.frontier_demo_empire.roguelite,
+        discoveredEndingIds: ["frontier_demo_empire"],
+      },
+    };
+    const undiscoveredPlan = getEndingTargetPlans(undiscoveredState, campaignEndings.length).find((plan) => plan.id === "frontier_demo_empire");
+    const discoveredPlan = getEndingTargetPlans(discoveredState, campaignEndings.length).find((plan) => plan.id === "frontier_demo_empire");
+
+    expect(undiscoveredPlan).toMatchObject({
+      complete: true,
+      rewardStatusLabel: "+5 통찰 신규 도감 보상",
+    });
+    expect(discoveredPlan).toMatchObject({
+      complete: true,
+      rewardStatusLabel: "도감 보상 수집 완료",
+    });
+  });
+
   it("builds deterministic replay plans that can seed a target ending run", () => {
     const state = {
       ...createInitialState(),

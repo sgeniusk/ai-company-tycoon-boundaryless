@@ -622,7 +622,7 @@ export function renderMenuContent(
                     <small>
                       {missingRequirements.length
                         ? missingRequirements.map((requirement) => `${requirement.label} ${requirement.currentLabel}/${requirement.targetLabel}`).join(" · ")
-                        : `완성 조건 충족 · 통찰 보너스 +${plan.meta_reward_bonus}`}
+                        : `완성 조건 충족 · ${plan.rewardStatusLabel}`}
                     </small>
                   </article>
                 );

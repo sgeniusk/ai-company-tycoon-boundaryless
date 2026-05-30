@@ -39,6 +39,7 @@ export interface EndingTargetPlan extends EndingDefinition {
   progressPercent: number;
   matchedRequirements: number;
   totalRequirements: number;
+  rewardStatusLabel: string;
   blockers: string[];
   requirements: EndingRequirementProgress[];
 }
@@ -334,6 +335,7 @@ function createEndingTargetPlan(ending: EndingDefinition, state: GameState): End
   const totalRequirements = requirements.length || 1;
   const blockers = requirements.filter((requirement) => requirement.blocking && !requirement.complete).map((requirement) => requirement.label);
   const progressScore = requirements.reduce((total, requirement) => total + requirement.progress, 0) / totalRequirements;
+  const discovered = state.roguelite.discoveredEndingIds.includes(ending.id);
 
   return {
     ...ending,
@@ -341,9 +343,14 @@ function createEndingTargetPlan(ending: EndingDefinition, state: GameState): End
     progressPercent: Math.round(progressScore * 100),
     matchedRequirements,
     totalRequirements,
+    rewardStatusLabel: getEndingTargetRewardStatusLabel(ending.meta_reward_bonus, discovered),
     blockers,
     requirements,
   };
+}
+
+function getEndingTargetRewardStatusLabel(metaRewardBonus: number, discovered: boolean): string {
+  return discovered ? "도감 보상 수집 완료" : `+${metaRewardBonus} 통찰 신규 도감 보상`;
 }
 
 function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<string>): EndingReplayPlan {
