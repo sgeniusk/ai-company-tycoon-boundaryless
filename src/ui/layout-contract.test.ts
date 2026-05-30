@@ -769,6 +769,9 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("endingCollectionSummary.lockedReplayableCount");
     expect(menuPanels).toContain("endingCollectionSummary.finalOnlyLockedCount");
     expect(menuPanels).toContain("결과 전용 잠김");
+    expect(menuPanels).toContain("entry.condition.fallback === true");
+    expect(menuPanels).toContain("결과 전용 엔딩");
+    expect(menuPanels).toContain("캠페인 결과에서만 공개되는 엔딩입니다.");
     expect(qaScenarios).toContain("ending-replay-complete");
     expect(menuPanels).toContain("entry.targetLabels");
     expect(menuPanels).toContain("entry.selection");

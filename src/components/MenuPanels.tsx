@@ -1440,12 +1440,20 @@ function DeckPanel({
             {sortedEndingCollectionEntries.map((entry) => {
               const replaySelection = entry.selection;
               const isActiveTargetRun = activeEndingReplayBrief?.id === entry.id;
+              const isFinalOnlyEntry = entry.condition.fallback === true;
+              const entryTypeLabel = isFinalOnlyEntry ? "결과 전용 엔딩" : "목표 엔딩";
 
               return (
                 <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
-                  <p className="item-meta">통찰 보너스 +{entry.meta_reward_bonus}</p>
+                  <p className="item-meta">{entryTypeLabel} · 통찰 보너스 +{entry.meta_reward_bonus}</p>
                   <strong>{entry.discovered ? entry.title : "미발견 엔딩"}</strong>
-                  <span>{entry.discovered ? entry.flavor : "10년 캠페인 결과에서 조건을 만족하면 공개됩니다."}</span>
+                  <span>
+                    {entry.discovered
+                      ? entry.flavor
+                      : isFinalOnlyEntry
+                        ? "캠페인 결과에서만 공개되는 엔딩입니다."
+                        : "10년 캠페인 결과에서 조건을 만족하면 공개됩니다."}
+                  </span>
                   <div className="ending-collection-progress" aria-label="엔딩 현재 런 진행">
                     <strong>현재 런 {entry.progressPercent}%</strong>
                     <span>조건 {entry.matchedRequirements}/{entry.totalRequirements}</span>
