@@ -39,6 +39,12 @@ export interface ActiveEndingReplayBrief extends EndingTargetPlan {
   rewardLabel: string;
 }
 
+export interface EndingNearMissPlan extends EndingTargetPlan {
+  missingLabels: string[];
+  replaySelection: RunModifierSelectionInput;
+  targetLabels: string[];
+}
+
 export function getCampaignEnding(finalState: GameState): EndingDefinition {
   const matches = campaignEndings
     .map((ending, index) => ({ ending, index }))
@@ -62,6 +68,25 @@ export function getEndingTargetPlans(state: GameState, limit = 3): EndingTargetP
   );
 
   return rankedPlans.slice(0, Math.max(1, limit));
+}
+
+export function getEndingNearMisses(state: GameState, limit = 3): EndingNearMissPlan[] {
+  if (state.status === "playing" && state.month < 120) return [];
+
+  const currentEndingId = getCampaignEnding(state).id;
+
+  return campaignEndings
+    .filter((ending) => ending.condition.fallback !== true && ending.id !== currentEndingId)
+    .map((ending) => createEndingNearMissPlan(ending, state))
+    .filter((plan) => !plan.complete)
+    .sort(
+      (first, second) =>
+        second.progressPercent - first.progressPercent ||
+        first.missingLabels.length - second.missingLabels.length ||
+        second.priority - first.priority ||
+        first.id.localeCompare(second.id),
+    )
+    .slice(0, Math.max(1, limit));
 }
 
 export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplayBrief | undefined {
@@ -135,6 +160,18 @@ function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<str
     discovered: discoveredIds.has(ending.id),
     selection,
     targetLabels: getReplayTargetLabels(ending.condition, selection),
+  };
+}
+
+function createEndingNearMissPlan(ending: EndingDefinition, state: GameState): EndingNearMissPlan {
+  const plan = createEndingTargetPlan(ending, state);
+  const replaySelection = createReplaySelection(ending);
+
+  return {
+    ...plan,
+    missingLabels: plan.requirements.filter((requirement) => !requirement.complete).map((requirement) => requirement.label),
+    replaySelection,
+    targetLabels: getReplayTargetLabels(ending.condition, replaySelection),
   };
 }
 

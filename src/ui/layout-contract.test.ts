@@ -803,6 +803,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.ending-replay-brief-steps\s*{[^}]*grid-template-columns:/s);
   });
 
+  it("v0.67 #7 lets final results restart from near-missed endings", () => {
+    expect(gameChrome).toContain("getEndingNearMisses");
+    expect(gameChrome).toContain("ending-nearmiss-panel");
+    expect(gameChrome).toContain("아쉬운 엔딩");
+    expect(gameChrome).toContain("nearMiss.replaySelection");
+    expect(appCss).toMatch(/\.ending-nearmiss-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-nearmiss-grid\s*{[^}]*grid-template-columns:/s);
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");

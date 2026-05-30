@@ -5,6 +5,7 @@ import {
   getActiveEndingReplayBrief,
   getCampaignEnding,
   getEndingCollectionEntries,
+  getEndingNearMisses,
   getEndingReplayPlans,
   getEndingTargetPlans,
 } from "./campaign-ending";
@@ -483,5 +484,52 @@ describe("v0.67 campaign ending selector", () => {
       expect.arrayContaining(["신뢰 기반 엔터프라이즈 성장 경로 선택", "신뢰 90까지 확보", "프라이버시 협약 아키타입 완성"]),
     );
     expect(getActiveEndingReplayBrief(createInitialState())).toBeUndefined();
+  });
+
+  it("ranks final-run near misses with replay selections for immediate rematch", () => {
+    const nearAgiState = finalStateFor(
+      {
+        worldLoreId: "agi_overhang",
+        marketConditionId: "regulation_crackdown",
+        founderTraitId: "researcher_founder",
+      },
+      {
+        chosenGrowthPath: {
+          id: "trust_enterprise",
+          title: "신뢰 기반 엔터프라이즈",
+          month: 4,
+          bonusDescription: "test fixture",
+          effects: {},
+          monthlyEffects: {},
+        },
+        resources: {
+          ...createInitialState().resources,
+          cash: 420000,
+          users: 260000,
+          compute: 340,
+          data: 320,
+          talent: 22,
+          trust: 88,
+          hype: 58,
+          automation: 76,
+        },
+      },
+    );
+    const nearMisses = getEndingNearMisses(nearAgiState, 3);
+
+    expect(getCampaignEnding(nearAgiState).id).not.toBe("agi_safety_accord");
+    expect(nearMisses[0]).toMatchObject({
+      id: "agi_safety_accord",
+      complete: false,
+      replaySelection: {
+        seed: "ending:agi_safety_accord",
+        worldLoreId: "agi_overhang",
+        marketConditionId: "regulation_crackdown",
+        challengeTierId: "standard",
+      },
+    });
+    expect(nearMisses[0].missingLabels).toEqual(expect.arrayContaining(["신뢰"]));
+    expect(nearMisses[0].targetLabels).toEqual(expect.arrayContaining(["AGI 임박", "규제 단속", "신뢰 기반 엔터프라이즈"]));
+    expect(getEndingNearMisses(createInitialState())).toEqual([]);
   });
 });

@@ -24,6 +24,7 @@ import { resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { rollRunModifierSelection } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
+import { getEndingNearMisses } from "../game/campaign-ending";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
   advanceToFirstAnnualReview,
@@ -422,6 +423,7 @@ export function GameStage({
   const selectedGrowthPath = gameState.chosenGrowthPath;
   const chosenGrowthPathId = selectedGrowthPath?.id;
   const runSummary = getRunSummary(gameState);
+  const endingNearMisses = getEndingNearMisses(gameState, 3);
   const releaseImpact = getReleaseImpactSummary(gameState);
   const calendar = getCampaignCalendar(gameState);
   const finale = getCampaignFinale(gameState);
@@ -941,6 +943,37 @@ export function GameStage({
                   </div>
                   <h2>{finale.title}</h2>
                   <p>{finale.verdict}</p>
+                </article>
+              )}
+              {endingNearMisses.length > 0 && (
+                <article className="ending-nearmiss-panel" aria-label="아쉬운 엔딩">
+                  <div>
+                    <p className="eyebrow">아쉬운 엔딩</p>
+                    <h2>거의 닿았던 다른 결말</h2>
+                    <p>부족했던 조건을 보고 바로 목표 런으로 다시 시작할 수 있습니다.</p>
+                  </div>
+                  <div className="ending-nearmiss-grid">
+                    {endingNearMisses.map((nearMiss) => (
+                      <button
+                        key={nearMiss.id}
+                        onClick={() =>
+                          setGameState((current) =>
+                            resetRunWithMetaUnlocks(
+                              current,
+                              [],
+                              current.roguelite.starterDeckId ?? "balanced_founder",
+                              nearMiss.replaySelection,
+                            ),
+                          )
+                        }
+                        type="button"
+                      >
+                        <strong>{nearMiss.title}</strong>
+                        <span>{nearMiss.progressPercent}% · {nearMiss.targetLabels.slice(0, 3).join(" / ")}</span>
+                        <small>{nearMiss.missingLabels.slice(0, 3).join(" / ") || "조건 확인 필요"}</small>
+                      </button>
+                    ))}
+                  </div>
                 </article>
               )}
               {gameState.lastRelease && (

@@ -3856,6 +3856,52 @@ p {
   border-color: #9bbfdc;
 }
 
+.ending-nearmiss-panel {
+  background: #fff7df;
+  border: 2px solid #d6a942;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.ending-nearmiss-panel h2 {
+  color: var(--green-dark);
+  margin-bottom: 4px;
+}
+
+.ending-nearmiss-panel p {
+  color: #5f5546;
+  font-size: 0.76rem;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.ending-nearmiss-grid {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ending-nearmiss-grid button {
+  align-content: start;
+  background: #fffdf7;
+  border: 2px solid #d8c49b;
+  color: #2e2415;
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  text-align: left;
+}
+
+.ending-nearmiss-grid span,
+.ending-nearmiss-grid small {
+  color: #5f5546;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
 .next-run-preview > div:first-child {
   align-items: center;
   display: flex;
@@ -9890,6 +9936,7 @@ p {
   .agent-grid,
   .item-grid,
   .competitor-grid,
+  .ending-nearmiss-grid,
   .expansion-map,
   .domain-filter,
   .run-spotlight-grid,
@@ -9963,6 +10010,7 @@ p {
   .growth-choice-confirmation ol,
   .annual-directive-confirmation ol,
   .annual-directive-actions,
+  .ending-nearmiss-grid,
   .ending-replay-brief-steps,
   .ending-target-grid,
   .year-two-kickoff-grid,
