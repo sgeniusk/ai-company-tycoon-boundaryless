@@ -63,8 +63,12 @@ describe("beta readiness QA script", () => {
     expect(result.routeOptionLabel).toBe("40/40");
     expect(result.scenarios).toEqual(expect.arrayContaining(["beta-readiness", "beta-readiness-complete"]));
     expect(result.completeCheckCount).toBe(result.totalCheckCount);
-    expect(result.totalCheckCount).toBe(8);
+    expect(result.totalCheckCount).toBe(9);
     expect(result.readinessPercent).toBe(100);
+    expect(result.checks.find((check) => check.id === "meta_state_integrity")).toMatchObject({
+      label: "메타 상태 무결성",
+      complete: true,
+    });
     expect(result.checks.find((check) => check.id === "in_game_guide")).toMatchObject({
       label: "게임 내 가이드",
       complete: true,
@@ -79,14 +83,14 @@ describe("beta readiness QA script", () => {
     const result = runBetaReadinessQaCheck();
 
     expect(result.status).toBe("pass");
-    expect(result.totalCheckCount).toBe(8);
+    expect(result.totalCheckCount).toBe(9);
     expect(result.readinessPercent).toBe(100);
   });
 
   it("prints readiness and guide status in the no-write beta readiness check", () => {
     const output = runBetaReadinessQaCheckText();
 
-    expect(output).toContain("Readiness: 8/8 checks (100%)");
+    expect(output).toContain("Readiness: 9/9 checks (100%)");
     expect(output).toContain("Guide: PASS");
     expect(output).toContain("Report: PASS");
   });

@@ -23,6 +23,10 @@ const qaScenariosSource = readSource("src/game/qa-scenarios.ts");
 const betaReadinessSource = readSource("src/game/beta-readiness.ts");
 const gameChromeSource = readSource("src/components/GameChrome.tsx");
 const appCssSource = readSource("src/App.css");
+const simulationSource = readSource("src/game/simulation.ts");
+const stateIntegritySource = readSource("src/game/state-integrity.ts");
+const metaProgressionSource = readSource("src/game/meta-progression.ts");
+const deckbuildingSource = readSource("src/game/deckbuilding.ts");
 
 const routeDimensions = [
   { id: "start_cities", label: "도시", dataKey: "start_cities", conditionField: "start_city_ids" },
@@ -200,6 +204,21 @@ const baseChecks = [
     label: "파생 전용 셀렉터",
     detail: "collection + axis summary reuse",
     complete: betaReadinessSource.includes("getEndingCollectionSummary") && betaReadinessSource.includes("getEndingAxisCoverageSummary"),
+  },
+  {
+    id: "meta_state_integrity",
+    label: "메타 상태 무결성",
+    detail: "hydrate + integrity + reset",
+    complete:
+      simulationSource.includes("getHydratedStarterDeckId") &&
+      simulationSource.includes("getHydratedRunRecordEndingId") &&
+      simulationSource.includes("hydrateRunHistory") &&
+      stateIntegritySource.includes("roguelite meta unlock") &&
+      stateIntegritySource.includes("roguelite starter deck") &&
+      stateIntegritySource.includes("run history ending") &&
+      stateIntegritySource.includes("run history campaignRank") &&
+      metaProgressionSource.includes("sanitizeCampaignEndingIds") &&
+      deckbuildingSource.includes("uniqueKnownStrings"),
   },
 ];
 
