@@ -42,6 +42,14 @@ export interface EndingReplayPlan extends EndingDefinition {
   openingMoves: string[];
 }
 
+export interface EndingCollectionSummary {
+  discoveredCount: number;
+  totalCount: number;
+  lockedCount: number;
+  completionPercent: number;
+  nextReplayPlan?: EndingReplayPlan;
+}
+
 export interface ActiveEndingReplayBrief extends EndingTargetPlan {
   seed: string;
   selection: RunModifierSelectionInput;
@@ -153,6 +161,20 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
       };
     })
     .sort((first, second) => Number(second.discovered) - Number(first.discovered) || second.priority - first.priority || first.id.localeCompare(second.id));
+}
+
+export function getEndingCollectionSummary(state: Pick<GameState, "roguelite">): EndingCollectionSummary {
+  const entries = getEndingCollectionEntries(state);
+  const discoveredCount = entries.filter((entry) => entry.discovered).length;
+  const replayPlans = getEndingReplayPlans(state, campaignEndings.length);
+
+  return {
+    discoveredCount,
+    totalCount: entries.length,
+    lockedCount: Math.max(0, entries.length - discoveredCount),
+    completionPercent: entries.length ? Math.round((discoveredCount / entries.length) * 100) : 100,
+    nextReplayPlan: replayPlans.find((plan) => !plan.discovered) ?? replayPlans[0],
+  };
 }
 
 export function endingMatchesState(ending: EndingDefinition, state: GameState): boolean {

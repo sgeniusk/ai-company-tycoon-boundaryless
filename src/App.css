@@ -6911,6 +6911,46 @@ p {
   overflow-wrap: anywhere;
 }
 
+.ending-collection-summary {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.ending-collection-summary > span,
+.ending-collection-summary button {
+  background: #fffdf7;
+  border: 2px solid #b9d0e6;
+  color: #263f52;
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px;
+}
+
+.ending-collection-summary button {
+  box-shadow: none;
+  min-height: 48px;
+  text-align: left;
+}
+
+.ending-collection-summary strong {
+  color: #263f52;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.ending-collection-summary small,
+.ending-collection-summary button span {
+  color: #5f7890;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .payoff-collection-grid {
   display: grid;
   gap: 7px;
@@ -10349,6 +10389,10 @@ p {
   }
 
   .ending-replay-checklist {
+    grid-template-columns: 1fr;
+  }
+
+  .ending-collection-summary {
     grid-template-columns: 1fr;
   }
 

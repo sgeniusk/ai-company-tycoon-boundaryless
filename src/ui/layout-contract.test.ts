@@ -757,17 +757,25 @@ describe("v0.13.3 compact game shell layout", () => {
 
   it("v0.67 #2 shows ending discovery as a roguelite collection", () => {
     expect(menuPanels).toContain("getEndingCollectionEntries");
+    expect(menuPanels).toContain("getEndingCollectionSummary");
     expect(menuPanels).toContain("ending-collection-panel");
+    expect(menuPanels).toContain("ending-collection-summary");
     expect(menuPanels).toContain("discoveredEndingIds");
     expect(menuPanels).toContain("엔딩 도감");
+    expect(menuPanels).toContain("남은 엔딩");
+    expect(menuPanels).toContain("다음 추천 목표");
+    expect(menuPanels).toContain("endingCollectionSummary.nextReplayPlan");
     expect(menuPanels).toContain("entry.targetLabels");
     expect(menuPanels).toContain("entry.selection");
     expect(menuPanels).toContain("도감 목표 런");
     expect(menuPanels).toContain("activeEndingReplayBrief?.id === entry.id");
     expect(menuPanels).toContain("현재 목표 런");
     expect(appCss).toMatch(/\.ending-collection-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-collection-summary\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.ending-collection-summary button\s*{[^}]*text-align:\s*left/s);
     expect(appCss).toMatch(/\.ending-collection-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.ending-collection-run-button\s*{[^}]*align-self:\s*end/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-summary\s*{[^}]*grid-template-columns:\s*1fr/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 

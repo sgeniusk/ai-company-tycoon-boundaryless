@@ -13,7 +13,13 @@ import {
 import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
 import { getBoundarylessExpansionGoals } from "../game/boundaryless-expansion";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
-import { getActiveEndingReplayBrief, getEndingCollectionEntries, getEndingReplayPlans, getEndingTargetPlans } from "../game/campaign-ending";
+import {
+  getActiveEndingReplayBrief,
+  getEndingCollectionEntries,
+  getEndingCollectionSummary,
+  getEndingReplayPlans,
+  getEndingTargetPlans,
+} from "../game/campaign-ending";
 import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getIndustryComboSummary } from "../game/industry-combos";
 import { getIndustrySynergySummary } from "../game/industry-synergies";
@@ -774,6 +780,7 @@ function DeckPanel({
   const starterDeckOptions = getAvailableStarterDecks(gameState);
   const nextRunSetupPlan = getNextRunSetupPlan(gameState);
   const endingCollectionEntries = getEndingCollectionEntries(gameState);
+  const endingCollectionSummary = getEndingCollectionSummary(gameState);
   const endingReplayPlans = getEndingReplayPlans(gameState, 3);
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
   const discoveredEndingCount = endingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
@@ -1329,6 +1336,35 @@ function DeckPanel({
           <div className="payoff-collection-heading">
             <strong>엔딩 도감</strong>
             <span>{discoveredEndingCount}/{endingCollectionEntries.length} 발견</span>
+          </div>
+          <div className="ending-collection-summary" aria-label="엔딩 도감 진행">
+            <span>
+              <strong>{endingCollectionSummary.completionPercent}%</strong>
+              <small>완성률</small>
+            </span>
+            <span>
+              <strong>{endingCollectionSummary.lockedCount}</strong>
+              <small>남은 엔딩</small>
+            </span>
+            {endingCollectionSummary.nextReplayPlan && (
+              <button
+                disabled={activeEndingReplayBrief?.id === endingCollectionSummary.nextReplayPlan.id}
+                onClick={() =>
+                  setGameState((current) =>
+                    resetRunWithMetaUnlocks(
+                      current,
+                      [],
+                      current.roguelite.starterDeckId ?? "balanced_founder",
+                      endingCollectionSummary.nextReplayPlan!.selection,
+                    ),
+                  )
+                }
+                type="button"
+              >
+                <strong>다음 추천 목표</strong>
+                <span>{endingCollectionSummary.nextReplayPlan.title}</span>
+              </button>
+            )}
           </div>
           <div className="ending-collection-grid">
             {endingCollectionEntries.map((entry) => {

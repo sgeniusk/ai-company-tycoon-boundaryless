@@ -6,6 +6,7 @@ import {
   getActiveEndingReplayBrief,
   getCampaignEnding,
   getCampaignEndingReport,
+  getEndingCollectionSummary,
   getEndingCollectionEntries,
   getEndingNearMisses,
   getEndingReplayPlans,
@@ -431,6 +432,34 @@ describe("v0.67 campaign ending selector", () => {
       worldLoreId: "open_source_heaven",
       founderTraitId: "engineer_founder",
       challengeTierId: "standard",
+    });
+  });
+
+  it("summarizes ending collection progress with the next recommended replay target", () => {
+    const state = {
+      ...createInitialState(),
+      roguelite: {
+        ...createInitialState().roguelite,
+        discoveredEndingIds: ["frontier_demo_empire"],
+      },
+    };
+    const summary = getEndingCollectionSummary(state);
+
+    expect(summary).toMatchObject({
+      discoveredCount: 1,
+      totalCount: campaignEndings.length,
+      lockedCount: campaignEndings.length - 1,
+      completionPercent: Math.round((1 / campaignEndings.length) * 100),
+    });
+    expect(summary.nextReplayPlan).toMatchObject({
+      id: "agi_safety_accord",
+      selection: {
+        seed: "ending:agi_safety_accord",
+        worldLoreId: "agi_overhang",
+        marketConditionId: "regulation_crackdown",
+        founderTraitId: "academic_founder",
+        challengeTierId: "standard",
+      },
     });
   });
 
