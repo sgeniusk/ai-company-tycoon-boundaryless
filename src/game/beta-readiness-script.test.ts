@@ -27,6 +27,14 @@ function runBetaReadinessQa(): BetaReadinessQaResult {
   return JSON.parse(output) as BetaReadinessQaResult;
 }
 
+function runBetaReadinessQaCheck(): BetaReadinessQaResult {
+  const output = execFileSync("npm", ["run", "--silent", "qa:beta-readiness:check", "--", "--json"], {
+    cwd: rootDir,
+  }).toString("utf8");
+
+  return JSON.parse(output) as BetaReadinessQaResult;
+}
+
 describe("beta readiness QA script", () => {
   it("reports the ending codex, reward, route, and scenario readiness gates", () => {
     const result = runBetaReadinessQa();
@@ -46,5 +54,13 @@ describe("beta readiness QA script", () => {
       label: "게임 내 가이드",
       complete: true,
     });
+  });
+
+  it("keeps a no-write beta readiness check command for CI-style gates", () => {
+    const result = runBetaReadinessQaCheck();
+
+    expect(result.status).toBe("pass");
+    expect(result.totalCheckCount).toBe(7);
+    expect(result.readinessPercent).toBe(100);
   });
 });

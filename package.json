@@ -29,6 +29,7 @@
     "qa:asset-handoff": "npm run qa:art-gate && node scripts/qa/prepare-v056-final-art-handoff.mjs",
     "qa:agy-review": "node scripts/qa/run-v057-agy-agent-review.mjs",
     "qa:beta-readiness": "node scripts/qa/check-v067-beta-readiness.mjs",
+    "qa:beta-readiness:check": "node scripts/qa/check-v067-beta-readiness.mjs --no-write",
     "harness:gate": "npm test -- --maxWorkers=1 && npm run validate:data && npm run build"
   },
   "dependencies": {
