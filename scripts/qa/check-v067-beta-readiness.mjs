@@ -268,8 +268,10 @@ if (jsonMode) {
   if (!noWrite) console.log(`Wrote ${path.relative(root, reportPath)}`);
   console.log(`Status: ${status.toUpperCase()}`);
   console.log(`Endings: ${result.endingTotal} total / ${result.replayableTotal} replayable`);
+  console.log(`Readiness: ${result.completeCheckCount}/${result.totalCheckCount} checks (${result.readinessPercent}%)`);
   console.log(`Unlock guidance: ${result.unlockHintLabel}`);
   console.log(`Route coverage: ${result.routeAxisLabel} axes / ${result.routeOptionLabel} options`);
+  console.log(`Guide: ${checks.find((check) => check.id === "in_game_guide")?.complete ? "PASS" : "FAIL"}`);
 }
 
 if (status !== "pass") process.exitCode = 1;

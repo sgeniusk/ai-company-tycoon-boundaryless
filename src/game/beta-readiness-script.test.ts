@@ -36,6 +36,12 @@ function runBetaReadinessQaCheck(): BetaReadinessQaResult {
   return JSON.parse(output) as BetaReadinessQaResult;
 }
 
+function runBetaReadinessQaCheckText(): string {
+  return execFileSync("npm", ["run", "--silent", "qa:beta-readiness:check"], {
+    cwd: rootDir,
+  }).toString("utf8");
+}
+
 describe("beta readiness QA script", () => {
   it("includes the no-write beta readiness check in the main harness gate", () => {
     const packageJson = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as {
@@ -71,5 +77,12 @@ describe("beta readiness QA script", () => {
     expect(result.status).toBe("pass");
     expect(result.totalCheckCount).toBe(7);
     expect(result.readinessPercent).toBe(100);
+  });
+
+  it("prints readiness and guide status in the no-write beta readiness check", () => {
+    const output = runBetaReadinessQaCheckText();
+
+    expect(output).toContain("Readiness: 7/7 checks (100%)");
+    expect(output).toContain("Guide: PASS");
   });
 });
