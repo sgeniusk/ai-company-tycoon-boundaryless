@@ -772,6 +772,21 @@ describe("v0.67 campaign ending selector", () => {
     });
   });
 
+  it("does not recommend a replay target when every replayable ending is already discovered", () => {
+    const replayableEndingIds = campaignEndings.filter((ending) => ending.condition.fallback !== true).map((ending) => ending.id);
+    const state = {
+      ...createInitialState(),
+      roguelite: {
+        ...createInitialState().roguelite,
+        discoveredEndingIds: replayableEndingIds,
+      },
+    };
+    const summary = getEndingCollectionSummary(state);
+
+    expect(summary.lockedCount).toBe(campaignEndings.length - replayableEndingIds.length);
+    expect(summary.nextReplayPlan).toBeUndefined();
+  });
+
   it("annotates ending collection entries with current-run progress and the next missing condition", () => {
     const state = finalStateFor(
       {

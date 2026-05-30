@@ -275,7 +275,7 @@ export function getEndingCollectionSummary(state: Pick<GameState, "roguelite">):
     lockedCount: Math.max(0, entries.length - discoveredCount),
     lockedRewardBonus: Math.max(0, totalRewardBonus - discoveredRewardBonus),
     completionPercent: entries.length ? Math.round((discoveredCount / entries.length) * 100) : 100,
-    nextReplayPlan: replayPlans.find((plan) => !plan.discovered) ?? replayPlans[0],
+    nextReplayPlan: replayPlans.find((plan) => !plan.discovered),
   };
 }
 

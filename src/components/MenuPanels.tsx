@@ -1383,7 +1383,7 @@ function DeckPanel({
               </strong>
               <small>통찰 보상 · 남은 보상 {endingCollectionSummary.lockedRewardBonus}</small>
             </span>
-            {endingCollectionSummary.nextReplayPlan && (
+            {endingCollectionSummary.nextReplayPlan ? (
               <button
                 disabled={activeEndingReplayBrief?.id === endingCollectionSummary.nextReplayPlan.id}
                 onClick={() =>
@@ -1401,6 +1401,11 @@ function DeckPanel({
                 <strong>다음 추천 목표</strong>
                 <span>{endingCollectionSummary.nextReplayPlan.title}</span>
               </button>
+            ) : (
+              <span>
+                <strong>목표 엔딩 완료</strong>
+                <small>모든 목표 엔딩 발견</small>
+              </span>
             )}
           </div>
           <div className="ending-collection-filter" aria-label="엔딩 도감 필터">
