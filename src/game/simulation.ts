@@ -4111,18 +4111,35 @@ function hydrateRunHistory(value: unknown): RunRecord[] {
         typeof entry.note === "string"
       );
     })
-    .map((entry) => ({
-      ...entry,
-      score: Math.round(clamp(entry.score, 0, 100)),
-      insightReward: Math.max(0, Math.round(entry.insightReward)),
-      runNumber: Math.max(1, Math.round(entry.runNumber)),
-      endedMonth: Math.max(1, Math.round(entry.endedMonth)),
-      endingId: typeof entry.endingId === "string" && campaignEndings.some((ending) => ending.id === entry.endingId) ? entry.endingId : undefined,
-      bestProductName: typeof entry.bestProductName === "string" ? entry.bestProductName : undefined,
-      representativeCardName: typeof entry.representativeCardName === "string" ? entry.representativeCardName : undefined,
-      rivalName: typeof entry.rivalName === "string" ? entry.rivalName : undefined,
-    }))
+    .map((entry) => {
+      const endingId = getHydratedRunRecordEndingId(entry.endingId);
+
+      return {
+        ...entry,
+        score: Math.round(clamp(entry.score, 0, 100)),
+        insightReward: Math.max(0, Math.round(entry.insightReward)),
+        runNumber: Math.max(1, Math.round(entry.runNumber)),
+        endedMonth: Math.max(1, Math.round(entry.endedMonth)),
+        campaignRank: isCampaignRank(entry.campaignRank) ? entry.campaignRank : undefined,
+        endingId,
+        endingName: endingId && typeof entry.endingName === "string" ? entry.endingName : undefined,
+        survivedYears: typeof entry.survivedYears === "number" && Number.isFinite(entry.survivedYears)
+          ? Math.max(0, Math.round(entry.survivedYears))
+          : undefined,
+        bestProductName: typeof entry.bestProductName === "string" ? entry.bestProductName : undefined,
+        representativeCardName: typeof entry.representativeCardName === "string" ? entry.representativeCardName : undefined,
+        rivalName: typeof entry.rivalName === "string" ? entry.rivalName : undefined,
+      };
+    })
     .slice(0, 8);
+}
+
+function getHydratedRunRecordEndingId(value: unknown): string | undefined {
+  return typeof value === "string" && campaignEndings.some((ending) => ending.id === value) ? value : undefined;
+}
+
+function isCampaignRank(value: unknown): value is RunRecord["campaignRank"] {
+  return ["S", "A", "B", "C", "D"].includes(String(value));
 }
 
 function hydrateAnnualReviewHistory(value: unknown): AnnualReviewHistoryEntry[] {

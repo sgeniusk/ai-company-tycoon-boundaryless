@@ -214,6 +214,21 @@ describe("v0.11 save integrity and recovery", () => {
         ...createInitialState().roguelite,
         unlockedMetaIds: ["unknown_meta_unlock"],
         starterDeckId: "unknown_starter_deck",
+        runHistory: [
+          {
+            id: "run_bad_ending",
+            runNumber: 1,
+            endedMonth: 120,
+            status: "success",
+            score: 90,
+            campaignRank: "Z" as GameState["roguelite"]["runHistory"][number]["campaignRank"],
+            endingId: "unknown_ending",
+            endingName: "Unknown",
+            survivedYears: 10,
+            insightReward: 10,
+            note: "bad ending record",
+          },
+        ],
       },
     });
 
@@ -222,6 +237,8 @@ describe("v0.11 save integrity and recovery", () => {
     expect(report.issues.some((issue) => issue.includes("missing_product"))).toBe(true);
     expect(report.issues.some((issue) => issue.includes("unknown_meta_unlock"))).toBe(true);
     expect(report.issues.some((issue) => issue.includes("unknown_starter_deck"))).toBe(true);
+    expect(report.issues.some((issue) => issue.includes("run history ending"))).toBe(true);
+    expect(report.issues.some((issue) => issue.includes("campaignRank"))).toBe(true);
   });
 
   it("keeps valid saves free of integrity issues", () => {
@@ -407,6 +424,45 @@ describe("v0.11 save integrity and recovery", () => {
     );
 
     expect(hydrated.roguelite.starterDeckId).toBe("balanced_founder");
+    expect(validateGameStateIntegrity(hydrated)).toMatchObject({ ok: true, issues: [] });
+  });
+
+  it("sanitizes malformed campaign ending fields in run history during hydration", () => {
+    const state = createInitialState();
+    const hydrated = hydrateGameState(
+      JSON.stringify({
+        version: 11,
+        state: {
+          ...state,
+          roguelite: {
+            ...state.roguelite,
+            runHistory: [
+              {
+                id: "run_1_120",
+                runNumber: 1,
+                endedMonth: 120,
+                status: "success",
+                score: 88,
+                campaignRank: "Z",
+                endingId: "unknown_ending",
+                endingName: 42,
+                survivedYears: "10",
+                insightReward: 12,
+                note: "malformed ending record",
+              },
+            ],
+          },
+        },
+      }),
+    );
+
+    expect(hydrated.roguelite.runHistory[0]).toMatchObject({
+      id: "run_1_120",
+      campaignRank: undefined,
+      endingId: undefined,
+      endingName: undefined,
+      survivedYears: undefined,
+    });
     expect(validateGameStateIntegrity(hydrated)).toMatchObject({ ok: true, issues: [] });
   });
 

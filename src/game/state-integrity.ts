@@ -242,5 +242,21 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
     }
   }
 
+  if (!Array.isArray(state.roguelite.runHistory)) {
+    issues.push("roguelite runHistory must be an array");
+  } else {
+    for (const record of state.roguelite.runHistory) {
+      if (record.endingId && !endingIds.has(record.endingId)) {
+        issues.push(`run history ending "${record.endingId}" is unknown`);
+      }
+      if (record.campaignRank && !["S", "A", "B", "C", "D"].includes(record.campaignRank)) {
+        issues.push(`run history campaignRank "${record.campaignRank}" is invalid`);
+      }
+      if (record.survivedYears !== undefined && (!Number.isFinite(record.survivedYears) || record.survivedYears < 0)) {
+        issues.push(`run history "${record.id}" has invalid survivedYears`);
+      }
+    }
+  }
+
   return { ok: issues.length === 0, issues, warnings };
 }
