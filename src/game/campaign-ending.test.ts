@@ -773,6 +773,23 @@ describe("v0.67 campaign ending selector", () => {
     });
   });
 
+  it("ignores unknown discovered ending ids when projecting final codex progress", () => {
+    const state = {
+      ...endingFixtures.privacy_trust_bastion,
+      roguelite: {
+        ...endingFixtures.privacy_trust_bastion.roguelite,
+        discoveredEndingIds: ["standard_platform_compounder", "unknown_ending_id"],
+      },
+    };
+
+    const discovery = getCampaignEndingDiscovery(state);
+
+    expect(discovery.id).toBe("privacy_trust_bastion");
+    expect(discovery.discoveredCountBeforeRun).toBe(1);
+    expect(discovery.discoveredCountAfterRun).toBe(2);
+    expect(discovery.completionPercentAfterRun).toBe(Math.round((2 / campaignEndings.length) * 100));
+  });
+
   it("labels result-only final endings as a zero codex record instead of a reward grant", () => {
     const discovery = getCampaignEndingDiscovery(endingFixtures.garage_restart);
     const repeatedDiscovery = getCampaignEndingDiscovery({

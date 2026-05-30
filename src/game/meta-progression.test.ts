@@ -388,4 +388,29 @@ describe("v0.32 next-run setup plan", () => {
 
     expect(nextRun.roguelite.discoveredEndingIds).toEqual(["standard_platform_compounder", "garage_restart"]);
   });
+
+  it("drops unknown ending discovery ids during the next-run carryover", () => {
+    const initial = createInitialState();
+    const finished = {
+      ...initial,
+      month: 120,
+      status: "success" as const,
+      activeProducts: ["ai_writing_assistant", "meeting_summary_bot", "customer_support_chatbot"],
+      resources: {
+        ...initial.resources,
+        cash: 120000,
+        users: 120000,
+        trust: 65,
+        automation: 50,
+      },
+      roguelite: {
+        ...initial.roguelite,
+        discoveredEndingIds: ["unknown_ending_id", "standard_platform_compounder"],
+      },
+    };
+
+    const nextRun = resetRunWithMetaUnlocks(finished);
+
+    expect(nextRun.roguelite.discoveredEndingIds).toEqual(["standard_platform_compounder"]);
+  });
 });

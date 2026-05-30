@@ -1,6 +1,12 @@
 import { competitors, difficultyTiers, metaUnlocks, products, resources, strategyCards } from "./data";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
-import { getCampaignEnding, getCampaignEndingDiscovery, getEndingRouteUnlockRecommendations, type EndingRouteUnlockRecommendation } from "./campaign-ending";
+import {
+  getCampaignEnding,
+  getCampaignEndingDiscovery,
+  getEndingRouteUnlockRecommendations,
+  sanitizeCampaignEndingIds,
+  type EndingRouteUnlockRecommendation,
+} from "./campaign-ending";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
 import type { RunModifierSelectionInput } from "./run-modifiers";
@@ -176,7 +182,7 @@ export function resetRunWithMetaUnlocks(
   const previousDiscoveredArchetypeIds = uniqueStrings(previousRoguelite.discoveredArchetypeIds ?? []);
   const newlyDiscoveredArchetypeIds = getNewlyDiscoveredArchetypes(previousDiscoveredArchetypeIds, getDerivedArchetypes(nextState));
   const discoveredArchetypeIds = uniqueStrings([...previousDiscoveredArchetypeIds, ...newlyDiscoveredArchetypeIds]);
-  const previousDiscoveredEndingIds = uniqueStrings(previousRoguelite.discoveredEndingIds ?? []);
+  const previousDiscoveredEndingIds = sanitizeCampaignEndingIds(previousRoguelite.discoveredEndingIds);
   const completedEndingId = state.month >= CAMPAIGN_FINAL_MONTH ? getCampaignEnding(state).id : undefined;
   const discoveredEndingIds = uniqueStrings([...previousDiscoveredEndingIds, ...(completedEndingId ? [completedEndingId] : [])]);
 

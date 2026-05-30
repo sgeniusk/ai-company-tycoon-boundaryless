@@ -147,7 +147,7 @@ export function getCampaignEndingReport(finalState: GameState): EndingTargetPlan
 
 export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndingDiscovery {
   const ending = getCampaignEnding(finalState);
-  const discoveredIds = new Set(finalState.roguelite.discoveredEndingIds ?? []);
+  const discoveredIds = new Set(sanitizeCampaignEndingIds(finalState.roguelite.discoveredEndingIds));
   const afterRunDiscoveredIds = new Set(discoveredIds);
   afterRunDiscoveredIds.add(ending.id);
   const alreadyDiscovered = discoveredIds.has(ending.id);
@@ -173,6 +173,11 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
     rewardLabel: rewardDeltaLabel,
     rewardStatusLabel: getFinalEndingRewardStatusLabel(ending, alreadyDiscovered),
   };
+}
+
+export function sanitizeCampaignEndingIds(values: string[] | undefined): string[] {
+  const knownEndingIds = new Set(campaignEndings.map((ending) => ending.id));
+  return [...new Set((values ?? []).filter((value) => knownEndingIds.has(value)))];
 }
 
 function getFinalEndingCodexApplyLabel(ending: EndingDefinition, alreadyDiscovered: boolean): string {
