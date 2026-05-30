@@ -210,6 +210,7 @@ describe("v0.11 commercial run summary", () => {
       title: "표준 세계의 복리 플랫폼",
       metaRewardBonus: 2,
       newlyDiscovered: true,
+      rewardStatusLabel: "엔딩 보너스 +2 통찰 · 신규 도감 보상",
     });
     expect(summary.spotlight.insightBreakdown).toEqual(
       expect.arrayContaining(["엔딩 보너스 표준 세계의 복리 플랫폼 +2"]),
@@ -223,5 +224,14 @@ describe("v0.11 commercial run summary", () => {
         },
       }).spotlight.ending?.newlyDiscovered,
     ).toBe(false);
+    expect(
+      getRunSummary({
+        ...finished,
+        roguelite: {
+          ...finished.roguelite,
+          discoveredEndingIds: ["standard_platform_compounder"],
+        },
+      }).spotlight.ending?.rewardStatusLabel,
+    ).toBe("엔딩 보너스 +2 통찰 · 도감 보상 수집 완료");
   });
 });

@@ -1183,7 +1183,7 @@ export function GameStage({
                       <div className="ending-spotlight-card">
                         <span>{runSummary.spotlight.ending.newlyDiscovered ? "신규 엔딩 발견" : "발견 완료 엔딩"}</span>
                         <strong>{runSummary.spotlight.ending.title}</strong>
-                        <small>엔딩 보너스 +{runSummary.spotlight.ending.metaRewardBonus} 통찰</small>
+                        <small>{runSummary.spotlight.ending.rewardStatusLabel}</small>
                       </div>
                     )}
                   </div>

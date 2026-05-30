@@ -868,7 +868,7 @@ describe("v0.13.3 compact game shell layout", () => {
   it("v0.67 #5 exposes ending reward payoff in the run summary", () => {
     expect(gameChrome).toContain("spotlight.ending");
     expect(gameChrome).toContain("ending-spotlight-card");
-    expect(gameChrome).toContain("엔딩 보너스");
+    expect(gameChrome).toContain("runSummary.spotlight.ending.rewardStatusLabel");
     expect(appCss).toMatch(/\.ending-spotlight-card\s*{[^}]*border-color:/s);
   });
 

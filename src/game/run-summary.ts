@@ -37,6 +37,7 @@ export interface RunSpotlightEnding {
   flavor: string;
   metaRewardBonus: number;
   newlyDiscovered: boolean;
+  rewardStatusLabel: string;
 }
 
 export interface RunNextPreview {
@@ -185,14 +186,21 @@ function getRunEndingSpotlight(state: GameState): RunSpotlightEnding | undefined
   if (state.month < CAMPAIGN_FINAL_MONTH) return undefined;
 
   const ending = getCampaignEnding(state);
+  const newlyDiscovered = !state.roguelite.discoveredEndingIds.includes(ending.id);
 
   return {
     id: ending.id,
     title: ending.title,
     flavor: ending.flavor,
     metaRewardBonus: ending.meta_reward_bonus,
-    newlyDiscovered: !state.roguelite.discoveredEndingIds.includes(ending.id),
+    newlyDiscovered,
+    rewardStatusLabel: getEndingRewardStatusLabel(ending.meta_reward_bonus, newlyDiscovered),
   };
+}
+
+function getEndingRewardStatusLabel(metaRewardBonus: number, newlyDiscovered: boolean): string {
+  const runRewardLabel = metaRewardBonus > 0 ? `엔딩 보너스 +${metaRewardBonus} 통찰` : "엔딩 보너스 없음";
+  return newlyDiscovered ? `${runRewardLabel} · 신규 도감 보상` : `${runRewardLabel} · 도감 보상 수집 완료`;
 }
 
 function getBestProduct(state: GameState): RunSpotlightProduct | undefined {
