@@ -859,6 +859,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #25 surfaces 10-year ending carryover in the next-run briefing", () => {
+    expect(menuPanels).toContain("latestRunRecord.endingName");
+    expect(menuPanels).toContain("next-run-ending-brief");
+    expect(menuPanels).toContain("10년 엔딩");
+    expect(menuPanels).toContain("latestRunRecord.campaignRank");
+    expect(menuPanels).toContain("latestRunRecord.survivedYears");
+    expect(qaScenarios).toContain("ten-year-next-run");
+    expect(appCss).toMatch(/\.next-run-ending-brief\s*{[^}]*display:\s*inline-flex/s);
+    expect(appCss).toMatch(/\.next-run-ending-brief\s*{[^}]*overflow-wrap:\s*anywhere/s);
+  });
+
   it("v0.67 #24 filters the expanded ending codex", () => {
     expect(menuPanels).toContain("endingCollectionFilter");
     expect(menuPanels).toContain('useState<"all" | "locked" | "discovered" | "reward" | "unlockHints" | "affordableUnlocks" | "finalOnly">');

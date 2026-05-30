@@ -1135,6 +1135,11 @@ function DeckPanel({
                 이전 런 {latestRunRecord.score}점 · {latestRunRecord.bestProductName ?? "출시 제품 없음"}
                 {latestRunRecord.representativeCardName ? ` / ${latestRunRecord.representativeCardName}` : ""}
               </span>
+              {latestRunRecord.endingName && (
+                <span className="next-run-ending-brief">
+                  10년 엔딩 {latestRunRecord.campaignRank} · {latestRunRecord.endingName} · {latestRunRecord.survivedYears}년 생존
+                </span>
+              )}
             </div>
             <ol>
               <li>최근 런 기록에서 강했던 제품과 카드를 확인</li>
