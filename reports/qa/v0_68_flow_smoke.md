@@ -11,12 +11,14 @@ Status: PASS
 ## Environment
 - Base URL: http://127.0.0.1:5220/
 - Chrome: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
-- Routes: 4/4
+- Routes: 6/6
 
 ## Routes
 | ID | Path | Status | DOM bytes | Failed checks |
 | --- | --- | --- | ---: | --- |
 | fresh | `/?scenario=fresh` | PASS | 276763 | - |
 | beta-readiness | `/?scenario=beta-readiness` | PASS | 276254 | - |
+| ending-fallback-final | `/?scenario=ending-fallback-final` | PASS | 276173 | - |
+| ending-nearmiss-final | `/?scenario=ending-nearmiss-final` | PASS | 276601 | - |
 | ten-year-ending-route-start | `/?scenario=ten-year-ending-route-start` | PASS | 310312 | - |
 | ending-nearmiss-retry-start | `/?scenario=ending-nearmiss-retry-start` | PASS | 309698 | - |

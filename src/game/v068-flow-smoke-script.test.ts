@@ -53,6 +53,16 @@ describe("v0.68 browser flow smoke QA script", () => {
         expectedText: "베타 준비 체크 QA",
       },
       {
+        id: "ending-fallback-final",
+        path: "/?scenario=ending-fallback-final",
+        expectedText: "결과 전용 엔딩 QA",
+      },
+      {
+        id: "ending-nearmiss-final",
+        path: "/?scenario=ending-nearmiss-final",
+        expectedText: "아쉬운 엔딩 재도전 QA",
+      },
+      {
         id: "ten-year-ending-route-start",
         path: "/?scenario=ten-year-ending-route-start",
         expectedText: "10년 엔딩 목표 런 QA",
