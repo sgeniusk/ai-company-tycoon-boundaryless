@@ -95,6 +95,7 @@ export const qaScenarioIds = [
   "ending-replay-known",
   "ending-replay-complete",
   "ending-replay-final",
+  "ending-replay-known-final",
   "ending-fallback-final",
   "ending-nearmiss-final",
 ] as const;
@@ -327,6 +328,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "목표 엔딩 결과 QA",
       state: createFinalActiveEndingReplayScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-replay-known-final") {
+    return {
+      id,
+      label: "반복 목표 엔딩 결과 QA",
+      state: createKnownFinalActiveEndingReplayScenarioState(),
       activeMenu: "company",
     };
   }
@@ -2061,6 +2071,26 @@ function createFinalActiveEndingReplayScenarioState(): GameState {
     },
     status: "success",
     timeline: ["목표 엔딩 결과 QA: 프라이버시 신뢰 요새를 노렸지만 일부 조건이 부족한 최종 화면", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createKnownFinalActiveEndingReplayScenarioState(): GameState {
+  const state = createFinalActiveEndingReplayScenarioState();
+
+  return {
+    ...state,
+    resources: {
+      ...state.resources,
+      automation: Math.max(state.resources.automation ?? 0, 72),
+      cash: Math.max(state.resources.cash ?? 0, 300000),
+      trust: Math.max(state.resources.trust ?? 0, 94),
+      users: Math.max(state.resources.users ?? 0, 180000),
+    },
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: [...new Set([...state.roguelite.discoveredEndingIds, "privacy_trust_bastion"])],
+    },
+    timeline: ["반복 목표 엔딩 결과 QA: 이미 발견한 프라이버시 신뢰 요새 완주 문구 확인", ...state.timeline].slice(0, 8),
   };
 }
 

@@ -916,7 +916,9 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("목표 엔딩 결과");
     expect(gameChrome).toContain("activeEndingReplayBrief.complete");
     expect(gameChrome).toContain("activeEndingReplayBrief.selection");
+    expect(gameChrome).toContain("activeEndingReplayBrief.completionRewardNotice");
     expect(gameChrome).toContain("목표 다시 도전");
+    expect(qaScenarios).toContain("ending-replay-known-final");
     expect(appCss).toMatch(/\.ending-target-result-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-target-result-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-target-result-grid\s*{[^}]*grid-template-columns:\s*1fr/s);

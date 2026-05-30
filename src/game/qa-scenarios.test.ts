@@ -100,6 +100,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "ending-replay-known",
       "ending-replay-complete",
       "ending-replay-final",
+      "ending-replay-known-final",
       "ending-fallback-final",
       "ending-nearmiss-final",
     ]);
@@ -816,6 +817,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=ending-replay-active")?.id).toBe("ending-replay-active");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-known")?.id).toBe("ending-replay-known");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-complete")?.id).toBe("ending-replay-complete");
+    expect(createQaScenarioFromSearch("?scenario=ending-replay-known-final")?.id).toBe("ending-replay-known-final");
     expect(createQaScenarioFromSearch("?scenario=ending-fallback-final")?.id).toBe("ending-fallback-final");
     expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-final")?.id).toBe("ending-nearmiss-final");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
@@ -911,6 +913,26 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.month).toBe(120);
     expect(scenario.state.status).toBe("success");
     expect(scenario.state.runModifiers.seed).toBe("ending:privacy_trust_bastion");
+  });
+
+  it("builds a final known ending replay scenario for repeat reward copy", () => {
+    const scenario = createQaScenario("ending-replay-known-final");
+    const brief = getActiveEndingReplayBrief(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("반복 목표 엔딩 결과");
+    expect(scenario.state.month).toBe(120);
+    expect(scenario.state.status).toBe("success");
+    expect(scenario.state.runModifiers.seed).toBe("ending:privacy_trust_bastion");
+    expect(scenario.state.roguelite.discoveredEndingIds).toEqual(
+      expect.arrayContaining(["standard_platform_compounder", "privacy_trust_bastion"]),
+    );
+    expect(brief).toMatchObject({
+      id: "privacy_trust_bastion",
+      complete: true,
+      alreadyDiscovered: true,
+      completionRewardNotice: "이미 발견한 엔딩입니다. 도감 통찰은 추가되지 않지만 기록은 갱신됩니다.",
+    });
   });
 
   it("builds a fallback final ending scenario for the result-only codex branch", () => {

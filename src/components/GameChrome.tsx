@@ -1025,7 +1025,7 @@ export function GameStage({
                           목표 다시 도전
                         </button>
                       ) : (
-                        <small>{activeEndingReplayBrief.rewardLabel}이 다음 런 메타 보상에 반영됩니다.</small>
+                        <small>{activeEndingReplayBrief.completionRewardNotice}</small>
                       )}
                     </div>
                   )}
