@@ -746,6 +746,7 @@ function DeckPanel({
   const rivalCounterSignal = getRivalCounterSignal(gameState);
   const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
   const [selectedChallengeTierId, setSelectedChallengeTierId] = useState("standard");
+  const [endingCollectionFilter, setEndingCollectionFilter] = useState<"all" | "locked" | "discovered">("all");
   const deck = gameState.roguelite.deck;
   const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
   const deckCards = getDeckCardCounts(deck)
@@ -784,6 +785,16 @@ function DeckPanel({
   const endingReplayPlans = getEndingReplayPlans(gameState, 3);
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
   const discoveredEndingCount = endingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
+  const endingCollectionFilterOptions = [
+    { id: "all", label: "전체", count: endingCollectionEntries.length },
+    { id: "locked", label: "미발견", count: endingCollectionSummary.lockedCount },
+    { id: "discovered", label: "발견 완료", count: discoveredEndingCount },
+  ] as const;
+  const filteredEndingCollectionEntries = endingCollectionEntries.filter((entry) => {
+    if (endingCollectionFilter === "locked") return !entry.discovered;
+    if (endingCollectionFilter === "discovered") return entry.discovered;
+    return true;
+  });
   const shouldShowNextRunSetup =
     gameState.month >= 10 || gameState.status !== "playing" || gameState.roguelite.runHistory.length > 0;
   const shouldShowDevelopmentIssueLaunchpad = Boolean(activeProject && activeProduct && puzzle && !gameState.lastDevelopmentPuzzle);
@@ -1366,8 +1377,24 @@ function DeckPanel({
               </button>
             )}
           </div>
+          <div className="ending-collection-filter" aria-label="엔딩 도감 필터">
+            {endingCollectionFilterOptions.map((option) => (
+              <button
+                className={endingCollectionFilter === option.id ? "active" : undefined}
+                key={option.id}
+                onClick={() => setEndingCollectionFilter(option.id)}
+                type="button"
+              >
+                <strong>{option.label}</strong>
+                <span>{option.count}</span>
+              </button>
+            ))}
+          </div>
           <div className="ending-collection-grid">
-            {endingCollectionEntries.map((entry) => {
+            {filteredEndingCollectionEntries.length === 0 && (
+              <p className="ending-collection-empty">아직 이 필터에 해당하는 엔딩이 없습니다.</p>
+            )}
+            {filteredEndingCollectionEntries.map((entry) => {
               const replaySelection = entry.selection;
               const isActiveTargetRun = activeEndingReplayBrief?.id === entry.id;
 

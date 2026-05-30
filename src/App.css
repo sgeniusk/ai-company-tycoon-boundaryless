@@ -6992,6 +6992,46 @@ p {
   overflow-wrap: anywhere;
 }
 
+.ending-collection-filter {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.ending-collection-filter button {
+  align-items: center;
+  background: #fffdf7;
+  border: 2px solid #b9d0e6;
+  box-shadow: none;
+  color: #263f52;
+  display: grid;
+  gap: 2px;
+  min-height: 42px;
+  min-width: 0;
+  padding: 7px;
+}
+
+.ending-collection-filter button.active {
+  background: #dcefff;
+  border-color: #7fa7ce;
+}
+
+.ending-collection-filter strong,
+.ending-collection-filter span {
+  overflow-wrap: anywhere;
+}
+
+.ending-collection-filter strong {
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+.ending-collection-filter span {
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
 .payoff-collection-grid {
   display: grid;
   gap: 7px;
@@ -7048,6 +7088,17 @@ p {
   min-height: 92px;
   min-width: 0;
   padding: 8px;
+}
+
+.ending-collection-empty {
+  background: #fffdf7;
+  border: 2px dashed #b9d0e6;
+  color: #5f7890;
+  font-size: 0.72rem;
+  font-weight: 900;
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 10px;
 }
 
 .ending-replay-grid article {
@@ -10438,6 +10489,10 @@ p {
   }
 
   .ending-collection-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .ending-collection-filter {
     grid-template-columns: 1fr;
   }
 

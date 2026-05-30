@@ -779,6 +779,18 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #24 filters the expanded ending codex", () => {
+    expect(menuPanels).toContain("endingCollectionFilter");
+    expect(menuPanels).toContain("filteredEndingCollectionEntries");
+    expect(menuPanels).toContain("ending-collection-filter");
+    expect(menuPanels).toContain("미발견");
+    expect(menuPanels).toContain("발견 완료");
+    expect(menuPanels).toContain("setEndingCollectionFilter");
+    expect(appCss).toMatch(/\.ending-collection-filter\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.ending-collection-filter button\.active\s*{[^}]*background:/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-filter\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("v0.67 #3 surfaces current-run ending targets in the company console", () => {
     expect(menuPanels).toContain("getEndingTargetPlans");
     expect(menuPanels).toContain("ending-target-panel");
