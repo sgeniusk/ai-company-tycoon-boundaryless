@@ -24,7 +24,7 @@ import { resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { rollRunModifierSelection } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
-import { getActiveEndingReplayBrief, getCampaignEndingReport, getEndingNearMisses } from "../game/campaign-ending";
+import { getActiveEndingReplayBrief, getCampaignEndingDiscovery, getCampaignEndingReport, getEndingNearMisses } from "../game/campaign-ending";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
   advanceToFirstAnnualReview,
@@ -434,6 +434,7 @@ export function GameStage({
   const calendar = getCampaignCalendar(gameState);
   const finale = getCampaignFinale(gameState);
   const endingReport = finale.isFinal ? getCampaignEndingReport(gameState) : undefined;
+  const endingDiscovery = finale.isFinal ? getCampaignEndingDiscovery(gameState) : undefined;
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
   const missingActiveEndingRequirements = activeEndingReplayBrief?.requirements.filter((requirement) => !requirement.complete).slice(0, 3) ?? [];
   const activeEndingResultRequirements = missingActiveEndingRequirements.length
@@ -955,6 +956,30 @@ export function GameStage({
                   </div>
                   <h2>{finale.title}</h2>
                   <p>{finale.verdict}</p>
+                  {endingDiscovery && (
+                    <div
+                      className={`ending-discovery-panel ${endingDiscovery.alreadyDiscovered ? "known" : "new"}`}
+                      aria-label="엔딩 도감 반영"
+                    >
+                      <span>
+                        <strong>{endingDiscovery.alreadyDiscovered ? "기록 갱신" : "새 엔딩 발견"}</strong>
+                        <small>
+                          도감 반영 {endingDiscovery.discoveredCountAfterRun}/{endingDiscovery.totalCount} · 완성률{" "}
+                          {endingDiscovery.completionPercentAfterRun}%
+                        </small>
+                      </span>
+                      <span>
+                        <strong>{endingDiscovery.rewardLabel}</strong>
+                        <small>다음 런 메타 보상</small>
+                      </span>
+                      <span>
+                        <strong>도감 반영</strong>
+                        <small>
+                          {endingDiscovery.alreadyDiscovered ? "이미 도감에 있는 결말입니다." : "재시작하면 엔딩 도감에 추가됩니다."}
+                        </small>
+                      </span>
+                    </div>
+                  )}
                   {activeEndingReplayBrief && (
                     <div
                       className={`ending-target-result-panel ${activeEndingReplayBrief.complete ? "complete" : "missed"}`}

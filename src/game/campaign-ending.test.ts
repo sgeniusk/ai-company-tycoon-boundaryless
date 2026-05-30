@@ -5,6 +5,7 @@ import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
 import {
   getActiveEndingReplayBrief,
   getCampaignEnding,
+  getCampaignEndingDiscovery,
   getCampaignEndingReport,
   getEndingCollectionSummary,
   getEndingCollectionEntries,
@@ -385,6 +386,28 @@ describe("v0.67 campaign ending selector", () => {
     });
     expect(finale.verdict).toContain("신뢰");
     expect(finale.score).toBeGreaterThan(0);
+  });
+
+  it("summarizes whether the final ending will be newly added to the codex", () => {
+    const state = {
+      ...endingFixtures.privacy_trust_bastion,
+      roguelite: {
+        ...endingFixtures.privacy_trust_bastion.roguelite,
+        discoveredEndingIds: ["standard_platform_compounder"],
+      },
+    };
+    const discovery = getCampaignEndingDiscovery(state);
+
+    expect(discovery).toMatchObject({
+      id: "privacy_trust_bastion",
+      title: "프라이버시 신뢰 요새",
+      alreadyDiscovered: false,
+      discoveredCountBeforeRun: 1,
+      discoveredCountAfterRun: 2,
+      totalCount: campaignEndings.length,
+      completionPercentAfterRun: Math.round((2 / campaignEndings.length) * 100),
+      rewardLabel: "+4 통찰",
+    });
   });
 
   it("explains the selected campaign ending with satisfied requirements", () => {

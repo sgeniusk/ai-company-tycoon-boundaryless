@@ -50,6 +50,15 @@ export interface EndingCollectionSummary {
   nextReplayPlan?: EndingReplayPlan;
 }
 
+export interface CampaignEndingDiscovery extends EndingDefinition {
+  alreadyDiscovered: boolean;
+  discoveredCountBeforeRun: number;
+  discoveredCountAfterRun: number;
+  totalCount: number;
+  completionPercentAfterRun: number;
+  rewardLabel: string;
+}
+
 export interface ActiveEndingReplayBrief extends EndingTargetPlan {
   seed: string;
   selection: RunModifierSelectionInput;
@@ -76,6 +85,23 @@ export function getCampaignEnding(finalState: GameState): EndingDefinition {
 
 export function getCampaignEndingReport(finalState: GameState): EndingTargetPlan {
   return createEndingTargetPlan(getCampaignEnding(finalState), finalState);
+}
+
+export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndingDiscovery {
+  const ending = getCampaignEnding(finalState);
+  const discoveredIds = new Set(finalState.roguelite.discoveredEndingIds ?? []);
+  const afterRunDiscoveredIds = new Set(discoveredIds);
+  afterRunDiscoveredIds.add(ending.id);
+
+  return {
+    ...ending,
+    alreadyDiscovered: discoveredIds.has(ending.id),
+    discoveredCountBeforeRun: discoveredIds.size,
+    discoveredCountAfterRun: afterRunDiscoveredIds.size,
+    totalCount: campaignEndings.length,
+    completionPercentAfterRun: campaignEndings.length ? Math.round((afterRunDiscoveredIds.size / campaignEndings.length) * 100) : 100,
+    rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
+  };
 }
 
 export function getEndingTargetPlans(state: GameState, limit = 3): EndingTargetPlan[] {

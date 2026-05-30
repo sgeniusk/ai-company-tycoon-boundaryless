@@ -860,6 +860,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-target-result-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #22 highlights newly discovered endings in the final results", () => {
+    expect(gameChrome).toContain("getCampaignEndingDiscovery");
+    expect(gameChrome).toContain("ending-discovery-panel");
+    expect(gameChrome).toContain("새 엔딩 발견");
+    expect(gameChrome).toContain("도감 반영");
+    expect(gameChrome).toContain("endingDiscovery.completionPercentAfterRun");
+    expect(appCss).toMatch(/\.ending-discovery-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-discovery-panel\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-discovery-panel\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("v0.67 #7 lets final results restart from near-missed endings", () => {
     expect(gameChrome).toContain("getEndingNearMisses");
     expect(gameChrome).toContain("ending-nearmiss-panel");
