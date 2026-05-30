@@ -821,6 +821,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.world-reveal-ending-target\s*{[^}]*display:\s*grid/s);
   });
 
+  it("v0.67 #10 explains final ending requirements in the result tab", () => {
+    expect(gameChrome).toContain("getCampaignEndingReport");
+    expect(gameChrome).toContain("ending-report-panel");
+    expect(gameChrome).toContain("endingReport.requirements");
+    expect(appCss).toMatch(/\.ending-report-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-report-grid\s*{[^}]*grid-template-columns:/s);
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");

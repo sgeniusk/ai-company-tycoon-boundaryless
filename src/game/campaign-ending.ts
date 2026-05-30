@@ -55,6 +55,10 @@ export function getCampaignEnding(finalState: GameState): EndingDefinition {
   return matches[0]?.ending ?? campaignEndings[campaignEndings.length - 1];
 }
 
+export function getCampaignEndingReport(finalState: GameState): EndingTargetPlan {
+  return createEndingTargetPlan(getCampaignEnding(finalState), finalState);
+}
+
 export function getEndingTargetPlans(state: GameState, limit = 3): EndingTargetPlan[] {
   const plans = campaignEndings
     .filter((ending) => ending.condition.fallback !== true)

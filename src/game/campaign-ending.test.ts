@@ -4,6 +4,7 @@ import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
 import {
   getActiveEndingReplayBrief,
   getCampaignEnding,
+  getCampaignEndingReport,
   getEndingCollectionEntries,
   getEndingNearMisses,
   getEndingReplayPlans,
@@ -373,6 +374,24 @@ describe("v0.67 campaign ending selector", () => {
     });
     expect(finale.verdict).toContain("신뢰");
     expect(finale.score).toBeGreaterThan(0);
+  });
+
+  it("explains the selected campaign ending with satisfied requirements", () => {
+    const report = getCampaignEndingReport(endingFixtures.privacy_trust_bastion);
+
+    expect(report).toMatchObject({
+      id: "privacy_trust_bastion",
+      complete: true,
+      progressPercent: 100,
+    });
+    expect(report.requirements.every((requirement) => requirement.complete)).toBe(true);
+    expect(report.requirements).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: "world_lore_ids", currentLabel: "프라이버시 요새", targetLabel: "프라이버시 요새" }),
+        expect.objectContaining({ id: "growth_path_ids", currentLabel: "신뢰 기반 엔터프라이즈" }),
+        expect.objectContaining({ id: "archetype_ids", currentLabel: "충족" }),
+      ]),
+    );
   });
 
   it("builds a cross-run ending collection from roguelite discoveries", () => {

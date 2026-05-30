@@ -24,7 +24,7 @@ import { resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { rollRunModifierSelection } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
-import { getEndingNearMisses } from "../game/campaign-ending";
+import { getCampaignEndingReport, getEndingNearMisses } from "../game/campaign-ending";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
   advanceToFirstAnnualReview,
@@ -427,6 +427,7 @@ export function GameStage({
   const releaseImpact = getReleaseImpactSummary(gameState);
   const calendar = getCampaignCalendar(gameState);
   const finale = getCampaignFinale(gameState);
+  const endingReport = finale.isFinal ? getCampaignEndingReport(gameState) : undefined;
   const stageProgress = getCompanyStageProgress(gameState);
   const phase = getDayPhase(gameState);
   const location = getCurrentLocation(gameState);
@@ -943,6 +944,29 @@ export function GameStage({
                   </div>
                   <h2>{finale.title}</h2>
                   <p>{finale.verdict}</p>
+                  {endingReport && (
+                    <div className="ending-report-panel" aria-label="엔딩 조건 리포트">
+                      <div>
+                        <strong>엔딩 조건 리포트</strong>
+                        <span>{endingReport.matchedRequirements}/{endingReport.totalRequirements} 조건 충족</span>
+                      </div>
+                      <div className="ending-report-grid">
+                        {endingReport.requirements.length ? (
+                          endingReport.requirements.map((requirement) => (
+                            <span className={requirement.complete ? "complete" : "missing"} key={requirement.id}>
+                              <strong>{requirement.label}</strong>
+                              <small>{requirement.currentLabel} / {requirement.targetLabel}</small>
+                            </span>
+                          ))
+                        ) : (
+                          <span className="complete">
+                            <strong>기본 결말</strong>
+                            <small>{endingReport.flavor}</small>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </article>
               )}
               {endingNearMisses.length > 0 && (
