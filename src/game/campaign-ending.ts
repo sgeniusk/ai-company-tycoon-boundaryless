@@ -5,6 +5,7 @@ import type { EndingConditionDefinition, EndingDefinition, GameState, ResourceMa
 
 export interface EndingCollectionEntry extends EndingDefinition {
   discovered: boolean;
+  rewardStatusLabel: string;
   targetLabels: string[];
   selection?: RunModifierSelectionInput;
 }
@@ -245,11 +246,18 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
       return {
         ...ending,
         discovered: discoveredIds.has(ending.id),
+        rewardStatusLabel: getEndingCollectionRewardStatusLabel(ending.meta_reward_bonus, discoveredIds.has(ending.id), ending.condition.fallback === true),
         targetLabels: selection ? getReplayTargetLabels(ending.condition, selection) : [],
         selection,
       };
     })
     .sort((first, second) => Number(second.discovered) - Number(first.discovered) || second.priority - first.priority || first.id.localeCompare(second.id));
+}
+
+function getEndingCollectionRewardStatusLabel(metaRewardBonus: number, discovered: boolean, finalOnly: boolean): string {
+  if (discovered) return "도감 보상 수집 완료";
+  if (metaRewardBonus > 0) return `+${metaRewardBonus} 통찰 도감 보상`;
+  return finalOnly ? "결과 전용 기록" : "도감 보상 없음";
 }
 
 export function getEndingCollectionProgressEntries(state: GameState): EndingCollectionProgressEntry[] {

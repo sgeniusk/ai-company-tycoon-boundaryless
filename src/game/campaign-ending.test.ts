@@ -757,6 +757,11 @@ describe("v0.67 campaign ending selector", () => {
     expect(entries.find((entry) => entry.id === "frontier_demo_empire")).toMatchObject({
       title: "프런티어 데모 제국",
       discovered: false,
+      rewardStatusLabel: "+5 통찰 도감 보상",
+    });
+    expect(entries.find((entry) => entry.id === "privacy_trust_bastion")).toMatchObject({
+      discovered: true,
+      rewardStatusLabel: "도감 보상 수집 완료",
     });
     expect(entries.find((entry) => entry.id === "frontier_demo_empire")?.targetLabels).toEqual(
       expect.arrayContaining(["오픈소스 천국", "엔지니어 창업자", "코드/비전 연구소", "프런티어 차고"]),

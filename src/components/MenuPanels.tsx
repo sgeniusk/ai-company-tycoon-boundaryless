@@ -1445,7 +1445,7 @@ function DeckPanel({
 
               return (
                 <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
-                  <p className="item-meta">{entryTypeLabel} · 통찰 보너스 +{entry.meta_reward_bonus}</p>
+                  <p className="item-meta">{entryTypeLabel} · {entry.rewardStatusLabel}</p>
                   <strong>{entry.discovered ? entry.title : "미발견 엔딩"}</strong>
                   <span>
                     {entry.discovered

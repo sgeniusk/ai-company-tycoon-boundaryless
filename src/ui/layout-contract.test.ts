@@ -6,6 +6,7 @@ const appCss = readFileSync(new URL("../App.css", import.meta.url), "utf8");
 const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
 const gameChrome = readFileSync(new URL("../components/GameChrome.tsx", import.meta.url), "utf8");
 const guidanceSource = readFileSync(new URL("../game/guidance.ts", import.meta.url), "utf8");
+const campaignEndingSource = readFileSync(new URL("../game/campaign-ending.ts", import.meta.url), "utf8");
 const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.meta.url), "utf8");
 const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPanel.tsx", import.meta.url), "utf8");
 const playtestObserver = readFileSync(new URL("../game/blind-playtest-observer.ts", import.meta.url), "utf8");
@@ -771,6 +772,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("결과 전용 잠김");
     expect(menuPanels).toContain("entry.condition.fallback === true");
     expect(menuPanels).toContain("결과 전용 엔딩");
+    expect(menuPanels).toContain("entry.rewardStatusLabel");
+    expect(campaignEndingSource).toContain("도감 보상 수집 완료");
     expect(menuPanels).toContain("캠페인 결과에서만 공개되는 엔딩입니다.");
     expect(qaScenarios).toContain("ending-replay-complete");
     expect(qaScenarios).toContain("ending-fallback-final");
