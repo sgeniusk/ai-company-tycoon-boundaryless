@@ -970,7 +970,10 @@ export function GameStage({
                       </span>
                       <span>
                         <strong>{endingDiscovery.rewardLabel}</strong>
-                        <small>다음 런 메타 보상</small>
+                        <small>
+                          도감 통찰 {endingDiscovery.discoveredRewardBonusAfterRun}/{endingDiscovery.totalRewardBonus} · 보상 완성률{" "}
+                          {endingDiscovery.rewardCompletionPercentAfterRun}%
+                        </small>
                       </span>
                       <span>
                         <strong>도감 반영</strong>

@@ -674,6 +674,8 @@ describe("v0.67 campaign ending selector", () => {
       },
     };
     const discovery = getCampaignEndingDiscovery(state);
+    const standardReward = campaignEndings.find((ending) => ending.id === "standard_platform_compounder")?.meta_reward_bonus ?? 0;
+    const totalRewardBonus = campaignEndings.reduce((total, ending) => total + ending.meta_reward_bonus, 0);
 
     expect(discovery).toMatchObject({
       id: "privacy_trust_bastion",
@@ -684,6 +686,10 @@ describe("v0.67 campaign ending selector", () => {
       totalCount: campaignEndings.length,
       completionPercentAfterRun: Math.round((2 / campaignEndings.length) * 100),
       rewardLabel: "+4 통찰",
+      discoveredRewardBonusBeforeRun: standardReward,
+      discoveredRewardBonusAfterRun: standardReward + 4,
+      totalRewardBonus,
+      rewardCompletionPercentAfterRun: Math.round(((standardReward + 4) / totalRewardBonus) * 100),
     });
   });
 

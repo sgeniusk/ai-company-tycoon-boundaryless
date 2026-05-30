@@ -64,8 +64,12 @@ export interface CampaignEndingDiscovery extends EndingDefinition {
   alreadyDiscovered: boolean;
   discoveredCountBeforeRun: number;
   discoveredCountAfterRun: number;
+  discoveredRewardBonusBeforeRun: number;
+  discoveredRewardBonusAfterRun: number;
   totalCount: number;
+  totalRewardBonus: number;
   completionPercentAfterRun: number;
+  rewardCompletionPercentAfterRun: number;
   rewardLabel: string;
 }
 
@@ -104,14 +108,27 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
   const discoveredIds = new Set(finalState.roguelite.discoveredEndingIds ?? []);
   const afterRunDiscoveredIds = new Set(discoveredIds);
   afterRunDiscoveredIds.add(ending.id);
+  const totalRewardBonus = campaignEndings.reduce((total, endingDefinition) => total + endingDefinition.meta_reward_bonus, 0);
+  const discoveredRewardBonusBeforeRun = campaignEndings.reduce(
+    (total, endingDefinition) => total + (discoveredIds.has(endingDefinition.id) ? endingDefinition.meta_reward_bonus : 0),
+    0,
+  );
+  const discoveredRewardBonusAfterRun = campaignEndings.reduce(
+    (total, endingDefinition) => total + (afterRunDiscoveredIds.has(endingDefinition.id) ? endingDefinition.meta_reward_bonus : 0),
+    0,
+  );
 
   return {
     ...ending,
     alreadyDiscovered: discoveredIds.has(ending.id),
     discoveredCountBeforeRun: discoveredIds.size,
     discoveredCountAfterRun: afterRunDiscoveredIds.size,
+    discoveredRewardBonusBeforeRun,
+    discoveredRewardBonusAfterRun,
     totalCount: campaignEndings.length,
+    totalRewardBonus,
     completionPercentAfterRun: campaignEndings.length ? Math.round((afterRunDiscoveredIds.size / campaignEndings.length) * 100) : 100,
+    rewardCompletionPercentAfterRun: totalRewardBonus ? Math.round((discoveredRewardBonusAfterRun / totalRewardBonus) * 100) : 100,
     rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
   };
 }
