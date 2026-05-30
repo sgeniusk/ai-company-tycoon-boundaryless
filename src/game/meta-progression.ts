@@ -3,8 +3,10 @@ import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
 import {
   getCampaignEnding,
   getCampaignEndingDiscovery,
+  getEndingReplayPlans,
   getEndingRouteUnlockRecommendations,
   sanitizeCampaignEndingIds,
+  type EndingReplayPlan,
   type EndingRouteUnlockRecommendation,
 } from "./campaign-ending";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
@@ -34,7 +36,7 @@ export interface NextRunStarterDeckPlan extends StarterDeckOption {
 }
 
 export interface NextRunQuickStart {
-  id: "safe_restart" | "recommended_unlock" | "current_deck";
+  id: "safe_restart" | "ending_route" | "recommended_unlock" | "current_deck";
   label: string;
   description: string;
   unlockIds: string[];
@@ -42,6 +44,7 @@ export interface NextRunQuickStart {
   affordable: boolean;
   reasons: string[];
   projectedInsightAfterStart: number;
+  runModifierSelection?: RunModifierSelectionInput;
 }
 
 export interface NextRunEndingNudge {
@@ -127,7 +130,17 @@ export function getNextRunSetupPlan(state: GameState): NextRunSetupPlan {
   const recommendedUnlocks = getRecommendedUnlocks(state, projectedFounderInsight);
   const starterDeckPlans = getStarterDeckPlans(state);
   const endingNudge = getNextRunEndingNudge(state, projectedFounderInsight);
-  const quickStarts = getNextRunQuickStarts(state, projectedFounderInsight, recommendedUnlocks, starterDeckPlans, endingNudge?.recommendedUnlocks);
+  const endingRoutePlan = getNextRunEndingRoutePlan(state);
+  const endingRouteUnlocks = endingRoutePlan ? getEndingRouteUnlockRecommendations(endingRoutePlan.condition, state, projectedFounderInsight) : [];
+  const quickStarts = getNextRunQuickStarts(
+    state,
+    projectedFounderInsight,
+    recommendedUnlocks,
+    starterDeckPlans,
+    endingNudge?.recommendedUnlocks,
+    endingRoutePlan,
+    endingRouteUnlocks,
+  );
 
   return {
     currentRunNumber: state.roguelite.runNumber,
@@ -236,6 +249,24 @@ function createEndingNudgeDescription(title: string, rewardLabel: string, result
   return `${title}은 이미 도감에 있어 이번 런은 기록만 갱신됩니다.`;
 }
 
+function getNextRunEndingRoutePlan(state: GameState): EndingReplayPlan | undefined {
+  const completedEndingId = state.month >= CAMPAIGN_FINAL_MONTH ? getCampaignEnding(state).id : undefined;
+  const discoveredEndingIds = sanitizeCampaignEndingIds([
+    ...(state.roguelite.discoveredEndingIds ?? []),
+    ...(completedEndingId ? [completedEndingId] : []),
+  ]);
+
+  return getEndingReplayPlans(
+    {
+      roguelite: {
+        ...state.roguelite,
+        discoveredEndingIds,
+      },
+    },
+    Number.MAX_SAFE_INTEGER,
+  ).find((plan) => !plan.discovered);
+}
+
 function uniqueStrings(values: string[]): string[] {
   return [...new Set(values.filter((value) => typeof value === "string" && value.length > 0))];
 }
@@ -286,6 +317,8 @@ function getNextRunQuickStarts(
   recommendedUnlocks: NextRunRecommendedUnlock[],
   starterDeckPlans: NextRunStarterDeckPlan[],
   endingRouteUnlocks: EndingRouteUnlockRecommendation[] = [],
+  endingRoutePlan?: EndingReplayPlan,
+  endingRoutePlanUnlocks: EndingRouteUnlockRecommendation[] = [],
 ): NextRunQuickStart[] {
   const routeUnlock = endingRouteUnlocks.find((unlock) => unlock.affordable) ?? endingRouteUnlocks[0];
   const routeRecommendedUnlock = routeUnlock ? recommendedUnlocks.find((unlock) => unlock.id === routeUnlock.id) : undefined;
@@ -295,6 +328,7 @@ function getNextRunQuickStarts(
     ? getStarterDeckIdAfterUnlock(state, recommendedUnlock.id)
     : starterDeckPlans.find((deck) => deck.recommended)?.id ?? "balanced_founder";
   const recommendedUnlockCost = recommendedUnlock?.affordable ? recommendedUnlock.cost : 0;
+  const endingRouteQuickStart = createEndingRouteQuickStart(state, projectedFounderInsight, recommendedUnlocks, starterDeckPlans, endingRoutePlan, endingRoutePlanUnlocks);
 
   return [
     {
@@ -307,6 +341,7 @@ function getNextRunQuickStarts(
       reasons: ["현재 통찰을 보존", "기본 덱으로 실패 복구 안정화"],
       projectedInsightAfterStart: projectedFounderInsight,
     },
+    ...(endingRouteQuickStart ? [endingRouteQuickStart] : []),
     {
       id: "recommended_unlock",
       label: recommendedUnlock ? `${recommendedUnlock.title} 해금` : "추천 해금 없음",
@@ -330,6 +365,41 @@ function getNextRunQuickStarts(
       projectedInsightAfterStart: projectedFounderInsight,
     },
   ];
+}
+
+function createEndingRouteQuickStart(
+  state: GameState,
+  projectedFounderInsight: number,
+  recommendedUnlocks: NextRunRecommendedUnlock[],
+  starterDeckPlans: NextRunStarterDeckPlan[],
+  endingRoutePlan?: EndingReplayPlan,
+  endingRouteUnlocks: EndingRouteUnlockRecommendation[] = [],
+): NextRunQuickStart | undefined {
+  if (!endingRoutePlan) return undefined;
+
+  const routeUnlock = endingRouteUnlocks.find((unlock) => unlock.affordable) ?? endingRouteUnlocks[0];
+  const recommendedUnlock = routeUnlock ? recommendedUnlocks.find((unlock) => unlock.id === routeUnlock.id) : undefined;
+  const unlockIds = recommendedUnlock?.affordable ? [recommendedUnlock.id] : [];
+  const unlockCost = recommendedUnlock?.affordable ? recommendedUnlock.cost : 0;
+  const starterDeckId = recommendedUnlock?.affordable
+    ? getStarterDeckIdAfterUnlock(state, recommendedUnlock.id)
+    : starterDeckPlans.find((deck) => deck.recommended)?.id ?? "balanced_founder";
+  const routeLabel = endingRoutePlan.targetLabels.slice(0, 3).join(" · ");
+  const unlockReason = recommendedUnlock
+    ? `${recommendedUnlock.title} ${recommendedUnlock.affordable ? "동시 해금" : recommendedUnlock.reasons[0] ?? "해금 보류"}`
+    : "추가 해금 없이 목표 조건 고정";
+
+  return {
+    id: "ending_route",
+    label: `엔딩 목표: ${endingRoutePlan.title}`,
+    description: `${routeLabel} 조건을 고정한 세계뽑기로 새 런을 시작합니다.`,
+    unlockIds,
+    starterDeckId,
+    affordable: true,
+    reasons: [routeLabel, unlockReason],
+    projectedInsightAfterStart: Math.max(0, projectedFounderInsight - unlockCost),
+    runModifierSelection: endingRoutePlan.selection,
+  };
 }
 
 function getRestartWarnings(state: GameState): string[] {

@@ -1089,20 +1089,20 @@ function DeckPanel({
                   <button
                     disabled={!quickStart.affordable}
                     key={quickStart.id}
-                    onClick={() =>
+                    onClick={() => {
+                      const runModifierSelection = quickStart.runModifierSelection
+                        ? { ...quickStart.runModifierSelection, challengeTierId: selectedChallengeTierId }
+                        : createEphemeralRunModifierSelection(`menu-quick-${quickStart.id}`, selectedChallengeTierId);
+
                       setGameState((current) =>
-                        resetRunWithMetaUnlocks(
-                          current,
-                          quickStart.unlockIds,
-                          quickStart.starterDeckId,
-                          createEphemeralRunModifierSelection(`menu-quick-${quickStart.id}`, selectedChallengeTierId),
-                        ),
-                      )
-                    }
+                        resetRunWithMetaUnlocks(current, quickStart.unlockIds, quickStart.starterDeckId, runModifierSelection),
+                      );
+                    }}
                     type="button"
                   >
                     <strong>{quickStart.label}</strong>
                     <span>{quickStart.description}</span>
+                    {quickStart.runModifierSelection && <small className="ending-route-quickstart-badge">엔딩 목표 런</small>}
                     <small>
                       {starterDeckTitle} · 남은 통찰 {quickStart.projectedInsightAfterStart}
                     </small>

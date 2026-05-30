@@ -9255,6 +9255,21 @@ p {
   margin-bottom: 0;
 }
 
+.ending-route-quickstart-badge {
+  align-items: center;
+  background: #fff1cf;
+  border: 1px solid #c9892d;
+  color: #6a3d07;
+  display: inline-flex;
+  font-size: 0.66rem;
+  font-weight: 900;
+  justify-self: start;
+  line-height: 1.1;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 3px 6px;
+}
+
 .next-run-recommendation-grid {
   display: grid;
   gap: 7px;

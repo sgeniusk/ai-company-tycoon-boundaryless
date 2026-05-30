@@ -318,6 +318,48 @@ describe("v0.32 next-run setup plan", () => {
     });
   });
 
+  it("offers a deterministic ending-route quick start after counting the completed final ending", () => {
+    const initial = createInitialState();
+    const finished = {
+      ...initial,
+      month: 120,
+      status: "success" as const,
+      activeProducts: [
+        "ai_writing_assistant",
+        "meeting_summary_bot",
+        "customer_support_chatbot",
+        "foundation_model_v0",
+      ],
+      resources: {
+        ...initial.resources,
+        cash: 180000,
+        users: 140000,
+        trust: 76,
+        automation: 58,
+      },
+    };
+
+    expect(getCampaignEnding(finished).id).toBe("standard_platform_compounder");
+
+    const plan = getNextRunSetupPlan(finished);
+    const routeQuickStart = plan.quickStarts.find((quickStart) => quickStart.id === "ending_route");
+    if (!routeQuickStart?.runModifierSelection?.seed) throw new Error("Missing ending route quick start");
+
+    expect(routeQuickStart.label).toContain("엔딩 목표");
+    expect(routeQuickStart.affordable).toBe(true);
+    expect(routeQuickStart.runModifierSelection.seed).toMatch(/^ending:/);
+    expect(routeQuickStart.runModifierSelection.seed).not.toBe("ending:standard_platform_compounder");
+
+    const nextRun = resetRunWithMetaUnlocks(
+      finished,
+      routeQuickStart.unlockIds,
+      routeQuickStart.starterDeckId,
+      routeQuickStart.runModifierSelection,
+    );
+
+    expect(nextRun.runModifiers.seed).toBe(routeQuickStart.runModifierSelection.seed);
+  });
+
   it("does not grant the ending meta bonus again for repeated discoveries", () => {
     const initial = createInitialState();
     const firstClear = {

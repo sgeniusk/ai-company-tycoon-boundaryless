@@ -7,6 +7,7 @@ const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
 const gameChrome = readFileSync(new URL("../components/GameChrome.tsx", import.meta.url), "utf8");
 const guidanceSource = readFileSync(new URL("../game/guidance.ts", import.meta.url), "utf8");
 const campaignEndingSource = readFileSync(new URL("../game/campaign-ending.ts", import.meta.url), "utf8");
+const metaProgressionSource = readFileSync(new URL("../game/meta-progression.ts", import.meta.url), "utf8");
 const betaReadinessSource = readFileSync(new URL("../game/beta-readiness.ts", import.meta.url), "utf8");
 const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.meta.url), "utf8");
 const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPanel.tsx", import.meta.url), "utf8");
@@ -776,6 +777,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.ending-route-meta-badge\s*{[^}]*display:\s*inline-flex/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-nudge-panel[\s\S]*grid-template-columns:\s*1fr/s);
     expect(appCss).toMatch(/\.next-run-quick-start-grid\s*{[^}]*grid-template-columns:/s);
+  });
+
+  it("v0.67 #26 exposes one-click ending route quick starts", () => {
+    expect(metaProgressionSource).toContain("getEndingReplayPlans");
+    expect(metaProgressionSource).toContain('id: "ending_route"');
+    expect(metaProgressionSource).toContain("runModifierSelection");
+    expect(menuPanels).toContain("quickStart.runModifierSelection");
+    expect(menuPanels).toContain("ending-route-quickstart-badge");
+    expect(menuPanels).toContain("엔딩 목표 런");
+    expect(appCss).toMatch(/\.ending-route-quickstart-badge\s*{[^}]*display:\s*inline-flex/s);
+    expect(appCss).toMatch(/\.ending-route-quickstart-badge\s*{[^}]*overflow-wrap:\s*anywhere/s);
   });
 
   it("wires challenge tier choice into the next-run setup and world reveal", () => {
