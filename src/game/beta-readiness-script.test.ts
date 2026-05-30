@@ -61,7 +61,15 @@ describe("beta readiness QA script", () => {
     expect(result.unlockHintLabel).toBe("23/23");
     expect(result.routeAxisLabel).toBe("4/4");
     expect(result.routeOptionLabel).toBe("40/40");
-    expect(result.scenarios).toEqual(expect.arrayContaining(["beta-readiness", "beta-readiness-complete", "ten-year-next-run", "ten-year-ending-route-start"]));
+    expect(result.scenarios).toEqual(
+      expect.arrayContaining([
+        "beta-readiness",
+        "beta-readiness-complete",
+        "ten-year-next-run",
+        "ten-year-ending-route-start",
+        "ending-nearmiss-retry-start",
+      ]),
+    );
     expect(result.completeCheckCount).toBe(result.totalCheckCount);
     expect(result.totalCheckCount).toBe(15);
     expect(result.readinessPercent).toBe(100);
