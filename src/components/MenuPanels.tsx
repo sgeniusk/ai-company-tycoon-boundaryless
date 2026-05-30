@@ -746,7 +746,8 @@ function DeckPanel({
   const rivalCounterSignal = getRivalCounterSignal(gameState);
   const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
   const [selectedChallengeTierId, setSelectedChallengeTierId] = useState("standard");
-  const [endingCollectionFilter, setEndingCollectionFilter] = useState<"all" | "locked" | "discovered" | "reward" | "unlockHints" | "finalOnly">("all");
+  const [endingCollectionFilter, setEndingCollectionFilter] =
+    useState<"all" | "locked" | "discovered" | "reward" | "unlockHints" | "affordableUnlocks" | "finalOnly">("all");
   const [endingCollectionSort, setEndingCollectionSort] = useState<"priority" | "progress" | "reward" | "unlockHints">("priority");
   const deck = gameState.roguelite.deck;
   const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
@@ -790,6 +791,9 @@ function DeckPanel({
   const discoveredEndingCount = baseEndingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
   const remainingRewardEndingCount = endingCollectionEntries.filter((entry) => !entry.discovered && entry.meta_reward_bonus > 0).length;
   const unlockHintEndingCount = endingCollectionEntries.filter((entry) => entry.recommendedUnlocks.length > 0).length;
+  const affordableUnlockHintEndingCount = endingCollectionEntries.filter((entry) =>
+    entry.recommendedUnlocks.some((unlock) => unlock.affordable),
+  ).length;
   const finalOnlyEndingCount = endingCollectionEntries.filter((entry) => entry.condition.fallback === true).length;
   const endingCollectionFilterOptions = [
     { id: "all", label: "전체", count: endingCollectionEntries.length },
@@ -797,6 +801,7 @@ function DeckPanel({
     { id: "discovered", label: "발견 완료", count: discoveredEndingCount },
     { id: "reward", label: "보상 남음", count: remainingRewardEndingCount },
     { id: "unlockHints", label: "해금 추천", count: unlockHintEndingCount },
+    { id: "affordableUnlocks", label: "해금 가능", count: affordableUnlockHintEndingCount },
     { id: "finalOnly", label: "결과 전용", count: finalOnlyEndingCount },
   ] as const;
   const endingCollectionSortOptions = [
@@ -810,6 +815,7 @@ function DeckPanel({
     if (endingCollectionFilter === "discovered") return entry.discovered;
     if (endingCollectionFilter === "reward") return !entry.discovered && entry.meta_reward_bonus > 0;
     if (endingCollectionFilter === "unlockHints") return entry.recommendedUnlocks.length > 0;
+    if (endingCollectionFilter === "affordableUnlocks") return entry.recommendedUnlocks.some((unlock) => unlock.affordable);
     if (endingCollectionFilter === "finalOnly") return entry.condition.fallback === true;
     return true;
   });
@@ -821,7 +827,11 @@ function DeckPanel({
             return second.progressPercent - first.progressPercent || second.priority - first.priority || first.id.localeCompare(second.id);
           }
           if (endingCollectionSort === "unlockHints") {
+            const firstAffordableUnlockCount = first.recommendedUnlocks.filter((unlock) => unlock.affordable).length;
+            const secondAffordableUnlockCount = second.recommendedUnlocks.filter((unlock) => unlock.affordable).length;
+
             return (
+              secondAffordableUnlockCount - firstAffordableUnlockCount ||
               second.recommendedUnlocks.length - first.recommendedUnlocks.length ||
               second.meta_reward_bonus - first.meta_reward_bonus ||
               second.priority - first.priority ||

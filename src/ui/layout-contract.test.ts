@@ -844,17 +844,21 @@ describe("v0.13.3 compact game shell layout", () => {
 
   it("v0.67 #24 filters the expanded ending codex", () => {
     expect(menuPanels).toContain("endingCollectionFilter");
-    expect(menuPanels).toContain('useState<"all" | "locked" | "discovered" | "reward" | "unlockHints" | "finalOnly">');
+    expect(menuPanels).toContain('useState<"all" | "locked" | "discovered" | "reward" | "unlockHints" | "affordableUnlocks" | "finalOnly">');
     expect(menuPanels).toContain("filteredEndingCollectionEntries");
     expect(menuPanels).toContain("ending-collection-filter");
     expect(menuPanels).toContain("미발견");
     expect(menuPanels).toContain("발견 완료");
     expect(menuPanels).toContain("보상 남음");
     expect(menuPanels).toContain("해금 추천");
+    expect(menuPanels).toContain("해금 가능");
     expect(menuPanels).toContain("unlockHintEndingCount");
+    expect(menuPanels).toContain("affordableUnlockHintEndingCount");
     expect(menuPanels).toContain("결과 전용");
     expect(menuPanels).toContain('endingCollectionFilter === "reward"');
     expect(menuPanels).toContain('endingCollectionFilter === "unlockHints"');
+    expect(menuPanels).toContain('endingCollectionFilter === "affordableUnlocks"');
+    expect(menuPanels).toContain("entry.recommendedUnlocks.some((unlock) => unlock.affordable)");
     expect(menuPanels).toContain('endingCollectionFilter === "finalOnly"');
     expect(menuPanels).toContain("setEndingCollectionFilter");
     expect(appCss).toMatch(/\.ending-collection-filter\s*{[^}]*grid-template-columns:/s);
@@ -892,6 +896,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("해금 순");
     expect(menuPanels).toContain('useState<"priority" | "progress" | "reward" | "unlockHints">');
     expect(menuPanels).toContain('endingCollectionSort === "unlockHints"');
+    expect(menuPanels).toContain("filter((unlock) => unlock.affordable).length");
     expect(menuPanels).toContain("second.recommendedUnlocks.length - first.recommendedUnlocks.length");
     expect(appCss).toMatch(/\.ending-collection-sort\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.ending-collection-sort button\.active\s*{[^}]*background:/s);
