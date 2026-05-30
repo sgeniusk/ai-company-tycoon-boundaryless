@@ -1031,6 +1031,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-replay-active-actions\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #109 labels active ending action target menus", () => {
+    expect(menuPanels).toContain("targetMenuLabel");
+    expect(menuPanels).toContain("ending-replay-action-target");
+    expect(menuPanels).toContain("메뉴로 이동");
+    expect(menuPanels).toContain("aria-label={`${requirement.actionLabel} · ${targetMenuLabel} 메뉴로 이동`}");
+    expect(appCss).toMatch(/\.ending-replay-action-target\s*{[^}]*display:\s*inline-flex/s);
+    expect(appCss).toMatch(/\.ending-replay-action-target\s*{[^}]*overflow-wrap:\s*anywhere/s);
+  });
+
   it("v0.67 #18 shows active ending target progress in the top HUD", () => {
     expect(gameChrome).toContain("getActiveEndingReplayBrief");
     expect(gameChrome).toContain("activeEndingReplayBrief.progressPercent");

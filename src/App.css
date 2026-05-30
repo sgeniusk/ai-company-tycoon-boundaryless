@@ -7411,6 +7411,20 @@ p {
   color: white;
 }
 
+.ending-replay-action-target {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+  display: inline-flex;
+  font-size: 0.62rem;
+  font-weight: 900;
+  justify-self: start;
+  line-height: 1.1;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 2px 5px;
+}
+
 .payoff-collection-grid article.discovered {
   background: #fff8df;
   border-color: #d6a942;

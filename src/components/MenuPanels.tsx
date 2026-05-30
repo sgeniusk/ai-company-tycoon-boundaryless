@@ -1572,12 +1572,23 @@ function DeckPanel({
               </div>
               {activeEndingReplayBrief.nextRequirements.length > 0 ? (
                 <div className="ending-replay-active-actions">
-                  {activeEndingReplayBrief.nextRequirements.slice(0, 3).map((requirement) => (
-                    <button disabled={!setActiveMenu} key={requirement.id} onClick={() => setActiveMenu?.(requirement.targetMenu)} type="button">
-                      <strong>{requirement.actionLabel}</strong>
-                      <span>{requirement.currentLabel} / {requirement.targetLabel}</span>
-                    </button>
-                  ))}
+                  {activeEndingReplayBrief.nextRequirements.slice(0, 3).map((requirement) => {
+                    const targetMenuLabel = getMenuLabel(requirement.targetMenu);
+
+                    return (
+                      <button
+                        aria-label={`${requirement.actionLabel} · ${targetMenuLabel} 메뉴로 이동`}
+                        disabled={!setActiveMenu}
+                        key={requirement.id}
+                        onClick={() => setActiveMenu?.(requirement.targetMenu)}
+                        type="button"
+                      >
+                        <strong>{requirement.actionLabel}</strong>
+                        <span>{requirement.currentLabel} / {requirement.targetLabel}</span>
+                        <small className="ending-replay-action-target">{targetMenuLabel} 메뉴로 이동</small>
+                      </button>
+                    );
+                  })}
                 </div>
               ) : (
                 <small>현재 표시된 추적 조건은 충족됐습니다. 10년 캠페인 완주까지 운영을 이어가세요.</small>
