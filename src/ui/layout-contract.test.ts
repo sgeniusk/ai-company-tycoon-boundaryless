@@ -1067,8 +1067,11 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("activeEndingReplayBrief.complete");
     expect(gameChrome).toContain("activeEndingReplayBrief.selection");
     expect(gameChrome).toContain("activeEndingReplayBrief.completionRewardNotice");
+    expect(gameChrome).toContain("handleRetryActiveEndingReplay");
+    expect(gameChrome).toContain("onClick={handleRetryActiveEndingReplay}");
     expect(gameChrome).toContain("목표 다시 도전");
     expect(qaScenarios).toContain("ending-replay-known-final");
+    expect(gameChrome).toMatch(/const handleRetryActiveEndingReplay[\s\S]*setActiveMenu\("deck"\)[\s\S]*setActiveStageTab\("guide"\)/);
     expect(appCss).toMatch(/\.ending-target-result-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-target-result-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-target-result-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
@@ -1106,10 +1109,13 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("ending-nearmiss-panel");
     expect(gameChrome).toContain("아쉬운 엔딩");
     expect(gameChrome).toContain("nearMiss.replaySelection");
+    expect(gameChrome).toContain("handleStartNearMissRun");
+    expect(gameChrome).toContain("handleStartNearMissRun(nearMiss.replaySelection)");
     expect(gameChrome).toContain("nearMiss.discovered");
     expect(gameChrome).toContain("새 도감 후보");
     expect(gameChrome).toContain("nearMiss.rewardStatusLabel");
     expect(qaScenarios).toContain("ending-nearmiss-known-final");
+    expect(gameChrome).toMatch(/const handleStartNearMissRun[\s\S]*setActiveMenu\("deck"\)[\s\S]*setActiveStageTab\("guide"\)/);
     expect(appCss).toMatch(/\.ending-nearmiss-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-nearmiss-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.ending-nearmiss-grid em\s*{[^}]*font-style:\s*normal/s);

@@ -21,7 +21,7 @@ import {
   type OpeningObjective,
 } from "../game/guidance";
 import { getNextRunSetupPlan, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
-import { rollRunModifierSelection } from "../game/run-modifiers";
+import { rollRunModifierSelection, type RunModifierSelectionInput } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
 import { getBetaReadinessSummary, type BetaReadinessSummary } from "../game/beta-readiness";
@@ -635,6 +635,34 @@ export function GameStage({
     setActiveStageTab("guide");
   };
 
+  const handleRetryActiveEndingReplay = () => {
+    if (!activeEndingReplayBrief) return;
+
+    setGameState((current) =>
+      resetRunWithMetaUnlocks(
+        current,
+        [],
+        current.roguelite.starterDeckId ?? "balanced_founder",
+        activeEndingReplayBrief.selection,
+      ),
+    );
+    setActiveMenu("deck");
+    setActiveStageTab("guide");
+  };
+
+  const handleStartNearMissRun = (replaySelection: RunModifierSelectionInput) => {
+    setGameState((current) =>
+      resetRunWithMetaUnlocks(
+        current,
+        [],
+        current.roguelite.starterDeckId ?? "balanced_founder",
+        replaySelection,
+      ),
+    );
+    setActiveMenu("deck");
+    setActiveStageTab("guide");
+  };
+
   const handleGrowthPathClick = (path: ReleaseGrowthPath) => {
     if (!chosenGrowthPathId) {
       setGameState((current) => chooseGrowthPath(path.id, current));
@@ -1049,19 +1077,7 @@ export function GameStage({
                         ))}
                       </div>
                       {!activeEndingReplayBrief.complete ? (
-                        <button
-                          onClick={() =>
-                            setGameState((current) =>
-                              resetRunWithMetaUnlocks(
-                                current,
-                                [],
-                                current.roguelite.starterDeckId ?? "balanced_founder",
-                                activeEndingReplayBrief.selection,
-                              ),
-                            )
-                          }
-                          type="button"
-                        >
+                        <button onClick={handleRetryActiveEndingReplay} type="button">
                           목표 다시 도전
                         </button>
                       ) : (
@@ -1105,16 +1121,7 @@ export function GameStage({
                     {endingNearMisses.map((nearMiss) => (
                       <button
                         key={nearMiss.id}
-                        onClick={() =>
-                          setGameState((current) =>
-                            resetRunWithMetaUnlocks(
-                              current,
-                              [],
-                              current.roguelite.starterDeckId ?? "balanced_founder",
-                              nearMiss.replaySelection,
-                            ),
-                          )
-                        }
+                        onClick={() => handleStartNearMissRun(nearMiss.replaySelection)}
                         type="button"
                       >
                         <strong>{nearMiss.title}</strong>
