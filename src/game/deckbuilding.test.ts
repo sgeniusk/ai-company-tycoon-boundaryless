@@ -41,10 +41,12 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
 
   it("sanitizes cross-run collection ids when creating roguelite state", () => {
     const roguelite = createInitialRogueliteState({
+      unlockedMetaIds: ["eval_harness", "unknown_meta_unlock", "eval_harness"],
       discoveredArchetypeIds: ["frontier_garage", "unknown_archetype", "frontier_garage"],
       discoveredEndingIds: ["privacy_trust_bastion", "unknown_ending", "privacy_trust_bastion"],
     });
 
+    expect(roguelite.unlockedMetaIds).toEqual(["eval_harness"]);
     expect(roguelite.discoveredArchetypeIds).toEqual(["frontier_garage"]);
     expect(roguelite.discoveredEndingIds).toEqual(["privacy_trust_bastion"]);
   });

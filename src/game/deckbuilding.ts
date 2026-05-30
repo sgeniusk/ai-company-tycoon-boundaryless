@@ -111,7 +111,10 @@ export function createInitialRogueliteState(options: {
   starterDeckId?: string;
   runHistory?: RunRecord[];
 } = {}): RogueliteState {
-  const unlockedMetaIds = [...new Set(options.unlockedMetaIds ?? [])];
+  const unlockedMetaIds = uniqueKnownStrings(
+    options.unlockedMetaIds,
+    metaUnlocks.map((unlock) => unlock.id),
+  );
   const discoveredArchetypeIds = uniqueKnownStrings(
     options.discoveredArchetypeIds,
     derivationRules.map((rule) => rule.id),

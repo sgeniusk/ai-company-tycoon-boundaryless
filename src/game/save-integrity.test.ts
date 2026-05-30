@@ -210,11 +210,16 @@ describe("v0.11 save integrity and recovery", () => {
         ...createInitialState().resources,
         cash: Number.NaN,
       },
+      roguelite: {
+        ...createInitialState().roguelite,
+        unlockedMetaIds: ["unknown_meta_unlock"],
+      },
     });
 
     expect(report.ok).toBe(false);
     expect(report.issues.some((issue) => issue.includes("cash"))).toBe(true);
     expect(report.issues.some((issue) => issue.includes("missing_product"))).toBe(true);
+    expect(report.issues.some((issue) => issue.includes("unknown_meta_unlock"))).toBe(true);
   });
 
   it("keeps valid saves free of integrity issues", () => {
@@ -363,6 +368,25 @@ describe("v0.11 save integrity and recovery", () => {
 
     expect(migrated.roguelite.discoveredEndingIds).toEqual([]);
     expect(validateGameStateIntegrity(migrated)).toMatchObject({ ok: true, issues: [] });
+  });
+
+  it("drops unknown roguelite meta unlock ids during hydration", () => {
+    const state = createInitialState();
+    const hydrated = hydrateGameState(
+      JSON.stringify({
+        version: 11,
+        state: {
+          ...state,
+          roguelite: {
+            ...state.roguelite,
+            unlockedMetaIds: ["eval_harness", "unknown_meta_unlock", "eval_harness"],
+          },
+        },
+      }),
+    );
+
+    expect(hydrated.roguelite.unlockedMetaIds).toEqual(["eval_harness"]);
+    expect(validateGameStateIntegrity(hydrated)).toMatchObject({ ok: true, issues: [] });
   });
 
   it("sanitizes malformed physical capability levels during hydration", () => {

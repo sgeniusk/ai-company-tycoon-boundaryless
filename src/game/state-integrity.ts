@@ -6,6 +6,7 @@ import {
   companyLocations,
   competitors,
   derivationRules,
+  metaUnlocks,
   products,
   resources,
   strategyCards,
@@ -33,6 +34,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const worldEventIds = new Set(worldEvents.map((event) => event.id));
   const derivationRuleIds = new Set(derivationRules.map((rule) => rule.id));
   const endingIds = new Set(campaignEndings.map((ending) => ending.id));
+  const metaUnlockIds = new Set(metaUnlocks.map((unlock) => unlock.id));
 
   for (const resourceId of Object.keys(resources)) {
     const value = state.resources[resourceId];
@@ -158,6 +160,22 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
 
   if (!Number.isFinite(state.roguelite.deckEditTokens) || state.roguelite.deckEditTokens < 0) {
     issues.push("roguelite deckEditTokens must be a non-negative number");
+  }
+
+  if (!Array.isArray(state.roguelite.unlockedMetaIds)) {
+    issues.push("roguelite unlockedMetaIds must be an array");
+  } else {
+    const seenMetaUnlockIds = new Set<string>();
+    for (const unlockId of state.roguelite.unlockedMetaIds) {
+      if (typeof unlockId !== "string" || !unlockId.length) {
+        issues.push("roguelite unlockedMetaIds must contain non-empty strings");
+      } else if (!metaUnlockIds.has(unlockId)) {
+        issues.push(`roguelite meta unlock "${unlockId}" is unknown`);
+      } else if (seenMetaUnlockIds.has(unlockId)) {
+        issues.push(`roguelite meta unlock "${unlockId}" is duplicated`);
+      }
+      seenMetaUnlockIds.add(unlockId);
+    }
   }
 
   for (const cardId of [

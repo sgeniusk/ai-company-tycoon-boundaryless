@@ -14,6 +14,7 @@ import {
   domains,
   events,
   items,
+  metaUnlocks,
   officeExpansions,
   officeReactions,
   officeSceneObjects,
@@ -3996,7 +3997,7 @@ function hydrateChosenGrowthPath(chosenGrowthPath: GameState["chosenGrowthPath"]
 function hydrateRogueliteState(value: unknown, fallback: RogueliteState, generatedProducts: ProductDefinition[] = []): RogueliteState {
   if (!isRecord(value)) return fallback;
 
-  const unlockedMetaIds = sanitizeStringArray(value.unlockedMetaIds);
+  const unlockedMetaIds = uniqueStrings(sanitizeStringArray(value.unlockedMetaIds, metaUnlocks.map((unlock) => unlock.id)));
   const discoveredArchetypeIds = uniqueStrings(sanitizeStringArray(value.discoveredArchetypeIds, derivationRules.map((rule) => rule.id)));
   const discoveredEndingIds = uniqueStrings(sanitizeStringArray(value.discoveredEndingIds, campaignEndings.map((ending) => ending.id)));
   const deck = hydrateStrategyDeck(value.deck, fallback.deck);
