@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { difficultyTiers, runModifiers } from "../game/data";
+import { getActiveEndingReplayBrief } from "../game/campaign-ending";
 import { DEFAULT_RUN_MODIFIER_SELECTION } from "../game/run-modifiers";
 import { formatResource } from "../game/simulation";
 import { getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "../game/tag-derivation";
@@ -89,6 +90,7 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
     () => derivedArchetypes.filter((rule) => newlyDiscoveredArchetypeSet.has(rule.id)),
     [derivedArchetypes, newlyDiscoveredArchetypeSet],
   );
+  const endingReplayBrief = useMemo(() => getActiveEndingReplayBrief(gameState), [gameState]);
   const challengeTier = difficultyTiers.find((tier) => tier.id === selection.challengeTier) ?? difficultyTiers.find((tier) => tier.id === "standard");
   const shouldShow = !isStandardRun(selection) && !dismissedSeeds.has(selection.seed);
 
@@ -132,6 +134,14 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
             <span>도전 티어</span>
             <strong>{challengeTier.name}</strong>
             <em>보상 x{challengeTier.reward_multiplier}</em>
+          </div>
+        )}
+        {endingReplayBrief && (
+          <div className="world-reveal-ending-target" aria-label="목표 엔딩">
+            <span>목표 엔딩</span>
+            <strong>{endingReplayBrief.title}</strong>
+            <em>{endingReplayBrief.rewardLabel}</em>
+            <small>{endingReplayBrief.openingMoves[0]}</small>
           </div>
         )}
         <div className="world-reveal-grid" aria-label="이번 런 모디파이어">

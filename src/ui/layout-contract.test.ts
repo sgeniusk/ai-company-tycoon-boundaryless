@@ -812,6 +812,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.ending-nearmiss-grid\s*{[^}]*grid-template-columns:/s);
   });
 
+  it("v0.67 #8 marks target ending runs in the world reveal", () => {
+    expect(worldRevealModal).toContain("getActiveEndingReplayBrief");
+    expect(worldRevealModal).toContain("world-reveal-ending-target");
+    expect(worldRevealModal).toContain("목표 엔딩");
+    expect(worldRevealModal).toContain("endingReplayBrief.openingMoves");
+    expect(appCss).toMatch(/\.world-reveal-ending-target\s*{[^}]*display:\s*grid/s);
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");
