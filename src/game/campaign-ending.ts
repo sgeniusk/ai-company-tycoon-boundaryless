@@ -176,13 +176,17 @@ export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplay
   const discoveredIds = new Set(state.roguelite.discoveredEndingIds ?? []);
   const afterCompletionDiscoveredIds = new Set(discoveredIds);
   afterCompletionDiscoveredIds.add(ending.id);
+  const alreadyDiscovered = discoveredIds.has(ending.id);
   const totalRewardBonus = getTotalEndingRewardBonus();
   const discoveredRewardBonusBeforeRun = getEndingRewardBonusForIds(discoveredIds);
   const discoveredRewardBonusAfterCompletion = getEndingRewardBonusForIds(afterCompletionDiscoveredIds);
+  const rewardProgressLabel = alreadyDiscovered
+    ? `발견 완료 · 도감 통찰 ${discoveredRewardBonusBeforeRun}/${totalRewardBonus}`
+    : `완주 시 도감 통찰 ${discoveredRewardBonusAfterCompletion}/${totalRewardBonus}`;
 
   return {
     ...plan,
-    alreadyDiscovered: discoveredIds.has(ending.id),
+    alreadyDiscovered,
     discoveredRewardBonusBeforeRun,
     discoveredRewardBonusAfterCompletion,
     seed: state.runModifiers.seed,
@@ -192,7 +196,7 @@ export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplay
     openingMoves: getReplayOpeningMoves(ending.condition),
     nextRequirements: getReplayNextRequirements(plan.requirements),
     rewardLabel: `완주 보너스 +${ending.meta_reward_bonus} 통찰`,
-    rewardProgressLabel: `완주 시 도감 통찰 ${discoveredRewardBonusAfterCompletion}/${totalRewardBonus}`,
+    rewardProgressLabel,
   };
 }
 

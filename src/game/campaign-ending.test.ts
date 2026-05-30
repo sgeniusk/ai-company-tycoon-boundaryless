@@ -953,6 +953,36 @@ describe("v0.67 campaign ending selector", () => {
     expect(getActiveEndingReplayBrief(createInitialState())).toBeUndefined();
   });
 
+  it("labels active ending replay reward previews when the target is already discovered", () => {
+    const state = createInitialState({
+      seed: "ending:privacy_trust_bastion",
+      worldLoreId: "privacy_fortress",
+      marketConditionId: "regulation_crackdown",
+      founderTraitId: "researcher_founder",
+    });
+    const discoveredState = {
+      ...state,
+      roguelite: {
+        ...state.roguelite,
+        discoveredEndingIds: ["standard_platform_compounder", "privacy_trust_bastion"],
+      },
+    };
+    const brief = getActiveEndingReplayBrief(discoveredState);
+    const discoveredReward = ["standard_platform_compounder", "privacy_trust_bastion"].reduce((total, endingId) => {
+      return total + (campaignEndings.find((ending) => ending.id === endingId)?.meta_reward_bonus ?? 0);
+    }, 0);
+    const totalRewardBonus = campaignEndings.reduce((total, ending) => total + ending.meta_reward_bonus, 0);
+
+    expect(brief).toMatchObject({
+      id: "privacy_trust_bastion",
+      alreadyDiscovered: true,
+      discoveredRewardBonusBeforeRun: discoveredReward,
+      discoveredRewardBonusAfterCompletion: discoveredReward,
+      totalRewardBonus,
+      rewardProgressLabel: `발견 완료 · 도감 통찰 ${discoveredReward}/${totalRewardBonus}`,
+    });
+  });
+
   it("ranks final-run near misses with replay selections for immediate rematch", () => {
     const nearAgiState = finalStateFor(
       {

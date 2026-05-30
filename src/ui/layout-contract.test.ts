@@ -868,6 +868,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("openingMoves");
     expect(menuPanels).toContain("activeEndingReplayBrief.rewardProgressLabel");
     expect(menuPanels).toContain("완주 시");
+    expect(menuPanels).toContain("activeEndingReplayBrief.alreadyDiscovered");
+    expect(menuPanels).toContain("발견 완료 목표");
     expect(menuPanels).toContain("activeEndingReplayBrief.nextRequirements");
     expect(menuPanels).toContain("ending-replay-checklist");
     expect(menuPanels).toContain("requirement.actionLabel");

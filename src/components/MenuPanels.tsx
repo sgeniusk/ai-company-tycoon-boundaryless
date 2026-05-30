@@ -579,6 +579,7 @@ export function renderMenuContent(
                   {activeEndingReplayBrief.targetLabels.slice(0, 5).join(" / ")} · {activeEndingReplayBrief.rewardLabel} ·{" "}
                   {activeEndingReplayBrief.rewardProgressLabel}
                 </span>
+                {activeEndingReplayBrief.alreadyDiscovered && <small>발견 완료 목표 · 반복 완주 보상</small>}
               </div>
               <div className="ending-replay-brief-steps">
                 {activeEndingReplayBrief.openingMoves.map((move) => (
