@@ -21,6 +21,8 @@ const runModifiers = readJson("run_modifiers.json");
 const metaUnlocks = readJson("meta_unlocks.json").meta_unlocks ?? [];
 const qaScenariosSource = readSource("src/game/qa-scenarios.ts");
 const betaReadinessSource = readSource("src/game/beta-readiness.ts");
+const gameChromeSource = readSource("src/components/GameChrome.tsx");
+const appCssSource = readSource("src/App.css");
 
 const routeDimensions = [
   { id: "start_cities", label: "도시", dataKey: "start_cities", conditionField: "start_city_ids" },
@@ -182,6 +184,16 @@ const checks = [
     label: "QA 시나리오",
     detail: scenarios.join(" / "),
     complete: scenarios.length === requiredScenarios.length,
+  },
+  {
+    id: "in_game_guide",
+    label: "게임 내 가이드",
+    detail: "status badge + checklist",
+    complete:
+      gameChromeSource.includes("BetaReadinessPanel") &&
+      gameChromeSource.includes("summary.statusLabel") &&
+      gameChromeSource.includes("summary.checks.map") &&
+      appCssSource.includes(".beta-readiness-check-list"),
   },
   {
     id: "derive_only_selector",

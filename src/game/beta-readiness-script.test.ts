@@ -16,6 +16,7 @@ interface BetaReadinessQaResult {
   completeCheckCount: number;
   totalCheckCount: number;
   readinessPercent: number;
+  checks: { id: string; label: string; complete: boolean }[];
 }
 
 function runBetaReadinessQa(): BetaReadinessQaResult {
@@ -39,7 +40,11 @@ describe("beta readiness QA script", () => {
     expect(result.routeOptionLabel).toBe("40/40");
     expect(result.scenarios).toEqual(expect.arrayContaining(["beta-readiness", "beta-readiness-complete"]));
     expect(result.completeCheckCount).toBe(result.totalCheckCount);
-    expect(result.totalCheckCount).toBe(6);
+    expect(result.totalCheckCount).toBe(7);
     expect(result.readinessPercent).toBe(100);
+    expect(result.checks.find((check) => check.id === "in_game_guide")).toMatchObject({
+      label: "게임 내 가이드",
+      complete: true,
+    });
   });
 });
