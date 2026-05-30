@@ -24,7 +24,16 @@ import { resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { rollRunModifierSelection } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
-import { getActiveEndingReplayBrief, getCampaignEndingDiscovery, getCampaignEndingReport, getEndingNearMisses } from "../game/campaign-ending";
+import {
+  getActiveEndingReplayBrief,
+  getCampaignEndingDiscovery,
+  getCampaignEndingReport,
+  getEndingAxisCoverageSummary,
+  getEndingCollectionSummary,
+  getEndingNearMisses,
+  type EndingAxisCoverageSummary,
+  type EndingCollectionSummary,
+} from "../game/campaign-ending";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
   advanceToFirstAnnualReview,
@@ -402,6 +411,8 @@ export function GameStage({
   const activeAlphaRunStep = getActiveAlphaRunRoadmapStep(gameState);
   const firstTenMinutePlan = getFirstTenMinutePlan(gameState);
   const firstTenMinuteProgress = getFirstTenMinuteProgress(gameState);
+  const endingCollectionSummary = getEndingCollectionSummary(gameState);
+  const endingAxisCoverage = getEndingAxisCoverageSummary();
   const availableProducts = getAvailableProductDefinitions(gameState);
   const activeProducts = availableProducts.filter((product) => gameState.activeProducts.includes(product.id));
   const activeProject = gameState.productProjects[0];
@@ -843,6 +854,8 @@ export function GameStage({
               alphaRunRoadmapProgress={alphaRunRoadmapProgress}
               alphaRunCompletion={alphaRunCompletion}
               alphaRunDebrief={alphaRunDebrief}
+              endingAxisCoverage={endingAxisCoverage}
+              endingCollectionSummary={endingCollectionSummary}
               firstTenMinutePlan={firstTenMinutePlan}
               firstTenMinuteProgress={firstTenMinuteProgress}
               firstHireRecommendation={firstHireRecommendation}
@@ -1974,6 +1987,60 @@ function WorkforceMixPanel({ summary }: { summary: WorkforceMixSummary }) {
   );
 }
 
+function BetaReadinessPanel({
+  endingAxisCoverage,
+  endingCollectionSummary,
+}: {
+  endingAxisCoverage: EndingAxisCoverageSummary[];
+  endingCollectionSummary: EndingCollectionSummary;
+}) {
+  const routeCoverageCount = endingAxisCoverage.filter((axis) => axis.complete).length;
+  const routeCoverageTotal = endingAxisCoverage.length;
+  const coveredRoutes = endingAxisCoverage.reduce((total, axis) => total + axis.covered, 0);
+  const totalRoutes = endingAxisCoverage.reduce((total, axis) => total + axis.total, 0);
+  const nextTargetLabel = endingCollectionSummary.nextReplayPlan?.title ?? "모든 목표 엔딩 발견";
+
+  return (
+    <div className="beta-readiness-panel" aria-label="베타 준비 체크">
+      <div className="beta-readiness-heading">
+        <strong>베타 준비 체크</strong>
+        <span>v0.67 멀티 엔딩 준비도</span>
+      </div>
+      <div className="beta-readiness-grid">
+        <span>
+          <strong>{endingCollectionSummary.totalCount}</strong>
+          <small>결말 루트</small>
+        </span>
+        <span>
+          <strong>{endingCollectionSummary.replayableCount}</strong>
+          <small>목표 엔딩</small>
+        </span>
+        <span>
+          <strong>
+            {endingCollectionSummary.unlockHintCount}/{endingCollectionSummary.unlockHintEligibleCount}
+          </strong>
+          <small>해금 안내 {endingCollectionSummary.unlockHintCoveragePercent}%</small>
+        </span>
+        <span>
+          <strong>{routeCoverageCount}/{routeCoverageTotal}</strong>
+          <small>루트 축 · {coveredRoutes}/{totalRoutes}</small>
+        </span>
+      </div>
+      <div className="beta-readiness-axis" aria-label="베타 엔딩 루트 커버리지">
+        {endingAxisCoverage.map((axis) => (
+          <span className={axis.complete ? "complete" : "partial"} key={axis.id}>
+            <strong>{axis.label}</strong>
+            <small>
+              {axis.covered}/{axis.total}{axis.complete ? "" : ` · 남은 ${axis.missingLabels.slice(0, 2).join(" / ")}`}
+            </small>
+          </span>
+        ))}
+      </div>
+      <small className="beta-readiness-next">다음 도감 목표: {nextTargetLabel}</small>
+    </div>
+  );
+}
+
 function AlphaRunRoadmap({
   onStepOpen,
   progress,
@@ -2079,6 +2146,8 @@ function GuidancePanel({
   alphaRunRoadmapProgress,
   alphaRunCompletion,
   alphaRunDebrief,
+  endingAxisCoverage,
+  endingCollectionSummary,
   firstTenMinutePlan,
   firstTenMinuteProgress,
   firstHireRecommendation,
@@ -2103,6 +2172,8 @@ function GuidancePanel({
   alphaRunRoadmapProgress: number;
   alphaRunCompletion?: AlphaRunCompletionSummary;
   alphaRunDebrief?: AlphaRunDebriefSummary;
+  endingAxisCoverage: EndingAxisCoverageSummary[];
+  endingCollectionSummary: EndingCollectionSummary;
   firstTenMinutePlan: FirstTenMinuteStep[];
   firstTenMinuteProgress: number;
   firstHireRecommendation?: FirstHireRecommendation;
@@ -2144,6 +2215,7 @@ function GuidancePanel({
 
   return (
     <article className={`guidance-card guidance-${guidance.tone}`}>
+      <BetaReadinessPanel endingAxisCoverage={endingAxisCoverage} endingCollectionSummary={endingCollectionSummary} />
       <div>
         <p className="eyebrow">{guidance.priorityLabel ?? "다음 목표"}</p>
         <h2>{guidance.title}</h2>

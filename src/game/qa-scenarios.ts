@@ -90,6 +90,7 @@ export const qaScenarioIds = [
   "difficulty-hard",
   "difficulty-reward",
   "world-events",
+  "beta-readiness",
   "ending-replay",
   "ending-replay-active",
   "ending-replay-known",
@@ -288,6 +289,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "아키타입 도감 QA",
       state: createArchetypeCollectionScenarioState(),
       activeMenu: "products",
+    };
+  }
+
+  if (id === "beta-readiness") {
+    return {
+      id,
+      label: "베타 준비 체크 QA",
+      state: createBetaReadinessScenarioState(),
+      activeMenu: "company",
     };
   }
 
@@ -1981,6 +1991,16 @@ function createNextRunState(): GameState {
   return {
     ...nextRunState,
     timeline: ["새 런 진입 QA: 덱 메뉴에서 최근 런 기록과 메타 해금 후보 확인", ...nextRunState.timeline].slice(0, 8),
+  };
+}
+
+function createBetaReadinessScenarioState(): GameState {
+  const state = createInitialState();
+
+  return {
+    ...state,
+    seenTutorials: [...new Set([...postReleaseSeenTutorials, ...(state.seenTutorials ?? [])])],
+    timeline: ["베타 준비 체크 QA: v0.67 멀티 엔딩 준비도와 해금 안내 100% 패널 확인", ...state.timeline].slice(0, 8),
   };
 }
 

@@ -6,6 +6,7 @@ import {
   getActiveEndingReplayBrief,
   getCampaignEnding,
   getCampaignEndingDiscovery,
+  getEndingAxisCoverageSummary,
   getEndingCollectionSummary,
   getEndingNearMisses,
 } from "./campaign-ending";
@@ -95,6 +96,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "difficulty-hard",
       "difficulty-reward",
       "world-events",
+      "beta-readiness",
       "ending-replay",
       "ending-replay-active",
       "ending-replay-known",
@@ -816,6 +818,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=difficulty-hard")?.id).toBe("difficulty-hard");
     expect(createQaScenarioFromSearch("?scenario=difficulty-reward")?.id).toBe("difficulty-reward");
     expect(createQaScenarioFromSearch("?scenario=world-events")?.id).toBe("world-events");
+    expect(createQaScenarioFromSearch("?scenario=beta-readiness")?.id).toBe("beta-readiness");
     expect(createQaScenarioFromSearch("?scenario=archetype-collection")?.id).toBe("archetype-collection");
     expect(createQaScenarioFromSearch("?scenario=ending-replay")?.id).toBe("ending-replay");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-active")?.id).toBe("ending-replay-active");
@@ -872,6 +875,19 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.roguelite.discoveredEndingIds).toEqual(
       expect.arrayContaining(["standard_platform_compounder", "privacy_trust_bastion"]),
     );
+  });
+
+  it("builds a beta readiness guide scenario from ending coverage summaries", () => {
+    const scenario = createQaScenario("beta-readiness");
+    const summary = getEndingCollectionSummary(scenario.state);
+    const axisCoverage = getEndingAxisCoverageSummary();
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("베타 준비 체크");
+    expect(summary.totalCount).toBe(campaignEndings.length);
+    expect(summary.unlockHintCount).toBe(summary.unlockHintEligibleCount);
+    expect(summary.unlockHintCoveragePercent).toBe(100);
+    expect(axisCoverage.every((axis) => axis.complete)).toBe(true);
   });
 
   it("builds an active ending replay target scenario for the company brief", () => {
