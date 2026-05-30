@@ -3124,6 +3124,31 @@ p {
   font-size: 0.86rem;
 }
 
+.beta-readiness-check-list {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.beta-readiness-check-list > span {
+  background: #fffdf5;
+  border: 2px solid #d8c49b;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 5px;
+}
+
+.beta-readiness-check-list > span.complete {
+  background: #e5f4dd;
+  border-color: var(--green);
+}
+
+.beta-readiness-check-list > span.partial {
+  background: #fff1df;
+  border-color: #d8a46f;
+}
+
 .beta-readiness-axis {
   display: grid;
   gap: 5px;
@@ -10832,6 +10857,10 @@ p {
 
   .beta-readiness-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .beta-readiness-check-list {
+    grid-template-columns: 1fr;
   }
 
   .beta-readiness-axis {

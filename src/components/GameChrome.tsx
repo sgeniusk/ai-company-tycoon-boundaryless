@@ -2019,6 +2019,14 @@ function BetaReadinessPanel({
           </span>
         ))}
       </div>
+      <div className="beta-readiness-check-list" aria-label="베타 준비 항목">
+        {summary.checks.map((check) => (
+          <span className={check.complete ? "complete" : "partial"} key={check.id}>
+            <strong>{check.label}</strong>
+            <small>{check.detail}</small>
+          </span>
+        ))}
+      </div>
       <small className="beta-readiness-next">
         준비 체크 {summary.completeCheckCount}/{summary.totalCheckCount} · {summary.codexStatusLabel} · 다음 도감 목표: {summary.nextTargetLabel}
       </small>

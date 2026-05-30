@@ -221,6 +221,9 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(betaReadinessSource).toContain("getEndingAxisCoverageSummary");
     expect(gameChrome).toContain("BetaReadinessPanel");
     expect(gameChrome).toContain("beta-readiness-panel");
+    expect(gameChrome).toContain("beta-readiness-check-list");
+    expect(gameChrome).toContain("summary.checks.map");
+    expect(gameChrome).toContain("check.complete ? \"complete\" : \"partial\"");
     expect(gameChrome).toContain("베타 준비 체크");
     expect(betaReadinessSource).toContain("v0.67 멀티 엔딩 준비도");
     expect(gameChrome).toContain("summary.unlockHintCoveragePercent");
@@ -230,8 +233,11 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("다음 도감 목표");
     expect(appCss).toMatch(/\.beta-readiness-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.beta-readiness-grid\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.beta-readiness-check-list\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.beta-readiness-check-list\s*>\s*span\.complete\s*{[^}]*border-color:/s);
     expect(appCss).toMatch(/\.beta-readiness-axis\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.beta-readiness-grid\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.beta-readiness-check-list\s*{[^}]*grid-template-columns:\s*1fr/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.beta-readiness-axis\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
