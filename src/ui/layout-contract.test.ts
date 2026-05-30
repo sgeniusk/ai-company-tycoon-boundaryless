@@ -852,6 +852,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("목표 런");
     expect(menuPanels).toContain("plan.selection");
     expect(menuPanels).toContain("plan.openingMoves");
+    expect(menuPanels).toContain("plan.rewardStatusLabel");
     expect(menuPanels).toContain("setActiveMenu={setActiveMenu}");
     expect(menuPanels).toContain("activeEndingReplayBrief?.id === plan.id");
     expect(menuPanels).toContain("ending-replay-active-card");

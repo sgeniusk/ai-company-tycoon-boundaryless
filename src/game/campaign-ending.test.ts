@@ -909,13 +909,16 @@ describe("v0.67 campaign ending selector", () => {
     };
     const plans = getEndingReplayPlans(state, campaignEndings.length);
     const privacyPlan = plans.find((plan) => plan.id === "privacy_trust_bastion");
+    const discoveredFrontierPlan = plans.find((plan) => plan.id === "frontier_demo_empire");
 
     expect(plans[0]).toMatchObject({
       id: "agi_safety_accord",
       discovered: false,
+      rewardStatusLabel: "+5 통찰 완주 보상",
     });
     expect(privacyPlan).toMatchObject({
       discovered: false,
+      rewardStatusLabel: "+4 통찰 완주 보상",
       selection: {
         seed: "ending:privacy_trust_bastion",
         worldLoreId: "privacy_fortress",
@@ -930,7 +933,10 @@ describe("v0.67 campaign ending selector", () => {
     expect(privacyPlan?.openingMoves).toEqual(
       expect.arrayContaining(["신뢰 기반 엔터프라이즈 성장 경로 선택", "프라이버시 협약 아키타입 완성"]),
     );
-    expect(plans.find((plan) => plan.id === "frontier_demo_empire")?.discovered).toBe(true);
+    expect(discoveredFrontierPlan).toMatchObject({
+      discovered: true,
+      rewardStatusLabel: "도감 보상 수집 완료",
+    });
   });
 
   it("summarizes active ending replay runs from the seeded target", () => {

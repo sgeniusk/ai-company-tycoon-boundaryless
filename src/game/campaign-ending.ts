@@ -47,6 +47,7 @@ export interface EndingReplayPlan extends EndingDefinition {
   selection: RunModifierSelectionInput;
   targetLabels: string[];
   openingMoves: string[];
+  rewardStatusLabel: string;
 }
 
 export interface EndingCollectionSummary {
@@ -335,13 +336,15 @@ function createEndingTargetPlan(ending: EndingDefinition, state: GameState): End
 
 function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<string>): EndingReplayPlan {
   const selection = createReplaySelection(ending);
+  const discovered = discoveredIds.has(ending.id);
 
   return {
     ...ending,
-    discovered: discoveredIds.has(ending.id),
+    discovered,
     selection,
     targetLabels: getReplayTargetLabels(ending.condition, selection),
     openingMoves: getReplayOpeningMoves(ending.condition),
+    rewardStatusLabel: discovered ? "도감 보상 수집 완료" : `+${ending.meta_reward_bonus} 통찰 완주 보상`,
   };
 }
 
