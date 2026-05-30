@@ -69,8 +69,10 @@ export interface ActiveEndingReplayBrief extends EndingTargetPlan {
 }
 
 export interface EndingNearMissPlan extends EndingTargetPlan {
+  discovered: boolean;
   missingLabels: string[];
   replaySelection: RunModifierSelectionInput;
+  rewardLabel: string;
   targetLabels: string[];
 }
 
@@ -243,8 +245,10 @@ function createEndingNearMissPlan(ending: EndingDefinition, state: GameState): E
 
   return {
     ...plan,
+    discovered: state.roguelite.discoveredEndingIds.includes(ending.id),
     missingLabels: plan.requirements.filter((requirement) => !requirement.complete).map((requirement) => requirement.label),
     replaySelection,
+    rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
     targetLabels: getReplayTargetLabels(ending.condition, replaySelection),
   };
 }

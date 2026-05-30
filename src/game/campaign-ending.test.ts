@@ -790,6 +790,8 @@ describe("v0.67 campaign ending selector", () => {
     expect(nearMisses[0]).toMatchObject({
       id: "agi_safety_accord",
       complete: false,
+      discovered: false,
+      rewardLabel: "+5 통찰",
       replaySelection: {
         seed: "ending:agi_safety_accord",
         worldLoreId: "agi_overhang",

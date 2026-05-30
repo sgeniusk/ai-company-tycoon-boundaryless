@@ -1076,6 +1076,7 @@ export function GameStage({
                       >
                         <strong>{nearMiss.title}</strong>
                         <span>{nearMiss.progressPercent}% · {nearMiss.targetLabels.slice(0, 3).join(" / ")}</span>
+                        <em>{nearMiss.discovered ? "발견 완료" : "새 도감 후보"} · {nearMiss.rewardLabel}</em>
                         <small>{nearMiss.missingLabels.slice(0, 3).join(" / ") || "조건 확인 필요"}</small>
                       </button>
                     ))}

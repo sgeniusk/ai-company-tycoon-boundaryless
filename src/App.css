@@ -4059,6 +4059,15 @@ p {
   overflow-wrap: anywhere;
 }
 
+.ending-nearmiss-grid em {
+  color: #8f4b1d;
+  font-size: 0.66rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .next-run-preview > div:first-child {
   align-items: center;
   display: flex;

@@ -888,8 +888,12 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("ending-nearmiss-panel");
     expect(gameChrome).toContain("아쉬운 엔딩");
     expect(gameChrome).toContain("nearMiss.replaySelection");
+    expect(gameChrome).toContain("nearMiss.discovered");
+    expect(gameChrome).toContain("새 도감 후보");
+    expect(gameChrome).toContain("nearMiss.rewardLabel");
     expect(appCss).toMatch(/\.ending-nearmiss-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-nearmiss-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.ending-nearmiss-grid em\s*{[^}]*font-style:\s*normal/s);
   });
 
   it("v0.67 #8 marks target ending runs in the world reveal", () => {
