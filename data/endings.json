@@ -106,6 +106,25 @@
       }
     },
     {
+      "id": "berlin_privacy_commons",
+      "priority": 86,
+      "title": "베를린 프라이버시 커먼즈",
+      "flavor": "프라이버시와 오픈 기술 문화를 결합해, 규제 압박을 투명한 제품 실험과 공동 검증의 장으로 바꾼 엔딩입니다.",
+      "meta_reward_bonus": 4,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 190000, "users": 120000, "data": 230, "trust": 92, "automation": 62 },
+        "start_city_ids": ["berlin"],
+        "world_lore_ids": ["privacy_fortress"],
+        "market_condition_ids": ["regulation_crackdown"],
+        "founder_trait_ids": ["engineer_founder"],
+        "growth_path_ids": ["code_vision_lab"],
+        "archetype_ids": ["privacy_compact"]
+      }
+    },
+    {
       "id": "singapore_gateway_trust_mesh",
       "priority": 84,
       "title": "싱가포르 신뢰 게이트웨이",
@@ -139,6 +158,24 @@
         "founder_trait_ids": ["researcher_founder", "academic_founder"],
         "growth_path_ids": ["code_vision_lab"],
         "archetype_ids": ["data_alchemist"]
+      }
+    },
+    {
+      "id": "beijing_domestic_platform_stack",
+      "priority": 80,
+      "title": "베이징 내수 플랫폼 스택",
+      "flavor": "거대한 내수 시장과 플랫폼 경쟁을 한 겹씩 쌓아, 외부 유통 장벽 없이도 독자적인 AI 제품 생태계를 만든 엔딩입니다.",
+      "meta_reward_bonus": 4,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 210000, "users": 260000, "compute": 220, "hype": 60, "automation": 60 },
+        "start_city_ids": ["beijing"],
+        "world_lore_ids": ["bigtech_monopoly"],
+        "market_condition_ids": ["platform_gold_rush"],
+        "founder_trait_ids": ["serial_founder"],
+        "growth_path_ids": ["productivity_line"]
       }
     },
     {
@@ -177,6 +214,24 @@
       }
     },
     {
+      "id": "alphago_slow_science_compound",
+      "priority": 72,
+      "title": "알파고 정체기의 느린 과학 복리",
+      "flavor": "연구 속도가 늦어진 세계에서도 작은 실험과 검증 데이터를 축적해, 조용한 과학적 복리로 다음 돌파구를 준비한 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 4,
+        "min_resources": { "cash": 160000, "users": 100000, "compute": 190, "data": 240, "trust": 70, "automation": 54 },
+        "world_lore_ids": ["alphago_stall"],
+        "market_condition_ids": ["funding_drought"],
+        "founder_trait_ids": ["researcher_founder"],
+        "growth_path_ids": ["code_vision_lab"],
+        "archetype_ids": ["lab_in_winter"]
+      }
+    },
+    {
       "id": "compute_siege_survivor",
       "priority": 70,
       "title": "컴퓨트 포위 생존자",
@@ -209,6 +264,24 @@
         "founder_trait_ids": ["researcher_founder"],
         "growth_path_ids": ["code_vision_lab"],
         "archetype_ids": ["lab_in_winter"]
+      }
+    },
+    {
+      "id": "texas_energy_compute_grid",
+      "priority": 64,
+      "title": "텍사스 에너지 컴퓨트 그리드",
+      "flavor": "에너지 인프라와 지역 컴퓨트 제약을 직접 엮어, 자본과 전력망으로 버티는 AI 운영 기반을 만든 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 4,
+        "min_resources": { "cash": 240000, "users": 130000, "compute": 280, "talent": 24, "automation": 68 },
+        "start_city_ids": ["texas"],
+        "world_lore_ids": ["chip_war"],
+        "market_condition_ids": ["talent_war"],
+        "founder_trait_ids": ["capitalist_founder"],
+        "growth_path_ids": ["productivity_line"]
       }
     },
     {
@@ -262,6 +335,25 @@
         "market_condition_ids": ["consumer_hype_cycle"],
         "founder_trait_ids": ["designer_founder", "marketer_founder"],
         "growth_path_ids": ["productivity_line"]
+      }
+    },
+    {
+      "id": "tokyo_hype_companion_studio",
+      "priority": 54,
+      "title": "도쿄 하이프 동반자 스튜디오",
+      "flavor": "로봇 붐과 소비자 하이프를 캐릭터 있는 제품 실험으로 묶어, 매달 화제가 되는 AI 동반자 스튜디오를 만든 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 190000, "users": 210000, "compute": 240, "hype": 84, "trust": 55, "automation": 56 },
+        "start_city_ids": ["tokyo"],
+        "world_lore_ids": ["robotics_boom"],
+        "market_condition_ids": ["consumer_hype_cycle"],
+        "founder_trait_ids": ["marketer_founder"],
+        "growth_path_ids": ["code_vision_lab"],
+        "archetype_ids": ["hype_machine"]
       }
     },
     {

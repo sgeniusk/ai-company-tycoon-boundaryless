@@ -421,6 +421,134 @@ const endingFixtures: Record<string, GameState> = {
       },
     },
   ),
+  berlin_privacy_commons: finalStateFor(
+    {
+      startCityId: "berlin",
+      worldLoreId: "privacy_fortress",
+      marketConditionId: "regulation_crackdown",
+      founderTraitId: "engineer_founder",
+    },
+    {
+      chosenGrowthPath: {
+        id: "code_vision_lab",
+        title: "코드/비전 연구소",
+        month: 4,
+        bonusDescription: "test fixture",
+        effects: {},
+        monthlyEffects: {},
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 230000,
+        users: 150000,
+        compute: 240,
+        data: 260,
+        talent: 18,
+        trust: 94,
+        hype: 42,
+        automation: 66,
+      },
+    },
+  ),
+  beijing_domestic_platform_stack: finalStateFor(
+    {
+      startCityId: "beijing",
+      worldLoreId: "bigtech_monopoly",
+      marketConditionId: "platform_gold_rush",
+      founderTraitId: "serial_founder",
+    },
+    {
+      resources: {
+        ...createInitialState().resources,
+        cash: 240000,
+        users: 280000,
+        compute: 260,
+        data: 230,
+        talent: 20,
+        trust: 70,
+        hype: 64,
+        automation: 64,
+      },
+    },
+  ),
+  alphago_slow_science_compound: finalStateFor(
+    {
+      worldLoreId: "alphago_stall",
+      marketConditionId: "funding_drought",
+      founderTraitId: "researcher_founder",
+    },
+    {
+      chosenGrowthPath: {
+        id: "code_vision_lab",
+        title: "코드/비전 연구소",
+        month: 4,
+        bonusDescription: "test fixture",
+        effects: {},
+        monthlyEffects: {},
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 180000,
+        users: 120000,
+        compute: 210,
+        data: 260,
+        talent: 20,
+        trust: 72,
+        hype: 30,
+        automation: 58,
+      },
+    },
+  ),
+  texas_energy_compute_grid: finalStateFor(
+    {
+      startCityId: "texas",
+      worldLoreId: "chip_war",
+      marketConditionId: "talent_war",
+      founderTraitId: "capitalist_founder",
+    },
+    {
+      resources: {
+        ...createInitialState().resources,
+        cash: 260000,
+        users: 150000,
+        compute: 300,
+        data: 180,
+        talent: 26,
+        trust: 62,
+        hype: 48,
+        automation: 70,
+      },
+    },
+  ),
+  tokyo_hype_companion_studio: finalStateFor(
+    {
+      startCityId: "tokyo",
+      worldLoreId: "robotics_boom",
+      marketConditionId: "consumer_hype_cycle",
+      founderTraitId: "marketer_founder",
+    },
+    {
+      chosenGrowthPath: {
+        id: "code_vision_lab",
+        title: "코드/비전 연구소",
+        month: 4,
+        bonusDescription: "test fixture",
+        effects: {},
+        monthlyEffects: {},
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 210000,
+        users: 230000,
+        compute: 260,
+        data: 220,
+        talent: 18,
+        trust: 58,
+        hype: 88,
+        automation: 58,
+      },
+    },
+  ),
   tokyo_consumer_companion: finalStateFor(
     {
       startCityId: "tokyo",
@@ -468,15 +596,20 @@ describe("v0.67 campaign ending selector", () => {
       "seoul_enterprise_operating_system",
       "physical_ai_supply_chain",
       "chip_war_local_compute_pact",
+      "berlin_privacy_commons",
       "singapore_gateway_trust_mesh",
       "data_drought_synthetic_lab",
+      "beijing_domestic_platform_stack",
       "new_york_hype_exchange",
       "platform_escape_network",
+      "alphago_slow_science_compound",
       "compute_siege_survivor",
       "bengaluru_frugal_research_lab",
+      "texas_energy_compute_grid",
       "ai_winter_profitable_lab",
       "london_ai_audit_exchange",
       "tokyo_consumer_companion",
+      "tokyo_hype_companion_studio",
       "standard_platform_compounder",
       "garage_restart",
     ]);
@@ -488,7 +621,7 @@ describe("v0.67 campaign ending selector", () => {
   });
 
   it("guards replay-safe ending data invariants in validate:data", () => {
-    expect(validateDataSource).toContain("expected exactly 17 campaign endings");
+    expect(validateDataSource).toContain("expected exactly 22 campaign endings");
     expect(validateDataSource).toContain("priority must be unique");
     expect(validateDataSource).toContain("fallback ending must be the final entry");
     expect(validateDataSource).toContain("non-fallback ending must require status success");
