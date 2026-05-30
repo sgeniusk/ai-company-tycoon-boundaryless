@@ -30,6 +30,7 @@ export interface EndingReplayPlan extends EndingDefinition {
   discovered: boolean;
   selection: RunModifierSelectionInput;
   targetLabels: string[];
+  openingMoves: string[];
 }
 
 export interface ActiveEndingReplayBrief extends EndingTargetPlan {
@@ -160,6 +161,7 @@ function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<str
     discovered: discoveredIds.has(ending.id),
     selection,
     targetLabels: getReplayTargetLabels(ending.condition, selection),
+    openingMoves: getReplayOpeningMoves(ending.condition),
   };
 }
 

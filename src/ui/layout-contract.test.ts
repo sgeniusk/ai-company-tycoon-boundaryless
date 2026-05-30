@@ -780,6 +780,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("ending-replay-panel");
     expect(menuPanels).toContain("목표 런");
     expect(menuPanels).toContain("plan.selection");
+    expect(menuPanels).toContain("plan.openingMoves");
     expect(qaScenarios).toContain("ending-replay");
     expect(appCss).toMatch(/\.ending-replay-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-replay-grid\s*{[^}]*grid-template-columns:/s);

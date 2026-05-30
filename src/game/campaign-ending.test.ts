@@ -459,6 +459,9 @@ describe("v0.67 campaign ending selector", () => {
     expect(privacyPlan?.targetLabels).toEqual(
       expect.arrayContaining(["프라이버시 요새", "규제 단속", "연구자 창업자", "신뢰 기반 엔터프라이즈"]),
     );
+    expect(privacyPlan?.openingMoves).toEqual(
+      expect.arrayContaining(["신뢰 기반 엔터프라이즈 성장 경로 선택", "프라이버시 협약 아키타입 완성"]),
+    );
     expect(plans.find((plan) => plan.id === "frontier_demo_empire")?.discovered).toBe(true);
   });
 

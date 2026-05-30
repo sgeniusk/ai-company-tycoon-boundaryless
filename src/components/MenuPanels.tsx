@@ -1330,6 +1330,7 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
                   <p className="item-meta">{plan.discovered ? "발견 완료" : "미발견 목표"} · 통찰 보너스 +{plan.meta_reward_bonus}</p>
                   <strong>{plan.title}</strong>
                   <span>{plan.targetLabels.slice(0, 5).join(" / ")}</span>
+                  <small>{plan.openingMoves.slice(0, 2).join(" / ")}</small>
                 </div>
                 <button
                   onClick={() =>
