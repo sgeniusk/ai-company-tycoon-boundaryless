@@ -32,6 +32,8 @@
     "qa:beta-readiness:check": "node scripts/qa/check-v067-beta-readiness.mjs --no-write",
     "qa:v068-flow-smoke": "node scripts/qa/check-v068-flow-smoke.mjs",
     "qa:v068-flow-smoke:check": "node scripts/qa/check-v068-flow-smoke.mjs --check",
+    "qa:v068-beta-candidate": "node scripts/qa/check-v068-beta-candidate.mjs",
+    "qa:v068-beta-candidate:check": "node scripts/qa/check-v068-beta-candidate.mjs --check",
     "harness:gate": "npm test -- --maxWorkers=1 && npm run validate:data && npm run qa:beta-readiness:check && npm run build"
   },
   "dependencies": {
