@@ -583,6 +583,9 @@ export function renderMenuContent(
                     <span className={requirement.blocking ? "blocking" : ""} key={requirement.id}>
                       <strong>{requirement.label}</strong>
                       <small>{requirement.currentLabel} / {requirement.targetLabel}</small>
+                      <button onClick={() => setActiveMenu?.(requirement.targetMenu)} type="button">
+                        {requirement.actionLabel}
+                      </button>
                     </span>
                   ))}
                 </div>

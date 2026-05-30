@@ -19,6 +19,13 @@ export interface EndingRequirementProgress {
   progress: number;
 }
 
+export type EndingReplayActionMenuId = "company" | "products" | "deck" | "agents" | "research" | "shop" | "competition" | "log";
+
+export interface EndingReplayRequirementPrompt extends EndingRequirementProgress {
+  actionLabel: string;
+  targetMenu: EndingReplayActionMenuId;
+}
+
 export interface EndingTargetPlan extends EndingDefinition {
   complete: boolean;
   progressPercent: number;
@@ -39,7 +46,7 @@ export interface ActiveEndingReplayBrief extends EndingTargetPlan {
   seed: string;
   targetLabels: string[];
   openingMoves: string[];
-  nextRequirements: EndingRequirementProgress[];
+  nextRequirements: EndingReplayRequirementPrompt[];
   rewardLabel: string;
 }
 
@@ -346,7 +353,7 @@ function getReplayOpeningMoves(condition: EndingConditionDefinition): string[] {
   return moves.slice(0, 5);
 }
 
-function getReplayNextRequirements(requirements: EndingRequirementProgress[]): EndingRequirementProgress[] {
+function getReplayNextRequirements(requirements: EndingRequirementProgress[]): EndingReplayRequirementPrompt[] {
   return requirements
     .filter((requirement) => !requirement.complete && requirement.id !== "status" && requirement.id !== "min_month")
     .sort(
@@ -355,7 +362,8 @@ function getReplayNextRequirements(requirements: EndingRequirementProgress[]): E
         Number(second.blocking) - Number(first.blocking) ||
         first.label.localeCompare(second.label),
     )
-    .slice(0, 4);
+    .slice(0, 4)
+    .map(addReplayRequirementAction);
 }
 
 function replayRequirementRank(id: string): number {
@@ -375,6 +383,34 @@ function replayRequirementRank(id: string): number {
   if (resourceRanks[id] !== undefined) return resourceRanks[id];
   if (id.endsWith("_ids")) return 20;
   return 30;
+}
+
+function addReplayRequirementAction(requirement: EndingRequirementProgress): EndingReplayRequirementPrompt {
+  return {
+    ...requirement,
+    ...getReplayRequirementAction(requirement.id),
+  };
+}
+
+function getReplayRequirementAction(id: string): Pick<EndingReplayRequirementPrompt, "actionLabel" | "targetMenu"> {
+  if (id === "growth_path_ids") return { actionLabel: "제품/성장 선택", targetMenu: "products" };
+  if (id === "archetype_ids") return { actionLabel: "세계 태그 점검", targetMenu: "company" };
+  if (id === "min_products") return { actionLabel: "제품 출시", targetMenu: "products" };
+
+  const resourceActions: Record<string, Pick<EndingReplayRequirementPrompt, "actionLabel" | "targetMenu">> = {
+    min_resource_automation: { actionLabel: "자동화 연구", targetMenu: "research" },
+    min_resource_cash: { actionLabel: "수익/확장 점검", targetMenu: "shop" },
+    min_resource_compute: { actionLabel: "컴퓨트 연구", targetMenu: "research" },
+    min_resource_data: { actionLabel: "데이터 연구", targetMenu: "research" },
+    min_resource_hype: { actionLabel: "제품 홍보", targetMenu: "products" },
+    min_resource_talent: { actionLabel: "팀 채용", targetMenu: "agents" },
+    min_resource_trust: { actionLabel: "신뢰 카드/안전 운영", targetMenu: "deck" },
+    min_resource_users: { actionLabel: "제품 성장", targetMenu: "products" },
+  };
+
+  if (resourceActions[id]) return resourceActions[id];
+  if (id.endsWith("_ids")) return { actionLabel: "목표 런 다시 시작", targetMenu: "deck" };
+  return { actionLabel: "회사 목표 점검", targetMenu: "company" };
 }
 
 function getEndingRequirementProgress(condition: EndingConditionDefinition, state: GameState): EndingRequirementProgress[] {

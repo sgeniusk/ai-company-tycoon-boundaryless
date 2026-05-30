@@ -4732,6 +4732,19 @@ p {
   color: #68735a;
 }
 
+.ending-replay-checklist button {
+  align-self: end;
+  background: var(--green);
+  border: 0;
+  color: white;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-weight: 900;
+  min-height: 30px;
+  padding: 7px 8px;
+  width: 100%;
+}
+
 .ending-target-grid {
   display: grid;
   gap: 7px;

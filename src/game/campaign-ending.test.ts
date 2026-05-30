@@ -520,6 +520,25 @@ describe("v0.67 campaign ending selector", () => {
       "min_resource_trust",
       "min_resource_automation",
     ]);
+    expect(brief?.nextRequirements).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "growth_path_ids",
+          actionLabel: "제품/성장 선택",
+          targetMenu: "products",
+        }),
+        expect.objectContaining({
+          id: "min_resource_trust",
+          actionLabel: "신뢰 카드/안전 운영",
+          targetMenu: "deck",
+        }),
+        expect.objectContaining({
+          id: "min_resource_automation",
+          actionLabel: "자동화 연구",
+          targetMenu: "research",
+        }),
+      ]),
+    );
     expect(brief?.nextRequirements.some((requirement) => ["status", "min_month", "world_lore_ids"].includes(requirement.id))).toBe(false);
     expect(getActiveEndingReplayBrief(createInitialState())).toBeUndefined();
   });
