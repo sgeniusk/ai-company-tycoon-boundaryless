@@ -9,6 +9,7 @@ import {
   metaUnlocks,
   products,
   resources,
+  starterDecks,
   strategyCards,
   worldEvents,
 } from "./data";
@@ -35,6 +36,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const derivationRuleIds = new Set(derivationRules.map((rule) => rule.id));
   const endingIds = new Set(campaignEndings.map((ending) => ending.id));
   const metaUnlockIds = new Set(metaUnlocks.map((unlock) => unlock.id));
+  const starterDeckIds = new Set(starterDecks.map((deck) => deck.id));
 
   for (const resourceId of Object.keys(resources)) {
     const value = state.resources[resourceId];
@@ -176,6 +178,14 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
       }
       seenMetaUnlockIds.add(unlockId);
     }
+  }
+
+  const unlockedMetaIdSet = new Set(Array.isArray(state.roguelite.unlockedMetaIds) ? state.roguelite.unlockedMetaIds : []);
+  const starterDeck = starterDecks.find((deck) => deck.id === state.roguelite.starterDeckId);
+  if (state.roguelite.starterDeckId !== undefined && !starterDeckIds.has(state.roguelite.starterDeckId)) {
+    issues.push(`roguelite starter deck "${state.roguelite.starterDeckId}" is unknown`);
+  } else if (starterDeck?.required_meta_id && !unlockedMetaIdSet.has(starterDeck.required_meta_id)) {
+    issues.push(`roguelite starter deck "${starterDeck.id}" requires meta unlock "${starterDeck.required_meta_id}"`);
   }
 
   for (const cardId of [

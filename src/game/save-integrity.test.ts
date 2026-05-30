@@ -213,6 +213,7 @@ describe("v0.11 save integrity and recovery", () => {
       roguelite: {
         ...createInitialState().roguelite,
         unlockedMetaIds: ["unknown_meta_unlock"],
+        starterDeckId: "unknown_starter_deck",
       },
     });
 
@@ -220,6 +221,7 @@ describe("v0.11 save integrity and recovery", () => {
     expect(report.issues.some((issue) => issue.includes("cash"))).toBe(true);
     expect(report.issues.some((issue) => issue.includes("missing_product"))).toBe(true);
     expect(report.issues.some((issue) => issue.includes("unknown_meta_unlock"))).toBe(true);
+    expect(report.issues.some((issue) => issue.includes("unknown_starter_deck"))).toBe(true);
   });
 
   it("keeps valid saves free of integrity issues", () => {
@@ -386,6 +388,25 @@ describe("v0.11 save integrity and recovery", () => {
     );
 
     expect(hydrated.roguelite.unlockedMetaIds).toEqual(["eval_harness"]);
+    expect(validateGameStateIntegrity(hydrated)).toMatchObject({ ok: true, issues: [] });
+  });
+
+  it("falls back from unknown starter deck ids during hydration", () => {
+    const state = createInitialState();
+    const hydrated = hydrateGameState(
+      JSON.stringify({
+        version: 11,
+        state: {
+          ...state,
+          roguelite: {
+            ...state.roguelite,
+            starterDeckId: "unknown_starter_deck",
+          },
+        },
+      }),
+    );
+
+    expect(hydrated.roguelite.starterDeckId).toBe("balanced_founder");
     expect(validateGameStateIntegrity(hydrated)).toMatchObject({ ok: true, issues: [] });
   });
 

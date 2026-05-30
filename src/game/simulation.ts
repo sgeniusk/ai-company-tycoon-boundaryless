@@ -23,6 +23,7 @@ import {
   products,
   resources,
   rivalEvents,
+  starterDecks,
   startingState,
   strategyCards,
   upgrades,
@@ -4003,13 +4004,15 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState, generat
   const deck = hydrateStrategyDeck(value.deck, fallback.deck);
   const cardIds = strategyCards.map((card) => card.id);
 
+  const starterDeckId = getHydratedStarterDeckId(value.starterDeckId, unlockedMetaIds, fallback.starterDeckId);
+
   return {
     runNumber: Math.max(1, Math.round(sanitizeNumber(value.runNumber, fallback.runNumber))),
     founderInsight: Math.max(0, Math.round(sanitizeNumber(value.founderInsight, fallback.founderInsight))),
     unlockedMetaIds,
     discoveredArchetypeIds,
     discoveredEndingIds,
-    starterDeckId: typeof value.starterDeckId === "string" ? value.starterDeckId : fallback.starterDeckId,
+    starterDeckId,
     deck,
     deckEditTokens: Math.max(0, Math.round(sanitizeNumber(value.deckEditTokens, fallback.deckEditTokens))),
     upgradedCardIds: uniqueStrings(sanitizeStringArray(value.upgradedCardIds, cardIds)),
@@ -4017,6 +4020,15 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState, generat
     runHistory: hydrateRunHistory(value.runHistory),
     pendingCardReward: hydratePendingCardReward(value.pendingCardReward, generatedProducts),
   };
+}
+
+function getHydratedStarterDeckId(value: unknown, unlockedMetaIds: string[], fallback: string | undefined): string {
+  const candidate = typeof value === "string" ? value : fallback;
+  const unlockedMetaIdSet = new Set(unlockedMetaIds);
+  const deck = starterDecks.find((entry) => entry.id === candidate);
+
+  if (deck && (!deck.required_meta_id || unlockedMetaIdSet.has(deck.required_meta_id))) return deck.id;
+  return "balanced_founder";
 }
 
 function hydrateStrategyDeck(value: unknown, fallback: StrategyDeckState): StrategyDeckState {
