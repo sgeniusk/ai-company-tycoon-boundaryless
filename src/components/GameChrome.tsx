@@ -1036,6 +1036,13 @@ export function GameStage({
                       <strong>{runSummary.spotlight.rivalPressure?.name ?? "관측 없음"}</strong>
                       <small>{runSummary.spotlight.rivalPressure?.pressure ?? "경쟁사 시장 압박이 아직 낮습니다."}</small>
                     </div>
+                    {runSummary.spotlight.ending && (
+                      <div className="ending-spotlight-card">
+                        <span>{runSummary.spotlight.ending.newlyDiscovered ? "신규 엔딩 발견" : "발견 완료 엔딩"}</span>
+                        <strong>{runSummary.spotlight.ending.title}</strong>
+                        <small>엔딩 보너스 +{runSummary.spotlight.ending.metaRewardBonus} 통찰</small>
+                      </div>
+                    )}
                   </div>
                   <div className="run-insight-card">
                     <strong>창업 통찰 +{runSummary.spotlight.insightReward}</strong>

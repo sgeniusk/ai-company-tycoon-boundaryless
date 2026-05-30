@@ -1,4 +1,6 @@
-import { achievements, competitors, domains, metaUnlocks, products, resources, strategyCards } from "./data";
+import { achievements, competitors, difficultyTiers, domains, metaUnlocks, products, resources, strategyCards } from "./data";
+import { CAMPAIGN_FINAL_MONTH } from "./campaign";
+import { getCampaignEnding } from "./campaign-ending";
 import { getRunInsightReward } from "./meta-progression";
 import { getTenMonthArc } from "./ten-month-arc";
 import type { GameState } from "./types";
@@ -29,6 +31,14 @@ export interface RunSpotlightRival {
   pressure: string;
 }
 
+export interface RunSpotlightEnding {
+  id: string;
+  title: string;
+  flavor: string;
+  metaRewardBonus: number;
+  newlyDiscovered: boolean;
+}
+
 export interface RunNextPreview {
   projectedRunNumber: number;
   projectedFounderInsight: number;
@@ -41,6 +51,7 @@ export interface RunSpotlight {
   bestProduct?: RunSpotlightProduct;
   representativeCard?: RunSpotlightCard;
   rivalPressure?: RunSpotlightRival;
+  ending?: RunSpotlightEnding;
   insightReward: number;
   insightBreakdown: string[];
   failureReasons: string[];
@@ -154,17 +165,33 @@ function getRunSpotlight(state: GameState, rank: RunRank): RunSpotlight {
   const bestProduct = getBestProduct(state);
   const representativeCard = getRepresentativeCard(state);
   const rivalPressure = getRivalPressure(state, bestProduct?.id);
+  const ending = getRunEndingSpotlight(state);
   const insightReward = getRunInsightReward(state);
 
   return {
     bestProduct,
     representativeCard,
     rivalPressure,
+    ending,
     insightReward,
     insightBreakdown: getInsightBreakdown(state),
     failureReasons: getFailureReasons(state),
     nextRunHook: getNextRunHook(state, rank, bestProduct, representativeCard),
     nextRunPreview: getNextRunPreview(state, insightReward, bestProduct, representativeCard, rivalPressure),
+  };
+}
+
+function getRunEndingSpotlight(state: GameState): RunSpotlightEnding | undefined {
+  if (state.month < CAMPAIGN_FINAL_MONTH) return undefined;
+
+  const ending = getCampaignEnding(state);
+
+  return {
+    id: ending.id,
+    title: ending.title,
+    flavor: ending.flavor,
+    metaRewardBonus: ending.meta_reward_bonus,
+    newlyDiscovered: !state.roguelite.discoveredEndingIds.includes(ending.id),
   };
 }
 
@@ -253,6 +280,12 @@ function getInsightBreakdown(state: GameState): string[] {
   if ((state.resources.trust ?? 0) >= 40) breakdown.push(`신뢰 보너스 +${Math.floor((state.resources.trust ?? 0) / 40)}`);
   if (state.status === "success") breakdown.push("성공 보너스 +3");
   if (state.status === "failure") breakdown.push("실패 학습 +1");
+  const rewardMultiplier = difficultyTiers.find((tier) => tier.id === state.runModifiers.challengeTier)?.reward_multiplier ?? 1;
+  if (rewardMultiplier !== 1) breakdown.push(`도전 티어 x${rewardMultiplier}`);
+  if (state.month >= CAMPAIGN_FINAL_MONTH) {
+    const ending = getCampaignEnding(state);
+    if (ending.meta_reward_bonus > 0) breakdown.push(`엔딩 보너스 ${ending.title} +${ending.meta_reward_bonus}`);
+  }
   return breakdown;
 }
 

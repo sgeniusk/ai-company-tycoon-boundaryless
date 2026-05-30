@@ -786,6 +786,13 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-replay-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #5 exposes ending reward payoff in the run summary", () => {
+    expect(gameChrome).toContain("spotlight.ending");
+    expect(gameChrome).toContain("ending-spotlight-card");
+    expect(gameChrome).toContain("엔딩 보너스");
+    expect(appCss).toMatch(/\.ending-spotlight-card\s*{[^}]*border-color:/s);
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");

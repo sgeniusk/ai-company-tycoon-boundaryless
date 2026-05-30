@@ -179,4 +179,49 @@ describe("v0.11 commercial run summary", () => {
     });
     expect(nextRun.roguelite.runHistory[0].note).toContain("10년");
   });
+
+  it("breaks out the 10-year ending bonus in the run summary spotlight", () => {
+    const initial = createInitialState();
+    const finished = {
+      ...initial,
+      month: 120,
+      status: "success" as const,
+      activeProducts: [
+        "ai_writing_assistant",
+        "meeting_summary_bot",
+        "customer_support_agent",
+        "foundation_model_api",
+        "robotics_control_os",
+      ],
+      unlockedDomains: ["personal_productivity", "customer_support", "foundation_models", "robotics", "mobility"],
+      resources: {
+        ...initial.resources,
+        cash: 250000,
+        users: 180000,
+        trust: 92,
+        automation: 70,
+      },
+    };
+
+    const summary = getRunSummary(finished);
+
+    expect(summary.spotlight.ending).toMatchObject({
+      id: "standard_platform_compounder",
+      title: "표준 세계의 복리 플랫폼",
+      metaRewardBonus: 2,
+      newlyDiscovered: true,
+    });
+    expect(summary.spotlight.insightBreakdown).toEqual(
+      expect.arrayContaining(["엔딩 보너스 표준 세계의 복리 플랫폼 +2"]),
+    );
+    expect(
+      getRunSummary({
+        ...finished,
+        roguelite: {
+          ...finished.roguelite,
+          discoveredEndingIds: ["standard_platform_compounder"],
+        },
+      }).spotlight.ending?.newlyDiscovered,
+    ).toBe(false);
+  });
 });

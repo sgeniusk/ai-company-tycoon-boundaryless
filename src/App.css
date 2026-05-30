@@ -3824,6 +3824,11 @@ p {
   padding: 8px;
 }
 
+.ending-spotlight-card {
+  background: #fff8df;
+  border-color: #d6a942;
+}
+
 .run-spotlight-grid span,
 .run-insight-card span,
 .run-risk-list span,
