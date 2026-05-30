@@ -1309,14 +1309,31 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             <span>{discoveredEndingCount}/{endingCollectionEntries.length} 발견</span>
           </div>
           <div className="ending-collection-grid">
-            {endingCollectionEntries.map((entry) => (
-              <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
-                <p className="item-meta">통찰 보너스 +{entry.meta_reward_bonus}</p>
-                <strong>{entry.discovered ? entry.title : "미발견 엔딩"}</strong>
-                <span>{entry.discovered ? entry.flavor : "10년 캠페인 결과에서 조건을 만족하면 공개됩니다."}</span>
-                {entry.targetLabels.length > 0 && <small>목표 힌트: {entry.targetLabels.slice(0, 4).join(" / ")}</small>}
-              </article>
-            ))}
+            {endingCollectionEntries.map((entry) => {
+              const replaySelection = entry.selection;
+
+              return (
+                <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
+                  <p className="item-meta">통찰 보너스 +{entry.meta_reward_bonus}</p>
+                  <strong>{entry.discovered ? entry.title : "미발견 엔딩"}</strong>
+                  <span>{entry.discovered ? entry.flavor : "10년 캠페인 결과에서 조건을 만족하면 공개됩니다."}</span>
+                  {entry.targetLabels.length > 0 && <small>목표 힌트: {entry.targetLabels.slice(0, 4).join(" / ")}</small>}
+                  {replaySelection && (
+                    <button
+                      className="ending-collection-run-button"
+                      onClick={() =>
+                        setGameState((current) =>
+                          resetRunWithMetaUnlocks(current, [], current.roguelite.starterDeckId ?? "balanced_founder", replaySelection),
+                        )
+                      }
+                      type="button"
+                    >
+                      도감 목표 런
+                    </button>
+                  )}
+                </article>
+              );
+            })}
           </div>
         </div>
         <div className="ending-replay-panel" aria-label="엔딩 목표 런">

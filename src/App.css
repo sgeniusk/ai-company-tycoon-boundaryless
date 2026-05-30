@@ -6971,6 +6971,10 @@ p {
   overflow-wrap: anywhere;
 }
 
+.ending-collection-run-button {
+  align-self: end;
+}
+
 .ending-replay-grid button {
   align-self: end;
 }

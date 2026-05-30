@@ -6,6 +6,7 @@ import type { EndingConditionDefinition, EndingDefinition, GameState, ResourceMa
 export interface EndingCollectionEntry extends EndingDefinition {
   discovered: boolean;
   targetLabels: string[];
+  selection?: RunModifierSelectionInput;
 }
 
 export interface EndingRequirementProgress {
@@ -130,12 +131,13 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
 
   return campaignEndings
     .map((ending) => {
-      const selection = createReplaySelection(ending);
+      const selection = ending.condition.fallback === true ? undefined : createReplaySelection(ending);
 
       return {
         ...ending,
         discovered: discoveredIds.has(ending.id),
-        targetLabels: getReplayTargetLabels(ending.condition, selection),
+        targetLabels: selection ? getReplayTargetLabels(ending.condition, selection) : [],
+        selection,
       };
     })
     .sort((first, second) => Number(second.discovered) - Number(first.discovered) || second.priority - first.priority || first.id.localeCompare(second.id));

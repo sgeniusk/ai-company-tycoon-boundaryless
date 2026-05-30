@@ -416,6 +416,12 @@ describe("v0.67 campaign ending selector", () => {
     expect(entries.find((entry) => entry.id === "frontier_demo_empire")?.targetLabels).toEqual(
       expect.arrayContaining(["오픈소스 천국", "엔지니어 창업자", "코드/비전 연구소", "프런티어 차고"]),
     );
+    expect(entries.find((entry) => entry.id === "frontier_demo_empire")?.selection).toMatchObject({
+      seed: "ending:frontier_demo_empire",
+      worldLoreId: "open_source_heaven",
+      founderTraitId: "engineer_founder",
+      challengeTierId: "standard",
+    });
   });
 
   it("ranks feasible ending targets for the current run and explains missing requirements", () => {

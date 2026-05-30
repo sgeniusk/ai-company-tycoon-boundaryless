@@ -761,8 +761,11 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("discoveredEndingIds");
     expect(menuPanels).toContain("엔딩 도감");
     expect(menuPanels).toContain("entry.targetLabels");
+    expect(menuPanels).toContain("entry.selection");
+    expect(menuPanels).toContain("도감 목표 런");
     expect(appCss).toMatch(/\.ending-collection-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-collection-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.ending-collection-run-button\s*{[^}]*align-self:\s*end/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
