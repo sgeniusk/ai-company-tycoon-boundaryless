@@ -968,6 +968,7 @@ describe("v0.67 campaign ending selector", () => {
       totalRewardBonus,
       completionRewardNotice: "완주 보너스 +4 통찰이 다음 런 메타 보상에 반영됩니다.",
       rewardProgressLabel: `완주 시 도감 통찰 ${standardReward + 4}/${totalRewardBonus}`,
+      rewardStatusLabel: "완주 보너스 +4 통찰",
       selection: {
         seed: "ending:privacy_trust_bastion",
         worldLoreId: "privacy_fortress",
@@ -1039,6 +1040,7 @@ describe("v0.67 campaign ending selector", () => {
       totalRewardBonus,
       completionRewardNotice: "이미 발견한 엔딩입니다. 도감 통찰은 추가되지 않지만 기록은 갱신됩니다.",
       rewardProgressLabel: `발견 완료 · 도감 통찰 ${discoveredReward}/${totalRewardBonus}`,
+      rewardStatusLabel: "도감 보상 수집 완료",
     });
   });
 

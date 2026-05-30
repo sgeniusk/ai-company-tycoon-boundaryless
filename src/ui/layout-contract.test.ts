@@ -960,6 +960,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(worldRevealModal).toContain("getActiveEndingReplayBrief");
     expect(worldRevealModal).toContain("world-reveal-ending-target");
     expect(worldRevealModal).toContain("목표 엔딩");
+    expect(worldRevealModal).toContain("endingReplayBrief.rewardStatusLabel");
     expect(worldRevealModal).toContain("endingReplayBrief.rewardProgressLabel");
     expect(worldRevealModal).toContain("endingReplayBrief.openingMoves");
     expect(appCss).toMatch(/\.world-reveal-ending-target\s*{[^}]*display:\s*grid/s);

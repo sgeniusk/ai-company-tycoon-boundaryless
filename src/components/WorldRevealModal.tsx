@@ -140,7 +140,7 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
           <div className="world-reveal-ending-target" aria-label="목표 엔딩">
             <span>목표 엔딩</span>
             <strong>{endingReplayBrief.title}</strong>
-            <em>{endingReplayBrief.rewardLabel}</em>
+            <em>{endingReplayBrief.rewardStatusLabel}</em>
             <small>{endingReplayBrief.rewardProgressLabel}</small>
             <small>{endingReplayBrief.openingMoves[0]}</small>
           </div>
