@@ -30,6 +30,7 @@
     "qa:agy-review": "node scripts/qa/run-v057-agy-agent-review.mjs",
     "qa:beta-readiness": "node scripts/qa/check-v067-beta-readiness.mjs",
     "qa:beta-readiness:check": "node scripts/qa/check-v067-beta-readiness.mjs --no-write",
+    "qa:v068-flow-smoke": "node scripts/qa/check-v068-flow-smoke.mjs",
     "harness:gate": "npm test -- --maxWorkers=1 && npm run validate:data && npm run qa:beta-readiness:check && npm run build"
   },
   "dependencies": {
