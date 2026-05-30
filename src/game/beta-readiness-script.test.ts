@@ -63,8 +63,12 @@ describe("beta readiness QA script", () => {
     expect(result.routeOptionLabel).toBe("40/40");
     expect(result.scenarios).toEqual(expect.arrayContaining(["beta-readiness", "beta-readiness-complete"]));
     expect(result.completeCheckCount).toBe(result.totalCheckCount);
-    expect(result.totalCheckCount).toBe(11);
+    expect(result.totalCheckCount).toBe(12);
     expect(result.readinessPercent).toBe(100);
+    expect(result.checks.find((check) => check.id === "end_to_end_ending_report")).toMatchObject({
+      label: "E2E 엔딩 리포트",
+      complete: true,
+    });
     expect(result.checks.find((check) => check.id === "long_run_carryover_preview")).toMatchObject({
       label: "장기 하네스 다음 런 미리보기",
       complete: true,
@@ -91,14 +95,14 @@ describe("beta readiness QA script", () => {
     const result = runBetaReadinessQaCheck();
 
     expect(result.status).toBe("pass");
-    expect(result.totalCheckCount).toBe(11);
+    expect(result.totalCheckCount).toBe(12);
     expect(result.readinessPercent).toBe(100);
   });
 
   it("prints readiness and guide status in the no-write beta readiness check", () => {
     const output = runBetaReadinessQaCheckText();
 
-    expect(output).toContain("Readiness: 11/11 checks (100%)");
+    expect(output).toContain("Readiness: 12/12 checks (100%)");
     expect(output).toContain("Guide: PASS");
     expect(output).toContain("Report: PASS");
   });

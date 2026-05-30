@@ -323,4 +323,17 @@ describe("v0.11 commercial balance simulation harness", () => {
       expect(report.pass, strategyId).toBe(true);
     }
   });
+
+  it("includes final ending carryover in end-to-end coverage reporting", () => {
+    const report = evaluateEndToEndCampaignCoverage("productivity_line");
+
+    expect(report).toMatchObject({
+      endingId: "standard_platform_compounder",
+      endingName: "표준 세계의 복리 플랫폼",
+      endingRewardDeltaLabel: "+2 통찰",
+      nextRunCarriesEnding: true,
+      nextRunHistoryCarriesEnding: true,
+      pass: true,
+    });
+  });
 });

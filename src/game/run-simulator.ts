@@ -136,6 +136,11 @@ export interface EndToEndCampaignCoverageReport {
   officeLevel: number;
   rewardPickCount: number;
   finaleRank: string;
+  endingId: string;
+  endingName: string;
+  endingRewardDeltaLabel: string;
+  nextRunCarriesEnding: boolean;
+  nextRunHistoryCarriesEnding: boolean;
   recommendations: string[];
 }
 
@@ -244,6 +249,9 @@ export function evaluateEndToEndCampaignCoverage(strategyId = "productivity_line
   const result = runTenYearCampaignSimulation(strategyId);
   const officeLevel = getOfficeExpansion(result.finalState).level;
   const rewardPickCount = result.finalState.roguelite.rewardHistory.length;
+  const endingId = result.endingDiscovery.id;
+  const nextRunCarriesEnding = result.nextRunPreview.roguelite.discoveredEndingIds.includes(endingId);
+  const nextRunHistoryCarriesEnding = result.nextRunPreview.roguelite.runHistory.some((record) => record.endingId === endingId);
   const pass =
     result.finalState.month >= CAMPAIGN_FINAL_MONTH &&
     result.finalState.status !== "playing" &&
@@ -251,6 +259,8 @@ export function evaluateEndToEndCampaignCoverage(strategyId = "productivity_line
     result.finalState.activeProducts.length >= 3 &&
     officeLevel >= 4 &&
     rewardPickCount >= 2 &&
+    nextRunCarriesEnding &&
+    nextRunHistoryCarriesEnding &&
     result.integrity.ok;
 
   return {
@@ -263,6 +273,11 @@ export function evaluateEndToEndCampaignCoverage(strategyId = "productivity_line
     officeLevel,
     rewardPickCount,
     finaleRank: result.finale.rank,
+    endingId,
+    endingName: result.endingDiscovery.title,
+    endingRewardDeltaLabel: result.endingDiscovery.rewardDeltaLabel,
+    nextRunCarriesEnding,
+    nextRunHistoryCarriesEnding,
     recommendations: [
       "전 성장 경로를 120개월 엔딩까지 자동 압축 검증한다.",
       "덱 보상 선택 수와 사무실 단계가 함께 오르는지 계속 게이트에 포함한다.",

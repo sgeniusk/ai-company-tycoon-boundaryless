@@ -239,6 +239,15 @@ const baseChecks = [
       runSimulatorSource.includes("resetRunWithMetaUnlocks(state)") &&
       runSimulatorSource.includes("nextRunPreview,"),
   },
+  {
+    id: "end_to_end_ending_report",
+    label: "E2E 엔딩 리포트",
+    detail: "coverage ending carryover fields",
+    complete:
+      runSimulatorSource.includes("endingRewardDeltaLabel") &&
+      runSimulatorSource.includes("nextRunCarriesEnding") &&
+      runSimulatorSource.includes("nextRunHistoryCarriesEnding"),
+  },
 ];
 
 function createResult(checks) {
