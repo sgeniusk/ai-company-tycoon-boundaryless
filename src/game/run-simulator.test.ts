@@ -286,9 +286,12 @@ describe("v0.11 commercial balance simulation harness", () => {
     expect(readiness.versionTarget).toBe("v0.61-alpha");
     expect(readiness.coveredStrategies).toBe(growthPaths.length);
     expect(readiness.gates.map((gate) => gate.id)).toEqual(
-      expect.arrayContaining(["commercial_paths", "ten_year_campaign", "integrity", "ending"]),
+      expect.arrayContaining(["commercial_paths", "ten_year_campaign", "integrity", "ending", "ending_carryover"]),
     );
     expect(readiness.gates.find((gate) => gate.id === "ten_year_campaign")?.detail).toContain(
+      `${growthPaths.length}/${growthPaths.length}`,
+    );
+    expect(readiness.gates.find((gate) => gate.id === "ending_carryover")?.detail).toContain(
       `${growthPaths.length}/${growthPaths.length}`,
     );
     expect(readiness.pass).toBe(true);

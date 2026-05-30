@@ -102,7 +102,7 @@ export interface TenYearCampaignSimulationResult extends AnnualDirectiveSimulati
 }
 
 export interface AlphaReadinessGate {
-  id: "commercial_paths" | "ten_year_campaign" | "integrity" | "ending";
+  id: "commercial_paths" | "ten_year_campaign" | "integrity" | "ending" | "ending_carryover";
   status: "pass" | "warn" | "fail";
   detail: string;
 }
@@ -166,6 +166,14 @@ export function evaluateAlphaReadiness(): AlphaReadinessReport {
   const campaignComplete = campaignPassCount === campaignResults.length;
   const endingPassCount = campaignResults.filter((result) => result.finale.rank !== "D").length;
   const endingGoodEnough = endingPassCount === campaignResults.length;
+  const endingCarryoverPassCount = campaignResults.filter((result) => {
+    const endingId = result.endingDiscovery.id;
+    return (
+      result.nextRunPreview.roguelite.discoveredEndingIds.includes(endingId) &&
+      result.nextRunPreview.roguelite.runHistory.some((record) => record.endingId === endingId)
+    );
+  }).length;
+  const endingCarryoverComplete = endingCarryoverPassCount === campaignResults.length;
   const gates: AlphaReadinessGate[] = [
     {
       id: "commercial_paths",
@@ -186,6 +194,11 @@ export function evaluateAlphaReadiness(): AlphaReadinessReport {
       id: "ending",
       status: endingGoodEnough ? "pass" : "warn",
       detail: `10년 엔딩 ${endingPassCount}/${campaignResults.length}개 성장 경로 D랭크 회피`,
+    },
+    {
+      id: "ending_carryover",
+      status: endingCarryoverComplete ? "pass" : "fail",
+      detail: `엔딩 도감/런 기록 carryover ${endingCarryoverPassCount}/${campaignResults.length}개 성장 경로 통과`,
     },
   ];
   const score = Math.round(

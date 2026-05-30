@@ -248,6 +248,15 @@ const baseChecks = [
       runSimulatorSource.includes("nextRunCarriesEnding") &&
       runSimulatorSource.includes("nextRunHistoryCarriesEnding"),
   },
+  {
+    id: "alpha_readiness_ending_carryover",
+    label: "전체 준비도 엔딩 Carryover",
+    detail: "alpha readiness gate",
+    complete:
+      runSimulatorSource.includes("ending_carryover") &&
+      runSimulatorSource.includes("endingCarryoverPassCount") &&
+      runSimulatorSource.includes("엔딩 도감/런 기록 carryover"),
+  },
 ];
 
 function createResult(checks) {
