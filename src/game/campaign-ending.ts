@@ -51,10 +51,14 @@ export interface EndingReplayPlan extends EndingDefinition {
 
 export interface EndingCollectionSummary {
   discoveredCount: number;
+  discoveredReplayableCount: number;
   discoveredRewardBonus: number;
   totalCount: number;
+  replayableCount: number;
   totalRewardBonus: number;
   lockedCount: number;
+  lockedReplayableCount: number;
+  finalOnlyLockedCount: number;
   lockedRewardBonus: number;
   completionPercent: number;
   nextReplayPlan?: EndingReplayPlan;
@@ -262,6 +266,8 @@ export function getEndingCollectionProgressEntries(state: GameState): EndingColl
 export function getEndingCollectionSummary(state: Pick<GameState, "roguelite">): EndingCollectionSummary {
   const entries = getEndingCollectionEntries(state);
   const discoveredEntries = entries.filter((entry) => entry.discovered);
+  const replayableEntries = entries.filter((entry) => entry.condition.fallback !== true);
+  const discoveredReplayableCount = replayableEntries.filter((entry) => entry.discovered).length;
   const discoveredCount = discoveredEntries.length;
   const totalRewardBonus = entries.reduce((total, entry) => total + entry.meta_reward_bonus, 0);
   const discoveredRewardBonus = discoveredEntries.reduce((total, entry) => total + entry.meta_reward_bonus, 0);
@@ -269,10 +275,14 @@ export function getEndingCollectionSummary(state: Pick<GameState, "roguelite">):
 
   return {
     discoveredCount,
+    discoveredReplayableCount,
     discoveredRewardBonus,
     totalCount: entries.length,
+    replayableCount: replayableEntries.length,
     totalRewardBonus,
     lockedCount: Math.max(0, entries.length - discoveredCount),
+    lockedReplayableCount: Math.max(0, replayableEntries.length - discoveredReplayableCount),
+    finalOnlyLockedCount: entries.filter((entry) => entry.condition.fallback === true && !entry.discovered).length,
     lockedRewardBonus: Math.max(0, totalRewardBonus - discoveredRewardBonus),
     completionPercent: entries.length ? Math.round((discoveredCount / entries.length) * 100) : 100,
     nextReplayPlan: replayPlans.find((plan) => !plan.discovered),

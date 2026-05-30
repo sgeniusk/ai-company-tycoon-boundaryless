@@ -762,10 +762,13 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("ending-collection-summary");
     expect(menuPanels).toContain("discoveredEndingIds");
     expect(menuPanels).toContain("엔딩 도감");
-    expect(menuPanels).toContain("남은 엔딩");
+    expect(menuPanels).toContain("남은 목표");
     expect(menuPanels).toContain("다음 추천 목표");
     expect(menuPanels).toContain("endingCollectionSummary.nextReplayPlan");
     expect(menuPanels).toContain("모든 목표 엔딩 발견");
+    expect(menuPanels).toContain("endingCollectionSummary.lockedReplayableCount");
+    expect(menuPanels).toContain("endingCollectionSummary.finalOnlyLockedCount");
+    expect(menuPanels).toContain("결과 전용 잠김");
     expect(qaScenarios).toContain("ending-replay-complete");
     expect(menuPanels).toContain("entry.targetLabels");
     expect(menuPanels).toContain("entry.selection");

@@ -753,8 +753,12 @@ describe("v0.67 campaign ending selector", () => {
 
     expect(summary).toMatchObject({
       discoveredCount: 1,
+      discoveredReplayableCount: 1,
       totalCount: campaignEndings.length,
+      replayableCount: campaignEndings.filter((ending) => ending.condition.fallback !== true).length,
       lockedCount: campaignEndings.length - 1,
+      lockedReplayableCount: campaignEndings.filter((ending) => ending.condition.fallback !== true).length - 1,
+      finalOnlyLockedCount: 1,
       completionPercent: Math.round((1 / campaignEndings.length) * 100),
       discoveredRewardBonus: 5,
       lockedRewardBonus: campaignEndings.reduce((total, ending) => total + ending.meta_reward_bonus, 0) - 5,
@@ -784,6 +788,10 @@ describe("v0.67 campaign ending selector", () => {
     const summary = getEndingCollectionSummary(state);
 
     expect(summary.lockedCount).toBe(campaignEndings.length - replayableEndingIds.length);
+    expect(summary.replayableCount).toBe(replayableEndingIds.length);
+    expect(summary.discoveredReplayableCount).toBe(replayableEndingIds.length);
+    expect(summary.lockedReplayableCount).toBe(0);
+    expect(summary.finalOnlyLockedCount).toBe(1);
     expect(summary.nextReplayPlan).toBeUndefined();
   });
 

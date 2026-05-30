@@ -1374,8 +1374,8 @@ function DeckPanel({
               <small>완성률</small>
             </span>
             <span>
-              <strong>{endingCollectionSummary.lockedCount}</strong>
-              <small>남은 엔딩</small>
+              <strong>{endingCollectionSummary.lockedReplayableCount}</strong>
+              <small>남은 목표 · 결과 전용 잠김 {endingCollectionSummary.finalOnlyLockedCount}</small>
             </span>
             <span>
               <strong>
