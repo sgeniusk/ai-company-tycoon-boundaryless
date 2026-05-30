@@ -3,6 +3,7 @@ import { agentTypes, products, strategyCards } from "./data";
 import { chooseAnnualDirective } from "./annual-review";
 import {
   chooseCardReward,
+  createInitialRogueliteState,
   createReleaseCardReward,
   drawStrategyCards,
   getAvailableStarterDecks,
@@ -36,6 +37,16 @@ describe("v0.12 roguelite deckbuilding foundation", () => {
     expect(state.roguelite.deck.hand).toHaveLength(4);
     expect(state.roguelite.deck.hand).toEqual(["prompt_sprint", "gpu_burst", "customer_interviews", "safety_review"]);
     expect(state.roguelite.deck.drawPile.length).toBeGreaterThan(0);
+  });
+
+  it("sanitizes cross-run collection ids when creating roguelite state", () => {
+    const roguelite = createInitialRogueliteState({
+      discoveredArchetypeIds: ["frontier_garage", "unknown_archetype", "frontier_garage"],
+      discoveredEndingIds: ["privacy_trust_bastion", "unknown_ending", "privacy_trust_bastion"],
+    });
+
+    expect(roguelite.discoveredArchetypeIds).toEqual(["frontier_garage"]);
+    expect(roguelite.discoveredEndingIds).toEqual(["privacy_trust_bastion"]);
   });
 
   it("plays a strategy card into an active product project", () => {

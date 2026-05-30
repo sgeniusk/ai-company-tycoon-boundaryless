@@ -1,4 +1,15 @@
-import { capabilities, competitors, deckArchetypes, deckSynergies, metaUnlocks, resources, starterDecks, strategyCards } from "./data";
+import {
+  campaignEndings,
+  capabilities,
+  competitors,
+  deckArchetypes,
+  deckSynergies,
+  derivationRules,
+  metaUnlocks,
+  resources,
+  starterDecks,
+  strategyCards,
+} from "./data";
 import { getRivalCounterTargetId } from "./rival-counters";
 import type {
   ActionCheck,
@@ -101,8 +112,14 @@ export function createInitialRogueliteState(options: {
   runHistory?: RunRecord[];
 } = {}): RogueliteState {
   const unlockedMetaIds = [...new Set(options.unlockedMetaIds ?? [])];
-  const discoveredArchetypeIds = [...new Set(options.discoveredArchetypeIds ?? [])];
-  const discoveredEndingIds = [...new Set(options.discoveredEndingIds ?? [])];
+  const discoveredArchetypeIds = uniqueKnownStrings(
+    options.discoveredArchetypeIds,
+    derivationRules.map((rule) => rule.id),
+  );
+  const discoveredEndingIds = uniqueKnownStrings(
+    options.discoveredEndingIds,
+    campaignEndings.map((ending) => ending.id),
+  );
   const starterDeckId = getAvailableStarterDecksFromMetaIds(unlockedMetaIds).some(
     (deck) => deck.id === (options.starterDeckId ?? "balanced_founder") && deck.available,
   )
@@ -122,6 +139,11 @@ export function createInitialRogueliteState(options: {
     rewardHistory: [],
     runHistory: options.runHistory ?? [],
   };
+}
+
+function uniqueKnownStrings(values: string[] | undefined, allowedValues: string[]): string[] {
+  const allowed = new Set(allowedValues);
+  return [...new Set((values ?? []).filter((value) => allowed.has(value)))];
 }
 
 export function getUnlockedStrategyCards(unlockedMetaIds: string[] = []): StrategyCardDefinition[] {
