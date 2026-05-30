@@ -1028,9 +1028,14 @@ describe("v0.13.3 compact game shell layout", () => {
 
   it("v0.67 #22 highlights newly discovered endings in the final results", () => {
     expect(gameChrome).toContain("getCampaignEndingDiscovery");
+    expect(gameChrome).toContain("getEndingRouteUnlockRecommendations");
+    expect(gameChrome).toContain("endingDiscoveryUnlocks");
     expect(gameChrome).toContain("ending-discovery-panel");
+    expect(gameChrome).toContain("ending-discovery-unlocks");
     expect(gameChrome).toContain("새 엔딩 발견");
     expect(gameChrome).toContain("도감 반영");
+    expect(gameChrome).toContain("다음 런 추천 해금");
+    expect(gameChrome).toContain("endingDiscoveryUnlock.statusLabel");
     expect(gameChrome).toContain("endingDiscovery.completionPercentAfterRun");
     expect(gameChrome).toContain("endingDiscovery.rewardStatusLabel");
     expect(gameChrome).toContain("endingDiscovery.rewardDeltaLabel");
@@ -1044,6 +1049,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("보상 완성률");
     expect(appCss).toMatch(/\.ending-discovery-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-discovery-panel\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.ending-discovery-unlocks\s*{[^}]*grid-column:\s*1\s*\/\s*-1/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-discovery-panel\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 

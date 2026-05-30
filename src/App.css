@@ -3951,6 +3951,13 @@ p {
   line-height: 1.25;
 }
 
+.ending-discovery-unlocks {
+  background: #fffdf5;
+  border: 1px solid #c9d9b8;
+  grid-column: 1 / -1;
+  padding: 6px;
+}
+
 .ending-target-result-panel {
   border: 2px solid rgba(93, 137, 87, 0.28);
   border-radius: 8px;

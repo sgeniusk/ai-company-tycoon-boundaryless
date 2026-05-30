@@ -20,7 +20,7 @@ import {
   type GuidanceStep,
   type OpeningObjective,
 } from "../game/guidance";
-import { resetRunWithMetaUnlocks } from "../game/meta-progression";
+import { getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { rollRunModifierSelection } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
@@ -30,6 +30,7 @@ import {
   getCampaignEndingDiscovery,
   getCampaignEndingReport,
   getEndingNearMisses,
+  getEndingRouteUnlockRecommendations,
 } from "../game/campaign-ending";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
@@ -438,6 +439,9 @@ export function GameStage({
   const finale = getCampaignFinale(gameState);
   const endingReport = finale.isFinal ? getCampaignEndingReport(gameState) : undefined;
   const endingDiscovery = finale.isFinal ? getCampaignEndingDiscovery(gameState) : undefined;
+  const endingDiscoveryUnlocks = endingDiscovery
+    ? getEndingRouteUnlockRecommendations(endingDiscovery.condition, gameState, gameState.roguelite.founderInsight + getRunInsightReward(gameState))
+    : [];
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
   const missingActiveEndingRequirements = activeEndingReplayBrief?.requirements.filter((requirement) => !requirement.complete).slice(0, 3) ?? [];
   const activeEndingResultRequirements = missingActiveEndingRequirements.length
@@ -983,6 +987,18 @@ export function GameStage({
                         <strong>도감 반영</strong>
                         <small>{endingDiscovery.codexApplyLabel}</small>
                       </span>
+                      {endingDiscoveryUnlocks.length > 0 && (
+                        <span className="ending-discovery-unlocks">
+                          <strong>다음 런 추천 해금</strong>
+                          <small>
+                            {endingDiscoveryUnlocks
+                              .map((endingDiscoveryUnlock) =>
+                                `${endingDiscoveryUnlock.title} · 비용 ${endingDiscoveryUnlock.cost} · ${endingDiscoveryUnlock.statusLabel}`,
+                              )
+                              .join(" / ")}
+                          </small>
+                        </span>
+                      )}
                     </div>
                   )}
                   {activeEndingReplayBrief && (
