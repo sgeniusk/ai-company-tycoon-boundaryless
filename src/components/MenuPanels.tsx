@@ -1365,6 +1365,29 @@ function DeckPanel({
             <strong>엔딩 목표 런</strong>
             <span>조건 기반 추천 {endingReplayPlans.length}개</span>
           </div>
+          {activeEndingReplayBrief && (
+            <div className="ending-replay-active-summary" aria-label="현재 목표 엔딩 진행">
+              <div>
+                <p className="item-meta">현재 목표 진행</p>
+                <strong>{activeEndingReplayBrief.title}</strong>
+                <span>
+                  조건 {activeEndingReplayBrief.matchedRequirements}/{activeEndingReplayBrief.totalRequirements} · {activeEndingReplayBrief.progressPercent}%
+                </span>
+              </div>
+              {activeEndingReplayBrief.nextRequirements.length > 0 ? (
+                <div className="ending-replay-active-actions">
+                  {activeEndingReplayBrief.nextRequirements.slice(0, 3).map((requirement) => (
+                    <button disabled={!setActiveMenu} key={requirement.id} onClick={() => setActiveMenu?.(requirement.targetMenu)} type="button">
+                      <strong>{requirement.actionLabel}</strong>
+                      <span>{requirement.currentLabel} / {requirement.targetLabel}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <small>현재 표시된 추적 조건은 충족됐습니다. 10년 캠페인 완주까지 운영을 이어가세요.</small>
+              )}
+            </div>
+          )}
           <div className="ending-replay-grid">
             {endingReplayPlans.map((plan) => {
               const isActiveTargetRun = activeEndingReplayBrief?.id === plan.id;

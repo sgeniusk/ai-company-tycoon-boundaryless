@@ -822,6 +822,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.ending-replay-checklist button\s*{[^}]*background:\s*var\(--green\)/s);
   });
 
+  it("v0.67 #17 summarizes active ending replay actions in the deck panel", () => {
+    expect(menuPanels).toContain("ending-replay-active-summary");
+    expect(menuPanels).toContain("현재 목표 진행");
+    expect(menuPanels).toContain("activeEndingReplayBrief.nextRequirements.slice(0, 3)");
+    expect(menuPanels).toContain("requirement.actionLabel");
+    expect(menuPanels).toContain("setActiveMenu?.(requirement.targetMenu)");
+    expect(appCss).toMatch(/\.ending-replay-active-summary\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-replay-active-actions\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-replay-active-actions\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("v0.67 #7 lets final results restart from near-missed endings", () => {
     expect(gameChrome).toContain("getEndingNearMisses");
     expect(gameChrome).toContain("ending-nearmiss-panel");
