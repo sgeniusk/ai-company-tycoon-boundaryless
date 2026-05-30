@@ -943,6 +943,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(discovery).toMatchObject({
       id: "privacy_trust_bastion",
       alreadyDiscovered: true,
+      rewardLabel: "+0 도감 통찰",
       rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
       rewardDeltaDescription: "이미 획득한 도감 보상입니다.",
@@ -961,7 +962,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(discovery).toMatchObject({
       id: "garage_restart",
       title: "다시 차고로",
-      rewardLabel: "+0 통찰",
+      rewardLabel: "+0 도감 통찰",
       rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "결과 전용 기록",
       rewardDeltaDescription: "결과 전용 엔딩이 도감에 기록됩니다.",

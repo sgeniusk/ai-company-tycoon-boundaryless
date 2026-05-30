@@ -715,7 +715,7 @@ describe("v0.67 campaign ending selector", () => {
       alreadyDiscovered: true,
       discoveredCountBeforeRun: 2,
       discoveredCountAfterRun: 2,
-      rewardLabel: "+4 통찰",
+      rewardLabel: "+0 도감 통찰",
       rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
       rewardDeltaDescription: "이미 획득한 도감 보상입니다.",
@@ -737,7 +737,7 @@ describe("v0.67 campaign ending selector", () => {
 
     expect(discovery).toMatchObject({
       id: "garage_restart",
-      rewardLabel: "+0 통찰",
+      rewardLabel: "+0 도감 통찰",
       rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "결과 전용 기록",
       rewardDeltaDescription: "결과 전용 엔딩이 도감에 기록됩니다.",
@@ -746,7 +746,7 @@ describe("v0.67 campaign ending selector", () => {
     expect(repeatedDiscovery).toMatchObject({
       id: "garage_restart",
       alreadyDiscovered: true,
-      rewardLabel: "+0 통찰",
+      rewardLabel: "+0 도감 통찰",
       rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "결과 전용 기록 수집 완료 · 추가 통찰 없음",
       rewardDeltaDescription: "이미 기록한 결과 전용 엔딩입니다.",

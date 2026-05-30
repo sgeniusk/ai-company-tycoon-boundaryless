@@ -131,6 +131,7 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
   const totalRewardBonus = getTotalEndingRewardBonus();
   const discoveredRewardBonusBeforeRun = getEndingRewardBonusForIds(discoveredIds);
   const discoveredRewardBonusAfterRun = getEndingRewardBonusForIds(afterRunDiscoveredIds);
+  const rewardDeltaLabel = getFinalEndingRewardDeltaLabel(ending, alreadyDiscovered);
 
   return {
     ...ending,
@@ -145,8 +146,8 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
     completionPercentAfterRun: campaignEndings.length ? Math.round((afterRunDiscoveredIds.size / campaignEndings.length) * 100) : 100,
     rewardCompletionPercentAfterRun: totalRewardBonus ? Math.round((discoveredRewardBonusAfterRun / totalRewardBonus) * 100) : 100,
     rewardDeltaDescription: getFinalEndingRewardDeltaDescription(ending, alreadyDiscovered),
-    rewardDeltaLabel: getFinalEndingRewardDeltaLabel(ending, alreadyDiscovered),
-    rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
+    rewardDeltaLabel,
+    rewardLabel: rewardDeltaLabel,
     rewardStatusLabel: getFinalEndingRewardStatusLabel(ending, alreadyDiscovered),
   };
 }
