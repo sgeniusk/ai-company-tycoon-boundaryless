@@ -754,9 +754,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("추천 해금");
     expect(menuPanels).toContain("next-run-quick-start-grid");
     expect(menuPanels).toContain("meta-category-badge");
+    expect(menuPanels).toContain("endingRouteUnlockIds");
+    expect(menuPanels).toContain("endingRouteUnlock");
+    expect(menuPanels).toContain("ending-route-meta-badge");
+    expect(menuPanels).toContain("엔딩 루트 추천");
+    expect(menuPanels).toContain("endingRouteUnlock.statusLabel");
     expect(appCss).toMatch(/\.next-run-command-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-nudge-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-nudge-unlocks\s*{[^}]*display:\s*flex/s);
+    expect(appCss).toMatch(/\.ending-route-meta-badge\s*{[^}]*display:\s*inline-flex/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-nudge-panel[\s\S]*grid-template-columns:\s*1fr/s);
     expect(appCss).toMatch(/\.next-run-quick-start-grid\s*{[^}]*grid-template-columns:/s);
   });

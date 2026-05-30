@@ -782,6 +782,7 @@ function DeckPanel({
   const deckSynergySummary = getDeckSynergySummary(gameState);
   const starterDeckOptions = getAvailableStarterDecks(gameState);
   const nextRunSetupPlan = getNextRunSetupPlan(gameState);
+  const endingRouteUnlockIds = new Set(nextRunSetupPlan.endingNudge?.recommendedUnlocks.map((unlock) => unlock.id) ?? []);
   const baseEndingCollectionEntries = getEndingCollectionEntries(gameState);
   const endingCollectionEntries = getEndingCollectionProgressEntries(gameState);
   const endingCollectionSummary = getEndingCollectionSummary(gameState);
@@ -1644,11 +1645,18 @@ function DeckPanel({
             const check = getMetaUnlockCheck(unlock.id, gameState, projectedInsight);
             const unlocked = gameState.roguelite.unlockedMetaIds.includes(unlock.id);
             const unlockedCards = strategyCards.filter((card) => unlock.unlock_card_ids.includes(card.id));
+            const endingRouteUnlock = endingRouteUnlockIds.has(unlock.id)
+              ? nextRunSetupPlan.endingNudge?.recommendedUnlocks.find((recommendation) => recommendation.id === unlock.id)
+              : undefined;
+
             return (
               <article className={unlocked ? "complete" : ""} key={unlock.id}>
                 <div>
                   <p className="item-meta">비용 {unlock.cost} 통찰</p>
                   <h3>{unlock.title}</h3>
+                  {endingRouteUnlock && (
+                    <span className="ending-route-meta-badge">엔딩 루트 추천 · {endingRouteUnlock.statusLabel}</span>
+                  )}
                   <p>{unlock.description}</p>
                   <small>해금 카드: {unlockedCards.map((card) => card.name).join(", ")}</small>
                 </div>

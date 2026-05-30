@@ -9914,6 +9914,20 @@ p {
   margin-bottom: 0;
 }
 
+.ending-route-meta-badge {
+  align-items: center;
+  background: #fff1cf;
+  border: 1px solid #c9892d;
+  color: #6a3d07;
+  display: inline-flex;
+  font-size: 0.68rem;
+  font-weight: 900;
+  justify-self: start;
+  line-height: 1;
+  margin: 3px 0;
+  padding: 4px 6px;
+}
+
 .meta-unlock-list small,
 .meta-unlock-list span {
   color: #5f5546;
@@ -9923,6 +9937,11 @@ p {
 
 .meta-unlock-list span {
   grid-column: 1 / -1;
+}
+
+.meta-unlock-list .ending-route-meta-badge {
+  color: #6a3d07;
+  font-size: 0.68rem;
 }
 
 .capability-row p,
