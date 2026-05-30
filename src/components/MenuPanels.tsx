@@ -13,6 +13,7 @@ import {
 import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
 import { getBoundarylessExpansionGoals } from "../game/boundaryless-expansion";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
+import { getEndingCollectionEntries, getEndingTargetPlans } from "../game/campaign-ending";
 import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getIndustryComboSummary } from "../game/industry-combos";
 import { getIndustrySynergySummary } from "../game/industry-synergies";
@@ -215,6 +216,7 @@ export function renderMenuContent(
     const officeZonePlan = getOfficeZonePlan(gameState);
     const calendar = getCampaignCalendar(gameState);
     const finale = getCampaignFinale(gameState);
+    const endingTargetPlans = getEndingTargetPlans(gameState, 3);
     const stageProgress = getCompanyStageProgress(gameState);
     const currentLocation = getCurrentLocation(gameState);
     const foundationSnapshot = getFoundationSnapshot(gameState);
@@ -560,6 +562,34 @@ export function renderMenuContent(
               <i style={{ width: `${calendar.progressPercent}%` }} />
             </div>
           </div>
+          <div className="ending-target-panel" aria-label="엔딩 목표">
+            <div>
+              <p className="eyebrow">엔딩 목표</p>
+              <h3>{endingTargetPlans[0]?.title ?? "목표 없음"}</h3>
+              <span>{endingTargetPlans[0] ? `현재 런 조건 기준 ${endingTargetPlans[0].progressPercent}%` : "이번 런에서 추적할 엔딩 후보가 없습니다."}</span>
+            </div>
+            <div className="ending-target-grid">
+              {endingTargetPlans.map((plan) => {
+                const missingRequirements = plan.requirements.filter((requirement) => !requirement.complete).slice(0, 2);
+                return (
+                  <article className={plan.complete ? "complete" : ""} key={plan.id}>
+                    <div className="ending-target-card-heading">
+                      <strong>{plan.title}</strong>
+                      <span>{plan.progressPercent}%</span>
+                    </div>
+                    <div className="arc-meter">
+                      <i style={{ width: `${plan.progressPercent}%` }} />
+                    </div>
+                    <small>
+                      {missingRequirements.length
+                        ? missingRequirements.map((requirement) => `${requirement.label} ${requirement.currentLabel}/${requirement.targetLabel}`).join(" · ")
+                        : `완성 조건 충족 · 통찰 보너스 +${plan.meta_reward_bonus}`}
+                    </small>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
           <div className="location-panel">
             <div className="panel-heading compact-heading">
               <h3>지역 이전</h3>
@@ -705,6 +735,8 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const deckSynergySummary = getDeckSynergySummary(gameState);
   const starterDeckOptions = getAvailableStarterDecks(gameState);
   const nextRunSetupPlan = getNextRunSetupPlan(gameState);
+  const endingCollectionEntries = getEndingCollectionEntries(gameState);
+  const discoveredEndingCount = endingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
   const shouldShowNextRunSetup =
     gameState.month >= 10 || gameState.status !== "playing" || gameState.roguelite.runHistory.length > 0;
   const shouldShowDevelopmentIssueLaunchpad = Boolean(activeProject && activeProduct && puzzle && !gameState.lastDevelopmentPuzzle);
@@ -1253,6 +1285,21 @@ function DeckPanel({ gameState, setGameState }: { gameState: GameState; setGameS
             ))}
           </div>
         )}
+        <div className="ending-collection-panel" aria-label="엔딩 도감">
+          <div className="payoff-collection-heading">
+            <strong>엔딩 도감</strong>
+            <span>{discoveredEndingCount}/{endingCollectionEntries.length} 발견</span>
+          </div>
+          <div className="ending-collection-grid">
+            {endingCollectionEntries.map((entry) => (
+              <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
+                <p className="item-meta">통찰 보너스 +{entry.meta_reward_bonus}</p>
+                <strong>{entry.discovered ? entry.title : "미발견 엔딩"}</strong>
+                <span>{entry.discovered ? entry.flavor : "10년 캠페인 결과에서 조건을 만족하면 공개됩니다."}</span>
+              </article>
+            ))}
+          </div>
+        </div>
         <div className="meta-unlock-list">
           <div className="starter-deck-choice-list">
             <h3>다음 런 시작 덱</h3>

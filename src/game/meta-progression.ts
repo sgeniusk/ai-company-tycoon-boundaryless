@@ -1,5 +1,6 @@
 import { competitors, difficultyTiers, metaUnlocks, products, resources, strategyCards } from "./data";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
+import { getCampaignEnding } from "./campaign-ending";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
 import type { RunModifierSelectionInput } from "./run-modifiers";
@@ -61,8 +62,9 @@ export function getRunInsightReward(state: GameState): number {
   const statusBonus = state.status === "success" ? 3 : state.status === "failure" ? 1 : 0;
   const rewardMultiplier = difficultyTiers.find((tier) => tier.id === state.runModifiers?.challengeTier)?.reward_multiplier ?? 1;
   const baseReward = Math.max(1, 1 + monthBonus + state.activeProducts.length + userBonus + trustBonus + statusBonus);
+  const endingBonus = state.month >= CAMPAIGN_FINAL_MONTH ? getCampaignEnding(state).meta_reward_bonus : 0;
 
-  return Math.round(baseReward * rewardMultiplier);
+  return Math.round(baseReward * rewardMultiplier) + endingBonus;
 }
 
 export function getMetaUnlockCheck(metaUnlockId: string, state: GameState, spendableInsight = state.roguelite.founderInsight): ActionCheck {
@@ -154,6 +156,9 @@ export function resetRunWithMetaUnlocks(
   const previousDiscoveredArchetypeIds = uniqueStrings(previousRoguelite.discoveredArchetypeIds ?? []);
   const newlyDiscoveredArchetypeIds = getNewlyDiscoveredArchetypes(previousDiscoveredArchetypeIds, getDerivedArchetypes(nextState));
   const discoveredArchetypeIds = uniqueStrings([...previousDiscoveredArchetypeIds, ...newlyDiscoveredArchetypeIds]);
+  const previousDiscoveredEndingIds = uniqueStrings(previousRoguelite.discoveredEndingIds ?? []);
+  const completedEndingId = state.month >= CAMPAIGN_FINAL_MONTH ? getCampaignEnding(state).id : undefined;
+  const discoveredEndingIds = uniqueStrings([...previousDiscoveredEndingIds, ...(completedEndingId ? [completedEndingId] : [])]);
 
   return {
     ...nextState,
@@ -164,6 +169,7 @@ export function resetRunWithMetaUnlocks(
       founderInsight: availableInsight,
       unlockedMetaIds: nextMetaIds,
       discoveredArchetypeIds,
+      discoveredEndingIds,
       starterDeckId: nextStarterDeckId,
       runHistory: [createRunRecord(state, insightReward), ...(previousRoguelite.runHistory ?? [])].slice(0, 8),
     }),
@@ -410,6 +416,7 @@ function createRunRecord(state: GameState, insightReward: number): RunRecord {
     status: state.status,
     score: estimateRecordScore(state),
     campaignRank: campaignFinale?.rank,
+    endingId: campaignFinale?.endingId,
     endingName: campaignFinale?.endingName,
     survivedYears: campaignFinale?.survivedYears,
     bestProductName: bestProduct?.name,

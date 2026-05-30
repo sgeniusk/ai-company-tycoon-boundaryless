@@ -96,11 +96,13 @@ export function createInitialRogueliteState(options: {
   founderInsight?: number;
   unlockedMetaIds?: string[];
   discoveredArchetypeIds?: string[];
+  discoveredEndingIds?: string[];
   starterDeckId?: string;
   runHistory?: RunRecord[];
 } = {}): RogueliteState {
   const unlockedMetaIds = [...new Set(options.unlockedMetaIds ?? [])];
   const discoveredArchetypeIds = [...new Set(options.discoveredArchetypeIds ?? [])];
+  const discoveredEndingIds = [...new Set(options.discoveredEndingIds ?? [])];
   const starterDeckId = getAvailableStarterDecksFromMetaIds(unlockedMetaIds).some(
     (deck) => deck.id === (options.starterDeckId ?? "balanced_founder") && deck.available,
   )
@@ -112,6 +114,7 @@ export function createInitialRogueliteState(options: {
     founderInsight: options.founderInsight ?? 0,
     unlockedMetaIds,
     discoveredArchetypeIds,
+    discoveredEndingIds,
     starterDeckId,
     deck: createInitialStrategyDeck(unlockedMetaIds, starterDeckId),
     deckEditTokens: 0,

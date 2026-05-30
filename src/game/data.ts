@@ -12,6 +12,7 @@ import worldEventsJson from "../../data/world_events.json";
 import runModifiersJson from "../../data/run_modifiers.json";
 import derivationRulesJson from "../../data/derivation_rules.json";
 import difficultyTiersJson from "../../data/difficulty_tiers.json";
+import endingsJson from "../../data/endings.json";
 import eventsJson from "../../data/events.json";
 import upgradesJson from "../../data/upgrades.json";
 import automationUpgradesJson from "../../data/automation_upgrades.json";
@@ -56,6 +57,7 @@ import type {
   DerivationRuleDefinition,
   DifficultyTierDefinition,
   DomainDefinition,
+  EndingDefinition,
   EventDefinition,
   GrowthPathDefinition,
   IndustryComboDefinition,
@@ -95,6 +97,7 @@ export const worldEvents = worldEventsJson.world_events as unknown as WorldEvent
 export const runModifiers = runModifiersJson as unknown as RunModifiersDataDefinition;
 export const derivationRules = derivationRulesJson.derivation_rules as unknown as DerivationRuleDefinition[];
 export const difficultyTiers = difficultyTiersJson.difficulty_tiers as unknown as DifficultyTierDefinition[];
+export const campaignEndings = endingsJson.endings as unknown as EndingDefinition[];
 export const events = eventsJson.events as unknown as EventDefinition[];
 export const upgrades = upgradesJson.upgrades as unknown as UpgradeDefinition[];
 export const automationUpgrades = automationUpgradesJson.automation_upgrades as unknown as AutomationUpgradeDefinition[];

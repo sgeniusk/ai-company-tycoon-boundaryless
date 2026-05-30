@@ -59,9 +59,11 @@ describe("v0.14 ten-year campaign structure", () => {
     expect(finale).toMatchObject({
       isFinal: true,
       title: "10년차 최종 평가",
+      endingId: "standard_platform_compounder",
+      endingName: "표준 세계의 복리 플랫폼",
       survivedYears: 10,
     });
-    expect(finale.endingName).toContain("AI");
+    expect(finale.verdict).toContain("기준선");
   });
 
   it("unlocks better locations after company growth and charges relocation cost", () => {

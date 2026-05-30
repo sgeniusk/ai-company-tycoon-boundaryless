@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { getCampaignEnding } from "./campaign-ending";
 import { getNextRunSetupPlan, getRunInsightReward, resetRunWithMetaUnlocks } from "./meta-progression";
 import { createInitialState } from "./simulation";
 
@@ -113,5 +114,69 @@ describe("v0.32 next-run setup plan", () => {
     expect(nextRun.roguelite.unlockedMetaIds).toEqual(expect.arrayContaining(unlockQuickStart.unlockIds));
     expect(nextRun.roguelite.starterDeckId).toBe(unlockQuickStart.starterDeckId);
     expect(nextRun.roguelite.runHistory[0]).toMatchObject({ runNumber: 1 });
+  });
+
+  it("records the finished campaign ending in the cross-run collection and nudges insight reward", () => {
+    const initial = createInitialState();
+    const finished = {
+      ...initial,
+      month: 120,
+      status: "success" as const,
+      activeProducts: [
+        "ai_writing_assistant",
+        "meeting_summary_bot",
+        "customer_support_chatbot",
+        "foundation_model_v0",
+      ],
+      resources: {
+        ...initial.resources,
+        cash: 180000,
+        users: 140000,
+        trust: 76,
+        automation: 58,
+      },
+    };
+    const ending = getCampaignEnding(finished);
+    const insightReward = getRunInsightReward(finished);
+
+    expect(ending).toMatchObject({
+      id: "standard_platform_compounder",
+      meta_reward_bonus: 2,
+    });
+    expect(insightReward).toBe(144);
+
+    const nextRun = resetRunWithMetaUnlocks(finished);
+
+    expect(nextRun.roguelite.discoveredEndingIds).toEqual(["standard_platform_compounder"]);
+    expect(nextRun.roguelite.founderInsight).toBe(insightReward);
+    expect(nextRun.roguelite.runHistory[0]).toMatchObject({
+      endingName: "표준 세계의 복리 플랫폼",
+      insightReward,
+    });
+  });
+
+  it("keeps ending discoveries unique across repeated resets", () => {
+    const initial = createInitialState();
+    const finished = {
+      ...initial,
+      month: 120,
+      status: "success" as const,
+      activeProducts: ["ai_writing_assistant", "meeting_summary_bot", "customer_support_chatbot"],
+      resources: {
+        ...initial.resources,
+        cash: 120000,
+        users: 120000,
+        trust: 65,
+        automation: 50,
+      },
+      roguelite: {
+        ...initial.roguelite,
+        discoveredEndingIds: ["standard_platform_compounder", "standard_platform_compounder", "garage_restart"],
+      },
+    };
+
+    const nextRun = resetRunWithMetaUnlocks(finished);
+
+    expect(nextRun.roguelite.discoveredEndingIds).toEqual(["standard_platform_compounder", "garage_restart"]);
   });
 });

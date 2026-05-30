@@ -5,6 +5,7 @@ import {
   automationUpgrades,
   balance,
   campaignShocks,
+  campaignEndings,
   capabilities,
   companyLocations,
   companyStages,
@@ -3997,6 +3998,7 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState, generat
 
   const unlockedMetaIds = sanitizeStringArray(value.unlockedMetaIds);
   const discoveredArchetypeIds = uniqueStrings(sanitizeStringArray(value.discoveredArchetypeIds, derivationRules.map((rule) => rule.id)));
+  const discoveredEndingIds = uniqueStrings(sanitizeStringArray(value.discoveredEndingIds, campaignEndings.map((ending) => ending.id)));
   const deck = hydrateStrategyDeck(value.deck, fallback.deck);
   const cardIds = strategyCards.map((card) => card.id);
 
@@ -4005,6 +4007,7 @@ function hydrateRogueliteState(value: unknown, fallback: RogueliteState, generat
     founderInsight: Math.max(0, Math.round(sanitizeNumber(value.founderInsight, fallback.founderInsight))),
     unlockedMetaIds,
     discoveredArchetypeIds,
+    discoveredEndingIds,
     starterDeckId: typeof value.starterDeckId === "string" ? value.starterDeckId : fallback.starterDeckId,
     deck,
     deckEditTokens: Math.max(0, Math.round(sanitizeNumber(value.deckEditTokens, fallback.deckEditTokens))),
@@ -4101,6 +4104,7 @@ function hydrateRunHistory(value: unknown): RunRecord[] {
       insightReward: Math.max(0, Math.round(entry.insightReward)),
       runNumber: Math.max(1, Math.round(entry.runNumber)),
       endedMonth: Math.max(1, Math.round(entry.endedMonth)),
+      endingId: typeof entry.endingId === "string" && campaignEndings.some((ending) => ending.id === entry.endingId) ? entry.endingId : undefined,
       bestProductName: typeof entry.bestProductName === "string" ? entry.bestProductName : undefined,
       representativeCardName: typeof entry.representativeCardName === "string" ? entry.representativeCardName : undefined,
       rivalName: typeof entry.rivalName === "string" ? entry.rivalName : undefined,

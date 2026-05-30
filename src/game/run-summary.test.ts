@@ -173,9 +173,10 @@ describe("v0.11 commercial run summary", () => {
     expect(nextRun.roguelite.runHistory[0]).toMatchObject({
       runNumber: 1,
       campaignRank: "S",
+      endingId: "standard_platform_compounder",
+      endingName: "표준 세계의 복리 플랫폼",
       survivedYears: 10,
     });
-    expect(nextRun.roguelite.runHistory[0].endingName).toContain("AI");
     expect(nextRun.roguelite.runHistory[0].note).toContain("10년");
   });
 });

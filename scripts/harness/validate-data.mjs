@@ -99,6 +99,8 @@ const campaignShocksData = readJson("campaign_shocks.json");
 const worldEventsData = readJson("world_events.json");
 const runModifiersData = readJson("run_modifiers.json");
 const difficultyTiersData = readJson("difficulty_tiers.json");
+const derivationRulesData = readJson("derivation_rules.json");
+const endingsData = readJson("endings.json");
 const agentTypesData = readJson("agent_types.json");
 const itemsData = readJson("items.json");
 const competitorsData = readJson("competitors.json");
@@ -142,6 +144,8 @@ const campaignShocks = campaignShocksData?.campaign_shocks ?? [];
 const worldEvents = worldEventsData?.world_events ?? [];
 const runModifiers = runModifiersData ?? {};
 const difficultyTiers = difficultyTiersData?.difficulty_tiers ?? [];
+const derivationRules = derivationRulesData?.derivation_rules ?? [];
+const campaignEndings = endingsData?.endings ?? [];
 const agentTypes = agentTypesData?.agent_types ?? [];
 const items = itemsData?.items ?? [];
 const competitors = competitorsData?.competitors ?? [];
@@ -183,11 +187,13 @@ idsAreUnique("company_locations", companyLocations);
 idsAreUnique("campaign_shocks", campaignShocks);
 idsAreUnique("world_events", worldEvents);
 const difficultyTierIds = idsAreUnique("difficulty_tiers", difficultyTiers);
+const derivationRuleIds = idsAreUnique("derivation_rules", derivationRules);
+idsAreUnique("endings", campaignEndings);
 const agentTypeIds = idsAreUnique("agent_types", agentTypes);
 const itemIds = idsAreUnique("items", items);
 const competitorIds = idsAreUnique("competitors", competitors);
 idsAreUnique("rival_events", rivalEvents);
-idsAreUnique("growth_paths", growthPaths);
+const growthPathIds = idsAreUnique("growth_paths", growthPaths);
 idsAreUnique("achievements", achievements);
 const strategyCardIds = idsAreUnique("strategy_cards", strategyCards);
 const metaUnlockIds = idsAreUnique("meta_unlocks", metaUnlocks);
@@ -312,6 +318,78 @@ if (standardTier && Object.keys(standardTier.monthly_headwind ?? {}).length > 0)
 }
 if (standardTier && standardTier.reward_multiplier !== 1) {
   errors.push('difficulty_tiers "standard": reward_multiplier must be 1');
+}
+
+if (!Array.isArray(campaignEndings) || campaignEndings.length !== 12) {
+  errors.push(`endings: expected exactly 12 campaign endings, found ${Array.isArray(campaignEndings) ? campaignEndings.length : "non-array"}`);
+}
+
+const endingReferenceSets = {
+  start_city_ids: new Set((runModifiers.start_cities ?? []).map((entry) => entry.id)),
+  world_lore_ids: new Set((runModifiers.world_lore ?? []).map((entry) => entry.id)),
+  market_condition_ids: new Set((runModifiers.market_conditions ?? []).map((entry) => entry.id)),
+  founder_trait_ids: new Set((runModifiers.founder_traits ?? []).map((entry) => entry.id)),
+  challenge_tier_ids: difficultyTierIds,
+  growth_path_ids: growthPathIds,
+  archetype_ids: derivationRuleIds,
+};
+let fallbackEndingCount = 0;
+
+for (const ending of campaignEndings) {
+  for (const field of ["title", "flavor", "priority", "meta_reward_bonus", "condition"]) {
+    if (!(field in ending)) errors.push(`ending "${ending.id}": missing ${field}`);
+  }
+  if (typeof ending.priority !== "number") errors.push(`ending "${ending.id}": priority must be numeric`);
+  if (typeof ending.meta_reward_bonus !== "number" || ending.meta_reward_bonus < 0 || ending.meta_reward_bonus > 5) {
+    errors.push(`ending "${ending.id}": meta_reward_bonus must be a number from 0 to 5`);
+  }
+  if (typeof ending.title !== "string" || ending.title.trim().length === 0) {
+    errors.push(`ending "${ending.id}": title must be a non-empty string`);
+  }
+  if (typeof ending.flavor !== "string" || ending.flavor.trim().length < 20) {
+    errors.push(`ending "${ending.id}": flavor must be a descriptive string`);
+  }
+
+  const condition = ending.condition ?? {};
+  if (!condition || typeof condition !== "object" || Array.isArray(condition)) {
+    errors.push(`ending "${ending.id}": condition must be an object`);
+    continue;
+  }
+  if (condition.fallback === true) fallbackEndingCount += 1;
+  if ("status" in condition && !["playing", "success", "failure", "any"].includes(condition.status)) {
+    errors.push(`ending "${ending.id}": unknown status condition "${condition.status}"`);
+  }
+  for (const numericField of ["min_month", "min_products"]) {
+    if (numericField in condition && (typeof condition[numericField] !== "number" || condition[numericField] < 0)) {
+      errors.push(`ending "${ending.id}": ${numericField} must be a non-negative number`);
+    }
+  }
+  if ("min_resources" in condition) {
+    if (!condition.min_resources || typeof condition.min_resources !== "object" || Array.isArray(condition.min_resources)) {
+      errors.push(`ending "${ending.id}": min_resources must be a resource map object`);
+    } else {
+      validateResourceMap(`ending "${ending.id}" min_resources`, condition.min_resources, resourceIds);
+    }
+  }
+
+  for (const [conditionField, allowedIds] of Object.entries(endingReferenceSets)) {
+    if (!(conditionField in condition)) continue;
+    if (!Array.isArray(condition[conditionField])) {
+      errors.push(`ending "${ending.id}": ${conditionField} must be a string array`);
+      continue;
+    }
+    for (const id of condition[conditionField]) {
+      if (typeof id !== "string" || !id.trim()) {
+        errors.push(`ending "${ending.id}": ${conditionField} contains an empty id`);
+      } else if (!allowedIds.has(id)) {
+        errors.push(`ending "${ending.id}": ${conditionField} references unknown id "${id}"`);
+      }
+    }
+  }
+}
+
+if (fallbackEndingCount !== 1) {
+  errors.push(`endings: expected exactly one fallback ending, found ${fallbackEndingCount}`);
 }
 
 if (worldEvents.length < 10 || worldEvents.length > 28) {

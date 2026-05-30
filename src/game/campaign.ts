@@ -1,4 +1,5 @@
 import { companyLocations, companyStages } from "./data";
+import { getCampaignEnding } from "./campaign-ending";
 import type { CompanyLocationDefinition, CompanyStageDefinition, GameState } from "./types";
 
 export const CAMPAIGN_FINAL_MONTH = 120;
@@ -23,6 +24,7 @@ export interface DayPhase {
 export interface CampaignFinale {
   isFinal: boolean;
   title: string;
+  endingId: string;
   endingName: string;
   score: number;
   rank: "S" | "A" | "B" | "C" | "D";
@@ -148,14 +150,16 @@ export function getCampaignFinale(state: GameState): CampaignFinale {
   const score = getCampaignScore(state);
   const rank = getCampaignRank(score, state.status);
   const location = getCurrentLocation(state);
+  const ending = getCampaignEnding(state);
   return {
     isFinal: state.month >= CAMPAIGN_FINAL_MONTH || state.status !== "playing",
     title: "10년차 최종 평가",
-    endingName: getEndingName(rank),
+    endingId: ending.id,
+    endingName: ending.title,
     score,
     rank,
     survivedYears: Math.min(10, Math.max(1, Math.ceil(state.month / MONTHS_PER_YEAR))),
-    verdict: `${location.region}에서 출발한 회사가 ${state.activeProducts.length}개 제품과 ${(state.resources.users ?? 0).toLocaleString("ko-KR")}명의 이용자를 남겼습니다.`,
+    verdict: `${ending.flavor} ${location.region}에서 출발한 회사가 ${state.activeProducts.length}개 제품과 ${(state.resources.users ?? 0).toLocaleString("ko-KR")}명의 이용자를 남겼습니다.`,
   };
 }
 
@@ -179,14 +183,6 @@ function getCampaignRank(score: number, status: GameState["status"]): CampaignFi
   if (score >= 55) return "B";
   if (score >= 38) return "C";
   return "D";
-}
-
-function getEndingName(rank: CampaignFinale["rank"]): string {
-  if (rank === "S") return "경계 없는 AI 제국";
-  if (rank === "A") return "세계적 AI 플랫폼";
-  if (rank === "B") return "강한 산업 AI 회사";
-  if (rank === "C") return "살아남은 차고 스타트업";
-  return "런 종료: 다시 차고로";
 }
 
 function requirementsMet(requirements: Record<string, number>, state: GameState): boolean {

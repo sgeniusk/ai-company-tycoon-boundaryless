@@ -193,6 +193,30 @@ export interface DifficultyTierDefinition {
   reward_multiplier: number;
 }
 
+export interface EndingConditionDefinition {
+  status?: "playing" | "success" | "failure" | "any";
+  min_month?: number;
+  min_products?: number;
+  min_resources?: ResourceMap;
+  start_city_ids?: string[];
+  world_lore_ids?: string[];
+  market_condition_ids?: string[];
+  founder_trait_ids?: string[];
+  challenge_tier_ids?: string[];
+  growth_path_ids?: string[];
+  archetype_ids?: string[];
+  fallback?: boolean;
+}
+
+export interface EndingDefinition {
+  id: string;
+  priority: number;
+  title: string;
+  flavor: string;
+  meta_reward_bonus: number;
+  condition: EndingConditionDefinition;
+}
+
 export interface RunModifiersState {
   seed: string;
   startCityId: string;
@@ -635,6 +659,7 @@ export interface RunRecord {
   status: GameState["status"];
   score: number;
   campaignRank?: "S" | "A" | "B" | "C" | "D";
+  endingId?: string;
   endingName?: string;
   survivedYears?: number;
   bestProductName?: string;
@@ -659,6 +684,7 @@ export interface RogueliteState {
   founderInsight: number;
   unlockedMetaIds: string[];
   discoveredArchetypeIds: string[];
+  discoveredEndingIds: string[];
   starterDeckId?: string;
   deck: StrategyDeckState;
   deckEditTokens: number;

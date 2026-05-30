@@ -1,0 +1,285 @@
+import { campaignEndings, difficultyTiers, growthPaths, runModifiers } from "./data";
+import { getDerivedArchetypes } from "./tag-derivation";
+import type { EndingConditionDefinition, EndingDefinition, GameState, ResourceMap } from "./types";
+
+export interface EndingCollectionEntry extends EndingDefinition {
+  discovered: boolean;
+}
+
+export interface EndingRequirementProgress {
+  id: string;
+  label: string;
+  currentLabel: string;
+  targetLabel: string;
+  complete: boolean;
+  blocking: boolean;
+  progress: number;
+}
+
+export interface EndingTargetPlan extends EndingDefinition {
+  complete: boolean;
+  progressPercent: number;
+  matchedRequirements: number;
+  totalRequirements: number;
+  blockers: string[];
+  requirements: EndingRequirementProgress[];
+}
+
+export function getCampaignEnding(finalState: GameState): EndingDefinition {
+  const matches = campaignEndings
+    .map((ending, index) => ({ ending, index }))
+    .filter(({ ending }) => endingMatchesState(ending, finalState))
+    .sort((a, b) => b.ending.priority - a.ending.priority || a.index - b.index);
+
+  return matches[0]?.ending ?? campaignEndings[campaignEndings.length - 1];
+}
+
+export function getEndingTargetPlans(state: GameState, limit = 3): EndingTargetPlan[] {
+  const plans = campaignEndings
+    .filter((ending) => ending.condition.fallback !== true)
+    .map((ending) => createEndingTargetPlan(ending, state));
+  const feasiblePlans = plans.filter((plan) => plan.blockers.length === 0);
+  const rankedPlans = (feasiblePlans.length ? feasiblePlans : plans).sort(
+    (first, second) =>
+      Number(second.complete) - Number(first.complete) ||
+      second.progressPercent - first.progressPercent ||
+      second.priority - first.priority ||
+      first.id.localeCompare(second.id),
+  );
+
+  return rankedPlans.slice(0, Math.max(1, limit));
+}
+
+export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">): EndingCollectionEntry[] {
+  const discoveredIds = new Set(state.roguelite.discoveredEndingIds ?? []);
+
+  return campaignEndings
+    .map((ending) => ({
+      ...ending,
+      discovered: discoveredIds.has(ending.id),
+    }))
+    .sort((first, second) => Number(second.discovered) - Number(first.discovered) || second.priority - first.priority || first.id.localeCompare(second.id));
+}
+
+export function endingMatchesState(ending: EndingDefinition, state: GameState): boolean {
+  return conditionMatchesState(ending.condition, state);
+}
+
+function createEndingTargetPlan(ending: EndingDefinition, state: GameState): EndingTargetPlan {
+  const requirements = getEndingRequirementProgress(ending.condition, state);
+  const matchedRequirements = requirements.filter((requirement) => requirement.complete).length;
+  const totalRequirements = requirements.length || 1;
+  const blockers = requirements.filter((requirement) => requirement.blocking && !requirement.complete).map((requirement) => requirement.label);
+  const progressScore = requirements.reduce((total, requirement) => total + requirement.progress, 0) / totalRequirements;
+
+  return {
+    ...ending,
+    complete: endingMatchesState(ending, state),
+    progressPercent: Math.round(progressScore * 100),
+    matchedRequirements,
+    totalRequirements,
+    blockers,
+    requirements,
+  };
+}
+
+function getEndingRequirementProgress(condition: EndingConditionDefinition, state: GameState): EndingRequirementProgress[] {
+  const requirements: EndingRequirementProgress[] = [];
+
+  if (condition.status && condition.status !== "any") {
+    requirements.push({
+      id: "status",
+      label: "최종 상태",
+      currentLabel: statusLabel(state.status),
+      targetLabel: statusLabel(condition.status),
+      complete: state.status === condition.status,
+      blocking: state.status === "failure" && condition.status === "success",
+      progress: state.status === condition.status ? 1 : state.status === "playing" && condition.status === "success" ? 0.5 : 0,
+    });
+  }
+
+  if (condition.min_month !== undefined) {
+    requirements.push(numberRequirement("min_month", "진행 개월", state.month, condition.min_month, "개월"));
+  }
+
+  if (condition.min_products !== undefined) {
+    requirements.push(numberRequirement("min_products", "출시 제품", state.activeProducts.length, condition.min_products, "개"));
+  }
+
+  for (const [resourceId, minimum] of Object.entries(condition.min_resources ?? {})) {
+    requirements.push(numberRequirement(`min_resource_${resourceId}`, resourceLabel(resourceId), state.resources[resourceId] ?? 0, minimum, resourceUnit(resourceId)));
+  }
+
+  pushSelectionRequirement(requirements, "start_city_ids", "시작 도시", state.runModifiers.startCityId, condition.start_city_ids, getRunModifierName("start_cities"));
+  pushSelectionRequirement(requirements, "world_lore_ids", "세계관", state.runModifiers.worldLoreId, condition.world_lore_ids, getRunModifierName("world_lore"));
+  pushSelectionRequirement(
+    requirements,
+    "market_condition_ids",
+    "시장 조건",
+    state.runModifiers.marketConditionId,
+    condition.market_condition_ids,
+    getRunModifierName("market_conditions"),
+  );
+  pushSelectionRequirement(
+    requirements,
+    "founder_trait_ids",
+    "창업자 성향",
+    state.runModifiers.founderTraitId,
+    condition.founder_trait_ids,
+    getRunModifierName("founder_traits"),
+  );
+  pushSelectionRequirement(requirements, "challenge_tier_ids", "도전 티어", state.runModifiers.challengeTier, condition.challenge_tier_ids, getDifficultyName);
+
+  if (condition.growth_path_ids?.length) {
+    const currentId = state.chosenGrowthPath?.id;
+    const complete = typeof currentId === "string" && condition.growth_path_ids.includes(currentId);
+    requirements.push({
+      id: "growth_path_ids",
+      label: "성장 경로",
+      currentLabel: currentId ? getGrowthPathName(currentId) : "미선택",
+      targetLabel: condition.growth_path_ids.map(getGrowthPathName).join(" / "),
+      complete,
+      blocking: Boolean(currentId && !complete),
+      progress: complete ? 1 : 0,
+    });
+  }
+
+  if (condition.archetype_ids?.length) {
+    const derivedIds = new Set(getDerivedArchetypes(state).map((rule) => rule.id));
+    const missingIds = condition.archetype_ids.filter((id) => !derivedIds.has(id));
+    requirements.push({
+      id: "archetype_ids",
+      label: "파생 아키타입",
+      currentLabel: missingIds.length ? `부족 ${missingIds.length}` : "충족",
+      targetLabel: condition.archetype_ids.join(" / "),
+      complete: missingIds.length === 0,
+      blocking: missingIds.length > 0,
+      progress: missingIds.length === 0 ? 1 : 0,
+    });
+  }
+
+  return requirements;
+}
+
+function numberRequirement(id: string, label: string, current: number, target: number, unit = ""): EndingRequirementProgress {
+  return {
+    id,
+    label,
+    currentLabel: formatRequirementNumber(current, unit),
+    targetLabel: formatRequirementNumber(target, unit),
+    complete: current >= target,
+    blocking: false,
+    progress: target <= 0 ? 1 : Math.max(0, Math.min(1, current / target)),
+  };
+}
+
+function pushSelectionRequirement(
+  requirements: EndingRequirementProgress[],
+  id: string,
+  label: string,
+  currentId: string | undefined,
+  targetIds: string[] | undefined,
+  nameForId: (id: string) => string,
+) {
+  if (!targetIds?.length) return;
+
+  const complete = typeof currentId === "string" && targetIds.includes(currentId);
+  requirements.push({
+    id,
+    label,
+    currentLabel: currentId ? nameForId(currentId) : "없음",
+    targetLabel: targetIds.map(nameForId).join(" / "),
+    complete,
+    blocking: !complete,
+    progress: complete ? 1 : 0,
+  });
+}
+
+function conditionMatchesState(condition: EndingConditionDefinition, state: GameState): boolean {
+  if (condition.status && condition.status !== "any" && state.status !== condition.status) return false;
+  if (condition.min_month !== undefined && state.month < condition.min_month) return false;
+  if (condition.min_products !== undefined && state.activeProducts.length < condition.min_products) return false;
+  if (!hasMinimumResources(state.resources, condition.min_resources ?? {})) return false;
+  if (!oneOf(state.runModifiers.startCityId, condition.start_city_ids)) return false;
+  if (!oneOf(state.runModifiers.worldLoreId, condition.world_lore_ids)) return false;
+  if (!oneOf(state.runModifiers.marketConditionId, condition.market_condition_ids)) return false;
+  if (!oneOf(state.runModifiers.founderTraitId, condition.founder_trait_ids)) return false;
+  if (!oneOf(state.runModifiers.challengeTier, condition.challenge_tier_ids)) return false;
+  if (!oneOf(state.chosenGrowthPath?.id, condition.growth_path_ids)) return false;
+  if (!hasRequiredArchetypes(state, condition.archetype_ids ?? [])) return false;
+
+  return condition.fallback === true || hasAnySpecificCondition(condition);
+}
+
+function hasMinimumResources(resources: ResourceMap, minimums: ResourceMap): boolean {
+  return Object.entries(minimums).every(([resourceId, minimum]) => (resources[resourceId] ?? 0) >= minimum);
+}
+
+function oneOf(value: string | undefined, allowed: string[] | undefined): boolean {
+  return !allowed?.length || (typeof value === "string" && allowed.includes(value));
+}
+
+function hasRequiredArchetypes(state: GameState, archetypeIds: string[]): boolean {
+  if (archetypeIds.length === 0) return true;
+
+  const derivedIds = new Set(getDerivedArchetypes(state).map((rule) => rule.id));
+  return archetypeIds.every((id) => derivedIds.has(id));
+}
+
+function hasAnySpecificCondition(condition: EndingConditionDefinition): boolean {
+  return Boolean(
+    condition.status ||
+      condition.min_month !== undefined ||
+      condition.min_products !== undefined ||
+      Object.keys(condition.min_resources ?? {}).length > 0 ||
+      condition.start_city_ids?.length ||
+      condition.world_lore_ids?.length ||
+      condition.market_condition_ids?.length ||
+      condition.founder_trait_ids?.length ||
+      condition.challenge_tier_ids?.length ||
+      condition.growth_path_ids?.length ||
+      condition.archetype_ids?.length,
+  );
+}
+
+function getRunModifierName(dimension: "start_cities" | "world_lore" | "market_conditions" | "founder_traits") {
+  return (id: string) => runModifiers[dimension].find((entry) => entry.id === id)?.name ?? id;
+}
+
+function getDifficultyName(id: string): string {
+  return difficultyTiers.find((tier) => tier.id === id)?.name ?? id;
+}
+
+function getGrowthPathName(id: string): string {
+  return growthPaths.find((path) => path.id === id)?.title ?? id;
+}
+
+function statusLabel(status: NonNullable<EndingConditionDefinition["status"]>): string {
+  if (status === "success") return "성공";
+  if (status === "failure") return "실패";
+  if (status === "playing") return "진행 중";
+  return "무관";
+}
+
+function resourceLabel(resourceId: string): string {
+  const labels: Record<string, string> = {
+    automation: "자동화",
+    cash: "자금",
+    compute: "컴퓨트",
+    data: "데이터",
+    hype: "화제성",
+    talent: "인재",
+    trust: "신뢰",
+    users: "이용자",
+  };
+  return labels[resourceId] ?? resourceId;
+}
+
+function resourceUnit(resourceId: string): string {
+  if (resourceId === "users") return "명";
+  return "";
+}
+
+function formatRequirementNumber(value: number, unit: string): string {
+  return `${Math.round(value).toLocaleString("ko-KR")}${unit}`;
+}

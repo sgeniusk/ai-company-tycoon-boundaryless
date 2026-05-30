@@ -1,0 +1,198 @@
+{
+  "endings": [
+    {
+      "id": "frontier_demo_empire",
+      "priority": 120,
+      "title": "프런티어 데모 제국",
+      "flavor": "짧은 데모와 공개 실험이 복리처럼 쌓여, 작은 팀이 세계의 제품 리듬을 끌고 가는 엔딩입니다.",
+      "meta_reward_bonus": 5,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 6,
+        "min_resources": { "cash": 250000, "users": 240000, "compute": 250, "hype": 60 },
+        "world_lore_ids": ["open_source_heaven"],
+        "founder_trait_ids": ["engineer_founder"],
+        "growth_path_ids": ["code_vision_lab"],
+        "archetype_ids": ["frontier_garage", "oss_evangelist"]
+      }
+    },
+    {
+      "id": "agi_safety_accord",
+      "priority": 110,
+      "title": "AGI 안전 협정",
+      "flavor": "AGI가 임박했다는 압박 속에서 속도보다 합의를 택해, 연구자와 고객이 함께 신뢰할 수 있는 안전 표준을 만든 엔딩입니다.",
+      "meta_reward_bonus": 5,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 220000, "users": 150000, "compute": 260, "data": 260, "trust": 92, "automation": 65 },
+        "world_lore_ids": ["agi_overhang"],
+        "market_condition_ids": ["regulation_crackdown"],
+        "founder_trait_ids": ["academic_founder", "researcher_founder"],
+        "growth_path_ids": ["trust_enterprise"]
+      }
+    },
+    {
+      "id": "privacy_trust_bastion",
+      "priority": 100,
+      "title": "프라이버시 신뢰 요새",
+      "flavor": "데이터를 덜 쓰는 대신 동의, 안전, 신뢰를 브랜드로 만든 회사가 느리지만 단단한 AI 표준을 세운 엔딩입니다.",
+      "meta_reward_bonus": 4,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 200000, "users": 150000, "trust": 90, "automation": 60 },
+        "world_lore_ids": ["privacy_fortress"],
+        "market_condition_ids": ["regulation_crackdown"],
+        "growth_path_ids": ["trust_enterprise"],
+        "archetype_ids": ["privacy_compact"]
+      }
+    },
+    {
+      "id": "seoul_enterprise_operating_system",
+      "priority": 92,
+      "title": "서울 엔터프라이즈 운영체제",
+      "flavor": "촘촘한 기업 고객망과 자본 감각을 하나의 운영체제로 엮어, AI가 회사 내부 프로세스를 조용히 장악한 엔딩입니다.",
+      "meta_reward_bonus": 4,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 260000, "users": 180000, "trust": 82, "automation": 68 },
+        "start_city_ids": ["seoul", "singapore", "london"],
+        "market_condition_ids": ["enterprise_winter"],
+        "founder_trait_ids": ["capitalist_founder", "serial_founder"],
+        "growth_path_ids": ["trust_enterprise"]
+      }
+    },
+    {
+      "id": "physical_ai_supply_chain",
+      "priority": 90,
+      "title": "물리 AI 공급망",
+      "flavor": "로봇, 물류, 에너지 운영이 하나의 제품군처럼 맞물려 화면 밖 산업을 움직이기 시작한 엔딩입니다.",
+      "meta_reward_bonus": 4,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 6,
+        "min_resources": { "cash": 250000, "users": 220000, "compute": 280, "automation": 75 },
+        "start_city_ids": ["texas"],
+        "world_lore_ids": ["robotics_boom"],
+        "founder_trait_ids": ["operator_founder"],
+        "growth_path_ids": ["code_vision_lab"],
+        "archetype_ids": ["hardware_frontier"]
+      }
+    },
+    {
+      "id": "data_drought_synthetic_lab",
+      "priority": 82,
+      "title": "합성 데이터 연구소",
+      "flavor": "공개 데이터가 마른 세계에서 합성 데이터와 검증 루프를 끝까지 밀어붙여, 부족함 자체를 연구 문화로 바꾼 엔딩입니다.",
+      "meta_reward_bonus": 4,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 4,
+        "min_resources": { "cash": 170000, "users": 100000, "data": 240, "trust": 65, "automation": 55 },
+        "world_lore_ids": ["data_drought"],
+        "founder_trait_ids": ["researcher_founder", "academic_founder"],
+        "growth_path_ids": ["code_vision_lab"],
+        "archetype_ids": ["data_alchemist"]
+      }
+    },
+    {
+      "id": "platform_escape_network",
+      "priority": 74,
+      "title": "플랫폼 탈출 네트워크",
+      "flavor": "빅테크 유통세를 우회하기 위해 커뮤니티, 제휴, 직접 판매를 쌓아 올려 독립 유통망을 만든 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 180000, "users": 170000, "hype": 55, "automation": 50 },
+        "world_lore_ids": ["bigtech_monopoly"],
+        "market_condition_ids": ["platform_gold_rush"],
+        "founder_trait_ids": ["marketer_founder", "serial_founder"]
+      }
+    },
+    {
+      "id": "compute_siege_survivor",
+      "priority": 70,
+      "title": "컴퓨트 포위 생존자",
+      "flavor": "GPU가 막힌 세계에서 낭비를 깎고 또 깎아, 작은 연산으로도 꺼지지 않는 회사를 남긴 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 4,
+        "min_resources": { "cash": 150000, "users": 120000, "compute": 180, "automation": 55 },
+        "world_lore_ids": ["bitcoin_gpu_squeeze"],
+        "founder_trait_ids": ["operator_founder"],
+        "archetype_ids": ["compute_siege_survivor"]
+      }
+    },
+    {
+      "id": "ai_winter_profitable_lab",
+      "priority": 62,
+      "title": "AI 겨울의 흑자 연구소",
+      "flavor": "투자와 관심이 얼어붙은 계절에도 작은 흑자와 긴 연구 호흡을 지켜내, 다음 봄을 기다릴 수 있는 회사를 남긴 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 3,
+        "min_resources": { "cash": 100000, "users": 80000, "data": 180, "trust": 60 },
+        "world_lore_ids": ["ai_winter_redux"],
+        "market_condition_ids": ["funding_drought"],
+        "founder_trait_ids": ["researcher_founder", "operator_founder"],
+        "archetype_ids": ["lab_in_winter"]
+      }
+    },
+    {
+      "id": "tokyo_consumer_companion",
+      "priority": 56,
+      "title": "도쿄 소비자 동반자",
+      "flavor": "캐릭터성, 하드웨어 감각, 소비자 하이프가 맞물려 매일 쓰는 작은 AI 동반자를 대중문화로 만든 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 180000, "users": 180000, "hype": 70, "trust": 55 },
+        "start_city_ids": ["tokyo"],
+        "market_condition_ids": ["consumer_hype_cycle"],
+        "founder_trait_ids": ["designer_founder", "marketer_founder"],
+        "growth_path_ids": ["productivity_line"]
+      }
+    },
+    {
+      "id": "standard_platform_compounder",
+      "priority": 20,
+      "title": "표준 세계의 복리 플랫폼",
+      "flavor": "특별한 세계 보정 없이 제품, 고객, 자동화가 차분히 누적되어 경계 없는 AI 회사의 기준선을 만든 엔딩입니다.",
+      "meta_reward_bonus": 2,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 3,
+        "min_resources": { "cash": 0, "trust": 45 },
+        "world_lore_ids": ["standard"],
+        "founder_trait_ids": ["no_founder"]
+      }
+    },
+    {
+      "id": "garage_restart",
+      "priority": 0,
+      "title": "다시 차고로",
+      "flavor": "이번 세계에서는 회사가 충분한 궤도에 오르지 못했습니다. 남은 기록은 다음 런의 더 좋은 선택지로 이어집니다.",
+      "meta_reward_bonus": 0,
+      "condition": {
+        "fallback": true
+      }
+    }
+  ]
+}

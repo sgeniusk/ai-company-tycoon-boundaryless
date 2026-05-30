@@ -4509,6 +4509,7 @@ p {
 }
 
 .campaign-panel,
+.ending-target-panel,
 .promotion-panel,
 .season-brief-panel,
 .annual-review-panel,
@@ -4526,6 +4527,7 @@ p {
 }
 
 .campaign-panel h3,
+.ending-target-panel h3,
 .promotion-panel h3,
 .season-brief-panel h3,
 .annual-review-panel h3,
@@ -4537,6 +4539,7 @@ p {
 }
 
 .campaign-panel span,
+.ending-target-panel span,
 .promotion-panel span,
 .season-brief-panel span,
 .annual-review-panel span,
@@ -4555,6 +4558,56 @@ p {
 .workforce-synergy-panel {
   background: #eef7ff;
   border-color: #9cb8d6;
+}
+
+.ending-target-panel {
+  background: #eef7ff;
+  border-color: #9cb8d6;
+  display: grid;
+}
+
+.ending-target-grid {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.ending-target-grid article {
+  background: #fffdf7;
+  border: 2px solid #b9d0e6;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px;
+}
+
+.ending-target-grid article.complete {
+  background: #eff9ea;
+  border-color: var(--green);
+}
+
+.ending-target-card-heading {
+  align-items: start;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-width: 0;
+}
+
+.ending-target-grid strong {
+  color: #263f52;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.ending-target-grid small {
+  color: #516579;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .recruitment-channel-panel {
@@ -6569,6 +6622,16 @@ p {
   padding: 10px;
 }
 
+.ending-collection-panel {
+  background: #eef7ff;
+  border: 2px solid #9cb8d6;
+  display: grid;
+  gap: 9px;
+  margin-bottom: 10px;
+  min-width: 0;
+  padding: 10px;
+}
+
 .payoff-collection-heading {
   align-items: end;
   display: grid;
@@ -6605,6 +6668,13 @@ p {
   min-width: 0;
 }
 
+.ending-collection-grid {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
+}
+
 .payoff-collection-grid article {
   background: #fffdf7;
   border: 2px solid #d7c894;
@@ -6625,6 +6695,16 @@ p {
   padding: 8px;
 }
 
+.ending-collection-grid article {
+  background: #fffdf7;
+  border: 2px solid #b9d0e6;
+  display: grid;
+  gap: 4px;
+  min-height: 92px;
+  min-width: 0;
+  padding: 8px;
+}
+
 .payoff-collection-grid article.discovered {
   background: #fff8df;
   border-color: #d6a942;
@@ -6633,6 +6713,11 @@ p {
 .archetype-collection-grid article.discovered {
   background: #fff8df;
   border-color: #d6a942;
+}
+
+.ending-collection-grid article.discovered {
+  background: #eff9ea;
+  border-color: var(--green);
 }
 
 .payoff-collection-grid article.locked {
@@ -6645,6 +6730,11 @@ p {
   border-color: #c7bda3;
 }
 
+.ending-collection-grid article.locked {
+  background: #e9edf1;
+  border-color: #b9c3ce;
+}
+
 .payoff-collection-grid strong {
   color: #4f4325;
   font-size: 0.78rem;
@@ -6654,6 +6744,13 @@ p {
 
 .archetype-collection-grid strong {
   color: #4f4325;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.ending-collection-grid strong {
+  color: #263f52;
   font-size: 0.78rem;
   line-height: 1.2;
   overflow-wrap: anywhere;
@@ -6671,6 +6768,15 @@ p {
 .archetype-collection-grid span,
 .archetype-collection-grid small {
   color: #6c5f39;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.ending-collection-grid span,
+.ending-collection-grid small {
+  color: #516579;
   font-size: 0.66rem;
   font-weight: 900;
   line-height: 1.3;
@@ -9748,6 +9854,7 @@ p {
   .payoff-collection-heading,
   .payoff-collection-grid,
   .archetype-collection-grid,
+  .ending-collection-grid,
   .run-spotlight-grid,
   .rival-wave-list,
   .deck-token-strip,
@@ -9757,6 +9864,7 @@ p {
   .growth-choice-confirmation ol,
   .annual-directive-confirmation ol,
   .annual-directive-actions,
+  .ending-target-grid,
   .year-two-kickoff-grid,
   .annual-research-launchpad,
   .ai-resource-visibility-grid,
@@ -9842,6 +9950,14 @@ p {
   }
 
   .archetype-collection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ending-target-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ending-collection-grid {
     grid-template-columns: 1fr;
   }
 

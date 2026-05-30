@@ -1,6 +1,7 @@
 import {
   annualDirectiveChoices,
   annualReviews,
+  campaignEndings,
   campaignShocks,
   companyLocations,
   competitors,
@@ -31,6 +32,7 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
   const campaignShockIds = new Set(campaignShocks.map((shock) => shock.id));
   const worldEventIds = new Set(worldEvents.map((event) => event.id));
   const derivationRuleIds = new Set(derivationRules.map((rule) => rule.id));
+  const endingIds = new Set(campaignEndings.map((ending) => ending.id));
 
   for (const resourceId of Object.keys(resources)) {
     const value = state.resources[resourceId];
@@ -184,6 +186,22 @@ export function validateGameStateIntegrity(state: GameState): StateIntegrityRepo
         issues.push(`discovered archetype "${archetypeId}" is duplicated`);
       }
       seenArchetypeIds.add(archetypeId);
+    }
+  }
+
+  if (!Array.isArray(state.roguelite.discoveredEndingIds)) {
+    issues.push("roguelite discoveredEndingIds must be an array");
+  } else {
+    const seenEndingIds = new Set<string>();
+    for (const endingId of state.roguelite.discoveredEndingIds) {
+      if (typeof endingId !== "string" || !endingId.length) {
+        issues.push("roguelite discoveredEndingIds must contain non-empty strings");
+      } else if (!endingIds.has(endingId)) {
+        issues.push(`discovered ending "${endingId}" is unknown`);
+      } else if (seenEndingIds.has(endingId)) {
+        issues.push(`discovered ending "${endingId}" is duplicated`);
+      }
+      seenEndingIds.add(endingId);
     }
   }
 

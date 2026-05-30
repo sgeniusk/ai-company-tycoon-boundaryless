@@ -755,6 +755,26 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.archetype-collection-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.67 #2 shows ending discovery as a roguelite collection", () => {
+    expect(menuPanels).toContain("getEndingCollectionEntries");
+    expect(menuPanels).toContain("ending-collection-panel");
+    expect(menuPanels).toContain("discoveredEndingIds");
+    expect(menuPanels).toContain("엔딩 도감");
+    expect(appCss).toMatch(/\.ending-collection-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-collection-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("v0.67 #3 surfaces current-run ending targets in the company console", () => {
+    expect(menuPanels).toContain("getEndingTargetPlans");
+    expect(menuPanels).toContain("ending-target-panel");
+    expect(menuPanels).toContain("엔딩 목표");
+    expect(menuPanels).toContain("progressPercent");
+    expect(appCss).toMatch(/\.ending-target-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-target-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-target-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");

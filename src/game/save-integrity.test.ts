@@ -342,6 +342,29 @@ describe("v0.11 save integrity and recovery", () => {
     expect(validateGameStateIntegrity(migrated)).toMatchObject({ ok: true, issues: [] });
   });
 
+  it("round-trips roguelite discoveredEndingIds and migrates old roguelite saves to an empty list", () => {
+    const discoveredState: GameState = {
+      ...createInitialState(),
+      roguelite: {
+        ...createInitialState().roguelite,
+        discoveredEndingIds: ["standard_platform_compounder", "privacy_trust_bastion"],
+      },
+    };
+    const hydrated = hydrateGameState(serializeGameState(discoveredState));
+
+    expect(hydrated.roguelite.discoveredEndingIds).toEqual(["standard_platform_compounder", "privacy_trust_bastion"]);
+
+    const legacyState: Partial<GameState> = {
+      ...createInitialState(),
+      roguelite: { ...createInitialState().roguelite },
+    };
+    delete (legacyState.roguelite as Partial<GameState["roguelite"]>).discoveredEndingIds;
+    const migrated = hydrateGameState(JSON.stringify({ version: 11, state: legacyState }));
+
+    expect(migrated.roguelite.discoveredEndingIds).toEqual([]);
+    expect(validateGameStateIntegrity(migrated)).toMatchObject({ ok: true, issues: [] });
+  });
+
   it("sanitizes malformed physical capability levels during hydration", () => {
     const state = createInitialState();
     const hydrated = hydrateGameState(
