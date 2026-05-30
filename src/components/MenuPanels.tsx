@@ -746,7 +746,7 @@ function DeckPanel({
   const rivalCounterSignal = getRivalCounterSignal(gameState);
   const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
   const [selectedChallengeTierId, setSelectedChallengeTierId] = useState("standard");
-  const [endingCollectionFilter, setEndingCollectionFilter] = useState<"all" | "locked" | "discovered" | "reward" | "finalOnly">("all");
+  const [endingCollectionFilter, setEndingCollectionFilter] = useState<"all" | "locked" | "discovered" | "reward" | "unlockHints" | "finalOnly">("all");
   const [endingCollectionSort, setEndingCollectionSort] = useState<"priority" | "progress" | "reward">("priority");
   const deck = gameState.roguelite.deck;
   const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
@@ -789,12 +789,14 @@ function DeckPanel({
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
   const discoveredEndingCount = baseEndingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
   const remainingRewardEndingCount = endingCollectionEntries.filter((entry) => !entry.discovered && entry.meta_reward_bonus > 0).length;
+  const unlockHintEndingCount = endingCollectionEntries.filter((entry) => entry.recommendedUnlockLabels.length > 0).length;
   const finalOnlyEndingCount = endingCollectionEntries.filter((entry) => entry.condition.fallback === true).length;
   const endingCollectionFilterOptions = [
     { id: "all", label: "전체", count: endingCollectionEntries.length },
     { id: "locked", label: "미발견", count: endingCollectionSummary.lockedCount },
     { id: "discovered", label: "발견 완료", count: discoveredEndingCount },
     { id: "reward", label: "보상 남음", count: remainingRewardEndingCount },
+    { id: "unlockHints", label: "해금 추천", count: unlockHintEndingCount },
     { id: "finalOnly", label: "결과 전용", count: finalOnlyEndingCount },
   ] as const;
   const endingCollectionSortOptions = [
@@ -806,6 +808,7 @@ function DeckPanel({
     if (endingCollectionFilter === "locked") return !entry.discovered;
     if (endingCollectionFilter === "discovered") return entry.discovered;
     if (endingCollectionFilter === "reward") return !entry.discovered && entry.meta_reward_bonus > 0;
+    if (endingCollectionFilter === "unlockHints") return entry.recommendedUnlockLabels.length > 0;
     if (endingCollectionFilter === "finalOnly") return entry.condition.fallback === true;
     return true;
   });
