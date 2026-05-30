@@ -723,6 +723,18 @@ describe("v0.67 campaign ending selector", () => {
     });
   });
 
+  it("labels result-only final endings as a zero codex record instead of a reward grant", () => {
+    const discovery = getCampaignEndingDiscovery(endingFixtures.garage_restart);
+
+    expect(discovery).toMatchObject({
+      id: "garage_restart",
+      rewardLabel: "+0 통찰",
+      rewardDeltaLabel: "+0 도감 통찰",
+      rewardStatusLabel: "결과 전용 기록",
+      rewardDeltaDescription: "결과 전용 엔딩이 도감에 기록됩니다.",
+    });
+  });
+
   it("explains the selected campaign ending with satisfied requirements", () => {
     const report = getCampaignEndingReport(endingFixtures.privacy_trust_bastion);
 

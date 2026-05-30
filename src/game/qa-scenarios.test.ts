@@ -958,7 +958,9 @@ describe("alpha v0.9.3 QA scenarios", () => {
       id: "garage_restart",
       title: "다시 차고로",
       rewardLabel: "+0 통찰",
+      rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "결과 전용 기록",
+      rewardDeltaDescription: "결과 전용 엔딩이 도감에 기록됩니다.",
     });
   });
 

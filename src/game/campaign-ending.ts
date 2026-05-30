@@ -142,11 +142,22 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
     totalRewardBonus,
     completionPercentAfterRun: campaignEndings.length ? Math.round((afterRunDiscoveredIds.size / campaignEndings.length) * 100) : 100,
     rewardCompletionPercentAfterRun: totalRewardBonus ? Math.round((discoveredRewardBonusAfterRun / totalRewardBonus) * 100) : 100,
-    rewardDeltaDescription: alreadyDiscovered ? "이미 획득한 도감 보상입니다." : "신규 도감 보상이 추가됩니다.",
-    rewardDeltaLabel: alreadyDiscovered ? "+0 도감 통찰" : `+${ending.meta_reward_bonus} 통찰`,
+    rewardDeltaDescription: getFinalEndingRewardDeltaDescription(ending, alreadyDiscovered),
+    rewardDeltaLabel: getFinalEndingRewardDeltaLabel(ending, alreadyDiscovered),
     rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
     rewardStatusLabel: getFinalEndingRewardStatusLabel(ending, alreadyDiscovered),
   };
+}
+
+function getFinalEndingRewardDeltaDescription(ending: EndingDefinition, alreadyDiscovered: boolean): string {
+  if (alreadyDiscovered) return "이미 획득한 도감 보상입니다.";
+  if (ending.condition.fallback === true || ending.meta_reward_bonus <= 0) return "결과 전용 엔딩이 도감에 기록됩니다.";
+  return "신규 도감 보상이 추가됩니다.";
+}
+
+function getFinalEndingRewardDeltaLabel(ending: EndingDefinition, alreadyDiscovered: boolean): string {
+  if (alreadyDiscovered || ending.condition.fallback === true || ending.meta_reward_bonus <= 0) return "+0 도감 통찰";
+  return `+${ending.meta_reward_bonus} 통찰`;
 }
 
 function getFinalEndingRewardStatusLabel(ending: EndingDefinition, alreadyDiscovered: boolean): string {
