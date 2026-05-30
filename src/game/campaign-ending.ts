@@ -332,6 +332,7 @@ function getEndingRouteUnlockTags(condition: EndingConditionDefinition): Set<str
   const worldIds = new Set(condition.world_lore_ids ?? []);
   const founderIds = new Set(condition.founder_trait_ids ?? []);
   const growthPathIds = new Set(condition.growth_path_ids ?? []);
+  const archetypeIds = new Set(condition.archetype_ids ?? []);
   const resources = condition.min_resources ?? {};
 
   if (
@@ -372,6 +373,22 @@ function getEndingRouteUnlockTags(condition: EndingConditionDefinition): Set<str
   if (worldIds.has("data_drought") || (resources.data ?? 0) >= 240) {
     tags.add("data");
     tags.add("quality");
+  }
+
+  if (
+    worldIds.has("ai_winter_redux") ||
+    marketIds.has("funding_drought") ||
+    founderIds.has("researcher_founder") ||
+    archetypeIds.has("lab_in_winter")
+  ) {
+    tags.add("data");
+    tags.add("quality");
+    tags.add("research");
+  }
+
+  if (worldIds.has("standard") || founderIds.has("no_founder")) {
+    tags.add("growth");
+    tags.add("automation");
   }
 
   return tags;

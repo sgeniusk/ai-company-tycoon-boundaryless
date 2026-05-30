@@ -889,6 +889,22 @@ describe("v0.67 campaign ending selector", () => {
     });
   });
 
+  it("keeps every replayable reward ending connected to meta unlock recommendations", () => {
+    const freshMetaState = createInitialState();
+    const missingRecommendationIds = campaignEndings
+      .filter((ending) => ending.condition.fallback !== true && ending.meta_reward_bonus > 0)
+      .filter((ending) => getEndingRouteUnlockLabels(ending.condition, freshMetaState).length === 0)
+      .map((ending) => ending.id);
+    const aiWinterEnding = campaignEndings.find((ending) => ending.id === "ai_winter_profitable_lab");
+    const standardEnding = campaignEndings.find((ending) => ending.id === "standard_platform_compounder");
+
+    expect(missingRecommendationIds).toEqual([]);
+    expect(aiWinterEnding).toBeDefined();
+    expect(standardEnding).toBeDefined();
+    expect(getEndingRouteUnlockLabels(aiWinterEnding!.condition, freshMetaState)).toEqual(["합성 사용자 실험실", "평가 하네스 기억"]);
+    expect(getEndingRouteUnlockLabels(standardEnding!.condition, freshMetaState)).toEqual(["런칭 플레이북", "자동화 기억"]);
+  });
+
   it("summarizes ending collection progress with the next recommended replay target", () => {
     const state = {
       ...createInitialState(),
