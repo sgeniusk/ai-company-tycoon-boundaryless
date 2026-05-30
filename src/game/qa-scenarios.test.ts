@@ -75,6 +75,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "annual-strategy",
       "ten-year-sim",
       "ten-year-next-run",
+      "ten-year-ending-route-start",
       "campaign-shock",
       "foundation",
       "commercial",
@@ -773,6 +774,28 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.timeline[0]).toContain("표준 세계의 복리 플랫폼");
   });
 
+  it("creates a ten-year ending-route quick-start scenario for browser QA", () => {
+    const scenario = createQaScenario("ten-year-ending-route-start");
+    const activeReplayBrief = getActiveEndingReplayBrief(scenario.state);
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("엔딩 목표 런");
+    expect(scenario.state.month).toBe(1);
+    expect(scenario.state.status).toBe("playing");
+    expect(scenario.state.roguelite.runNumber).toBe(2);
+    expect(scenario.state.roguelite.discoveredEndingIds).toContain("standard_platform_compounder");
+    expect(scenario.state.runModifiers.seed).toMatch(/^ending:/);
+    expect(scenario.state.runModifiers.seed).not.toBe("ending:standard_platform_compounder");
+    expect(scenario.state.roguelite.runHistory[0]).toMatchObject({
+      endingId: "standard_platform_compounder",
+      endingName: "표준 세계의 복리 플랫폼",
+      survivedYears: 10,
+    });
+    expect(activeReplayBrief?.seed).toBe(scenario.state.runModifiers.seed);
+    expect(activeReplayBrief?.alreadyDiscovered).toBe(false);
+    expect(scenario.state.timeline[0]).toContain("엔딩 목표 런 QA");
+  });
+
   it("creates a campaign shock scenario for v0.33 pacing QA", () => {
     const scenario = createQaScenario("campaign-shock");
 
@@ -823,6 +846,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=annual-strategy")?.id).toBe("annual-strategy");
     expect(createQaScenarioFromSearch("?scenario=ten-year-sim")?.id).toBe("ten-year-sim");
     expect(createQaScenarioFromSearch("?scenario=ten-year-next-run")?.id).toBe("ten-year-next-run");
+    expect(createQaScenarioFromSearch("?scenario=ten-year-ending-route-start")?.id).toBe("ten-year-ending-route-start");
     expect(createQaScenarioFromSearch("?scenario=campaign-shock")?.id).toBe("campaign-shock");
     expect(createQaScenarioFromSearch("?scenario=foundation")?.id).toBe("foundation");
     expect(createQaScenarioFromSearch("?scenario=commercial")?.id).toBe("commercial");

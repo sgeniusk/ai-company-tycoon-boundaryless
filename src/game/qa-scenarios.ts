@@ -4,7 +4,7 @@ import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
 import { applyDueCampaignShocks } from "./campaign-shocks";
 import { chooseCardReward, createReleaseCardReward, getStrategyCardById, playStrategyCard } from "./deckbuilding";
 import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
-import { resetRunWithMetaUnlocks } from "./meta-progression";
+import { getNextRunSetupPlan, resetRunWithMetaUnlocks } from "./meta-progression";
 import { runPersonaPlaytestReview } from "./persona-playtest";
 import { rollRunModifierSelection } from "./run-modifiers";
 import { evaluateAlphaReadiness, runScriptedCommercialSimulation, runTenMinuteAlphaSimulation, runTenYearCampaignSimulation } from "./run-simulator";
@@ -68,6 +68,7 @@ export const qaScenarioIds = [
   "annual-strategy",
   "ten-year-sim",
   "ten-year-next-run",
+  "ten-year-ending-route-start",
   "campaign-shock",
   "foundation",
   "commercial",
@@ -807,6 +808,26 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
         timeline: [
           `10년 엔딩 다음 런 QA: ${result.endingDiscovery.title} 기록과 ${result.endingDiscovery.rewardDeltaLabel} 반영 확인`,
           ...result.nextRunPreview.timeline,
+        ].slice(0, 8),
+      },
+      activeMenu: "deck",
+    };
+  }
+
+  if (id === "ten-year-ending-route-start") {
+    const result = runTenYearCampaignSimulation("productivity_line");
+    const quickStart = getNextRunSetupPlan(result.finalState).quickStarts.find((entry) => entry.id === "ending_route");
+    if (!quickStart?.runModifierSelection) throw new Error("Missing ending route quick start QA state");
+    const state = resetRunWithMetaUnlocks(result.finalState, quickStart.unlockIds, quickStart.starterDeckId, quickStart.runModifierSelection);
+
+    return {
+      id,
+      label: "10년 엔딩 목표 런 QA",
+      state: {
+        ...state,
+        timeline: [
+          `엔딩 목표 런 QA: ${quickStart.label} · ${state.runModifiers.seed}`,
+          ...state.timeline,
         ].slice(0, 8),
       },
       activeMenu: "deck",
