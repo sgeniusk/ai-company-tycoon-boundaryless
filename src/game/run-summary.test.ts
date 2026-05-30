@@ -223,7 +223,7 @@ describe("v0.11 commercial run summary", () => {
       expect.arrayContaining(["엔딩 보너스 표준 세계의 복리 플랫폼 +2"]),
     );
     expect(repeatSummary.spotlight.ending?.newlyDiscovered).toBe(false);
-    expect(repeatSummary.spotlight.ending?.rewardStatusLabel).toBe("엔딩 보너스 +2 통찰 · 도감 보상 수집 완료");
+    expect(repeatSummary.spotlight.ending?.rewardStatusLabel).toBe("도감 보상 수집 완료 · 추가 엔딩 보너스 없음");
     expect(repeatSummary.spotlight.insightReward).toBe(summary.spotlight.insightReward - 2);
     expect(repeatSummary.spotlight.insightBreakdown).not.toEqual(
       expect.arrayContaining(["엔딩 보너스 표준 세계의 복리 플랫폼 +2"]),
@@ -259,6 +259,6 @@ describe("v0.11 commercial run summary", () => {
           discoveredEndingIds: ["garage_restart"],
         },
       }).spotlight.ending?.rewardStatusLabel,
-    ).toBe("엔딩 보너스 없음 · 도감 보상 수집 완료");
+    ).toBe("결과 전용 기록 수집 완료 · 추가 엔딩 보너스 없음");
   });
 });

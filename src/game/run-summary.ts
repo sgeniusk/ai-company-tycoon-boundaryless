@@ -200,7 +200,9 @@ function getRunEndingSpotlight(state: GameState): RunSpotlightEnding | undefined
 
 function getEndingRewardStatusLabel(metaRewardBonus: number, newlyDiscovered: boolean, resultOnly: boolean): string {
   const runRewardLabel = metaRewardBonus > 0 ? `엔딩 보너스 +${metaRewardBonus} 통찰` : "엔딩 보너스 없음";
-  if (!newlyDiscovered) return `${runRewardLabel} · 도감 보상 수집 완료`;
+  if (!newlyDiscovered) {
+    return resultOnly ? "결과 전용 기록 수집 완료 · 추가 엔딩 보너스 없음" : "도감 보상 수집 완료 · 추가 엔딩 보너스 없음";
+  }
   if (resultOnly || metaRewardBonus <= 0) return `${runRewardLabel} · 결과 전용 기록`;
   return `${runRewardLabel} · 신규 도감 보상`;
 }
