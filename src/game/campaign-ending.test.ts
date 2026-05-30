@@ -727,6 +727,13 @@ describe("v0.67 campaign ending selector", () => {
 
   it("labels result-only final endings as a zero codex record instead of a reward grant", () => {
     const discovery = getCampaignEndingDiscovery(endingFixtures.garage_restart);
+    const repeatedDiscovery = getCampaignEndingDiscovery({
+      ...endingFixtures.garage_restart,
+      roguelite: {
+        ...endingFixtures.garage_restart.roguelite,
+        discoveredEndingIds: ["garage_restart"],
+      },
+    });
 
     expect(discovery).toMatchObject({
       id: "garage_restart",
@@ -735,6 +742,15 @@ describe("v0.67 campaign ending selector", () => {
       rewardStatusLabel: "결과 전용 기록",
       rewardDeltaDescription: "결과 전용 엔딩이 도감에 기록됩니다.",
       codexApplyLabel: "재시작하면 결과 기록으로 도감에 추가됩니다.",
+    });
+    expect(repeatedDiscovery).toMatchObject({
+      id: "garage_restart",
+      alreadyDiscovered: true,
+      rewardLabel: "+0 통찰",
+      rewardDeltaLabel: "+0 도감 통찰",
+      rewardStatusLabel: "결과 전용 기록 수집 완료 · 추가 통찰 없음",
+      rewardDeltaDescription: "이미 기록한 결과 전용 엔딩입니다.",
+      codexApplyLabel: "이미 도감에 있는 결과 기록입니다.",
     });
   });
 
@@ -761,7 +777,7 @@ describe("v0.67 campaign ending selector", () => {
       ...createInitialState(),
       roguelite: {
         ...createInitialState().roguelite,
-        discoveredEndingIds: ["standard_platform_compounder", "privacy_trust_bastion"],
+        discoveredEndingIds: ["standard_platform_compounder", "privacy_trust_bastion", "garage_restart"],
       },
     };
     const entries = getEndingCollectionEntries(state);
@@ -770,6 +786,7 @@ describe("v0.67 campaign ending selector", () => {
     expect(entries.filter((entry) => entry.discovered).map((entry) => entry.id)).toEqual([
       "privacy_trust_bastion",
       "standard_platform_compounder",
+      "garage_restart",
     ]);
     expect(entries.find((entry) => entry.id === "frontier_demo_empire")).toMatchObject({
       title: "프런티어 데모 제국",
@@ -779,6 +796,10 @@ describe("v0.67 campaign ending selector", () => {
     expect(entries.find((entry) => entry.id === "privacy_trust_bastion")).toMatchObject({
       discovered: true,
       rewardStatusLabel: "도감 보상 수집 완료",
+    });
+    expect(entries.find((entry) => entry.id === "garage_restart")).toMatchObject({
+      discovered: true,
+      rewardStatusLabel: "결과 전용 기록 수집 완료",
     });
     expect(entries.find((entry) => entry.id === "frontier_demo_empire")?.targetLabels).toEqual(
       expect.arrayContaining(["오픈소스 천국", "엔지니어 창업자", "코드/비전 연구소", "프런티어 차고"]),

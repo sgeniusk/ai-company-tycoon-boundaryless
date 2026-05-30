@@ -152,14 +152,16 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
 }
 
 function getFinalEndingCodexApplyLabel(ending: EndingDefinition, alreadyDiscovered: boolean): string {
-  if (alreadyDiscovered) return "이미 도감에 있는 결말입니다.";
-  if (ending.condition.fallback === true || ending.meta_reward_bonus <= 0) return "재시작하면 결과 기록으로 도감에 추가됩니다.";
+  const resultOnly = isResultOnlyEnding(ending);
+  if (alreadyDiscovered) return resultOnly ? "이미 도감에 있는 결과 기록입니다." : "이미 도감에 있는 결말입니다.";
+  if (resultOnly) return "재시작하면 결과 기록으로 도감에 추가됩니다.";
   return "재시작하면 엔딩 도감에 추가됩니다.";
 }
 
 function getFinalEndingRewardDeltaDescription(ending: EndingDefinition, alreadyDiscovered: boolean): string {
-  if (alreadyDiscovered) return "이미 획득한 도감 보상입니다.";
-  if (ending.condition.fallback === true || ending.meta_reward_bonus <= 0) return "결과 전용 엔딩이 도감에 기록됩니다.";
+  const resultOnly = isResultOnlyEnding(ending);
+  if (alreadyDiscovered) return resultOnly ? "이미 기록한 결과 전용 엔딩입니다." : "이미 획득한 도감 보상입니다.";
+  if (resultOnly) return "결과 전용 엔딩이 도감에 기록됩니다.";
   return "신규 도감 보상이 추가됩니다.";
 }
 
@@ -169,9 +171,14 @@ function getFinalEndingRewardDeltaLabel(ending: EndingDefinition, alreadyDiscove
 }
 
 function getFinalEndingRewardStatusLabel(ending: EndingDefinition, alreadyDiscovered: boolean): string {
-  if (alreadyDiscovered) return "도감 보상 수집 완료 · 추가 통찰 없음";
-  if (ending.condition.fallback === true || ending.meta_reward_bonus <= 0) return "결과 전용 기록";
+  const resultOnly = isResultOnlyEnding(ending);
+  if (alreadyDiscovered) return resultOnly ? "결과 전용 기록 수집 완료 · 추가 통찰 없음" : "도감 보상 수집 완료 · 추가 통찰 없음";
+  if (resultOnly) return "결과 전용 기록";
   return `+${ending.meta_reward_bonus} 통찰 신규 도감 보상`;
+}
+
+function isResultOnlyEnding(ending: EndingDefinition): boolean {
+  return ending.condition.fallback === true || ending.meta_reward_bonus <= 0;
 }
 
 export function getEndingTargetPlans(state: GameState, limit = 3): EndingTargetPlan[] {
@@ -284,7 +291,7 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
 }
 
 function getEndingCollectionRewardStatusLabel(metaRewardBonus: number, discovered: boolean, finalOnly: boolean): string {
-  if (discovered) return "도감 보상 수집 완료";
+  if (discovered) return finalOnly ? "결과 전용 기록 수집 완료" : "도감 보상 수집 완료";
   if (metaRewardBonus > 0) return `+${metaRewardBonus} 통찰 도감 보상`;
   return finalOnly ? "결과 전용 기록" : "도감 보상 없음";
 }

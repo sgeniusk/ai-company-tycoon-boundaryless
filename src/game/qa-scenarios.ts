@@ -97,6 +97,7 @@ export const qaScenarioIds = [
   "ending-replay-final",
   "ending-replay-known-final",
   "ending-fallback-final",
+  "ending-fallback-known-final",
   "ending-nearmiss-final",
   "ending-nearmiss-known-final",
 ] as const;
@@ -347,6 +348,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "결과 전용 엔딩 QA",
       state: createFallbackEndingFinalScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-fallback-known-final") {
+    return {
+      id,
+      label: "반복 결과 전용 엔딩 QA",
+      state: createKnownFallbackEndingFinalScenarioState(),
       activeMenu: "company",
     };
   }
@@ -2133,6 +2143,19 @@ function createFallbackEndingFinalScenarioState(): GameState {
     },
     status: "failure",
     timeline: ["결과 전용 엔딩 QA: 10년 최종 결과에서 다시 차고로 fallback 엔딩 공개 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createKnownFallbackEndingFinalScenarioState(): GameState {
+  const state = createFallbackEndingFinalScenarioState();
+
+  return {
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: [...new Set([...state.roguelite.discoveredEndingIds, "garage_restart"])],
+    },
+    timeline: ["반복 결과 전용 엔딩 QA: 이미 기록한 다시 차고로 fallback 문구 확인", ...state.timeline].slice(0, 8),
   };
 }
 

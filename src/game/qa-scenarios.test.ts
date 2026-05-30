@@ -102,6 +102,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "ending-replay-final",
       "ending-replay-known-final",
       "ending-fallback-final",
+      "ending-fallback-known-final",
       "ending-nearmiss-final",
       "ending-nearmiss-known-final",
     ]);
@@ -820,6 +821,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=ending-replay-complete")?.id).toBe("ending-replay-complete");
     expect(createQaScenarioFromSearch("?scenario=ending-replay-known-final")?.id).toBe("ending-replay-known-final");
     expect(createQaScenarioFromSearch("?scenario=ending-fallback-final")?.id).toBe("ending-fallback-final");
+    expect(createQaScenarioFromSearch("?scenario=ending-fallback-known-final")?.id).toBe("ending-fallback-known-final");
     expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-final")?.id).toBe("ending-nearmiss-final");
     expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-known-final")?.id).toBe("ending-nearmiss-known-final");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
@@ -964,6 +966,24 @@ describe("alpha v0.9.3 QA scenarios", () => {
       rewardStatusLabel: "결과 전용 기록",
       rewardDeltaDescription: "결과 전용 엔딩이 도감에 기록됩니다.",
       codexApplyLabel: "재시작하면 결과 기록으로 도감에 추가됩니다.",
+    });
+  });
+
+  it("builds a repeated fallback final ending scenario for result-only record copy", () => {
+    const scenario = createQaScenario("ending-fallback-known-final");
+    const discovery = getCampaignEndingDiscovery(scenario.state);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("반복 결과 전용");
+    expect(scenario.state.roguelite.discoveredEndingIds).toEqual(expect.arrayContaining(["garage_restart"]));
+    expect(getCampaignEnding(scenario.state).id).toBe("garage_restart");
+    expect(discovery).toMatchObject({
+      id: "garage_restart",
+      alreadyDiscovered: true,
+      rewardDeltaLabel: "+0 도감 통찰",
+      rewardStatusLabel: "결과 전용 기록 수집 완료 · 추가 통찰 없음",
+      rewardDeltaDescription: "이미 기록한 결과 전용 엔딩입니다.",
+      codexApplyLabel: "이미 도감에 있는 결과 기록입니다.",
     });
   });
 
