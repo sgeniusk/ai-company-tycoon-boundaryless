@@ -155,6 +155,52 @@ describe("v0.32 next-run setup plan", () => {
     });
   });
 
+  it("does not grant the ending meta bonus again for repeated discoveries", () => {
+    const initial = createInitialState();
+    const firstClear = {
+      ...initial,
+      month: 120,
+      status: "success" as const,
+      activeProducts: [
+        "ai_writing_assistant",
+        "meeting_summary_bot",
+        "customer_support_chatbot",
+        "foundation_model_v0",
+      ],
+      resources: {
+        ...initial.resources,
+        cash: 180000,
+        users: 140000,
+        trust: 76,
+        automation: 58,
+      },
+    };
+    const repeatedClear = {
+      ...firstClear,
+      roguelite: {
+        ...firstClear.roguelite,
+        founderInsight: 7,
+        discoveredEndingIds: ["standard_platform_compounder"],
+      },
+    };
+    const firstReward = getRunInsightReward(firstClear);
+    const repeatedReward = getRunInsightReward(repeatedClear);
+    const nextRun = resetRunWithMetaUnlocks(repeatedClear);
+
+    expect(getCampaignEnding(repeatedClear)).toMatchObject({
+      id: "standard_platform_compounder",
+      meta_reward_bonus: 2,
+    });
+    expect(firstReward).toBe(144);
+    expect(repeatedReward).toBe(142);
+    expect(nextRun.roguelite.founderInsight).toBe(7 + repeatedReward);
+    expect(nextRun.roguelite.discoveredEndingIds).toEqual(["standard_platform_compounder"]);
+    expect(nextRun.roguelite.runHistory[0]).toMatchObject({
+      endingId: "standard_platform_compounder",
+      insightReward: repeatedReward,
+    });
+  });
+
   it("keeps ending discoveries unique across repeated resets", () => {
     const initial = createInitialState();
     const finished = {

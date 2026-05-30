@@ -294,7 +294,9 @@ function getInsightBreakdown(state: GameState): string[] {
   if (rewardMultiplier !== 1) breakdown.push(`도전 티어 x${rewardMultiplier}`);
   if (state.month >= CAMPAIGN_FINAL_MONTH) {
     const ending = getCampaignEnding(state);
-    if (ending.meta_reward_bonus > 0) breakdown.push(`엔딩 보너스 ${ending.title} +${ending.meta_reward_bonus}`);
+    if (!state.roguelite.discoveredEndingIds.includes(ending.id) && ending.meta_reward_bonus > 0) {
+      breakdown.push(`엔딩 보너스 ${ending.title} +${ending.meta_reward_bonus}`);
+    }
   }
   return breakdown;
 }

@@ -62,9 +62,15 @@ export function getRunInsightReward(state: GameState): number {
   const statusBonus = state.status === "success" ? 3 : state.status === "failure" ? 1 : 0;
   const rewardMultiplier = difficultyTiers.find((tier) => tier.id === state.runModifiers?.challengeTier)?.reward_multiplier ?? 1;
   const baseReward = Math.max(1, 1 + monthBonus + state.activeProducts.length + userBonus + trustBonus + statusBonus);
-  const endingBonus = state.month >= CAMPAIGN_FINAL_MONTH ? getCampaignEnding(state).meta_reward_bonus : 0;
+  const endingBonus = getNewEndingMetaRewardBonus(state);
 
   return Math.round(baseReward * rewardMultiplier) + endingBonus;
+}
+
+function getNewEndingMetaRewardBonus(state: GameState): number {
+  if (state.month < CAMPAIGN_FINAL_MONTH) return 0;
+  const ending = getCampaignEnding(state);
+  return state.roguelite.discoveredEndingIds.includes(ending.id) ? 0 : ending.meta_reward_bonus;
 }
 
 export function getMetaUnlockCheck(metaUnlockId: string, state: GameState, spendableInsight = state.roguelite.founderInsight): ActionCheck {
