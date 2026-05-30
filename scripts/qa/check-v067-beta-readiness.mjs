@@ -192,12 +192,18 @@ const checks = [
 ];
 
 const status = checks.every((check) => check.complete) ? "pass" : "fail";
+const completeCheckCount = checks.filter((check) => check.complete).length;
+const totalCheckCount = checks.length;
+const readinessPercent = totalCheckCount ? Math.round((completeCheckCount / totalCheckCount) * 100) : 100;
 const result = {
   status,
   endingTotal: endings.length,
   replayableTotal: replayableEndings.length,
   fallbackTotal: fallbackEndings.length,
   rewardTotal,
+  completeCheckCount,
+  totalCheckCount,
+  readinessPercent,
   unlockHintCount,
   unlockHintEligibleCount: unlockHintEligibleEndings.length,
   unlockHintLabel: `${unlockHintCount}/${unlockHintEligibleEndings.length}`,
@@ -221,6 +227,7 @@ Status: ${status === "pass" ? "PASS" : "FAIL"}
 
 - Endings: ${result.endingTotal} total / ${result.replayableTotal} replayable / ${result.fallbackTotal} result-only fallback
 - Codex rewards: ${result.rewardTotal} total insight
+- Readiness: ${result.completeCheckCount}/${result.totalCheckCount} checks (${result.readinessPercent}%)
 - Unlock guidance: ${result.unlockHintLabel}
 - Route coverage: ${result.routeAxisLabel} axes / ${result.routeOptionLabel} options
 - QA scenarios: ${scenarios.join(", ")}

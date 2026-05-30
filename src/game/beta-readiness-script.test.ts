@@ -13,6 +13,9 @@ interface BetaReadinessQaResult {
   routeAxisLabel: string;
   routeOptionLabel: string;
   scenarios: string[];
+  completeCheckCount: number;
+  totalCheckCount: number;
+  readinessPercent: number;
 }
 
 function runBetaReadinessQa(): BetaReadinessQaResult {
@@ -35,5 +38,8 @@ describe("beta readiness QA script", () => {
     expect(result.routeAxisLabel).toBe("4/4");
     expect(result.routeOptionLabel).toBe("40/40");
     expect(result.scenarios).toEqual(expect.arrayContaining(["beta-readiness", "beta-readiness-complete"]));
+    expect(result.completeCheckCount).toBe(result.totalCheckCount);
+    expect(result.totalCheckCount).toBe(6);
+    expect(result.readinessPercent).toBe(100);
   });
 });

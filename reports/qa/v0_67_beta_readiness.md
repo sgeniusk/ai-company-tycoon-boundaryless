@@ -6,6 +6,7 @@ Status: PASS
 
 - Endings: 24 total / 23 replayable / 1 result-only fallback
 - Codex rewards: 81 total insight
+- Readiness: 6/6 checks (100%)
 - Unlock guidance: 23/23
 - Route coverage: 4/4 axes / 40/40 options
 - QA scenarios: beta-readiness, beta-readiness-complete
