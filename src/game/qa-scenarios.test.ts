@@ -892,6 +892,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       id: "privacy_trust_bastion",
       alreadyDiscovered: true,
       rewardProgressLabel: expect.stringContaining("발견 완료"),
+      rewardStatusLabel: "도감 보상 수집 완료",
     });
   });
 

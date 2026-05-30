@@ -576,10 +576,10 @@ export function renderMenuContent(
                 <p className="eyebrow">목표 엔딩 런</p>
                 <h3>{activeEndingReplayBrief.title}</h3>
                 <span>
-                  {activeEndingReplayBrief.targetLabels.slice(0, 5).join(" / ")} · {activeEndingReplayBrief.rewardLabel} ·{" "}
+                  {activeEndingReplayBrief.targetLabels.slice(0, 5).join(" / ")} · {activeEndingReplayBrief.rewardStatusLabel} ·{" "}
                   {activeEndingReplayBrief.rewardProgressLabel}
                 </span>
-                {activeEndingReplayBrief.alreadyDiscovered && <small>발견 완료 목표 · 반복 완주 보상</small>}
+                {activeEndingReplayBrief.alreadyDiscovered && <small>발견 완료 목표 · 기록 갱신 런</small>}
               </div>
               <div className="ending-replay-brief-steps">
                 {activeEndingReplayBrief.openingMoves.map((move) => (
