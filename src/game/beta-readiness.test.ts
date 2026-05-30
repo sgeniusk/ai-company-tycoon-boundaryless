@@ -1,0 +1,47 @@
+import { describe, expect, it } from "vitest";
+import { campaignEndings } from "./data";
+import { getBetaReadinessSummary } from "./beta-readiness";
+import { createInitialState } from "./simulation";
+
+describe("beta readiness summary", () => {
+  it("summarizes multi-ending content coverage for beta prep", () => {
+    const summary = getBetaReadinessSummary(createInitialState());
+    const replayableEndingCount = campaignEndings.filter((ending) => ending.condition.fallback !== true).length;
+
+    expect(summary.title).toBe("v0.67 멀티 엔딩 준비도");
+    expect(summary.endingTotal).toBe(campaignEndings.length);
+    expect(summary.replayableTotal).toBe(replayableEndingCount);
+    expect(summary.unlockHintLabel).toBe("23/23");
+    expect(summary.unlockHintCoveragePercent).toBe(100);
+    expect(summary.routeAxisLabel).toBe("4/4");
+    expect(summary.routeOptionLabel).toBe("40/40");
+    expect(summary.nextTargetLabel).toBe("프런티어 데모 제국");
+    expect(summary.checks.map((check) => check.id)).toEqual([
+      "ending_routes",
+      "unlock_guidance",
+      "route_coverage",
+      "target_replay",
+    ]);
+    expect(summary.completeCheckCount).toBe(summary.totalCheckCount);
+    expect(summary.readinessPercent).toBe(100);
+  });
+
+  it("keeps the target replay check complete when every replayable ending is discovered", () => {
+    const replayableEndingIds = campaignEndings.filter((ending) => ending.condition.fallback !== true).map((ending) => ending.id);
+    const state = {
+      ...createInitialState(),
+      roguelite: {
+        ...createInitialState().roguelite,
+        discoveredEndingIds: replayableEndingIds,
+      },
+    };
+    const summary = getBetaReadinessSummary(state);
+
+    expect(summary.nextTargetLabel).toBe("모든 목표 엔딩 발견");
+    expect(summary.checks.find((check) => check.id === "target_replay")).toMatchObject({
+      complete: true,
+      detail: "모든 목표 엔딩 발견",
+    });
+    expect(summary.readinessPercent).toBe(100);
+  });
+});

@@ -7,6 +7,7 @@ const appSource = readFileSync(new URL("../App.tsx", import.meta.url), "utf8");
 const gameChrome = readFileSync(new URL("../components/GameChrome.tsx", import.meta.url), "utf8");
 const guidanceSource = readFileSync(new URL("../game/guidance.ts", import.meta.url), "utf8");
 const campaignEndingSource = readFileSync(new URL("../game/campaign-ending.ts", import.meta.url), "utf8");
+const betaReadinessSource = readFileSync(new URL("../game/beta-readiness.ts", import.meta.url), "utf8");
 const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.meta.url), "utf8");
 const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPanel.tsx", import.meta.url), "utf8");
 const playtestObserver = readFileSync(new URL("../game/blind-playtest-observer.ts", import.meta.url), "utf8");
@@ -215,14 +216,15 @@ describe("v0.13.3 compact game shell layout", () => {
   });
 
   it("surfaces beta readiness signals from the multi-ending track in the guide", () => {
-    expect(gameChrome).toContain("getEndingCollectionSummary");
-    expect(gameChrome).toContain("getEndingAxisCoverageSummary");
+    expect(gameChrome).toContain("getBetaReadinessSummary");
+    expect(betaReadinessSource).toContain("getEndingCollectionSummary");
+    expect(betaReadinessSource).toContain("getEndingAxisCoverageSummary");
     expect(gameChrome).toContain("BetaReadinessPanel");
     expect(gameChrome).toContain("beta-readiness-panel");
     expect(gameChrome).toContain("베타 준비 체크");
-    expect(gameChrome).toContain("v0.67 멀티 엔딩 준비도");
-    expect(gameChrome).toContain("endingCollectionSummary.unlockHintCoveragePercent");
-    expect(gameChrome).toContain("routeCoverageCount");
+    expect(betaReadinessSource).toContain("v0.67 멀티 엔딩 준비도");
+    expect(gameChrome).toContain("summary.unlockHintCoveragePercent");
+    expect(betaReadinessSource).toContain("routeAxisCount");
     expect(gameChrome).toContain("해금 안내");
     expect(gameChrome).toContain("다음 도감 목표");
     expect(appCss).toMatch(/\.beta-readiness-panel\s*{[^}]*display:\s*grid/s);
