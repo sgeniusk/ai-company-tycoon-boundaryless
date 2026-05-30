@@ -74,6 +74,8 @@ export interface CampaignEndingDiscovery extends EndingDefinition {
   totalRewardBonus: number;
   completionPercentAfterRun: number;
   rewardCompletionPercentAfterRun: number;
+  rewardDeltaDescription: string;
+  rewardDeltaLabel: string;
   rewardLabel: string;
 }
 
@@ -118,13 +120,14 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
   const discoveredIds = new Set(finalState.roguelite.discoveredEndingIds ?? []);
   const afterRunDiscoveredIds = new Set(discoveredIds);
   afterRunDiscoveredIds.add(ending.id);
+  const alreadyDiscovered = discoveredIds.has(ending.id);
   const totalRewardBonus = getTotalEndingRewardBonus();
   const discoveredRewardBonusBeforeRun = getEndingRewardBonusForIds(discoveredIds);
   const discoveredRewardBonusAfterRun = getEndingRewardBonusForIds(afterRunDiscoveredIds);
 
   return {
     ...ending,
-    alreadyDiscovered: discoveredIds.has(ending.id),
+    alreadyDiscovered,
     discoveredCountBeforeRun: discoveredIds.size,
     discoveredCountAfterRun: afterRunDiscoveredIds.size,
     discoveredRewardBonusBeforeRun,
@@ -133,6 +136,8 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
     totalRewardBonus,
     completionPercentAfterRun: campaignEndings.length ? Math.round((afterRunDiscoveredIds.size / campaignEndings.length) * 100) : 100,
     rewardCompletionPercentAfterRun: totalRewardBonus ? Math.round((discoveredRewardBonusAfterRun / totalRewardBonus) * 100) : 100,
+    rewardDeltaDescription: alreadyDiscovered ? "이미 획득한 도감 보상입니다." : "신규 도감 보상이 추가됩니다.",
+    rewardDeltaLabel: alreadyDiscovered ? "+0 도감 통찰" : `+${ending.meta_reward_bonus} 통찰`,
     rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
   };
 }

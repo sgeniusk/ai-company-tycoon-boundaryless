@@ -918,6 +918,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
   it("builds a final known ending replay scenario for repeat reward copy", () => {
     const scenario = createQaScenario("ending-replay-known-final");
     const brief = getActiveEndingReplayBrief(scenario.state);
+    const discovery = getCampaignEndingDiscovery(scenario.state);
 
     expect(scenario.activeMenu).toBe("company");
     expect(scenario.label).toContain("반복 목표 엔딩 결과");
@@ -932,6 +933,12 @@ describe("alpha v0.9.3 QA scenarios", () => {
       complete: true,
       alreadyDiscovered: true,
       completionRewardNotice: "이미 발견한 엔딩입니다. 도감 통찰은 추가되지 않지만 기록은 갱신됩니다.",
+    });
+    expect(discovery).toMatchObject({
+      id: "privacy_trust_bastion",
+      alreadyDiscovered: true,
+      rewardDeltaLabel: "+0 도감 통찰",
+      rewardDeltaDescription: "이미 획득한 도감 보상입니다.",
     });
   });
 

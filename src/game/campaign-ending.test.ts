@@ -686,10 +686,38 @@ describe("v0.67 campaign ending selector", () => {
       totalCount: campaignEndings.length,
       completionPercentAfterRun: Math.round((2 / campaignEndings.length) * 100),
       rewardLabel: "+4 통찰",
+      rewardDeltaLabel: "+4 통찰",
+      rewardDeltaDescription: "신규 도감 보상이 추가됩니다.",
       discoveredRewardBonusBeforeRun: standardReward,
       discoveredRewardBonusAfterRun: standardReward + 4,
       totalRewardBonus,
       rewardCompletionPercentAfterRun: Math.round(((standardReward + 4) / totalRewardBonus) * 100),
+    });
+  });
+
+  it("labels repeated final endings as a zero codex reward delta", () => {
+    const state = {
+      ...endingFixtures.privacy_trust_bastion,
+      roguelite: {
+        ...endingFixtures.privacy_trust_bastion.roguelite,
+        discoveredEndingIds: ["standard_platform_compounder", "privacy_trust_bastion"],
+      },
+    };
+    const discovery = getCampaignEndingDiscovery(state);
+    const discoveredReward = ["standard_platform_compounder", "privacy_trust_bastion"].reduce((total, endingId) => {
+      return total + (campaignEndings.find((ending) => ending.id === endingId)?.meta_reward_bonus ?? 0);
+    }, 0);
+
+    expect(discovery).toMatchObject({
+      id: "privacy_trust_bastion",
+      alreadyDiscovered: true,
+      discoveredCountBeforeRun: 2,
+      discoveredCountAfterRun: 2,
+      rewardLabel: "+4 통찰",
+      rewardDeltaLabel: "+0 도감 통찰",
+      rewardDeltaDescription: "이미 획득한 도감 보상입니다.",
+      discoveredRewardBonusBeforeRun: discoveredReward,
+      discoveredRewardBonusAfterRun: discoveredReward,
     });
   });
 
