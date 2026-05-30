@@ -100,6 +100,7 @@ export interface EndingNearMissPlan extends EndingTargetPlan {
   missingLabels: string[];
   replaySelection: RunModifierSelectionInput;
   rewardLabel: string;
+  rewardStatusLabel: string;
   targetLabels: string[];
 }
 
@@ -351,13 +352,15 @@ function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<str
 function createEndingNearMissPlan(ending: EndingDefinition, state: GameState): EndingNearMissPlan {
   const plan = createEndingTargetPlan(ending, state);
   const replaySelection = createReplaySelection(ending);
+  const discovered = state.roguelite.discoveredEndingIds.includes(ending.id);
 
   return {
     ...plan,
-    discovered: state.roguelite.discoveredEndingIds.includes(ending.id),
+    discovered,
     missingLabels: plan.requirements.filter((requirement) => !requirement.complete).map((requirement) => requirement.label),
     replaySelection,
     rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
+    rewardStatusLabel: discovered ? "도감 보상 수집 완료" : `+${ending.meta_reward_bonus} 통찰 신규 도감 보상`,
     targetLabels: getReplayTargetLabels(ending.condition, replaySelection),
   };
 }

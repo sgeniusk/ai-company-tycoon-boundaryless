@@ -103,6 +103,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "ending-replay-known-final",
       "ending-fallback-final",
       "ending-nearmiss-final",
+      "ending-nearmiss-known-final",
     ]);
   });
 
@@ -820,6 +821,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=ending-replay-known-final")?.id).toBe("ending-replay-known-final");
     expect(createQaScenarioFromSearch("?scenario=ending-fallback-final")?.id).toBe("ending-fallback-final");
     expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-final")?.id).toBe("ending-nearmiss-final");
+    expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-known-final")?.id).toBe("ending-nearmiss-known-final");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
@@ -977,6 +979,22 @@ describe("alpha v0.9.3 QA scenarios", () => {
       },
     });
     expect(nearMisses[0].missingLabels).toContain("신뢰");
+  });
+
+  it("builds a final discovered near-miss scenario for repeat reward QA", () => {
+    const scenario = createQaScenario("ending-nearmiss-known-final");
+    const nearMisses = getEndingNearMisses(scenario.state, 3);
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("발견 완료 아쉬운 엔딩");
+    expect(scenario.state.month).toBe(120);
+    expect(scenario.state.status).toBe("success");
+    expect(scenario.state.roguelite.discoveredEndingIds).toEqual(expect.arrayContaining(["agi_safety_accord"]));
+    expect(nearMisses[0]).toMatchObject({
+      id: "agi_safety_accord",
+      discovered: true,
+      rewardStatusLabel: "도감 보상 수집 완료",
+    });
   });
 
   it("allows QA URLs to override the active menu", () => {

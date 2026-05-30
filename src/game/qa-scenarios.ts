@@ -98,6 +98,7 @@ export const qaScenarioIds = [
   "ending-replay-known-final",
   "ending-fallback-final",
   "ending-nearmiss-final",
+  "ending-nearmiss-known-final",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation" | "archetype-collection";
@@ -355,6 +356,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       id,
       label: "아쉬운 엔딩 재도전 QA",
       state: createEndingNearMissFinalScenarioState(),
+      activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-nearmiss-known-final") {
+    return {
+      id,
+      label: "발견 완료 아쉬운 엔딩 재도전 QA",
+      state: createKnownEndingNearMissFinalScenarioState(),
       activeMenu: "company",
     };
   }
@@ -2166,6 +2176,19 @@ function createEndingNearMissFinalScenarioState(): GameState {
     },
     status: "success",
     timeline: ["아쉬운 엔딩 QA: AGI 안전 협정에 신뢰 4가 부족한 최종 결과와 즉시 재도전 버튼 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createKnownEndingNearMissFinalScenarioState(): GameState {
+  const state = createEndingNearMissFinalScenarioState();
+
+  return {
+    ...state,
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: [...new Set([...state.roguelite.discoveredEndingIds, "agi_safety_accord"])],
+    },
+    timeline: ["발견 완료 아쉬운 엔딩 QA: 이미 도감에 있는 AGI 안전 협정 near-miss 보상 문구 확인", ...state.timeline].slice(0, 8),
   };
 }
 

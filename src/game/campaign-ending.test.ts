@@ -1072,6 +1072,16 @@ describe("v0.67 campaign ending selector", () => {
       },
     );
     const nearMisses = getEndingNearMisses(nearAgiState, 3);
+    const discoveredNearMisses = getEndingNearMisses(
+      {
+        ...nearAgiState,
+        roguelite: {
+          ...nearAgiState.roguelite,
+          discoveredEndingIds: ["agi_safety_accord"],
+        },
+      },
+      3,
+    );
 
     expect(getCampaignEnding(nearAgiState).id).not.toBe("agi_safety_accord");
     expect(nearMisses[0]).toMatchObject({
@@ -1079,6 +1089,7 @@ describe("v0.67 campaign ending selector", () => {
       complete: false,
       discovered: false,
       rewardLabel: "+5 통찰",
+      rewardStatusLabel: "+5 통찰 신규 도감 보상",
       replaySelection: {
         seed: "ending:agi_safety_accord",
         worldLoreId: "agi_overhang",
@@ -1088,6 +1099,11 @@ describe("v0.67 campaign ending selector", () => {
     });
     expect(nearMisses[0].missingLabels).toEqual(expect.arrayContaining(["신뢰"]));
     expect(nearMisses[0].targetLabels).toEqual(expect.arrayContaining(["AGI 임박", "규제 단속", "신뢰 기반 엔터프라이즈"]));
+    expect(discoveredNearMisses[0]).toMatchObject({
+      id: "agi_safety_accord",
+      discovered: true,
+      rewardStatusLabel: "도감 보상 수집 완료",
+    });
     expect(getEndingNearMisses(createInitialState())).toEqual([]);
   });
 });
