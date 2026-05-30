@@ -20,7 +20,7 @@ import {
   type GuidanceStep,
   type OpeningObjective,
 } from "../game/guidance";
-import { getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
+import { getNextRunSetupPlan, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { rollRunModifierSelection } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
 import { getRunSummary } from "../game/run-summary";
@@ -433,6 +433,10 @@ export function GameStage({
   const selectedGrowthPath = gameState.chosenGrowthPath;
   const chosenGrowthPathId = selectedGrowthPath?.id;
   const runSummary = getRunSummary(gameState);
+  const nextRunSetupPlan = getNextRunSetupPlan(gameState);
+  const endingRouteQuickStart = nextRunSetupPlan.quickStarts.find(
+    (quickStart) => quickStart.id === "ending_route" && quickStart.runModifierSelection,
+  );
   const endingNearMisses = getEndingNearMisses(gameState, 3);
   const releaseImpact = getReleaseImpactSummary(gameState);
   const calendar = getCampaignCalendar(gameState);
@@ -611,6 +615,24 @@ export function GameStage({
   const handleStartNextRun = () => {
     setGameState((current) => resetRunWithMetaUnlocks(current, [], "balanced_founder", createEphemeralRunModifierSelection("chrome-next-run")));
     setActiveMenu("deck");
+  };
+
+  const handleStartEndingRouteRun = () => {
+    setGameState((current) => {
+      const routeQuickStart = getNextRunSetupPlan(current).quickStarts.find(
+        (quickStart) => quickStart.id === "ending_route" && quickStart.runModifierSelection,
+      );
+      if (!routeQuickStart?.runModifierSelection) return current;
+
+      return resetRunWithMetaUnlocks(
+        current,
+        routeQuickStart.unlockIds,
+        routeQuickStart.starterDeckId,
+        routeQuickStart.runModifierSelection,
+      );
+    });
+    setActiveMenu("deck");
+    setActiveStageTab("guide");
   };
 
   const handleGrowthPathClick = (path: ReleaseGrowthPath) => {
@@ -1244,6 +1266,14 @@ export function GameStage({
                   </div>
                   <p className="next-run-hook">{runSummary.spotlight.nextRunHook}</p>
                   <small>{runSummary.recommendation}</small>
+                  {endingRouteQuickStart?.runModifierSelection && (
+                    <button className="ending-route-result-action" onClick={handleStartEndingRouteRun} type="button">
+                      <span>다음 도감 목표</span>
+                      <strong>엔딩 목표 런으로 새 런</strong>
+                      <small>{endingRouteQuickStart.label.replace("엔딩 목표: ", "")}</small>
+                      <em>{endingRouteQuickStart.description}</em>
+                    </button>
+                  )}
                   <button className="primary-action" onClick={handleStartNextRun} type="button">
                     통찰 받고 새 런
                   </button>

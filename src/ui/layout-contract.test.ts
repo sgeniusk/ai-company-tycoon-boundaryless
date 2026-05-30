@@ -790,6 +790,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.ending-route-quickstart-badge\s*{[^}]*overflow-wrap:\s*anywhere/s);
   });
 
+  it("v0.67 #27 lets the finale result screen start the next ending-route run", () => {
+    expect(gameChrome).toContain("getNextRunSetupPlan");
+    expect(gameChrome).toContain("endingRouteQuickStart");
+    expect(gameChrome).toContain("handleStartEndingRouteRun");
+    expect(gameChrome).toContain("ending-route-result-action");
+    expect(gameChrome).toContain("엔딩 목표 런으로 새 런");
+    expect(gameChrome).toContain("routeQuickStart.runModifierSelection");
+    expect(appCss).toMatch(/\.ending-route-result-action\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-route-result-action\s*{[^}]*overflow-wrap:\s*anywhere/s);
+  });
+
   it("wires challenge tier choice into the next-run setup and world reveal", () => {
     expect(menuPanels).toContain("difficultyTiers");
     expect(menuPanels).toContain("selectedChallengeTierId");

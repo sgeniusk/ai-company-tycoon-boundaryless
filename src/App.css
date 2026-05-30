@@ -4252,6 +4252,38 @@ p {
   padding: 8px;
 }
 
+.ending-route-result-action {
+  background: #fff8df;
+  border: 2px solid #d6a942;
+  color: #2e2415;
+  display: grid;
+  gap: 3px;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.ending-route-result-action span {
+  color: #7a4c12;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.ending-route-result-action strong {
+  color: #263f52;
+  font-size: 0.82rem;
+  line-height: 1.15;
+}
+
+.ending-route-result-action small,
+.ending-route-result-action em {
+  color: #5f5546;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
 .run-summary.rank-S,
 .run-summary.rank-A {
   background: #e8f5dc;
