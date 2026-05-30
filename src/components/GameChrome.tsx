@@ -2020,7 +2020,7 @@ function BetaReadinessPanel({
         ))}
       </div>
       <small className="beta-readiness-next">
-        준비 체크 {summary.completeCheckCount}/{summary.totalCheckCount} · 다음 도감 목표: {summary.nextTargetLabel}
+        준비 체크 {summary.completeCheckCount}/{summary.totalCheckCount} · {summary.codexStatusLabel} · 다음 도감 목표: {summary.nextTargetLabel}
       </small>
     </div>
   );

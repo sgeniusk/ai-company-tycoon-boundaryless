@@ -7,10 +7,14 @@ describe("beta readiness summary", () => {
   it("summarizes multi-ending content coverage for beta prep", () => {
     const summary = getBetaReadinessSummary(createInitialState());
     const replayableEndingCount = campaignEndings.filter((ending) => ending.condition.fallback !== true).length;
+    const totalRewardBonus = campaignEndings.reduce((total, ending) => total + ending.meta_reward_bonus, 0);
 
     expect(summary.title).toBe("v0.67 멀티 엔딩 준비도");
     expect(summary.endingTotal).toBe(campaignEndings.length);
     expect(summary.replayableTotal).toBe(replayableEndingCount);
+    expect(summary.codexProgressLabel).toBe(`0/${campaignEndings.length}`);
+    expect(summary.rewardProgressLabel).toBe(`0/${totalRewardBonus}`);
+    expect(summary.codexStatusLabel).toBe(`도감 0/${campaignEndings.length} · 보상 0/${totalRewardBonus}`);
     expect(summary.unlockHintLabel).toBe("23/23");
     expect(summary.unlockHintCoveragePercent).toBe(100);
     expect(summary.routeAxisLabel).toBe("4/4");
@@ -38,6 +42,8 @@ describe("beta readiness summary", () => {
     const summary = getBetaReadinessSummary(state);
 
     expect(summary.nextTargetLabel).toBe("모든 목표 엔딩 발견");
+    expect(summary.codexProgressLabel).toBe(`${replayableEndingIds.length}/${campaignEndings.length}`);
+    expect(summary.lockedReplayableLabel).toBe("목표 엔딩 0개 남음");
     expect(summary.checks.find((check) => check.id === "target_replay")).toMatchObject({
       complete: true,
       detail: "모든 목표 엔딩 발견",

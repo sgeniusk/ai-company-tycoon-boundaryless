@@ -20,6 +20,10 @@ export interface BetaReadinessSummary {
   title: string;
   endingTotal: number;
   replayableTotal: number;
+  codexProgressLabel: string;
+  rewardProgressLabel: string;
+  codexStatusLabel: string;
+  lockedReplayableLabel: string;
   unlockHintCount: number;
   unlockHintEligibleCount: number;
   unlockHintCoveragePercent: number;
@@ -86,6 +90,10 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     title: "v0.67 멀티 엔딩 준비도",
     endingTotal: endingCollectionSummary.totalCount,
     replayableTotal: endingCollectionSummary.replayableCount,
+    codexProgressLabel: `${endingCollectionSummary.discoveredCount}/${endingCollectionSummary.totalCount}`,
+    rewardProgressLabel: `${endingCollectionSummary.discoveredRewardBonus}/${endingCollectionSummary.totalRewardBonus}`,
+    codexStatusLabel: `도감 ${endingCollectionSummary.discoveredCount}/${endingCollectionSummary.totalCount} · 보상 ${endingCollectionSummary.discoveredRewardBonus}/${endingCollectionSummary.totalRewardBonus}`,
+    lockedReplayableLabel: `목표 엔딩 ${endingCollectionSummary.lockedReplayableCount}개 남음`,
     unlockHintCount: endingCollectionSummary.unlockHintCount,
     unlockHintEligibleCount: endingCollectionSummary.unlockHintEligibleCount,
     unlockHintCoveragePercent: endingCollectionSummary.unlockHintCoveragePercent,

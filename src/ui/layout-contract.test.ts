@@ -224,6 +224,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("베타 준비 체크");
     expect(betaReadinessSource).toContain("v0.67 멀티 엔딩 준비도");
     expect(gameChrome).toContain("summary.unlockHintCoveragePercent");
+    expect(gameChrome).toContain("summary.codexStatusLabel");
     expect(betaReadinessSource).toContain("routeAxisCount");
     expect(gameChrome).toContain("해금 안내");
     expect(gameChrome).toContain("다음 도감 목표");
