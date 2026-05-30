@@ -795,7 +795,7 @@ describe("v0.67 campaign ending selector", () => {
     });
     expect(entries.find((entry) => entry.id === "privacy_trust_bastion")).toMatchObject({
       discovered: true,
-      rewardStatusLabel: "도감 보상 수집 완료",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
     expect(entries.find((entry) => entry.id === "garage_restart")).toMatchObject({
       discovered: true,
@@ -966,7 +966,7 @@ describe("v0.67 campaign ending selector", () => {
     });
     expect(discoveredPlan).toMatchObject({
       complete: true,
-      rewardStatusLabel: "도감 보상 수집 완료",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
   });
 
@@ -1006,7 +1006,7 @@ describe("v0.67 campaign ending selector", () => {
     );
     expect(discoveredFrontierPlan).toMatchObject({
       discovered: true,
-      rewardStatusLabel: "도감 보상 수집 완료",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
   });
 
@@ -1176,7 +1176,7 @@ describe("v0.67 campaign ending selector", () => {
     expect(discoveredNearMisses[0]).toMatchObject({
       id: "agi_safety_accord",
       discovered: true,
-      rewardStatusLabel: "도감 보상 수집 완료",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
     expect(getEndingNearMisses(createInitialState())).toEqual([]);
   });

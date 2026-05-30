@@ -291,7 +291,7 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
 }
 
 function getEndingCollectionRewardStatusLabel(metaRewardBonus: number, discovered: boolean, finalOnly: boolean): string {
-  if (discovered) return finalOnly ? "결과 전용 기록 수집 완료" : "도감 보상 수집 완료";
+  if (discovered) return finalOnly ? "결과 전용 기록 수집 완료" : getCollectedReplayableEndingRewardStatusLabel();
   if (metaRewardBonus > 0) return `+${metaRewardBonus} 통찰 도감 보상`;
   return finalOnly ? "결과 전용 기록" : "도감 보상 없음";
 }
@@ -385,7 +385,7 @@ function createEndingTargetPlan(ending: EndingDefinition, state: GameState): End
 }
 
 function getEndingTargetRewardStatusLabel(metaRewardBonus: number, discovered: boolean): string {
-  return discovered ? "도감 보상 수집 완료" : `+${metaRewardBonus} 통찰 신규 도감 보상`;
+  return discovered ? getCollectedReplayableEndingRewardStatusLabel() : `+${metaRewardBonus} 통찰 신규 도감 보상`;
 }
 
 function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<string>): EndingReplayPlan {
@@ -398,7 +398,7 @@ function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<str
     selection,
     targetLabels: getReplayTargetLabels(ending.condition, selection),
     openingMoves: getReplayOpeningMoves(ending.condition),
-    rewardStatusLabel: discovered ? "도감 보상 수집 완료" : `+${ending.meta_reward_bonus} 통찰 완주 보상`,
+    rewardStatusLabel: discovered ? getCollectedReplayableEndingRewardStatusLabel() : `+${ending.meta_reward_bonus} 통찰 완주 보상`,
   };
 }
 
@@ -413,9 +413,13 @@ function createEndingNearMissPlan(ending: EndingDefinition, state: GameState): E
     missingLabels: plan.requirements.filter((requirement) => !requirement.complete).map((requirement) => requirement.label),
     replaySelection,
     rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
-    rewardStatusLabel: discovered ? "도감 보상 수집 완료" : `+${ending.meta_reward_bonus} 통찰 신규 도감 보상`,
+    rewardStatusLabel: discovered ? getCollectedReplayableEndingRewardStatusLabel() : `+${ending.meta_reward_bonus} 통찰 신규 도감 보상`,
     targetLabels: getReplayTargetLabels(ending.condition, replaySelection),
   };
+}
+
+function getCollectedReplayableEndingRewardStatusLabel(): string {
+  return "도감 보상 수집 완료 · 추가 통찰 없음";
 }
 
 function getNextCollectionRequirement(requirements: EndingRequirementProgress[]): EndingRequirementProgress | undefined {

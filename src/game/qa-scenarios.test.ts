@@ -1020,7 +1020,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(nearMisses[0]).toMatchObject({
       id: "agi_safety_accord",
       discovered: true,
-      rewardStatusLabel: "도감 보상 수집 완료",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
   });
 
