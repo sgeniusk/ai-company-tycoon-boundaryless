@@ -669,6 +669,8 @@ describe("v0.67 campaign ending selector", () => {
     expect(validateDataSource).toContain("fallback ending must be the final entry");
     expect(validateDataSource).toContain("non-fallback ending must require status success");
     expect(validateDataSource).toContain("non-fallback ending must require min_month 120");
+    expect(validateDataSource).toContain("validateEndingAxisCoverage");
+    expect(validateDataSource).toContain("must cover run modifier id");
   });
 
   it("picks the highest-priority matching ending deterministically", () => {

@@ -82,6 +82,24 @@ function validateAssetStatus(label, status) {
   }
 }
 
+function validateEndingAxisCoverage(dimensionName, entries, conditionField, endings) {
+  if (!Array.isArray(entries) || !Array.isArray(endings)) return;
+
+  const coveredIds = new Set();
+  for (const ending of endings) {
+    const conditionIds = ending.condition?.[conditionField];
+    if (!Array.isArray(conditionIds)) continue;
+    for (const id of conditionIds) coveredIds.add(id);
+  }
+
+  for (const entry of entries) {
+    if (!entry?.id) continue;
+    if (!coveredIds.has(entry.id)) {
+      errors.push(`endings: ${conditionField} must cover run modifier id "${entry.id}" from ${dimensionName}`);
+    }
+  }
+}
+
 const resourcesData = readJson("resources.json");
 const productsData = readJson("products.json");
 const productIdeasData = readJson("product_ideas.json");
@@ -404,6 +422,11 @@ for (const ending of campaignEndings) {
     }
   }
 }
+
+validateEndingAxisCoverage("run_modifiers.start_cities", runModifiers.start_cities, "start_city_ids", campaignEndings);
+validateEndingAxisCoverage("run_modifiers.world_lore", runModifiers.world_lore, "world_lore_ids", campaignEndings);
+validateEndingAxisCoverage("run_modifiers.market_conditions", runModifiers.market_conditions, "market_condition_ids", campaignEndings);
+validateEndingAxisCoverage("run_modifiers.founder_traits", runModifiers.founder_traits, "founder_trait_ids", campaignEndings);
 
 if (fallbackEndingCount !== 1) {
   errors.push(`endings: expected exactly one fallback ending, found ${fallbackEndingCount}`);
