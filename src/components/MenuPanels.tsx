@@ -747,7 +747,7 @@ function DeckPanel({
   const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
   const [selectedChallengeTierId, setSelectedChallengeTierId] = useState("standard");
   const [endingCollectionFilter, setEndingCollectionFilter] = useState<"all" | "locked" | "discovered" | "reward" | "unlockHints" | "finalOnly">("all");
-  const [endingCollectionSort, setEndingCollectionSort] = useState<"priority" | "progress" | "reward">("priority");
+  const [endingCollectionSort, setEndingCollectionSort] = useState<"priority" | "progress" | "reward" | "unlockHints">("priority");
   const deck = gameState.roguelite.deck;
   const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
   const deckCards = getDeckCardCounts(deck)
@@ -803,6 +803,7 @@ function DeckPanel({
     { id: "priority", label: "추천 순" },
     { id: "progress", label: "가까운 순" },
     { id: "reward", label: "보상 순" },
+    { id: "unlockHints", label: "해금 순" },
   ] as const;
   const filteredEndingCollectionEntries = endingCollectionEntries.filter((entry) => {
     if (endingCollectionFilter === "locked") return !entry.discovered;
@@ -818,6 +819,14 @@ function DeckPanel({
       : [...filteredEndingCollectionEntries].sort((first, second) => {
           if (endingCollectionSort === "progress") {
             return second.progressPercent - first.progressPercent || second.priority - first.priority || first.id.localeCompare(second.id);
+          }
+          if (endingCollectionSort === "unlockHints") {
+            return (
+              second.recommendedUnlockLabels.length - first.recommendedUnlockLabels.length ||
+              second.meta_reward_bonus - first.meta_reward_bonus ||
+              second.priority - first.priority ||
+              first.id.localeCompare(second.id)
+            );
           }
 
           return second.meta_reward_bonus - first.meta_reward_bonus || second.priority - first.priority || first.id.localeCompare(second.id);

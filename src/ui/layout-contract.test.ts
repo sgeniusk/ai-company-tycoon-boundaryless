@@ -854,12 +854,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.ending-collection-progress strong\s*{[^}]*overflow-wrap:\s*anywhere/s);
   });
 
-  it("v0.67 #27 sorts the ending codex by route priority, current progress, or reward", () => {
+  it("v0.67 #27 sorts the ending codex by route priority, current progress, reward, or unlock hints", () => {
     expect(menuPanels).toContain("endingCollectionSort");
     expect(menuPanels).toContain("sortedEndingCollectionEntries");
     expect(menuPanels).toContain("ending-collection-sort");
     expect(menuPanels).toContain("가까운 순");
     expect(menuPanels).toContain("보상 순");
+    expect(menuPanels).toContain("해금 순");
+    expect(menuPanels).toContain('useState<"priority" | "progress" | "reward" | "unlockHints">');
+    expect(menuPanels).toContain('endingCollectionSort === "unlockHints"');
+    expect(menuPanels).toContain("second.recommendedUnlockLabels.length - first.recommendedUnlockLabels.length");
     expect(appCss).toMatch(/\.ending-collection-sort\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.ending-collection-sort button\.active\s*{[^}]*background:/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-sort\s*{[^}]*grid-template-columns:\s*1fr/s);
