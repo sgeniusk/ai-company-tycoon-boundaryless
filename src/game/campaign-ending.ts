@@ -80,6 +80,7 @@ export interface CampaignEndingDiscovery extends EndingDefinition {
   rewardDeltaDescription: string;
   rewardDeltaLabel: string;
   rewardLabel: string;
+  rewardStatusLabel: string;
 }
 
 export interface ActiveEndingReplayBrief extends EndingTargetPlan {
@@ -144,7 +145,14 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
     rewardDeltaDescription: alreadyDiscovered ? "이미 획득한 도감 보상입니다." : "신규 도감 보상이 추가됩니다.",
     rewardDeltaLabel: alreadyDiscovered ? "+0 도감 통찰" : `+${ending.meta_reward_bonus} 통찰`,
     rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
+    rewardStatusLabel: getFinalEndingRewardStatusLabel(ending, alreadyDiscovered),
   };
+}
+
+function getFinalEndingRewardStatusLabel(ending: EndingDefinition, alreadyDiscovered: boolean): string {
+  if (alreadyDiscovered) return "도감 보상 수집 완료";
+  if (ending.condition.fallback === true || ending.meta_reward_bonus <= 0) return "결과 전용 기록";
+  return `+${ending.meta_reward_bonus} 통찰 신규 도감 보상`;
 }
 
 export function getEndingTargetPlans(state: GameState, limit = 3): EndingTargetPlan[] {

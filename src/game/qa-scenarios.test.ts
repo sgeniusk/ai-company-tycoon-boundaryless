@@ -958,6 +958,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       id: "garage_restart",
       title: "다시 차고로",
       rewardLabel: "+0 통찰",
+      rewardStatusLabel: "결과 전용 기록",
     });
   });
 

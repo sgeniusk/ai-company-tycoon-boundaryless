@@ -941,7 +941,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("새 엔딩 발견");
     expect(gameChrome).toContain("도감 반영");
     expect(gameChrome).toContain("endingDiscovery.completionPercentAfterRun");
-    expect(gameChrome).toContain("endingDiscovery.rewardDeltaLabel");
+    expect(gameChrome).toContain("endingDiscovery.rewardStatusLabel");
+    expect(gameChrome).not.toContain("<strong>{endingDiscovery.rewardDeltaLabel}</strong>");
     expect(gameChrome).toContain("endingDiscovery.rewardDeltaDescription");
     expect(gameChrome).toContain("endingDiscovery.discoveredRewardBonusAfterRun");
     expect(gameChrome).toContain("endingDiscovery.totalRewardBonus");

@@ -969,7 +969,7 @@ export function GameStage({
                         </small>
                       </span>
                       <span>
-                        <strong>{endingDiscovery.rewardDeltaLabel}</strong>
+                        <strong>{endingDiscovery.rewardStatusLabel}</strong>
                         <small>
                           {endingDiscovery.rewardDeltaDescription} · 도감 통찰 {endingDiscovery.discoveredRewardBonusAfterRun}/{endingDiscovery.totalRewardBonus} · 보상 완성률{" "}
                           {endingDiscovery.rewardCompletionPercentAfterRun}%
