@@ -6,7 +6,7 @@ Status: PASS
 
 - Endings: 24 total / 23 replayable / 1 result-only fallback
 - Codex rewards: 81 total insight
-- Readiness: 10/10 checks (100%)
+- Readiness: 11/11 checks (100%)
 - Unlock guidance: 23/23
 - Route coverage: 4/4 axes / 40/40 options
 - QA scenarios: beta-readiness, beta-readiness-complete
@@ -24,6 +24,7 @@ Status: PASS
 | 파생 전용 셀렉터 | collection + axis summary reuse | PASS |
 | 메타 상태 무결성 | hydrate + integrity + reset | PASS |
 | 장기 하네스 엔딩 텔레메트리 | 10-year ending discovery | PASS |
+| 장기 하네스 다음 런 미리보기 | 10-year reset carryover | PASS |
 | 리포트 최신성 | reports/qa/v0_67_beta_readiness.md | PASS |
 
 ## Axis Coverage

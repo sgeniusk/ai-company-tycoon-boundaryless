@@ -97,6 +97,23 @@ describe("v0.11 commercial balance simulation harness", () => {
     });
   });
 
+  it("projects the next run after applying 10-year ending carryover", () => {
+    const result = runTenYearCampaignSimulation("productivity_line");
+    const historyRecord = result.nextRunPreview.roguelite.runHistory[0];
+
+    expect(result.nextRunPreview.month).toBe(1);
+    expect(result.nextRunPreview.status).toBe("playing");
+    expect(result.nextRunPreview.roguelite.discoveredEndingIds).toContain(result.endingDiscovery.id);
+    expect(historyRecord).toMatchObject({
+      runNumber: result.finalState.roguelite.runNumber,
+      endingId: result.endingDiscovery.id,
+      endingName: result.endingDiscovery.title,
+      campaignRank: result.finale.rank,
+      survivedYears: result.finale.survivedYears,
+    });
+    expect(result.nextRunPreview.roguelite.founderInsight).toBeGreaterThan(result.finalState.roguelite.founderInsight);
+  });
+
   it("completes the full 10-year campaign for every growth path", () => {
     const results = growthPaths.map((path) => runTenYearCampaignSimulation(path.id));
 

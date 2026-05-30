@@ -98,6 +98,7 @@ export interface TenYearCampaignSimulationResult extends AnnualDirectiveSimulati
   milestones: TenYearCampaignMilestone[];
   finale: ReturnType<typeof getCampaignFinale>;
   endingDiscovery: ReturnType<typeof getCampaignEndingDiscovery>;
+  nextRunPreview: GameState;
 }
 
 export interface AlphaReadinessGate {
@@ -474,6 +475,7 @@ export function runTenYearCampaignSimulation(
 
   const finale = getCampaignFinale(state);
   const endingDiscovery = getCampaignEndingDiscovery(state);
+  const nextRunPreview = resetRunWithMetaUnlocks(state);
   milestones.push({
     type: "ending",
     month: state.month,
@@ -494,6 +496,7 @@ export function runTenYearCampaignSimulation(
     milestones,
     finale,
     endingDiscovery,
+    nextRunPreview,
   };
 }
 

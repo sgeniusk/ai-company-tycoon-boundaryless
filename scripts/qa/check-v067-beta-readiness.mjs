@@ -230,6 +230,15 @@ const baseChecks = [
       runSimulatorSource.includes("endingDiscovery: ReturnType") &&
       runSimulatorSource.includes("endingDiscovery,"),
   },
+  {
+    id: "long_run_carryover_preview",
+    label: "장기 하네스 다음 런 미리보기",
+    detail: "10-year reset carryover",
+    complete:
+      runSimulatorSource.includes("nextRunPreview: GameState") &&
+      runSimulatorSource.includes("resetRunWithMetaUnlocks(state)") &&
+      runSimulatorSource.includes("nextRunPreview,"),
+  },
 ];
 
 function createResult(checks) {
