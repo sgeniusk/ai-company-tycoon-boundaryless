@@ -12,6 +12,25 @@ import {
 } from "./run-simulator";
 import { getDerivedArchetypes } from "./tag-derivation";
 
+type RunModifierSweepCase = {
+  id: string;
+  selection?: Parameters<typeof runTenYearCampaignSimulation>[1];
+  expectedArchetypes: string[];
+};
+
+function getFinalSurvivalCushion(result: ReturnType<typeof runTenYearCampaignSimulation>): number {
+  const resources = result.finalState.resources;
+
+  return Math.round(
+    (resources.cash ?? 0) +
+      (resources.users ?? 0) * 0.05 +
+      (resources.trust ?? 0) * 250 +
+      (resources.hype ?? 0) * 150 +
+      (resources.compute ?? 0) * 10 +
+      (resources.data ?? 0) * 5,
+  );
+}
+
 describe("v0.11 commercial balance simulation harness", () => {
   it("runs a scripted productivity strategy through the 10-month MVP window", () => {
     const result = runScriptedCommercialSimulation("productivity_line");
@@ -106,6 +125,106 @@ describe("v0.11 commercial balance simulation harness", () => {
     expect(result.finale).toMatchObject({ isFinal: true });
     expect(result.annualReviewCount).toBeGreaterThanOrEqual(10);
     expect(result.yearlySnapshots).toHaveLength(10);
+  });
+
+  it("sweeps v0.66 combined roguelike balance across representative modifier stacks", () => {
+    const cases: RunModifierSweepCase[] = [
+      {
+        id: "standard/no-arg",
+        expectedArchetypes: [],
+      },
+      {
+        id: "harsh-world-market-hard",
+        selection: {
+          worldLoreId: "bitcoin_gpu_squeeze",
+          marketConditionId: "enterprise_winter",
+          challengeTierId: "hard",
+        },
+        expectedArchetypes: [],
+      },
+      {
+        id: "archetype-bearing",
+        selection: {
+          startCityId: "san_francisco",
+          founderTraitId: "engineer_founder",
+        },
+        expectedArchetypes: ["frontier_garage"],
+      },
+      {
+        id: "mixed-world-hard-archetypes",
+        selection: {
+          startCityId: "san_francisco",
+          worldLoreId: "open_source_heaven",
+          marketConditionId: "ai_boom",
+          founderTraitId: "engineer_founder",
+          challengeTierId: "hard",
+        },
+        expectedArchetypes: ["frontier_demo_loop", "frontier_garage", "oss_evangelist"],
+      },
+    ];
+
+    for (const sweepCase of cases) {
+      const result = runTenYearCampaignSimulation("productivity_line", sweepCase.selection);
+      const derivedIds = getDerivedArchetypes(result.finalState).map((rule) => rule.id);
+
+      expect(result.finalState.month, sweepCase.id).toBeGreaterThanOrEqual(CAMPAIGN_FINAL_MONTH);
+      expect(result.finalState.status, sweepCase.id).not.toBe("failure");
+      expect(result.integrity.ok, sweepCase.id).toBe(true);
+      expect(result.finale, sweepCase.id).toMatchObject({ isFinal: true });
+      expect(result.annualReviewCount, sweepCase.id).toBeGreaterThanOrEqual(10);
+      expect(result.yearlySnapshots, sweepCase.id).toHaveLength(10);
+      expect(result.yearlySnapshots[result.yearlySnapshots.length - 1], sweepCase.id).toMatchObject({
+        month: CAMPAIGN_FINAL_MONTH,
+      });
+      if (!sweepCase.selection) {
+        expect(result.finalState.runModifiers, sweepCase.id).toMatchObject({
+          startCityId: "default_city",
+          worldLoreId: "standard",
+          marketConditionId: "steady_market",
+          founderTraitId: "no_founder",
+          challengeTier: "standard",
+        });
+      }
+      if (sweepCase.expectedArchetypes.length > 0) {
+        expect(derivedIds, sweepCase.id).toEqual(expect.arrayContaining(sweepCase.expectedArchetypes));
+        expect(derivedIds.length, sweepCase.id).toBeGreaterThanOrEqual(sweepCase.expectedArchetypes.length);
+      } else {
+        expect(derivedIds, sweepCase.id).toEqual([]);
+      }
+    }
+  });
+
+  it("keeps challenge tier pressure non-inverted for a mixed archetype run", () => {
+    const baseSelection = {
+      startCityId: "san_francisco",
+      worldLoreId: "open_source_heaven",
+      marketConditionId: "ai_boom",
+      founderTraitId: "engineer_founder",
+    };
+    const tierResults = {
+      story: runTenYearCampaignSimulation("productivity_line", { ...baseSelection, challengeTierId: "story" }),
+      standard: runTenYearCampaignSimulation("productivity_line", { ...baseSelection, challengeTierId: "standard" }),
+      hard: runTenYearCampaignSimulation("productivity_line", { ...baseSelection, challengeTierId: "hard" }),
+      brutal: runTenYearCampaignSimulation("productivity_line", { ...baseSelection, challengeTierId: "brutal" }),
+    };
+
+    for (const [tierId, result] of Object.entries(tierResults)) {
+      expect(result.finalState.month, tierId).toBeGreaterThanOrEqual(CAMPAIGN_FINAL_MONTH);
+      expect(result.finalState.status, tierId).not.toBe("failure");
+      expect(result.integrity.ok, tierId).toBe(true);
+      expect(result.finale, tierId).toMatchObject({ isFinal: true });
+    }
+
+    const cushions = {
+      story: getFinalSurvivalCushion(tierResults.story),
+      standard: getFinalSurvivalCushion(tierResults.standard),
+      hard: getFinalSurvivalCushion(tierResults.hard),
+      brutal: getFinalSurvivalCushion(tierResults.brutal),
+    };
+
+    expect(cushions.story).toBeGreaterThanOrEqual(cushions.standard);
+    expect(cushions.standard).toBeGreaterThanOrEqual(cushions.hard);
+    expect(cushions.hard).toBeGreaterThanOrEqual(cushions.brutal);
   });
 
   it("completes a 10-year campaign after expanding into v0.60 physical industries", () => {
