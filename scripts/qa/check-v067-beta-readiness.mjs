@@ -22,6 +22,7 @@ const metaUnlocks = readJson("meta_unlocks.json").meta_unlocks ?? [];
 const qaScenariosSource = readSource("src/game/qa-scenarios.ts");
 const betaReadinessSource = readSource("src/game/beta-readiness.ts");
 const gameChromeSource = readSource("src/components/GameChrome.tsx");
+const menuPanelsSource = readSource("src/components/MenuPanels.tsx");
 const appCssSource = readSource("src/App.css");
 const simulationSource = readSource("src/game/simulation.ts");
 const stateIntegritySource = readSource("src/game/state-integrity.ts");
@@ -256,6 +257,19 @@ const baseChecks = [
       runSimulatorSource.includes("ending_carryover") &&
       runSimulatorSource.includes("endingCarryoverPassCount") &&
       runSimulatorSource.includes("엔딩 도감/런 기록 carryover"),
+  },
+  {
+    id: "ending_route_quick_start",
+    label: "엔딩 Route Quick Start",
+    detail: "next-run target route",
+    complete:
+      metaProgressionSource.includes("getEndingReplayPlans") &&
+      metaProgressionSource.includes('id: "ending_route"') &&
+      metaProgressionSource.includes("runModifierSelection: endingRoutePlan.selection") &&
+      menuPanelsSource.includes("quickStart.runModifierSelection") &&
+      menuPanelsSource.includes("ending-route-quickstart-badge") &&
+      appCssSource.includes(".ending-route-quickstart-badge") &&
+      betaReadinessSource.includes("route_quick_start"),
   },
 ];
 

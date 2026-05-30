@@ -27,6 +27,7 @@ describe("beta readiness summary", () => {
       "unlock_guidance",
       "route_coverage",
       "target_replay",
+      "route_quick_start",
     ]);
     expect(summary.checks.find((check) => check.id === "ending_routes")).toMatchObject({
       detail: "24 결말 · 23 목표 · 1 결과 전용",
@@ -35,6 +36,10 @@ describe("beta readiness summary", () => {
     expect(summary.checks.find((check) => check.id === "reward_pool")).toMatchObject({
       label: "도감 보상",
       detail: `0/${totalRewardBonus} 통찰 · 목표 엔딩 23개 남음`,
+      complete: true,
+    });
+    expect(summary.checks.find((check) => check.id === "route_quick_start")).toMatchObject({
+      label: "원클릭 목표 런",
       complete: true,
     });
     expect(summary.completeCheckCount).toBe(summary.totalCheckCount);
@@ -57,6 +62,10 @@ describe("beta readiness summary", () => {
     expect(summary.codexProgressLabel).toBe(`${replayableEndingIds.length}/${campaignEndings.length}`);
     expect(summary.lockedReplayableLabel).toBe("목표 엔딩 0개 남음");
     expect(summary.checks.find((check) => check.id === "target_replay")).toMatchObject({
+      complete: true,
+      detail: "모든 목표 엔딩 발견",
+    });
+    expect(summary.checks.find((check) => check.id === "route_quick_start")).toMatchObject({
       complete: true,
       detail: "모든 목표 엔딩 발견",
     });

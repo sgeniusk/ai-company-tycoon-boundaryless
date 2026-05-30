@@ -10,7 +10,7 @@ export interface BetaReadinessAxisSummary extends EndingAxisCoverageSummary {
 }
 
 export interface BetaReadinessCheck {
-  id: "ending_routes" | "reward_pool" | "unlock_guidance" | "route_coverage" | "target_replay";
+  id: "ending_routes" | "reward_pool" | "unlock_guidance" | "route_coverage" | "target_replay" | "route_quick_start";
   label: string;
   detail: string;
   complete: boolean;
@@ -57,6 +57,8 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
   const routeOptionCount = axes.reduce((total, axis) => total + axis.covered, 0);
   const routeOptionTotal = axes.reduce((total, axis) => total + axis.total, 0);
   const nextTargetLabel = endingCollectionSummary.nextReplayPlan?.title ?? "모든 목표 엔딩 발견";
+  const nextTargetRouteLabel =
+    endingCollectionSummary.nextReplayPlan?.targetLabels.slice(0, 3).join(" / ") ?? "모든 목표 엔딩 발견";
   const resultOnlyTotal = Math.max(0, endingCollectionSummary.totalCount - endingCollectionSummary.replayableCount);
   const checks: BetaReadinessCheck[] = [
     {
@@ -91,6 +93,12 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
       label: "목표 런",
       detail: nextTargetLabel,
       complete: Boolean(endingCollectionSummary.nextReplayPlan) || endingCollectionSummary.lockedReplayableCount === 0,
+    },
+    {
+      id: "route_quick_start",
+      label: "원클릭 목표 런",
+      detail: nextTargetRouteLabel,
+      complete: Boolean(endingCollectionSummary.nextReplayPlan?.selection?.seed) || endingCollectionSummary.lockedReplayableCount === 0,
     },
   ];
   const completeCheckCount = checks.filter((check) => check.complete).length;
