@@ -2013,7 +2013,7 @@ function BetaReadinessPanel({
       <div className="beta-readiness-grid">
         <span>
           <strong>{summary.endingTotal}</strong>
-          <small>결말 루트</small>
+          <small>결말 루트 · 결과 전용 {summary.resultOnlyTotal}</small>
         </span>
         <span>
           <strong>{summary.replayableTotal}</strong>

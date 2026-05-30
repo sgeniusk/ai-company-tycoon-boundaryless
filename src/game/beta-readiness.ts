@@ -20,6 +20,7 @@ export interface BetaReadinessSummary {
   title: string;
   endingTotal: number;
   replayableTotal: number;
+  resultOnlyTotal: number;
   codexProgressLabel: string;
   rewardProgressLabel: string;
   codexStatusLabel: string;
@@ -55,6 +56,7 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
   const routeOptionCount = axes.reduce((total, axis) => total + axis.covered, 0);
   const routeOptionTotal = axes.reduce((total, axis) => total + axis.total, 0);
   const nextTargetLabel = endingCollectionSummary.nextReplayPlan?.title ?? "모든 목표 엔딩 발견";
+  const resultOnlyTotal = Math.max(0, endingCollectionSummary.totalCount - endingCollectionSummary.replayableCount);
   const checks: BetaReadinessCheck[] = [
     {
       id: "ending_routes",
@@ -96,6 +98,7 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     title: "v0.67 멀티 엔딩 준비도",
     endingTotal: endingCollectionSummary.totalCount,
     replayableTotal: endingCollectionSummary.replayableCount,
+    resultOnlyTotal,
     codexProgressLabel: `${endingCollectionSummary.discoveredCount}/${endingCollectionSummary.totalCount}`,
     rewardProgressLabel: `${endingCollectionSummary.discoveredRewardBonus}/${endingCollectionSummary.totalRewardBonus}`,
     codexStatusLabel: `도감 ${endingCollectionSummary.discoveredCount}/${endingCollectionSummary.totalCount} · 보상 ${endingCollectionSummary.discoveredRewardBonus}/${endingCollectionSummary.totalRewardBonus}`,

@@ -12,6 +12,7 @@ describe("beta readiness summary", () => {
     expect(summary.title).toBe("v0.67 멀티 엔딩 준비도");
     expect(summary.endingTotal).toBe(campaignEndings.length);
     expect(summary.replayableTotal).toBe(replayableEndingCount);
+    expect(summary.resultOnlyTotal).toBe(1);
     expect(summary.codexProgressLabel).toBe(`0/${campaignEndings.length}`);
     expect(summary.rewardProgressLabel).toBe(`0/${totalRewardBonus}`);
     expect(summary.codexStatusLabel).toBe(`도감 0/${campaignEndings.length} · 보상 0/${totalRewardBonus}`);
