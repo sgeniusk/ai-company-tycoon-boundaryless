@@ -1088,9 +1088,10 @@ describe("v0.67 campaign ending selector", () => {
       discoveredRewardBonusBeforeRun: discoveredReward,
       discoveredRewardBonusAfterCompletion: discoveredReward,
       totalRewardBonus,
+      rewardLabel: "추가 통찰 없음",
       completionRewardNotice: "이미 발견한 엔딩입니다. 도감 통찰은 추가되지 않지만 기록은 갱신됩니다.",
       rewardProgressLabel: `발견 완료 · 도감 통찰 ${discoveredReward}/${totalRewardBonus}`,
-      rewardStatusLabel: "도감 보상 수집 완료",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
   });
 

@@ -892,7 +892,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       id: "privacy_trust_bastion",
       alreadyDiscovered: true,
       rewardProgressLabel: expect.stringContaining("발견 완료"),
-      rewardStatusLabel: "도감 보상 수집 완료",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
   });
 
@@ -936,6 +936,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       complete: true,
       alreadyDiscovered: true,
       completionRewardNotice: "이미 발견한 엔딩입니다. 도감 통찰은 추가되지 않지만 기록은 갱신됩니다.",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
     expect(discovery).toMatchObject({
       id: "privacy_trust_bastion",

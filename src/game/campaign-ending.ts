@@ -225,11 +225,12 @@ export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplay
   const rewardProgressLabel = alreadyDiscovered
     ? `발견 완료 · 도감 통찰 ${discoveredRewardBonusBeforeRun}/${totalRewardBonus}`
     : `완주 시 도감 통찰 ${discoveredRewardBonusAfterCompletion}/${totalRewardBonus}`;
-  const rewardLabel = `완주 보너스 +${ending.meta_reward_bonus} 통찰`;
-  const rewardStatusLabel = alreadyDiscovered ? "도감 보상 수집 완료" : rewardLabel;
+  const completionRewardLabel = `완주 보너스 +${ending.meta_reward_bonus} 통찰`;
+  const rewardLabel = alreadyDiscovered ? "추가 통찰 없음" : completionRewardLabel;
+  const rewardStatusLabel = alreadyDiscovered ? "도감 보상 수집 완료 · 추가 통찰 없음" : completionRewardLabel;
   const completionRewardNotice = alreadyDiscovered
     ? "이미 발견한 엔딩입니다. 도감 통찰은 추가되지 않지만 기록은 갱신됩니다."
-    : `${rewardLabel}이 다음 런 메타 보상에 반영됩니다.`;
+    : `${completionRewardLabel}이 다음 런 메타 보상에 반영됩니다.`;
 
   return {
     ...plan,
