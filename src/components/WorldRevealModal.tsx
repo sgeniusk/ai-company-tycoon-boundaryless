@@ -141,6 +141,7 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
             <span>목표 엔딩</span>
             <strong>{endingReplayBrief.title}</strong>
             <em>{endingReplayBrief.rewardLabel}</em>
+            <small>{endingReplayBrief.rewardProgressLabel}</small>
             <small>{endingReplayBrief.openingMoves[0]}</small>
           </div>
         )}

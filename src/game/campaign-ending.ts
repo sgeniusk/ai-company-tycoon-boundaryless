@@ -74,12 +74,17 @@ export interface CampaignEndingDiscovery extends EndingDefinition {
 }
 
 export interface ActiveEndingReplayBrief extends EndingTargetPlan {
+  alreadyDiscovered: boolean;
+  discoveredRewardBonusBeforeRun: number;
+  discoveredRewardBonusAfterCompletion: number;
   seed: string;
   selection: RunModifierSelectionInput;
   targetLabels: string[];
+  totalRewardBonus: number;
   openingMoves: string[];
   nextRequirements: EndingReplayRequirementPrompt[];
   rewardLabel: string;
+  rewardProgressLabel: string;
 }
 
 export interface EndingNearMissPlan extends EndingTargetPlan {
@@ -108,15 +113,9 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
   const discoveredIds = new Set(finalState.roguelite.discoveredEndingIds ?? []);
   const afterRunDiscoveredIds = new Set(discoveredIds);
   afterRunDiscoveredIds.add(ending.id);
-  const totalRewardBonus = campaignEndings.reduce((total, endingDefinition) => total + endingDefinition.meta_reward_bonus, 0);
-  const discoveredRewardBonusBeforeRun = campaignEndings.reduce(
-    (total, endingDefinition) => total + (discoveredIds.has(endingDefinition.id) ? endingDefinition.meta_reward_bonus : 0),
-    0,
-  );
-  const discoveredRewardBonusAfterRun = campaignEndings.reduce(
-    (total, endingDefinition) => total + (afterRunDiscoveredIds.has(endingDefinition.id) ? endingDefinition.meta_reward_bonus : 0),
-    0,
-  );
+  const totalRewardBonus = getTotalEndingRewardBonus();
+  const discoveredRewardBonusBeforeRun = getEndingRewardBonusForIds(discoveredIds);
+  const discoveredRewardBonusAfterRun = getEndingRewardBonusForIds(afterRunDiscoveredIds);
 
   return {
     ...ending,
@@ -174,15 +173,26 @@ export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplay
 
   const plan = createEndingTargetPlan(ending, state);
   const selection = createReplaySelection(ending);
+  const discoveredIds = new Set(state.roguelite.discoveredEndingIds ?? []);
+  const afterCompletionDiscoveredIds = new Set(discoveredIds);
+  afterCompletionDiscoveredIds.add(ending.id);
+  const totalRewardBonus = getTotalEndingRewardBonus();
+  const discoveredRewardBonusBeforeRun = getEndingRewardBonusForIds(discoveredIds);
+  const discoveredRewardBonusAfterCompletion = getEndingRewardBonusForIds(afterCompletionDiscoveredIds);
 
   return {
     ...plan,
+    alreadyDiscovered: discoveredIds.has(ending.id),
+    discoveredRewardBonusBeforeRun,
+    discoveredRewardBonusAfterCompletion,
     seed: state.runModifiers.seed,
     selection,
     targetLabels: getReplayTargetLabels(ending.condition, selection),
+    totalRewardBonus,
     openingMoves: getReplayOpeningMoves(ending.condition),
     nextRequirements: getReplayNextRequirements(plan.requirements),
     rewardLabel: `완주 보너스 +${ending.meta_reward_bonus} 통찰`,
+    rewardProgressLabel: `완주 시 도감 통찰 ${discoveredRewardBonusAfterCompletion}/${totalRewardBonus}`,
   };
 }
 
@@ -263,6 +273,17 @@ export function getEndingCollectionSummary(state: Pick<GameState, "roguelite">):
     completionPercent: entries.length ? Math.round((discoveredCount / entries.length) * 100) : 100,
     nextReplayPlan: replayPlans.find((plan) => !plan.discovered) ?? replayPlans[0],
   };
+}
+
+function getTotalEndingRewardBonus(): number {
+  return campaignEndings.reduce((total, endingDefinition) => total + endingDefinition.meta_reward_bonus, 0);
+}
+
+function getEndingRewardBonusForIds(discoveredIds: Set<string>): number {
+  return campaignEndings.reduce(
+    (total, endingDefinition) => total + (discoveredIds.has(endingDefinition.id) ? endingDefinition.meta_reward_bonus : 0),
+    0,
+  );
 }
 
 export function endingMatchesState(ending: EndingDefinition, state: GameState): boolean {

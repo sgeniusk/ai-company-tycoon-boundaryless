@@ -576,7 +576,8 @@ export function renderMenuContent(
                 <p className="eyebrow">목표 엔딩 런</p>
                 <h3>{activeEndingReplayBrief.title}</h3>
                 <span>
-                  {activeEndingReplayBrief.targetLabels.slice(0, 5).join(" / ")} · {activeEndingReplayBrief.rewardLabel}
+                  {activeEndingReplayBrief.targetLabels.slice(0, 5).join(" / ")} · {activeEndingReplayBrief.rewardLabel} ·{" "}
+                  {activeEndingReplayBrief.rewardProgressLabel}
                 </span>
               </div>
               <div className="ending-replay-brief-steps">
@@ -1482,6 +1483,7 @@ function DeckPanel({
                 <span>
                   조건 {activeEndingReplayBrief.matchedRequirements}/{activeEndingReplayBrief.totalRequirements} · {activeEndingReplayBrief.progressPercent}%
                 </span>
+                <small aria-label="완주 시 도감 통찰 예고">{activeEndingReplayBrief.rewardProgressLabel}</small>
               </div>
               {activeEndingReplayBrief.nextRequirements.length > 0 ? (
                 <div className="ending-replay-active-actions">

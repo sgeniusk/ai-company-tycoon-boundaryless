@@ -889,13 +889,27 @@ describe("v0.67 campaign ending selector", () => {
       marketConditionId: "regulation_crackdown",
       founderTraitId: "researcher_founder",
     });
-    const brief = getActiveEndingReplayBrief(state);
+    const stateWithDiscovery = {
+      ...state,
+      roguelite: {
+        ...state.roguelite,
+        discoveredEndingIds: ["standard_platform_compounder"],
+      },
+    };
+    const brief = getActiveEndingReplayBrief(stateWithDiscovery);
+    const standardReward = campaignEndings.find((ending) => ending.id === "standard_platform_compounder")?.meta_reward_bonus ?? 0;
+    const totalRewardBonus = campaignEndings.reduce((total, ending) => total + ending.meta_reward_bonus, 0);
 
     expect(brief).toMatchObject({
       id: "privacy_trust_bastion",
       title: "프라이버시 신뢰 요새",
       progressPercent: expect.any(Number),
       rewardLabel: "완주 보너스 +4 통찰",
+      alreadyDiscovered: false,
+      discoveredRewardBonusBeforeRun: standardReward,
+      discoveredRewardBonusAfterCompletion: standardReward + 4,
+      totalRewardBonus,
+      rewardProgressLabel: `완주 시 도감 통찰 ${standardReward + 4}/${totalRewardBonus}`,
       selection: {
         seed: "ending:privacy_trust_bastion",
         worldLoreId: "privacy_fortress",

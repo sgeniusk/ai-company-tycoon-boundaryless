@@ -866,6 +866,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("ending-replay-brief-panel");
     expect(menuPanels).toContain("목표 엔딩 런");
     expect(menuPanels).toContain("openingMoves");
+    expect(menuPanels).toContain("activeEndingReplayBrief.rewardProgressLabel");
+    expect(menuPanels).toContain("완주 시");
     expect(menuPanels).toContain("activeEndingReplayBrief.nextRequirements");
     expect(menuPanels).toContain("ending-replay-checklist");
     expect(menuPanels).toContain("requirement.actionLabel");
@@ -939,6 +941,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(worldRevealModal).toContain("getActiveEndingReplayBrief");
     expect(worldRevealModal).toContain("world-reveal-ending-target");
     expect(worldRevealModal).toContain("목표 엔딩");
+    expect(worldRevealModal).toContain("endingReplayBrief.rewardProgressLabel");
     expect(worldRevealModal).toContain("endingReplayBrief.openingMoves");
     expect(appCss).toMatch(/\.world-reveal-ending-target\s*{[^}]*display:\s*grid/s);
   });
