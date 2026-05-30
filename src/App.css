@@ -7041,6 +7041,30 @@ p {
   font-weight: 900;
 }
 
+.ending-collection-sort {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.ending-collection-sort button {
+  background: #fffdf7;
+  border: 2px solid #b9d0e6;
+  box-shadow: none;
+  color: #263f52;
+  font-size: 0.68rem;
+  font-weight: 900;
+  min-height: 34px;
+  min-width: 0;
+  padding: 7px;
+}
+
+.ending-collection-sort button.active {
+  background: #dcefff;
+  border-color: #7fa7ce;
+}
+
 .payoff-collection-grid {
   display: grid;
   gap: 7px;
@@ -10527,6 +10551,10 @@ p {
   }
 
   .ending-collection-filter {
+    grid-template-columns: 1fr;
+  }
+
+  .ending-collection-sort {
     grid-template-columns: 1fr;
   }
 

@@ -748,6 +748,7 @@ function DeckPanel({
   const [selectedPuzzleTileIds, setSelectedPuzzleTileIds] = useState<string[]>([]);
   const [selectedChallengeTierId, setSelectedChallengeTierId] = useState("standard");
   const [endingCollectionFilter, setEndingCollectionFilter] = useState<"all" | "locked" | "discovered">("all");
+  const [endingCollectionSort, setEndingCollectionSort] = useState<"priority" | "progress" | "reward">("priority");
   const deck = gameState.roguelite.deck;
   const handCards = deck.hand.map((cardId) => getStrategyCardById(cardId)).filter((card): card is StrategyCardDefinition => Boolean(card));
   const deckCards = getDeckCardCounts(deck)
@@ -792,11 +793,26 @@ function DeckPanel({
     { id: "locked", label: "미발견", count: endingCollectionSummary.lockedCount },
     { id: "discovered", label: "발견 완료", count: discoveredEndingCount },
   ] as const;
+  const endingCollectionSortOptions = [
+    { id: "priority", label: "추천 순" },
+    { id: "progress", label: "가까운 순" },
+    { id: "reward", label: "보상 순" },
+  ] as const;
   const filteredEndingCollectionEntries = endingCollectionEntries.filter((entry) => {
     if (endingCollectionFilter === "locked") return !entry.discovered;
     if (endingCollectionFilter === "discovered") return entry.discovered;
     return true;
   });
+  const sortedEndingCollectionEntries =
+    endingCollectionSort === "priority"
+      ? filteredEndingCollectionEntries
+      : [...filteredEndingCollectionEntries].sort((first, second) => {
+          if (endingCollectionSort === "progress") {
+            return second.progressPercent - first.progressPercent || second.priority - first.priority || first.id.localeCompare(second.id);
+          }
+
+          return second.meta_reward_bonus - first.meta_reward_bonus || second.priority - first.priority || first.id.localeCompare(second.id);
+        });
   const shouldShowNextRunSetup =
     gameState.month >= 10 || gameState.status !== "playing" || gameState.roguelite.runHistory.length > 0;
   const shouldShowDevelopmentIssueLaunchpad = Boolean(activeProject && activeProduct && puzzle && !gameState.lastDevelopmentPuzzle);
@@ -1392,11 +1408,23 @@ function DeckPanel({
               </button>
             ))}
           </div>
+          <div className="ending-collection-sort" aria-label="엔딩 도감 정렬">
+            {endingCollectionSortOptions.map((option) => (
+              <button
+                className={endingCollectionSort === option.id ? "active" : undefined}
+                key={option.id}
+                onClick={() => setEndingCollectionSort(option.id)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
           <div className="ending-collection-grid">
-            {filteredEndingCollectionEntries.length === 0 && (
+            {sortedEndingCollectionEntries.length === 0 && (
               <p className="ending-collection-empty">아직 이 필터에 해당하는 엔딩이 없습니다.</p>
             )}
-            {filteredEndingCollectionEntries.map((entry) => {
+            {sortedEndingCollectionEntries.map((entry) => {
               const replaySelection = entry.selection;
               const isActiveTargetRun = activeEndingReplayBrief?.id === entry.id;
 
