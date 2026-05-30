@@ -1409,7 +1409,10 @@ function DeckPanel({
             </span>
             <span>
               <strong>{endingCollectionSummary.lockedReplayableCount}</strong>
-              <small>남은 목표 · 결과 전용 잠김 {endingCollectionSummary.finalOnlyLockedCount}</small>
+              <small>
+                남은 목표 · 결과 전용 잠김 {endingCollectionSummary.finalOnlyLockedCount} · 해금 안내{" "}
+                {endingCollectionSummary.unlockHintCount}/{endingCollectionSummary.unlockHintEligibleCount} ({endingCollectionSummary.unlockHintCoveragePercent}%)
+              </small>
             </span>
             <span>
               <strong>

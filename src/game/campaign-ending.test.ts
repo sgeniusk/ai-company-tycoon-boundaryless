@@ -927,6 +927,9 @@ describe("v0.67 campaign ending selector", () => {
       discoveredRewardBonus: 5,
       lockedRewardBonus: campaignEndings.reduce((total, ending) => total + ending.meta_reward_bonus, 0) - 5,
       totalRewardBonus: campaignEndings.reduce((total, ending) => total + ending.meta_reward_bonus, 0),
+      unlockHintCount: campaignEndings.filter((ending) => ending.condition.fallback !== true && ending.meta_reward_bonus > 0).length,
+      unlockHintEligibleCount: campaignEndings.filter((ending) => ending.condition.fallback !== true && ending.meta_reward_bonus > 0).length,
+      unlockHintCoveragePercent: 100,
     });
     expect(summary.nextReplayPlan).toMatchObject({
       id: "agi_safety_accord",

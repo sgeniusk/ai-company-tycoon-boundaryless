@@ -64,6 +64,9 @@ export interface EndingCollectionSummary {
   lockedReplayableCount: number;
   finalOnlyLockedCount: number;
   lockedRewardBonus: number;
+  unlockHintCount: number;
+  unlockHintEligibleCount: number;
+  unlockHintCoveragePercent: number;
   completionPercent: number;
   nextReplayPlan?: EndingReplayPlan;
 }
@@ -430,6 +433,8 @@ export function getEndingCollectionSummary(state: Pick<GameState, "roguelite">):
   const totalRewardBonus = entries.reduce((total, entry) => total + entry.meta_reward_bonus, 0);
   const discoveredRewardBonus = discoveredEntries.reduce((total, entry) => total + entry.meta_reward_bonus, 0);
   const replayPlans = getEndingReplayPlans(state, campaignEndings.length);
+  const unlockHintEligibleEntries = entries.filter((entry) => entry.condition.fallback !== true && entry.meta_reward_bonus > 0);
+  const unlockHintCount = unlockHintEligibleEntries.filter((entry) => entry.recommendedUnlockLabels.length > 0).length;
 
   return {
     discoveredCount,
@@ -442,6 +447,9 @@ export function getEndingCollectionSummary(state: Pick<GameState, "roguelite">):
     lockedReplayableCount: Math.max(0, replayableEntries.length - discoveredReplayableCount),
     finalOnlyLockedCount: entries.filter((entry) => entry.condition.fallback === true && !entry.discovered).length,
     lockedRewardBonus: Math.max(0, totalRewardBonus - discoveredRewardBonus),
+    unlockHintCount,
+    unlockHintEligibleCount: unlockHintEligibleEntries.length,
+    unlockHintCoveragePercent: unlockHintEligibleEntries.length ? Math.round((unlockHintCount / unlockHintEligibleEntries.length) * 100) : 100,
     completionPercent: entries.length ? Math.round((discoveredCount / entries.length) * 100) : 100,
     nextReplayPlan: replayPlans.find((plan) => !plan.discovered),
   };

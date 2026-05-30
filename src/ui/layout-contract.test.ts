@@ -791,7 +791,11 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("모든 목표 엔딩 발견");
     expect(menuPanels).toContain("endingCollectionSummary.lockedReplayableCount");
     expect(menuPanels).toContain("endingCollectionSummary.finalOnlyLockedCount");
+    expect(menuPanels).toContain("endingCollectionSummary.unlockHintCount");
+    expect(menuPanels).toContain("endingCollectionSummary.unlockHintEligibleCount");
+    expect(menuPanels).toContain("endingCollectionSummary.unlockHintCoveragePercent");
     expect(menuPanels).toContain("결과 전용 잠김");
+    expect(menuPanels).toContain("해금 안내");
     expect(menuPanels).toContain("entry.condition.fallback === true");
     expect(menuPanels).toContain("결과 전용 엔딩");
     expect(menuPanels).toContain("entry.rewardStatusLabel");
