@@ -793,6 +793,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.ending-spotlight-card\s*{[^}]*border-color:/s);
   });
 
+  it("v0.67 #6 briefs active ending target runs in the company console", () => {
+    expect(menuPanels).toContain("getActiveEndingReplayBrief");
+    expect(menuPanels).toContain("ending-replay-brief-panel");
+    expect(menuPanels).toContain("목표 엔딩 런");
+    expect(menuPanels).toContain("openingMoves");
+    expect(qaScenarios).toContain("ending-replay-active");
+    expect(appCss).toMatch(/\.ending-replay-brief-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-replay-brief-steps\s*{[^}]*grid-template-columns:/s);
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");

@@ -91,6 +91,7 @@ export const qaScenarioIds = [
   "difficulty-reward",
   "world-events",
   "ending-replay",
+  "ending-replay-active",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation" | "archetype-collection";
@@ -286,6 +287,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "엔딩 목표 재시작 QA",
       state: createEndingReplayScenarioState(),
       activeMenu: "deck",
+    };
+  }
+
+  if (id === "ending-replay-active") {
+    return {
+      id,
+      label: "목표 엔딩 런 브리핑 QA",
+      state: createActiveEndingReplayScenarioState(),
+      activeMenu: "company",
     };
   }
 
@@ -1913,6 +1923,25 @@ function createEndingReplayScenarioState(): GameState {
       ],
     },
     timeline: ["엔딩 목표 재시작 QA: 도감에서 다음 목표 런을 고르는 상태", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createActiveEndingReplayScenarioState(): GameState {
+  const state = createInitialState({
+    seed: "ending:privacy_trust_bastion",
+    worldLoreId: "privacy_fortress",
+    marketConditionId: "regulation_crackdown",
+    founderTraitId: "researcher_founder",
+  });
+
+  return {
+    ...state,
+    month: 2,
+    roguelite: {
+      ...state.roguelite,
+      discoveredEndingIds: ["standard_platform_compounder"],
+    },
+    timeline: ["목표 엔딩 런 QA: 프라이버시 신뢰 요새를 향한 초반 브리핑 확인", ...state.timeline].slice(0, 8),
   };
 }
 

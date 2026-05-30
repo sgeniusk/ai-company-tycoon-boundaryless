@@ -89,6 +89,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "difficulty-reward",
       "world-events",
       "ending-replay",
+      "ending-replay-active",
     ]);
   });
 
@@ -800,6 +801,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=world-events")?.id).toBe("world-events");
     expect(createQaScenarioFromSearch("?scenario=archetype-collection")?.id).toBe("archetype-collection");
     expect(createQaScenarioFromSearch("?scenario=ending-replay")?.id).toBe("ending-replay");
+    expect(createQaScenarioFromSearch("?scenario=ending-replay-active")?.id).toBe("ending-replay-active");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
@@ -844,6 +846,16 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.roguelite.discoveredEndingIds).toEqual(
       expect.arrayContaining(["standard_platform_compounder", "privacy_trust_bastion"]),
     );
+  });
+
+  it("builds an active ending replay target scenario for the company brief", () => {
+    const scenario = createQaScenario("ending-replay-active");
+
+    expect(scenario.activeMenu).toBe("company");
+    expect(scenario.label).toContain("목표 엔딩");
+    expect(scenario.state.runModifiers.seed).toBe("ending:privacy_trust_bastion");
+    expect(scenario.state.runModifiers.worldLoreId).toBe("privacy_fortress");
+    expect(scenario.state.runModifiers.marketConditionId).toBe("regulation_crackdown");
   });
 
   it("allows QA URLs to override the active menu", () => {

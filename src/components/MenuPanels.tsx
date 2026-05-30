@@ -13,7 +13,7 @@ import {
 import { getAnnualStrategyAdvice, getAnnualStrategyMenuFocus, prioritizeAnnualStrategyFocus } from "../game/annual-strategy-advisor";
 import { getBoundarylessExpansionGoals } from "../game/boundaryless-expansion";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation } from "../game/campaign";
-import { getEndingCollectionEntries, getEndingReplayPlans, getEndingTargetPlans } from "../game/campaign-ending";
+import { getActiveEndingReplayBrief, getEndingCollectionEntries, getEndingReplayPlans, getEndingTargetPlans } from "../game/campaign-ending";
 import { getCompetitionSeasonBrief, getCompetitionSeasonChallenges, getGrowthPathCompetitionSignals } from "../game/competition-signals";
 import { getIndustryComboSummary } from "../game/industry-combos";
 import { getIndustrySynergySummary } from "../game/industry-synergies";
@@ -217,6 +217,7 @@ export function renderMenuContent(
     const calendar = getCampaignCalendar(gameState);
     const finale = getCampaignFinale(gameState);
     const endingTargetPlans = getEndingTargetPlans(gameState, 3);
+    const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
     const stageProgress = getCompanyStageProgress(gameState);
     const currentLocation = getCurrentLocation(gameState);
     const foundationSnapshot = getFoundationSnapshot(gameState);
@@ -562,6 +563,22 @@ export function renderMenuContent(
               <i style={{ width: `${calendar.progressPercent}%` }} />
             </div>
           </div>
+          {activeEndingReplayBrief && (
+            <div className="ending-replay-brief-panel" aria-label="목표 엔딩 런">
+              <div>
+                <p className="eyebrow">목표 엔딩 런</p>
+                <h3>{activeEndingReplayBrief.title}</h3>
+                <span>
+                  {activeEndingReplayBrief.targetLabels.slice(0, 5).join(" / ")} · {activeEndingReplayBrief.rewardLabel}
+                </span>
+              </div>
+              <div className="ending-replay-brief-steps">
+                {activeEndingReplayBrief.openingMoves.map((move) => (
+                  <span key={move}>{move}</span>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="ending-target-panel" aria-label="엔딩 목표">
             <div>
               <p className="eyebrow">엔딩 목표</p>

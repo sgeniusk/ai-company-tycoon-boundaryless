@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { campaignEndings, products } from "./data";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
-import { getCampaignEnding, getEndingCollectionEntries, getEndingReplayPlans, getEndingTargetPlans } from "./campaign-ending";
+import {
+  getActiveEndingReplayBrief,
+  getCampaignEnding,
+  getEndingCollectionEntries,
+  getEndingReplayPlans,
+  getEndingTargetPlans,
+} from "./campaign-ending";
 import { runTenYearCampaignSimulation } from "./run-simulator";
 import { createInitialState } from "./simulation";
 import type { GameState, RunModifiersState } from "./types";
@@ -453,5 +459,29 @@ describe("v0.67 campaign ending selector", () => {
       expect.arrayContaining(["프라이버시 요새", "규제 단속", "연구자 창업자", "신뢰 기반 엔터프라이즈"]),
     );
     expect(plans.find((plan) => plan.id === "frontier_demo_empire")?.discovered).toBe(true);
+  });
+
+  it("summarizes active ending replay runs from the seeded target", () => {
+    const state = createInitialState({
+      seed: "ending:privacy_trust_bastion",
+      worldLoreId: "privacy_fortress",
+      marketConditionId: "regulation_crackdown",
+      founderTraitId: "researcher_founder",
+    });
+    const brief = getActiveEndingReplayBrief(state);
+
+    expect(brief).toMatchObject({
+      id: "privacy_trust_bastion",
+      title: "프라이버시 신뢰 요새",
+      progressPercent: expect.any(Number),
+      rewardLabel: "완주 보너스 +4 통찰",
+    });
+    expect(brief?.targetLabels).toEqual(
+      expect.arrayContaining(["프라이버시 요새", "규제 단속", "연구자 창업자", "신뢰 기반 엔터프라이즈"]),
+    );
+    expect(brief?.openingMoves).toEqual(
+      expect.arrayContaining(["신뢰 기반 엔터프라이즈 성장 경로 선택", "신뢰 90까지 확보", "프라이버시 협약 아키타입 완성"]),
+    );
+    expect(getActiveEndingReplayBrief(createInitialState())).toBeUndefined();
   });
 });

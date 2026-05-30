@@ -32,6 +32,13 @@ export interface EndingReplayPlan extends EndingDefinition {
   targetLabels: string[];
 }
 
+export interface ActiveEndingReplayBrief extends EndingTargetPlan {
+  seed: string;
+  targetLabels: string[];
+  openingMoves: string[];
+  rewardLabel: string;
+}
+
 export function getCampaignEnding(finalState: GameState): EndingDefinition {
   const matches = campaignEndings
     .map((ending, index) => ({ ending, index }))
@@ -55,6 +62,21 @@ export function getEndingTargetPlans(state: GameState, limit = 3): EndingTargetP
   );
 
   return rankedPlans.slice(0, Math.max(1, limit));
+}
+
+export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplayBrief | undefined {
+  const ending = getReplayEndingFromSeed(state.runModifiers.seed);
+  if (!ending) return undefined;
+
+  const plan = createEndingTargetPlan(ending, state);
+
+  return {
+    ...plan,
+    seed: state.runModifiers.seed,
+    targetLabels: getReplayTargetLabels(ending.condition, createReplaySelection(ending)),
+    openingMoves: getReplayOpeningMoves(ending.condition),
+    rewardLabel: `완주 보너스 +${ending.meta_reward_bonus} 통찰`,
+  };
 }
 
 export function getEndingReplayPlans(state: Pick<GameState, "roguelite">, limit = 3): EndingReplayPlan[] {
@@ -114,6 +136,12 @@ function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<str
     selection,
     targetLabels: getReplayTargetLabels(ending.condition, selection),
   };
+}
+
+function getReplayEndingFromSeed(seed: string): EndingDefinition | undefined {
+  if (!seed.startsWith("ending:")) return undefined;
+  const endingId = seed.slice("ending:".length);
+  return campaignEndings.find((ending) => ending.id === endingId && ending.condition.fallback !== true);
 }
 
 function createReplaySelection(ending: EndingDefinition): RunModifierSelectionInput {
@@ -235,6 +263,34 @@ function pushReplayLabel(
 
 function pushUnique(values: string[], value: string) {
   if (!values.includes(value)) values.push(value);
+}
+
+function getReplayOpeningMoves(condition: EndingConditionDefinition): string[] {
+  const moves: string[] = [];
+
+  for (const growthPathId of condition.growth_path_ids ?? []) {
+    pushUnique(moves, `${getGrowthPathName(growthPathId)} 성장 경로 선택`);
+  }
+
+  for (const archetypeId of condition.archetype_ids ?? []) {
+    pushUnique(moves, `${getArchetypeName(archetypeId)} 아키타입 완성`);
+  }
+
+  const resourcePriority = ["trust", "automation", "cash", "users", "compute", "data", "hype", "talent"];
+  for (const resourceId of resourcePriority) {
+    const target = condition.min_resources?.[resourceId];
+    if (target !== undefined) pushUnique(moves, `${resourceLabel(resourceId)} ${Math.round(target).toLocaleString("ko-KR")}${resourceUnit(resourceId)}까지 확보`);
+  }
+
+  if (condition.min_products !== undefined) {
+    pushUnique(moves, `제품 ${condition.min_products}개 출시`);
+  }
+
+  if (moves.length === 0) {
+    moves.push("10년 캠페인을 끝까지 생존");
+  }
+
+  return moves.slice(0, 5);
 }
 
 function getEndingRequirementProgress(condition: EndingConditionDefinition, state: GameState): EndingRequirementProgress[] {
