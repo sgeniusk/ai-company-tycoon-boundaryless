@@ -8878,6 +8878,62 @@ p {
   color: #6a4b20;
 }
 
+.ending-nudge-panel {
+  align-items: center;
+  background: #f4fbec;
+  border: 2px solid #86b86f;
+  color: #2f4d29;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-width: 0;
+  padding: 8px;
+}
+
+.ending-nudge-panel.known {
+  background: #fffdf7;
+  border-color: #b6ccdc;
+  color: #334b5e;
+}
+
+.ending-nudge-panel div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.ending-nudge-panel strong,
+.ending-nudge-panel span,
+.ending-nudge-panel small {
+  overflow-wrap: anywhere;
+}
+
+.ending-nudge-panel strong {
+  font-size: 0.76rem;
+  line-height: 1.15;
+}
+
+.ending-nudge-panel span,
+.ending-nudge-panel small {
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.ending-nudge-panel em {
+  background: #fffdf7;
+  border: 2px solid currentColor;
+  font-size: 0.74rem;
+  font-style: normal;
+  font-weight: 900;
+  padding: 6px 8px;
+  white-space: nowrap;
+}
+
+.ending-nudge-panel small {
+  grid-column: 1 / -1;
+}
+
 .challenge-tier-picker {
   background: #fffdf7;
   border: 2px solid #b6ccdc;
@@ -10465,6 +10521,7 @@ p {
   .annual-review-header,
   .annual-review-meta,
   .annual-goal-list,
+  .ending-nudge-panel,
   .meta-unlock-list article {
     grid-template-columns: 1fr;
   }

@@ -999,6 +999,16 @@ function DeckPanel({
               <span>예상 보상 +{nextRunSetupPlan.insightReward}</span>
               <span>시작 가능 {nextRunSetupPlan.projectedFounderInsight}</span>
             </div>
+            {nextRunSetupPlan.endingNudge && (
+              <div className={`ending-nudge-panel ${nextRunSetupPlan.endingNudge.newlyDiscovered ? "new" : "known"}`} aria-label="엔딩 보상">
+                <div>
+                  <strong>엔딩 보상</strong>
+                  <span>{nextRunSetupPlan.endingNudge.title} · {nextRunSetupPlan.endingNudge.statusLabel}</span>
+                </div>
+                <em>{nextRunSetupPlan.endingNudge.rewardLabel}</em>
+                <small>{nextRunSetupPlan.endingNudge.description}</small>
+              </div>
+            )}
             {nextRunSetupPlan.recoveryWarnings.length > 0 && (
               <div className="restart-warning-row">
                 {nextRunSetupPlan.recoveryWarnings.map((warning) => (

@@ -723,9 +723,14 @@ describe("v0.13.3 compact game shell layout", () => {
   it("adds a next-run command room for roguelite restart decisions", () => {
     expect(menuPanels).toContain("getNextRunSetupPlan");
     expect(menuPanels).toContain("next-run-command-panel");
+    expect(menuPanels).toContain("nextRunSetupPlan.endingNudge");
+    expect(menuPanels).toContain("ending-nudge-panel");
+    expect(menuPanels).toContain("엔딩 보상");
     expect(menuPanels).toContain("next-run-quick-start-grid");
     expect(menuPanels).toContain("meta-category-badge");
     expect(appCss).toMatch(/\.next-run-command-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-nudge-panel\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-nudge-panel[\s\S]*grid-template-columns:\s*1fr/s);
     expect(appCss).toMatch(/\.next-run-quick-start-grid\s*{[^}]*grid-template-columns:/s);
   });
 

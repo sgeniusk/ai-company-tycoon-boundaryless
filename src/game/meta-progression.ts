@@ -1,6 +1,6 @@
 import { competitors, difficultyTiers, metaUnlocks, products, resources, strategyCards } from "./data";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
-import { getCampaignEnding } from "./campaign-ending";
+import { getCampaignEnding, getCampaignEndingDiscovery } from "./campaign-ending";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
 import type { RunModifierSelectionInput } from "./run-modifiers";
@@ -38,6 +38,15 @@ export interface NextRunQuickStart {
   projectedInsightAfterStart: number;
 }
 
+export interface NextRunEndingNudge {
+  id: string;
+  title: string;
+  newlyDiscovered: boolean;
+  rewardLabel: string;
+  statusLabel: string;
+  description: string;
+}
+
 export interface NextRunSetupPlan {
   currentRunNumber: number;
   projectedRunNumber: number;
@@ -46,6 +55,7 @@ export interface NextRunSetupPlan {
   projectedFounderInsight: number;
   focusTitle: string;
   focusSummary: string;
+  endingNudge?: NextRunEndingNudge;
   recoveryWarnings: string[];
   bestProductName?: string;
   representativeCardName?: string;
@@ -109,6 +119,7 @@ export function getNextRunSetupPlan(state: GameState): NextRunSetupPlan {
   const recommendedUnlocks = getRecommendedUnlocks(state, projectedFounderInsight);
   const starterDeckPlans = getStarterDeckPlans(state);
   const quickStarts = getNextRunQuickStarts(state, projectedFounderInsight, recommendedUnlocks, starterDeckPlans);
+  const endingNudge = getNextRunEndingNudge(state);
 
   return {
     currentRunNumber: state.roguelite.runNumber,
@@ -118,6 +129,7 @@ export function getNextRunSetupPlan(state: GameState): NextRunSetupPlan {
     projectedFounderInsight,
     focusTitle: getNextRunFocusTitle(state, recoveryWarnings),
     focusSummary: createNextRunFocusSummary(state, bestProduct?.name, representativeCard?.name, strongestRival?.name),
+    endingNudge,
     recoveryWarnings,
     bestProductName: bestProduct?.name,
     representativeCardName: representativeCard?.name,
@@ -184,6 +196,33 @@ export function resetRunWithMetaUnlocks(
       ...nextState.timeline,
     ].slice(0, 8),
   };
+}
+
+function getNextRunEndingNudge(state: GameState): NextRunEndingNudge | undefined {
+  if (state.month < CAMPAIGN_FINAL_MONTH) return undefined;
+
+  const discovery = getCampaignEndingDiscovery(state);
+  const newlyDiscovered = !discovery.alreadyDiscovered;
+
+  return {
+    id: discovery.id,
+    title: discovery.title,
+    newlyDiscovered,
+    rewardLabel: discovery.rewardLabel,
+    statusLabel: discovery.rewardStatusLabel,
+    description: createEndingNudgeDescription(discovery.title, discovery.rewardLabel, discovery.condition.fallback === true, newlyDiscovered),
+  };
+}
+
+function createEndingNudgeDescription(title: string, rewardLabel: string, resultOnly: boolean, newlyDiscovered: boolean): string {
+  if (resultOnly) {
+    return newlyDiscovered
+      ? `${title}: 결과 전용 기록이 도감에 남고 보상 통찰은 추가되지 않습니다.`
+      : `${title}: 이미 기록한 결과 전용 엔딩이라 기록만 갱신됩니다.`;
+  }
+
+  if (newlyDiscovered) return `${title} 보상 ${rewardLabel}이 다음 런 해금 후보에 반영됩니다.`;
+  return `${title}은 이미 도감에 있어 이번 런은 기록만 갱신됩니다.`;
 }
 
 function uniqueStrings(values: string[]): string[] {

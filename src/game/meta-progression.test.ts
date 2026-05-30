@@ -155,6 +155,55 @@ describe("v0.32 next-run setup plan", () => {
     });
   });
 
+  it("adds a finale ending nudge to the next-run setup plan", () => {
+    const initial = createInitialState();
+    const finished = {
+      ...initial,
+      month: 120,
+      status: "success" as const,
+      activeProducts: [
+        "ai_writing_assistant",
+        "meeting_summary_bot",
+        "customer_support_chatbot",
+        "foundation_model_v0",
+      ],
+      resources: {
+        ...initial.resources,
+        cash: 180000,
+        users: 140000,
+        trust: 76,
+        automation: 58,
+      },
+    };
+
+    const plan = getNextRunSetupPlan(finished);
+
+    expect(plan.endingNudge).toMatchObject({
+      id: "standard_platform_compounder",
+      title: "표준 세계의 복리 플랫폼",
+      newlyDiscovered: true,
+      rewardLabel: "+2 통찰",
+      statusLabel: "+2 통찰 신규 도감 보상",
+      description: "표준 세계의 복리 플랫폼 보상 +2 통찰이 다음 런 해금 후보에 반영됩니다.",
+    });
+
+    const repeatedPlan = getNextRunSetupPlan({
+      ...finished,
+      roguelite: {
+        ...finished.roguelite,
+        discoveredEndingIds: ["standard_platform_compounder"],
+      },
+    });
+
+    expect(repeatedPlan.endingNudge).toMatchObject({
+      id: "standard_platform_compounder",
+      newlyDiscovered: false,
+      rewardLabel: "+0 도감 통찰",
+      statusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
+      description: "표준 세계의 복리 플랫폼은 이미 도감에 있어 이번 런은 기록만 갱신됩니다.",
+    });
+  });
+
   it("does not grant the ending meta bonus again for repeated discoveries", () => {
     const initial = createInitialState();
     const firstClear = {
