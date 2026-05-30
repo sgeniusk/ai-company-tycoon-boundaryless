@@ -249,6 +249,20 @@ describe("v0.32 next-run setup plan", () => {
     expect(getNextRunSetupPlan(finished).endingNudge).toMatchObject({
       id: "san_francisco_ai_boom_launchpad",
       recommendedUnlockLabels: ["런칭 플레이북", "경계 없는 브랜드 기억"],
+      recommendedUnlocks: [
+        expect.objectContaining({
+          id: "launch_playbook",
+          cost: 4,
+          affordable: true,
+          statusLabel: "해금 가능",
+        }),
+        expect.objectContaining({
+          id: "boundaryless_brand_memory",
+          cost: 8,
+          affordable: true,
+          statusLabel: "해금 가능",
+        }),
+      ],
     });
   });
 

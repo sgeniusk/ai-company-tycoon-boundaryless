@@ -747,7 +747,9 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("nextRunSetupPlan.endingNudge");
     expect(menuPanels).toContain("ending-nudge-panel");
     expect(menuPanels).toContain("ending-nudge-unlocks");
-    expect(menuPanels).toContain("recommendedUnlockLabels");
+    expect(menuPanels).toContain("recommendedUnlocks");
+    expect(menuPanels).toContain("unlock.statusLabel");
+    expect(menuPanels).toContain("비용 {unlock.cost}");
     expect(menuPanels).toContain("엔딩 보상");
     expect(menuPanels).toContain("추천 해금");
     expect(menuPanels).toContain("next-run-quick-start-grid");
@@ -862,9 +864,11 @@ describe("v0.13.3 compact game shell layout", () => {
 
   it("v0.67 #72 surfaces ending route unlock hints in the codex", () => {
     expect(campaignEndingSource).toContain("getEndingRouteUnlockLabels");
+    expect(campaignEndingSource).toContain("getEndingRouteUnlockRecommendations");
     expect(campaignEndingSource).toContain("recommendedUnlockLabels");
+    expect(campaignEndingSource).toContain("recommendedUnlocks");
     expect(menuPanels).toContain("ending-collection-unlock-hints");
-    expect(menuPanels).toContain("entry.recommendedUnlockLabels");
+    expect(menuPanels).toContain("entry.recommendedUnlocks");
     expect(menuPanels).toContain("추천 해금");
     expect(appCss).toMatch(/\.ending-collection-unlock-hints\s*{[^}]*display:\s*flex/s);
     expect(appCss).toMatch(/\.ending-collection-unlock-hints span\s*{[^}]*overflow-wrap:\s*anywhere/s);
@@ -888,7 +892,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("해금 순");
     expect(menuPanels).toContain('useState<"priority" | "progress" | "reward" | "unlockHints">');
     expect(menuPanels).toContain('endingCollectionSort === "unlockHints"');
-    expect(menuPanels).toContain("second.recommendedUnlockLabels.length - first.recommendedUnlockLabels.length");
+    expect(menuPanels).toContain("second.recommendedUnlocks.length - first.recommendedUnlocks.length");
     expect(appCss).toMatch(/\.ending-collection-sort\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.ending-collection-sort button\.active\s*{[^}]*background:/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-collection-sort\s*{[^}]*grid-template-columns:\s*1fr/s);

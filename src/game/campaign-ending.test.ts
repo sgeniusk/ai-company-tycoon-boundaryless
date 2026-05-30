@@ -13,6 +13,7 @@ import {
   getEndingCollectionProgressEntries,
   getEndingNearMisses,
   getEndingReplayPlans,
+  getEndingRouteUnlockRecommendations,
   getEndingRouteUnlockLabels,
   getEndingTargetPlans,
 } from "./campaign-ending";
@@ -868,10 +869,33 @@ describe("v0.67 campaign ending selector", () => {
       founderTraitId: "serial_founder",
     });
     const sanFranciscoEnding = campaignEndings.find((ending) => ending.id === "san_francisco_ai_boom_launchpad");
-    const entries = getEndingCollectionEntries(state);
+    const stateWithInsight = {
+      ...state,
+      roguelite: {
+        ...state.roguelite,
+        founderInsight: 4,
+      },
+    };
+    const entries = getEndingCollectionEntries(stateWithInsight);
 
     expect(sanFranciscoEnding).toBeDefined();
     expect(getEndingRouteUnlockLabels(sanFranciscoEnding!.condition, state)).toEqual(["런칭 플레이북", "경계 없는 브랜드 기억"]);
+    expect(getEndingRouteUnlockRecommendations(sanFranciscoEnding!.condition, stateWithInsight)).toEqual([
+      expect.objectContaining({
+        id: "launch_playbook",
+        title: "런칭 플레이북",
+        cost: 4,
+        affordable: true,
+        statusLabel: "해금 가능",
+      }),
+      expect.objectContaining({
+        id: "boundaryless_brand_memory",
+        title: "경계 없는 브랜드 기억",
+        cost: 8,
+        affordable: false,
+        statusLabel: "창업 통찰 8 필요",
+      }),
+    ]);
     expect(
       getEndingRouteUnlockLabels(sanFranciscoEnding!.condition, {
         ...state,
@@ -883,9 +907,14 @@ describe("v0.67 campaign ending selector", () => {
     ).toEqual(["경계 없는 브랜드 기억"]);
     expect(entries.find((entry) => entry.id === "san_francisco_ai_boom_launchpad")).toMatchObject({
       recommendedUnlockLabels: ["런칭 플레이북", "경계 없는 브랜드 기억"],
+      recommendedUnlocks: [
+        expect.objectContaining({ id: "launch_playbook", statusLabel: "해금 가능" }),
+        expect.objectContaining({ id: "boundaryless_brand_memory", statusLabel: "창업 통찰 8 필요" }),
+      ],
     });
     expect(entries.find((entry) => entry.id === "garage_restart")).toMatchObject({
       recommendedUnlockLabels: [],
+      recommendedUnlocks: [],
     });
   });
 

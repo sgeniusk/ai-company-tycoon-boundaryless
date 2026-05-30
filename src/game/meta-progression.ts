@@ -1,6 +1,6 @@
 import { competitors, difficultyTiers, metaUnlocks, products, resources, strategyCards } from "./data";
 import { CAMPAIGN_FINAL_MONTH, getCampaignFinale } from "./campaign";
-import { getCampaignEnding, getCampaignEndingDiscovery, getEndingRouteUnlockLabels } from "./campaign-ending";
+import { getCampaignEnding, getCampaignEndingDiscovery, getEndingRouteUnlockRecommendations, type EndingRouteUnlockRecommendation } from "./campaign-ending";
 import { createInitialRogueliteState, getAvailableStarterDecks, getMetaStartingResourceEffects } from "./deckbuilding";
 import { createInitialState } from "./simulation";
 import type { RunModifierSelectionInput } from "./run-modifiers";
@@ -43,6 +43,7 @@ export interface NextRunEndingNudge {
   title: string;
   newlyDiscovered: boolean;
   rewardLabel: string;
+  recommendedUnlocks: EndingRouteUnlockRecommendation[];
   recommendedUnlockLabels: string[];
   statusLabel: string;
   description: string;
@@ -120,7 +121,7 @@ export function getNextRunSetupPlan(state: GameState): NextRunSetupPlan {
   const recommendedUnlocks = getRecommendedUnlocks(state, projectedFounderInsight);
   const starterDeckPlans = getStarterDeckPlans(state);
   const quickStarts = getNextRunQuickStarts(state, projectedFounderInsight, recommendedUnlocks, starterDeckPlans);
-  const endingNudge = getNextRunEndingNudge(state);
+  const endingNudge = getNextRunEndingNudge(state, projectedFounderInsight);
 
   return {
     currentRunNumber: state.roguelite.runNumber,
@@ -199,18 +200,20 @@ export function resetRunWithMetaUnlocks(
   };
 }
 
-function getNextRunEndingNudge(state: GameState): NextRunEndingNudge | undefined {
+function getNextRunEndingNudge(state: GameState, projectedFounderInsight: number): NextRunEndingNudge | undefined {
   if (state.month < CAMPAIGN_FINAL_MONTH) return undefined;
 
   const discovery = getCampaignEndingDiscovery(state);
   const newlyDiscovered = !discovery.alreadyDiscovered;
+  const recommendedUnlocks = getEndingRouteUnlockRecommendations(discovery.condition, state, projectedFounderInsight);
 
   return {
     id: discovery.id,
     title: discovery.title,
     newlyDiscovered,
     rewardLabel: discovery.rewardLabel,
-    recommendedUnlockLabels: getEndingRouteUnlockLabels(discovery.condition, state),
+    recommendedUnlocks,
+    recommendedUnlockLabels: recommendedUnlocks.map((unlock) => unlock.title),
     statusLabel: discovery.rewardStatusLabel,
     description: createEndingNudgeDescription(discovery.title, discovery.rewardLabel, discovery.condition.fallback === true, newlyDiscovered),
   };

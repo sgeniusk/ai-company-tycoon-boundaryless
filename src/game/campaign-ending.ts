@@ -5,10 +5,20 @@ import type { EndingConditionDefinition, EndingDefinition, GameState, ResourceMa
 
 export interface EndingCollectionEntry extends EndingDefinition {
   discovered: boolean;
+  recommendedUnlocks: EndingRouteUnlockRecommendation[];
   recommendedUnlockLabels: string[];
   rewardStatusLabel: string;
   targetLabels: string[];
   selection?: RunModifierSelectionInput;
+}
+
+export interface EndingRouteUnlockRecommendation {
+  id: string;
+  title: string;
+  cost: number;
+  affordable: boolean;
+  reasons: string[];
+  statusLabel: string;
 }
 
 export interface EndingCollectionProgressEntry extends EndingCollectionEntry {
@@ -292,11 +302,13 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
   return campaignEndings
     .map((ending) => {
       const selection = ending.condition.fallback === true ? undefined : createReplaySelection(ending);
+      const recommendedUnlocks = getEndingRouteUnlockRecommendations(ending.condition, state);
 
       return {
         ...ending,
         discovered: discoveredIds.has(ending.id),
-        recommendedUnlockLabels: getEndingRouteUnlockLabels(ending.condition, state),
+        recommendedUnlocks,
+        recommendedUnlockLabels: recommendedUnlocks.map((unlock) => unlock.title),
         rewardStatusLabel: getEndingCollectionRewardStatusLabel(ending.meta_reward_bonus, discoveredIds.has(ending.id), ending.condition.fallback === true),
         targetLabels: selection ? getReplayTargetLabels(ending.condition, selection) : [],
         selection,
@@ -312,6 +324,14 @@ function getEndingCollectionRewardStatusLabel(metaRewardBonus: number, discovere
 }
 
 export function getEndingRouteUnlockLabels(condition: EndingConditionDefinition, state: Pick<GameState, "roguelite">): string[] {
+  return getEndingRouteUnlockRecommendations(condition, state).map((unlock) => unlock.title);
+}
+
+export function getEndingRouteUnlockRecommendations(
+  condition: EndingConditionDefinition,
+  state: Pick<GameState, "roguelite">,
+  spendableInsight = state.roguelite.founderInsight,
+): EndingRouteUnlockRecommendation[] {
   if (condition.fallback === true) return [];
 
   const targetTags = getEndingRouteUnlockTags(condition);
@@ -326,7 +346,19 @@ export function getEndingRouteUnlockLabels(condition: EndingConditionDefinition,
     .filter((entry) => entry.score > 0)
     .sort((first, second) => second.score - first.score || first.unlock.cost - second.unlock.cost || first.unlock.id.localeCompare(second.unlock.id))
     .slice(0, 2)
-    .map(({ unlock }) => unlock.title);
+    .map(({ unlock }) => {
+      const reasons = spendableInsight >= unlock.cost ? [] : [`창업 통찰 ${unlock.cost} 필요`];
+      const affordable = reasons.length === 0;
+
+      return {
+        id: unlock.id,
+        title: unlock.title,
+        cost: unlock.cost,
+        affordable,
+        reasons,
+        statusLabel: affordable ? "해금 가능" : reasons[0] ?? "통찰 부족",
+      };
+    });
 }
 
 function getEndingRouteUnlockTags(condition: EndingConditionDefinition): Set<string> {

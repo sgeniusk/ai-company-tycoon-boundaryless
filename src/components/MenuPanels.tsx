@@ -789,7 +789,7 @@ function DeckPanel({
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
   const discoveredEndingCount = baseEndingCollectionEntries.filter((entry) => gameState.roguelite.discoveredEndingIds.includes(entry.id)).length;
   const remainingRewardEndingCount = endingCollectionEntries.filter((entry) => !entry.discovered && entry.meta_reward_bonus > 0).length;
-  const unlockHintEndingCount = endingCollectionEntries.filter((entry) => entry.recommendedUnlockLabels.length > 0).length;
+  const unlockHintEndingCount = endingCollectionEntries.filter((entry) => entry.recommendedUnlocks.length > 0).length;
   const finalOnlyEndingCount = endingCollectionEntries.filter((entry) => entry.condition.fallback === true).length;
   const endingCollectionFilterOptions = [
     { id: "all", label: "전체", count: endingCollectionEntries.length },
@@ -809,7 +809,7 @@ function DeckPanel({
     if (endingCollectionFilter === "locked") return !entry.discovered;
     if (endingCollectionFilter === "discovered") return entry.discovered;
     if (endingCollectionFilter === "reward") return !entry.discovered && entry.meta_reward_bonus > 0;
-    if (endingCollectionFilter === "unlockHints") return entry.recommendedUnlockLabels.length > 0;
+    if (endingCollectionFilter === "unlockHints") return entry.recommendedUnlocks.length > 0;
     if (endingCollectionFilter === "finalOnly") return entry.condition.fallback === true;
     return true;
   });
@@ -822,7 +822,7 @@ function DeckPanel({
           }
           if (endingCollectionSort === "unlockHints") {
             return (
-              second.recommendedUnlockLabels.length - first.recommendedUnlockLabels.length ||
+              second.recommendedUnlocks.length - first.recommendedUnlocks.length ||
               second.meta_reward_bonus - first.meta_reward_bonus ||
               second.priority - first.priority ||
               first.id.localeCompare(second.id)
@@ -1027,11 +1027,11 @@ function DeckPanel({
                 </div>
                 <em>{nextRunSetupPlan.endingNudge.rewardLabel}</em>
                 <small>{nextRunSetupPlan.endingNudge.description}</small>
-                {nextRunSetupPlan.endingNudge.recommendedUnlockLabels.length > 0 && (
+                {nextRunSetupPlan.endingNudge.recommendedUnlocks.length > 0 && (
                   <div className="ending-nudge-unlocks" aria-label="엔딩 추천 해금">
                     <strong>추천 해금</strong>
-                    {nextRunSetupPlan.endingNudge.recommendedUnlockLabels.map((label) => (
-                      <span key={label}>{label}</span>
+                    {nextRunSetupPlan.endingNudge.recommendedUnlocks.map((unlock) => (
+                      <span key={unlock.id}>{unlock.title} · 비용 {unlock.cost} · {unlock.statusLabel}</span>
                     ))}
                   </div>
                 )}
@@ -1507,11 +1507,11 @@ function DeckPanel({
                     <small>다음 조건: {entry.nextRequirementLabel}</small>
                   </div>
                   {entry.targetLabels.length > 0 && <small>목표 힌트: {entry.targetLabels.slice(0, 4).join(" / ")}</small>}
-                  {entry.recommendedUnlockLabels.length > 0 && (
+                  {entry.recommendedUnlocks.length > 0 && (
                     <div className="ending-collection-unlock-hints" aria-label="엔딩 추천 해금">
                       <strong>추천 해금</strong>
-                      {entry.recommendedUnlockLabels.map((label) => (
-                        <span key={label}>{label}</span>
+                      {entry.recommendedUnlocks.map((unlock) => (
+                        <span key={unlock.id}>{unlock.title} · 비용 {unlock.cost} · {unlock.statusLabel}</span>
                       ))}
                     </div>
                   )}
