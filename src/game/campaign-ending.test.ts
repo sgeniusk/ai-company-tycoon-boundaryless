@@ -689,6 +689,7 @@ describe("v0.67 campaign ending selector", () => {
       rewardDeltaLabel: "+4 통찰",
       rewardStatusLabel: "+4 통찰 신규 도감 보상",
       rewardDeltaDescription: "신규 도감 보상이 추가됩니다.",
+      codexApplyLabel: "재시작하면 엔딩 도감에 추가됩니다.",
       discoveredRewardBonusBeforeRun: standardReward,
       discoveredRewardBonusAfterRun: standardReward + 4,
       totalRewardBonus,
@@ -718,6 +719,7 @@ describe("v0.67 campaign ending selector", () => {
       rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "도감 보상 수집 완료",
       rewardDeltaDescription: "이미 획득한 도감 보상입니다.",
+      codexApplyLabel: "이미 도감에 있는 결말입니다.",
       discoveredRewardBonusBeforeRun: discoveredReward,
       discoveredRewardBonusAfterRun: discoveredReward,
     });
@@ -732,6 +734,7 @@ describe("v0.67 campaign ending selector", () => {
       rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "결과 전용 기록",
       rewardDeltaDescription: "결과 전용 엔딩이 도감에 기록됩니다.",
+      codexApplyLabel: "재시작하면 결과 기록으로 도감에 추가됩니다.",
     });
   });
 

@@ -961,6 +961,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       rewardDeltaLabel: "+0 도감 통찰",
       rewardStatusLabel: "결과 전용 기록",
       rewardDeltaDescription: "결과 전용 엔딩이 도감에 기록됩니다.",
+      codexApplyLabel: "재시작하면 결과 기록으로 도감에 추가됩니다.",
     });
   });
 

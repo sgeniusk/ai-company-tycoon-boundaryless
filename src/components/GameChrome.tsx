@@ -977,9 +977,7 @@ export function GameStage({
                       </span>
                       <span>
                         <strong>도감 반영</strong>
-                        <small>
-                          {endingDiscovery.alreadyDiscovered ? "이미 도감에 있는 결말입니다." : "재시작하면 엔딩 도감에 추가됩니다."}
-                        </small>
+                        <small>{endingDiscovery.codexApplyLabel}</small>
                       </span>
                     </div>
                   )}

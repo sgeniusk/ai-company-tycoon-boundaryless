@@ -946,6 +946,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("endingDiscovery.rewardDeltaDescription");
     expect(gameChrome).toContain("endingDiscovery.discoveredRewardBonusAfterRun");
     expect(gameChrome).toContain("endingDiscovery.totalRewardBonus");
+    expect(gameChrome).toContain("endingDiscovery.codexApplyLabel");
+    expect(gameChrome).not.toContain('endingDiscovery.alreadyDiscovered ? "이미 도감에 있는 결말입니다."');
     expect(gameChrome).toContain("도감 통찰");
     expect(gameChrome).toContain("보상 완성률");
     expect(appCss).toMatch(/\.ending-discovery-panel\s*{[^}]*display:\s*grid/s);

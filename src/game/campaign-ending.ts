@@ -69,6 +69,7 @@ export interface EndingCollectionSummary {
 
 export interface CampaignEndingDiscovery extends EndingDefinition {
   alreadyDiscovered: boolean;
+  codexApplyLabel: string;
   discoveredCountBeforeRun: number;
   discoveredCountAfterRun: number;
   discoveredRewardBonusBeforeRun: number;
@@ -134,6 +135,7 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
   return {
     ...ending,
     alreadyDiscovered,
+    codexApplyLabel: getFinalEndingCodexApplyLabel(ending, alreadyDiscovered),
     discoveredCountBeforeRun: discoveredIds.size,
     discoveredCountAfterRun: afterRunDiscoveredIds.size,
     discoveredRewardBonusBeforeRun,
@@ -147,6 +149,12 @@ export function getCampaignEndingDiscovery(finalState: GameState): CampaignEndin
     rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
     rewardStatusLabel: getFinalEndingRewardStatusLabel(ending, alreadyDiscovered),
   };
+}
+
+function getFinalEndingCodexApplyLabel(ending: EndingDefinition, alreadyDiscovered: boolean): string {
+  if (alreadyDiscovered) return "이미 도감에 있는 결말입니다.";
+  if (ending.condition.fallback === true || ending.meta_reward_bonus <= 0) return "재시작하면 결과 기록으로 도감에 추가됩니다.";
+  return "재시작하면 엔딩 도감에 추가됩니다.";
 }
 
 function getFinalEndingRewardDeltaDescription(ending: EndingDefinition, alreadyDiscovered: boolean): string {
