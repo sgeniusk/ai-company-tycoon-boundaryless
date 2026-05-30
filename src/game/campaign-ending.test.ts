@@ -207,6 +207,64 @@ const endingFixtures: Record<string, GameState> = {
       },
     },
   ),
+  chip_war_local_compute_pact: finalStateFor(
+    {
+      startCityId: "texas",
+      worldLoreId: "chip_war",
+      marketConditionId: "talent_war",
+      founderTraitId: "engineer_founder",
+    },
+    {
+      chosenGrowthPath: {
+        id: "code_vision_lab",
+        title: "코드/비전 연구소",
+        month: 4,
+        bonusDescription: "test fixture",
+        effects: {},
+        monthlyEffects: {},
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 320000,
+        users: 210000,
+        compute: 300,
+        data: 220,
+        talent: 22,
+        trust: 74,
+        hype: 52,
+        automation: 70,
+      },
+    },
+  ),
+  singapore_gateway_trust_mesh: finalStateFor(
+    {
+      startCityId: "singapore",
+      worldLoreId: "regulatory_stronghold",
+      marketConditionId: "regulation_crackdown",
+      founderTraitId: "operator_founder",
+    },
+    {
+      chosenGrowthPath: {
+        id: "trust_enterprise",
+        title: "신뢰 기반 엔터프라이즈",
+        month: 4,
+        bonusDescription: "test fixture",
+        effects: {},
+        monthlyEffects: {},
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 300000,
+        users: 200000,
+        compute: 250,
+        data: 220,
+        talent: 20,
+        trust: 94,
+        hype: 42,
+        automation: 78,
+      },
+    },
+  ),
   data_drought_synthetic_lab: finalStateFor(
     {
       worldLoreId: "data_drought",
@@ -235,6 +293,27 @@ const endingFixtures: Record<string, GameState> = {
       },
     },
   ),
+  new_york_hype_exchange: finalStateFor(
+    {
+      startCityId: "new_york",
+      worldLoreId: "bigtech_monopoly",
+      marketConditionId: "consumer_hype_cycle",
+      founderTraitId: "marketer_founder",
+    },
+    {
+      resources: {
+        ...createInitialState().resources,
+        cash: 260000,
+        users: 260000,
+        compute: 230,
+        data: 210,
+        talent: 20,
+        trust: 58,
+        hype: 88,
+        automation: 58,
+      },
+    },
+  ),
   platform_escape_network: finalStateFor(
     {
       worldLoreId: "bigtech_monopoly",
@@ -252,6 +331,35 @@ const endingFixtures: Record<string, GameState> = {
         trust: 68,
         hype: 64,
         automation: 60,
+      },
+    },
+  ),
+  bengaluru_frugal_research_lab: finalStateFor(
+    {
+      startCityId: "bengaluru",
+      worldLoreId: "ai_winter_redux",
+      marketConditionId: "funding_drought",
+      founderTraitId: "researcher_founder",
+    },
+    {
+      chosenGrowthPath: {
+        id: "code_vision_lab",
+        title: "코드/비전 연구소",
+        month: 4,
+        bonusDescription: "test fixture",
+        effects: {},
+        monthlyEffects: {},
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 170000,
+        users: 120000,
+        compute: 190,
+        data: 230,
+        talent: 18,
+        trust: 72,
+        hype: 32,
+        automation: 64,
       },
     },
   ),
@@ -280,6 +388,35 @@ const endingFixtures: Record<string, GameState> = {
         trust: 70,
         hype: 28,
         automation: 52,
+      },
+    },
+  ),
+  london_ai_audit_exchange: finalStateFor(
+    {
+      startCityId: "london",
+      worldLoreId: "regulatory_stronghold",
+      marketConditionId: "regulation_crackdown",
+      founderTraitId: "academic_founder",
+    },
+    {
+      chosenGrowthPath: {
+        id: "trust_enterprise",
+        title: "신뢰 기반 엔터프라이즈",
+        month: 4,
+        bonusDescription: "test fixture",
+        effects: {},
+        monthlyEffects: {},
+      },
+      resources: {
+        ...createInitialState().resources,
+        cash: 210000,
+        users: 140000,
+        compute: 220,
+        data: 260,
+        talent: 18,
+        trust: 90,
+        hype: 38,
+        automation: 62,
       },
     },
   ),
@@ -329,10 +466,15 @@ describe("v0.67 campaign ending selector", () => {
       "privacy_trust_bastion",
       "seoul_enterprise_operating_system",
       "physical_ai_supply_chain",
+      "chip_war_local_compute_pact",
+      "singapore_gateway_trust_mesh",
       "data_drought_synthetic_lab",
+      "new_york_hype_exchange",
       "platform_escape_network",
       "compute_siege_survivor",
+      "bengaluru_frugal_research_lab",
       "ai_winter_profitable_lab",
+      "london_ai_audit_exchange",
       "tokyo_consumer_companion",
       "standard_platform_compounder",
       "garage_restart",
@@ -345,6 +487,7 @@ describe("v0.67 campaign ending selector", () => {
   });
 
   it("guards replay-safe ending data invariants in validate:data", () => {
+    expect(validateDataSource).toContain("expected exactly 17 campaign endings");
     expect(validateDataSource).toContain("priority must be unique");
     expect(validateDataSource).toContain("fallback ending must be the final entry");
     expect(validateDataSource).toContain("non-fallback ending must require status success");
@@ -529,7 +672,7 @@ describe("v0.67 campaign ending selector", () => {
         discoveredEndingIds: ["frontier_demo_empire"],
       },
     };
-    const plans = getEndingReplayPlans(state, 12);
+    const plans = getEndingReplayPlans(state, campaignEndings.length);
     const privacyPlan = plans.find((plan) => plan.id === "privacy_trust_bastion");
 
     expect(plans[0]).toMatchObject({

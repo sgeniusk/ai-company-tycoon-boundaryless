@@ -87,6 +87,44 @@
       }
     },
     {
+      "id": "chip_war_local_compute_pact",
+      "priority": 88,
+      "title": "칩 전쟁 로컬 컴퓨트 동맹",
+      "flavor": "수출 통제와 지역 컴퓨트 장벽을 작은 하드웨어 선택지로 쪼개, 공급망 파트너와 함께 버티는 엔딩입니다.",
+      "meta_reward_bonus": 4,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 240000, "users": 150000, "compute": 240, "automation": 68 },
+        "start_city_ids": ["texas"],
+        "world_lore_ids": ["chip_war"],
+        "market_condition_ids": ["talent_war"],
+        "founder_trait_ids": ["engineer_founder"],
+        "growth_path_ids": ["code_vision_lab"],
+        "archetype_ids": ["chip_war_localizer"]
+      }
+    },
+    {
+      "id": "singapore_gateway_trust_mesh",
+      "priority": 84,
+      "title": "싱가포르 신뢰 게이트웨이",
+      "flavor": "규제와 신뢰가 빽빽한 관문 시장에서 여러 지역의 고객 검증을 하나의 운영망으로 묶어낸 엔딩입니다.",
+      "meta_reward_bonus": 4,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 220000, "users": 140000, "trust": 92, "automation": 72 },
+        "start_city_ids": ["singapore"],
+        "world_lore_ids": ["regulatory_stronghold"],
+        "market_condition_ids": ["regulation_crackdown"],
+        "founder_trait_ids": ["operator_founder"],
+        "growth_path_ids": ["trust_enterprise"],
+        "archetype_ids": ["gateway_operator", "trust_bastion"]
+      }
+    },
+    {
       "id": "data_drought_synthetic_lab",
       "priority": 82,
       "title": "합성 데이터 연구소",
@@ -101,6 +139,25 @@
         "founder_trait_ids": ["researcher_founder", "academic_founder"],
         "growth_path_ids": ["code_vision_lab"],
         "archetype_ids": ["data_alchemist"]
+      }
+    },
+    {
+      "id": "new_york_hype_exchange",
+      "priority": 78,
+      "title": "뉴욕 하이프 거래소",
+      "flavor": "빅테크 유통 장벽을 미디어와 소비자 하이프로 정면 돌파해, 관심 자체를 제품 성장의 시장으로 만든 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 5,
+        "min_resources": { "cash": 190000, "users": 210000, "hype": 80, "automation": 52 },
+        "start_city_ids": ["new_york"],
+        "world_lore_ids": ["bigtech_monopoly"],
+        "market_condition_ids": ["consumer_hype_cycle"],
+        "founder_trait_ids": ["marketer_founder"],
+        "growth_path_ids": ["productivity_line"],
+        "archetype_ids": ["hype_machine"]
       }
     },
     {
@@ -136,6 +193,25 @@
       }
     },
     {
+      "id": "bengaluru_frugal_research_lab",
+      "priority": 66,
+      "title": "벵갈루루 절약 연구소",
+      "flavor": "얼어붙은 투자 환경에서 낮은 번레이트와 연구 리듬을 무기로 삼아, 적은 비용으로 긴 실험을 이어간 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 4,
+        "min_resources": { "cash": 130000, "users": 90000, "data": 210, "trust": 68, "automation": 58 },
+        "start_city_ids": ["bengaluru"],
+        "world_lore_ids": ["ai_winter_redux"],
+        "market_condition_ids": ["funding_drought"],
+        "founder_trait_ids": ["researcher_founder"],
+        "growth_path_ids": ["code_vision_lab"],
+        "archetype_ids": ["lab_in_winter"]
+      }
+    },
+    {
       "id": "ai_winter_profitable_lab",
       "priority": 62,
       "title": "AI 겨울의 흑자 연구소",
@@ -150,6 +226,25 @@
         "market_condition_ids": ["funding_drought"],
         "founder_trait_ids": ["researcher_founder", "operator_founder"],
         "archetype_ids": ["lab_in_winter"]
+      }
+    },
+    {
+      "id": "london_ai_audit_exchange",
+      "priority": 58,
+      "title": "런던 AI 감사 거래소",
+      "flavor": "규제 강도와 금융권 검증 문화를 제품화해, 모델 감사와 신뢰 보고서를 반복 가능한 사업으로 만든 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 4,
+        "min_resources": { "cash": 160000, "users": 90000, "data": 220, "trust": 88, "automation": 56 },
+        "start_city_ids": ["london"],
+        "world_lore_ids": ["regulatory_stronghold"],
+        "market_condition_ids": ["regulation_crackdown"],
+        "founder_trait_ids": ["academic_founder"],
+        "growth_path_ids": ["trust_enterprise"],
+        "archetype_ids": ["trust_bastion"]
       }
     },
     {

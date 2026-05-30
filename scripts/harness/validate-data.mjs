@@ -320,8 +320,8 @@ if (standardTier && standardTier.reward_multiplier !== 1) {
   errors.push('difficulty_tiers "standard": reward_multiplier must be 1');
 }
 
-if (!Array.isArray(campaignEndings) || campaignEndings.length !== 12) {
-  errors.push(`endings: expected exactly 12 campaign endings, found ${Array.isArray(campaignEndings) ? campaignEndings.length : "non-array"}`);
+if (!Array.isArray(campaignEndings) || campaignEndings.length !== 17) {
+  errors.push(`endings: expected exactly 17 campaign endings, found ${Array.isArray(campaignEndings) ? campaignEndings.length : "non-array"}`);
 }
 
 const endingReferenceSets = {
