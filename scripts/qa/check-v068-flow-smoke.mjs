@@ -28,6 +28,11 @@ const routes = [
     expectedText: "베타 준비 체크 QA",
   },
   {
+    id: "beta-readiness-complete",
+    path: "/?scenario=beta-readiness-complete",
+    expectedText: "베타 준비 완료 도감 QA",
+  },
+  {
     id: "ending-fallback-final",
     path: "/?scenario=ending-fallback-final",
     expectedText: "결과 전용 엔딩 QA",
@@ -41,6 +46,11 @@ const routes = [
     id: "ten-year-ending-route-start",
     path: "/?scenario=ten-year-ending-route-start",
     expectedText: "10년 엔딩 목표 런 QA",
+  },
+  {
+    id: "ten-year-next-run",
+    path: "/?scenario=ten-year-next-run",
+    expectedText: "10년 엔딩 다음 런 QA",
   },
   {
     id: "ending-nearmiss-retry-start",
@@ -130,7 +140,11 @@ async function stopViteServer(child) {
   ]);
 }
 
-function runChromeDom(chromePath, url) {
+function hasRequiredDomMarkers(dom, expectedText) {
+  return dom.includes("app-shell") && dom.includes("경계 없는 회사") && dom.includes(expectedText);
+}
+
+function runChromeDom(chromePath, url, expectedText) {
   const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "act-v068-flow-smoke-"));
 
   return new Promise((resolve, reject) => {
@@ -186,7 +200,7 @@ function runChromeDom(chromePath, url) {
 
     child.stdout.on("data", (chunk) => {
       stdout += chunk.toString("utf8");
-      if (stdout.includes("</html>")) finish(resolve, stdout);
+      if (stdout.includes("</html>") || hasRequiredDomMarkers(stdout, expectedText)) finish(resolve, stdout);
     });
     child.stderr.on("data", (chunk) => {
       stderr += chunk.toString("utf8");
@@ -214,7 +228,7 @@ function getRouteUrl(baseUrl, routePath) {
 
 async function inspectRoute(chromePath, baseUrl, route) {
   const url = getRouteUrl(baseUrl, route.path);
-  const dom = await runChromeDom(chromePath, url);
+  const dom = await runChromeDom(chromePath, url, route.expectedText);
   const checks = [
     { id: "app_shell", label: "App shell rendered", pass: dom.includes("app-shell") },
     { id: "title", label: "Game title rendered", pass: dom.includes("경계 없는 회사") },
