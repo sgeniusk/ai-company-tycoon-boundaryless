@@ -113,6 +113,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       "ending-fallback-known-final",
       "ending-nearmiss-final",
       "ending-nearmiss-known-final",
+      "ending-nearmiss-retry-start",
     ]);
   });
 
@@ -877,6 +878,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=ending-fallback-known-final")?.id).toBe("ending-fallback-known-final");
     expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-final")?.id).toBe("ending-nearmiss-final");
     expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-known-final")?.id).toBe("ending-nearmiss-known-final");
+    expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-retry-start")?.id).toBe("ending-nearmiss-retry-start");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
   });
@@ -1148,6 +1150,25 @@ describe("alpha v0.9.3 QA scenarios", () => {
       discovered: true,
       rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
+  });
+
+  it("builds a near-miss retry-start scenario for browser QA", () => {
+    const scenario = createQaScenario("ending-nearmiss-retry-start");
+    const activeReplayBrief = getActiveEndingReplayBrief(scenario.state);
+
+    expect(scenario.activeMenu).toBe("deck");
+    expect(scenario.label).toContain("아쉬운 엔딩 목표 런");
+    expect(scenario.state.month).toBe(1);
+    expect(scenario.state.status).toBe("playing");
+    expect(scenario.state.roguelite.runNumber).toBe(2);
+    expect(scenario.state.runModifiers.seed).toBe("ending:agi_safety_accord");
+    expect(scenario.state.roguelite.runHistory[0]).toMatchObject({
+      endingName: expect.any(String),
+      survivedYears: 10,
+    });
+    expect(activeReplayBrief?.id).toBe("agi_safety_accord");
+    expect(activeReplayBrief?.seed).toBe(scenario.state.runModifiers.seed);
+    expect(scenario.state.timeline[0]).toContain("아쉬운 엔딩 목표 런 QA");
   });
 
   it("allows QA URLs to override the active menu", () => {

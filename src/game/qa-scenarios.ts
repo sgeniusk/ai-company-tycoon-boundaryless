@@ -2,6 +2,7 @@ import { agentTypes, campaignEndings, capabilities, items, officeExpansions, pro
 import { chooseAnnualDirective } from "./annual-review";
 import { getAnnualStrategyAdvice } from "./annual-strategy-advisor";
 import { applyDueCampaignShocks } from "./campaign-shocks";
+import { getEndingNearMisses } from "./campaign-ending";
 import { chooseCardReward, createReleaseCardReward, getStrategyCardById, playStrategyCard } from "./deckbuilding";
 import { createDevelopmentPuzzle, resolveDevelopmentPuzzle } from "./development-puzzle";
 import { getNextRunSetupPlan, resetRunWithMetaUnlocks } from "./meta-progression";
@@ -106,6 +107,7 @@ export const qaScenarioIds = [
   "ending-fallback-known-final",
   "ending-nearmiss-final",
   "ending-nearmiss-known-final",
+  "ending-nearmiss-retry-start",
 ] as const;
 
 export type QaScenarioId = (typeof qaScenarioIds)[number] | "world-reveal" | "tag-derivation" | "archetype-collection";
@@ -418,6 +420,15 @@ export function createQaScenario(id: QaScenarioId): QaScenario {
       label: "발견 완료 아쉬운 엔딩 재도전 QA",
       state: createKnownEndingNearMissFinalScenarioState(),
       activeMenu: "company",
+    };
+  }
+
+  if (id === "ending-nearmiss-retry-start") {
+    return {
+      id,
+      label: "아쉬운 엔딩 목표 런 QA",
+      state: createEndingNearMissRetryStartScenarioState(),
+      activeMenu: "deck",
     };
   }
 
@@ -2402,6 +2413,27 @@ function createKnownEndingNearMissFinalScenarioState(): GameState {
       discoveredEndingIds: [...new Set([...state.roguelite.discoveredEndingIds, "agi_safety_accord"])],
     },
     timeline: ["발견 완료 아쉬운 엔딩 QA: 이미 도감에 있는 AGI 안전 협정 near-miss 보상 문구 확인", ...state.timeline].slice(0, 8),
+  };
+}
+
+function createEndingNearMissRetryStartScenarioState(): GameState {
+  const finalState = createEndingNearMissFinalScenarioState();
+  const nearMiss = getEndingNearMisses(finalState, 1)[0];
+  if (!nearMiss) throw new Error("Missing near-miss replay target QA state");
+
+  const state = resetRunWithMetaUnlocks(
+    finalState,
+    [],
+    finalState.roguelite.starterDeckId ?? "balanced_founder",
+    nearMiss.replaySelection,
+  );
+
+  return {
+    ...state,
+    timeline: [
+      `아쉬운 엔딩 목표 런 QA: ${nearMiss.title} · ${state.runModifiers.seed}`,
+      ...state.timeline,
+    ].slice(0, 8),
   };
 }
 

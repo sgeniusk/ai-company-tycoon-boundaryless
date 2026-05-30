@@ -1115,6 +1115,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("새 도감 후보");
     expect(gameChrome).toContain("nearMiss.rewardStatusLabel");
     expect(qaScenarios).toContain("ending-nearmiss-known-final");
+    expect(qaScenarios).toContain("ending-nearmiss-retry-start");
     expect(gameChrome).toMatch(/const handleStartNearMissRun[\s\S]*setActiveMenu\("deck"\)[\s\S]*setActiveStageTab\("guide"\)/);
     expect(appCss).toMatch(/\.ending-nearmiss-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-nearmiss-grid\s*{[^}]*grid-template-columns:/s);
