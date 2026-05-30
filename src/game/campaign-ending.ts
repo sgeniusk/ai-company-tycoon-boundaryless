@@ -169,7 +169,7 @@ function getFinalEndingRewardDeltaLabel(ending: EndingDefinition, alreadyDiscove
 }
 
 function getFinalEndingRewardStatusLabel(ending: EndingDefinition, alreadyDiscovered: boolean): string {
-  if (alreadyDiscovered) return "도감 보상 수집 완료";
+  if (alreadyDiscovered) return "도감 보상 수집 완료 · 추가 통찰 없음";
   if (ending.condition.fallback === true || ending.meta_reward_bonus <= 0) return "결과 전용 기록";
   return `+${ending.meta_reward_bonus} 통찰 신규 도감 보상`;
 }

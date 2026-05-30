@@ -942,6 +942,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
       id: "privacy_trust_bastion",
       alreadyDiscovered: true,
       rewardDeltaLabel: "+0 도감 통찰",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
       rewardDeltaDescription: "이미 획득한 도감 보상입니다.",
     });
   });

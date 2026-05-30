@@ -717,7 +717,7 @@ describe("v0.67 campaign ending selector", () => {
       discoveredCountAfterRun: 2,
       rewardLabel: "+4 통찰",
       rewardDeltaLabel: "+0 도감 통찰",
-      rewardStatusLabel: "도감 보상 수집 완료",
+      rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
       rewardDeltaDescription: "이미 획득한 도감 보상입니다.",
       codexApplyLabel: "이미 도감에 있는 결말입니다.",
       discoveredRewardBonusBeforeRun: discoveredReward,
