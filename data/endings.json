@@ -52,6 +52,24 @@
       }
     },
     {
+      "id": "san_francisco_ai_boom_launchpad",
+      "priority": 94,
+      "title": "샌프란시스코 AI 붐 런치패드",
+      "flavor": "샌프란시스코의 자본, 커뮤니티, 데모 문화가 AI 붐을 타고 짧은 출시 루프를 세계 표준으로 밀어 올린 엔딩입니다.",
+      "meta_reward_bonus": 4,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 6,
+        "min_resources": { "cash": 230000, "users": 230000, "compute": 260, "hype": 72, "automation": 58 },
+        "start_city_ids": ["san_francisco"],
+        "world_lore_ids": ["open_source_heaven"],
+        "market_condition_ids": ["ai_boom"],
+        "founder_trait_ids": ["engineer_founder", "serial_founder"],
+        "growth_path_ids": ["productivity_line"]
+      }
+    },
+    {
       "id": "seoul_enterprise_operating_system",
       "priority": 92,
       "title": "서울 엔터프라이즈 운영체제",
@@ -245,6 +263,23 @@
         "world_lore_ids": ["bitcoin_gpu_squeeze"],
         "founder_trait_ids": ["operator_founder"],
         "archetype_ids": ["compute_siege_survivor"]
+      }
+    },
+    {
+      "id": "steady_operator_compounder",
+      "priority": 68,
+      "title": "꾸준한 운영 복리 회사",
+      "flavor": "폭발적인 붐 없이도 운영자 창업자가 번율, 고객 대응, 자동화 루틴을 다듬어 조용히 복리를 쌓은 엔딩입니다.",
+      "meta_reward_bonus": 3,
+      "condition": {
+        "status": "success",
+        "min_month": 120,
+        "min_products": 4,
+        "min_resources": { "cash": 150000, "users": 120000, "trust": 68, "automation": 68 },
+        "start_city_ids": ["default_city", "bengaluru"],
+        "market_condition_ids": ["steady_market"],
+        "founder_trait_ids": ["operator_founder"],
+        "growth_path_ids": ["productivity_line"]
       }
     },
     {

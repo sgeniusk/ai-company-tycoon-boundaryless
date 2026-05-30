@@ -114,6 +114,26 @@ const endingFixtures: Record<string, GameState> = {
       },
     },
   ),
+  steady_operator_compounder: finalStateFor(
+    {
+      startCityId: "default_city",
+      marketConditionId: "steady_market",
+      founderTraitId: "operator_founder",
+    },
+    {
+      resources: {
+        ...createInitialState().resources,
+        cash: 190000,
+        users: 150000,
+        compute: 170,
+        data: 150,
+        talent: 16,
+        trust: 72,
+        hype: 36,
+        automation: 72,
+      },
+    },
+  ),
   frontier_demo_empire: finalStateFor(
     {
       startCityId: "san_francisco",
@@ -129,6 +149,27 @@ const endingFixtures: Record<string, GameState> = {
         bonusDescription: "test fixture",
         effects: {},
         monthlyEffects: {},
+      },
+    },
+  ),
+  san_francisco_ai_boom_launchpad: finalStateFor(
+    {
+      startCityId: "san_francisco",
+      worldLoreId: "open_source_heaven",
+      marketConditionId: "ai_boom",
+      founderTraitId: "serial_founder",
+    },
+    {
+      resources: {
+        ...createInitialState().resources,
+        cash: 280000,
+        users: 260000,
+        compute: 290,
+        data: 220,
+        talent: 20,
+        trust: 70,
+        hype: 82,
+        automation: 64,
       },
     },
   ),
@@ -593,6 +634,7 @@ describe("v0.67 campaign ending selector", () => {
       "frontier_demo_empire",
       "agi_safety_accord",
       "privacy_trust_bastion",
+      "san_francisco_ai_boom_launchpad",
       "seoul_enterprise_operating_system",
       "physical_ai_supply_chain",
       "chip_war_local_compute_pact",
@@ -604,6 +646,7 @@ describe("v0.67 campaign ending selector", () => {
       "platform_escape_network",
       "alphago_slow_science_compound",
       "compute_siege_survivor",
+      "steady_operator_compounder",
       "bengaluru_frugal_research_lab",
       "texas_energy_compute_grid",
       "ai_winter_profitable_lab",
@@ -621,7 +664,7 @@ describe("v0.67 campaign ending selector", () => {
   });
 
   it("guards replay-safe ending data invariants in validate:data", () => {
-    expect(validateDataSource).toContain("expected exactly 22 campaign endings");
+    expect(validateDataSource).toContain("expected exactly 24 campaign endings");
     expect(validateDataSource).toContain("priority must be unique");
     expect(validateDataSource).toContain("fallback ending must be the final entry");
     expect(validateDataSource).toContain("non-fallback ending must require status success");
