@@ -22,10 +22,16 @@ describe("beta readiness summary", () => {
     expect(summary.nextTargetLabel).toBe("프런티어 데모 제국");
     expect(summary.checks.map((check) => check.id)).toEqual([
       "ending_routes",
+      "reward_pool",
       "unlock_guidance",
       "route_coverage",
       "target_replay",
     ]);
+    expect(summary.checks.find((check) => check.id === "reward_pool")).toMatchObject({
+      label: "도감 보상",
+      detail: `0/${totalRewardBonus} 통찰 · 목표 엔딩 23개 남음`,
+      complete: true,
+    });
     expect(summary.completeCheckCount).toBe(summary.totalCheckCount);
     expect(summary.readinessPercent).toBe(100);
   });
