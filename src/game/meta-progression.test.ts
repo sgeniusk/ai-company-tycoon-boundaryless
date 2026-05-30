@@ -266,6 +266,58 @@ describe("v0.32 next-run setup plan", () => {
     });
   });
 
+  it("aligns the recommended quick start with the latest ending route unlock", () => {
+    const initial = createInitialState({
+      seed: "ending:san_francisco_ai_boom_launchpad",
+      startCityId: "san_francisco",
+      worldLoreId: "open_source_heaven",
+      marketConditionId: "ai_boom",
+      founderTraitId: "serial_founder",
+    });
+    const finished = {
+      ...initial,
+      activeProducts: [
+        "ai_writing_assistant",
+        "meeting_summary_bot",
+        "customer_support_chatbot",
+        "foundation_model_v0",
+        "ai_course_builder",
+        "developer_copilot",
+      ],
+      chosenGrowthPath: {
+        id: "productivity_line",
+        title: "생산성 제품 라인 확장",
+        month: 4,
+        bonusDescription: "test fixture",
+        effects: {},
+        monthlyEffects: {},
+      },
+      month: 120,
+      resources: {
+        ...initial.resources,
+        cash: 280000,
+        users: 260000,
+        compute: 290,
+        data: 220,
+        talent: 20,
+        trust: 70,
+        hype: 82,
+        automation: 64,
+      },
+      status: "success" as const,
+    };
+
+    const plan = getNextRunSetupPlan(finished);
+    const unlockQuickStart = plan.quickStarts.find((quickStart) => quickStart.id === "recommended_unlock");
+
+    expect(plan.endingNudge?.recommendedUnlocks[0]).toMatchObject({ id: "launch_playbook", affordable: true });
+    expect(unlockQuickStart).toMatchObject({
+      label: "런칭 플레이북 해금",
+      unlockIds: ["launch_playbook"],
+      affordable: true,
+    });
+  });
+
   it("does not grant the ending meta bonus again for repeated discoveries", () => {
     const initial = createInitialState();
     const firstClear = {

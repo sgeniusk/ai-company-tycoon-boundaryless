@@ -120,8 +120,8 @@ export function getNextRunSetupPlan(state: GameState): NextRunSetupPlan {
   const strongestRival = getStrongestRival(state);
   const recommendedUnlocks = getRecommendedUnlocks(state, projectedFounderInsight);
   const starterDeckPlans = getStarterDeckPlans(state);
-  const quickStarts = getNextRunQuickStarts(state, projectedFounderInsight, recommendedUnlocks, starterDeckPlans);
   const endingNudge = getNextRunEndingNudge(state, projectedFounderInsight);
+  const quickStarts = getNextRunQuickStarts(state, projectedFounderInsight, recommendedUnlocks, starterDeckPlans, endingNudge?.recommendedUnlocks);
 
   return {
     currentRunNumber: state.roguelite.runNumber,
@@ -279,8 +279,11 @@ function getNextRunQuickStarts(
   projectedFounderInsight: number,
   recommendedUnlocks: NextRunRecommendedUnlock[],
   starterDeckPlans: NextRunStarterDeckPlan[],
+  endingRouteUnlocks: EndingRouteUnlockRecommendation[] = [],
 ): NextRunQuickStart[] {
-  const recommendedUnlock = recommendedUnlocks.find((unlock) => unlock.affordable) ?? recommendedUnlocks[0];
+  const routeUnlock = endingRouteUnlocks.find((unlock) => unlock.affordable) ?? endingRouteUnlocks[0];
+  const routeRecommendedUnlock = routeUnlock ? recommendedUnlocks.find((unlock) => unlock.id === routeUnlock.id) : undefined;
+  const recommendedUnlock = routeRecommendedUnlock ?? recommendedUnlocks.find((unlock) => unlock.affordable) ?? recommendedUnlocks[0];
   const currentStarterDeckId = starterDeckPlans.find((deck) => deck.id === state.roguelite.starterDeckId && deck.available)?.id ?? "balanced_founder";
   const recommendedStarterDeckId = recommendedUnlock
     ? getStarterDeckIdAfterUnlock(state, recommendedUnlock.id)
