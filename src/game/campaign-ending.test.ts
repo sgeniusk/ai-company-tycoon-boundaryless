@@ -514,6 +514,13 @@ describe("v0.67 campaign ending selector", () => {
     expect(brief?.openingMoves).toEqual(
       expect.arrayContaining(["신뢰 기반 엔터프라이즈 성장 경로 선택", "신뢰 90까지 확보", "프라이버시 협약 아키타입 완성"]),
     );
+    expect(brief?.nextRequirements.map((requirement) => requirement.id)).toEqual([
+      "growth_path_ids",
+      "min_products",
+      "min_resource_trust",
+      "min_resource_automation",
+    ]);
+    expect(brief?.nextRequirements.some((requirement) => ["status", "min_month", "world_lore_ids"].includes(requirement.id))).toBe(false);
     expect(getActiveEndingReplayBrief(createInitialState())).toBeUndefined();
   });
 

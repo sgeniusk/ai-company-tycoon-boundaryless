@@ -805,9 +805,12 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("ending-replay-brief-panel");
     expect(menuPanels).toContain("목표 엔딩 런");
     expect(menuPanels).toContain("openingMoves");
+    expect(menuPanels).toContain("activeEndingReplayBrief.nextRequirements");
+    expect(menuPanels).toContain("ending-replay-checklist");
     expect(qaScenarios).toContain("ending-replay-active");
     expect(appCss).toMatch(/\.ending-replay-brief-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.ending-replay-brief-steps\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.ending-replay-checklist\s*{[^}]*grid-template-columns:/s);
   });
 
   it("v0.67 #7 lets final results restart from near-missed endings", () => {

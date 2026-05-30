@@ -577,6 +577,16 @@ export function renderMenuContent(
                   <span key={move}>{move}</span>
                 ))}
               </div>
+              {activeEndingReplayBrief.nextRequirements.length > 0 && (
+                <div className="ending-replay-checklist" aria-label="목표 엔딩 체크리스트">
+                  {activeEndingReplayBrief.nextRequirements.map((requirement) => (
+                    <span className={requirement.blocking ? "blocking" : ""} key={requirement.id}>
+                      <strong>{requirement.label}</strong>
+                      <small>{requirement.currentLabel} / {requirement.targetLabel}</small>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           <div className="ending-target-panel" aria-label="엔딩 목표">

@@ -39,6 +39,7 @@ export interface ActiveEndingReplayBrief extends EndingTargetPlan {
   seed: string;
   targetLabels: string[];
   openingMoves: string[];
+  nextRequirements: EndingRequirementProgress[];
   rewardLabel: string;
 }
 
@@ -107,6 +108,7 @@ export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplay
     seed: state.runModifiers.seed,
     targetLabels: getReplayTargetLabels(ending.condition, createReplaySelection(ending)),
     openingMoves: getReplayOpeningMoves(ending.condition),
+    nextRequirements: getReplayNextRequirements(plan.requirements),
     rewardLabel: `완주 보너스 +${ending.meta_reward_bonus} 통찰`,
   };
 }
@@ -342,6 +344,37 @@ function getReplayOpeningMoves(condition: EndingConditionDefinition): string[] {
   }
 
   return moves.slice(0, 5);
+}
+
+function getReplayNextRequirements(requirements: EndingRequirementProgress[]): EndingRequirementProgress[] {
+  return requirements
+    .filter((requirement) => !requirement.complete && requirement.id !== "status" && requirement.id !== "min_month")
+    .sort(
+      (first, second) =>
+        replayRequirementRank(first.id) - replayRequirementRank(second.id) ||
+        Number(second.blocking) - Number(first.blocking) ||
+        first.label.localeCompare(second.label),
+    )
+    .slice(0, 4);
+}
+
+function replayRequirementRank(id: string): number {
+  if (id === "growth_path_ids") return 0;
+  if (id === "archetype_ids") return 1;
+  if (id === "min_products") return 2;
+  const resourceRanks: Record<string, number> = {
+    min_resource_trust: 3,
+    min_resource_automation: 4,
+    min_resource_cash: 5,
+    min_resource_users: 6,
+    min_resource_compute: 7,
+    min_resource_data: 8,
+    min_resource_hype: 9,
+    min_resource_talent: 10,
+  };
+  if (resourceRanks[id] !== undefined) return resourceRanks[id];
+  if (id.endsWith("_ids")) return 20;
+  return 30;
 }
 
 function getEndingRequirementProgress(condition: EndingConditionDefinition, state: GameState): EndingRequirementProgress[] {

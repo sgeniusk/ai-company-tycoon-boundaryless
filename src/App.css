@@ -4700,6 +4700,38 @@ p {
   padding: 8px;
 }
 
+.ending-replay-checklist {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.ending-replay-checklist span {
+  background: #fffdf7;
+  border: 2px solid #c7d99f;
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px;
+}
+
+.ending-replay-checklist span.blocking {
+  border-color: #d79a78;
+}
+
+.ending-replay-checklist strong,
+.ending-replay-checklist small {
+  color: #3f5630;
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.ending-replay-checklist small {
+  color: #68735a;
+}
+
 .ending-target-grid {
   display: grid;
   gap: 7px;
@@ -10065,6 +10097,7 @@ p {
   .annual-directive-actions,
   .ending-nearmiss-grid,
   .ending-replay-brief-steps,
+  .ending-replay-checklist,
   .ending-target-grid,
   .year-two-kickoff-grid,
   .annual-research-launchpad,
@@ -10159,6 +10192,10 @@ p {
   }
 
   .ending-replay-brief-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .ending-replay-checklist {
     grid-template-columns: 1fr;
   }
 
