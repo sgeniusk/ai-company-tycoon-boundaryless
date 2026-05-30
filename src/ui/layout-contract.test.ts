@@ -910,8 +910,10 @@ describe("v0.13.3 compact game shell layout", () => {
   it("v0.67 #18 shows active ending target progress in the top HUD", () => {
     expect(gameChrome).toContain("getActiveEndingReplayBrief");
     expect(gameChrome).toContain("activeEndingReplayBrief.progressPercent");
+    expect(gameChrome).toContain("activeEndingReplayBrief.alreadyDiscovered");
     expect(gameChrome).toContain("ending-target-pill");
     expect(gameChrome).toContain("목표 엔딩");
+    expect(gameChrome).toContain("수집 완료");
     expect(appCss).toMatch(/\.status-pill\.ending-target-pill\s*{[^}]*background:\s*#f4fbec/s);
   });
 

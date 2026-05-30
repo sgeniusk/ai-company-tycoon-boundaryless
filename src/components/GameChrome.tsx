@@ -297,7 +297,7 @@ export function TopBar({
           <span className="status-pill">점유 {getPlayerMarketShare(gameState)}%</span>
           {activeEndingReplayBrief && (
             <span className="status-pill ending-target-pill">
-              목표 엔딩 {activeEndingReplayBrief.progressPercent}%
+              목표 엔딩 {activeEndingReplayBrief.progressPercent}%{activeEndingReplayBrief.alreadyDiscovered ? " · 수집 완료" : ""}
             </span>
           )}
           {qaScenarioLabel && <span className="status-pill qa-pill">{qaScenarioLabel}</span>}
