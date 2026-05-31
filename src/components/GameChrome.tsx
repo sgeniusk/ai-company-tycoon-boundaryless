@@ -138,6 +138,7 @@ const agentSheetId = "agents_v053_final_art_import";
 const officeObjectSheetId = "office_objects_v054_final_art_import";
 const officeBackdropId = "office_isometric_v054_final_art_import";
 const competitorLogoAtlasId = "competitor_logos_v072_atlas";
+const brandCrestAtlasId = "brand_crest_v075_atlas";
 
 function getAssetSheet(sheetId?: string): SpriteSheetDefinition | undefined {
   if (!sheetId) return undefined;
@@ -215,6 +216,14 @@ function CommercialUiIcon({ className = "", iconId }: { className?: string; icon
       style={getCommercialUiIconStyle(iconId)}
     />
   );
+}
+
+function getBrandCrestStyle(): CSSProperties {
+  const sheet = getAssetSheet(brandCrestAtlasId);
+
+  return {
+    "--brand-crest-image": `url(${sheet?.path ?? "/assets/ui/v075-brand-crest-atlas.png"})`,
+  } as CSSProperties;
 }
 
 function getSpriteSheetFrameStyle(
@@ -385,9 +394,12 @@ export function TopBar({
   return (
     <section className="top-bar" aria-label="회사 상태">
       <div className="top-brand-panel">
-        <p className="eyebrow">AI 컴퍼니 타이쿤 알파</p>
-        <h1>경계 없는 회사</h1>
-        <span className="top-brand-deck">Boundaryless command deck</span>
+        <span className="top-brand-crest" style={getBrandCrestStyle()} aria-hidden="true" />
+        <div className="top-brand-copy">
+          <p className="eyebrow">AI 컴퍼니 타이쿤 알파</p>
+          <h1>경계 없는 회사</h1>
+          <span className="top-brand-deck">Boundaryless command deck</span>
+        </div>
       </div>
       <div className="top-command-center">
         <div className="top-run-metrics" aria-label="핵심 런 상태">

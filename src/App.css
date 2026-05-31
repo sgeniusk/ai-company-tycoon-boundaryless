@@ -147,9 +147,29 @@ button:disabled {
   border: 2px solid rgba(255, 253, 245, 0.22);
   box-shadow: inset 0 0 0 1px rgba(242, 207, 127, 0.22);
   display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
   gap: 4px;
   min-width: 0;
   padding: 10px;
+}
+
+.top-brand-crest {
+  align-self: center;
+  aspect-ratio: 4 / 3;
+  background-image: var(--brand-crest-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: drop-shadow(0 4px 0 rgba(8, 22, 18, 0.52));
+  image-rendering: pixelated;
+  width: 78px;
+}
+
+.top-brand-copy {
+  align-content: stretch;
+  display: grid;
+  gap: 4px;
+  min-width: 0;
 }
 
 .top-brand-panel .eyebrow {

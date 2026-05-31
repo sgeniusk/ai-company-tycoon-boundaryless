@@ -296,6 +296,25 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(readFileSync(helperScriptUrl, "utf8")).toContain("v074-helper-portrait-atlas.png");
   });
 
+  it("ships a final brand crest for the first-screen command deck", () => {
+    const brandSheet = assetManifest.sprite_sheets.brand_crest_v075_atlas;
+    const brandScriptUrl = new URL("../../scripts/assets/generate-v075-brand-crest-atlas.mjs", import.meta.url);
+
+    expect(brandSheet).toMatchObject({
+      path: "/assets/ui/v075-brand-crest-atlas.png",
+      source_status: "final",
+      frame_width: 128,
+      frame_height: 96,
+      columns: 1,
+      rows: 1,
+      frame_count: 1,
+      slice_mode: "single-frame command deck brand crest",
+    });
+    expect(readPngSize(brandSheet.path)).toEqual({ width: 128, height: 96 });
+    expect(packageJson.scripts["assets:v075"]).toBe("node scripts/assets/generate-v075-brand-crest-atlas.mjs");
+    expect(readFileSync(brandScriptUrl, "utf8")).toContain("v075-brand-crest-atlas.png");
+  });
+
   it("maps first-shop item icons to known items", () => {
     const itemIconSheet = assetManifest.sprite_sheets.commercial_ui_v071_atlas;
 

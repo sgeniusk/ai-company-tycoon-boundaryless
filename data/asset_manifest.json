@@ -1034,6 +1034,18 @@
       "preview_frames": [0, 0, 0, 0],
       "slice_mode": "single-frame helper portrait atlas"
     },
+    "brand_crest_v075_atlas": {
+      "path": "/assets/ui/v075-brand-crest-atlas.png",
+      "source_status": "final",
+      "density": 1,
+      "frame_width": 128,
+      "frame_height": 96,
+      "columns": 1,
+      "rows": 1,
+      "frame_count": 1,
+      "preview_frames": [0, 0, 0, 0],
+      "slice_mode": "single-frame command deck brand crest"
+    },
     "commercial_ui_v071_atlas": {
       "path": "/assets/ui/v071-commercial-ui-atlas.png",
       "source_status": "final",

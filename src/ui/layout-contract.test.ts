@@ -54,6 +54,9 @@ describe("v0.13.3 compact game shell layout", () => {
 
   it("uses a commercial command-deck top HUD instead of an ungrouped pill swarm", () => {
     expect(gameChrome).toContain("top-brand-panel");
+    expect(gameChrome).toContain("brand_crest_v075_atlas");
+    expect(gameChrome).toContain("getBrandCrestStyle");
+    expect(gameChrome).toContain("top-brand-crest");
     expect(gameChrome).toContain("top-command-center");
     expect(gameChrome).toContain("top-run-metrics");
     expect(gameChrome).toContain("top-progress-rail");
@@ -62,6 +65,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("캠페인 진행 {calendar.progressPercent}%");
     expect(appCss).toMatch(/\.top-bar\s*{[^}]*grid-template-columns:\s*minmax\(180px,\s*0\.72fr\)\s+minmax\(0,\s*1\.12fr\)\s+minmax\(340px,\s*0\.92fr\)/s);
     expect(appCss).toMatch(/\.top-brand-panel\s*{[^}]*background:\s*linear-gradient/s);
+    expect(appCss).toMatch(/\.top-brand-crest\s*{[^}]*background-image:\s*var\(--brand-crest-image\)/s);
+    expect(appCss).toMatch(/\.top-brand-crest\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.top-run-metrics\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.top-progress-fill\s*{[^}]*transition:\s*width\s+320ms\s+ease/s);
     expect(appCss).toMatch(/\.top-market-suite\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.12fr\)\s+minmax\(0,\s*0\.88fr\)/s);
