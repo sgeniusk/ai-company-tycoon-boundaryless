@@ -368,6 +368,21 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.incident-screen-moment\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
   });
 
+  it("docks event moments in a playfield-safe pixel rail instead of stretching across the office", () => {
+    expect(appSource).toContain("event-stack playfield-event-rail");
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\s*{[^}]*justify-self:\s*start/s);
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\s*{[^}]*width:\s*min\(760px,\s*calc\(100% - 24px\)\)/s);
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\s*{[^}]*max-height:\s*clamp\(96px,\s*18%,\s*144px\)/s);
+    expect(appCss).toMatch(/\.event-panel\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.event-panel::before\s*{[^}]*content:\s*""/s);
+    expect(appCss).toMatch(/\.event-panel::before\s*{[^}]*background:\s*var\(--event-rail-accent/s);
+    expect(appCss).toMatch(/\.staff-event-panel\s*{[^}]*--event-rail-accent:\s*#b8781f/s);
+    expect(appCss).toMatch(/\.rival-event-panel\s*{[^}]*--event-rail-accent:\s*var\(--blue\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.event-stack\.playfield-event-rail\s*{[^}]*width:\s*auto/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.event-stack\.playfield-event-rail\s*{[^}]*max-height:\s*clamp\(72px,\s*13dvh,\s*108px\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.event-stack\.playfield-event-rail\s+\.event-moment-meta\s*{[^}]*display:\s*none/s);
+  });
+
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);

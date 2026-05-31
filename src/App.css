@@ -3549,6 +3549,17 @@ p {
   overflow: auto;
 }
 
+.event-stack.playfield-event-rail {
+  justify-self: start;
+  max-height: clamp(96px, 18%, 144px);
+  width: min(760px, calc(100% - 24px));
+}
+
+.event-stack.playfield-event-rail:hover,
+.event-stack.playfield-event-rail:focus-within {
+  max-height: min(34%, 230px);
+}
+
 .first-ten-minute-roadmap li.complete {
   background: #e1f3df;
   border-color: var(--green);
@@ -5159,14 +5170,29 @@ p {
 }
 
 .event-panel {
+  --event-rail-accent: var(--red);
   align-items: center;
   background: #ffe6d8;
   display: grid;
   gap: 8px;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 0.9fr);
+  image-rendering: pixelated;
+  isolation: isolate;
   min-height: 0;
-  padding: 8px 10px;
+  overflow: hidden;
+  padding: 8px 10px 8px 18px;
   pointer-events: auto;
+  position: relative;
+}
+
+.event-panel::before {
+  background: var(--event-rail-accent, var(--red));
+  bottom: 0;
+  content: "";
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 7px;
 }
 
 .incident-screen-moment {
@@ -5209,6 +5235,7 @@ p {
 }
 
 .rival-event-panel {
+  --event-rail-accent: var(--blue);
   background: #e8efff;
 }
 
@@ -5217,6 +5244,7 @@ p {
 }
 
 .staff-event-panel {
+  --event-rail-accent: #b8781f;
   background: #fff1c6;
   border-color: #b8781f;
 }
@@ -11296,6 +11324,12 @@ p {
     padding: 6px 8px;
   }
 
+  .event-stack.playfield-event-rail {
+    justify-self: stretch;
+    max-height: clamp(72px, 13dvh, 108px);
+    width: auto;
+  }
+
   .event-stack:hover,
   .event-stack:focus-within {
     max-height: 28dvh;
@@ -11310,6 +11344,10 @@ p {
   }
 
   .event-panel-copy .eyebrow {
+    display: none;
+  }
+
+  .event-stack.playfield-event-rail .event-moment-meta {
     display: none;
   }
 
