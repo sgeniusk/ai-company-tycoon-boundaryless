@@ -830,6 +830,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(worldRevealModal).toContain("도전 티어");
     expect(worldRevealModal).toContain("reward_multiplier");
     expect(appCss).toMatch(/\.challenge-tier-choice-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.world-reveal-overlay\s*{[^}]*pointer-events:\s*auto/s);
     expect(appCss).toMatch(/\.world-reveal-tier\s*{[^}]*display:\s*grid/s);
   });
 
@@ -1361,6 +1362,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(bigEventModal).toContain("role=\"dialog\"");
     expect(bigEventModal).toContain("aria-modal=\"true\"");
     expect(appCss).toMatch(/\.big-event-overlay\s*{[^}]*position:\s*fixed/s);
+    expect(appCss).toMatch(/\.big-event-overlay\s*{[^}]*pointer-events:\s*auto/s);
     expect(appCss).toMatch(/\.big-event-card\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.big-event-card\.big-event-tier-late_boss\s*{/s);
     expect(appCss).toMatch(/\.big-event-dismiss\s*{[^}]*cursor:\s*pointer/s);
@@ -1381,6 +1383,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(payoffCelebrationModal).toContain("scenario\") === \"payoff-juice\"");
     expect(qaScenarios).toContain("\"payoff-juice\"");
     expect(appCss).toMatch(/\.payoff-celebration-overlay\s*{[^}]*position:\s*fixed/s);
+    expect(appCss).toMatch(/\.payoff-celebration-overlay\s*{[^}]*pointer-events:\s*auto/s);
     expect(appCss).toMatch(/\.payoff-celebration-card\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.payoff-celebration-card\.payoff-celebration-combo\s*{[^}]*animation:\s*payoff-celebration-pop/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.payoff-celebration-card\s*{[^}]*max-width:\s*100%/s);

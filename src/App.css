@@ -11763,6 +11763,7 @@ p {
   inset: 0;
   justify-content: center;
   padding: 24px;
+  pointer-events: auto;
   position: fixed;
   z-index: 1200;
   animation: big-event-fade-in 220ms ease-out;
@@ -11916,6 +11917,7 @@ p {
   inset: 0;
   justify-content: center;
   padding: 24px;
+  pointer-events: auto;
   position: fixed;
   z-index: 1210;
 }
@@ -12087,6 +12089,7 @@ p {
   inset: 0;
   justify-content: center;
   padding: 24px;
+  pointer-events: auto;
   position: fixed;
   z-index: 1220;
 }
