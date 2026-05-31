@@ -734,9 +734,11 @@
   "item_icons": [
     {
       "item_id": "prompt_notebook",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-prompt-notebook",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 10,
       "palette": [
         "#5fc6a6",
         "#fff1ba",
@@ -746,9 +748,11 @@
     },
     {
       "item_id": "mechanical_keyboard",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-mechanical-keyboard",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 2,
       "palette": [
         "#314453",
         "#56d6e9",
@@ -758,9 +762,11 @@
     },
     {
       "item_id": "gpu_rack_mini",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-gpu-rack-mini",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 2,
       "palette": [
         "#334b5e",
         "#7ed6f1",
@@ -770,9 +776,11 @@
     },
     {
       "item_id": "tensor_whiteboard",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-tensor-whiteboard",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 3,
       "palette": [
         "#fffaf0",
         "#547ad8",
@@ -782,9 +790,11 @@
     },
     {
       "item_id": "redteam_toolkit",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-redteam-toolkit",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 22,
       "palette": [
         "#b84c38",
         "#fffaf0",
@@ -794,9 +804,11 @@
     },
     {
       "item_id": "viral_camera",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-viral-camera",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 6,
       "palette": [
         "#f28a32",
         "#39a6a3",
@@ -806,9 +818,11 @@
     },
     {
       "item_id": "pager_phone",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-pager-phone",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 7,
       "palette": [
         "#20292d",
         "#a9e45c",
@@ -818,9 +832,11 @@
     },
     {
       "item_id": "instant_noodle_corner",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-noodle-corner",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 4,
       "palette": [
         "#dd6f48",
         "#fff1ba",
@@ -830,9 +846,11 @@
     },
     {
       "item_id": "customer_story_wall",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-customer-story-wall",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 1,
       "palette": [
         "#39a6a3",
         "#fff4dc",
@@ -842,9 +860,11 @@
     },
     {
       "item_id": "hiring_banner",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-hiring-banner",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 4,
       "palette": [
         "#7d60c7",
         "#fff0c8",
@@ -854,9 +874,11 @@
     },
     {
       "item_id": "nap_pod",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-nap-pod",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 5,
       "palette": [
         "#d8dde4",
         "#547ad8",
@@ -866,9 +888,11 @@
     },
     {
       "item_id": "benchmark_dashboard",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-benchmark-dashboard",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 21,
       "palette": [
         "#355f9f",
         "#dfeaff",
@@ -878,9 +902,11 @@
     },
     {
       "item_id": "playtest_mirror_room",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-playtest-mirror-room",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 12,
       "palette": [
         "#e5e7eb",
         "#4b5563",
@@ -890,9 +916,11 @@
     },
     {
       "item_id": "simulation_sandbox",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-simulation-sandbox",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 23,
       "palette": [
         "#20231f",
         "#56d6e9",
@@ -902,9 +930,11 @@
     },
     {
       "item_id": "prototype_printer",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-prototype-printer",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 9,
       "palette": [
         "#f2c14e",
         "#26342d",
@@ -914,9 +944,11 @@
     },
     {
       "item_id": "robot_charging_mat",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-robot-charging-mat",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 7,
       "palette": [
         "#667580",
         "#f28a32",
@@ -926,9 +958,11 @@
     },
     {
       "item_id": "inventory_beacon",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-inventory-beacon",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 3,
       "palette": [
         "#334b5e",
         "#7ed6f1",
@@ -938,9 +972,11 @@
     },
     {
       "item_id": "precision_tool_cart",
-      "source_status": "placeholder",
+      "source_status": "final",
       "icon_class": "icon-precision-tool-cart",
       "icon_size": 24,
+      "sheet_id": "commercial_ui_v071_atlas",
+      "sheet_index": 13,
       "palette": [
         "#4b5563",
         "#e5e7eb",

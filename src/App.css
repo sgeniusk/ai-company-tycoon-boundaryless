@@ -8161,11 +8161,31 @@ p {
   width: 26px;
 }
 
+.item-icon.item-icon-atlas {
+  background-color: transparent;
+  background-image: var(--item-icon-atlas);
+  background-position: var(--item-icon-x) var(--item-icon-y);
+  background-repeat: no-repeat;
+  background-size: 192px 72px;
+  border: 0;
+  box-shadow: 0 2px 0 rgba(32, 35, 31, 0.22);
+  flex-basis: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+  outline: 2px solid var(--line);
+  width: 24px;
+}
+
 .item-icon::before,
 .item-icon::after {
   content: "";
   display: block;
   position: absolute;
+}
+
+.item-icon.item-icon-atlas::before,
+.item-icon.item-icon-atlas::after {
+  display: none;
 }
 
 .item-icon::before {

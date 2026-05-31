@@ -158,6 +158,7 @@ import type {
   ItemDefinition,
   ItemIconDefinition,
   ProductDefinition,
+  SpriteSheetDefinition,
   StrategyCardDefinition,
 } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
@@ -197,6 +198,27 @@ function getCompetitorIdentity(competitorId: string): CompetitorIdentityDefiniti
 
 function getItemIcon(itemId: string): ItemIconDefinition | undefined {
   return assetManifest.item_icons.find((icon) => icon.item_id === itemId);
+}
+
+function getAssetSheet(sheetId?: string): SpriteSheetDefinition | undefined {
+  if (!sheetId) return undefined;
+  return assetManifest.sprite_sheets[sheetId];
+}
+
+function getItemIconAtlasStyle(icon: ItemIconDefinition): CSSProperties {
+  if (!icon.sheet_id || typeof icon.sheet_index !== "number") return {};
+  const sheet = getAssetSheet(icon.sheet_id);
+  if (!sheet) return {};
+
+  const column = icon.sheet_index % sheet.columns;
+  const row = Math.floor(icon.sheet_index / sheet.columns);
+  const displaySize = icon.icon_size;
+
+  return {
+    "--item-icon-atlas": `url(${sheet.path})`,
+    "--item-icon-x": `${-column * displaySize}px`,
+    "--item-icon-y": `${-row * displaySize}px`,
+  } as CSSProperties;
 }
 
 function getMenuLabel(menuId: string): string {
@@ -3387,8 +3409,8 @@ function ItemCard({
       <div className="item-title-row">
         {itemIcon && (
           <span
-            className={`item-icon ${itemIcon.icon_class}`}
-            style={assetPaletteVars(itemIcon.palette)}
+            className={`item-icon ${itemIcon.icon_class} ${itemIcon.sheet_id ? "item-icon-atlas" : ""}`}
+            style={{ ...assetPaletteVars(itemIcon.palette), ...getItemIconAtlasStyle(itemIcon) }}
             aria-hidden="true"
           />
         )}

@@ -350,6 +350,8 @@ export interface ItemIconDefinition {
   icon_size: number;
   palette: string[];
   readable_shape: string;
+  sheet_id?: string;
+  sheet_index?: number;
 }
 
 export interface SpriteSheetDefinition {

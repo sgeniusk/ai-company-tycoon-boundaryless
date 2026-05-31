@@ -81,6 +81,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.main-menu button\s*{[^}]*grid-template-columns:\s*auto\s+minmax\(0,\s*1fr\)/s);
   });
 
+  it("replaces shop item placeholder glyphs with atlas-backed item icon art", () => {
+    expect(menuPanels).toContain("getItemIconAtlasStyle");
+    expect(menuPanels).toContain("item-icon-atlas");
+    expect(menuPanels).toContain("sheet_index");
+    expect(appCss).toMatch(/\.item-icon\.item-icon-atlas\s*{[^}]*background-image:\s*var\(--item-icon-atlas\)/s);
+    expect(appCss).toMatch(/\.item-icon\.item-icon-atlas\s*{[^}]*background-position:\s*var\(--item-icon-x\)\s+var\(--item-icon-y\)/s);
+    expect(appCss).toMatch(/\.item-icon\.item-icon-atlas::before,\s*\.item-icon\.item-icon-atlas::after\s*{[^}]*display:\s*none/s);
+  });
+
   it("makes the first 10 seconds read as a garage AI company game", () => {
     expect(gameChrome).toContain("OpeningFantasySignal");
     expect(gameChrome).toContain("opening-fantasy-signal");

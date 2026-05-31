@@ -257,12 +257,19 @@ describe("alpha v0.9 pixel asset manifest", () => {
   });
 
   it("maps first-shop item icons to known items", () => {
+    const itemIconSheet = assetManifest.sprite_sheets.commercial_ui_v071_atlas;
+
     expect(assetManifest.item_icons.length).toBeGreaterThanOrEqual(18);
 
     for (const icon of assetManifest.item_icons) {
       expect(knownItemIds.has(icon.item_id)).toBe(true);
+      expect(icon.source_status).toBe("final");
       expect(icon.icon_size).toBe(assetManifest.sprite_grid.icon_size);
       expect(icon.readable_shape).toBeTruthy();
+      expect(icon.sheet_id).toBe("commercial_ui_v071_atlas");
+      expect(typeof icon.sheet_index).toBe("number");
+      expect(icon.sheet_index ?? -1).toBeGreaterThanOrEqual(0);
+      expect(icon.sheet_index ?? itemIconSheet.frame_count).toBeLessThan(itemIconSheet.frame_count);
     }
   });
 
