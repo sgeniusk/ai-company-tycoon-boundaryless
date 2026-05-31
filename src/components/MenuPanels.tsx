@@ -192,6 +192,24 @@ function getAgentSprite(agentTypeId?: string): AgentSpriteDefinition | undefined
   return assetManifest.agent_sprites.find((sprite) => sprite.agent_type_id === agentTypeId);
 }
 
+function getAgentPortraitAtlasStyle(sprite: AgentSpriteDefinition | undefined, displaySize = 72): CSSProperties {
+  const sheet = getAssetSheet(sprite?.sheet_id ?? "agents_v053_final_art_import");
+  if (!sprite?.sheet_id || !sheet) return {};
+  const frameIndex = sprite.animations.idle.row * sheet.columns;
+  const column = frameIndex % sheet.columns;
+  const row = Math.floor(frameIndex / sheet.columns);
+  const portraitFrameSize = Math.round(displaySize * 1.35);
+  const cropX = Math.round((portraitFrameSize - displaySize) / 2);
+  const cropY = Math.round((portraitFrameSize - displaySize) * 0.82);
+
+  return {
+    "--agent-portrait-atlas": `url(${sheet.path})`,
+    "--agent-portrait-x": `${-(column * portraitFrameSize + cropX)}px`,
+    "--agent-portrait-y": `${-(row * portraitFrameSize + cropY)}px`,
+    "--agent-portrait-size": `${sheet.columns * portraitFrameSize}px ${sheet.rows * portraitFrameSize}px`,
+  } as CSSProperties;
+}
+
 function getCompetitorIdentity(competitorId: string): CompetitorIdentityDefinition | undefined {
   return assetManifest.competitor_identities.find((identity) => identity.competitor_id === competitorId);
 }
@@ -2658,8 +2676,8 @@ function HiredAgentCard({
     <article className="hired-card">
       <div className="agent-top">
         <div
-          className={`agent-portrait compact ${agentSprite?.body_class ?? ""}`}
-          style={assetPaletteVars(agentSprite?.palette)}
+          className={`agent-portrait compact ${agentSprite?.body_class ?? ""} ${agentSprite?.sheet_id ? "agent-portrait-atlas" : ""}`}
+          style={{ ...assetPaletteVars(agentSprite?.palette), ...getAgentPortraitAtlasStyle(agentSprite, 58) }}
           aria-hidden="true"
         >
           <span className="agent-head" />
@@ -2806,8 +2824,8 @@ function AgentCard({
     <article className={`agent-card rarity-${agent.rarity}`}>
       <div className="agent-top">
         <div
-          className={`agent-portrait ${agentSprite?.body_class ?? ""}`}
-          style={assetPaletteVars(agentSprite?.palette)}
+          className={`agent-portrait ${agentSprite?.body_class ?? ""} ${agentSprite?.sheet_id ? "agent-portrait-atlas" : ""}`}
+          style={{ ...assetPaletteVars(agentSprite?.palette), ...getAgentPortraitAtlasStyle(agentSprite, 72) }}
           aria-hidden="true"
         >
           <span className="agent-head" />

@@ -101,6 +101,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.competitor-hud-logo\.competitor-hud-logo-atlas\s+b,\s*\.competitor-hud-logo\.competitor-hud-logo-atlas::after\s*{[^}]*display:\s*none/s);
   });
 
+  it("replaces agent card block portraits with character-sheet portrait art", () => {
+    expect(menuPanels).toContain("getAgentPortraitAtlasStyle");
+    expect(menuPanels).toContain("agents_v053_final_art_import");
+    expect(menuPanels).toContain("agent-portrait-atlas");
+    expect(appCss).toMatch(/\.agent-portrait\.agent-portrait-atlas\s*{[^}]*background-image:\s*var\(--agent-portrait-atlas\)/s);
+    expect(appCss).toMatch(/\.agent-portrait\.agent-portrait-atlas\s*{[^}]*background-position:\s*var\(--agent-portrait-x\)\s+var\(--agent-portrait-y\)/s);
+    expect(appCss).toMatch(/\.agent-portrait\.agent-portrait-atlas\s+\.agent-head,\s*\.agent-portrait\.agent-portrait-atlas\s+\.agent-body,\s*\.agent-portrait\.agent-portrait-atlas\s+\.agent-prop\s*{[^}]*display:\s*none/s);
+  });
+
   it("makes the first 10 seconds read as a garage AI company game", () => {
     expect(gameChrome).toContain("OpeningFantasySignal");
     expect(gameChrome).toContain("opening-fantasy-signal");

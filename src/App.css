@@ -8779,6 +8779,23 @@ p {
   width: 72px;
 }
 
+.agent-portrait.agent-portrait-atlas {
+  background-color: #1f3b37;
+  background-image: var(--agent-portrait-atlas);
+  background-position: var(--agent-portrait-x) var(--agent-portrait-y);
+  background-repeat: no-repeat;
+  background-size: var(--agent-portrait-size);
+  box-shadow: inset 0 0 0 2px rgba(255, 241, 186, 0.22), 0 4px 0 rgba(31, 24, 15, 0.28);
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+.agent-portrait.agent-portrait-atlas .agent-head,
+.agent-portrait.agent-portrait-atlas .agent-body,
+.agent-portrait.agent-portrait-atlas .agent-prop {
+  display: none;
+}
+
 .agent-portrait.compact {
   height: 58px;
   width: 58px;
