@@ -329,6 +329,8 @@ export interface CompetitorIdentityDefinition {
   logo_size: number;
   palette: string[];
   mascot_hint: string;
+  sheet_id?: string;
+  sheet_index?: number;
 }
 
 export interface OfficeObjectAssetDefinition {

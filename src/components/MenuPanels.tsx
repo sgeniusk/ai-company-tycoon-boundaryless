@@ -196,6 +196,21 @@ function getCompetitorIdentity(competitorId: string): CompetitorIdentityDefiniti
   return assetManifest.competitor_identities.find((identity) => identity.competitor_id === competitorId);
 }
 
+function getCompetitorLogoStyle(identity: CompetitorIdentityDefinition | undefined, displaySize = 32): CSSProperties {
+  if (!identity?.sheet_id || typeof identity.sheet_index !== "number") return {};
+  const sheet = getAssetSheet(identity.sheet_id);
+  if (!sheet) return {};
+  const column = identity.sheet_index % sheet.columns;
+  const row = Math.floor(identity.sheet_index / sheet.columns);
+
+  return {
+    "--competitor-logo-atlas": `url(${sheet.path})`,
+    "--competitor-logo-x": `${-column * displaySize}px`,
+    "--competitor-logo-y": `${-row * displaySize}px`,
+    "--competitor-logo-size": `${sheet.columns * displaySize}px ${sheet.rows * displaySize}px`,
+  } as CSSProperties;
+}
+
 function getItemIcon(itemId: string): ItemIconDefinition | undefined {
   return assetManifest.item_icons.find((icon) => icon.item_id === itemId);
 }
@@ -3560,8 +3575,8 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
               >
                 <div className="competitor-top">
                   <div
-                    className={`competitor-logo ${identity?.logo_class ?? ""}`}
-                    style={assetPaletteVars(identity?.palette)}
+                    className={`competitor-logo ${identity?.logo_class ?? ""} ${identity?.sheet_id ? "competitor-logo-atlas" : ""}`}
+                    style={{ ...assetPaletteVars(identity?.palette), ...getCompetitorLogoStyle(identity, 32) }}
                     aria-hidden="true"
                   >
                     <span />

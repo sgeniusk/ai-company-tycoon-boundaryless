@@ -243,16 +243,37 @@ describe("alpha v0.9 pixel asset manifest", () => {
 
   it("assigns every competitor a logo identity hook", () => {
     const identityIds = new Set(assetManifest.competitor_identities.map((identity) => identity.competitor_id));
+    const logoSheet = assetManifest.sprite_sheets.competitor_logos_v072_atlas;
+    const logoScriptUrl = new URL("../../scripts/assets/generate-v072-competitor-logo-atlas.mjs", import.meta.url);
 
     for (const competitorId of knownCompetitorIds) {
       expect(identityIds.has(competitorId)).toBe(true);
     }
 
+    expect(logoSheet).toMatchObject({
+      path: "/assets/ui/v072-competitor-logo-atlas.png",
+      source_status: "final",
+      frame_width: 32,
+      frame_height: 32,
+      columns: 6,
+      rows: 2,
+      frame_count: 12,
+      slice_mode: "row-major competitor logo atlas",
+    });
+    expect(readPngSize(logoSheet.path)).toEqual({ width: 192, height: 64 });
+    expect(packageJson.scripts["assets:v072"]).toBe("node scripts/assets/generate-v072-competitor-logo-atlas.mjs");
+    expect(readFileSync(logoScriptUrl, "utf8")).toContain("v072-competitor-logo-atlas.png");
+
     for (const identity of assetManifest.competitor_identities) {
       expect(knownCompetitorIds.has(identity.competitor_id)).toBe(true);
+      expect(identity.source_status).toBe("final");
       expect(identity.logo_size).toBe(assetManifest.sprite_grid.competitor_logo_size);
       expect(identity.palette.length).toBeGreaterThanOrEqual(3);
       expect(identity.mascot_hint).toBeTruthy();
+      expect(identity.sheet_id).toBe("competitor_logos_v072_atlas");
+      expect(typeof identity.sheet_index).toBe("number");
+      expect(identity.sheet_index ?? -1).toBeGreaterThanOrEqual(0);
+      expect(identity.sheet_index ?? logoSheet.frame_count).toBeLessThan(logoSheet.frame_count);
     }
   });
 

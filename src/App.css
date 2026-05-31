@@ -464,6 +464,22 @@ p {
   width: 4px;
 }
 
+.competitor-hud-logo.competitor-hud-logo-atlas {
+  background-color: transparent;
+  background-image: var(--competitor-logo-atlas);
+  background-position: var(--competitor-logo-x) var(--competitor-logo-y);
+  background-repeat: no-repeat;
+  background-size: var(--competitor-logo-size);
+  border: 0;
+  box-shadow: 0 1px 0 rgba(13, 23, 20, 0.44);
+  image-rendering: pixelated;
+}
+
+.competitor-hud-logo.competitor-hud-logo-atlas b,
+.competitor-hud-logo.competitor-hud-logo-atlas::after {
+  display: none;
+}
+
 .resource-strip {
   display: grid;
   align-content: stretch;
@@ -1668,6 +1684,20 @@ p {
 
 .office-asset-mini.asset-competitor.logo-automaru i {
   border-radius: 50%;
+}
+
+.office-asset-mini.asset-competitor-atlas {
+  background-color: transparent;
+  background-image: var(--competitor-logo-atlas);
+  background-position: var(--competitor-logo-x) var(--competitor-logo-y);
+  background-repeat: no-repeat;
+  background-size: var(--competitor-logo-size);
+}
+
+.office-asset-mini.asset-competitor-atlas i,
+.office-asset-mini.asset-competitor-atlas::before,
+.office-asset-mini.asset-competitor-atlas::after {
+  display: none;
 }
 
 .office-asset-mini.asset-office-object {
@@ -8631,6 +8661,25 @@ p {
   position: absolute;
   top: 6px;
   width: 20px;
+}
+
+.competitor-logo.competitor-logo-atlas {
+  background-color: transparent;
+  background-image: var(--competitor-logo-atlas);
+  background-position: var(--competitor-logo-x) var(--competitor-logo-y);
+  background-repeat: no-repeat;
+  background-size: var(--competitor-logo-size);
+  border: 0;
+  box-shadow: 2px 2px 0 rgba(61, 51, 35, 0.24);
+  height: 32px;
+  image-rendering: pixelated;
+  outline: 2px solid var(--line);
+  width: 32px;
+}
+
+.competitor-logo.competitor-logo-atlas span,
+.competitor-logo.competitor-logo-atlas::after {
+  display: none;
 }
 
 .logo-chatgody span,

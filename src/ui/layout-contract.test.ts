@@ -90,6 +90,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.item-icon\.item-icon-atlas::before,\s*\.item-icon\.item-icon-atlas::after\s*{[^}]*display:\s*none/s);
   });
 
+  it("replaces competitor placeholder logos with atlas-backed rival logos", () => {
+    expect(gameChrome).toContain("getCompetitorLogoStyle");
+    expect(gameChrome).toContain("competitor_logos_v072_atlas");
+    expect(gameChrome).toContain("competitor-hud-logo-atlas");
+    expect(menuPanels).toContain("getCompetitorLogoStyle");
+    expect(menuPanels).toContain("competitor-logo-atlas");
+    expect(appCss).toMatch(/\.competitor-hud-logo\.competitor-hud-logo-atlas\s*{[^}]*background-image:\s*var\(--competitor-logo-atlas\)/s);
+    expect(appCss).toMatch(/\.competitor-logo\.competitor-logo-atlas\s*{[^}]*background-image:\s*var\(--competitor-logo-atlas\)/s);
+    expect(appCss).toMatch(/\.competitor-hud-logo\.competitor-hud-logo-atlas\s+b,\s*\.competitor-hud-logo\.competitor-hud-logo-atlas::after\s*{[^}]*display:\s*none/s);
+  });
+
   it("makes the first 10 seconds read as a garage AI company game", () => {
     expect(gameChrome).toContain("OpeningFantasySignal");
     expect(gameChrome).toContain("opening-fantasy-signal");

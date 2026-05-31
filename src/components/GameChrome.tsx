@@ -93,6 +93,7 @@ import {
 } from "../game/simulation";
 import type {
   AgentSpriteDefinition,
+  CompetitorIdentityDefinition,
   GameState,
   ItemDefinition,
   OfficeObjectAssetDefinition,
@@ -136,6 +137,7 @@ function assetPaletteVars(palette?: string[]): CSSProperties {
 const agentSheetId = "agents_v053_final_art_import";
 const officeObjectSheetId = "office_objects_v054_final_art_import";
 const officeBackdropId = "office_isometric_v054_final_art_import";
+const competitorLogoAtlasId = "competitor_logos_v072_atlas";
 
 function getAssetSheet(sheetId?: string): SpriteSheetDefinition | undefined {
   if (!sheetId) return undefined;
@@ -287,6 +289,21 @@ function getAgentSpriteFrameStyle(
 function getCompetitorIdentity(competitorId?: string) {
   if (!competitorId) return undefined;
   return assetManifest.competitor_identities.find((identity) => identity.competitor_id === competitorId);
+}
+
+function getCompetitorLogoStyle(identity: CompetitorIdentityDefinition | undefined, displaySize = 32): CSSProperties {
+  if (!identity?.sheet_id || typeof identity.sheet_index !== "number") return {};
+  const sheet = getAssetSheet(identity.sheet_id ?? competitorLogoAtlasId);
+  if (!sheet) return {};
+  const column = identity.sheet_index % sheet.columns;
+  const row = Math.floor(identity.sheet_index / sheet.columns);
+
+  return {
+    "--competitor-logo-atlas": `url(${sheet.path})`,
+    "--competitor-logo-x": `${-column * displaySize}px`,
+    "--competitor-logo-y": `${-row * displaySize}px`,
+    "--competitor-logo-size": `${sheet.columns * displaySize}px ${sheet.rows * displaySize}px`,
+  } as CSSProperties;
 }
 
 function getItemIcon(itemId: string) {
@@ -474,7 +491,11 @@ function CompetitorHudStrip({ gameState, locale }: { gameState: GameState; local
             key={state.id}
             style={{ ...assetPaletteVars(identity?.palette), "--rival-color": definition?.color } as CSSProperties}
           >
-            <i className={`competitor-hud-logo ${identity?.logo_class ?? ""}`} aria-hidden="true">
+            <i
+              className={`competitor-hud-logo ${identity?.logo_class ?? ""} ${identity?.sheet_id ? "competitor-hud-logo-atlas" : ""}`}
+              aria-hidden="true"
+              style={getCompetitorLogoStyle(identity, 16)}
+            >
               <b />
             </i>
             <small>{t(definition?.name_key ?? state.id, locale)} {state.marketShare}%</small>
@@ -1573,6 +1594,7 @@ type OfficeGraphicAssetTile = {
   key: string;
   label: string;
   palette?: string[];
+  style?: CSSProperties;
   title: string;
 };
 
@@ -1591,10 +1613,11 @@ function OfficeGraphicAssetWall() {
     {
       id: "competitors",
       tiles: assetManifest.competitor_identities.map((identity) => ({
-        className: `asset-competitor ${identity.logo_class}`,
+        className: `asset-competitor ${identity.logo_class} ${identity.sheet_id ? "asset-competitor-atlas" : ""}`,
         key: identity.competitor_id,
         label: identity.competitor_id,
         palette: identity.palette,
+        style: getCompetitorLogoStyle(identity, 13),
         title: identity.mascot_hint,
       })),
     },
@@ -1630,7 +1653,7 @@ function OfficeGraphicAssetWall() {
               className={`office-asset-mini ${tile.className}`}
               key={tile.key}
               role="img"
-              style={assetPaletteVars(tile.palette)}
+              style={{ ...assetPaletteVars(tile.palette), ...tile.style }}
               title={`${tile.label} · ${tile.title}`}
             >
               <i />

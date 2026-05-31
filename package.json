@@ -16,6 +16,7 @@
     "assets:v053": "node scripts/assets/import-v053-character-source.mjs",
     "assets:v054": "node scripts/assets/generate-v046-hires-pixel-sheets.mjs && node scripts/assets/import-v054-office-art.mjs",
     "assets:v071": "node scripts/assets/generate-v071-commercial-ui-atlas.mjs",
+    "assets:v072": "node scripts/assets/generate-v072-competitor-logo-atlas.mjs",
     "qa:office-visuals:screenshots": "node scripts/qa/capture-office-visuals-screenshots.mjs",
     "qa:blind-rehearsal": "node scripts/qa/run-v056-blind-rehearsal.mjs",
     "qa:blind-summary": "node scripts/qa/summarize-v056-blind-sessions.mjs",
