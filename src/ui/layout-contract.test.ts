@@ -52,6 +52,22 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.resource-tile\.critical\s*{/s);
   });
 
+  it("uses a commercial command-deck top HUD instead of an ungrouped pill swarm", () => {
+    expect(gameChrome).toContain("top-brand-panel");
+    expect(gameChrome).toContain("top-command-center");
+    expect(gameChrome).toContain("top-run-metrics");
+    expect(gameChrome).toContain("top-progress-rail");
+    expect(gameChrome).toContain("top-secondary-status");
+    expect(gameChrome).toContain("top-market-suite");
+    expect(gameChrome).toContain("캠페인 진행 {calendar.progressPercent}%");
+    expect(appCss).toMatch(/\.top-bar\s*{[^}]*grid-template-columns:\s*minmax\(180px,\s*0\.72fr\)\s+minmax\(0,\s*1\.12fr\)\s+minmax\(340px,\s*0\.92fr\)/s);
+    expect(appCss).toMatch(/\.top-brand-panel\s*{[^}]*background:\s*linear-gradient/s);
+    expect(appCss).toMatch(/\.top-run-metrics\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.top-progress-fill\s*{[^}]*transition:\s*width\s+320ms\s+ease/s);
+    expect(appCss).toMatch(/\.top-market-suite\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.12fr\)\s+minmax\(0,\s*0\.88fr\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*900px\)[\s\S]*\.top-bar\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("makes the first 10 seconds read as a garage AI company game", () => {
     expect(gameChrome).toContain("OpeningFantasySignal");
     expect(gameChrome).toContain("opening-fantasy-signal");

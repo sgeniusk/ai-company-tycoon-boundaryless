@@ -290,24 +290,43 @@ export function TopBar({
   const phase = getDayPhase(gameState);
   const location = getCurrentLocation(gameState);
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
+  const statusClassName = ["status-pill", gameState.status].filter(Boolean).join(" ");
 
   return (
     <section className="top-bar" aria-label="회사 상태">
-      <div>
+      <div className="top-brand-panel">
         <p className="eyebrow">AI 컴퍼니 타이쿤 알파</p>
         <h1>경계 없는 회사</h1>
+        <span className="top-brand-deck">Boundaryless command deck</span>
       </div>
-      <div className="top-status-area">
-        <div className="status-cluster">
-          <span className="status-pill">{calendar.year}년 {calendar.monthOfYear}월</span>
-          <span className="status-pill">{getCompanyStarRating(gameState)}성</span>
-          <span className="status-pill">{phase.label}</span>
-          <span className="status-pill">{location.region}</span>
-          <span className={`status-pill ${gameState.status}`}>{statusLabel(gameState.status)}</span>
-          <span className="status-pill">출시 가능 {launchableCount}</span>
-          <span className="status-pill">개발 중 {gameState.productProjects.length}</span>
-          <span className="status-pill">런 {gameState.roguelite.runNumber}</span>
-          <span className="status-pill">통찰 {gameState.roguelite.founderInsight}</span>
+      <div className="top-command-center">
+        <div className="top-run-metrics" aria-label="핵심 런 상태">
+          <span>
+            <small>시간</small>
+            <strong>{calendar.year}년 {calendar.monthOfYear}월</strong>
+          </span>
+          <span>
+            <small>회사</small>
+            <strong>{getCompanyStarRating(gameState)}성 · {location.region}</strong>
+          </span>
+          <span>
+            <small>제품</small>
+            <strong>출시 {launchableCount} · 개발 {gameState.productProjects.length}</strong>
+          </span>
+          <span>
+            <small>메타</small>
+            <strong>런 {gameState.roguelite.runNumber} · 통찰 {gameState.roguelite.founderInsight}</strong>
+          </span>
+        </div>
+        <div className="top-progress-rail" aria-label={`캠페인 진행 ${calendar.progressPercent}%`}>
+          <span>캠페인 진행 {calendar.progressPercent}%</span>
+          <b>
+            <i className="top-progress-fill" style={{ width: `${calendar.progressPercent}%` }} />
+          </b>
+          <em>{phase.label}</em>
+        </div>
+        <div className="status-cluster top-secondary-status">
+          <span className={statusClassName}>{statusLabel(gameState.status)}</span>
           <span className="status-pill">점유 {getPlayerMarketShare(gameState)}%</span>
           {activeEndingReplayBrief && (
             <span className="status-pill ending-target-pill">
@@ -321,8 +340,10 @@ export function TopBar({
         </div>
         <CompetitorHudStrip gameState={gameState} locale={locale} />
       </div>
-      <MarketSharePanel gameState={gameState} locale={locale} />
-      <RivalArchetypePanel gameState={gameState} locale={locale} />
+      <aside className="top-market-suite" aria-label="시장 정보">
+        <MarketSharePanel gameState={gameState} locale={locale} />
+        <RivalArchetypePanel gameState={gameState} locale={locale} />
+      </aside>
     </section>
   );
 }
