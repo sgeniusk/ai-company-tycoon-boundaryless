@@ -132,6 +132,12 @@ export interface EndingNearMissPlan extends EndingTargetPlan {
   targetLabels: string[];
 }
 
+interface EndingReplayRoute {
+  selection: RunModifierSelectionInput;
+  targetLabels: string[];
+  openingMoves: string[];
+}
+
 export function getCampaignEnding(finalState: GameState): EndingDefinition {
   const matches = campaignEndings
     .map((ending, index) => ({ ending, index }))
@@ -250,7 +256,7 @@ export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplay
   if (!ending) return undefined;
 
   const plan = createEndingTargetPlan(ending, state);
-  const selection = createReplaySelection(ending);
+  const replayRoute = createEndingReplayRoute(ending);
   const discoveredIds = new Set(state.roguelite.discoveredEndingIds ?? []);
   const afterCompletionDiscoveredIds = new Set(discoveredIds);
   afterCompletionDiscoveredIds.add(ending.id);
@@ -274,10 +280,10 @@ export function getActiveEndingReplayBrief(state: GameState): ActiveEndingReplay
     discoveredRewardBonusBeforeRun,
     discoveredRewardBonusAfterCompletion,
     seed: state.runModifiers.seed,
-    selection,
-    targetLabels: getReplayTargetLabels(ending.condition, selection),
+    selection: replayRoute.selection,
+    targetLabels: replayRoute.targetLabels,
     totalRewardBonus,
-    openingMoves: getReplayOpeningMoves(ending.condition),
+    openingMoves: replayRoute.openingMoves,
     nextRequirements: getReplayNextRequirements(plan.requirements),
     completionRewardNotice,
     rewardLabel,
@@ -306,7 +312,7 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
 
   return campaignEndings
     .map((ending) => {
-      const selection = ending.condition.fallback === true ? undefined : createReplaySelection(ending);
+      const replayRoute = ending.condition.fallback === true ? undefined : createEndingReplayRoute(ending);
       const recommendedUnlocks = getEndingRouteUnlockRecommendations(ending.condition, state);
 
       return {
@@ -315,8 +321,8 @@ export function getEndingCollectionEntries(state: Pick<GameState, "roguelite">):
         recommendedUnlocks,
         recommendedUnlockLabels: recommendedUnlocks.map((unlock) => unlock.title),
         rewardStatusLabel: getEndingCollectionRewardStatusLabel(ending.meta_reward_bonus, discoveredIds.has(ending.id), ending.condition.fallback === true),
-        targetLabels: selection ? getReplayTargetLabels(ending.condition, selection) : [],
-        selection,
+        targetLabels: replayRoute?.targetLabels ?? [],
+        selection: replayRoute?.selection,
       };
     })
     .sort((first, second) => Number(second.discovered) - Number(first.discovered) || second.priority - first.priority || first.id.localeCompare(second.id));
@@ -559,32 +565,32 @@ function getEndingTargetRewardStatusLabel(metaRewardBonus: number, discovered: b
 }
 
 function createEndingReplayPlan(ending: EndingDefinition, discoveredIds: Set<string>): EndingReplayPlan {
-  const selection = createReplaySelection(ending);
+  const replayRoute = createEndingReplayRoute(ending);
   const discovered = discoveredIds.has(ending.id);
 
   return {
     ...ending,
     discovered,
-    selection,
-    targetLabels: getReplayTargetLabels(ending.condition, selection),
-    openingMoves: getReplayOpeningMoves(ending.condition),
+    selection: replayRoute.selection,
+    targetLabels: replayRoute.targetLabels,
+    openingMoves: replayRoute.openingMoves,
     rewardStatusLabel: discovered ? getCollectedReplayableEndingRewardStatusLabel() : `+${ending.meta_reward_bonus} 통찰 완주 보상`,
   };
 }
 
 function createEndingNearMissPlan(ending: EndingDefinition, state: GameState): EndingNearMissPlan {
   const plan = createEndingTargetPlan(ending, state);
-  const replaySelection = createReplaySelection(ending);
+  const replayRoute = createEndingReplayRoute(ending);
   const discovered = state.roguelite.discoveredEndingIds.includes(ending.id);
 
   return {
     ...plan,
     discovered,
     missingLabels: plan.requirements.filter((requirement) => !requirement.complete).map((requirement) => requirement.label),
-    replaySelection,
+    replaySelection: replayRoute.selection,
     rewardLabel: `+${ending.meta_reward_bonus} 통찰`,
     rewardStatusLabel: discovered ? getCollectedReplayableEndingRewardStatusLabel() : `+${ending.meta_reward_bonus} 통찰 신규 도감 보상`,
-    targetLabels: getReplayTargetLabels(ending.condition, replaySelection),
+    targetLabels: replayRoute.targetLabels,
   };
 }
 
@@ -607,6 +613,16 @@ function getReplayEndingFromSeed(seed: string): EndingDefinition | undefined {
   if (!seed.startsWith("ending:")) return undefined;
   const endingId = seed.slice("ending:".length);
   return campaignEndings.find((ending) => ending.id === endingId && ending.condition.fallback !== true);
+}
+
+function createEndingReplayRoute(ending: EndingDefinition): EndingReplayRoute {
+  const selection = createReplaySelection(ending);
+
+  return {
+    selection,
+    targetLabels: getReplayTargetLabels(ending.condition, selection),
+    openingMoves: getReplayOpeningMoves(ending.condition),
+  };
 }
 
 function createReplaySelection(ending: EndingDefinition): RunModifierSelectionInput {

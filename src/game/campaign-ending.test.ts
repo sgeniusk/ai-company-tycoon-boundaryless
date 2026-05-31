@@ -22,6 +22,7 @@ import { createInitialState } from "./simulation";
 import type { GameState, RunModifiersState } from "./types";
 
 const validateDataSource = readFileSync(new URL("../../scripts/harness/validate-data.mjs", import.meta.url), "utf8");
+const campaignEndingSource = readFileSync(new URL("./campaign-ending.ts", import.meta.url), "utf8");
 
 function finalStateFor(selection: Partial<RunModifiersState>, overrides: Partial<GameState> = {}): GameState {
   const selectedSeed =
@@ -1159,6 +1160,28 @@ describe("v0.67 campaign ending selector", () => {
       discovered: true,
       rewardStatusLabel: "도감 보상 수집 완료 · 추가 통찰 없음",
     });
+  });
+
+  it("keeps replay route selection and labels centralized across ending surfaces", () => {
+    const state = createInitialState();
+    const replayPlans = getEndingReplayPlans(state, campaignEndings.length);
+    const collectionEntries = getEndingCollectionEntries(state);
+    const privacyPlan = replayPlans.find((plan) => plan.id === "privacy_trust_bastion");
+    const privacyEntry = collectionEntries.find((entry) => entry.id === "privacy_trust_bastion");
+    const activeReplayState = createInitialState({
+      seed: "ending:privacy_trust_bastion",
+      worldLoreId: "privacy_fortress",
+      marketConditionId: "regulation_crackdown",
+      founderTraitId: "researcher_founder",
+    });
+    const activeBrief = getActiveEndingReplayBrief(activeReplayState);
+
+    expect(campaignEndingSource).toContain("function createEndingReplayRoute");
+    expect(privacyEntry?.selection).toEqual(privacyPlan?.selection);
+    expect(privacyEntry?.targetLabels).toEqual(privacyPlan?.targetLabels);
+    expect(activeBrief?.selection).toEqual(privacyPlan?.selection);
+    expect(activeBrief?.targetLabels).toEqual(privacyPlan?.targetLabels);
+    expect(activeBrief?.openingMoves).toEqual(privacyPlan?.openingMoves);
   });
 
   it("summarizes active ending replay runs from the seeded target", () => {
