@@ -297,6 +297,46 @@ function ProductDomainIcon({ domainId, className = "" }: { domainId?: string; cl
   return <span aria-hidden="true" className={`product-domain-icon${className ? ` ${className}` : ""}`} style={style} />;
 }
 
+const capabilityResearchAtlasId = "capability_research_v080_atlas";
+const capabilityIconDisplaySize = 32;
+const capabilityIconFrameById: Record<string, number> = {
+  language: 0,
+  code: 1,
+  vision: 2,
+  audio: 3,
+  video: 4,
+  agent: 5,
+  enterprise: 6,
+  safety: 7,
+  optimization: 8,
+  robotics: 9,
+  manufacturing: 10,
+  logistics: 11,
+};
+
+function getCapabilityIconStyle(capabilityId?: string, displaySize = capabilityIconDisplaySize): CSSProperties {
+  if (!capabilityId) return {};
+  const sheet = getAssetSheet(capabilityResearchAtlasId);
+  const frameIndex = capabilityIconFrameById[capabilityId];
+  if (!sheet || typeof frameIndex !== "number") return {};
+  const column = frameIndex % sheet.columns;
+  const row = Math.floor(frameIndex / sheet.columns);
+
+  return {
+    "--capability-icon-atlas": `url(${sheet.path})`,
+    "--capability-icon-x": `${-column * displaySize}px`,
+    "--capability-icon-y": `${-row * displaySize}px`,
+    "--capability-icon-size": `${sheet.columns * displaySize}px ${sheet.rows * displaySize}px`,
+  } as CSSProperties;
+}
+
+function CapabilityIcon({ capabilityId, className = "" }: { capabilityId?: string; className?: string }) {
+  const style = getCapabilityIconStyle(capabilityId);
+  if (!Object.keys(style).length) return null;
+
+  return <span aria-hidden="true" className={`capability-icon${className ? ` ${className}` : ""}`} style={style} />;
+}
+
 function getMenuLabel(menuId: string): string {
   return menus.find((menu) => menu.id === menuId)?.label ?? menuId;
 }
@@ -3071,9 +3111,12 @@ function ResearchPanel({
 
           return (
             <article className={`capability-row${strategyFocus?.targetId === capability.id ? " strategy-focus" : ""}`} key={capability.id}>
-              <div>
-                <h3>{capability.name}</h3>
-                <p>Lv.{currentLevel} / {capability.max_level}</p>
+              <div className="capability-title">
+                <CapabilityIcon capabilityId={capability.id} />
+                <div>
+                  <h3>{capability.name}</h3>
+                  <p>Lv.{currentLevel} / {capability.max_level}</p>
+                </div>
               </div>
               <button
                 disabled={!check.ok || gameState.status !== "playing"}

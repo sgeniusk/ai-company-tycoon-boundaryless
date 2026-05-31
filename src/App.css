@@ -8510,6 +8510,27 @@ p {
   min-height: 72px;
 }
 
+.capability-title {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.capability-icon {
+  background-image: var(--capability-icon-atlas);
+  background-position: var(--capability-icon-x) var(--capability-icon-y);
+  background-repeat: no-repeat;
+  background-size: var(--capability-icon-size);
+  border: 2px solid var(--line);
+  box-shadow: 0 2px 0 rgba(32, 35, 31, 0.2);
+  display: inline-block;
+  flex: 0 0 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  width: 32px;
+}
+
 .automation-row {
   background: #edf8eb;
   border-color: #99bf91;

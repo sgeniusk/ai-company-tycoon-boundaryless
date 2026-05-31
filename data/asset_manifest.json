@@ -1094,6 +1094,18 @@
       "preview_frames": [0, 1, 2, 4, 7, 9, 12, 14],
       "slice_mode": "row-major product domain icons"
     },
+    "capability_research_v080_atlas": {
+      "path": "/assets/ui/v080-capability-research-atlas.png",
+      "source_status": "final",
+      "density": 1,
+      "frame_width": 48,
+      "frame_height": 48,
+      "columns": 6,
+      "rows": 2,
+      "frame_count": 12,
+      "preview_frames": [0, 1, 2, 5, 8, 9, 10, 11],
+      "slice_mode": "row-major capability research icons"
+    },
     "commercial_ui_v071_atlas": {
       "path": "/assets/ui/v071-commercial-ui-atlas.png",
       "source_status": "final",

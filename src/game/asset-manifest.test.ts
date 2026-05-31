@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { agentTypes, assetManifest, competitors, domains, items } from "./data";
+import { agentTypes, assetManifest, capabilities, competitors, domains, items } from "./data";
 
 const packageJson = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as {
   scripts: Record<string, string>;
@@ -389,6 +389,25 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(readPngSize(domainSheet.path)).toEqual({ width: 240, height: 144 });
     expect(packageJson.scripts["assets:v079"]).toBe("node scripts/assets/generate-v079-product-domain-atlas.mjs");
     expect(readFileSync(domainScriptUrl, "utf8")).toContain("v079-product-domain-atlas.png");
+  });
+
+  it("ships final capability research icons for the research menu", () => {
+    const capabilitySheet = assetManifest.sprite_sheets.capability_research_v080_atlas;
+    const capabilityScriptUrl = new URL("../../scripts/assets/generate-v080-capability-research-atlas.mjs", import.meta.url);
+
+    expect(capabilitySheet).toMatchObject({
+      path: "/assets/ui/v080-capability-research-atlas.png",
+      source_status: "final",
+      frame_width: 48,
+      frame_height: 48,
+      columns: 6,
+      rows: 2,
+      frame_count: capabilities.length,
+      slice_mode: "row-major capability research icons",
+    });
+    expect(readPngSize(capabilitySheet.path)).toEqual({ width: 288, height: 96 });
+    expect(packageJson.scripts["assets:v080"]).toBe("node scripts/assets/generate-v080-capability-research-atlas.mjs");
+    expect(readFileSync(capabilityScriptUrl, "utf8")).toContain("v080-capability-research-atlas.png");
   });
 
   it("maps first-shop item icons to known items", () => {

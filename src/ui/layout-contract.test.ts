@@ -562,6 +562,19 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.ai-resource-visibility-grid[\s\S]*grid-template-columns:\s*1fr/s);
   });
 
+  it("skins research capabilities with atlas-backed game art", () => {
+    expect(menuPanels).toContain("capability_research_v080_atlas");
+    expect(menuPanels).toContain("capabilityIconFrameById");
+    expect(menuPanels).toContain("getCapabilityIconStyle");
+    expect(menuPanels).toContain("CapabilityIcon");
+    expect(menuPanels).toContain("capability-icon");
+    expect(menuPanels).toContain("capability-title");
+    expect(appCss).toMatch(/\.capability-icon\s*{[^}]*background-image:\s*var\(--capability-icon-atlas\)/s);
+    expect(appCss).toMatch(/\.capability-icon\s*{[^}]*background-position:\s*var\(--capability-icon-x\)\s+var\(--capability-icon-y\)/s);
+    expect(appCss).toMatch(/\.capability-icon\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.capability-title\s*{[^}]*grid-template-columns:\s*auto\s+minmax\(0,\s*1fr\)/s);
+  });
+
   it("shows shareable timeline moments as a compact highlight grid", () => {
     expect(appCss).toMatch(/\.highlight-moment-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.highlight-moment-card\s*{[^}]*min-height:/s);
