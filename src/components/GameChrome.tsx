@@ -969,6 +969,8 @@ export function GameStage({
                 }
                 title={`${object.label} · ${object.active ? object.activity : object.blockedReason}`}
               >
+                <i aria-hidden="true" className="office-object-activity-light" />
+                <b aria-hidden="true" className="office-object-status-dot" />
                 <small>{object.label}</small>
               </span>
             ))}

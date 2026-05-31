@@ -715,6 +715,22 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-workbeat-node/s);
   });
 
+  it("gives active office objects their own pixel status lights and busy loops", () => {
+    expect(gameChrome).toContain("office-object-activity-light");
+    expect(gameChrome).toContain("office-object-status-dot");
+    expect(appCss).toMatch(/\.office-object\.pixel-office-object\s*{[^}]*--object-base-x:\s*-50%/s);
+    expect(appCss).toMatch(/\.office-object\.pixel-office-object\s*{[^}]*--object-base-y:\s*-50%/s);
+    expect(appCss).toMatch(/\.office-object\.pixel-office-object\.active\s*{[^}]*animation:\s*pixel-screen-pulse[^;]+,\s*pixel-office-object-busy/s);
+    expect(appCss).toMatch(/\.office-object\.pixel-office-object\.object-kind-route\s*{[^}]*--object-base-x:\s*0/s);
+    expect(appCss).toMatch(/\.office-object-activity-light\s*{[^}]*animation:\s*office-object-light-chase/s);
+    expect(appCss).toMatch(/\.office-object-status-dot\s*{[^}]*animation:\s*office-object-status-blink/s);
+    expect(appCss).toMatch(/\.office-object\.pixel-office-object\.locked\s+\.office-object-activity-light/s);
+    expect(appCss).toMatch(/@keyframes\s+pixel-office-object-busy/s);
+    expect(appCss).toMatch(/@keyframes\s+office-object-light-chase/s);
+    expect(appCss).toMatch(/@keyframes\s+office-object-status-blink/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-object-activity-light/s);
+  });
+
   it("protects the playfield by narrowing the persistent console column", () => {
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*0\.94fr\)\s+minmax\(0,\s*1fr\)\s+clamp\(330px,\s*28vw,\s*390px\)/s);
     expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);

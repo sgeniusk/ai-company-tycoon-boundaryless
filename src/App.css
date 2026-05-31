@@ -1527,6 +1527,8 @@ p {
 }
 
 .office-object.pixel-office-object {
+  --object-base-x: -50%;
+  --object-base-y: -50%;
   align-items: end;
   animation: pixel-screen-pulse 1800ms steps(2) infinite;
   background:
@@ -1541,9 +1543,15 @@ p {
   min-width: 34px;
   padding: 3px;
   top: var(--object-y, 45%);
-  transform: translate(-50%, -50%);
+  transform: translate(var(--object-base-x, -50%), var(--object-base-y, -50%));
   width: var(--object-w, 12%);
   z-index: 1;
+}
+
+.office-object.pixel-office-object.active {
+  animation:
+    pixel-screen-pulse 1800ms steps(2) infinite,
+    pixel-office-object-busy 1260ms steps(2) infinite;
 }
 
 .office-object.pixel-office-object::before {
@@ -1581,13 +1589,55 @@ p {
   z-index: 2;
 }
 
+.office-object-activity-light {
+  animation: office-object-light-chase 960ms steps(3) infinite;
+  background: var(--sprite-secondary, #fff3c7);
+  border: 2px solid var(--line);
+  box-shadow:
+    8px 0 0 -2px var(--sprite-secondary, #fff3c7),
+    8px 0 0 0 var(--line),
+    16px 0 0 -2px var(--sprite-secondary, #fff3c7),
+    16px 0 0 0 var(--line);
+  display: block;
+  height: 5px;
+  image-rendering: pixelated;
+  left: 7px;
+  pointer-events: none;
+  position: absolute;
+  top: 6px;
+  width: 5px;
+  z-index: 3;
+}
+
+.office-object-status-dot {
+  animation: office-object-status-blink 1220ms steps(2) infinite;
+  background: var(--sprite-accent, #26342d);
+  border: 2px solid var(--line);
+  display: block;
+  height: 7px;
+  image-rendering: pixelated;
+  pointer-events: none;
+  position: absolute;
+  right: 5px;
+  top: -9px;
+  width: 7px;
+  z-index: 3;
+}
+
 .office-object.pixel-office-object.locked {
   animation: none;
   filter: grayscale(0.55);
   opacity: 0.46;
 }
 
+.office-object.pixel-office-object.locked .office-object-activity-light,
+.office-object.pixel-office-object.locked .office-object-status-dot {
+  animation: none;
+  opacity: 0.42;
+}
+
 .office-object.pixel-office-object.object-kind-route {
+  --object-base-x: 0;
   background:
     repeating-linear-gradient(90deg, var(--sprite-primary, #f2cf7f) 0 12px, transparent 12px 18px),
     rgba(255, 247, 223, 0.52);
@@ -1599,12 +1649,23 @@ p {
   display: none;
 }
 
+.office-object.pixel-office-object.object-kind-route .office-object-activity-light {
+  left: 10%;
+  top: 50%;
+}
+
 .office-object.pixel-office-object.object-kind-server::before,
 .office-object.pixel-office-object.object-kind-robotics::before {
   border-radius: 50%;
   height: 12px;
   top: 5px;
   width: 12px;
+}
+
+.office-object.pixel-office-object.object-kind-server .office-object-activity-light,
+.office-object.pixel-office-object.object-kind-robotics .office-object-activity-light,
+.office-object.pixel-office-object.object-kind-chip .office-object-activity-light {
+  animation-duration: 720ms;
 }
 
 .office-object.pixel-office-object.object-kind-launch,
@@ -2368,6 +2429,40 @@ p {
   }
   50% {
     box-shadow: 2px 2px 0 rgba(61, 51, 35, 0.22), 0 0 12px rgba(255, 243, 199, 0.28);
+  }
+}
+
+@keyframes pixel-office-object-busy {
+  0%,
+  100% {
+    transform: translate(var(--object-base-x, -50%), var(--object-base-y, -50%)) translateY(0);
+  }
+  50% {
+    transform: translate(var(--object-base-x, -50%), var(--object-base-y, -50%)) translateY(-2px);
+  }
+}
+
+@keyframes office-object-light-chase {
+  0%,
+  100% {
+    filter: brightness(0.9);
+    opacity: 0.58;
+  }
+  50% {
+    filter: brightness(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes office-object-status-blink {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
   }
 }
 
@@ -11124,6 +11219,8 @@ p {
   button,
   .release-spotlight,
   .office-object.pixel-office-object,
+  .office-object-activity-light,
+  .office-object-status-dot,
   .office-event-reaction,
   .office-workbeat-node,
   .office-workbeat-node::before,
@@ -11723,6 +11820,20 @@ p {
     display: grid;
     min-height: 15px;
     min-width: 28px;
+  }
+
+  .office-object-activity-light {
+    border-width: 1px;
+    height: 4px;
+    top: 5px;
+    width: 4px;
+  }
+
+  .office-object-status-dot {
+    border-width: 1px;
+    height: 6px;
+    top: -7px;
+    width: 6px;
   }
 
   .office-object.pixel-office-object:nth-child(n + 7),
