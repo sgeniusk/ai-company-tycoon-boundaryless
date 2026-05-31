@@ -7,6 +7,19 @@ import { spawn } from "node:child_process";
 const root = process.cwd();
 const version = "0.68-beta-stabilization";
 const reportPath = "reports/qa/v0_68_flow_smoke.md";
+const summaryPath = "reports/qa/v0_68_flow_smoke.json";
+const artifacts = [
+  {
+    id: "markdown_report",
+    path: reportPath,
+    format: "markdown",
+  },
+  {
+    id: "json_summary",
+    path: summaryPath,
+    format: "json",
+  },
+];
 const defaultHost = "127.0.0.1";
 const defaultPort = 5220;
 const defaultChromeCandidates = [
@@ -283,6 +296,7 @@ Status: ${result.status.toUpperCase()}
 - Command: \`npm run qa:v068-flow-smoke\`
 - Version lane: ${result.version}
 - Browser load smoke for the core reloadable beta flow URLs.
+- Writes a deterministic JSON summary for automation-friendly route-level review.
 - Standalone local QA only; not part of \`harness:gate\` because it requires Chrome/Chromium.
 
 ## Environment
@@ -297,6 +311,31 @@ ${routeRows}
 `;
 }
 
+function createSummary(result) {
+  const summary = {
+    version: result.version,
+    status: result.status,
+    baseUrl: result.baseUrl,
+    chromePath: result.chromePath,
+    reportPath: result.reportPath,
+    summaryPath: result.summaryPath,
+    artifacts,
+    totalRoutes: result.totalRoutes,
+    passedRoutes: result.passedRoutes,
+    routes: result.routes.map((route) => ({
+      id: route.id,
+      path: route.path,
+      expectedText: route.expectedText,
+      requiredTexts: route.requiredTexts,
+      status: route.status,
+      domBytes: route.domBytes,
+      failedChecks: route.checks.filter((check) => !check.pass).map((check) => check.id),
+    })),
+  };
+
+  return `${JSON.stringify(summary, null, 2)}\n`;
+}
+
 function printSummary(result) {
   console.log(`Status: ${result.status.toUpperCase()}`);
   console.log(`Version: ${result.version}`);
@@ -304,6 +343,8 @@ function printSummary(result) {
   const reportStatusLabel =
     result.reportFresh === false ? "Report: FAIL" : result.reportFresh === true ? "Report: PASS" : `Report: ${result.reportPath}`;
   console.log(reportStatusLabel);
+  if (result.summaryFresh !== undefined) console.log(result.summaryFresh ? "Summary: PASS" : "Summary: FAIL");
+  else console.log(`Summary: ${result.summaryPath}`);
   for (const route of result.routes) {
     console.log(`- ${route.id}: ${route.status.toUpperCase()} (${route.domBytes} bytes)`);
   }
@@ -311,7 +352,7 @@ function printSummary(result) {
 
 async function main() {
   if (hasArg("--list-json")) {
-    console.log(JSON.stringify({ version, reportPath, routes }, null, 2));
+    console.log(JSON.stringify({ version, reportPath, summaryPath, artifacts, routes }, null, 2));
     return;
   }
 
@@ -344,19 +385,25 @@ async function main() {
       baseUrl,
       chromePath,
       reportPath,
+      summaryPath,
       totalRoutes: inspectedRoutes.length,
       passedRoutes,
       routes: inspectedRoutes,
     };
     const generatedReport = createReport(result);
+    const generatedSummary = createSummary(result);
     const outputPath = resolveProjectPath(reportPath);
+    const summaryOutputPath = resolveProjectPath(summaryPath);
 
     if (checkReport) {
       result.reportFresh = fs.existsSync(outputPath) && fs.readFileSync(outputPath, "utf8") === generatedReport;
-      if (!result.reportFresh) result.status = "fail";
+      result.summaryFresh = fs.existsSync(summaryOutputPath) && fs.readFileSync(summaryOutputPath, "utf8") === generatedSummary;
+      if (!result.reportFresh || !result.summaryFresh) result.status = "fail";
     } else if (!hasArg("--no-write")) {
       fs.mkdirSync(path.dirname(outputPath), { recursive: true });
       fs.writeFileSync(outputPath, generatedReport);
+      fs.mkdirSync(path.dirname(summaryOutputPath), { recursive: true });
+      fs.writeFileSync(summaryOutputPath, generatedSummary);
     }
 
     if (hasArg("--json")) {

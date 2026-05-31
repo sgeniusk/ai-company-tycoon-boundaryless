@@ -12,9 +12,17 @@ interface FlowSmokeRoute {
   requiredTexts: string[];
 }
 
+interface FlowSmokeArtifact {
+  id: string;
+  path: string;
+  format: string;
+}
+
 interface FlowSmokeListResult {
   version: string;
   reportPath: string;
+  summaryPath: string;
+  artifacts: FlowSmokeArtifact[];
   routes: FlowSmokeRoute[];
 }
 
@@ -42,6 +50,19 @@ describe("v0.68 browser flow smoke QA script", () => {
 
     expect(result.version).toBe("0.68-beta-stabilization");
     expect(result.reportPath).toBe("reports/qa/v0_68_flow_smoke.md");
+    expect(result.summaryPath).toBe("reports/qa/v0_68_flow_smoke.json");
+    expect(result.artifacts).toEqual([
+      {
+        id: "markdown_report",
+        path: "reports/qa/v0_68_flow_smoke.md",
+        format: "markdown",
+      },
+      {
+        id: "json_summary",
+        path: "reports/qa/v0_68_flow_smoke.json",
+        format: "json",
+      },
+    ]);
     expect(result.routes).toEqual([
       {
         id: "fresh",
@@ -101,6 +122,7 @@ describe("v0.68 browser flow smoke QA script", () => {
     expect(source).toContain("--virtual-time-budget=8000");
     expect(source).toContain("--check");
     expect(source).toContain("reports/qa/v0_68_flow_smoke.md");
+    expect(source).toContain("reports/qa/v0_68_flow_smoke.json");
     expect(source).toContain("Report: FAIL");
     expect(source).toContain("npm run qa:v068-flow-smoke");
   });

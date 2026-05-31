@@ -6,6 +6,7 @@ Status: PASS
 - Command: `npm run qa:v068-flow-smoke`
 - Version lane: 0.68-beta-stabilization
 - Browser load smoke for the core reloadable beta flow URLs.
+- Writes a deterministic JSON summary for automation-friendly route-level review.
 - Standalone local QA only; not part of `harness:gate` because it requires Chrome/Chromium.
 
 ## Environment
