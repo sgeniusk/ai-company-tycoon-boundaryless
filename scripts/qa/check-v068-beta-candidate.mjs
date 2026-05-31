@@ -7,6 +7,18 @@ const root = process.cwd();
 const version = "0.68-beta-stabilization";
 const reportPath = "reports/qa/v0_68_beta_candidate.md";
 const summaryPath = "reports/qa/v0_68_beta_candidate.json";
+const artifacts = [
+  {
+    id: "markdown_report",
+    path: reportPath,
+    format: "markdown",
+  },
+  {
+    id: "json_summary",
+    path: summaryPath,
+    format: "json",
+  },
+];
 const checks = [
   {
     id: "harness_gate",
@@ -93,6 +105,7 @@ function createSummary(result) {
     status: result.status,
     reportPath: result.reportPath,
     summaryPath: result.summaryPath,
+    artifacts,
     totalChecks: result.totalChecks,
     passedChecks: result.passedChecks,
     checks: result.checks.map((check) => ({
@@ -125,6 +138,7 @@ if (hasArg("--list-json")) {
     version,
     reportPath,
     summaryPath,
+    artifacts,
     checks: checks.map((check) => ({ id: check.id, command: check.command })),
   }, null, 2));
   process.exit(0);

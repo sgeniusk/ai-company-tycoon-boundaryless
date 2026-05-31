@@ -10,10 +10,17 @@ interface BetaCandidateCheck {
   command: string;
 }
 
+interface BetaCandidateArtifact {
+  id: string;
+  path: string;
+  format: string;
+}
+
 interface BetaCandidateListResult {
   version: string;
   reportPath: string;
   summaryPath: string;
+  artifacts: BetaCandidateArtifact[];
   checks: BetaCandidateCheck[];
 }
 
@@ -43,6 +50,18 @@ describe("v0.68 beta candidate local QA script", () => {
       version: "0.68-beta-stabilization",
       reportPath: "reports/qa/v0_68_beta_candidate.md",
       summaryPath: "reports/qa/v0_68_beta_candidate.json",
+      artifacts: [
+        {
+          id: "markdown_report",
+          path: "reports/qa/v0_68_beta_candidate.md",
+          format: "markdown",
+        },
+        {
+          id: "json_summary",
+          path: "reports/qa/v0_68_beta_candidate.json",
+          format: "json",
+        },
+      ],
       checks: [
         {
           id: "harness_gate",

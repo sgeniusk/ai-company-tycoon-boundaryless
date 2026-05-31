@@ -3,6 +3,18 @@
   "status": "pass",
   "reportPath": "reports/qa/v0_68_beta_candidate.md",
   "summaryPath": "reports/qa/v0_68_beta_candidate.json",
+  "artifacts": [
+    {
+      "id": "markdown_report",
+      "path": "reports/qa/v0_68_beta_candidate.md",
+      "format": "markdown"
+    },
+    {
+      "id": "json_summary",
+      "path": "reports/qa/v0_68_beta_candidate.json",
+      "format": "json"
+    }
+  ],
   "totalChecks": 2,
   "passedChecks": 2,
   "checks": [
