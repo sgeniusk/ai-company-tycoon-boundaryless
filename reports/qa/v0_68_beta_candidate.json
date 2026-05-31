@@ -23,7 +23,7 @@
       "command": "npm run harness:gate < /dev/null",
       "status": "pass",
       "exitStatus": 0,
-      "evidence": "53 passed (53); 597 passed (597); 15/15 checks (100%); build passed",
+      "evidence": "53 passed (53); 598 passed (598); 15/15 checks (100%); build passed",
       "diagnostic": "exit 0; Test Files  53 passed (53)"
     },
     {
@@ -31,7 +31,7 @@
       "command": "npm run qa:v068-flow-smoke:check < /dev/null",
       "status": "pass",
       "exitStatus": 0,
-      "evidence": "8/8; Report: PASS",
+      "evidence": "8/8; Report: PASS; Summary: PASS",
       "diagnostic": "exit 0; Report: PASS"
     }
   ]

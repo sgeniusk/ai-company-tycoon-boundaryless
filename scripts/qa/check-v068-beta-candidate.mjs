@@ -74,7 +74,8 @@ function summarizeOutput(id, output) {
   if (id === "flow_smoke") {
     const routes = output.match(/Routes:\s+([^\n]+)/)?.[1]?.trim() ?? "unknown";
     const report = output.includes("Report: PASS") ? "Report: PASS" : "Report: FAIL";
-    return `${routes}; ${report}`;
+    const summary = output.includes("Summary: PASS") ? "Summary: PASS" : output.includes("Summary: FAIL") ? "Summary: FAIL" : "Summary: unknown";
+    return `${routes}; ${report}; ${summary}`;
   }
 
   return output.split("\n").find((line) => line.trim())?.trim() ?? "no output";
@@ -90,10 +91,12 @@ function summarizeDiagnostic(output, exitStatus) {
     /error TS\d+:/,
     /^FAIL\b/,
     /Test Files\s+.*failed/,
+    /^Summary:\s+FAIL/,
     /^Report:\s+FAIL/,
     /^Status:\s+FAIL/,
     /Test Files\s+.*passed/,
     /^Report:\s+PASS/,
+    /^Summary:\s+PASS/,
   ];
   const diagnosticLine =
     priorityPatterns.map((pattern) => lines.find((line) => pattern.test(line))).find(Boolean) ?? lines[0] ?? "no output";

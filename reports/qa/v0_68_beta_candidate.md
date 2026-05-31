@@ -11,5 +11,5 @@ Status: PASS
 ## Checks
 | ID | Command | Status | Exit | Evidence | Diagnostic |
 | --- | --- | --- | ---: | --- | --- |
-| harness_gate | npm run harness:gate < /dev/null | PASS | 0 | 53 passed (53); 597 passed (597); 15/15 checks (100%); build passed | exit 0; Test Files  53 passed (53) |
-| flow_smoke | npm run qa:v068-flow-smoke:check < /dev/null | PASS | 0 | 8/8; Report: PASS | exit 0; Report: PASS |
+| harness_gate | npm run harness:gate < /dev/null | PASS | 0 | 53 passed (53); 598 passed (598); 15/15 checks (100%); build passed | exit 0; Test Files  53 passed (53) |
+| flow_smoke | npm run qa:v068-flow-smoke:check < /dev/null | PASS | 0 | 8/8; Report: PASS; Summary: PASS | exit 0; Report: PASS |

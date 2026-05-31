@@ -108,6 +108,7 @@ describe("v0.68 beta candidate local QA script", () => {
     expect(source).toContain("reports/qa/v0_68_beta_candidate.md");
     expect(source).toContain("reports/qa/v0_68_beta_candidate.json");
     expect(source).toContain("Report: FAIL");
+    expect(source).toContain("Summary: FAIL");
   });
 
   it("keeps failure diagnostics machine-readable when child gates fail", () => {
@@ -180,6 +181,45 @@ exit 9
 
     expect(result.checks.find((check) => check.id === "harness_gate")?.diagnostic).toBe(
       "exit 2; src/game/example.test.ts(1,1): error TS2305: boom",
+    );
+  });
+
+  it("surfaces downstream flow-smoke summary freshness in candidate evidence", () => {
+    const result = runCandidateWithFakeNpm(`#!/bin/sh
+if [ "$1 $2" = "run harness:gate" ]; then
+  echo "Test Files  53 passed (53)"
+  echo "Tests  597 passed (597)"
+  echo "Readiness: 15/15 checks (100%)"
+  echo "✓ built in 900ms"
+  exit 0
+fi
+if [ "$1 $2" = "run qa:v068-flow-smoke:check" ]; then
+  echo "Status: FAIL"
+  echo "Routes: 8/8"
+  echo "Report: PASS"
+  echo "Summary: FAIL"
+  exit 8
+fi
+echo "unexpected npm $*" >&2
+exit 9
+`) as {
+      status: string;
+      checks: Array<{
+        id: string;
+        status: string;
+        evidence: string;
+        diagnostic: string;
+      }>;
+    };
+    const flowSmoke = result.checks.find((check) => check.id === "flow_smoke");
+
+    expect(result.status).toBe("fail");
+    expect(flowSmoke).toEqual(
+      expect.objectContaining({
+        status: "fail",
+        evidence: "8/8; Report: PASS; Summary: FAIL",
+        diagnostic: "exit 8; Summary: FAIL",
+      }),
     );
   });
 });
