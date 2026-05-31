@@ -950,6 +950,18 @@
     }
   ],
   "sprite_sheets": {
+    "commercial_ui_v071_atlas": {
+      "path": "/assets/ui/v071-commercial-ui-atlas.png",
+      "source_status": "final",
+      "density": 1,
+      "frame_width": 48,
+      "frame_height": 48,
+      "columns": 8,
+      "rows": 3,
+      "frame_count": 24,
+      "preview_frames": [0, 1, 2, 5, 8, 10, 16, 18, 23],
+      "slice_mode": "row-major commercial UI icon atlas"
+    },
     "agents_v053_final_art_import": {
       "path": "/assets/sprites/v053-agents-event-poses-final.png",
       "source_path": "/assets/sprites/source/v053-agents-event-poses-final-source.png",

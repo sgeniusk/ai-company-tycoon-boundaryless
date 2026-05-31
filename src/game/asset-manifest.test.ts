@@ -222,6 +222,25 @@ describe("alpha v0.9 pixel asset manifest", () => {
     }
   });
 
+  it("ships a commercial UI icon atlas for first-screen chrome controls", () => {
+    const atlas = assetManifest.sprite_sheets.commercial_ui_v071_atlas;
+    const atlasScriptUrl = new URL("../../scripts/assets/generate-v071-commercial-ui-atlas.mjs", import.meta.url);
+
+    expect(atlas).toMatchObject({
+      path: "/assets/ui/v071-commercial-ui-atlas.png",
+      source_status: "final",
+      frame_width: 48,
+      frame_height: 48,
+      columns: 8,
+      rows: 3,
+      frame_count: 24,
+      slice_mode: "row-major commercial UI icon atlas",
+    });
+    expect(readPngSize(atlas.path)).toEqual({ width: 384, height: 144 });
+    expect(packageJson.scripts["assets:v071"]).toBe("node scripts/assets/generate-v071-commercial-ui-atlas.mjs");
+    expect(readFileSync(atlasScriptUrl, "utf8")).toContain("v071-commercial-ui-atlas.png");
+  });
+
   it("assigns every competitor a logo identity hook", () => {
     const identityIds = new Set(assetManifest.competitor_identities.map((identity) => identity.competitor_id));
 

@@ -68,6 +68,19 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*900px\)[\s\S]*\.top-bar\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("skins bottom HUD resources, command buttons, and menu rails with a UI icon atlas", () => {
+    expect(gameChrome).toContain("commercial_ui_v071_atlas");
+    expect(gameChrome).toContain("getCommercialUiIconStyle");
+    expect(gameChrome).toContain("resource-icon");
+    expect(gameChrome).toContain("command-icon");
+    expect(gameChrome).toContain("menu-icon");
+    expect(appCss).toMatch(/\.ui-atlas-icon\s*{[^}]*background-image:\s*var\(--ui-icon-atlas\)/s);
+    expect(appCss).toMatch(/\.ui-atlas-icon\s*{[^}]*background-position:\s*var\(--ui-icon-x\)\s+var\(--ui-icon-y\)/s);
+    expect(appCss).toMatch(/\.resource-tile\s*{[^}]*grid-template-columns:\s*auto\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.command-row button\s*{[^}]*grid-template-columns:\s*auto\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.main-menu button\s*{[^}]*grid-template-columns:\s*auto\s+minmax\(0,\s*1fr\)/s);
+  });
+
   it("makes the first 10 seconds read as a garage AI company game", () => {
     expect(gameChrome).toContain("OpeningFantasySignal");
     expect(gameChrome).toContain("opening-fantasy-signal");

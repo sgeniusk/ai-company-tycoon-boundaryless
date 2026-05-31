@@ -142,6 +142,79 @@ function getAssetSheet(sheetId?: string): SpriteSheetDefinition | undefined {
   return assetManifest.sprite_sheets[sheetId];
 }
 
+const commercialUiAtlasId = "commercial_ui_v071_atlas";
+const commercialUiIconSize = 24;
+const commercialUiIconFrames = {
+  cash: [0, 0],
+  users: [1, 0],
+  compute: [2, 0],
+  data: [3, 0],
+  talent: [4, 0],
+  trust: [5, 0],
+  hype: [6, 0],
+  automation: [7, 0],
+  company: [0, 1],
+  products: [1, 1],
+  deck: [2, 1],
+  agents: [3, 1],
+  research: [4, 1],
+  shop: [5, 1],
+  competition: [6, 1],
+  log: [7, 1],
+  next: [0, 2],
+  newGame: [1, 2],
+  save: [2, 2],
+  load: [3, 2],
+  locale: [4, 2],
+  market: [5, 2],
+  warning: [6, 2],
+  result: [7, 2],
+} as const;
+type CommercialUiIconId = keyof typeof commercialUiIconFrames;
+
+const resourceIconIds: Record<string, CommercialUiIconId> = {
+  cash: "cash",
+  users: "users",
+  compute: "compute",
+  data: "data",
+  talent: "talent",
+  trust: "trust",
+  hype: "hype",
+  automation: "automation",
+};
+
+const menuIconIds: Record<MenuId, CommercialUiIconId> = {
+  company: "company",
+  products: "products",
+  deck: "deck",
+  agents: "agents",
+  research: "research",
+  shop: "shop",
+  competition: "competition",
+  log: "log",
+};
+
+function getCommercialUiIconStyle(iconId: CommercialUiIconId): CSSProperties {
+  const sheet = getAssetSheet(commercialUiAtlasId);
+  const [column, row] = commercialUiIconFrames[iconId];
+
+  return {
+    "--ui-icon-atlas": `url(${sheet?.path ?? "/assets/ui/v071-commercial-ui-atlas.png"})`,
+    "--ui-icon-x": `${-column * commercialUiIconSize}px`,
+    "--ui-icon-y": `${-row * commercialUiIconSize}px`,
+  } as CSSProperties;
+}
+
+function CommercialUiIcon({ className = "", iconId }: { className?: string; iconId: CommercialUiIconId }) {
+  return (
+    <i
+      aria-hidden="true"
+      className={["ui-atlas-icon", className].filter(Boolean).join(" ")}
+      style={getCommercialUiIconStyle(iconId)}
+    />
+  );
+}
+
 function getSpriteSheetFrameStyle(
   sheet: SpriteSheetDefinition,
   frameIndex: number,
@@ -364,6 +437,7 @@ export function ResourceStrip({ gameState }: { gameState: GameState }) {
 
         return (
           <article className={tileClass} key={resourceId}>
+            <CommercialUiIcon className="resource-icon" iconId={resourceIconIds[resourceId] ?? "market"} />
             <span>{resources[resourceId].name}</span>
             <strong>{formatResource(resourceId, gameState.resources[resourceId] ?? 0)}</strong>
             <small className={`resource-delta ${deltaTone}`}>
@@ -2640,18 +2714,26 @@ export function CommandRow({
 
   return (
     <section className="command-row" aria-label="주요 명령">
-      <button className="primary-action" onClick={() => setGameState((current) => advanceMonth(current))}>
-        다음 달
+      <button
+        aria-label="다음 달 진행"
+        className="primary-action command-action"
+        onClick={() => setGameState((current) => advanceMonth(current))}
+      >
+        <CommercialUiIcon className="command-icon" iconId="next" />
+        <span>다음 달</span>
       </button>
       <StrategyHand gameState={gameState} />
-      <button className="secondary-action" onClick={() => setGameState(createInitialState())}>
-        새 게임
+      <button aria-label="새 게임" className="secondary-action command-action" onClick={() => setGameState(createInitialState())}>
+        <CommercialUiIcon className="command-icon" iconId="newGame" />
+        <span>새 게임</span>
       </button>
-      <button className="secondary-action" onClick={onSave}>
-        저장
+      <button aria-label="저장" className="secondary-action command-action" onClick={onSave}>
+        <CommercialUiIcon className="command-icon" iconId="save" />
+        <span>저장</span>
       </button>
-      <button className="secondary-action" onClick={onLoad}>
-        불러오기
+      <button aria-label="불러오기" className="secondary-action command-action" onClick={onLoad}>
+        <CommercialUiIcon className="command-icon" iconId="load" />
+        <span>불러오기</span>
       </button>
       <p>활성 제품: {activeProducts.length ? activeProducts.map((product) => product.name).join(", ") : "없음"}.</p>
     </section>
@@ -2713,6 +2795,7 @@ export function MainMenu({
         onClick={() => handleMenuClick(menu.id)}
         type="button"
       >
+        <CommercialUiIcon className="menu-icon" iconId={menuIconIds[menu.id]} />
         <strong>{menu.label}</strong>
         <span>{menu.hint}</span>
       </button>
@@ -2729,6 +2812,7 @@ export function MainMenu({
           onClick={() => setMobileMoreOpen((current) => !current)}
           type="button"
         >
+          <CommercialUiIcon className="menu-icon" iconId="result" />
           <strong>더보기</strong>
           <span>보조</span>
         </button>
