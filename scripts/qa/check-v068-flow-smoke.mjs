@@ -21,41 +21,49 @@ const routes = [
     id: "fresh",
     path: "/?scenario=fresh",
     expectedText: "첫 화면",
+    requiredTexts: ["차고 AI 회사를 시작했어요"],
   },
   {
     id: "beta-readiness",
     path: "/?scenario=beta-readiness",
     expectedText: "베타 준비 체크 QA",
+    requiredTexts: ["베타 준비 체크", "결말 루트"],
   },
   {
     id: "beta-readiness-complete",
     path: "/?scenario=beta-readiness-complete",
     expectedText: "베타 준비 완료 도감 QA",
+    requiredTexts: ["목표 엔딩 0개 남음", "모든 목표 엔딩 발견"],
   },
   {
     id: "ending-fallback-final",
     path: "/?scenario=ending-fallback-final",
     expectedText: "결과 전용 엔딩 QA",
+    requiredTexts: ["다시 차고로", "결과 전용 기록"],
   },
   {
     id: "ending-nearmiss-final",
     path: "/?scenario=ending-nearmiss-final",
     expectedText: "아쉬운 엔딩 재도전 QA",
+    requiredTexts: ["아쉬운 엔딩", "AGI 안전 협정"],
   },
   {
     id: "ten-year-ending-route-start",
     path: "/?scenario=ten-year-ending-route-start",
     expectedText: "10년 엔딩 목표 런 QA",
+    requiredTexts: ["엔딩 목표 런", "목표 엔딩"],
   },
   {
     id: "ten-year-next-run",
     path: "/?scenario=ten-year-next-run",
     expectedText: "10년 엔딩 다음 런 QA",
+    requiredTexts: ["다음 런", "도감"],
   },
   {
     id: "ending-nearmiss-retry-start",
     path: "/?scenario=ending-nearmiss-retry-start",
     expectedText: "아쉬운 엔딩 목표 런 QA",
+    requiredTexts: ["목표 엔딩", "AGI 안전 협정"],
   },
 ];
 
@@ -140,11 +148,16 @@ async function stopViteServer(child) {
   ]);
 }
 
-function hasRequiredDomMarkers(dom, expectedText) {
-  return dom.includes("app-shell") && dom.includes("경계 없는 회사") && dom.includes(expectedText);
+function hasRequiredDomMarkers(dom, route) {
+  return (
+    dom.includes("app-shell") &&
+    dom.includes("경계 없는 회사") &&
+    dom.includes(route.expectedText) &&
+    route.requiredTexts.every((text) => dom.includes(text))
+  );
 }
 
-function runChromeDom(chromePath, url, expectedText) {
+function runChromeDom(chromePath, url, route) {
   const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "act-v068-flow-smoke-"));
 
   return new Promise((resolve, reject) => {
@@ -200,7 +213,7 @@ function runChromeDom(chromePath, url, expectedText) {
 
     child.stdout.on("data", (chunk) => {
       stdout += chunk.toString("utf8");
-      if (stdout.includes("</html>") || hasRequiredDomMarkers(stdout, expectedText)) finish(resolve, stdout);
+      if (stdout.includes("</html>") || hasRequiredDomMarkers(stdout, route)) finish(resolve, stdout);
     });
     child.stderr.on("data", (chunk) => {
       stderr += chunk.toString("utf8");
@@ -228,11 +241,16 @@ function getRouteUrl(baseUrl, routePath) {
 
 async function inspectRoute(chromePath, baseUrl, route) {
   const url = getRouteUrl(baseUrl, route.path);
-  const dom = await runChromeDom(chromePath, url, route.expectedText);
+  const dom = await runChromeDom(chromePath, url, route);
   const checks = [
     { id: "app_shell", label: "App shell rendered", pass: dom.includes("app-shell") },
     { id: "title", label: "Game title rendered", pass: dom.includes("경계 없는 회사") },
     { id: "scenario_label", label: "Scenario label rendered", pass: dom.includes(route.expectedText) },
+    ...route.requiredTexts.map((text) => ({
+      id: `required_text_${text}`,
+      label: `Required text: ${text}`,
+      pass: dom.includes(text),
+    })),
     {
       id: "no_vite_error",
       label: "No Vite/runtime error overlay",
