@@ -101,7 +101,7 @@ describe("v0.68 browser flow smoke QA script", () => {
         id: "ten-year-ending-route-start",
         path: "/?scenario=ten-year-ending-route-start",
         expectedText: "10년 엔딩 목표 런 QA",
-        requiredTexts: ["엔딩 목표 런", "목표 엔딩"],
+        requiredTexts: ["엔딩 목표 런", "목표 엔딩", "이번 세계가 열렸습니다"],
       },
       {
         id: "ten-year-next-run",
@@ -113,7 +113,7 @@ describe("v0.68 browser flow smoke QA script", () => {
         id: "ending-nearmiss-retry-start",
         path: "/?scenario=ending-nearmiss-retry-start",
         expectedText: "아쉬운 엔딩 목표 런 QA",
-        requiredTexts: ["목표 엔딩", "AGI 안전 협정"],
+        requiredTexts: ["목표 엔딩", "AGI 안전 협정", "이번 세계가 열렸습니다"],
       },
     ]);
   });
@@ -125,6 +125,17 @@ describe("v0.68 browser flow smoke QA script", () => {
     expect(finalResultRoutes.map((route) => route.id)).toEqual(["ending-fallback-final", "ending-nearmiss-final"]);
     for (const route of finalResultRoutes) {
       expect(route.forbiddenTexts).toEqual(["이번 세계가 열렸습니다", "이 세계로 시작"]);
+    }
+  });
+
+  it("requires run-start and retry-start routes to prove the world reveal or run briefing is present", () => {
+    const result = listFlowSmokeRoutes();
+    const routeStartGuards = ["이번 세계가 열렸습니다", "이 세계로 시작", "새 런 브리핑", "다음 런 브리핑"];
+    const startRoutes = result.routes.filter((route) => route.path.includes("-route-start") || route.path.includes("-retry-start"));
+
+    expect(startRoutes.map((route) => route.id)).toEqual(["ten-year-ending-route-start", "ending-nearmiss-retry-start"]);
+    for (const route of startRoutes) {
+      expect(route.requiredTexts.some((text) => routeStartGuards.includes(text))).toBe(true);
     }
   });
 

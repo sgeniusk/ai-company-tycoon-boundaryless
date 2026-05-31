@@ -22,6 +22,7 @@ const defaultChromeCandidates = [
   "/usr/bin/chromium-browser",
 ];
 const finalResultForbiddenTexts = ["이번 세계가 열렸습니다", "이 세계로 시작"];
+const startRouteRequiredTexts = ["이번 세계가 열렸습니다"];
 const baseRoutes = [
   {
     id: "fresh",
@@ -72,9 +73,15 @@ const baseRoutes = [
     requiredTexts: ["목표 엔딩", "AGI 안전 협정"],
   },
 ];
-const routes = baseRoutes.map((route) =>
-  route.path.includes("-final") ? { ...route, forbiddenTexts: finalResultForbiddenTexts } : route,
-);
+const routes = baseRoutes.map((route) => {
+  const finalResultGuard = route.path.includes("-final") ? { forbiddenTexts: finalResultForbiddenTexts } : {};
+  const startRouteGuard =
+    route.path.includes("-route-start") || route.path.includes("-retry-start")
+      ? { requiredTexts: [...route.requiredTexts, ...startRouteRequiredTexts] }
+      : {};
+
+  return { ...route, ...finalResultGuard, ...startRouteGuard };
+});
 
 function hasArg(name) {
   return process.argv.includes(name);

@@ -133,7 +133,10 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
             <strong>{endingReplayBrief.title}</strong>
             <em>{endingReplayBrief.rewardStatusLabel}</em>
             <small>{endingReplayBrief.rewardProgressLabel}</small>
-            <small>{endingReplayBrief.openingMoves[0]}</small>
+            <small>목표 루트: {endingReplayBrief.targetLabels.slice(0, 3).join(" / ")}</small>
+            {endingReplayBrief.openingMoves.slice(0, 2).map((move) => (
+              <small key={move}>{move}</small>
+            ))}
           </div>
         )}
         <div className="world-reveal-grid" aria-label="이번 런 모디파이어">

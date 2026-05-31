@@ -1143,9 +1143,11 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(worldRevealModal).toContain("getActiveEndingReplayBrief");
     expect(worldRevealModal).toContain("world-reveal-ending-target");
     expect(worldRevealModal).toContain("목표 엔딩");
+    expect(worldRevealModal).toContain("목표 루트");
+    expect(worldRevealModal).toContain("endingReplayBrief.targetLabels.slice(0, 3)");
     expect(worldRevealModal).toContain("endingReplayBrief.rewardStatusLabel");
     expect(worldRevealModal).toContain("endingReplayBrief.rewardProgressLabel");
-    expect(worldRevealModal).toContain("endingReplayBrief.openingMoves");
+    expect(worldRevealModal).toContain("endingReplayBrief.openingMoves.slice(0, 2)");
     expect(appCss).toMatch(/\.world-reveal-ending-target\s*{[^}]*display:\s*grid/s);
   });
 

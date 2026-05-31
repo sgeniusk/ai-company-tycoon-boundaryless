@@ -93,10 +93,11 @@
       "expectedText": "10년 엔딩 목표 런 QA",
       "requiredTexts": [
         "엔딩 목표 런",
-        "목표 엔딩"
+        "목표 엔딩",
+        "이번 세계가 열렸습니다"
       ],
       "status": "pass",
-      "domBytes": 262144,
+      "domBytes": 314181,
       "failedChecks": []
     },
     {
@@ -117,10 +118,11 @@
       "expectedText": "아쉬운 엔딩 목표 런 QA",
       "requiredTexts": [
         "목표 엔딩",
-        "AGI 안전 협정"
+        "AGI 안전 협정",
+        "이번 세계가 열렸습니다"
       ],
       "status": "pass",
-      "domBytes": 313418,
+      "domBytes": 313536,
       "failedChecks": []
     }
   ]

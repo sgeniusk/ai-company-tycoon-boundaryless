@@ -22,6 +22,6 @@ Status: PASS
 | beta-readiness-complete | `/?scenario=beta-readiness-complete` | PASS | 262144 | - |
 | ending-fallback-final | `/?scenario=ending-fallback-final` | PASS | 262145 | - |
 | ending-nearmiss-final | `/?scenario=ending-nearmiss-final` | PASS | 262144 | - |
-| ten-year-ending-route-start | `/?scenario=ten-year-ending-route-start` | PASS | 262144 | - |
+| ten-year-ending-route-start | `/?scenario=ten-year-ending-route-start` | PASS | 314181 | - |
 | ten-year-next-run | `/?scenario=ten-year-next-run` | PASS | 262145 | - |
-| ending-nearmiss-retry-start | `/?scenario=ending-nearmiss-retry-start` | PASS | 313418 | - |
+| ending-nearmiss-retry-start | `/?scenario=ending-nearmiss-retry-start` | PASS | 313536 | - |
