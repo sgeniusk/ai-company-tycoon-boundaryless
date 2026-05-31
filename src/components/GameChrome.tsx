@@ -2722,7 +2722,7 @@ export function EventPanels({
           className={`event-panel staff-event-panel incident-screen-moment severity-${primaryStaffIncident.severity}`}
           aria-label="직원 사건"
         >
-          <div>
+          <div className="event-panel-copy">
             <p className="eyebrow">직원 화면 사건</p>
             <h2>{primaryStaffIncident.title}</h2>
             <p>{primaryStaffIncident.description}</p>
@@ -2740,7 +2740,7 @@ export function EventPanels({
                 type="button"
               >
                 <strong>{option.label}</strong>
-                <span>{option.effectLabel}</span>
+                <span className="event-choice-summary">{option.effectLabel}</span>
               </button>
             ))}
           </div>
@@ -2749,7 +2749,7 @@ export function EventPanels({
 
       {gameState.currentRivalEvent && (
         <section className="event-panel rival-event-panel incident-screen-moment" aria-label="경쟁사 이벤트">
-          <div>
+          <div className="event-panel-copy">
             <p className="eyebrow">경쟁사 화면 사건</p>
             <h2>{t(gameState.currentRivalEvent.name_key, locale)}</h2>
             <p>{t(gameState.currentRivalEvent.description_key, locale)}</p>
@@ -2763,7 +2763,7 @@ export function EventPanels({
             {gameState.currentRivalEvent.choices.map((choice) => (
               <button key={choice.id} onClick={() => setGameState((current) => resolveRivalEventChoice(choice, current))}>
                 <strong>{t(choice.text_key, locale)}</strong>
-                <span>{t(choice.description_key, locale)}</span>
+                <span className="event-choice-summary">{t(choice.description_key, locale)}</span>
               </button>
             ))}
           </div>
@@ -2772,7 +2772,7 @@ export function EventPanels({
 
       {gameState.currentEvent && (
         <section className="event-panel" aria-label="월간 이벤트">
-          <div>
+          <div className="event-panel-copy">
             <p className="eyebrow">긴급 이슈</p>
             <h2>{gameState.currentEvent.name}</h2>
             <p>{gameState.currentEvent.description}</p>
@@ -2781,7 +2781,7 @@ export function EventPanels({
             {gameState.currentEvent.choices.map((choice) => (
               <button key={choice.id} onClick={() => setGameState((current) => resolveEventChoice(choice, current))}>
                 <strong>{choice.text}</strong>
-                <span>{choice.description}</span>
+                <span className="event-choice-summary">{choice.description}</span>
               </button>
             ))}
           </div>

@@ -355,6 +355,19 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.event-moment-meta\s*{[^}]*display:\s*block/s);
   });
 
+  it("keeps incident screen moments as compact office ribbons so actors stay visible", () => {
+    expect(gameChrome).toContain("event-panel-copy");
+    expect(gameChrome).toContain("event-choice-summary");
+    expect(appCss).toMatch(/\.event-stack\s*{[^}]*max-height:\s*clamp\(112px,\s*22%,\s*168px\)/s);
+    expect(appCss).toMatch(/\.event-stack:hover,\s*\.event-stack:focus-within\s*{[^}]*max-height:\s*min\(42%,\s*280px\)/s);
+    expect(appCss).toMatch(/\.incident-screen-moment\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(300px,\s*0\.9fr\)/s);
+    expect(appCss).toMatch(/\.event-panel-copy\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.incident-screen-moment p\s*{[^}]*-webkit-line-clamp:\s*2/s);
+    expect(appCss).toMatch(/\.event-choice-summary\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.event-stack\s*{[^}]*max-height:\s*clamp\(84px,\s*18dvh,\s*138px\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.incident-screen-moment\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+  });
+
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);

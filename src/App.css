@@ -3276,16 +3276,22 @@ p {
   gap: 8px;
   grid-area: stage;
   justify-self: stretch;
-  max-height: 42%;
+  max-height: clamp(112px, 22%, 168px);
   min-height: 0;
-  overflow: auto;
-  padding: 10px;
+  overflow: hidden;
+  padding: 8px 10px 10px;
   pointer-events: none;
   z-index: 6;
 }
 
 .event-stack:empty {
   display: none;
+}
+
+.event-stack:hover,
+.event-stack:focus-within {
+  max-height: min(42%, 280px);
+  overflow: auto;
 }
 
 .first-ten-minute-roadmap li.complete {
@@ -4901,15 +4907,23 @@ p {
   align-items: center;
   background: #ffe6d8;
   display: grid;
-  gap: 12px;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  padding: 12px;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.9fr);
+  min-height: 0;
+  padding: 8px 10px;
   pointer-events: auto;
 }
 
 .incident-screen-moment {
   border-width: 3px;
   box-shadow: 0 4px 0 rgba(61, 51, 35, 0.36);
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr);
+}
+
+.event-panel-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
 }
 
 .incident-screen-moment .event-choices {
@@ -4917,17 +4931,26 @@ p {
 }
 
 .incident-screen-moment .event-choices button {
-  min-height: 46px;
-  padding: 7px 9px;
+  min-height: 40px;
+  padding: 6px 8px;
 }
 
 .incident-screen-moment h2 {
-  font-size: 1rem;
+  font-size: 0.92rem;
+  line-height: 1.08;
+  margin-bottom: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .incident-screen-moment p {
-  font-size: 0.78rem;
-  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  font-size: 0.72rem;
+  line-height: 1.24;
+  overflow: hidden;
 }
 
 .rival-event-panel {
@@ -4950,7 +4973,7 @@ p {
 
 .event-panel h2 {
   color: var(--red);
-  font-size: 1.15rem;
+  font-size: 0.96rem;
 }
 
 .staff-event-panel h2 {
@@ -4976,15 +4999,16 @@ p {
 
 .event-choices {
   display: grid;
-  gap: 8px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .event-choices button {
   background: #fffaf0;
   display: grid;
-  gap: 4px;
-  min-height: 54px;
-  padding: 8px 10px;
+  gap: 2px;
+  min-height: 38px;
+  padding: 6px 8px;
   text-align: left;
 }
 
@@ -4995,7 +5019,21 @@ p {
 
 .event-choices span {
   color: #705a38;
-  font-size: 0.78rem;
+  font-size: 0.66rem;
+}
+
+.event-choices strong,
+.event-choice-summary {
+  line-height: 1.08;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-choice-summary {
+  display: grid;
+  font-weight: 900;
 }
 
 .command-row {
@@ -10994,9 +11032,57 @@ p {
 
   .event-stack {
     grid-area: stage;
-    max-height: 35%;
+    max-height: clamp(84px, 18dvh, 138px);
+    overflow: hidden;
+    padding: 6px 8px;
+  }
+
+  .event-stack:hover,
+  .event-stack:focus-within {
+    max-height: 28dvh;
     overflow: auto;
-    padding: 8px;
+  }
+
+  .event-panel,
+  .incident-screen-moment {
+    gap: 5px;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 7px;
+  }
+
+  .event-panel-copy .eyebrow {
+    display: none;
+  }
+
+  .incident-screen-moment h2 {
+    font-size: 0.84rem;
+  }
+
+  .incident-screen-moment p {
+    -webkit-line-clamp: 1;
+  }
+
+  .event-moment-meta {
+    font-size: 0.54rem;
+    margin-top: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .event-choices,
+  .rival-event-panel .event-choices {
+    gap: 4px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .event-choices button {
+    min-height: 30px;
+    padding: 5px 6px;
+  }
+
+  .event-choice-summary {
+    display: none;
   }
 
   .main-menu {
