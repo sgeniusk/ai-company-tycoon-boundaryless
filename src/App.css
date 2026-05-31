@@ -1953,6 +1953,15 @@ p {
   overflow: auto;
 }
 
+.stage-side-panel.tab-results {
+  align-content: start;
+  grid-auto-rows: max-content;
+}
+
+.stage-side-panel.tab-results > article {
+  overflow: visible;
+}
+
 .company-stage,
 .monthly-report,
 .guidance-card,
@@ -3948,6 +3957,18 @@ p {
   line-height: 1.25;
 }
 
+.beta-completion-aftermath {
+  background: rgba(255, 253, 245, 0.1);
+  border-left: 3px solid #f2cf7f;
+  color: #fff8d6;
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+  padding: 7px;
+}
+
 .beta-completion-crest-grid {
   display: grid;
   gap: 6px;
@@ -4021,6 +4042,85 @@ p {
   color: #4d4639;
   font-size: 0.74rem;
   line-height: 1.3;
+}
+
+.campaign-aftermath-panel {
+  background: #f7fbf4;
+  border: 2px solid rgba(93, 137, 87, 0.28);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+}
+
+.campaign-aftermath-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.campaign-aftermath-copy span {
+  color: #5d8957;
+  font-size: 0.68rem;
+  font-weight: 1000;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.campaign-aftermath-copy strong {
+  color: #263f52;
+  font-size: 0.88rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.campaign-aftermath-copy small {
+  color: #4d6172;
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.campaign-aftermath-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.campaign-aftermath-grid > span {
+  background: #fffdf5;
+  border-left: 3px solid #9cb8d6;
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 7px;
+}
+
+.campaign-aftermath-grid > span.tone-positive {
+  border-left-color: #5d8957;
+}
+
+.campaign-aftermath-grid > span.tone-warning {
+  background: #fff8ee;
+  border-left-color: #d78352;
+}
+
+.campaign-aftermath-grid strong,
+.campaign-aftermath-grid small {
+  overflow-wrap: anywhere;
+}
+
+.campaign-aftermath-grid strong {
+  color: #2e2415;
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+.campaign-aftermath-grid small {
+  color: #5f5546;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.25;
 }
 
 .ending-discovery-panel {
@@ -10933,6 +11033,7 @@ p {
   .monthly-report dl,
   .objective-strip,
   .ending-report-grid,
+  .campaign-aftermath-grid,
   .ending-target-result-grid,
   .company-summary,
   .run-summary-strip,

@@ -66,6 +66,36 @@ describe("v0.14 ten-year campaign structure", () => {
     expect(finale.verdict).toContain("기준선");
   });
 
+  it("projects a post-campaign aftermath without adding persisted state", () => {
+    const state = {
+      ...createInitialState(),
+      month: 120,
+      status: "success" as const,
+      activeProducts: products.slice(0, 5).map((product) => product.id),
+      worldEventHistory: ["border_drone_contracts"],
+      resources: {
+        ...createInitialState().resources,
+        cash: 180000,
+        users: 125000,
+        trust: 58,
+        automation: 54,
+      },
+    };
+
+    const finale = getCampaignFinale(state);
+
+    expect(finale.aftermath).toMatchObject({
+      yearLabel: "11년차 후일담",
+      signals: expect.arrayContaining([
+        expect.objectContaining({ id: "legacy" }),
+        expect.objectContaining({ id: "geopolitics", tone: "warning" }),
+      ]),
+    });
+    expect(finale.aftermath.headline).toContain(finale.endingName);
+    expect(finale.aftermath.signals).toHaveLength(3);
+    expect(finale.aftermath.signals.map((signal) => signal.detail).join(" ")).toContain("국방 조달");
+  });
+
   it("unlocks better locations after company growth and charges relocation cost", () => {
     const grownState = {
       ...createInitialState(),

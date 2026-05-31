@@ -1049,6 +1049,21 @@ export function GameStage({
                   </div>
                   <h2>{finale.title}</h2>
                   <p>{finale.verdict}</p>
+                  <div className="campaign-aftermath-panel" aria-label="11년차 후일담">
+                    <div className="campaign-aftermath-copy">
+                      <span>{finale.aftermath.yearLabel}</span>
+                      <strong>{finale.aftermath.headline}</strong>
+                      <small>{finale.aftermath.summary}</small>
+                    </div>
+                    <div className="campaign-aftermath-grid">
+                      {finale.aftermath.signals.map((signal) => (
+                        <span className={`tone-${signal.tone}`} key={signal.id}>
+                          <strong>{signal.label}</strong>
+                          <small>{signal.detail}</small>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                   {endingDiscovery && (
                     <div
                       className={`ending-discovery-panel ${endingDiscovery.alreadyDiscovered ? "known" : "new"}`}
@@ -2102,6 +2117,9 @@ function BetaCompletionCrest({
           <span>{finale.survivedYears}년 완주 · {finale.score}점 · {discoveryLabel}</span>
         </div>
       </div>
+      <small className="beta-completion-aftermath">
+        {finale.aftermath.yearLabel} · {finale.aftermath.headline}
+      </small>
       <div className="beta-completion-crest-grid">
         <span>
           <small>베타 준비</small>
