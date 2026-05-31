@@ -1082,6 +1082,18 @@
       "preview_frames": [0, 1, 2, 3],
       "slice_mode": "row-major world reveal stamps: city, world, market, founder"
     },
+    "product_domain_v079_atlas": {
+      "path": "/assets/ui/v079-product-domain-atlas.png",
+      "source_status": "final",
+      "density": 1,
+      "frame_width": 48,
+      "frame_height": 48,
+      "columns": 5,
+      "rows": 3,
+      "frame_count": 15,
+      "preview_frames": [0, 1, 2, 4, 7, 9, 12, 14],
+      "slice_mode": "row-major product domain icons"
+    },
     "commercial_ui_v071_atlas": {
       "path": "/assets/ui/v071-commercial-ui-atlas.png",
       "source_status": "final",

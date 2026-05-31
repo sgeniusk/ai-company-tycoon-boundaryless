@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { agentTypes, assetManifest, competitors, items } from "./data";
+import { agentTypes, assetManifest, competitors, domains, items } from "./data";
 
 const packageJson = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as {
   scripts: Record<string, string>;
@@ -370,6 +370,25 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(readPngSize(stampSheet.path)).toEqual({ width: 256, height: 64 });
     expect(packageJson.scripts["assets:v078"]).toBe("node scripts/assets/generate-v078-world-reveal-stamp-atlas.mjs");
     expect(readFileSync(stampScriptUrl, "utf8")).toContain("v078-world-reveal-stamp-atlas.png");
+  });
+
+  it("ships final product domain icons for the products menu", () => {
+    const domainSheet = assetManifest.sprite_sheets.product_domain_v079_atlas;
+    const domainScriptUrl = new URL("../../scripts/assets/generate-v079-product-domain-atlas.mjs", import.meta.url);
+
+    expect(domainSheet).toMatchObject({
+      path: "/assets/ui/v079-product-domain-atlas.png",
+      source_status: "final",
+      frame_width: 48,
+      frame_height: 48,
+      columns: 5,
+      rows: 3,
+      frame_count: domains.length,
+      slice_mode: "row-major product domain icons",
+    });
+    expect(readPngSize(domainSheet.path)).toEqual({ width: 240, height: 144 });
+    expect(packageJson.scripts["assets:v079"]).toBe("node scripts/assets/generate-v079-product-domain-atlas.mjs");
+    expect(readFileSync(domainScriptUrl, "utf8")).toContain("v079-product-domain-atlas.png");
   });
 
   it("maps first-shop item icons to known items", () => {

@@ -254,6 +254,49 @@ function getItemIconAtlasStyle(icon: ItemIconDefinition): CSSProperties {
   } as CSSProperties;
 }
 
+const productDomainAtlasId = "product_domain_v079_atlas";
+const productDomainIconDisplaySize = 32;
+const domainIconFrameById: Record<string, number> = {
+  foundation_models: 0,
+  personal_productivity: 1,
+  creator_tools: 2,
+  developer_tools: 3,
+  customer_support: 4,
+  education: 5,
+  enterprise_automation: 6,
+  semiconductors: 7,
+  mobility: 8,
+  robotics: 9,
+  odd_industries: 10,
+  toys: 11,
+  manufacturing: 12,
+  logistics: 13,
+  energy: 14,
+};
+
+function getProductDomainIconStyle(domainId?: string, displaySize = productDomainIconDisplaySize): CSSProperties {
+  if (!domainId) return {};
+  const sheet = getAssetSheet(productDomainAtlasId);
+  const frameIndex = domainIconFrameById[domainId];
+  if (!sheet || typeof frameIndex !== "number") return {};
+  const column = frameIndex % sheet.columns;
+  const row = Math.floor(frameIndex / sheet.columns);
+
+  return {
+    "--product-domain-atlas": `url(${sheet.path})`,
+    "--product-domain-x": `${-column * displaySize}px`,
+    "--product-domain-y": `${-row * displaySize}px`,
+    "--product-domain-size": `${sheet.columns * displaySize}px ${sheet.rows * displaySize}px`,
+  } as CSSProperties;
+}
+
+function ProductDomainIcon({ domainId, className = "" }: { domainId?: string; className?: string }) {
+  const style = getProductDomainIconStyle(domainId);
+  if (!Object.keys(style).length) return null;
+
+  return <span aria-hidden="true" className={`product-domain-icon${className ? ` ${className}` : ""}`} style={style} />;
+}
+
 function getMenuLabel(menuId: string): string {
   return menus.find((menu) => menu.id === menuId)?.label ?? menuId;
 }
@@ -2196,21 +2239,26 @@ function ProductsPanel({
       </div>
       {!gameState.hiredAgents.length && <p className="empty-note">먼저 에이전트 메뉴에서 첫 에이전트를 고용하면 제품 개발을 시작할 수 있습니다.</p>}
       <div className="domain-filter" aria-label="제품 산업 필터">
-        {domainFilters.map((filter) => (
-          <button
-            aria-pressed={selectedFilter.id === filter.id}
-            className={`${selectedFilter.id === filter.id ? "selected" : ""}${filter.unlocked ? "" : " locked"}`}
-            key={filter.id}
-            onClick={() => setSelectedDomainFilterId(filter.id)}
-            type="button"
-          >
-            <strong>{filter.label}</strong>
-            <span>
-              제품 {filter.productCount}개{filter.unlocked ? "" : " · 잠김"}
-            </span>
-            {!filter.unlocked && filter.lockedReason && <small>{filter.lockedReason}</small>}
-          </button>
-        ))}
+        {domainFilters.map((filter) => {
+          const hasDomainArt = typeof domainIconFrameById[filter.id] === "number";
+
+          return (
+            <button
+              aria-pressed={selectedFilter.id === filter.id}
+              className={`${selectedFilter.id === filter.id ? "selected" : ""}${filter.unlocked ? "" : " locked"}${hasDomainArt ? " has-domain-art" : ""}`}
+              key={filter.id}
+              onClick={() => setSelectedDomainFilterId(filter.id)}
+              type="button"
+            >
+              <ProductDomainIcon domainId={filter.id} />
+              <strong>{filter.label}</strong>
+              <span>
+                제품 {filter.productCount}개{filter.unlocked ? "" : " · 잠김"}
+              </span>
+              {!filter.unlocked && filter.lockedReason && <small>{filter.lockedReason}</small>}
+            </button>
+          );
+        })}
       </div>
       <div className="filter-summary">
         <strong>{selectedFilter.label}</strong>
@@ -2235,10 +2283,13 @@ function ProductsPanel({
 
           return (
             <article className={`item-card product-card${strategyFocus?.targetId === product.id ? " strategy-focus" : ""}`} key={product.id}>
-              <div>
-                <p className="item-meta">{domain?.name ?? product.domain}</p>
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
+              <div className="product-card-title">
+                <ProductDomainIcon className="product-card-domain-icon" domainId={domain?.id ?? product.domain} />
+                <div>
+                  <p className="item-meta">{domain?.name ?? product.domain}</p>
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                </div>
               </div>
               {review && (
                 <div className="review-badge">

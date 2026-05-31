@@ -22,6 +22,7 @@
     "assets:v076": "node scripts/assets/generate-v076-workforce-actor-atlas.mjs",
     "assets:v077": "node scripts/assets/generate-v077-celebration-emblem-atlas.mjs",
     "assets:v078": "node scripts/assets/generate-v078-world-reveal-stamp-atlas.mjs",
+    "assets:v079": "node scripts/assets/generate-v079-product-domain-atlas.mjs",
     "qa:office-visuals:screenshots": "node scripts/qa/capture-office-visuals-screenshots.mjs",
     "qa:blind-rehearsal": "node scripts/qa/run-v056-blind-rehearsal.mjs",
     "qa:blind-summary": "node scripts/qa/summarize-v056-blind-sessions.mjs",

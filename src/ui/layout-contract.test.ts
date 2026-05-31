@@ -665,6 +665,20 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.renewal-option-grid\s*{[^}]*grid-template-columns:/s);
   });
 
+  it("skins product domains with atlas-backed game art instead of text-only filters", () => {
+    expect(menuPanels).toContain("product_domain_v079_atlas");
+    expect(menuPanels).toContain("domainIconFrameById");
+    expect(menuPanels).toContain("getProductDomainIconStyle");
+    expect(menuPanels).toContain("ProductDomainIcon");
+    expect(menuPanels).toContain("product-domain-icon");
+    expect(menuPanels).toContain("product-card-title");
+    expect(appCss).toMatch(/\.product-domain-icon\s*{[^}]*background-image:\s*var\(--product-domain-atlas\)/s);
+    expect(appCss).toMatch(/\.product-domain-icon\s*{[^}]*background-position:\s*var\(--product-domain-x\)\s+var\(--product-domain-y\)/s);
+    expect(appCss).toMatch(/\.product-domain-icon\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.domain-filter button\s*{[^}]*grid-template-columns:\s*auto\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.product-card-title\s*{[^}]*grid-template-columns:\s*auto\s+minmax\(0,\s*1fr\)/s);
+  });
+
   it("gives staffed fresh runs a product-menu starter project launchpad", () => {
     expect(menuPanels).toContain("first-project-launchpad");
     expect(menuPanels).toContain("추천 첫 제품");
