@@ -28,8 +28,14 @@ describe("v0.14.5 annual directive choices", () => {
   });
 
   it("defines a reusable pool of annual directive choices", () => {
-    expect(annualDirectiveChoices.length).toBeGreaterThanOrEqual(6);
+    expect(annualDirectiveChoices.length).toBeGreaterThanOrEqual(10);
     expect(annualDirectiveChoices.every((choice) => choice.title && choice.monthly_effects && choice.recommended_menu)).toBe(true);
+    expect(annualDirectiveChoices.map((choice) => choice.id)).toEqual(
+      expect.arrayContaining(["operator_scale_playbook", "ending_route_postmortem"]),
+    );
+    expect(annualDirectiveChoices.find((choice) => choice.id === "ending_route_postmortem")?.reward_bias_tags).toEqual(
+      expect.arrayContaining(["quality", "safety", "trust"]),
+    );
   });
 
   it("selects the current annual review from campaign month", () => {

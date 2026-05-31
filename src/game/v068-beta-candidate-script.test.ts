@@ -261,4 +261,46 @@ exit 0
       }),
     ]);
   });
+
+  it("rejects passing child gates when confidence evidence is missing", () => {
+    const result = runCandidateWithFakeNpm(`#!/bin/sh
+if [ "$1 $2" = "run harness:gate" ]; then
+  echo "Status: PASS"
+  exit 0
+fi
+if [ "$1 $2" = "run qa:v068-flow-smoke:check" ]; then
+  echo "Status: PASS"
+  exit 0
+fi
+echo "unexpected npm $*" >&2
+exit 9
+`) as {
+      status: string;
+      checks: Array<{
+        id: string;
+        status: string;
+        exitStatus: number | null;
+        diagnostic: string;
+        missingEvidence?: string[];
+      }>;
+    };
+
+    expect(result.status).toBe("fail");
+    expect(result.checks).toEqual([
+      expect.objectContaining({
+        id: "harness_gate",
+        status: "fail",
+        exitStatus: 0,
+        diagnostic: "exit 0; missing evidence: Test Files, Tests, Readiness, build artifact",
+        missingEvidence: ["Test Files", "Tests", "Readiness", "build artifact"],
+      }),
+      expect.objectContaining({
+        id: "flow_smoke",
+        status: "fail",
+        exitStatus: 0,
+        diagnostic: "exit 0; missing evidence: Routes, Report, Summary",
+        missingEvidence: ["Routes", "Report", "Summary"],
+      }),
+    ]);
+  });
 });

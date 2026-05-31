@@ -12,6 +12,8 @@ const summaryPath = "reports/qa/v0_68_flow_smoke.json";
 const artifacts = createArtifactManifest(reportPath, summaryPath);
 const defaultHost = "127.0.0.1";
 const defaultPort = 5220;
+const chromeDomAttempts = 2;
+const chromeDomTimeoutMs = 45000;
 const defaultChromeCandidates = [
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   "/Applications/Chromium.app/Contents/MacOS/Chromium",
@@ -160,7 +162,7 @@ function hasRequiredDomMarkers(dom, route) {
   );
 }
 
-function runChromeDom(chromePath, url, route) {
+function runChromeDomAttempt(chromePath, url, route, attempt) {
   const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "act-v068-flow-smoke-"));
 
   return new Promise((resolve, reject) => {
@@ -207,12 +209,12 @@ function runChromeDom(chromePath, url, route) {
       finish(
         reject,
         new Error([
-          `Chrome DOM dump timed out for ${url}`,
+          `Chrome DOM dump timed out for ${url} (attempt ${attempt}/${chromeDomAttempts})`,
           stderr.trim(),
           stdout.slice(0, 500).trim(),
         ].filter(Boolean).join("\n")),
       );
-    }, 25000);
+    }, chromeDomTimeoutMs);
 
     child.stdout.on("data", (chunk) => {
       stdout += chunk.toString("utf8");
@@ -236,6 +238,22 @@ function runChromeDom(chromePath, url, route) {
       );
     });
   });
+}
+
+async function runChromeDom(chromePath, url, route) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= chromeDomAttempts; attempt += 1) {
+    try {
+      return await runChromeDomAttempt(chromePath, url, route, attempt);
+    } catch (error) {
+      lastError = error;
+      if (attempt >= chromeDomAttempts) break;
+      await sleep(500);
+    }
+  }
+
+  throw lastError;
 }
 
 function getRouteUrl(baseUrl, routePath) {

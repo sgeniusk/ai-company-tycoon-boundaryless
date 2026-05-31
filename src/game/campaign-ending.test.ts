@@ -999,7 +999,7 @@ describe("v0.67 campaign ending selector", () => {
     ]);
   });
 
-  it("does not recommend a replay target when every replayable ending is already discovered", () => {
+  it("keeps a deterministic replay recommendation when every replayable ending is already discovered", () => {
     const replayableEndingIds = campaignEndings.filter((ending) => ending.condition.fallback !== true).map((ending) => ending.id);
     const state = {
       ...createInitialState(),
@@ -1016,6 +1016,17 @@ describe("v0.67 campaign ending selector", () => {
     expect(summary.lockedReplayableCount).toBe(0);
     expect(summary.finalOnlyLockedCount).toBe(1);
     expect(summary.nextReplayPlan).toBeUndefined();
+    expect(summary.recommendedReplayPlan).toMatchObject({
+      id: "frontier_demo_empire",
+      discovered: true,
+      selection: {
+        seed: "ending:frontier_demo_empire",
+        startCityId: "san_francisco",
+        worldLoreId: "open_source_heaven",
+        marketConditionId: "steady_market",
+        founderTraitId: "engineer_founder",
+      },
+    });
   });
 
   it("annotates ending collection entries with current-run progress and the next missing condition", () => {

@@ -124,6 +124,11 @@ describe("v0.68 browser flow smoke QA script", () => {
     expect(source).toContain("writeArtifactPair");
     expect(source).toContain("--dump-dom");
     expect(source).toContain("--virtual-time-budget=8000");
+    expect(source).toContain("const chromeDomAttempts = 2");
+    expect(source).toContain("const chromeDomTimeoutMs = 45000");
+    expect(source).toContain("}, chromeDomTimeoutMs)");
+    expect(source).toContain("runChromeDomAttempt");
+    expect(source).toContain("attempt ${attempt}/${chromeDomAttempts}");
     expect(source).toContain("--check");
     expect(source).toContain("reports/qa/v0_68_flow_smoke.md");
     expect(source).toContain("reports/qa/v0_68_flow_smoke.json");

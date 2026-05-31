@@ -48,15 +48,18 @@ function runCheck(check) {
   const output = `${result.stdout ?? ""}${result.stderr ?? ""}`;
   const timedOut = result.error?.code === "ETIMEDOUT" || elapsedMs >= timeoutMs;
   const exitStatus = timedOut ? null : result.status ?? null;
+  const evidence = summarizeOutput(check.id, output);
+  const evidenceContract = getEvidenceContract(check.id, output);
 
   return {
     id: check.id,
     label: check.label,
     command: check.command,
-    status: exitStatus === 0 && !result.error && !timedOut ? "pass" : "fail",
+    status: exitStatus === 0 && !result.error && !timedOut && evidenceContract.complete ? "pass" : "fail",
     exitStatus,
-    evidence: summarizeOutput(check.id, output),
-    diagnostic: summarizeDiagnostic(output, exitStatus, { timedOut, timeoutMs, spawnError: result.error }),
+    evidence,
+    diagnostic: summarizeDiagnostic(output, exitStatus, { timedOut, timeoutMs, spawnError: result.error, evidenceContract }),
+    missingEvidence: evidenceContract.missing,
   };
 }
 
@@ -79,8 +82,34 @@ function summarizeOutput(id, output) {
   return output.split("\n").find((line) => line.trim())?.trim() ?? "no output";
 }
 
-function summarizeDiagnostic(output, exitStatus, { timedOut = false, timeoutMs, spawnError } = {}) {
+function getEvidenceContract(id, output) {
+  const contracts = {
+    harness_gate: [
+      ["Test Files", /Test Files\s+/],
+      ["Tests", /Tests\s+/],
+      ["Readiness", /Readiness:\s+/],
+      ["build artifact", /built in/],
+    ],
+    flow_smoke: [
+      ["Routes", /^Routes:\s+/m],
+      ["Report", /^Report:\s+(PASS|FAIL)/m],
+      ["Summary", /^Summary:\s+(PASS|FAIL)/m],
+    ],
+  };
+  const requiredMarkers = contracts[id] ?? [];
+  const missing = requiredMarkers.filter(([, pattern]) => !pattern.test(output)).map(([label]) => label);
+
+  return {
+    complete: missing.length === 0,
+    missing,
+  };
+}
+
+function summarizeDiagnostic(output, exitStatus, { timedOut = false, timeoutMs, spawnError, evidenceContract } = {}) {
   if (timedOut) return `timeout after ${timeoutMs}ms; child gate did not finish`;
+  if (exitStatus === 0 && evidenceContract && !evidenceContract.complete) {
+    return `exit 0; missing evidence: ${evidenceContract.missing.join(", ")}`;
+  }
 
   const lines = output
     .split(/\r?\n/)

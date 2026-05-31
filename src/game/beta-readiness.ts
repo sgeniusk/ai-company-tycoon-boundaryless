@@ -45,6 +45,8 @@ export interface BetaReadinessSummary {
   routeOptionLabel: string;
   nextTargetLabel: string;
   nextTargetRouteLabel: string;
+  replayGuidanceLabel: string;
+  replayGuidanceDetail: string;
   axes: BetaReadinessAxisSummary[];
   checks: BetaReadinessCheck[];
   completeCheckCount: number;
@@ -58,6 +60,8 @@ const minimumBetaEndingRoutes = 24;
 interface RouteStartReadiness {
   nextTargetLabel: string;
   nextTargetRouteLabel: string;
+  replayGuidanceLabel: string;
+  replayGuidanceDetail: string;
   targetRunComplete: boolean;
   routeStartComplete: boolean;
 }
@@ -84,14 +88,28 @@ function formatAxisDetail(axis: EndingAxisCoverageSummary): string {
 function getRouteStartReadiness(endingCollectionSummary: EndingCollectionSummary): RouteStartReadiness {
   const allReplayableEndingsDiscovered = endingCollectionSummary.lockedReplayableCount === 0;
   const nextReplayPlan = endingCollectionSummary.nextReplayPlan;
-  const nextTargetRouteLabel = nextReplayPlan?.targetLabels.slice(0, 3).join(" / ") ?? "모든 목표 엔딩 발견";
+  const recommendedReplayPlan = endingCollectionSummary.recommendedReplayPlan;
+  const nextTargetRouteLabel = formatReplayRouteLabel(nextReplayPlan?.targetLabels, "모든 목표 엔딩 발견");
+  const recommendedReplayRouteLabel = formatReplayRouteLabel(recommendedReplayPlan?.targetLabels, "새 루트 실험 또는 최고 점수 재도전");
 
   return {
     nextTargetLabel: nextReplayPlan?.title ?? "모든 목표 엔딩 발견",
     nextTargetRouteLabel,
+    replayGuidanceLabel: allReplayableEndingsDiscovered
+      ? "목표 엔딩 도감 완성"
+      : `다음 목표: ${nextReplayPlan?.title ?? recommendedReplayPlan?.title ?? "목표 엔딩 점검"}`,
+    replayGuidanceDetail: allReplayableEndingsDiscovered
+      ? recommendedReplayPlan
+        ? `재도전 추천: ${recommendedReplayPlan.title} · ${recommendedReplayRouteLabel}`
+        : recommendedReplayRouteLabel
+      : recommendedReplayRouteLabel,
     targetRunComplete: Boolean(nextReplayPlan) || allReplayableEndingsDiscovered,
     routeStartComplete: Boolean(nextReplayPlan?.selection?.seed) || allReplayableEndingsDiscovered,
   };
+}
+
+function formatReplayRouteLabel(targetLabels: string[] | undefined, fallback: string): string {
+  return targetLabels?.slice(0, 3).join(" / ") || fallback;
 }
 
 function createBetaReadinessChecks({
@@ -197,6 +215,8 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     routeOptionLabel: `${routeOptionCount}/${routeOptionTotal}`,
     nextTargetLabel: routeStartReadiness.nextTargetLabel,
     nextTargetRouteLabel: routeStartReadiness.nextTargetRouteLabel,
+    replayGuidanceLabel: routeStartReadiness.replayGuidanceLabel,
+    replayGuidanceDetail: routeStartReadiness.replayGuidanceDetail,
     axes,
     checks,
     completeCheckCount,

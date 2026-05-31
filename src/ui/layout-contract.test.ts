@@ -1157,6 +1157,21 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.ending-report-grid\s*{[^}]*grid-template-columns:/s);
   });
 
+  it("polishes final beta/endgame results with a completion crest", () => {
+    expect(gameChrome).toContain("BetaCompletionCrest");
+    expect(gameChrome).toContain("beta-completion-crest");
+    expect(gameChrome).toContain("베타 클로징");
+    expect(gameChrome).toContain("summary.codexProgressLabel");
+    expect(gameChrome).toContain("endingDiscovery?.completionPercentAfterRun");
+    expect(gameChrome).toContain("<BetaCompletionCrest finale={finale} summary={betaReadinessSummary} endingDiscovery={endingDiscovery} />");
+    expect(appCss).toMatch(/\.beta-completion-crest\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.beta-completion-crest-main\s*{[^}]*grid-template-columns:\s*54px minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.beta-completion-crest-grid\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.beta-completion-crest-grid\s*>\s*span\s*{[^}]*min-width:\s*0/s);
+    expect(appCss).toMatch(/\.beta-completion-crest strong,\s*\.beta-completion-crest span,\s*\.beta-completion-crest small,\s*\.beta-completion-crest em\s*{[^}]*overflow-wrap:\s*anywhere/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.beta-completion-crest-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");

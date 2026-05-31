@@ -25,6 +25,8 @@ describe("beta readiness summary", () => {
     expect(summary.routeOptionLabel).toBe("40/40");
     expect(summary.nextTargetLabel).toBe("프런티어 데모 제국");
     expect(summary.nextTargetRouteLabel).toBe("샌프란시스코 / 오픈소스 천국 / 엔지니어 창업자");
+    expect(summary.replayGuidanceLabel).toBe("다음 목표: 프런티어 데모 제국");
+    expect(summary.replayGuidanceDetail).toBe("샌프란시스코 / 오픈소스 천국 / 엔지니어 창업자");
     expect(summary.checks.map((check) => check.id)).toEqual([
       "ending_routes",
       "reward_pool",
@@ -70,6 +72,8 @@ describe("beta readiness summary", () => {
 
     expect(summary.nextTargetLabel).toBe("모든 목표 엔딩 발견");
     expect(summary.nextTargetRouteLabel).toBe("모든 목표 엔딩 발견");
+    expect(summary.replayGuidanceLabel).toBe("목표 엔딩 도감 완성");
+    expect(summary.replayGuidanceDetail).toBe("재도전 추천: 프런티어 데모 제국 · 샌프란시스코 / 오픈소스 천국 / 엔지니어 창업자");
     expect(summary.codexProgressLabel).toBe(`${replayableEndingIds.length}/${campaignEndings.length}`);
     expect(summary.lockedReplayableLabel).toBe("목표 엔딩 0개 남음");
     expect(summary.checks.find((check) => check.id === "target_replay")).toMatchObject({

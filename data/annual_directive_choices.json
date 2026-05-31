@@ -61,6 +61,18 @@
       "reward_bias_tags": ["automation", "agent", "compute"]
     },
     {
+      "id": "operator_scale_playbook",
+      "title": "오퍼레이터 스케일 플레이북",
+      "description": "제품, 고객, 내부 운영을 같은 리듬으로 묶어 후반 확장에도 무너지지 않는 회사를 만듭니다.",
+      "sources": ["passed", "recovery"],
+      "year_range": [4, 10],
+      "monthly_effects": {"automation": 1, "users": 260, "cash": 260},
+      "recommended_menu": "agents",
+      "rival_momentum_delta": 0,
+      "tags": ["ops", "automation", "growth"],
+      "reward_bias_tags": ["automation", "ops", "growth"]
+    },
+    {
       "id": "rival_war_room",
       "title": "경쟁사 전황실",
       "description": "주요 경쟁사의 선점 제품을 추적하고 대응 카드와 연구 우선순위를 고정합니다.",
@@ -83,6 +95,18 @@
       "rival_momentum_delta": 2,
       "tags": ["industry", "boundaryless"],
       "reward_bias_tags": ["product", "research", "automation"]
+    },
+    {
+      "id": "ending_route_postmortem",
+      "title": "엔딩 루트 포스트모템",
+      "description": "현재 세계관, 창업자 성향, 성장 경로를 되짚어 최종 2년의 신뢰와 품질 결정을 선명하게 만듭니다.",
+      "sources": ["passed", "recovery"],
+      "year_range": [7, 10],
+      "monthly_effects": {"trust": 1, "data": 5, "hype": 1},
+      "recommended_menu": "company",
+      "rival_momentum_delta": -1,
+      "tags": ["quality", "safety", "trust"],
+      "reward_bias_tags": ["quality", "safety", "trust"]
     },
     {
       "id": "global_brand_push",

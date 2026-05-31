@@ -3881,6 +3881,108 @@ p {
   gap: 7px;
 }
 
+.beta-completion-crest {
+  background: linear-gradient(135deg, #15352d 0%, #263f52 58%, #5d471b 100%);
+  border: 2px solid #d6b765;
+  color: #fffdf5;
+  display: grid;
+  gap: 10px;
+  overflow: hidden;
+  padding: 12px;
+  position: relative;
+}
+
+.beta-completion-crest::before {
+  background: #f2cf7f;
+  content: "";
+  height: 4px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.beta-completion-crest-main {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 54px minmax(0, 1fr);
+  min-width: 0;
+}
+
+.beta-completion-medal {
+  background: #f2cf7f;
+  border: 2px solid rgba(255, 253, 245, 0.68);
+  color: #2e2415;
+  display: grid;
+  font-size: 1.42rem;
+  font-weight: 900;
+  height: 54px;
+  place-items: center;
+  width: 54px;
+}
+
+.beta-completion-crest .eyebrow {
+  color: #f5dc91;
+}
+
+.beta-completion-crest h2 {
+  color: #fffdf5;
+  font-size: 1rem;
+  line-height: 1.12;
+  margin-bottom: 2px;
+  overflow-wrap: anywhere;
+}
+
+.beta-completion-crest strong,
+.beta-completion-crest span,
+.beta-completion-crest small,
+.beta-completion-crest em {
+  overflow-wrap: anywhere;
+}
+
+.beta-completion-crest-main span {
+  color: #d9eee3;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.beta-completion-crest-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.beta-completion-crest-grid > span {
+  background: rgba(255, 253, 245, 0.12);
+  border: 1px solid rgba(242, 207, 127, 0.42);
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 7px;
+}
+
+.beta-completion-crest-grid small,
+.beta-completion-crest-grid em {
+  color: #dce9dd;
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1.22;
+}
+
+.beta-completion-crest-grid strong {
+  color: #fff8d6;
+  font-size: 0.86rem;
+  line-height: 1.15;
+}
+
+.beta-completion-crest.rank-D {
+  background: linear-gradient(135deg, #3b241d 0%, #263f52 100%);
+  border-color: #d78352;
+}
+
 .run-summary h2,
 .run-summary p {
   margin-bottom: 0;
@@ -10902,6 +11004,20 @@ p {
   }
 
   .ending-replay-readiness-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .beta-completion-crest-main {
+    grid-template-columns: 46px minmax(0, 1fr);
+  }
+
+  .beta-completion-medal {
+    font-size: 1.18rem;
+    height: 46px;
+    width: 46px;
+  }
+
+  .beta-completion-crest-grid {
     grid-template-columns: 1fr;
   }
 

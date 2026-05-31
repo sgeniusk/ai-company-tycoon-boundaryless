@@ -32,9 +32,18 @@ import {
   getEndingNearMisses,
   getEndingRouteUnlockRecommendations,
   type ActiveEndingReplayBrief,
+  type CampaignEndingDiscovery,
   type EndingNearMissPlan,
 } from "../game/campaign-ending";
-import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
+import {
+  getCampaignCalendar,
+  getCampaignFinale,
+  getCompanyStageProgress,
+  getCompanyStarRating,
+  getCurrentLocation,
+  getDayPhase,
+  type CampaignFinale,
+} from "../game/campaign";
 import {
   advanceToFirstAnnualReview,
   advanceToFirstLaunch,
@@ -1014,6 +1023,7 @@ export function GameStage({
           )}
           {activeStageTab === "results" && (
             <>
+              {finale.isFinal && <BetaCompletionCrest finale={finale} summary={betaReadinessSummary} endingDiscovery={endingDiscovery} />}
               {showEndingReplayReadinessStrip && (
                 <EndingReplayReadinessStrip
                   activeEndingReplayBrief={activeEndingReplayBrief}
@@ -2057,6 +2067,64 @@ function WorkforceMixPanel({ summary }: { summary: WorkforceMixSummary }) {
             : "사람, AI, 로봇을 섞으면 제품 개발 보너스가 열립니다."}
       </small>
     </div>
+  );
+}
+
+function BetaCompletionCrest({
+  endingDiscovery,
+  finale,
+  summary,
+}: {
+  endingDiscovery?: CampaignEndingDiscovery;
+  finale: CampaignFinale;
+  summary: BetaReadinessSummary;
+}) {
+  const codexProgressLabel = endingDiscovery
+    ? `${endingDiscovery.discoveredCountAfterRun}/${endingDiscovery.totalCount}`
+    : summary.codexProgressLabel;
+  const rewardProgressLabel = endingDiscovery
+    ? `${endingDiscovery.discoveredRewardBonusAfterRun}/${endingDiscovery.totalRewardBonus}`
+    : summary.rewardProgressLabel;
+  const codexCompletionLabel = `${endingDiscovery?.completionPercentAfterRun ?? summary.readinessPercent}%`;
+  const discoveryLabel = endingDiscovery
+    ? endingDiscovery.alreadyDiscovered
+      ? "기록 갱신"
+      : "새 엔딩 발견"
+    : summary.statusLabel;
+
+  return (
+    <article className={`beta-completion-crest rank-${finale.rank}`} aria-label="베타 완주 클로징">
+      <div className="beta-completion-crest-main">
+        <span className="beta-completion-medal">{finale.rank}</span>
+        <div>
+          <p className="eyebrow">베타 클로징</p>
+          <h2>{finale.endingName}</h2>
+          <span>{finale.survivedYears}년 완주 · {finale.score}점 · {discoveryLabel}</span>
+        </div>
+      </div>
+      <div className="beta-completion-crest-grid">
+        <span>
+          <small>베타 준비</small>
+          <strong>{summary.readinessPercent}%</strong>
+          <em>{summary.statusLabel}</em>
+        </span>
+        <span>
+          <small>엔딩 도감</small>
+          <strong>{codexProgressLabel}</strong>
+          <em>{codexCompletionLabel} 완성</em>
+        </span>
+        <span>
+          <small>도감 보상</small>
+          <strong>{rewardProgressLabel}</strong>
+          <em>{endingDiscovery?.rewardDeltaLabel ?? summary.codexStatusLabel}</em>
+        </span>
+        <span>
+          <small>다음 목표</small>
+          <strong>{summary.nextTargetLabel}</strong>
+          <em>{summary.nextTargetRouteLabel}</em>
+        </span>
+      </div>
+    </article>
   );
 }
 
