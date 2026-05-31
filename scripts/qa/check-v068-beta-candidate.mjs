@@ -6,6 +6,7 @@ import { spawnSync } from "node:child_process";
 const root = process.cwd();
 const version = "0.68-beta-stabilization";
 const reportPath = "reports/qa/v0_68_beta_candidate.md";
+const summaryPath = "reports/qa/v0_68_beta_candidate.json";
 const checks = [
   {
     id: "harness_gate",
@@ -76,6 +77,7 @@ Status: ${result.status.toUpperCase()}
 ## Scope
 - Version lane: ${result.version}
 - Aggregates the local default harness gate and standalone browser flow smoke freshness check.
+- Writes a deterministic JSON summary for automation-friendly release-candidate review.
 - External/user validation remains out of scope until the final release-candidate stage.
 
 ## Checks
@@ -85,6 +87,25 @@ ${rows}
 `;
 }
 
+function createSummary(result) {
+  const summary = {
+    version: result.version,
+    status: result.status,
+    reportPath: result.reportPath,
+    summaryPath: result.summaryPath,
+    totalChecks: result.totalChecks,
+    passedChecks: result.passedChecks,
+    checks: result.checks.map((check) => ({
+      id: check.id,
+      command: check.command,
+      status: check.status,
+      evidence: check.evidence,
+    })),
+  };
+
+  return `${JSON.stringify(summary, null, 2)}\n`;
+}
+
 function printSummary(result) {
   console.log(`Status: ${result.status.toUpperCase()}`);
   console.log(`Version: ${result.version}`);
@@ -92,6 +113,8 @@ function printSummary(result) {
   const reportStatusLabel =
     result.reportFresh === false ? "Report: FAIL" : result.reportFresh === true ? "Report: PASS" : `Report: ${result.reportPath}`;
   console.log(reportStatusLabel);
+  if (result.summaryFresh !== undefined) console.log(result.summaryFresh ? "Summary: PASS" : "Summary: FAIL");
+  else console.log(`Summary: ${result.summaryPath}`);
   for (const check of result.checks) {
     console.log(`- ${check.id}: ${check.status.toUpperCase()} (${check.evidence})`);
   }
@@ -101,6 +124,7 @@ if (hasArg("--list-json")) {
   console.log(JSON.stringify({
     version,
     reportPath,
+    summaryPath,
     checks: checks.map((check) => ({ id: check.id, command: check.command })),
   }, null, 2));
   process.exit(0);
@@ -112,19 +136,25 @@ const result = {
   version,
   status: passedChecks === checkResults.length ? "pass" : "fail",
   reportPath,
+  summaryPath,
   totalChecks: checkResults.length,
   passedChecks,
   checks: checkResults,
 };
 const generatedReport = createReport(result);
+const generatedSummary = createSummary(result);
 const outputPath = resolveProjectPath(reportPath);
+const summaryOutputPath = resolveProjectPath(summaryPath);
 
 if (hasArg("--check")) {
   result.reportFresh = fs.existsSync(outputPath) && fs.readFileSync(outputPath, "utf8") === generatedReport;
-  if (!result.reportFresh) result.status = "fail";
+  result.summaryFresh = fs.existsSync(summaryOutputPath) && fs.readFileSync(summaryOutputPath, "utf8") === generatedSummary;
+  if (!result.reportFresh || !result.summaryFresh) result.status = "fail";
 } else if (!hasArg("--no-write")) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, generatedReport);
+  fs.mkdirSync(path.dirname(summaryOutputPath), { recursive: true });
+  fs.writeFileSync(summaryOutputPath, generatedSummary);
 }
 
 if (hasArg("--json")) {

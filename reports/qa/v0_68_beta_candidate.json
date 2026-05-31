@@ -1,0 +1,22 @@
+{
+  "version": "0.68-beta-stabilization",
+  "status": "pass",
+  "reportPath": "reports/qa/v0_68_beta_candidate.md",
+  "summaryPath": "reports/qa/v0_68_beta_candidate.json",
+  "totalChecks": 2,
+  "passedChecks": 2,
+  "checks": [
+    {
+      "id": "harness_gate",
+      "command": "npm run harness:gate < /dev/null",
+      "status": "pass",
+      "evidence": "53 passed (53); 595 passed (595); 15/15 checks (100%); build passed"
+    },
+    {
+      "id": "flow_smoke",
+      "command": "npm run qa:v068-flow-smoke:check < /dev/null",
+      "status": "pass",
+      "evidence": "8/8; Report: PASS"
+    }
+  ]
+}

@@ -13,6 +13,7 @@ interface BetaCandidateCheck {
 interface BetaCandidateListResult {
   version: string;
   reportPath: string;
+  summaryPath: string;
   checks: BetaCandidateCheck[];
 }
 
@@ -41,6 +42,7 @@ describe("v0.68 beta candidate local QA script", () => {
     expect(result).toEqual({
       version: "0.68-beta-stabilization",
       reportPath: "reports/qa/v0_68_beta_candidate.md",
+      summaryPath: "reports/qa/v0_68_beta_candidate.json",
       checks: [
         {
           id: "harness_gate",
@@ -60,6 +62,7 @@ describe("v0.68 beta candidate local QA script", () => {
     expect(source).toContain("npm run harness:gate < /dev/null");
     expect(source).toContain("npm run qa:v068-flow-smoke:check < /dev/null");
     expect(source).toContain("reports/qa/v0_68_beta_candidate.md");
+    expect(source).toContain("reports/qa/v0_68_beta_candidate.json");
     expect(source).toContain("Report: FAIL");
   });
 });

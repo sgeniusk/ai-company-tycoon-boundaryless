@@ -5,6 +5,7 @@ Status: PASS
 ## Scope
 - Version lane: 0.68-beta-stabilization
 - Aggregates the local default harness gate and standalone browser flow smoke freshness check.
+- Writes a deterministic JSON summary for automation-friendly release-candidate review.
 - External/user validation remains out of scope until the final release-candidate stage.
 
 ## Checks
