@@ -2495,10 +2495,12 @@ export function EventPanels({
   gameState,
   setGameState,
   locale,
+  onWorldRevealVisibilityChange,
 }: {
   gameState: GameState;
   setGameState: Dispatch<SetStateAction<GameState>>;
   locale: LocaleCode;
+  onWorldRevealVisibilityChange?: (visible: boolean) => void;
 }) {
   const staffIncidents = getStaffIncidentBriefs(gameState);
   const primaryStaffIncident = staffIncidents[0];
@@ -2508,7 +2510,7 @@ export function EventPanels({
   return (
     <>
       <BigEventModal gameState={gameState} setGameState={setGameState} locale={locale} />
-      <WorldRevealModal gameState={gameState} />
+      <WorldRevealModal gameState={gameState} onVisibilityChange={onWorldRevealVisibilityChange} />
       <PayoffCelebrationModal gameState={gameState} setGameState={setGameState} />
       {primaryStaffIncident && (
         <section

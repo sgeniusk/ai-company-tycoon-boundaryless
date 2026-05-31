@@ -96,8 +96,11 @@
         "목표 엔딩",
         "이번 세계가 열렸습니다"
       ],
+      "forbiddenTexts": [
+        "미나의 안내"
+      ],
       "status": "pass",
-      "domBytes": 314181,
+      "domBytes": 313563,
       "failedChecks": []
     },
     {
@@ -121,8 +124,11 @@
         "AGI 안전 협정",
         "이번 세계가 열렸습니다"
       ],
+      "forbiddenTexts": [
+        "미나의 안내"
+      ],
       "status": "pass",
-      "domBytes": 313536,
+      "domBytes": 312918,
       "failedChecks": []
     }
   ]

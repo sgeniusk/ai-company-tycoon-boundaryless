@@ -23,6 +23,7 @@ const defaultChromeCandidates = [
 ];
 const finalResultForbiddenTexts = ["이번 세계가 열렸습니다", "이 세계로 시작"];
 const startRouteRequiredTexts = ["이번 세계가 열렸습니다"];
+const startRouteForbiddenTexts = ["미나의 안내"];
 const baseRoutes = [
   {
     id: "fresh",
@@ -77,7 +78,7 @@ const routes = baseRoutes.map((route) => {
   const finalResultGuard = route.path.includes("-final") ? { forbiddenTexts: finalResultForbiddenTexts } : {};
   const startRouteGuard =
     route.path.includes("-route-start") || route.path.includes("-retry-start")
-      ? { requiredTexts: [...route.requiredTexts, ...startRouteRequiredTexts] }
+      ? { requiredTexts: [...route.requiredTexts, ...startRouteRequiredTexts], forbiddenTexts: startRouteForbiddenTexts }
       : {};
 
   return { ...route, ...finalResultGuard, ...startRouteGuard };

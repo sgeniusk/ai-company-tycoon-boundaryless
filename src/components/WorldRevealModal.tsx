@@ -65,7 +65,13 @@ function getScenarioPreviousArchetypeIds(): string[] | undefined {
   return getScenario() === "archetype-collection" ? ["frontier_garage"] : undefined;
 }
 
-export function WorldRevealModal({ gameState }: { gameState: GameState }) {
+export function WorldRevealModal({
+  gameState,
+  onVisibilityChange,
+}: {
+  gameState: GameState;
+  onVisibilityChange?: (visible: boolean) => void;
+}) {
   const [dismissedSeeds, setDismissedSeeds] = useState<Set<string>>(() => new Set());
   const [revealedCount, setRevealedCount] = useState(1);
   const previousDiscoveredArchetypeIdsRef = useRef<string[] | undefined>(getScenarioPreviousArchetypeIds());
@@ -105,6 +111,11 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
   useEffect(() => {
     previousDiscoveredArchetypeIdsRef.current = gameState.roguelite.discoveredArchetypeIds ?? [];
   }, [gameState.roguelite.discoveredArchetypeIds]);
+
+  useEffect(() => {
+    onVisibilityChange?.(shouldShow);
+    return () => onVisibilityChange?.(false);
+  }, [onVisibilityChange, shouldShow]);
 
   if (!shouldShow) return null;
 

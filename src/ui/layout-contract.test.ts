@@ -697,6 +697,10 @@ describe("v0.13.3 compact game shell layout", () => {
 
     expect(app).toContain("getTutorialGuide");
     expect(app).toContain("dismissTutorialGuide");
+    expect(app).toContain("shouldShowWorldReveal");
+    expect(app).toContain("worldRevealVisible");
+    expect(app).toContain("onWorldRevealVisibilityChange={setWorldRevealVisible}");
+    expect(app).toContain("tutorialGuide && !offlineSettlement && !worldRevealVisible");
     expect(app).toContain("helper-tutorial");
     expect(app).toContain("helper-portrait");
     expect(appCss).toMatch(/\.helper-tutorial\s*{[^}]*position:\s*fixed/s);

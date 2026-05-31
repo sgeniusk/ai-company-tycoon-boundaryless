@@ -102,6 +102,7 @@ describe("v0.68 browser flow smoke QA script", () => {
         path: "/?scenario=ten-year-ending-route-start",
         expectedText: "10년 엔딩 목표 런 QA",
         requiredTexts: ["엔딩 목표 런", "목표 엔딩", "이번 세계가 열렸습니다"],
+        forbiddenTexts: ["미나의 안내"],
       },
       {
         id: "ten-year-next-run",
@@ -114,6 +115,7 @@ describe("v0.68 browser flow smoke QA script", () => {
         path: "/?scenario=ending-nearmiss-retry-start",
         expectedText: "아쉬운 엔딩 목표 런 QA",
         requiredTexts: ["목표 엔딩", "AGI 안전 협정", "이번 세계가 열렸습니다"],
+        forbiddenTexts: ["미나의 안내"],
       },
     ]);
   });
@@ -136,6 +138,15 @@ describe("v0.68 browser flow smoke QA script", () => {
     expect(startRoutes.map((route) => route.id)).toEqual(["ten-year-ending-route-start", "ending-nearmiss-retry-start"]);
     for (const route of startRoutes) {
       expect(route.requiredTexts.some((text) => routeStartGuards.includes(text))).toBe(true);
+    }
+  });
+
+  it("keeps helper tutorials out of opening world reveal routes", () => {
+    const result = listFlowSmokeRoutes();
+    const startRoutes = result.routes.filter((route) => route.path.includes("-route-start") || route.path.includes("-retry-start"));
+
+    for (const route of startRoutes) {
+      expect(route.forbiddenTexts).toEqual(["미나의 안내"]);
     }
   });
 

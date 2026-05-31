@@ -15,6 +15,7 @@ import {
 } from "./game/simulation";
 import { getTutorialGuide } from "./game/tutorial-guide";
 import type { GameState } from "./game/types";
+import { shouldShowWorldReveal } from "./game/world-reveal";
 import type { LocaleCode } from "./i18n";
 import type { MenuId } from "./ui/menu";
 
@@ -64,6 +65,7 @@ function App() {
   const [shouldAutoSave] = useState(initialSession.shouldAutoSave);
   const [offlineSettlement, setOfflineSettlement] = useState<OfflineSettlement | undefined>(initialSession.offlineSettlement);
   const [locale, setLocale] = useState<LocaleCode>("ko");
+  const [worldRevealVisible, setWorldRevealVisible] = useState(() => shouldShowWorldReveal(initialSession.state));
 
   const launchableCount = useMemo(
     () => products.filter((product) => getProductProjectCheck(product, gameState).ok).length,
@@ -143,14 +145,19 @@ function App() {
       <ResourceStrip gameState={gameState} />
       <GameStage gameState={gameState} qaScenarioLabel={qaScenarioLabel} setGameState={setGameState} setActiveMenu={setActiveMenu} />
       <div className="event-stack">
-        <EventPanels gameState={gameState} setGameState={setGameState} locale={locale} />
+        <EventPanels
+          gameState={gameState}
+          setGameState={setGameState}
+          locale={locale}
+          onWorldRevealVisibilityChange={setWorldRevealVisible}
+        />
       </div>
       <CommandRow gameState={gameState} setGameState={setGameState} onSave={handleSave} onLoad={handleLoad} />
       <section className="menu-layout" aria-label="경영 메뉴">
         <MainMenu activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
         <div className="menu-panel">{renderMenuContent(activeMenu, gameState, setGameState, locale, setActiveMenu)}</div>
       </section>
-      {tutorialGuide && !offlineSettlement && (
+      {tutorialGuide && !offlineSettlement && !worldRevealVisible && (
         <section className="helper-tutorial" role="dialog" aria-live="polite" aria-label="도우미 튜토리얼">
           <div className="helper-portrait" aria-hidden="true">
             <span>{tutorialGuide.helperName}</span>
