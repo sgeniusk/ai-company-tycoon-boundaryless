@@ -9,7 +9,7 @@ Status: PASS
 - External/user validation remains out of scope until the final release-candidate stage.
 
 ## Checks
-| ID | Command | Status | Evidence |
-| --- | --- | --- | --- |
-| harness_gate | npm run harness:gate < /dev/null | PASS | 53 passed (53); 595 passed (595); 15/15 checks (100%); build passed |
-| flow_smoke | npm run qa:v068-flow-smoke:check < /dev/null | PASS | 8/8; Report: PASS |
+| ID | Command | Status | Exit | Evidence | Diagnostic |
+| --- | --- | --- | ---: | --- | --- |
+| harness_gate | npm run harness:gate < /dev/null | PASS | 0 | 53 passed (53); 597 passed (597); 15/15 checks (100%); build passed | exit 0; Test Files  53 passed (53) |
+| flow_smoke | npm run qa:v068-flow-smoke:check < /dev/null | PASS | 0 | 8/8; Report: PASS | exit 0; Report: PASS |

@@ -49,13 +49,16 @@ function runCheck(check) {
     stdio: ["ignore", "pipe", "pipe"],
   });
   const output = `${result.stdout ?? ""}${result.stderr ?? ""}`;
+  const exitStatus = result.status ?? null;
 
   return {
     id: check.id,
     label: check.label,
     command: check.command,
-    status: result.status === 0 ? "pass" : "fail",
+    status: exitStatus === 0 ? "pass" : "fail",
+    exitStatus,
     evidence: summarizeOutput(check.id, output),
+    diagnostic: summarizeDiagnostic(output, exitStatus),
   };
 }
 
@@ -77,9 +80,38 @@ function summarizeOutput(id, output) {
   return output.split("\n").find((line) => line.trim())?.trim() ?? "no output";
 }
 
+function summarizeDiagnostic(output, exitStatus) {
+  const lines = output
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.trim());
+  const priorityPatterns = [
+    /^Error:/,
+    /error TS\d+:/,
+    /^FAIL\b/,
+    /Test Files\s+.*failed/,
+    /^Report:\s+FAIL/,
+    /^Status:\s+FAIL/,
+    /Test Files\s+.*passed/,
+    /^Report:\s+PASS/,
+  ];
+  const diagnosticLine =
+    priorityPatterns.map((pattern) => lines.find((line) => pattern.test(line))).find(Boolean) ?? lines[0] ?? "no output";
+  const compactLine = diagnosticLine.length > 180 ? `${diagnosticLine.slice(0, 177)}...` : diagnosticLine;
+
+  return `exit ${exitStatus ?? "unknown"}; ${compactLine}`;
+}
+
+function formatTableCell(value) {
+  return String(value).replace(/\|/g, "\\|");
+}
+
 function createReport(result) {
   const rows = result.checks
-    .map((check) => `| ${check.id} | ${check.command} | ${check.status.toUpperCase()} | ${check.evidence} |`)
+    .map(
+      (check) =>
+        `| ${check.id} | ${check.command} | ${check.status.toUpperCase()} | ${check.exitStatus ?? "unknown"} | ${formatTableCell(check.evidence)} | ${formatTableCell(check.diagnostic)} |`,
+    )
     .join("\n");
 
   return `# v0.68 Beta Candidate Local Gate
@@ -93,8 +125,8 @@ Status: ${result.status.toUpperCase()}
 - External/user validation remains out of scope until the final release-candidate stage.
 
 ## Checks
-| ID | Command | Status | Evidence |
-| --- | --- | --- | --- |
+| ID | Command | Status | Exit | Evidence | Diagnostic |
+| --- | --- | --- | ---: | --- | --- |
 ${rows}
 `;
 }
@@ -112,7 +144,9 @@ function createSummary(result) {
       id: check.id,
       command: check.command,
       status: check.status,
+      exitStatus: check.exitStatus,
       evidence: check.evidence,
+      diagnostic: check.diagnostic,
     })),
   };
 
