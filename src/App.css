@@ -1034,6 +1034,85 @@ p {
   color: var(--red);
 }
 
+.office-workbeat-layer {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.office-workbeat-node {
+  animation: office-workbeat-pop 1540ms steps(2) infinite;
+  animation-delay: var(--workbeat-delay, 0ms);
+  background: #fffdf5;
+  border: 2px solid var(--line);
+  box-shadow: 0 3px 0 rgba(61, 51, 35, 0.32);
+  color: #243629;
+  display: grid;
+  font-size: 0.54rem;
+  font-weight: 1000;
+  image-rendering: pixelated;
+  left: var(--workbeat-x, 50%);
+  line-height: 1;
+  max-width: 68px;
+  min-width: 32px;
+  overflow: visible;
+  padding: 4px 5px;
+  place-items: center;
+  position: absolute;
+  text-align: center;
+  text-overflow: ellipsis;
+  top: var(--workbeat-y, 50%);
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.office-workbeat-node::before {
+  animation: office-workbeat-trail 1540ms steps(3) infinite;
+  animation-delay: var(--workbeat-delay, 0ms);
+  background: #f2cf7f;
+  border: 2px solid var(--line);
+  box-shadow: 7px 7px 0 -2px #f2cf7f, 7px 7px 0 0 var(--line);
+  content: "";
+  height: 5px;
+  left: -12px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+}
+
+.office-workbeat-node::after {
+  background: #5fc6a6;
+  content: "";
+  height: 3px;
+  position: absolute;
+  right: 4px;
+  top: 3px;
+  width: 10px;
+}
+
+.office-workbeat-node.workbeat-compute {
+  background: #e8f0ff;
+  color: #1f376b;
+}
+
+.office-workbeat-node.workbeat-team {
+  background: #fff3c7;
+  color: #6b4713;
+}
+
+.office-workbeat-node.workbeat-idea,
+.office-workbeat-node.workbeat-ship {
+  background: #dff1df;
+  color: var(--green-dark);
+}
+
+.office-workbeat-node.workbeat-data {
+  background: #f4e8ff;
+  color: #55386d;
+}
+
 .office-level-2 .office-floor {
   min-height: 212px;
 }
@@ -2245,6 +2324,30 @@ p {
   50% {
     opacity: 1;
     transform: translate(-50%, calc(-100% - 8px));
+  }
+}
+
+@keyframes office-workbeat-pop {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(-5px);
+  }
+}
+
+@keyframes office-workbeat-trail {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translate(-2px, -50%);
+  }
+  45% {
+    opacity: 1;
+    transform: translate(4px, -50%);
   }
 }
 
@@ -11022,6 +11125,8 @@ p {
   .release-spotlight,
   .office-object.pixel-office-object,
   .office-event-reaction,
+  .office-workbeat-node,
+  .office-workbeat-node::before,
   .staff-sprite.pixel-actor,
   .office-actor-reaction-sprite,
   .office-actor-work-puff {
@@ -11622,6 +11727,17 @@ p {
 
   .office-object.pixel-office-object:nth-child(n + 7),
   .office-object.pixel-office-object.object-kind-route {
+    display: none;
+  }
+
+  .office-workbeat-node {
+    font-size: 0.46rem;
+    max-width: 52px;
+    min-width: 28px;
+    padding: 3px 4px;
+  }
+
+  .office-workbeat-node:nth-child(n + 5) {
     display: none;
   }
 

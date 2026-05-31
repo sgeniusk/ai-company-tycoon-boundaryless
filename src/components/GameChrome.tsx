@@ -1001,6 +1001,7 @@ export function GameStage({
           <RivalIncidentBanner gameState={gameState} />
           <OperationCommandPanel plan={operationsPlan} onOpenMenu={setActiveMenu} />
           <OfficeEventReactionLayer reactions={officeScenePlan.eventReactions} />
+          <OfficeWorkBeatLayer activeObjectCount={officeScenePlan.activeObjectCount} />
           <div className="office-actor-layer" aria-label="사무실 액터">
             {visibleOfficeActors.map((actor, index) => {
               const agentType = actor.agentTypeId ? agentTypes.find((type) => type.id === actor.agentTypeId) : undefined;
@@ -1755,6 +1756,42 @@ function OfficeEventReactionLayer({ reactions }: { reactions: OfficeEventReactio
         >
           <strong>{reaction.bubble}</strong>
           <small>{reaction.headline}</small>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+const officeWorkBeatNodes = [
+  { id: "build", label: "빌드", tone: "code", x: 34, y: 54 },
+  { id: "gpu", label: "GPU", tone: "compute", x: 58, y: 42 },
+  { id: "meet", label: "회의", tone: "team", x: 24, y: 66 },
+  { id: "idea", label: "아이디어", tone: "idea", x: 70, y: 58 },
+  { id: "data", label: "데이터", tone: "data", x: 44, y: 74 },
+  { id: "ship", label: "런칭", tone: "ship", x: 78, y: 36 },
+  { id: "debug", label: "수정", tone: "code", x: 16, y: 48 },
+  { id: "ops", label: "OPS", tone: "compute", x: 86, y: 70 },
+] as const;
+
+function OfficeWorkBeatLayer({ activeObjectCount }: { activeObjectCount: number }) {
+  const visibleCount = Math.max(4, Math.min(officeWorkBeatNodes.length, activeObjectCount + 3));
+
+  return (
+    <div className="office-workbeat-layer" aria-hidden="true">
+      {officeWorkBeatNodes.slice(0, visibleCount).map((node, index) => (
+        <span
+          className={`office-workbeat-node workbeat-${node.tone}`}
+          key={node.id}
+          style={
+            {
+              "--workbeat-delay": `${(index % 4) * 220}ms`,
+              "--workbeat-x": `${node.x}%`,
+              "--workbeat-y": `${node.y}%`,
+              ...getDepthStyle(node.y, 56),
+            } as CSSProperties
+          }
+        >
+          {node.label}
         </span>
       ))}
     </div>

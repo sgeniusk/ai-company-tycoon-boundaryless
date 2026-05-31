@@ -698,6 +698,23 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.office-actor-work-puff::after\s*{/s);
   });
 
+  it("adds small office workbeat signals so the scene reads as an active pixel sim", () => {
+    expect(gameChrome).toContain("OfficeWorkBeatLayer");
+    expect(gameChrome).toContain("officeWorkBeatNodes");
+    expect(gameChrome).toContain("office-workbeat-layer");
+    expect(gameChrome).toContain("office-workbeat-node");
+    expect(gameChrome).toContain("activeObjectCount={officeScenePlan.activeObjectCount}");
+    expect(appCss).toMatch(/\.office-workbeat-layer\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.office-workbeat-layer\s*{[^}]*pointer-events:\s*none/s);
+    expect(appCss).toMatch(/\.office-workbeat-node\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.office-workbeat-node\s*{[^}]*animation:\s*office-workbeat-pop/s);
+    expect(appCss).toMatch(/\.office-workbeat-node::before\s*{[^}]*animation:\s*office-workbeat-trail/s);
+    expect(appCss).toMatch(/@keyframes\s+office-workbeat-pop/s);
+    expect(appCss).toMatch(/@keyframes\s+office-workbeat-trail/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.office-workbeat-node:nth-child\(n \+ 5\)\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-workbeat-node/s);
+  });
+
   it("protects the playfield by narrowing the persistent console column", () => {
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*0\.94fr\)\s+minmax\(0,\s*1fr\)\s+clamp\(330px,\s*28vw,\s*390px\)/s);
     expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);
