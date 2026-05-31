@@ -653,6 +653,19 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@keyframes\s+office-reaction-pop/s);
   });
 
+  it("keeps office work loops comic and pixel-art consistent", () => {
+    expect(gameChrome).toContain("office_reactions_v081_atlas");
+    expect(gameChrome).toContain("getOfficeActorReactionIconStyle");
+    expect(gameChrome).toContain("office-actor-reaction-sprite");
+    expect(gameChrome).toContain("office-actor-work-puff");
+    expect(appCss).toMatch(/\.office-actor-reaction-sprite\s*{[^}]*background-image:\s*var\(--office-reaction-atlas\)/s);
+    expect(appCss).toMatch(/\.office-actor-reaction-sprite\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.office-actor-reaction-sprite\s*{[^}]*animation:\s*office-actor-reaction-bounce/s);
+    expect(appCss).toMatch(/@keyframes\s+office-actor-reaction-bounce/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.actor-state-working\s+\.office-actor-work-puff\s*{[^}]*animation:\s*office-actor-work-puff/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-actor-reaction-sprite/s);
+  });
+
   it("protects the playfield by narrowing the persistent console column", () => {
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*0\.94fr\)\s+minmax\(0,\s*1fr\)\s+clamp\(330px,\s*28vw,\s*390px\)/s);
     expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);

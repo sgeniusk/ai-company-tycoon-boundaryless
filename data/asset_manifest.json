@@ -1106,6 +1106,18 @@
       "preview_frames": [0, 1, 2, 5, 8, 9, 10, 11],
       "slice_mode": "row-major capability research icons"
     },
+    "office_reactions_v081_atlas": {
+      "path": "/assets/ui/v081-office-reaction-atlas.png",
+      "source_status": "final",
+      "density": 1,
+      "frame_width": 40,
+      "frame_height": 40,
+      "columns": 6,
+      "rows": 1,
+      "frame_count": 6,
+      "preview_frames": [0, 1, 2, 3, 4, 5],
+      "slice_mode": "row-major comic office reaction icons"
+    },
     "commercial_ui_v071_atlas": {
       "path": "/assets/ui/v071-commercial-ui-atlas.png",
       "source_status": "final",

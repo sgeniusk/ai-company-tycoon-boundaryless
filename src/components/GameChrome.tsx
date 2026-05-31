@@ -140,11 +140,21 @@ const officeBackdropId = "office_isometric_v054_final_art_import";
 const competitorLogoAtlasId = "competitor_logos_v072_atlas";
 const brandCrestAtlasId = "brand_crest_v075_atlas";
 const workforceActorAtlasId = "workforce_actor_v076_atlas";
+const officeReactionAtlasId = "office_reactions_v081_atlas";
+const officeReactionIconSize = 28;
 const fallbackActorFrameIndexes: Record<OfficeSceneActorStatus["kind"], number> = {
   human: 0,
   ai_agent: 1,
   robot: 2,
 };
+const officeActorReactionFrameByKey = {
+  code: 0,
+  idea: 1,
+  coffee: 2,
+  alert: 3,
+  cheer: 4,
+  gear: 5,
+} as const;
 
 function getAssetSheet(sheetId?: string): SpriteSheetDefinition | undefined {
   if (!sheetId) return undefined;
@@ -306,6 +316,32 @@ function getFallbackActorSpriteFrameStyle(actor: OfficeSceneActorStatus): CSSPro
   if (!sheet) return undefined;
 
   return getSpriteSheetFrameStyle(sheet, fallbackActorFrameIndexes[actor.kind] ?? 0, 76, 76);
+}
+
+function getOfficeActorReactionFrame(actor: OfficeSceneActorStatus, index: number) {
+  if (actor.state === "warning" || actor.reactionPose === "alert") return officeActorReactionFrameByKey.alert;
+  if (actor.state === "resting") return officeActorReactionFrameByKey.coffee;
+  if (actor.reactionPose === "cheer") return officeActorReactionFrameByKey.cheer;
+  if (actor.reactionPose === "card_use") return officeActorReactionFrameByKey.idea;
+  if (actor.kind === "robot") return officeActorReactionFrameByKey.gear;
+  if (actor.kind === "ai_agent") return index % 2 === 0 ? officeActorReactionFrameByKey.code : officeActorReactionFrameByKey.idea;
+  return index % 3 === 0 ? officeActorReactionFrameByKey.coffee : index % 2 === 0 ? officeActorReactionFrameByKey.code : officeActorReactionFrameByKey.idea;
+}
+
+function getOfficeActorReactionIconStyle(actor: OfficeSceneActorStatus, index: number): CSSProperties {
+  const sheet = getAssetSheet(officeReactionAtlasId);
+  if (!sheet) return {};
+  const frameIndex = getOfficeActorReactionFrame(actor, index);
+  const column = frameIndex % sheet.columns;
+  const row = Math.floor(frameIndex / sheet.columns);
+
+  return {
+    "--office-reaction-atlas": `url(${sheet.path})`,
+    "--office-reaction-delay": `${(index % 4) * 180}ms`,
+    "--office-reaction-size": `${sheet.columns * officeReactionIconSize}px ${sheet.rows * officeReactionIconSize}px`,
+    "--office-reaction-x": `${-column * officeReactionIconSize}px`,
+    "--office-reaction-y": `${-row * officeReactionIconSize}px`,
+  } as CSSProperties;
 }
 
 function getCompetitorIdentity(competitorId?: string) {
@@ -996,6 +1032,12 @@ export function GameStage({
                 >
                   <b>{actor.name.slice(0, 3)}</b>
                   <small className="actor-thought">{actor.assignmentLabel}</small>
+                  <span
+                    aria-hidden="true"
+                    className="office-actor-reaction-sprite"
+                    style={getOfficeActorReactionIconStyle(actor, index)}
+                  />
+                  <i aria-hidden="true" className="office-actor-work-puff" />
                 </button>
               );
             })}

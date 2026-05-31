@@ -1804,6 +1804,7 @@ p {
   image-rendering: pixelated;
   left: var(--actor-x, 18%);
   min-height: 28px;
+  overflow: visible;
   padding: 0;
   pointer-events: auto;
   top: var(--actor-y, 64%);
@@ -1925,6 +1926,51 @@ p {
 .staff-sprite.pixel-actor.actor-state-warning .actor-thought {
   background: #ffe1d8;
   color: #842d1f;
+}
+
+.office-actor-reaction-sprite {
+  animation: office-actor-reaction-bounce 1260ms steps(2) infinite;
+  animation-delay: var(--office-reaction-delay, 0ms);
+  background-image: var(--office-reaction-atlas);
+  background-position: var(--office-reaction-x) var(--office-reaction-y);
+  background-repeat: no-repeat;
+  background-size: var(--office-reaction-size);
+  filter: drop-shadow(0 2px 0 rgba(61, 51, 35, 0.32));
+  height: 28px;
+  image-rendering: pixelated;
+  pointer-events: none;
+  position: absolute;
+  right: -18px;
+  top: -38px;
+  width: 28px;
+  z-index: 4;
+}
+
+.staff-sprite.pixel-actor.actor-state-warning .office-actor-reaction-sprite {
+  animation-name: office-actor-reaction-alert;
+}
+
+.staff-sprite.pixel-actor.actor-state-resting .office-actor-reaction-sprite {
+  opacity: 0.9;
+  top: -32px;
+}
+
+.office-actor-work-puff {
+  background: #fffaf0;
+  border: 2px solid var(--line);
+  box-shadow: 7px -5px 0 -2px #fffaf0, 7px -5px 0 0 var(--line), 14px -1px 0 -2px #fffaf0, 14px -1px 0 0 var(--line);
+  height: 5px;
+  left: 16px;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: -9px;
+  width: 5px;
+  z-index: 3;
+}
+
+.staff-sprite.pixel-actor.actor-state-working .office-actor-work-puff {
+  animation: office-actor-work-puff 940ms steps(3) infinite;
 }
 
 .office-actor-focus-panel {
@@ -2086,6 +2132,41 @@ p {
   }
   50% {
     transform: translate(-50%, -50%) translateY(3px);
+  }
+}
+
+@keyframes office-actor-reaction-bounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.04);
+  }
+}
+
+@keyframes office-actor-reaction-alert {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(5deg);
+  }
+}
+
+@keyframes office-actor-work-puff {
+  0% {
+    opacity: 0;
+    transform: translate(0, 2px) scale(0.75);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(4px, -3px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(10px, -9px) scale(1.12);
   }
 }
 
@@ -10846,6 +10927,13 @@ p {
   .release-spotlight,
   .office-object.pixel-office-object,
   .office-event-reaction,
+  .staff-sprite.pixel-actor,
+  .office-actor-reaction-sprite,
+  .office-actor-work-puff {
+    animation: none;
+    transition: none;
+  }
+
   .staff-sprite.pixel-actor {
     animation: none;
     transition: none;

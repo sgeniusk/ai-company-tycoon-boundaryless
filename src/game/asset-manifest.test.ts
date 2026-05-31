@@ -410,6 +410,25 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(readFileSync(capabilityScriptUrl, "utf8")).toContain("v080-capability-research-atlas.png");
   });
 
+  it("ships final comic office reaction icons for animated office work loops", () => {
+    const reactionSheet = assetManifest.sprite_sheets.office_reactions_v081_atlas;
+    const reactionScriptUrl = new URL("../../scripts/assets/generate-v081-office-reaction-atlas.mjs", import.meta.url);
+
+    expect(reactionSheet).toMatchObject({
+      path: "/assets/ui/v081-office-reaction-atlas.png",
+      source_status: "final",
+      frame_width: 40,
+      frame_height: 40,
+      columns: 6,
+      rows: 1,
+      frame_count: 6,
+      slice_mode: "row-major comic office reaction icons",
+    });
+    expect(readPngSize(reactionSheet.path)).toEqual({ width: 240, height: 40 });
+    expect(packageJson.scripts["assets:v081"]).toBe("node scripts/assets/generate-v081-office-reaction-atlas.mjs");
+    expect(readFileSync(reactionScriptUrl, "utf8")).toContain("v081-office-reaction-atlas.png");
+  });
+
   it("maps first-shop item icons to known items", () => {
     const itemIconSheet = assetManifest.sprite_sheets.commercial_ui_v071_atlas;
 
