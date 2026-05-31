@@ -63,6 +63,10 @@
         "다시 차고로",
         "결과 전용 기록"
       ],
+      "forbiddenTexts": [
+        "이번 세계가 열렸습니다",
+        "이 세계로 시작"
+      ],
       "status": "pass",
       "domBytes": 262145,
       "failedChecks": []
@@ -74,6 +78,10 @@
       "requiredTexts": [
         "아쉬운 엔딩",
         "AGI 안전 협정"
+      ],
+      "forbiddenTexts": [
+        "이번 세계가 열렸습니다",
+        "이 세계로 시작"
       ],
       "status": "pass",
       "domBytes": 262144,

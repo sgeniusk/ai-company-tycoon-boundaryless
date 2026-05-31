@@ -21,7 +21,8 @@ const defaultChromeCandidates = [
   "/usr/bin/chromium",
   "/usr/bin/chromium-browser",
 ];
-const routes = [
+const finalResultForbiddenTexts = ["이번 세계가 열렸습니다", "이 세계로 시작"];
+const baseRoutes = [
   {
     id: "fresh",
     path: "/?scenario=fresh",
@@ -71,6 +72,9 @@ const routes = [
     requiredTexts: ["목표 엔딩", "AGI 안전 협정"],
   },
 ];
+const routes = baseRoutes.map((route) =>
+  route.path.includes("-final") ? { ...route, forbiddenTexts: finalResultForbiddenTexts } : route,
+);
 
 function hasArg(name) {
   return process.argv.includes(name);
@@ -272,6 +276,11 @@ async function inspectRoute(chromePath, baseUrl, route) {
       label: `Required text: ${text}`,
       pass: dom.includes(text),
     })),
+    ...(route.forbiddenTexts ?? []).map((text) => ({
+      id: `forbidden_text_${text}`,
+      label: `Forbidden text absent: ${text}`,
+      pass: !dom.includes(text),
+    })),
     {
       id: "no_vite_error",
       label: "No Vite/runtime error overlay",
@@ -335,6 +344,7 @@ function createSummary(result) {
       path: route.path,
       expectedText: route.expectedText,
       requiredTexts: route.requiredTexts,
+      forbiddenTexts: route.forbiddenTexts,
       status: route.status,
       domBytes: route.domBytes,
       failedChecks: route.checks.filter((check) => !check.pass).map((check) => check.id),

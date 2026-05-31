@@ -10,6 +10,7 @@ interface FlowSmokeRoute {
   path: string;
   expectedText: string;
   requiredTexts: string[];
+  forbiddenTexts?: string[];
 }
 
 interface FlowSmokeArtifact {
@@ -87,12 +88,14 @@ describe("v0.68 browser flow smoke QA script", () => {
         path: "/?scenario=ending-fallback-final",
         expectedText: "결과 전용 엔딩 QA",
         requiredTexts: ["다시 차고로", "결과 전용 기록"],
+        forbiddenTexts: ["이번 세계가 열렸습니다", "이 세계로 시작"],
       },
       {
         id: "ending-nearmiss-final",
         path: "/?scenario=ending-nearmiss-final",
         expectedText: "아쉬운 엔딩 재도전 QA",
         requiredTexts: ["아쉬운 엔딩", "AGI 안전 협정"],
+        forbiddenTexts: ["이번 세계가 열렸습니다", "이 세계로 시작"],
       },
       {
         id: "ten-year-ending-route-start",
@@ -113,6 +116,16 @@ describe("v0.68 browser flow smoke QA script", () => {
         requiredTexts: ["목표 엔딩", "AGI 안전 협정"],
       },
     ]);
+  });
+
+  it("guards final-result routes against a blocking world reveal modal", () => {
+    const result = listFlowSmokeRoutes();
+    const finalResultRoutes = result.routes.filter((route) => route.path.includes("-final"));
+
+    expect(finalResultRoutes.map((route) => route.id)).toEqual(["ending-fallback-final", "ending-nearmiss-final"]);
+    for (const route of finalResultRoutes) {
+      expect(route.forbiddenTexts).toEqual(["이번 세계가 열렸습니다", "이 세계로 시작"]);
+    }
   });
 
   it("keeps the smoke implementation tied to Chrome DOM checks and a QA report artifact", () => {

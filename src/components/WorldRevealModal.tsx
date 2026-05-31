@@ -4,6 +4,7 @@ import { getActiveEndingReplayBrief } from "../game/campaign-ending";
 import { DEFAULT_RUN_MODIFIER_SELECTION } from "../game/run-modifiers";
 import { formatResource } from "../game/simulation";
 import { getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "../game/tag-derivation";
+import { shouldShowWorldReveal } from "../game/world-reveal";
 import type { GameState, RunModifierOptionDefinition, RunModifiersState } from "../game/types";
 
 type RevealAxis = {
@@ -40,16 +41,6 @@ function getRevealAxes(selection: RunModifiersState): RevealAxis[] {
       option: runModifiers.founder_traits.find((option) => option.id === selection.founderTraitId),
     },
   ];
-}
-
-function isStandardRun(selection: RunModifiersState): boolean {
-  return (
-    selection.startCityId === DEFAULT_RUN_MODIFIER_SELECTION.startCityId &&
-    selection.worldLoreId === DEFAULT_RUN_MODIFIER_SELECTION.worldLoreId &&
-    selection.marketConditionId === DEFAULT_RUN_MODIFIER_SELECTION.marketConditionId &&
-    selection.founderTraitId === DEFAULT_RUN_MODIFIER_SELECTION.founderTraitId &&
-    selection.challengeTier === "standard"
-  );
 }
 
 function getDeltaEntries(option?: RunModifierOptionDefinition): string[] {
@@ -92,7 +83,7 @@ export function WorldRevealModal({ gameState }: { gameState: GameState }) {
   );
   const endingReplayBrief = useMemo(() => getActiveEndingReplayBrief(gameState), [gameState]);
   const challengeTier = difficultyTiers.find((tier) => tier.id === selection.challengeTier) ?? difficultyTiers.find((tier) => tier.id === "standard");
-  const shouldShow = !isStandardRun(selection) && !dismissedSeeds.has(selection.seed);
+  const shouldShow = shouldShowWorldReveal(gameState, dismissedSeeds);
 
   useEffect(() => {
     if (!shouldShow) return;

@@ -3,6 +3,7 @@ import { difficultyTiers, runModifiers } from "./data";
 import { resetRunWithMetaUnlocks } from "./meta-progression";
 import { createQaScenario } from "./qa-scenarios";
 import { advanceMonth, calculateMonthlyEconomy, createInitialState, hydrateGameState, serializeGameState } from "./simulation";
+import { shouldShowWorldReveal } from "./world-reveal";
 import {
   DEFAULT_RUN_MODIFIER_SELECTION,
   applyRunModifierStartingDeltas,
@@ -280,6 +281,18 @@ describe("v0.63 run modifier foundation", () => {
     expect(scenario.state.runModifiers.challengeTier).toBe("hard");
     expect(scenario.state.runModifiers.seed).toBe("qa-difficulty-reward");
     expect(scenario.state.status).toBe("success");
+  });
+
+  it("shows the world reveal only for opening-run states so final results are not blocked", () => {
+    const retryStart = createQaScenario("ending-nearmiss-retry-start");
+    const finalResult = createQaScenario("ending-nearmiss-final");
+
+    expect(retryStart.state.month).toBe(1);
+    expect(retryStart.state.status).toBe("playing");
+    expect(shouldShowWorldReveal(retryStart.state)).toBe(true);
+    expect(finalResult.state.month).toBe(120);
+    expect(finalResult.state.status).toBe("success");
+    expect(shouldShowWorldReveal(finalResult.state)).toBe(false);
   });
 
   it("sums conservative monthly effects from active modifier tags", () => {
