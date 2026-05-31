@@ -374,6 +374,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.resource-tile\s*{[^}]*min-height:\s*42px/s);
   });
 
+  it("keeps the mobile bottom economy HUD as a complete two-row pixel board", () => {
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*grid-template-rows:\s*repeat\(2,\s*minmax\(42px,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*grid-auto-flow:\s*row/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*overflow:\s*hidden/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-tile\s*{[^}]*grid-template-columns:\s*18px\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-icon\s*{[^}]*transform:\s*scale\(0\.82\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-delta\s*{[^}]*display:\s*none/s);
+  });
+
   it("treats the command row as a fixed bottom control strip", () => {
     expect(appCss).toMatch(/\.command-row\s*{[^}]*grid-area:\s*commands/s);
     expect(appCss).toMatch(/\.command-row\s*{[^}]*overflow:\s*hidden/s);
@@ -677,6 +687,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@keyframes\s+office-actor-reaction-bounce/s);
     expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.actor-state-working\s+\.office-actor-work-puff\s*{[^}]*animation:\s*office-actor-work-puff/s);
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-actor-reaction-sprite/s);
+  });
+
+  it("keeps office actors moving in stepped comic pixel loops", () => {
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\s*{[^}]*--actor-base-y:\s*-50%/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.sprite-sheet-frame\s*{[^}]*--actor-base-y:\s*-70%/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.sprite-sheet-frame\.sprite-sheet-animated\s*{[^}]*animation:\s*sprite-sheet-frame-cycle[^;]+,\s*pixel-actor-work/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.actor-fallback-sheet\.actor-state-working\s*{[^}]*animation:\s*pixel-actor-work\s+860ms\s+steps\(2\)\s+infinite/s);
+    expect(appCss).toMatch(/@keyframes\s+pixel-actor-work\s*{[\s\S]*var\(--actor-base-y,\s*-50%\)/s);
+    expect(appCss).toMatch(/\.office-actor-work-puff::after\s*{/s);
   });
 
   it("protects the playfield by narrowing the persistent console column", () => {
