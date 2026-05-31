@@ -353,6 +353,25 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(readFileSync(emblemScriptUrl, "utf8")).toContain("v077-celebration-emblem-atlas.png");
   });
 
+  it("ships final world reveal stamps for run modifier axes", () => {
+    const stampSheet = assetManifest.sprite_sheets.world_reveal_stamps_v078_atlas;
+    const stampScriptUrl = new URL("../../scripts/assets/generate-v078-world-reveal-stamp-atlas.mjs", import.meta.url);
+
+    expect(stampSheet).toMatchObject({
+      path: "/assets/ui/v078-world-reveal-stamp-atlas.png",
+      source_status: "final",
+      frame_width: 64,
+      frame_height: 64,
+      columns: 4,
+      rows: 1,
+      frame_count: 4,
+      slice_mode: "row-major world reveal stamps: city, world, market, founder",
+    });
+    expect(readPngSize(stampSheet.path)).toEqual({ width: 256, height: 64 });
+    expect(packageJson.scripts["assets:v078"]).toBe("node scripts/assets/generate-v078-world-reveal-stamp-atlas.mjs");
+    expect(readFileSync(stampScriptUrl, "utf8")).toContain("v078-world-reveal-stamp-atlas.png");
+  });
+
   it("maps first-shop item icons to known items", () => {
     const itemIconSheet = assetManifest.sprite_sheets.commercial_ui_v071_atlas;
 

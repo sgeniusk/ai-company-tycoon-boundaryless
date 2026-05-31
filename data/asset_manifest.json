@@ -1070,6 +1070,18 @@
       "preview_frames": [0, 1, 2, 0],
       "slice_mode": "row-major celebration emblems: synergy, combo, achievement"
     },
+    "world_reveal_stamps_v078_atlas": {
+      "path": "/assets/ui/v078-world-reveal-stamp-atlas.png",
+      "source_status": "final",
+      "density": 1,
+      "frame_width": 64,
+      "frame_height": 64,
+      "columns": 4,
+      "rows": 1,
+      "frame_count": 4,
+      "preview_frames": [0, 1, 2, 3],
+      "slice_mode": "row-major world reveal stamps: city, world, market, founder"
+    },
     "commercial_ui_v071_atlas": {
       "path": "/assets/ui/v071-commercial-ui-atlas.png",
       "source_status": "final",

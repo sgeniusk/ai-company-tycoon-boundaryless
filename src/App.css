@@ -12515,14 +12515,31 @@ p {
 }
 
 .world-reveal-axis {
+  align-items: start;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 8px;
   display: grid;
   gap: 6px;
+  grid-template-columns: 44px minmax(0, 1fr);
   min-width: 0;
   padding: 10px;
   transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease;
+}
+
+.world-reveal-axis-stamp {
+  background-image: var(--world-reveal-stamp-atlas);
+  background-position: var(--world-reveal-stamp-x) var(--world-reveal-stamp-y);
+  background-repeat: no-repeat;
+  background-size: var(--world-reveal-stamp-size);
+  border: 1px solid rgba(161, 245, 225, 0.28);
+  border-radius: 8px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+  display: block;
+  grid-row: 1 / span 4;
+  height: 44px;
+  image-rendering: pixelated;
+  width: 44px;
 }
 
 .world-reveal-axis.locked {
@@ -12544,11 +12561,13 @@ p {
   color: rgba(161, 245, 225, 0.84);
   font-size: 0.62rem;
   font-weight: 900;
+  grid-column: 2;
 }
 
 .world-reveal-axis strong {
   color: #fff8df;
   font-size: 0.98rem;
+  grid-column: 2;
   line-height: 1.15;
   overflow-wrap: anywhere;
 }
@@ -12557,6 +12576,7 @@ p {
   color: rgba(255, 255, 255, 0.78);
   font-size: 0.7rem;
   font-weight: 800;
+  grid-column: 2;
   line-height: 1.42;
   margin: 0;
   overflow-wrap: anywhere;
@@ -12566,6 +12586,7 @@ p {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
+  grid-column: 2;
 }
 
 .world-reveal-deltas em {

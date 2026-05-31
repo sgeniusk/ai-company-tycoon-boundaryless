@@ -885,9 +885,14 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("challengeTierId: \"standard\"");
     expect(worldRevealModal).toContain("도전 티어");
     expect(worldRevealModal).toContain("reward_multiplier");
+    expect(worldRevealModal).toContain("world_reveal_stamps_v078_atlas");
+    expect(worldRevealModal).toContain("getWorldRevealStampStyle");
+    expect(worldRevealModal).toContain("world-reveal-axis-stamp");
     expect(appCss).toMatch(/\.challenge-tier-choice-grid\s*{[^}]*grid-template-columns:/s);
     expect(appCss).toMatch(/\.world-reveal-overlay\s*{[^}]*pointer-events:\s*auto/s);
     expect(appCss).toMatch(/\.world-reveal-tier\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.world-reveal-axis-stamp\s*{[^}]*background-image:\s*var\(--world-reveal-stamp-atlas\)/s);
+    expect(appCss).toMatch(/\.world-reveal-axis-stamp\s*{[^}]*image-rendering:\s*pixelated/s);
   });
 
   it("keeps UI restart seeds deterministic", () => {

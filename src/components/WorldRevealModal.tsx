@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { difficultyTiers, runModifiers } from "../game/data";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { assetManifest, difficultyTiers, runModifiers } from "../game/data";
 import { getActiveEndingReplayBrief } from "../game/campaign-ending";
 import { DEFAULT_RUN_MODIFIER_SELECTION } from "../game/run-modifiers";
 import { formatResource } from "../game/simulation";
@@ -7,12 +7,39 @@ import { getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "../game/tag-
 import { shouldShowWorldReveal } from "../game/world-reveal";
 import type { GameState, RunModifierOptionDefinition, RunModifiersState } from "../game/types";
 
+type RevealAxisId = "city" | "world" | "market" | "founder";
+
 type RevealAxis = {
-  id: string;
+  id: RevealAxisId;
   label: string;
   defaultId: string;
   option?: RunModifierOptionDefinition;
 };
+
+const worldRevealStampAtlasId = "world_reveal_stamps_v078_atlas";
+const worldRevealStampDisplaySize = 44;
+const worldRevealStampFrameIndexes: Record<RevealAxisId, number> = {
+  city: 0,
+  world: 1,
+  market: 2,
+  founder: 3,
+};
+
+function getWorldRevealStampStyle(axisId: RevealAxisId): CSSProperties {
+  const sheet = assetManifest.sprite_sheets[worldRevealStampAtlasId];
+  const frameIndex = worldRevealStampFrameIndexes[axisId];
+  const columns = sheet?.columns ?? 4;
+  const rows = sheet?.rows ?? 1;
+  const column = frameIndex % columns;
+  const row = Math.floor(frameIndex / columns);
+
+  return {
+    "--world-reveal-stamp-atlas": `url(${sheet?.path ?? "/assets/ui/v078-world-reveal-stamp-atlas.png"})`,
+    "--world-reveal-stamp-x": `${-column * worldRevealStampDisplaySize}px`,
+    "--world-reveal-stamp-y": `${-row * worldRevealStampDisplaySize}px`,
+    "--world-reveal-stamp-size": `${columns * worldRevealStampDisplaySize}px ${rows * worldRevealStampDisplaySize}px`,
+  } as CSSProperties;
+}
 
 function getRevealAxes(selection: RunModifiersState): RevealAxis[] {
   return [
@@ -161,6 +188,11 @@ export function WorldRevealModal({
                 className={`world-reveal-axis${revealed ? " revealed" : " locked"}${nonStandard ? " non-standard" : " standard"}`}
                 key={axis.id}
               >
+                <i
+                  aria-hidden="true"
+                  className={`world-reveal-axis-stamp world-reveal-axis-stamp-${axis.id}`}
+                  style={getWorldRevealStampStyle(axis.id)}
+                />
                 <span>{axis.label}</span>
                 <strong>{revealed ? axis.option?.name ?? "알 수 없음" : "???"}</strong>
                 <p>{revealed ? axis.option?.description ?? "선택 정보를 찾을 수 없습니다." : "결과 분석 중"}</p>
