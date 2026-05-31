@@ -1,7 +1,10 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { campaignEndings } from "./data";
 import { getBetaReadinessSummary } from "./beta-readiness";
 import { createInitialState } from "./simulation";
+
+const betaReadinessSource = readFileSync(new URL("./beta-readiness.ts", import.meta.url), "utf8");
 
 describe("beta readiness summary", () => {
   it("summarizes multi-ending content coverage for beta prep", () => {
@@ -80,5 +83,18 @@ describe("beta readiness summary", () => {
       detail: "모든 목표 엔딩 발견",
     });
     expect(summary.readinessPercent).toBe(100);
+  });
+
+  it("keeps route-start checks aligned through named readiness helpers", () => {
+    const summary = getBetaReadinessSummary(createInitialState());
+    const quickStartCheck = summary.checks.find((check) => check.id === "route_quick_start");
+    const resultStartCheck = summary.checks.find((check) => check.id === "result_route_start");
+
+    expect(betaReadinessSource).toContain("function getRouteStartReadiness");
+    expect(betaReadinessSource).toContain("function createBetaReadinessChecks");
+    expect(quickStartCheck?.detail).toBe(resultStartCheck?.detail);
+    expect(quickStartCheck?.complete).toBe(resultStartCheck?.complete);
+    expect(summary.totalCheckCount).toBe(summary.checks.length);
+    expect(summary.readinessPercent).toBe(Math.round((summary.completeCheckCount / summary.totalCheckCount) * 100));
   });
 });

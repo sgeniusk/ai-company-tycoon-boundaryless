@@ -2,6 +2,7 @@ import {
   getEndingAxisCoverageSummary,
   getEndingCollectionSummary,
   type EndingAxisCoverageSummary,
+  type EndingCollectionSummary,
 } from "./campaign-ending";
 import type { GameState } from "./types";
 
@@ -53,21 +54,55 @@ export interface BetaReadinessSummary {
 
 const minimumBetaEndingRoutes = 24;
 
-export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): BetaReadinessSummary {
-  const endingCollectionSummary = getEndingCollectionSummary(state);
-  const axes = getEndingAxisCoverageSummary().map((axis) => ({
-    ...axis,
-    detail: axis.complete ? `${axis.covered}/${axis.total}` : `${axis.covered}/${axis.total} · 남은 ${axis.missingLabels.slice(0, 2).join(" / ")}`,
-  }));
-  const routeAxisCount = axes.filter((axis) => axis.complete).length;
-  const routeAxisTotal = axes.length;
-  const routeOptionCount = axes.reduce((total, axis) => total + axis.covered, 0);
-  const routeOptionTotal = axes.reduce((total, axis) => total + axis.total, 0);
-  const nextTargetLabel = endingCollectionSummary.nextReplayPlan?.title ?? "모든 목표 엔딩 발견";
-  const nextTargetRouteLabel =
-    endingCollectionSummary.nextReplayPlan?.targetLabels.slice(0, 3).join(" / ") ?? "모든 목표 엔딩 발견";
-  const resultOnlyTotal = Math.max(0, endingCollectionSummary.totalCount - endingCollectionSummary.replayableCount);
-  const checks: BetaReadinessCheck[] = [
+interface RouteStartReadiness {
+  nextTargetLabel: string;
+  nextTargetRouteLabel: string;
+  targetRunComplete: boolean;
+  routeStartComplete: boolean;
+}
+
+interface CreateBetaReadinessChecksInput {
+  endingCollectionSummary: EndingCollectionSummary;
+  resultOnlyTotal: number;
+  routeAxisCount: number;
+  routeAxisTotal: number;
+  routeOptionCount: number;
+  routeOptionTotal: number;
+  routeStartReadiness: RouteStartReadiness;
+}
+
+function formatAxisDetail(axis: EndingAxisCoverageSummary): string {
+  if (axis.complete) {
+    return `${axis.covered}/${axis.total}`;
+  }
+
+  const missingPreview = axis.missingLabels.slice(0, 2).join(" / ");
+  return `${axis.covered}/${axis.total} · 남은 ${missingPreview}`;
+}
+
+function getRouteStartReadiness(endingCollectionSummary: EndingCollectionSummary): RouteStartReadiness {
+  const allReplayableEndingsDiscovered = endingCollectionSummary.lockedReplayableCount === 0;
+  const nextReplayPlan = endingCollectionSummary.nextReplayPlan;
+  const nextTargetRouteLabel = nextReplayPlan?.targetLabels.slice(0, 3).join(" / ") ?? "모든 목표 엔딩 발견";
+
+  return {
+    nextTargetLabel: nextReplayPlan?.title ?? "모든 목표 엔딩 발견",
+    nextTargetRouteLabel,
+    targetRunComplete: Boolean(nextReplayPlan) || allReplayableEndingsDiscovered,
+    routeStartComplete: Boolean(nextReplayPlan?.selection?.seed) || allReplayableEndingsDiscovered,
+  };
+}
+
+function createBetaReadinessChecks({
+  endingCollectionSummary,
+  resultOnlyTotal,
+  routeAxisCount,
+  routeAxisTotal,
+  routeOptionCount,
+  routeOptionTotal,
+  routeStartReadiness,
+}: CreateBetaReadinessChecksInput): BetaReadinessCheck[] {
+  return [
     {
       id: "ending_routes",
       label: "엔딩 루트",
@@ -98,22 +133,45 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     {
       id: "target_replay",
       label: "목표 런",
-      detail: nextTargetLabel,
-      complete: Boolean(endingCollectionSummary.nextReplayPlan) || endingCollectionSummary.lockedReplayableCount === 0,
+      detail: routeStartReadiness.nextTargetLabel,
+      complete: routeStartReadiness.targetRunComplete,
     },
     {
       id: "route_quick_start",
       label: "원클릭 목표 런",
-      detail: nextTargetRouteLabel,
-      complete: Boolean(endingCollectionSummary.nextReplayPlan?.selection?.seed) || endingCollectionSummary.lockedReplayableCount === 0,
+      detail: routeStartReadiness.nextTargetRouteLabel,
+      complete: routeStartReadiness.routeStartComplete,
     },
     {
       id: "result_route_start",
       label: "결과 목표 런",
-      detail: nextTargetRouteLabel,
-      complete: Boolean(endingCollectionSummary.nextReplayPlan?.selection?.seed) || endingCollectionSummary.lockedReplayableCount === 0,
+      detail: routeStartReadiness.nextTargetRouteLabel,
+      complete: routeStartReadiness.routeStartComplete,
     },
   ];
+}
+
+export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): BetaReadinessSummary {
+  const endingCollectionSummary = getEndingCollectionSummary(state);
+  const axes = getEndingAxisCoverageSummary().map((axis) => ({
+    ...axis,
+    detail: formatAxisDetail(axis),
+  }));
+  const routeAxisCount = axes.filter((axis) => axis.complete).length;
+  const routeAxisTotal = axes.length;
+  const routeOptionCount = axes.reduce((total, axis) => total + axis.covered, 0);
+  const routeOptionTotal = axes.reduce((total, axis) => total + axis.total, 0);
+  const resultOnlyTotal = Math.max(0, endingCollectionSummary.totalCount - endingCollectionSummary.replayableCount);
+  const routeStartReadiness = getRouteStartReadiness(endingCollectionSummary);
+  const checks = createBetaReadinessChecks({
+    endingCollectionSummary,
+    resultOnlyTotal,
+    routeAxisCount,
+    routeAxisTotal,
+    routeOptionCount,
+    routeOptionTotal,
+    routeStartReadiness,
+  });
   const completeCheckCount = checks.filter((check) => check.complete).length;
   const statusLabel = completeCheckCount === checks.length ? "준비 완료" : "점검 필요";
 
@@ -136,7 +194,7 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     routeOptionCount,
     routeOptionTotal,
     routeOptionLabel: `${routeOptionCount}/${routeOptionTotal}`,
-    nextTargetLabel,
+    nextTargetLabel: routeStartReadiness.nextTargetLabel,
     axes,
     checks,
     completeCheckCount,
