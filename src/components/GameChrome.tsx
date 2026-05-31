@@ -139,6 +139,12 @@ const officeObjectSheetId = "office_objects_v054_final_art_import";
 const officeBackdropId = "office_isometric_v054_final_art_import";
 const competitorLogoAtlasId = "competitor_logos_v072_atlas";
 const brandCrestAtlasId = "brand_crest_v075_atlas";
+const workforceActorAtlasId = "workforce_actor_v076_atlas";
+const fallbackActorFrameIndexes: Record<OfficeSceneActorStatus["kind"], number> = {
+  human: 0,
+  ai_agent: 1,
+  robot: 2,
+};
 
 function getAssetSheet(sheetId?: string): SpriteSheetDefinition | undefined {
   if (!sheetId) return undefined;
@@ -293,6 +299,13 @@ function getAgentSpriteFrameStyle(
       : sprite.animations.idle;
 
   return getAnimatedSpriteSheetFrameStyle(sheet, animation, 76, 76);
+}
+
+function getFallbackActorSpriteFrameStyle(actor: OfficeSceneActorStatus): CSSProperties | undefined {
+  const sheet = getAssetSheet(workforceActorAtlasId);
+  if (!sheet) return undefined;
+
+  return getSpriteSheetFrameStyle(sheet, fallbackActorFrameIndexes[actor.kind] ?? 0, 76, 76);
 }
 
 function getCompetitorIdentity(competitorId?: string) {
@@ -957,6 +970,8 @@ export function GameStage({
               const agentType = actor.agentTypeId ? agentTypes.find((type) => type.id === actor.agentTypeId) : undefined;
               const agentSprite = getAgentSprite(actor.agentTypeId);
               const agentSpriteFrameStyle = getAgentSpriteFrameStyle(agentSprite, actor);
+              const fallbackActorFrameStyle = agentSpriteFrameStyle ? undefined : getFallbackActorSpriteFrameStyle(actor);
+              const actorSpriteFrameStyle = agentSpriteFrameStyle ?? fallbackActorFrameStyle;
               const isSelected = focusedOfficeActor?.id === actor.id;
               const actorPoseClass = actor.reactionPose ? `actor-pose-${actor.reactionPose}` : "actor-pose-base";
 
@@ -964,13 +979,13 @@ export function GameStage({
                 <button
                   aria-label={`${actor.name} · ${agentType?.role ?? "창업자"} · ${actor.assignmentLabel}`}
                   aria-pressed={isSelected}
-                  className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${actorPoseClass} ${isSelected ? "selected" : ""} ${actor.state === "working" ? "working" : "idle"} ${agentSpriteFrameStyle ? "sprite-sheet-frame sprite-sheet-animated" : ""} ${agentSprite?.body_class ?? ""}`}
+                  className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${actorPoseClass} ${isSelected ? "selected" : ""} ${actor.state === "working" ? "working" : "idle"} ${actorSpriteFrameStyle ? "sprite-sheet-frame" : ""} ${agentSpriteFrameStyle ? "sprite-sheet-animated" : ""} ${fallbackActorFrameStyle ? "actor-fallback-sheet" : ""} ${agentSprite?.body_class ?? ""}`}
                   key={actor.id}
                   onClick={() => setSelectedOfficeActorId(actor.id)}
                   style={
                     {
                       ...assetPaletteVars(agentSprite?.palette),
-                      ...agentSpriteFrameStyle,
+                      ...actorSpriteFrameStyle,
                       "--actor-x": `${actor.x}%`,
                       "--actor-y": `${actor.y}%`,
                       ...getDepthStyle(actor.y, 80),

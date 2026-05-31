@@ -1828,6 +1828,16 @@ p {
   left: 4px;
 }
 
+.staff-sprite.pixel-actor.actor-fallback-sheet {
+  animation: none;
+  image-rendering: pixelated;
+}
+
+.staff-sprite.pixel-actor.actor-fallback-sheet b {
+  bottom: 2px;
+  left: 6px;
+}
+
 .staff-sprite.pixel-actor:hover,
 .staff-sprite.pixel-actor:focus-visible,
 .staff-sprite.pixel-actor.selected {

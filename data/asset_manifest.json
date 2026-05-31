@@ -1046,6 +1046,18 @@
       "preview_frames": [0, 0, 0, 0],
       "slice_mode": "single-frame command deck brand crest"
     },
+    "workforce_actor_v076_atlas": {
+      "path": "/assets/sprites/v076-workforce-actor-atlas.png",
+      "source_status": "final",
+      "density": 1,
+      "frame_width": 76,
+      "frame_height": 76,
+      "columns": 3,
+      "rows": 1,
+      "frame_count": 3,
+      "preview_frames": [0, 1, 2, 0],
+      "slice_mode": "row-major fallback actor frames: human, ai_agent, robot"
+    },
     "commercial_ui_v071_atlas": {
       "path": "/assets/ui/v071-commercial-ui-atlas.png",
       "source_status": "final",

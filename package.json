@@ -19,6 +19,7 @@
     "assets:v072": "node scripts/assets/generate-v072-competitor-logo-atlas.mjs",
     "assets:v074": "node scripts/assets/generate-v074-helper-portrait-atlas.mjs",
     "assets:v075": "node scripts/assets/generate-v075-brand-crest-atlas.mjs",
+    "assets:v076": "node scripts/assets/generate-v076-workforce-actor-atlas.mjs",
     "qa:office-visuals:screenshots": "node scripts/qa/capture-office-visuals-screenshots.mjs",
     "qa:blind-rehearsal": "node scripts/qa/run-v056-blind-rehearsal.mjs",
     "qa:blind-summary": "node scripts/qa/summarize-v056-blind-sessions.mjs",

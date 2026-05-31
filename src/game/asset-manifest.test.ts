@@ -315,6 +315,25 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(readFileSync(brandScriptUrl, "utf8")).toContain("v075-brand-crest-atlas.png");
   });
 
+  it("ships a final workforce actor fallback atlas for unmapped office actors", () => {
+    const actorSheet = assetManifest.sprite_sheets.workforce_actor_v076_atlas;
+    const actorScriptUrl = new URL("../../scripts/assets/generate-v076-workforce-actor-atlas.mjs", import.meta.url);
+
+    expect(actorSheet).toMatchObject({
+      path: "/assets/sprites/v076-workforce-actor-atlas.png",
+      source_status: "final",
+      frame_width: 76,
+      frame_height: 76,
+      columns: 3,
+      rows: 1,
+      frame_count: 3,
+      slice_mode: "row-major fallback actor frames: human, ai_agent, robot",
+    });
+    expect(readPngSize(actorSheet.path)).toEqual({ width: 228, height: 76 });
+    expect(packageJson.scripts["assets:v076"]).toBe("node scripts/assets/generate-v076-workforce-actor-atlas.mjs");
+    expect(readFileSync(actorScriptUrl, "utf8")).toContain("v076-workforce-actor-atlas.png");
+  });
+
   it("maps first-shop item icons to known items", () => {
     const itemIconSheet = assetManifest.sprite_sheets.commercial_ui_v071_atlas;
 

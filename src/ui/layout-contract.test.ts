@@ -607,6 +607,9 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("source_origin");
     expect(gameChrome).toContain("office_objects_v054_final_art_import");
     expect(gameChrome).toContain("office_isometric_v054_final_art_import");
+    expect(gameChrome).toContain("workforce_actor_v076_atlas");
+    expect(gameChrome).toContain("getFallbackActorSpriteFrameStyle");
+    expect(gameChrome).toContain("actor-fallback-sheet");
     expect(gameChrome).toContain("getAnimatedSpriteSheetFrameStyle(sheet, animation, 76, 76)");
     expect(gameChrome).toContain("getAgentSpriteFrameStyle(agentSprite, actor)");
     expect(gameChrome).toContain("actor-pose-");
@@ -623,6 +626,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@keyframes\s+sprite-sheet-frame-cycle/s);
     expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.sprite-sheet-frame\.sprite-sheet-animated\s*{[^}]*sprite-sheet-frame-cycle/s);
     expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.sprite-sheet-frame\s*{[^}]*border:\s*0/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.actor-fallback-sheet\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.competitor-hud-logo\s*{[^}]*image-rendering:\s*pixelated/s);
   });
 
