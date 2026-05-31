@@ -86,7 +86,8 @@ describe("alpha content data", () => {
   });
 
   it("defines rival events and keeps locale dictionaries aligned", () => {
-    expect(rivalEvents.length).toBeGreaterThanOrEqual(3);
+    expect(rivalEvents.length).toBeGreaterThanOrEqual(5);
+    expect(rivalEvents.map((event) => event.id)).toEqual(expect.arrayContaining(["defense_procurement_bid", "autonomous_safety_leak"]));
 
     const localeCodes = Object.keys(locales);
     expect(localeCodes).toEqual(expect.arrayContaining(["ko", "en"]));
@@ -100,6 +101,13 @@ describe("alpha content data", () => {
         expect(t(choice.description_key, "en")).not.toBe(choice.description_key);
       }
     }
+
+    const defenseBid = rivalEvents.find((event) => event.id === "defense_procurement_bid");
+    expect(defenseBid).toMatchObject({
+      competitor_id: "competitor_ironoracle",
+      conditions: { min_month: 18, min_trust: 55 },
+    });
+    expect(defenseBid?.choices.map((choice) => choice.id)).toEqual(["ethics_board", "fast_defense_bid"]);
   });
 
   it("defines a balanced 20-person playtest council with creative and player lenses", () => {

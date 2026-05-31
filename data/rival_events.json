@@ -68,6 +68,52 @@
           "competitor_effects": {"score": 5, "momentum": 3}
         }
       ]
+    },
+    {
+      "id": "defense_procurement_bid",
+      "name_key": "rivalEvents.defenseProcurementBid.name",
+      "description_key": "rivalEvents.defenseProcurementBid.description",
+      "conditions": {"min_month": 18, "min_trust": 55},
+      "competitor_id": "competitor_ironoracle",
+      "choices": [
+        {
+          "id": "ethics_board",
+          "text_key": "rivalEvents.defenseProcurementBid.ethicsBoard.text",
+          "description_key": "rivalEvents.defenseProcurementBid.ethicsBoard.description",
+          "effects": {"cash": -2600, "data": -12, "trust": 6},
+          "competitor_effects": {"score": -3, "momentum": -2}
+        },
+        {
+          "id": "fast_defense_bid",
+          "text_key": "rivalEvents.defenseProcurementBid.fastDefenseBid.text",
+          "description_key": "rivalEvents.defenseProcurementBid.fastDefenseBid.description",
+          "effects": {"cash": 4200, "trust": -6, "hype": 4, "automation": 2},
+          "competitor_effects": {"score": 4, "momentum": 3}
+        }
+      ]
+    },
+    {
+      "id": "autonomous_safety_leak",
+      "name_key": "rivalEvents.autonomousSafetyLeak.name",
+      "description_key": "rivalEvents.autonomousSafetyLeak.description",
+      "conditions": {"min_month": 24, "min_products": 2},
+      "competitor_id": "competitor_vizionlab",
+      "choices": [
+        {
+          "id": "publish_audit",
+          "text_key": "rivalEvents.autonomousSafetyLeak.publishAudit.text",
+          "description_key": "rivalEvents.autonomousSafetyLeak.publishAudit.description",
+          "effects": {"cash": -1800, "trust": 5, "hype": -2},
+          "competitor_effects": {"score": -2, "momentum": -3}
+        },
+        {
+          "id": "stay_quiet",
+          "text_key": "rivalEvents.autonomousSafetyLeak.stayQuiet.text",
+          "description_key": "rivalEvents.autonomousSafetyLeak.stayQuiet.description",
+          "effects": {"cash": 1500, "trust": -5, "hype": 3},
+          "competitor_effects": {"score": 3, "momentum": 2}
+        }
+      ]
     }
   ]
 }

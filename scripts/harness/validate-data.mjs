@@ -432,8 +432,8 @@ if (fallbackEndingCount !== 1) {
   errors.push(`endings: expected exactly one fallback ending, found ${fallbackEndingCount}`);
 }
 
-if (worldEvents.length < 10 || worldEvents.length > 28) {
-  errors.push(`world_events: expected about 10-28 events, found ${worldEvents.length}`);
+if (worldEvents.length < 10 || worldEvents.length > 32) {
+  errors.push(`world_events: expected about 10-32 events, found ${worldEvents.length}`);
 }
 
 for (const event of worldEvents) {

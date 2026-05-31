@@ -350,6 +350,34 @@
         "trust": 3
       },
       "world_lore_tags": ["regulation_heavy", "safety_first", "privacy_strict"]
+    },
+    {
+      "id": "autonomous_weapons_hearing",
+      "title": "자율무기 청문회",
+      "description": "국방 AI 시범 계약이 안전성 논쟁을 부르며 공개 검증 요구가 커집니다.",
+      "trigger": "4-7년차 자율무기 안전 변수",
+      "year_range": [4, 7],
+      "resource_effects": {
+        "cash": -2400,
+        "data": 24,
+        "trust": 4,
+        "hype": -3
+      },
+      "world_lore_tags": ["safety_scrutiny", "regulation_heavy", "embodied_demand"]
+    },
+    {
+      "id": "border_drone_contracts",
+      "title": "국경 드론 조달 문의",
+      "description": "국경 긴장이 높아지며 국방 드론 조달 문의가 몰리지만, 회사의 중립성과 안전 원칙이 시험대에 오릅니다.",
+      "trigger": "6-9년차 국방 조달 변수",
+      "year_range": [6, 9],
+      "resource_effects": {
+        "cash": 4200,
+        "users": 260,
+        "trust": -4,
+        "automation": 2
+      },
+      "world_lore_tags": ["embodied_demand", "hardware_capital", "export_controls"]
     }
   ]
 }

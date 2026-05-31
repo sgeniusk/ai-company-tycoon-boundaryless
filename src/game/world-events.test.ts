@@ -15,9 +15,11 @@ const worldEventSelection = {
 
 describe("v0.63 yearly world events", () => {
   it("defines a conservative pool of seed-selectable yearly events", () => {
-    expect(worldEvents.length).toBe(28);
+    expect(worldEvents.length).toBe(30);
     expect(new Set(worldEvents.map((event) => event.id)).size).toBe(worldEvents.length);
-    expect(worldEvents.map((event) => event.id)).toEqual(expect.arrayContaining(["late_open_weight_checkpoint", "regulatory_sandbox_grants"]));
+    expect(worldEvents.map((event) => event.id)).toEqual(
+      expect.arrayContaining(["late_open_weight_checkpoint", "regulatory_sandbox_grants", "autonomous_weapons_hearing", "border_drone_contracts"]),
+    );
 
     for (const event of worldEvents) {
       expect(event.title.length).toBeGreaterThan(0);
@@ -36,6 +38,15 @@ describe("v0.63 yearly world events", () => {
       expect(Math.abs(event.resource_effects.hype ?? 0)).toBeLessThanOrEqual(5);
       expect(Math.abs(event.resource_effects.automation ?? 0)).toBeLessThanOrEqual(3);
     }
+  });
+
+  it("adds geopolitical AI incidents as tension events rather than pure rewards", () => {
+    const defenseEvents = worldEvents.filter((event) => ["autonomous_weapons_hearing", "border_drone_contracts"].includes(event.id));
+
+    expect(defenseEvents).toHaveLength(2);
+    expect(defenseEvents.every((event) => event.description.includes("안전") || event.description.includes("국방"))).toBe(true);
+    expect(defenseEvents.some((event) => (event.resource_effects.trust ?? 0) < 0 || (event.resource_effects.hype ?? 0) < 0)).toBe(true);
+    expect(defenseEvents.some((event) => (event.resource_effects.cash ?? 0) > 0)).toBe(true);
   });
 
   it("selects the same yearly event sequence from the same seed and world lore", () => {
