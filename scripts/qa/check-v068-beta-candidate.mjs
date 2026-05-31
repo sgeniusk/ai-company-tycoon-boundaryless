@@ -1,24 +1,12 @@
-import fs from "node:fs";
-import path from "node:path";
 import process from "node:process";
 import { spawnSync } from "node:child_process";
+import { applyArtifactFreshness, createArtifactManifest, writeArtifactPair } from "./report-artifacts.mjs";
 
 const root = process.cwd();
 const version = "0.68-beta-stabilization";
 const reportPath = "reports/qa/v0_68_beta_candidate.md";
 const summaryPath = "reports/qa/v0_68_beta_candidate.json";
-const artifacts = [
-  {
-    id: "markdown_report",
-    path: reportPath,
-    format: "markdown",
-  },
-  {
-    id: "json_summary",
-    path: summaryPath,
-    format: "json",
-  },
-];
+const artifacts = createArtifactManifest(reportPath, summaryPath);
 const checks = [
   {
     id: "harness_gate",
@@ -36,10 +24,6 @@ const checks = [
 
 function hasArg(name) {
   return process.argv.includes(name);
-}
-
-function resolveProjectPath(value) {
-  return path.isAbsolute(value) ? value : path.join(root, value);
 }
 
 function runCheck(check) {
@@ -194,18 +178,11 @@ const result = {
 };
 const generatedReport = createReport(result);
 const generatedSummary = createSummary(result);
-const outputPath = resolveProjectPath(reportPath);
-const summaryOutputPath = resolveProjectPath(summaryPath);
 
 if (hasArg("--check")) {
-  result.reportFresh = fs.existsSync(outputPath) && fs.readFileSync(outputPath, "utf8") === generatedReport;
-  result.summaryFresh = fs.existsSync(summaryOutputPath) && fs.readFileSync(summaryOutputPath, "utf8") === generatedSummary;
-  if (!result.reportFresh || !result.summaryFresh) result.status = "fail";
+  applyArtifactFreshness(result, { root, reportPath, summaryPath, report: generatedReport, summary: generatedSummary });
 } else if (!hasArg("--no-write")) {
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, generatedReport);
-  fs.mkdirSync(path.dirname(summaryOutputPath), { recursive: true });
-  fs.writeFileSync(summaryOutputPath, generatedSummary);
+  writeArtifactPair({ root, reportPath, summaryPath, report: generatedReport, summary: generatedSummary });
 }
 
 if (hasArg("--json")) {

@@ -118,6 +118,10 @@ describe("v0.68 browser flow smoke QA script", () => {
   it("keeps the smoke implementation tied to Chrome DOM checks and a QA report artifact", () => {
     const source = readFileSync(new URL("../../scripts/qa/check-v068-flow-smoke.mjs", import.meta.url), "utf8");
 
+    expect(source).toContain("./report-artifacts.mjs");
+    expect(source).toContain("createArtifactManifest");
+    expect(source).toContain("applyArtifactFreshness");
+    expect(source).toContain("writeArtifactPair");
     expect(source).toContain("--dump-dom");
     expect(source).toContain("--virtual-time-budget=8000");
     expect(source).toContain("--check");

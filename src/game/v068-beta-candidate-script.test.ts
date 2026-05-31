@@ -103,6 +103,10 @@ describe("v0.68 beta candidate local QA script", () => {
   it("keeps the candidate implementation tied to harness and browser smoke freshness", () => {
     const source = readFileSync(new URL("../../scripts/qa/check-v068-beta-candidate.mjs", import.meta.url), "utf8");
 
+    expect(source).toContain("./report-artifacts.mjs");
+    expect(source).toContain("createArtifactManifest");
+    expect(source).toContain("applyArtifactFreshness");
+    expect(source).toContain("writeArtifactPair");
     expect(source).toContain("npm run harness:gate < /dev/null");
     expect(source).toContain("npm run qa:v068-flow-smoke:check < /dev/null");
     expect(source).toContain("reports/qa/v0_68_beta_candidate.md");
