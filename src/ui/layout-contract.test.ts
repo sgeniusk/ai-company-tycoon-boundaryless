@@ -1432,6 +1432,9 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(payoffCelebrationModal).toContain("getPayoffCelebrationMoments");
     expect(payoffCelebrationModal).toContain("getNewPayoffActivationIds");
     expect(payoffCelebrationModal).toContain("discoverActivePayoffs");
+    expect(payoffCelebrationModal).toContain("celebration_emblems_v077_atlas");
+    expect(payoffCelebrationModal).toContain("getCelebrationEmblemStyle");
+    expect(payoffCelebrationModal).toContain("payoff-celebration-emblem");
     expect(payoffCelebrationModal).toContain("payoff-celebration-overlay");
     expect(payoffCelebrationModal).toContain("payoff-celebration-card");
     expect(payoffCelebrationModal).toContain("신규 발견!");
@@ -1441,6 +1444,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.payoff-celebration-overlay\s*{[^}]*position:\s*fixed/s);
     expect(appCss).toMatch(/\.payoff-celebration-overlay\s*{[^}]*pointer-events:\s*auto/s);
     expect(appCss).toMatch(/\.payoff-celebration-card\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.payoff-celebration-emblem\s*{[^}]*background-image:\s*var\(--celebration-emblem-atlas\)/s);
+    expect(appCss).toMatch(/\.payoff-celebration-emblem\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.payoff-celebration-card\.payoff-celebration-combo\s*{[^}]*animation:\s*payoff-celebration-pop/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.payoff-celebration-card\s*{[^}]*max-width:\s*100%/s);
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.payoff-celebration-card/s);

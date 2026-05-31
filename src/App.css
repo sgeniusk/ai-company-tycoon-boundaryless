@@ -12163,6 +12163,29 @@ p {
   min-width: 0;
 }
 
+.payoff-celebration-emblem {
+  background-image: var(--celebration-emblem-atlas);
+  background-position: var(--celebration-emblem-x) var(--celebration-emblem-y);
+  background-repeat: no-repeat;
+  background-size: var(--celebration-emblem-size);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38), 0 0 0 2px rgba(255, 255, 255, 0.04) inset;
+  display: block;
+  flex: 0 0 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  width: 64px;
+}
+
+.payoff-celebration-emblem-combo {
+  box-shadow: 0 10px 26px rgba(255, 118, 52, 0.22), 0 0 0 2px rgba(255, 118, 52, 0.12) inset;
+}
+
+.payoff-celebration-emblem-achievement {
+  box-shadow: 0 10px 26px rgba(255, 214, 82, 0.24), 0 0 0 2px rgba(255, 214, 82, 0.14) inset;
+}
+
 .payoff-celebration-pill,
 .payoff-celebration-queue {
   border-radius: 4px;

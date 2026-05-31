@@ -1058,6 +1058,18 @@
       "preview_frames": [0, 1, 2, 0],
       "slice_mode": "row-major fallback actor frames: human, ai_agent, robot"
     },
+    "celebration_emblems_v077_atlas": {
+      "path": "/assets/ui/v077-celebration-emblem-atlas.png",
+      "source_status": "final",
+      "density": 1,
+      "frame_width": 80,
+      "frame_height": 80,
+      "columns": 3,
+      "rows": 1,
+      "frame_count": 3,
+      "preview_frames": [0, 1, 2, 0],
+      "slice_mode": "row-major celebration emblems: synergy, combo, achievement"
+    },
     "commercial_ui_v071_atlas": {
       "path": "/assets/ui/v071-commercial-ui-atlas.png",
       "source_status": "final",

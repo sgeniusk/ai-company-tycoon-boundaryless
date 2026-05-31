@@ -1,10 +1,11 @@
 // v0.62 — combo/synergy celebration queue stays local; first-ever discovery ids persist in GameState.
-import { useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import {
   getAchievementCelebrationMoments,
   getNewAchievementUnlockIds,
   type AchievementCelebrationMoment,
 } from "../game/achievements";
+import { assetManifest } from "../game/data";
 import {
   discoverActivePayoffs,
   getNewPayoffActivationIds,
@@ -16,6 +17,31 @@ import { formatResource } from "../game/simulation";
 import type { GameState } from "../game/types";
 
 type CelebrationMoment = PayoffCelebrationMoment | AchievementCelebrationMoment;
+type CelebrationTone = "synergy" | "combo" | "achievement";
+
+const celebrationEmblemAtlasId = "celebration_emblems_v077_atlas";
+const celebrationEmblemDisplaySize = 64;
+const celebrationEmblemFrameIndexes: Record<CelebrationTone, number> = {
+  synergy: 0,
+  combo: 1,
+  achievement: 2,
+};
+
+function getCelebrationEmblemStyle(tone: CelebrationTone): CSSProperties {
+  const sheet = assetManifest.sprite_sheets[celebrationEmblemAtlasId];
+  const frameIndex = celebrationEmblemFrameIndexes[tone];
+  const columns = sheet?.columns ?? 3;
+  const rows = sheet?.rows ?? 1;
+  const column = frameIndex % columns;
+  const row = Math.floor(frameIndex / columns);
+
+  return {
+    "--celebration-emblem-atlas": `url(${sheet?.path ?? "/assets/ui/v077-celebration-emblem-atlas.png"})`,
+    "--celebration-emblem-x": `${-column * celebrationEmblemDisplaySize}px`,
+    "--celebration-emblem-y": `${-row * celebrationEmblemDisplaySize}px`,
+    "--celebration-emblem-size": `${columns * celebrationEmblemDisplaySize}px ${rows * celebrationEmblemDisplaySize}px`,
+  } as CSSProperties;
+}
 
 function getEffectEntries(moment: CelebrationMoment): [string, number][] {
   const effects = moment.kind === "achievement" ? moment.reward : moment.monthlyEffects;
@@ -144,6 +170,11 @@ export function PayoffCelebrationModal({
     <div className="payoff-celebration-overlay" role="dialog" aria-modal="true" aria-labelledby="payoff-celebration-title">
       <div className={`payoff-celebration-card payoff-celebration-${tone}${isDiscovery ? " payoff-celebration-discovery" : ""}`}>
         <header className="payoff-celebration-header">
+          <span
+            aria-hidden="true"
+            className={`payoff-celebration-emblem payoff-celebration-emblem-${tone}`}
+            style={getCelebrationEmblemStyle(tone)}
+          />
           <span className="payoff-celebration-pill">
             {isAchievement ? "마일스톤 달성" : isDiscovery ? "신규 발견!" : moment.kind === "combo" ? "고위험 조합 발동" : "산업 시너지 발동"}
           </span>

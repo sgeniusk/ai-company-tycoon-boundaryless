@@ -334,6 +334,25 @@ describe("alpha v0.9 pixel asset manifest", () => {
     expect(readFileSync(actorScriptUrl, "utf8")).toContain("v076-workforce-actor-atlas.png");
   });
 
+  it("ships final celebration emblems for payoff and milestone popups", () => {
+    const emblemSheet = assetManifest.sprite_sheets.celebration_emblems_v077_atlas;
+    const emblemScriptUrl = new URL("../../scripts/assets/generate-v077-celebration-emblem-atlas.mjs", import.meta.url);
+
+    expect(emblemSheet).toMatchObject({
+      path: "/assets/ui/v077-celebration-emblem-atlas.png",
+      source_status: "final",
+      frame_width: 80,
+      frame_height: 80,
+      columns: 3,
+      rows: 1,
+      frame_count: 3,
+      slice_mode: "row-major celebration emblems: synergy, combo, achievement",
+    });
+    expect(readPngSize(emblemSheet.path)).toEqual({ width: 240, height: 80 });
+    expect(packageJson.scripts["assets:v077"]).toBe("node scripts/assets/generate-v077-celebration-emblem-atlas.mjs");
+    expect(readFileSync(emblemScriptUrl, "utf8")).toContain("v077-celebration-emblem-atlas.png");
+  });
+
   it("maps first-shop item icons to known items", () => {
     const itemIconSheet = assetManifest.sprite_sheets.commercial_ui_v071_atlas;
 
