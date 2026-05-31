@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { CommandRow, EventPanels, GameStage, MainMenu, ResourceStrip, TopBar } from "./components/GameChrome";
 import { renderMenuContent } from "./components/MenuPanels";
 import { createBlindPlaytestObserverSummary, type BlindPlaytestObserverSummary } from "./game/blind-playtest-observer";
-import { products } from "./game/data";
+import { assetManifest, products } from "./game/data";
 import { applyOfflineSettlement, calculateOfflineSettlement, type OfflineSettlement } from "./game/offline";
 import { createQaScenarioFromSearch } from "./game/qa-scenarios";
 import {
@@ -20,6 +20,10 @@ import type { LocaleCode } from "./i18n";
 import type { MenuId } from "./ui/menu";
 
 const saveKey = "ai-company-tycoon-alpha-save";
+const helperPortraitSheet = assetManifest.sprite_sheets.helper_portraits_v074_atlas;
+const helperPortraitStyle = helperPortraitSheet
+  ? ({ "--helper-portrait-image": `url(${helperPortraitSheet.path})` } as CSSProperties)
+  : undefined;
 
 interface InitialSession {
   state: GameState;
@@ -159,7 +163,7 @@ function App() {
       </section>
       {tutorialGuide && !offlineSettlement && !worldRevealVisible && (
         <section className="helper-tutorial" role="dialog" aria-live="polite" aria-label="도우미 튜토리얼">
-          <div className="helper-portrait" aria-hidden="true">
+          <div className="helper-portrait helper-portrait-art" style={helperPortraitStyle} aria-hidden="true">
             <span>{tutorialGuide.helperName}</span>
           </div>
           <div className="helper-copy">

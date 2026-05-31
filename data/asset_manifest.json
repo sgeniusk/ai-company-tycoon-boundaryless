@@ -1022,6 +1022,18 @@
       "preview_frames": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
       "slice_mode": "row-major competitor logo atlas"
     },
+    "helper_portraits_v074_atlas": {
+      "path": "/assets/ui/v074-helper-portrait-atlas.png",
+      "source_status": "final",
+      "density": 1,
+      "frame_width": 96,
+      "frame_height": 96,
+      "columns": 1,
+      "rows": 1,
+      "frame_count": 1,
+      "preview_frames": [0, 0, 0, 0],
+      "slice_mode": "single-frame helper portrait atlas"
+    },
     "commercial_ui_v071_atlas": {
       "path": "/assets/ui/v071-commercial-ui-atlas.png",
       "source_status": "final",

@@ -5192,6 +5192,16 @@ p {
   padding: 6px;
 }
 
+.helper-portrait.helper-portrait-art {
+  background-color: #1c3934;
+  background-image: var(--helper-portrait-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: inset 0 0 0 2px rgba(255, 247, 223, 0.24);
+  overflow: hidden;
+}
+
 .helper-portrait span {
   background: #20342d;
   border: 2px solid var(--line);

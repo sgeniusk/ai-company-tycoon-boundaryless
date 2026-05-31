@@ -755,6 +755,9 @@ describe("v0.13.3 compact game shell layout", () => {
 
     expect(app).toContain("getTutorialGuide");
     expect(app).toContain("dismissTutorialGuide");
+    expect(app).toContain("helper_portraits_v074_atlas");
+    expect(app).toContain("helper-portrait-art");
+    expect(app).toContain("--helper-portrait-image");
     expect(app).toContain("shouldShowWorldReveal");
     expect(app).toContain("worldRevealVisible");
     expect(app).toContain("onWorldRevealVisibilityChange={setWorldRevealVisible}");
@@ -763,6 +766,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(app).toContain("helper-portrait");
     expect(appCss).toMatch(/\.helper-tutorial\s*{[^}]*position:\s*fixed/s);
     expect(appCss).toMatch(/\.helper-tutorial\s*{[^}]*z-index:\s*30/s);
+    expect(appCss).toMatch(/\.helper-portrait\.helper-portrait-art\s*{[^}]*background-image:\s*var\(--helper-portrait-image\)/s);
+    expect(appCss).toMatch(/\.helper-portrait\.helper-portrait-art\s*{[^}]*background-size:\s*cover/s);
     expect(appCss).toMatch(/\.helper-actions\s*{[^}]*display:\s*flex/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.helper-tutorial\s*{[^}]*bottom:\s*72px/s);
   });

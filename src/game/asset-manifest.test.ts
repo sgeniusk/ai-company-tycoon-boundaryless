@@ -277,6 +277,25 @@ describe("alpha v0.9 pixel asset manifest", () => {
     }
   });
 
+  it("ships a final helper portrait atlas for the tutorial guide", () => {
+    const helperSheet = assetManifest.sprite_sheets.helper_portraits_v074_atlas;
+    const helperScriptUrl = new URL("../../scripts/assets/generate-v074-helper-portrait-atlas.mjs", import.meta.url);
+
+    expect(helperSheet).toMatchObject({
+      path: "/assets/ui/v074-helper-portrait-atlas.png",
+      source_status: "final",
+      frame_width: 96,
+      frame_height: 96,
+      columns: 1,
+      rows: 1,
+      frame_count: 1,
+      slice_mode: "single-frame helper portrait atlas",
+    });
+    expect(readPngSize(helperSheet.path)).toEqual({ width: 96, height: 96 });
+    expect(packageJson.scripts["assets:v074"]).toBe("node scripts/assets/generate-v074-helper-portrait-atlas.mjs");
+    expect(readFileSync(helperScriptUrl, "utf8")).toContain("v074-helper-portrait-atlas.png");
+  });
+
   it("maps first-shop item icons to known items", () => {
     const itemIconSheet = assetManifest.sprite_sheets.commercial_ui_v071_atlas;
 
