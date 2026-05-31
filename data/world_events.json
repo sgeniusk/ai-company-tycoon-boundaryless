@@ -324,6 +324,32 @@
         "trust": -1
       },
       "world_lore_tags": ["hardware_capital"]
+    },
+    {
+      "id": "late_open_weight_checkpoint",
+      "title": "오픈 웨이트 안전 점검",
+      "description": "커뮤니티가 공개 모델의 안전 점검표를 공유하며 데이터와 신뢰를 동시에 보강합니다.",
+      "trigger": "8-10년차 오픈소스 점검 변수",
+      "year_range": [8, 10],
+      "resource_effects": {
+        "data": 32,
+        "trust": 2,
+        "hype": -1
+      },
+      "world_lore_tags": ["open_source_heaven", "community_models"]
+    },
+    {
+      "id": "regulatory_sandbox_grants",
+      "title": "규제 샌드박스 보조금",
+      "description": "감독기관이 검증된 AI 운영사에 제한적 샌드박스와 보조금을 열어줍니다.",
+      "trigger": "7-10년차 규제 샌드박스 변수",
+      "year_range": [7, 10],
+      "resource_effects": {
+        "cash": 2600,
+        "users": 180,
+        "trust": 3
+      },
+      "world_lore_tags": ["regulation_heavy", "safety_first", "privacy_strict"]
     }
   ]
 }

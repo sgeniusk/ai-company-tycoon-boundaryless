@@ -24,6 +24,7 @@ describe("beta readiness summary", () => {
     expect(summary.routeAxisLabel).toBe("4/4");
     expect(summary.routeOptionLabel).toBe("40/40");
     expect(summary.nextTargetLabel).toBe("프런티어 데모 제국");
+    expect(summary.nextTargetRouteLabel).toBe("샌프란시스코 / 오픈소스 천국 / 엔지니어 창업자");
     expect(summary.checks.map((check) => check.id)).toEqual([
       "ending_routes",
       "reward_pool",
@@ -68,6 +69,7 @@ describe("beta readiness summary", () => {
     const summary = getBetaReadinessSummary(state);
 
     expect(summary.nextTargetLabel).toBe("모든 목표 엔딩 발견");
+    expect(summary.nextTargetRouteLabel).toBe("모든 목표 엔딩 발견");
     expect(summary.codexProgressLabel).toBe(`${replayableEndingIds.length}/${campaignEndings.length}`);
     expect(summary.lockedReplayableLabel).toBe("목표 엔딩 0개 남음");
     expect(summary.checks.find((check) => check.id === "target_replay")).toMatchObject({

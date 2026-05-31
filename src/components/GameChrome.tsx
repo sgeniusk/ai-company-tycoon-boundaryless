@@ -31,6 +31,8 @@ import {
   getCampaignEndingReport,
   getEndingNearMisses,
   getEndingRouteUnlockRecommendations,
+  type ActiveEndingReplayBrief,
+  type EndingNearMissPlan,
 } from "../game/campaign-ending";
 import { getCampaignCalendar, getCampaignFinale, getCompanyStageProgress, getCompanyStarRating, getCurrentLocation, getDayPhase } from "../game/campaign";
 import {
@@ -485,6 +487,13 @@ export function GameStage({
   const [selectedOfficeActorId, setSelectedOfficeActorId] = useState<string>();
   const focusedOfficeActor = visibleOfficeActors.find((actor) => actor.id === selectedOfficeActorId) ?? defaultFocusedOfficeActor;
   const hasResultPanel = finale.isFinal || Boolean(gameState.lastRelease) || runSummary.isFinal;
+  const showEndingReplayReadinessStrip =
+    hasResultPanel &&
+    (finale.isFinal ||
+      runSummary.isFinal ||
+      Boolean(activeEndingReplayBrief) ||
+      endingNearMisses.length > 0 ||
+      Boolean(endingRouteQuickStart?.runModifierSelection));
 
   useEffect(() => {
     if (hasResultPanel) setActiveStageTab("results");
@@ -1005,6 +1014,22 @@ export function GameStage({
           )}
           {activeStageTab === "results" && (
             <>
+              {showEndingReplayReadinessStrip && (
+                <EndingReplayReadinessStrip
+                  activeEndingReplayBrief={activeEndingReplayBrief}
+                  codexStatusLabel={betaReadinessSummary.codexStatusLabel}
+                  endingNearMisses={endingNearMisses}
+                  endingRouteQuickStartDescription={endingRouteQuickStart?.description}
+                  endingRouteQuickStartLabel={endingRouteQuickStart?.label}
+                  hasEndingRouteQuickStart={Boolean(endingRouteQuickStart?.runModifierSelection)}
+                  nextTargetLabel={betaReadinessSummary.nextTargetLabel}
+                  nextTargetRouteLabel={betaReadinessSummary.nextTargetRouteLabel}
+                  onRetryActiveEndingReplay={handleRetryActiveEndingReplay}
+                  onStartEndingRouteRun={handleStartEndingRouteRun}
+                  onStartNearMissRun={handleStartNearMissRun}
+                  readinessPercent={betaReadinessSummary.readinessPercent}
+                />
+              )}
               {finale.isFinal && (
                 <article className={`run-summary rank-${finale.rank}`}>
                   <p className="eyebrow">10년 엔딩</p>
@@ -2032,6 +2057,101 @@ function WorkforceMixPanel({ summary }: { summary: WorkforceMixSummary }) {
             : "사람, AI, 로봇을 섞으면 제품 개발 보너스가 열립니다."}
       </small>
     </div>
+  );
+}
+
+function EndingReplayReadinessStrip({
+  activeEndingReplayBrief,
+  codexStatusLabel,
+  endingNearMisses,
+  endingRouteQuickStartDescription,
+  endingRouteQuickStartLabel,
+  hasEndingRouteQuickStart,
+  nextTargetLabel,
+  nextTargetRouteLabel,
+  onRetryActiveEndingReplay,
+  onStartEndingRouteRun,
+  onStartNearMissRun,
+  readinessPercent,
+}: {
+  activeEndingReplayBrief?: ActiveEndingReplayBrief;
+  codexStatusLabel: string;
+  endingNearMisses: EndingNearMissPlan[];
+  endingRouteQuickStartDescription?: string;
+  endingRouteQuickStartLabel?: string;
+  hasEndingRouteQuickStart: boolean;
+  nextTargetLabel: string;
+  nextTargetRouteLabel: string;
+  onRetryActiveEndingReplay: () => void;
+  onStartEndingRouteRun: () => void;
+  onStartNearMissRun: (replaySelection: RunModifierSelectionInput) => void;
+  readinessPercent: number;
+}) {
+  const topNearMiss = endingNearMisses[0];
+  const routeTargetLabel = endingRouteQuickStartLabel?.replace("엔딩 목표: ", "") ?? nextTargetRouteLabel ?? nextTargetLabel;
+  const targetTitle = activeEndingReplayBrief?.title ?? topNearMiss?.title ?? routeTargetLabel;
+  const targetDetail = activeEndingReplayBrief
+    ? `${activeEndingReplayBrief.progressPercent}% · ${activeEndingReplayBrief.rewardStatusLabel}`
+    : topNearMiss
+      ? `${topNearMiss.progressPercent}% · ${topNearMiss.rewardStatusLabel}`
+      : endingRouteQuickStartDescription ?? `다음 목표 루트: ${nextTargetRouteLabel}`;
+  const actionLabel =
+    activeEndingReplayBrief && !activeEndingReplayBrief.complete
+      ? "목표 다시 도전"
+      : hasEndingRouteQuickStart
+        ? "목표 런 시작"
+        : topNearMiss
+          ? "근접 엔딩 재도전"
+          : "다음 목표 대기";
+  const actionDetail =
+    activeEndingReplayBrief && !activeEndingReplayBrief.complete
+      ? activeEndingReplayBrief.targetLabels.slice(0, 3).join(" / ")
+      : hasEndingRouteQuickStart
+        ? routeTargetLabel
+        : topNearMiss
+          ? topNearMiss.missingLabels.slice(0, 2).join(" / ") || topNearMiss.rewardStatusLabel
+          : nextTargetLabel;
+  const actionDisabled = !((activeEndingReplayBrief && !activeEndingReplayBrief.complete) || hasEndingRouteQuickStart || topNearMiss);
+
+  const handleActionClick = () => {
+    if (activeEndingReplayBrief && !activeEndingReplayBrief.complete) {
+      onRetryActiveEndingReplay();
+      return;
+    }
+
+    if (hasEndingRouteQuickStart) {
+      onStartEndingRouteRun();
+      return;
+    }
+
+    if (topNearMiss) {
+      onStartNearMissRun(topNearMiss.replaySelection);
+    }
+  };
+
+  return (
+    <article className="ending-replay-readiness-strip" aria-label="엔딩 리플레이 다음 행동">
+      <div className="ending-replay-readiness-copy">
+        <p className="eyebrow">다음 도전 판단</p>
+        <h2>엔딩/리플레이 준비 상황</h2>
+        <p>결과에서 바로 이어갈 수 있는 목표를 한 줄로 고릅니다.</p>
+      </div>
+      <span className="ending-replay-readiness-metric">
+        <small>베타 준비</small>
+        <strong>{readinessPercent}%</strong>
+        <em>{codexStatusLabel}</em>
+      </span>
+      <span className="ending-replay-readiness-metric">
+        <small>우선 목표</small>
+        <strong>{targetTitle}</strong>
+        <em>{targetDetail}</em>
+      </span>
+      <button className="ending-replay-readiness-action" disabled={actionDisabled} onClick={handleActionClick} type="button">
+        <small>근접 후보 {endingNearMisses.length}개</small>
+        <strong>{actionLabel}</strong>
+        <span>{actionDetail}</span>
+      </button>
+    </article>
   );
 }
 

@@ -28,7 +28,7 @@
         "차고 AI 회사를 시작했어요"
       ],
       "status": "pass",
-      "domBytes": 276763,
+      "domBytes": 278312,
       "failedChecks": []
     },
     {
@@ -40,7 +40,7 @@
         "결말 루트"
       ],
       "status": "pass",
-      "domBytes": 262144,
+      "domBytes": 262146,
       "failedChecks": []
     },
     {
@@ -52,7 +52,7 @@
         "모든 목표 엔딩 발견"
       ],
       "status": "pass",
-      "domBytes": 262144,
+      "domBytes": 262145,
       "failedChecks": []
     },
     {
@@ -64,7 +64,7 @@
         "결과 전용 기록"
       ],
       "status": "pass",
-      "domBytes": 262145,
+      "domBytes": 262144,
       "failedChecks": []
     },
     {
@@ -100,7 +100,7 @@
         "도감"
       ],
       "status": "pass",
-      "domBytes": 262144,
+      "domBytes": 262145,
       "failedChecks": []
     },
     {
@@ -112,7 +112,7 @@
         "AGI 안전 협정"
       ],
       "status": "pass",
-      "domBytes": 309698,
+      "domBytes": 311247,
       "failedChecks": []
     }
   ]

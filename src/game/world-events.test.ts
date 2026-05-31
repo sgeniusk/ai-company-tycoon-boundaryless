@@ -15,9 +15,9 @@ const worldEventSelection = {
 
 describe("v0.63 yearly world events", () => {
   it("defines a conservative pool of seed-selectable yearly events", () => {
-    expect(worldEvents.length).toBeGreaterThanOrEqual(10);
-    expect(worldEvents.length).toBeLessThanOrEqual(28);
+    expect(worldEvents.length).toBe(28);
     expect(new Set(worldEvents.map((event) => event.id)).size).toBe(worldEvents.length);
+    expect(worldEvents.map((event) => event.id)).toEqual(expect.arrayContaining(["late_open_weight_checkpoint", "regulatory_sandbox_grants"]));
 
     for (const event of worldEvents) {
       expect(event.title.length).toBeGreaterThan(0);

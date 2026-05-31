@@ -34,7 +34,7 @@ function listBetaCandidateChecks(): BetaCandidateListResult {
   return JSON.parse(output) as BetaCandidateListResult;
 }
 
-function runCandidateWithFakeNpm(fakeNpmBody: string): unknown {
+function runCandidateWithFakeNpm(fakeNpmBody: string, envOverrides: Record<string, string> = {}): unknown {
   const fakeBin = mkdtempSync(join(tmpdir(), "act-v068-candidate-"));
   const fakeNpmPath = join(fakeBin, "npm");
   writeFileSync(fakeNpmPath, fakeNpmBody);
@@ -46,6 +46,7 @@ function runCandidateWithFakeNpm(fakeNpmBody: string): unknown {
       cwd: rootDir,
       env: {
         PATH: `${fakeBin}:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin`,
+        ...envOverrides,
       },
     }).toString("utf8");
 
@@ -225,5 +226,39 @@ exit 9
         diagnostic: "exit 8; Summary: FAIL",
       }),
     );
+  });
+
+  it("fails fast with a machine-readable diagnostic when a child gate hangs", () => {
+    const result = runCandidateWithFakeNpm(`#!/bin/sh
+sleep 1
+echo "unexpected timeout miss"
+exit 0
+`, {
+      ACT_BETA_CANDIDATE_CHECK_TIMEOUT_MS: "50",
+    }) as {
+      status: string;
+      checks: Array<{
+        id: string;
+        status: string;
+        exitStatus: number | null;
+        diagnostic: string;
+      }>;
+    };
+
+    expect(result.status).toBe("fail");
+    expect(result.checks).toEqual([
+      expect.objectContaining({
+        id: "harness_gate",
+        status: "fail",
+        exitStatus: null,
+        diagnostic: "timeout after 50ms; child gate did not finish",
+      }),
+      expect.objectContaining({
+        id: "flow_smoke",
+        status: "fail",
+        exitStatus: null,
+        diagnostic: "timeout after 50ms; child gate did not finish",
+      }),
+    ]);
   });
 });

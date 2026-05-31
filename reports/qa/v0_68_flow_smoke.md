@@ -17,11 +17,11 @@ Status: PASS
 ## Routes
 | ID | Path | Status | DOM bytes | Failed checks |
 | --- | --- | --- | ---: | --- |
-| fresh | `/?scenario=fresh` | PASS | 276763 | - |
-| beta-readiness | `/?scenario=beta-readiness` | PASS | 262144 | - |
-| beta-readiness-complete | `/?scenario=beta-readiness-complete` | PASS | 262144 | - |
-| ending-fallback-final | `/?scenario=ending-fallback-final` | PASS | 262145 | - |
+| fresh | `/?scenario=fresh` | PASS | 278312 | - |
+| beta-readiness | `/?scenario=beta-readiness` | PASS | 262146 | - |
+| beta-readiness-complete | `/?scenario=beta-readiness-complete` | PASS | 262145 | - |
+| ending-fallback-final | `/?scenario=ending-fallback-final` | PASS | 262144 | - |
 | ending-nearmiss-final | `/?scenario=ending-nearmiss-final` | PASS | 262144 | - |
 | ten-year-ending-route-start | `/?scenario=ten-year-ending-route-start` | PASS | 262144 | - |
-| ten-year-next-run | `/?scenario=ten-year-next-run` | PASS | 262144 | - |
-| ending-nearmiss-retry-start | `/?scenario=ending-nearmiss-retry-start` | PASS | 309698 | - |
+| ten-year-next-run | `/?scenario=ten-year-next-run` | PASS | 262145 | - |
+| ending-nearmiss-retry-start | `/?scenario=ending-nearmiss-retry-start` | PASS | 311247 | - |

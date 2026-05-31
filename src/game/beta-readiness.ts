@@ -44,6 +44,7 @@ export interface BetaReadinessSummary {
   routeOptionTotal: number;
   routeOptionLabel: string;
   nextTargetLabel: string;
+  nextTargetRouteLabel: string;
   axes: BetaReadinessAxisSummary[];
   checks: BetaReadinessCheck[];
   completeCheckCount: number;
@@ -195,6 +196,7 @@ export function getBetaReadinessSummary(state: Pick<GameState, "roguelite">): Be
     routeOptionTotal,
     routeOptionLabel: `${routeOptionCount}/${routeOptionTotal}`,
     nextTargetLabel: routeStartReadiness.nextTargetLabel,
+    nextTargetRouteLabel: routeStartReadiness.nextTargetRouteLabel,
     axes,
     checks,
     completeCheckCount,

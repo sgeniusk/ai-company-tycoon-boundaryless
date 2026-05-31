@@ -1077,6 +1077,23 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-target-result-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("v0.70 keeps the replay and beta-readiness next step visible in final results", () => {
+    expect(gameChrome).toContain("EndingReplayReadinessStrip");
+    expect(gameChrome).toContain("ending-replay-readiness-strip");
+    expect(gameChrome).toContain("betaReadinessSummary.readinessPercent");
+    expect(gameChrome).toContain("betaReadinessSummary.codexStatusLabel");
+    expect(gameChrome).toContain("activeEndingReplayBrief.progressPercent");
+    expect(gameChrome).toContain("endingNearMisses.length");
+    expect(gameChrome).toContain("endingRouteQuickStart?.label");
+    expect(gameChrome).toContain("다음 도전 판단");
+    expect(gameChrome).toContain("결과에서 바로 이어갈 수 있는 목표를 한 줄로 고릅니다.");
+    expect(appCss).toMatch(/\.ending-replay-readiness-strip\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.ending-replay-readiness-strip\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.15fr\)\s+repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.ending-replay-readiness-action\s*{[^}]*background:\s*var\(--green\)/s);
+    expect(appCss).toMatch(/\.ending-replay-readiness-strip strong\s*{[^}]*overflow-wrap:\s*anywhere/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.ending-replay-readiness-strip\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
   it("v0.67 #22 highlights newly discovered endings in the final results", () => {
     expect(gameChrome).toContain("getCampaignEndingDiscovery");
     expect(gameChrome).toContain("getEndingRouteUnlockRecommendations");

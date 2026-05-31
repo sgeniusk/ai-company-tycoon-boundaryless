@@ -7,6 +7,7 @@ const version = "0.68-beta-stabilization";
 const reportPath = "reports/qa/v0_68_beta_candidate.md";
 const summaryPath = "reports/qa/v0_68_beta_candidate.json";
 const artifacts = createArtifactManifest(reportPath, summaryPath);
+const defaultCheckTimeoutMs = 15 * 60 * 1000;
 const checks = [
   {
     id: "harness_gate",
@@ -26,23 +27,36 @@ function hasArg(name) {
   return process.argv.includes(name);
 }
 
+function getCheckTimeoutMs() {
+  const parsed = Number(process.env.ACT_BETA_CANDIDATE_CHECK_TIMEOUT_MS);
+
+  if (Number.isFinite(parsed) && parsed > 0) return Math.trunc(parsed);
+  return defaultCheckTimeoutMs;
+}
+
 function runCheck(check) {
+  const timeoutMs = getCheckTimeoutMs();
+  const startedAt = Date.now();
   const result = spawnSync("npm", check.args, {
     cwd: root,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
+    timeout: timeoutMs,
+    killSignal: "SIGTERM",
   });
+  const elapsedMs = Date.now() - startedAt;
   const output = `${result.stdout ?? ""}${result.stderr ?? ""}`;
-  const exitStatus = result.status ?? null;
+  const timedOut = result.error?.code === "ETIMEDOUT" || elapsedMs >= timeoutMs;
+  const exitStatus = timedOut ? null : result.status ?? null;
 
   return {
     id: check.id,
     label: check.label,
     command: check.command,
-    status: exitStatus === 0 ? "pass" : "fail",
+    status: exitStatus === 0 && !result.error && !timedOut ? "pass" : "fail",
     exitStatus,
     evidence: summarizeOutput(check.id, output),
-    diagnostic: summarizeDiagnostic(output, exitStatus),
+    diagnostic: summarizeDiagnostic(output, exitStatus, { timedOut, timeoutMs, spawnError: result.error }),
   };
 }
 
@@ -65,11 +79,15 @@ function summarizeOutput(id, output) {
   return output.split("\n").find((line) => line.trim())?.trim() ?? "no output";
 }
 
-function summarizeDiagnostic(output, exitStatus) {
+function summarizeDiagnostic(output, exitStatus, { timedOut = false, timeoutMs, spawnError } = {}) {
+  if (timedOut) return `timeout after ${timeoutMs}ms; child gate did not finish`;
+
   const lines = output
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter((line) => line.trim());
+  if (spawnError && lines.length === 0) return `exit ${exitStatus ?? "unknown"}; ${spawnError.message}`;
+
   const priorityPatterns = [
     /^Error:/,
     /error TS\d+:/,

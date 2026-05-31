@@ -23,7 +23,7 @@
       "command": "npm run harness:gate < /dev/null",
       "status": "pass",
       "exitStatus": 0,
-      "evidence": "53 passed (53); 598 passed (598); 15/15 checks (100%); build passed",
+      "evidence": "53 passed (53); 602 passed (602); 15/15 checks (100%); build passed",
       "diagnostic": "exit 0; Test Files  53 passed (53)"
     },
     {
