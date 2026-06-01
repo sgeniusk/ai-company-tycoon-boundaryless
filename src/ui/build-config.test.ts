@@ -9,4 +9,9 @@ describe("v0.21 build configuration", () => {
     expect(viteConfig).toContain("react-vendor");
     expect(viteConfig).toContain("game-data");
   });
+
+  it("v0.99 splits game logic into its own chunk so the entry stays under the 500 kB warning", () => {
+    expect(viteConfig).toContain("game-logic");
+    expect(viteConfig).toMatch(/src\/game/);
+  });
 });
