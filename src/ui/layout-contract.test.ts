@@ -416,6 +416,17 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.event-panel-signal\s+i/s);
   });
 
+  it("v0.95 keeps incident panels in a sightline-preserving pixel dialogue rail", () => {
+    expect(appSource).toContain("office-sightline-event-rail");
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\.office-sightline-event-rail\s*{[^}]*max-height:\s*clamp\(82px,\s*14%,\s*118px\)/s);
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\.office-sightline-event-rail:hover,\s*\.event-stack\.playfield-event-rail\.office-sightline-event-rail:focus-within\s*{[^}]*max-height:\s*min\(30%,\s*210px\)/s);
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\.office-sightline-event-rail\s+\.event-panel\s*{[^}]*grid-template-columns:\s*16px\s+minmax\(0,\s*1fr\)\s+minmax\(220px,\s*0\.62fr\)/s);
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\.office-sightline-event-rail\s+\.event-panel\s*{[^}]*min-height:\s*64px/s);
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\.office-sightline-event-rail\s+\.event-panel-copy::after\s*{[^}]*content:\s*""/s);
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\.office-sightline-event-rail\s+\.event-choices\s+button\s*{[^}]*min-height:\s*32px/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.event-stack\.playfield-event-rail\.office-sightline-event-rail\s*{[^}]*max-height:\s*clamp\(64px,\s*11dvh,\s*92px\)/s);
+  });
+
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);

@@ -148,7 +148,7 @@ function App() {
       />
       <ResourceStrip gameState={gameState} />
       <GameStage gameState={gameState} qaScenarioLabel={qaScenarioLabel} setGameState={setGameState} setActiveMenu={setActiveMenu} />
-      <div className="event-stack playfield-event-rail">
+      <div className="event-stack playfield-event-rail office-sightline-event-rail">
         <EventPanels
           gameState={gameState}
           setGameState={setGameState}

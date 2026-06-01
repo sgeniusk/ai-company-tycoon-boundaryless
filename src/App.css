@@ -4101,6 +4101,16 @@ p {
   max-height: min(34%, 230px);
 }
 
+.event-stack.playfield-event-rail.office-sightline-event-rail {
+  max-height: clamp(82px, 14%, 118px);
+  padding: 6px 10px 8px;
+}
+
+.event-stack.playfield-event-rail.office-sightline-event-rail:hover,
+.event-stack.playfield-event-rail.office-sightline-event-rail:focus-within {
+  max-height: min(30%, 210px);
+}
+
 .first-ten-minute-roadmap li.complete {
   background: #e1f3df;
   border-color: var(--green);
@@ -5743,6 +5753,46 @@ p {
 
 .event-stack.playfield-event-rail .incident-screen-moment {
   grid-template-columns: 18px minmax(0, 1fr) minmax(252px, 0.72fr);
+}
+
+.event-stack.playfield-event-rail.office-sightline-event-rail .event-panel {
+  background: rgba(255, 246, 222, 0.94);
+  border: 3px solid var(--line);
+  box-shadow: 0 3px 0 rgba(61, 51, 35, 0.34);
+  grid-template-columns: 16px minmax(0, 1fr) minmax(220px, 0.62fr);
+  min-height: 64px;
+  padding: 6px 8px 6px 16px;
+}
+
+.event-stack.playfield-event-rail.office-sightline-event-rail .staff-event-panel {
+  background: rgba(255, 241, 198, 0.94);
+}
+
+.event-stack.playfield-event-rail.office-sightline-event-rail .staff-event-panel.severity-critical {
+  background: rgba(255, 225, 216, 0.94);
+}
+
+.event-stack.playfield-event-rail.office-sightline-event-rail .rival-event-panel {
+  background: rgba(232, 239, 255, 0.94);
+}
+
+.event-stack.playfield-event-rail.office-sightline-event-rail .event-panel-copy::after {
+  background: #fff6de;
+  border-bottom: 2px solid var(--line);
+  border-left: 2px solid var(--line);
+  bottom: -12px;
+  content: "";
+  height: 10px;
+  image-rendering: pixelated;
+  left: 20px;
+  position: absolute;
+  transform: rotate(-45deg);
+  width: 10px;
+}
+
+.event-stack.playfield-event-rail.office-sightline-event-rail .event-choices button {
+  min-height: 32px;
+  padding: 5px 6px;
 }
 
 .event-stack.playfield-event-rail .event-panel::after {
@@ -12128,6 +12178,11 @@ p {
     width: auto;
   }
 
+  .event-stack.playfield-event-rail.office-sightline-event-rail {
+    max-height: clamp(64px, 11dvh, 92px);
+    padding: 4px 6px;
+  }
+
   .event-stack:hover,
   .event-stack:focus-within {
     max-height: 28dvh;
@@ -12145,6 +12200,16 @@ p {
   .event-stack.playfield-event-rail .incident-screen-moment {
     grid-template-columns: minmax(0, 1fr);
     min-height: 0;
+  }
+
+  .event-stack.playfield-event-rail.office-sightline-event-rail .event-panel {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    padding: 6px;
+  }
+
+  .event-stack.playfield-event-rail.office-sightline-event-rail .event-panel-copy::after {
+    display: none;
   }
 
   .event-panel-signal {
@@ -12184,6 +12249,10 @@ p {
   .event-choices button {
     min-height: 30px;
     padding: 5px 6px;
+  }
+
+  .event-stack.playfield-event-rail.office-sightline-event-rail .event-choices button {
+    min-height: 28px;
   }
 
   .event-choice-summary {
