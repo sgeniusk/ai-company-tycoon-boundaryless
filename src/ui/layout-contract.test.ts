@@ -400,6 +400,22 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.event-stack\.playfield-event-rail\s+\.event-moment-meta\s*{[^}]*display:\s*none/s);
   });
 
+  it("v0.92 gives event ribbons compact pixel signal hardware", () => {
+    expect(gameChrome).toContain("EventPanelSignal");
+    expect(gameChrome).toContain("event-panel-signal");
+    expect(gameChrome).toContain("event-signal-staff");
+    expect(gameChrome).toContain("event-signal-rival");
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\s+\.incident-screen-moment\s*{[^}]*grid-template-columns:\s*18px\s+minmax\(0,\s*1fr\)\s+minmax\(252px,\s*0\.72fr\)/s);
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\s+\.event-panel\s*{[^}]*min-height:\s*72px/s);
+    expect(appCss).toMatch(/\.event-panel-signal\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.event-panel-signal\s+i\s*{[^}]*animation:\s*event-panel-signal-blip/s);
+    expect(appCss).toMatch(/\.event-stack\.playfield-event-rail\s+\.event-panel::after\s*{[^}]*animation:\s*event-panel-scanline/s);
+    expect(appCss).toMatch(/@keyframes\s+event-panel-signal-blip/s);
+    expect(appCss).toMatch(/@keyframes\s+event-panel-scanline/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.event-panel-signal\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.event-panel-signal\s+i/s);
+  });
+
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);

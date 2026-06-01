@@ -2825,6 +2825,24 @@ function GuidancePanel({
   );
 }
 
+type EventPanelSignalTone = "staff" | "rival" | "world";
+
+const eventPanelSignalClasses: Record<EventPanelSignalTone, string> = {
+  rival: "event-signal-rival",
+  staff: "event-signal-staff",
+  world: "event-signal-world",
+};
+
+function EventPanelSignal({ tone }: { tone: EventPanelSignalTone }) {
+  return (
+    <span aria-hidden="true" className={`event-panel-signal ${eventPanelSignalClasses[tone]}`}>
+      <i />
+      <b />
+      <em />
+    </span>
+  );
+}
+
 export function EventPanels({
   gameState,
   setGameState,
@@ -2851,6 +2869,7 @@ export function EventPanels({
           className={`event-panel staff-event-panel incident-screen-moment severity-${primaryStaffIncident.severity}`}
           aria-label="직원 사건"
         >
+          <EventPanelSignal tone="staff" />
           <div className="event-panel-copy">
             <p className="eyebrow">직원 화면 사건</p>
             <h2>{primaryStaffIncident.title}</h2>
@@ -2878,6 +2897,7 @@ export function EventPanels({
 
       {gameState.currentRivalEvent && (
         <section className="event-panel rival-event-panel incident-screen-moment" aria-label="경쟁사 이벤트">
+          <EventPanelSignal tone="rival" />
           <div className="event-panel-copy">
             <p className="eyebrow">경쟁사 화면 사건</p>
             <h2>{t(gameState.currentRivalEvent.name_key, locale)}</h2>
@@ -2901,6 +2921,7 @@ export function EventPanels({
 
       {gameState.currentEvent && (
         <section className="event-panel" aria-label="월간 이벤트">
+          <EventPanelSignal tone="world" />
           <div className="event-panel-copy">
             <p className="eyebrow">긴급 이슈</p>
             <h2>{gameState.currentEvent.name}</h2>

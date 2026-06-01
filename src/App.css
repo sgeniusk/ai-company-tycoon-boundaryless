@@ -2814,6 +2814,32 @@ p {
   }
 }
 
+@keyframes event-panel-signal-blip {
+  0%,
+  100% {
+    filter: brightness(0.92);
+    opacity: 0.58;
+    transform: translateY(0);
+  }
+  50% {
+    filter: brightness(1.18);
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes event-panel-scanline {
+  0%,
+  100% {
+    opacity: 0.18;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 0.42;
+    transform: translateX(7px);
+  }
+}
+
 @keyframes office-control-light-blink {
   0%,
   100% {
@@ -5563,6 +5589,70 @@ p {
   position: absolute;
   top: 0;
   width: 7px;
+}
+
+.event-stack.playfield-event-rail .event-panel {
+  grid-template-columns: 18px minmax(0, 1fr) minmax(252px, 0.72fr);
+  min-height: 72px;
+}
+
+.event-stack.playfield-event-rail .incident-screen-moment {
+  grid-template-columns: 18px minmax(0, 1fr) minmax(252px, 0.72fr);
+}
+
+.event-stack.playfield-event-rail .event-panel::after {
+  animation: event-panel-scanline 1640ms steps(4) infinite;
+  background:
+    repeating-linear-gradient(90deg, var(--event-rail-accent, var(--red)) 0 8px, transparent 8px 14px);
+  bottom: 5px;
+  content: "";
+  height: 3px;
+  left: 18px;
+  opacity: 0.28;
+  pointer-events: none;
+  position: absolute;
+  right: 8px;
+  z-index: 0;
+}
+
+.event-panel-copy,
+.event-choices,
+.event-panel-signal {
+  position: relative;
+  z-index: 1;
+}
+
+.event-panel-signal {
+  align-self: stretch;
+  display: grid;
+  gap: 4px;
+  grid-template-rows: 1fr 1fr 1fr;
+  image-rendering: pixelated;
+  justify-items: center;
+  min-width: 18px;
+  pointer-events: none;
+}
+
+.event-panel-signal i,
+.event-panel-signal b,
+.event-panel-signal em {
+  background: var(--event-rail-accent, var(--red));
+  border: 2px solid var(--line);
+  display: block;
+  height: 8px;
+  width: 8px;
+}
+
+.event-panel-signal i {
+  animation: event-panel-signal-blip 1160ms steps(2) infinite;
+}
+
+.event-panel-signal b {
+  opacity: 0.68;
+}
+
+.event-panel-signal em {
+  opacity: 0.42;
 }
 
 .incident-screen-moment {
@@ -11696,6 +11786,8 @@ p {
   .office-object-production-meter,
   .office-object-production-meter::before,
   .office-object-packet-spark,
+  .event-panel-signal i,
+  .event-stack.playfield-event-rail .event-panel::after,
   .office-action-slot-light,
   .office-event-reaction,
   .office-workbeat-node,
@@ -11794,6 +11886,16 @@ p {
     gap: 5px;
     grid-template-columns: minmax(0, 1fr);
     padding: 7px;
+  }
+
+  .event-stack.playfield-event-rail .event-panel,
+  .event-stack.playfield-event-rail .incident-screen-moment {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .event-panel-signal {
+    display: none;
   }
 
   .event-panel-copy .eyebrow {
