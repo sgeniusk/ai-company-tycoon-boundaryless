@@ -941,7 +941,7 @@ export function GameStage({
 
   return (
     <section className="game-stage" aria-label="AI 회사 사무실">
-      <div className={`office-scene office-level-${officeExpansion.level} office-phase-${phase.id}`}>
+      <div className={`office-scene pixel-office-theater office-level-${officeExpansion.level} office-phase-${phase.id}`}>
         <div className="office-wall">
           <span>{location.name}</span>
           <span>TEAM {gameState.hiredAgents.length}/{officeHireCapacity}</span>
@@ -1031,6 +1031,7 @@ export function GameStage({
                       ...actorSpriteFrameStyle,
                       "--actor-x": `${actor.x}%`,
                       "--actor-y": `${actor.y}%`,
+                      "--office-workloop-delay": `${(index % 5) * 120}ms`,
                       ...getDepthStyle(actor.y, 80),
                     } as CSSProperties
                   }
@@ -1040,6 +1041,11 @@ export function GameStage({
                   <i aria-hidden="true" className="office-actor-bustle-shadow" />
                   <b>{actor.name.slice(0, 3)}</b>
                   <small className="actor-thought">{actor.assignmentLabel}</small>
+                  <span aria-hidden="true" className="office-actor-workloop-kit">
+                    <i className="office-actor-key-clack" />
+                    <i className="office-actor-comic-pop" />
+                    <i className="office-actor-focus-beam" />
+                  </span>
                   <span
                     aria-hidden="true"
                     className="office-actor-reaction-sprite"

@@ -605,6 +605,10 @@ p {
   box-shadow: inset 0 0 0 4px rgba(255, 250, 240, 0.18);
 }
 
+.office-scene.pixel-office-theater {
+  image-rendering: pixelated;
+}
+
 .office-phase-night {
   background: #33556d;
 }
@@ -2323,6 +2327,87 @@ p {
   color: #842d1f;
 }
 
+.office-actor-workloop-kit {
+  height: 34px;
+  image-rendering: pixelated;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
+  top: 5px;
+  transform: translate(-50%, -50%);
+  width: 54px;
+  z-index: 2;
+}
+
+.staff-sprite.pixel-actor.sprite-sheet-frame .office-actor-workloop-kit {
+  top: 18px;
+}
+
+.office-actor-workloop-kit i {
+  display: block;
+  image-rendering: pixelated;
+  position: absolute;
+}
+
+.office-actor-key-clack {
+  background: #24352f;
+  border: 2px solid var(--line);
+  bottom: 0;
+  box-shadow: 7px 0 0 -2px #5fc6a6, 7px 0 0 0 var(--line), 15px 0 0 -2px #f2cf7f, 15px 0 0 0 var(--line);
+  height: 5px;
+  left: 10px;
+  opacity: 0;
+  width: 15px;
+}
+
+.office-actor-comic-pop {
+  animation: office-actor-comic-pop 1280ms steps(2) infinite;
+  animation-delay: var(--office-workloop-delay, 0ms);
+  background: #fffaf0;
+  border: 2px solid var(--line);
+  box-shadow: 7px -4px 0 -2px #fffaf0, 7px -4px 0 0 var(--line);
+  height: 7px;
+  opacity: 0.68;
+  right: 6px;
+  top: 0;
+  width: 7px;
+}
+
+.staff-sprite.pixel-actor.actor-state-warning .office-actor-comic-pop {
+  background: #df6b55;
+  box-shadow: 7px -4px 0 -2px #df6b55, 7px -4px 0 0 var(--line);
+}
+
+.staff-sprite.pixel-actor.actor-state-resting .office-actor-comic-pop {
+  background: #dff1df;
+  box-shadow: 7px -4px 0 -2px #dff1df, 7px -4px 0 0 var(--line);
+}
+
+.office-actor-focus-beam {
+  background:
+    linear-gradient(90deg, transparent 0 18%, #f2cf7f 18% 34%, transparent 34% 52%, #f2cf7f 52% 68%, transparent 68% 100%);
+  height: 6px;
+  left: 1px;
+  opacity: 0;
+  top: 10px;
+  width: 28px;
+}
+
+.staff-sprite.pixel-actor.actor-state-working .office-actor-workloop-kit .office-actor-key-clack {
+  animation: office-actor-key-clack 720ms steps(2) infinite;
+  animation-delay: var(--office-workloop-delay, 0ms);
+}
+
+.staff-sprite.pixel-actor.actor-state-working .office-actor-workloop-kit .office-actor-focus-beam {
+  animation: office-actor-focus-beam 960ms steps(3) infinite;
+  animation-delay: var(--office-workloop-delay, 0ms);
+}
+
+.staff-sprite.pixel-actor.actor-state-resting .office-actor-workloop-kit .office-actor-key-clack,
+.staff-sprite.pixel-actor.actor-state-resting .office-actor-workloop-kit .office-actor-focus-beam {
+  display: none;
+}
+
 .office-actor-reaction-sprite {
   animation: office-actor-reaction-bounce 1260ms steps(2) infinite;
   animation-delay: var(--office-reaction-delay, 0ms);
@@ -2648,6 +2733,45 @@ p {
   100% {
     opacity: 0;
     transform: translate(8px, -3px);
+  }
+}
+
+@keyframes office-actor-key-clack {
+  0%,
+  100% {
+    opacity: 0.52;
+    transform: translate(0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(2px, -1px);
+  }
+}
+
+@keyframes office-actor-comic-pop {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: translate(0, 2px) scale(0.82);
+  }
+  50% {
+    opacity: 0.96;
+    transform: translate(3px, -3px) scale(1.08);
+  }
+}
+
+@keyframes office-actor-focus-beam {
+  0% {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  42% {
+    opacity: 0.9;
+    transform: translateX(2px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(8px);
   }
 }
 
@@ -11924,6 +12048,9 @@ p {
   .office-actor-work-puff,
   .office-actor-bustle-shadow,
   .office-actor-motion-tick,
+  .office-actor-key-clack,
+  .office-actor-comic-pop,
+  .office-actor-focus-beam,
   .office-task-link,
   .office-task-link::after {
     animation: none;
@@ -12663,6 +12790,10 @@ p {
 
   .staff-sprite.pixel-actor .actor-thought {
     display: none;
+  }
+
+  .office-actor-workloop-kit {
+    transform: translate(-50%, -50%) scale(0.82);
   }
 
   .office-actor-focus-panel {

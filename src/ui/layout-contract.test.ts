@@ -789,6 +789,25 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-actor-bustle-shadow/s);
   });
 
+  it("v0.94 keeps the office scene in a pixel-art comic workloop style", () => {
+    expect(gameChrome).toContain("pixel-office-theater");
+    expect(gameChrome).toContain("--office-workloop-delay");
+    expect(gameChrome).toContain("office-actor-workloop-kit");
+    expect(gameChrome).toContain("office-actor-key-clack");
+    expect(gameChrome).toContain("office-actor-comic-pop");
+    expect(gameChrome).toContain("office-actor-focus-beam");
+    expect(appCss).toMatch(/\.office-scene\.pixel-office-theater\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.office-actor-workloop-kit\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.actor-state-working\s+\.office-actor-workloop-kit\s+\.office-actor-key-clack\s*{[^}]*animation:\s*office-actor-key-clack/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.actor-state-working\s+\.office-actor-workloop-kit\s+\.office-actor-focus-beam\s*{[^}]*animation:\s*office-actor-focus-beam/s);
+    expect(appCss).toMatch(/\.office-actor-comic-pop\s*{[^}]*animation:\s*office-actor-comic-pop/s);
+    expect(appCss).toMatch(/@keyframes\s+office-actor-key-clack/s);
+    expect(appCss).toMatch(/@keyframes\s+office-actor-comic-pop/s);
+    expect(appCss).toMatch(/@keyframes\s+office-actor-focus-beam/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.office-actor-workloop-kit\s*{[^}]*transform:\s*translate\(-50%,\s*-50%\)\s+scale\(0\.82\)/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-actor-key-clack/s);
+  });
+
   it("adds small office workbeat signals so the scene reads as an active pixel sim", () => {
     expect(gameChrome).toContain("OfficeWorkBeatLayer");
     expect(gameChrome).toContain("officeWorkBeatNodes");
