@@ -14005,6 +14005,12 @@ p {
   font-size: 0.74rem;
   font-weight: 900;
   padding: 9px 14px;
+  transition: background 160ms ease, box-shadow 120ms var(--pixel-steps), transform 120ms var(--pixel-steps);
+}
+
+.payoff-celebration-dismiss:hover {
+  background: rgba(255, 200, 100, 0.98);
+  transform: translateY(-1px);
 }
 
 .world-reveal-overlay {
@@ -14318,6 +14324,27 @@ p {
   font-size: 0.74rem;
   font-weight: 900;
   padding: 10px 14px;
+  transition: background 160ms ease, box-shadow 120ms var(--pixel-steps), transform 120ms var(--pixel-steps);
+}
+
+.world-reveal-dismiss:hover {
+  background: rgba(134, 234, 225, 1);
+  transform: translateY(-1px);
+}
+
+.big-event-dismiss:active,
+.payoff-celebration-dismiss:active,
+.world-reveal-dismiss:active {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.16) inset;
+  transform: translateY(1px);
+}
+
+.big-event-dismiss:focus-visible,
+.payoff-celebration-dismiss:focus-visible,
+.world-reveal-dismiss:focus-visible {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18), 0 0 0 7px rgba(255, 180, 58, 0.52);
+  outline: 3px solid #fffdf5;
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -14331,6 +14358,15 @@ p {
   .payoff-celebration-flare,
   .world-reveal-flare {
     animation: none;
+  }
+
+  .big-event-dismiss:hover,
+  .big-event-dismiss:active,
+  .payoff-celebration-dismiss:hover,
+  .payoff-celebration-dismiss:active,
+  .world-reveal-dismiss:hover,
+  .world-reveal-dismiss:active {
+    transform: none;
   }
 }
 

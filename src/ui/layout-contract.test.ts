@@ -473,6 +473,13 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/--pixel-steps?:\s*steps\(/);
   });
 
+  it("v0.98 gives overlay dismiss buttons hover/active/focus affordance", () => {
+    for (const cls of ["world-reveal-dismiss", "payoff-celebration-dismiss", "big-event-dismiss"]) {
+      expect(appCss).toMatch(new RegExp(`\\.${cls}:focus-visible`));
+      expect(appCss).toMatch(new RegExp(`\\.${cls}:active`));
+    }
+  });
+
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);

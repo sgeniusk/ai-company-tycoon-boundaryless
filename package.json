@@ -45,6 +45,7 @@
     "qa:v068-beta-candidate": "node scripts/qa/check-v068-beta-candidate.mjs",
     "qa:v068-beta-candidate:check": "node scripts/qa/check-v068-beta-candidate.mjs --check",
     "qa:v096-first-screen": "node scripts/qa/check-v096-first-screen.mjs",
+    "qa:v098-overlays": "node scripts/qa/check-v098-overlays.mjs",
     "harness:gate": "npm test -- --maxWorkers=1 && npm run validate:data && npm run qa:beta-readiness:check && npm run build"
   },
   "dependencies": {
