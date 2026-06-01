@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-05-30",
-  "current_feature_id": "v0.67-alpha-multi-ending",
+  "last_updated": "2026-06-02",
+  "current_feature_id": "v0.97-alpha-pixel-art-consistency-sweep",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -304,7 +304,7 @@
       "id": "v0.67-alpha-multi-ending",
       "name": "Multi-ending (run-defined win conditions — decision B)",
       "description": "Decision B. Different win conditions + endings per world-lore / founder / growth-path / archetype, so '이 엔딩 보려고 저 조합으로 또 한 판' becomes a replay driver layered on the v0.63-v0.66 roguelike track. The existing campaign finale judgement (run-simulator success/integrity/finale) gets a deterministic ending-selection layer on top; the 10-year completability gate is preserved, endings branch above it. Likely: data/endings.json (condition predicates + ending copy/flavor) + a pure ending selector + reveal at finale. Roadmap default-next after v0.66; ALTERNATIVE is beta prep (decision C). Master plan reports/v0_63_plus_content_roadmap.md.",
-      "status": "planned",
+      "status": "completed",
       "priority": "P1",
       "dependencies": [
         "v0.66-alpha-tag-derivation-engine"
@@ -314,7 +314,8 @@
         "Each block: harness:gate passes; deterministic; 10-year completability preserved; derive-only first."
       ],
       "evidence": [
-        "2026-05-30: Opened as roadmap default-next after the v0.66 closeout, NOT started — Claude Code is checkpointing with the user (multi-ending vs beta prep) and was asked to write a Codex continuation prompt to resume from this clean v0.66-complete state."
+        "2026-05-30: Opened as roadmap default-next after the v0.66 closeout, NOT started — Claude Code is checkpointing with the user (multi-ending vs beta prep) and was asked to write a Codex continuation prompt to resume from this clean v0.66-complete state.",
+        "Per reports/v0_63_plus_content_roadmap.md 2026-06-01 addendum, the v0.63-v0.67 roguelike track shipped (multi-ending / ending replay / near-miss guidance). Detailed history in git + reports/. Not independently re-verified in the 2026-06-02 session."
       ],
       "next_step": "Confirm direction with the user. If multi-ending: write the block #1 handoff (endings.json + pure getCampaignEnding selector, derive-only) and launch on Codex."
     },
@@ -338,6 +339,62 @@
         "docs/ART_INTAKE.md and docs/ANTIGRAVITY_ART_BRIEF.md define source dimensions, import commands, and gate timing."
       ],
       "next_step": "Start only after qa:asset-handoff reports final art request possible (gated by P2 AGY/real human blind playtest track)."
+    },
+    {
+      "id": "v0.68-v0.95-commercial-polish-track",
+      "name": "Commercial pixel-art polish track (v0.68-v0.95)",
+      "description": "Beta prep plus commercial pixel-art surfaces shipped across prior autonomous Codex sessions: UI atlas/brand/logo/stamp/reaction atlases, pixel office event ribbons, workbeats, objects, menu cabinet, task links, command console, comic workloops, and event sightline protection.",
+      "status": "completed",
+      "priority": "P1",
+      "dependencies": [
+        "v0.67-alpha-multi-ending"
+      ],
+      "definition_of_done": [
+        "Beta-readiness gate (qa:beta-readiness:check) stays green.",
+        "Pixel-art surfaces shipped per reports/v0_63_plus_content_roadmap.md addendum and reports/v0_96_plus_commercial_polish_roadmap.md."
+      ],
+      "evidence": [
+        "Shipped in prior autonomous Codex sessions; history in git + reports/ (e.g. v0.93 command console 8f14da7, v0.94 comic workloops 5513e95, v0.95 event sightline 9236c96). Not independently re-verified in the 2026-06-02 session."
+      ],
+      "next_step": "Continue commercial polish per reports/v0_96_plus_commercial_polish_roadmap.md."
+    },
+    {
+      "id": "v0.96-alpha-first-screen-composition",
+      "name": "First-screen composition pass",
+      "description": "Make the first viewport read as a game scene first, UI second: lock the office-dominant stage and event-rail-overlay composition in the layout contract, add a first-viewport browser smoke (desktop/mobile), and guard chrome surfaces against text overflow. Visual-only.",
+      "status": "completed",
+      "priority": "P1",
+      "dependencies": [
+        "v0.68-v0.95-commercial-polish-track"
+      ],
+      "definition_of_done": [
+        "first-screen-composition marker plus scoped App.css composition rules; layout-contract RED to GREEN.",
+        "check-v096-first-screen.mjs first-viewport smoke passes desktop and mobile (exit 0).",
+        "Office visible/nonblank/dominant, zero surface text overflow, office center uncovered.",
+        "harness:gate passes; simulation.ts/types.ts/data diff empty (visual-only)."
+      ],
+      "evidence": [
+        "2026-06-01: Codex implemented (medium effort); Claude verified independently on the live dev server because the Codex sandbox could only use the dist fallback. Commit d11eb13. harness:gate 53 files / 643 tests; live smoke desktop/mobile exit 0, overflow 0, office fraction 0.26/0.246, 6 actors; visual-only diff empty. reports/qa/v0_96_first_screen_run.md."
+      ],
+      "next_step": "Desktop HUD pixel resource icons/deltas were compacted (hidden) because the HUD layout is tight; restoring them on desktop is carried to v0.97 (needs a HUD layout redesign, not a hide toggle)."
+    },
+    {
+      "id": "v0.97-alpha-pixel-art-consistency-sweep",
+      "name": "Pixel-art consistency sweep",
+      "description": "Remove remaining generic web-app visual language (soft SaaS shadows, card-like panels, inconsistent radii, non-stepped animations) and tighten pixel visual tokens. Includes a desktop resource-HUD layout redesign so pixel resource icons and +/- deltas can return on desktop without overflow (carried from v0.96).",
+      "status": "in_progress",
+      "priority": "P1",
+      "dependencies": [
+        "v0.96-alpha-first-screen-composition"
+      ],
+      "definition_of_done": [
+        "Layout contract locks the pixel treatment for major shells (topbar, resource HUD, office, event rail, command console, menu cabinet).",
+        "Desktop resource HUD redesigned so pixel resource icons and deltas show without surface text overflow (first-screen smoke stays exit 0).",
+        "Browser screenshots show coherent pixel materials desktop/mobile; reduced-motion covered.",
+        "harness:gate passes; visual-only (simulation.ts/types.ts/data unchanged)."
+      ],
+      "evidence": [],
+      "next_step": "Write reports/codex-handoff/v0_97_*.md; Codex implements CSS + unit tests while Claude runs the browser smoke; TDD-first with layout-contract RED/GREEN."
     }
   ]
 }

@@ -29,8 +29,8 @@ Keep startup context lean:
 
 ## Current Source Of Truth
 
-- Current version: `v0.58-alpha` (closed; entering `v0.59-alpha`)
-- Current feature: `v0.67-alpha-multi-ending` (PLANNED — awaiting user direction at checkpoint; decision B, alt = beta prep decision C). The ENTIRE roguelike track shipped 2026-05-30: `v0.63` system spine + `v0.64` content depth (9,504 combos + 26 events) + `v0.65` difficulty (challenge tiers + reward multiplier) + `v0.66` tag-derivation engine (decision A — archetype discovery + 도감 + emergent effects), all CLOSED. Baseline 48 files / 500 tests. Master plan: reports/v0_63_plus_content_roadmap.md.
+- Current version: `v0.96-alpha` (closed at `d11eb13`); entering `v0.97-alpha`
+- Current feature: `v0.97-alpha-pixel-art-consistency-sweep` (in progress) — pixel-token consistency + a desktop resource-HUD redesign so pixel icons/deltas return without overflow (carried from v0.96). Roguelike v0.63–v0.67 and commercial polish v0.68–v0.95 shipped (history in git + reports/). Baseline 53 files / 643 tests. Active roadmap: reports/v0_96_plus_commercial_polish_roadmap.md.
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`

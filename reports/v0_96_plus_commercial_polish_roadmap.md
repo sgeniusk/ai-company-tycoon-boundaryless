@@ -30,6 +30,8 @@ Non-goals for the next stretch:
 
 Goal: make the first viewport read as a game scene first, UI second.
 
+> Status: CLOSED 2026-06-01 (commit `d11eb13`, verified). harness:gate 53 files / 643 tests; live first-viewport smoke desktop/mobile exit 0; visual-only diff empty. Evidence `reports/qa/v0_96_first_screen_run.md`. Carried to v0.97: desktop pixel resource icons/deltas were compacted because the HUD layout is tight (restoring on desktop caused 18 overflows incl. truncated values) — needs a HUD layout redesign.
+
 Planned work:
 - Audit desktop and mobile first screen with screenshots.
 - Reduce any remaining panel crowding around the office.
@@ -46,6 +48,7 @@ Acceptance:
 Goal: remove remaining generic web-app visual language.
 
 Planned work:
+- Redesign the desktop resource HUD so pixel resource icons + deltas return without surface overflow (carried from v0.96; the first-screen smoke must stay exit 0).
 - Audit CSS for non-pixel materials: soft SaaS shadows, card-like panels, inconsistent radii, non-stepped animations.
 - Tighten visual tokens: borders, pixel shadows, palette accents, `image-rendering: pixelated`, reduced-motion coverage.
 - Keep cards only where they represent discrete game objects or menu entries.
@@ -97,4 +100,4 @@ Release criteria:
 
 Do not restart from the old v0.63 plan. Treat it as shipped history. The active lane is commercial polish and first-screen game feel.
 
-Best next block: v0.96 first-screen composition pass. It should be visual-only, TDD-first, and verified with browser screenshots.
+Best next block: v0.97 pixel-art consistency sweep (v0.96 CLOSED 2026-06-01, commit `d11eb13`). Priority: redesign the desktop resource HUD so pixel resource icons + deltas return without overflow (carried from v0.96), then broaden to pixel-token consistency. Visual-only, TDD-first, browser-smoke verified.
