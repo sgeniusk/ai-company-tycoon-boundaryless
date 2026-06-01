@@ -147,29 +147,12 @@ button:disabled {
   text-overflow: ellipsis;
 }
 
-.app-shell.v034-game-shell.first-screen-composition .resource-tile span,
-.app-shell.v034-game-shell.first-screen-composition .resource-icon,
-.app-shell.v034-game-shell.first-screen-composition .resource-delta,
 .app-shell.v034-game-shell.first-screen-composition .command-action span,
 .app-shell.v034-game-shell.first-screen-composition .hand-count,
 .app-shell.v034-game-shell.first-screen-composition .strategy-hand-card strong,
 .app-shell.v034-game-shell.first-screen-composition .strategy-hand-card small,
 .app-shell.v034-game-shell.first-screen-composition .command-row p {
   display: none;
-}
-
-.app-shell.v034-game-shell.first-screen-composition .resource-tile {
-  grid-template-columns: minmax(0, 1fr);
-  padding-inline: 4px;
-}
-
-.app-shell.v034-game-shell.first-screen-composition .resource-tile strong {
-  font-size: 0.58rem;
-  grid-column: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  word-break: normal;
 }
 
 .app-shell.v034-game-shell.first-screen-composition .command-row {
@@ -189,6 +172,92 @@ button:disabled {
 @media (max-width: 1100px) {
   .app-shell.v034-game-shell.first-screen-composition {
     grid-template-rows: auto minmax(0, 1fr) auto auto minmax(180px, 34dvh);
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .resource-tile span,
+  .app-shell.v034-game-shell.first-screen-composition .resource-icon,
+  .app-shell.v034-game-shell.first-screen-composition .resource-delta {
+    display: none;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .resource-tile {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: 4px;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .resource-tile strong {
+    font-size: 0.58rem;
+    grid-column: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: normal;
+  }
+}
+
+@media (min-width: 1101px) {
+  .app-shell.v034-game-shell.first-screen-composition .resource-tile {
+    align-content: center;
+    column-gap: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 15px 12px 9px;
+    justify-items: center;
+    overflow: hidden;
+    padding: 3px 3px 2px;
+    row-gap: 1px;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .resource-icon {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    transform: scale(0.62);
+    transform-origin: center;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .resource-tile span {
+    display: none;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .resource-tile strong {
+    font-size: 0.56rem;
+    font-variant-numeric: tabular-nums;
+    grid-column: 1;
+    grid-row: 2;
+    line-height: 1;
+    max-width: 100%;
+    overflow: hidden;
+    overflow-wrap: normal;
+    text-align: center;
+    text-overflow: clip;
+    white-space: nowrap;
+    word-break: normal;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .resource-delta {
+    display: block;
+    font-size: 0.46rem;
+    font-variant-numeric: tabular-nums;
+    grid-column: 1;
+    grid-row: 3;
+    line-height: 1;
+    margin-top: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: clip;
+    white-space: nowrap;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .resource-delta.neutral {
+    font-size: 0;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .resource-delta.neutral::before {
+    content: "·";
+    font-size: 0.52rem;
+    line-height: 1;
   }
 }
 

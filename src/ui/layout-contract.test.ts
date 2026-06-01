@@ -453,6 +453,17 @@ describe("v0.13.3 compact game shell layout", () => {
     );
   });
 
+  it("v0.97 keeps desktop resource-HUD pixel icons and deltas visible", () => {
+    // 자원 아이콘/델타 숨김은 좁은 뷰포트(≤1100px)로 한정된다 — 데스크톱은 픽셀 아이콘+델타 유지.
+    expect(appCss).toMatch(
+      /@media\s*\(max-width:\s*1100px\)[\s\S]*?\.first-screen-composition\b[\s\S]*?\.resource-icon[\s\S]*?display:\s*none/s,
+    );
+    // 데스크톱(>1100px) 자원 타일을 아이콘+값+델타가 들어가도록 콤팩트 재배치하는 규칙이 존재한다.
+    expect(appCss).toMatch(
+      /@media\s*\(min-width:\s*1101px\)[\s\S]*?\.first-screen-composition\b[\s\S]*?\.resource-tile/s,
+    );
+  });
+
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);
