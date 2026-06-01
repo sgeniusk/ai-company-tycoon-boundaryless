@@ -1033,6 +1033,7 @@ export function GameStage({
                   title={`${actor.name} · ${agentType?.role ?? "창업자"} · ${actor.activity}`}
                   type="button"
                 >
+                  <i aria-hidden="true" className="office-actor-bustle-shadow" />
                   <b>{actor.name.slice(0, 3)}</b>
                   <small className="actor-thought">{actor.assignmentLabel}</small>
                   <span
@@ -1041,6 +1042,7 @@ export function GameStage({
                     style={getOfficeActorReactionIconStyle(actor, index)}
                   />
                   <i aria-hidden="true" className="office-actor-work-puff" />
+                  <i aria-hidden="true" className="office-actor-motion-tick" />
                 </button>
               );
             })}

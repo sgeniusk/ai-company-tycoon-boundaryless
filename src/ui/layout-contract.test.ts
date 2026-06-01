@@ -743,6 +743,18 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.office-actor-work-puff::after\s*{/s);
   });
 
+  it("v0.89 gives office actors comic bustle marks under their feet", () => {
+    expect(gameChrome).toContain("office-actor-bustle-shadow");
+    expect(gameChrome).toContain("office-actor-motion-tick");
+    expect(appCss).toMatch(/\.office-actor-bustle-shadow\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.actor-state-working\s+\.office-actor-bustle-shadow\s*{[^}]*animation:\s*office-actor-bustle-shadow/s);
+    expect(appCss).toMatch(/\.office-actor-motion-tick\s*{[^}]*animation:\s*office-actor-motion-tick/s);
+    expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\.sprite-sheet-frame\s+\.office-actor-bustle-shadow\s*{[^}]*bottom:/s);
+    expect(appCss).toMatch(/@keyframes\s+office-actor-bustle-shadow/s);
+    expect(appCss).toMatch(/@keyframes\s+office-actor-motion-tick/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-actor-bustle-shadow/s);
+  });
+
   it("adds small office workbeat signals so the scene reads as an active pixel sim", () => {
     expect(gameChrome).toContain("OfficeWorkBeatLayer");
     expect(gameChrome).toContain("officeWorkBeatNodes");

@@ -2072,6 +2072,40 @@ p {
   left: 6px;
 }
 
+.office-actor-bustle-shadow {
+  background: rgba(61, 51, 35, 0.24);
+  border: 2px solid rgba(61, 51, 35, 0.34);
+  bottom: -5px;
+  box-shadow: 9px 0 0 -3px rgba(61, 51, 35, 0.2), -8px 1px 0 -3px rgba(61, 51, 35, 0.18);
+  height: 6px;
+  image-rendering: pixelated;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-50%);
+  width: 28px;
+  z-index: 0;
+}
+
+.staff-sprite.pixel-actor.actor-state-working .office-actor-bustle-shadow {
+  animation: office-actor-bustle-shadow 860ms steps(2) infinite;
+}
+
+.staff-sprite.pixel-actor.actor-state-resting .office-actor-bustle-shadow {
+  opacity: 0.48;
+  width: 24px;
+}
+
+.staff-sprite.pixel-actor.actor-state-warning .office-actor-bustle-shadow {
+  animation: office-actor-bustle-shadow 940ms steps(2) infinite;
+  background: rgba(214, 72, 56, 0.22);
+}
+
+.staff-sprite.pixel-actor.sprite-sheet-frame .office-actor-bustle-shadow {
+  bottom: 4px;
+  width: 34px;
+}
+
 .staff-sprite.pixel-actor:hover,
 .staff-sprite.pixel-actor:focus-visible,
 .staff-sprite.pixel-actor.selected {
@@ -2235,6 +2269,36 @@ p {
 
 .staff-sprite.pixel-actor.actor-state-working .office-actor-work-puff::after {
   animation: office-actor-work-spark 940ms steps(2) infinite;
+}
+
+.office-actor-motion-tick {
+  animation: office-actor-motion-tick 860ms steps(3) infinite;
+  background: #f2cf7f;
+  border: 2px solid var(--line);
+  bottom: 4px;
+  box-shadow: 7px -2px 0 -2px #f2cf7f, 7px -2px 0 0 var(--line);
+  height: 4px;
+  image-rendering: pixelated;
+  left: 1px;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 4px;
+  z-index: 3;
+}
+
+.staff-sprite.pixel-actor.actor-state-resting .office-actor-motion-tick {
+  display: none;
+}
+
+.staff-sprite.pixel-actor.actor-state-warning .office-actor-motion-tick {
+  background: #df6b55;
+  box-shadow: 7px -2px 0 -2px #df6b55, 7px -2px 0 0 var(--line);
+}
+
+.staff-sprite.pixel-actor.sprite-sheet-frame .office-actor-motion-tick {
+  bottom: 13px;
+  left: 8px;
 }
 
 .office-actor-focus-panel {
@@ -2443,6 +2507,33 @@ p {
   45% {
     opacity: 1;
     transform: translate(4px, -2px) scale(1);
+  }
+}
+
+@keyframes office-actor-bustle-shadow {
+  0%,
+  100% {
+    opacity: 0.48;
+    transform: translateX(-50%) scaleX(0.82);
+  }
+  50% {
+    opacity: 0.82;
+    transform: translateX(-50%) scaleX(1.12);
+  }
+}
+
+@keyframes office-actor-motion-tick {
+  0% {
+    opacity: 0;
+    transform: translate(0, 1px);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(4px, -1px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(8px, -3px);
   }
 }
 
@@ -11431,7 +11522,9 @@ p {
   .operation-command-signal,
   .staff-sprite.pixel-actor,
   .office-actor-reaction-sprite,
-  .office-actor-work-puff {
+  .office-actor-work-puff,
+  .office-actor-bustle-shadow,
+  .office-actor-motion-tick {
     animation: none;
     transition: none;
   }
