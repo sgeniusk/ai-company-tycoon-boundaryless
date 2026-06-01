@@ -772,6 +772,23 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-workbeat-node/s);
   });
 
+  it("v0.90 links office actors to active work objects with pixel task routes", () => {
+    expect(gameChrome).toContain("OfficeTaskLinkLayer");
+    expect(gameChrome).toContain("createOfficeTaskLinks");
+    expect(gameChrome).toContain("office-task-link-layer");
+    expect(gameChrome).toContain("office-task-link");
+    expect(gameChrome).toContain("actors={visibleOfficeActors}");
+    expect(gameChrome).toContain("objects={officeScenePlan.objects}");
+    expect(appCss).toMatch(/\.office-task-link-layer\s*{[^}]*pointer-events:\s*none/s);
+    expect(appCss).toMatch(/\.office-task-link\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.office-task-link\s*{[^}]*animation:\s*office-task-link-pulse/s);
+    expect(appCss).toMatch(/\.office-task-link::after\s*{[^}]*animation:\s*office-task-link-packet/s);
+    expect(appCss).toMatch(/@keyframes\s+office-task-link-pulse/s);
+    expect(appCss).toMatch(/@keyframes\s+office-task-link-packet/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.office-task-link:nth-child\(n \+ 5\)\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-task-link/s);
+  });
+
   it("gives active office objects their own pixel status lights and busy loops", () => {
     expect(gameChrome).toContain("office-object-activity-light");
     expect(gameChrome).toContain("office-object-status-dot");

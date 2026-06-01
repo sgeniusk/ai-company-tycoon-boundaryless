@@ -99,6 +99,7 @@ import type {
   OfficeObjectAssetDefinition,
   OfficeEventReactionStatus,
   OfficeSceneActorStatus,
+  OfficeSceneObjectStatus,
   OperationsCommandPlan,
   ReleaseGrowthPath,
   SpriteAnimationDefinition,
@@ -1004,6 +1005,7 @@ export function GameStage({
           <OperationCommandPanel plan={operationsPlan} onOpenMenu={setActiveMenu} />
           <OfficeEventReactionLayer reactions={officeScenePlan.eventReactions} />
           <OfficeWorkBeatLayer activeObjectCount={officeScenePlan.activeObjectCount} />
+          <OfficeTaskLinkLayer actors={visibleOfficeActors} objects={officeScenePlan.objects} />
           <div className="office-actor-layer" aria-label="사무실 액터">
             {visibleOfficeActors.map((actor, index) => {
               const agentType = actor.agentTypeId ? agentTypes.find((type) => type.id === actor.agentTypeId) : undefined;
@@ -1797,6 +1799,86 @@ function OfficeWorkBeatLayer({ activeObjectCount }: { activeObjectCount: number 
         >
           {node.label}
         </span>
+      ))}
+    </div>
+  );
+}
+
+type OfficeTaskLinkTone = "compute" | "team" | "launch" | "care" | "alert" | "default";
+
+interface OfficeTaskLink {
+  id: string;
+  label: string;
+  tone: OfficeTaskLinkTone;
+  x: number;
+  y: number;
+  length: number;
+  angle: number;
+  delayMs: number;
+}
+
+function getOfficeTaskLinkTone(actor: OfficeSceneActorStatus, object: OfficeSceneObjectStatus): OfficeTaskLinkTone {
+  if (object.kind === "server" || object.kind === "chip" || object.kind === "screen") return "compute";
+  if (actor.state === "warning") return "alert";
+  if (object.kind === "hiring" || object.kind === "desk") return "team";
+  if (object.kind === "launch" || object.kind === "showroom") return "launch";
+  if (object.kind === "lounge") return "care";
+  return "default";
+}
+
+function createOfficeTaskLinks(actors: OfficeSceneActorStatus[], objects: OfficeSceneObjectStatus[]): OfficeTaskLink[] {
+  const workObjects = objects.filter((object) => object.active && object.kind !== "route");
+  if (workObjects.length === 0) return [];
+
+  return actors
+    .filter((actor) => actor.state !== "resting")
+    .slice(0, 6)
+    .map((actor, index) => {
+      const object = workObjects[(index + (actor.kind === "robot" ? 1 : 0)) % workObjects.length];
+      const dx = object.x - actor.x;
+      const dy = object.y - actor.y;
+      const length = Math.max(8, Math.min(42, Math.hypot(dx, dy)));
+
+      return {
+        id: `${actor.id}-${object.id}`,
+        label: `${actor.assignmentLabel} -> ${object.activity}`,
+        tone: getOfficeTaskLinkTone(actor, object),
+        x: actor.x,
+        y: actor.y,
+        length,
+        angle: Math.atan2(dy, dx) * (180 / Math.PI),
+        delayMs: (index % 4) * 180,
+      };
+    });
+}
+
+function OfficeTaskLinkLayer({
+  actors,
+  objects,
+}: {
+  actors: OfficeSceneActorStatus[];
+  objects: OfficeSceneObjectStatus[];
+}) {
+  const links = createOfficeTaskLinks(actors, objects);
+  if (links.length === 0) return null;
+
+  return (
+    <div className="office-task-link-layer" aria-hidden="true">
+      {links.map((link) => (
+        <span
+          className={`office-task-link task-link-${link.tone}`}
+          key={link.id}
+          style={
+            {
+              "--task-link-angle": `${link.angle}deg`,
+              "--task-link-delay": `${link.delayMs}ms`,
+              "--task-link-length": `${link.length}%`,
+              "--task-link-x": `${link.x}%`,
+              "--task-link-y": `${link.y}%`,
+            } as CSSProperties
+          }
+          title={link.label}
+        />
       ))}
     </div>
   );

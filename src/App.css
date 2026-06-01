@@ -1192,6 +1192,67 @@ p {
   color: #55386d;
 }
 
+.office-task-link-layer {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.office-task-link {
+  animation: office-task-link-pulse 1440ms steps(2) infinite;
+  animation-delay: var(--task-link-delay, 0ms);
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 253, 245, 0.92) 0 8px, transparent 8px 13px),
+    var(--task-link-color, #73e08c);
+  border: 1px solid rgba(61, 51, 35, 0.44);
+  box-shadow: 0 1px 0 rgba(61, 51, 35, 0.24);
+  display: block;
+  height: 5px;
+  image-rendering: pixelated;
+  left: var(--task-link-x, 50%);
+  opacity: 0.64;
+  position: absolute;
+  top: var(--task-link-y, 50%);
+  transform: rotate(var(--task-link-angle, 0deg));
+  transform-origin: left center;
+  width: var(--task-link-length, 20%);
+}
+
+.office-task-link::after {
+  animation: office-task-link-packet 1440ms steps(4) infinite;
+  animation-delay: var(--task-link-delay, 0ms);
+  background: #fffdf5;
+  border: 2px solid var(--line);
+  content: "";
+  height: 7px;
+  left: 0;
+  position: absolute;
+  top: -3px;
+  width: 7px;
+}
+
+.office-task-link.task-link-compute {
+  --task-link-color: #9ee7ff;
+}
+
+.office-task-link.task-link-team {
+  --task-link-color: #f2cf7f;
+}
+
+.office-task-link.task-link-launch {
+  --task-link-color: #73e08c;
+}
+
+.office-task-link.task-link-care {
+  --task-link-color: #dff1df;
+}
+
+.office-task-link.task-link-alert {
+  --task-link-color: #df6b55;
+}
+
 .office-level-2 .office-floor {
   min-height: 212px;
 }
@@ -2579,6 +2640,32 @@ p {
   45% {
     opacity: 1;
     transform: translate(4px, -50%);
+  }
+}
+
+@keyframes office-task-link-pulse {
+  0%,
+  100% {
+    opacity: 0.38;
+    filter: brightness(0.92);
+  }
+  50% {
+    opacity: 0.78;
+    filter: brightness(1.14);
+  }
+}
+
+@keyframes office-task-link-packet {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  22% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 7px);
+    opacity: 0;
   }
 }
 
@@ -11524,7 +11611,9 @@ p {
   .office-actor-reaction-sprite,
   .office-actor-work-puff,
   .office-actor-bustle-shadow,
-  .office-actor-motion-tick {
+  .office-actor-motion-tick,
+  .office-task-link,
+  .office-task-link::after {
     animation: none;
     transition: none;
   }
@@ -12183,6 +12272,15 @@ p {
   }
 
   .office-workbeat-node:nth-child(n + 5) {
+    display: none;
+  }
+
+  .office-task-link {
+    height: 4px;
+    opacity: 0.5;
+  }
+
+  .office-task-link:nth-child(n + 5) {
     display: none;
   }
 
