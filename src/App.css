@@ -81,6 +81,123 @@ button:disabled {
   width: min(100%, 1366px);
 }
 
+.app-shell.v034-game-shell.first-screen-composition {
+  grid-template-rows: minmax(54px, auto) minmax(0, 1fr) minmax(58px, auto);
+}
+
+.app-shell.v034-game-shell.first-screen-composition .game-stage,
+.app-shell.v034-game-shell.first-screen-composition .office-scene.pixel-office-theater {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .top-bar,
+.app-shell.v034-game-shell.first-screen-composition .resource-strip,
+.app-shell.v034-game-shell.first-screen-composition .command-row,
+.app-shell.v034-game-shell.first-screen-composition .event-stack,
+.app-shell.v034-game-shell.first-screen-composition .menu-layout,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel,
+.app-shell.v034-game-shell.first-screen-composition .main-menu {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .menu-panel {
+  overflow: auto;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .resource-strip *,
+.app-shell.v034-game-shell.first-screen-composition .command-row *,
+.app-shell.v034-game-shell.first-screen-composition .event-stack *,
+.app-shell.v034-game-shell.first-screen-composition .menu-layout *,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel * {
+  min-width: 0;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .resource-strip span,
+.app-shell.v034-game-shell.first-screen-composition .resource-strip strong,
+.app-shell.v034-game-shell.first-screen-composition .resource-strip small,
+.app-shell.v034-game-shell.first-screen-composition .command-row p,
+.app-shell.v034-game-shell.first-screen-composition .command-row span,
+.app-shell.v034-game-shell.first-screen-composition .event-stack span,
+.app-shell.v034-game-shell.first-screen-composition .event-stack strong,
+.app-shell.v034-game-shell.first-screen-composition .event-stack small,
+.app-shell.v034-game-shell.first-screen-composition .event-stack p,
+.app-shell.v034-game-shell.first-screen-composition .event-stack h2,
+.app-shell.v034-game-shell.first-screen-composition .menu-layout button,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel span,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel strong,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel small,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel p,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel h2,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel h3,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel li,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel em,
+.app-shell.v034-game-shell.first-screen-composition .menu-panel code {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .resource-label,
+.app-shell.v034-game-shell.first-screen-composition .resource-value,
+.app-shell.v034-game-shell.first-screen-composition .resource-delta,
+.app-shell.v034-game-shell.first-screen-composition .command-row p,
+.app-shell.v034-game-shell.first-screen-composition .menu-group-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .resource-tile span,
+.app-shell.v034-game-shell.first-screen-composition .resource-icon,
+.app-shell.v034-game-shell.first-screen-composition .resource-delta,
+.app-shell.v034-game-shell.first-screen-composition .command-action span,
+.app-shell.v034-game-shell.first-screen-composition .hand-count,
+.app-shell.v034-game-shell.first-screen-composition .strategy-hand-card strong,
+.app-shell.v034-game-shell.first-screen-composition .strategy-hand-card small,
+.app-shell.v034-game-shell.first-screen-composition .command-row p {
+  display: none;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .resource-tile {
+  grid-template-columns: minmax(0, 1fr);
+  padding-inline: 4px;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .resource-tile strong {
+  font-size: 0.58rem;
+  grid-column: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .command-row {
+  grid-template-columns: minmax(42px, 0.36fr) minmax(0, 2.2fr) repeat(3, minmax(36px, 0.22fr));
+}
+
+.app-shell.v034-game-shell.first-screen-composition .command-action {
+  grid-template-columns: 24px;
+  justify-items: center;
+}
+
+.app-shell.v034-game-shell.first-screen-composition .event-stack.office-sightline-event-rail .event-choices strong,
+.app-shell.v034-game-shell.first-screen-composition .event-stack.office-sightline-event-rail .event-choice-summary {
+  white-space: normal;
+}
+
+@media (max-width: 1100px) {
+  .app-shell.v034-game-shell.first-screen-composition {
+    grid-template-rows: auto minmax(0, 1fr) auto auto minmax(180px, 34dvh);
+  }
+}
+
+@media (max-width: 700px) {
+  .app-shell.v034-game-shell.first-screen-composition {
+    grid-template-rows: minmax(78px, auto) minmax(250px, 1fr) auto minmax(74px, auto) minmax(150px, 24dvh);
+  }
+}
+
 .game-stage,
 .menu-layout,
 .resource-strip,

@@ -116,7 +116,7 @@ function App() {
   }, [gameState, shouldAutoSave]);
 
   return (
-    <main className="app-shell v034-game-shell">
+    <main className="app-shell v034-game-shell first-screen-composition">
       {offlineSettlement && (
         <section className="offline-modal" role="dialog" aria-label="오프라인 정산">
           <div>

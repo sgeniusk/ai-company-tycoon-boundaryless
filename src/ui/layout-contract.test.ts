@@ -427,6 +427,32 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.event-stack\.playfield-event-rail\.office-sightline-event-rail\s*{[^}]*max-height:\s*clamp\(64px,\s*11dvh,\s*92px\)/s);
   });
 
+  it("v0.96 composes the first screen as a protected game scene", () => {
+    // 마커: 셸이 첫 화면 구성 패스를 opt-in 한다.
+    expect(appSource).toContain("first-screen-composition");
+
+    // 구성 규칙이 존재하고 게임 셸에 scoped 되어 있다.
+    expect(appCss).toMatch(/\.app-shell\.v034-game-shell\.first-screen-composition\b/);
+
+    // 데스크톱에서 오피스 스테이지가 지배적 중앙 영역으로 유지된다
+    // (named grid area 보존, 오피스 행이 유연한 1fr, 메뉴는 사이드 컬럼).
+    expect(appCss).toMatch(
+      /\.app-shell\s*\{[\s\S]*?grid-template-areas:[\s\S]*?"stage stage menu"[\s\S]*?"resources commands menu"/s,
+    );
+    expect(appCss).toMatch(
+      /\.app-shell\s*\{[\s\S]*?grid-template-rows:\s*minmax\(54px,\s*auto\)\s+minmax\(0,\s*1fr\)\s+minmax\(58px,\s*auto\)/s,
+    );
+
+    // 이벤트 레일이 오피스를 오버레이(stage 영역 공유)한다 — 오피스 행을 빼앗지 않는다.
+    expect(appCss).toMatch(/\.event-stack\s*\{[^}]*grid-area:\s*stage/s);
+
+    // 첫 화면 혼잡 가드: 4개 크롬 표면(resource/command/event/menu)의 텍스트가
+    // 첫 화면에서 넘치지 않도록 clip/wrap 한다. (Codex가 실제 구현한 selector·속성으로 확정.)
+    expect(appCss).toMatch(
+      /\.app-shell\.v034-game-shell\.first-screen-composition\b[\s\S]*?(min-width:\s*0|overflow:\s*hidden|overflow:\s*auto|text-overflow:\s*ellipsis|overflow-wrap)/s,
+    );
+  });
+
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);
