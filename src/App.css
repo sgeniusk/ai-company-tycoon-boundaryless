@@ -2840,6 +2840,27 @@ p {
   }
 }
 
+@keyframes command-console-light-blip {
+  0%,
+  100% {
+    filter: brightness(0.86);
+    opacity: 0.62;
+  }
+  50% {
+    filter: brightness(1.22);
+    opacity: 1;
+  }
+}
+
+@keyframes command-turn-meter-scan {
+  0% {
+    transform: translateX(-48%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
 @keyframes office-control-light-blink {
   0%,
   100% {
@@ -5791,6 +5812,93 @@ p {
   padding: 7px;
 }
 
+.command-row.pixel-command-console {
+  background:
+    linear-gradient(180deg, rgba(255, 250, 236, 0.98), rgba(238, 211, 144, 0.96) 56%, rgba(114, 95, 54, 0.42)),
+    var(--panel);
+  isolation: isolate;
+  position: relative;
+}
+
+.command-row.pixel-command-console::before {
+  border: 2px solid rgba(61, 51, 35, 0.42);
+  bottom: 4px;
+  content: "";
+  left: 4px;
+  pointer-events: none;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  z-index: 0;
+}
+
+.command-row.pixel-command-console > * {
+  position: relative;
+  z-index: 1;
+}
+
+.command-console-lights {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(3, 7px);
+  image-rendering: pixelated;
+  pointer-events: none;
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  z-index: 2;
+}
+
+.command-console-lights i,
+.command-console-lights b,
+.command-console-lights em {
+  background: var(--green);
+  border: 2px solid var(--line);
+  display: block;
+  height: 7px;
+  width: 7px;
+}
+
+.command-console-lights i {
+  animation: command-console-light-blip 980ms steps(2) infinite;
+}
+
+.command-console-lights b {
+  background: var(--yellow);
+  opacity: 0.76;
+}
+
+.command-console-lights em {
+  background: var(--blue);
+  opacity: 0.58;
+}
+
+.command-turn-meter {
+  background: rgba(32, 52, 45, 0.86);
+  border: 2px solid var(--line);
+  bottom: 4px;
+  display: block;
+  height: 5px;
+  image-rendering: pixelated;
+  left: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-50%);
+  width: min(220px, 34%);
+  z-index: 2;
+}
+
+.command-turn-meter i {
+  animation: command-turn-meter-scan 1420ms steps(5) infinite;
+  background:
+    linear-gradient(90deg, var(--green) 0 44%, var(--yellow) 44% 70%, var(--blue) 70% 100%);
+  display: block;
+  height: 100%;
+  transform: translateX(-45%);
+  width: 46%;
+}
+
 .command-row p {
   color: #6a5b42;
   font-size: 0.72rem;
@@ -5862,6 +5970,22 @@ p {
   color: #3d3323;
   flex: 1 1 52px;
   min-width: 52px;
+  padding-left: 15px;
+  position: relative;
+}
+
+.strategy-card-contact {
+  background: var(--green);
+  border: 1px solid var(--line);
+  box-shadow: 0 9px 0 0 var(--line), 0 9px 0 -1px var(--yellow);
+  display: block;
+  height: 5px;
+  image-rendering: pixelated;
+  left: 5px;
+  pointer-events: none;
+  position: absolute;
+  top: 6px;
+  width: 5px;
 }
 
 .strategy-hand-card strong,
@@ -11788,6 +11912,8 @@ p {
   .office-object-packet-spark,
   .event-panel-signal i,
   .event-stack.playfield-event-rail .event-panel::after,
+  .command-console-lights i,
+  .command-turn-meter i,
   .office-action-slot-light,
   .office-event-reaction,
   .office-workbeat-node,
@@ -12107,6 +12233,15 @@ p {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
+  .command-console-lights {
+    display: none;
+  }
+
+  .command-turn-meter {
+    bottom: 3px;
+    width: min(168px, 54%);
+  }
+
   .command-row .primary-action {
     grid-column: 1 / -1;
   }
@@ -12173,6 +12308,10 @@ p {
   .strategy-hand-card {
     min-width: 0;
     padding: 4px 3px;
+  }
+
+  .strategy-card-contact {
+    display: none;
   }
 
   .hand-count {

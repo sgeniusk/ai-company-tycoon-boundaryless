@@ -2955,7 +2955,15 @@ export function CommandRow({
   const activeProducts = getAvailableProductDefinitions(gameState).filter((product) => gameState.activeProducts.includes(product.id));
 
   return (
-    <section className="command-row" aria-label="주요 명령">
+    <section className="command-row pixel-command-console" aria-label="주요 명령">
+      <span aria-hidden="true" className="command-console-lights">
+        <i />
+        <b />
+        <em />
+      </span>
+      <span aria-hidden="true" className="command-turn-meter">
+        <i />
+      </span>
       <button
         aria-label="다음 달 진행"
         className="primary-action command-action"
@@ -2998,6 +3006,7 @@ function StrategyHand({ gameState }: { gameState: GameState }) {
 
           return (
             <span className={`strategy-hand-card rarity-${card?.rarity ?? "starter"}`} key={cardId} title={card?.description ?? cardId}>
+              <i aria-hidden="true" className="strategy-card-contact" />
               <strong>{card?.name ?? cardId}</strong>
               <small>{primaryCost ? `${resources[primaryCost[0]]?.name ?? primaryCost[0]} ${primaryCost[1]}` : "비용 없음"}</small>
             </span>
@@ -3005,6 +3014,7 @@ function StrategyHand({ gameState }: { gameState: GameState }) {
         })
       ) : (
         <span className="strategy-hand-card empty">
+          <i aria-hidden="true" className="strategy-card-contact" />
           <strong>전략 대기</strong>
           <small>다음 달에 손패 갱신</small>
         </span>

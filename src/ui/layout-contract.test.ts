@@ -438,6 +438,24 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.command-row\s+p\s*{[^}]*white-space:\s*nowrap/s);
   });
 
+  it("v0.93 turns the bottom command row into a pixel control console", () => {
+    expect(gameChrome).toContain("pixel-command-console");
+    expect(gameChrome).toContain("command-console-lights");
+    expect(gameChrome).toContain("command-turn-meter");
+    expect(gameChrome).toContain("strategy-card-contact");
+    expect(appCss).toMatch(/\.command-row\.pixel-command-console\s*{[^}]*position:\s*relative/s);
+    expect(appCss).toMatch(/\.command-row\.pixel-command-console::before\s*{[^}]*content:\s*""/s);
+    expect(appCss).toMatch(/\.command-console-lights\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.command-console-lights\s+i\s*{[^}]*animation:\s*command-console-light-blip/s);
+    expect(appCss).toMatch(/\.command-turn-meter\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.command-turn-meter\s+i\s*{[^}]*animation:\s*command-turn-meter-scan/s);
+    expect(appCss).toMatch(/\.strategy-card-contact\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/@keyframes\s+command-console-light-blip/s);
+    expect(appCss).toMatch(/@keyframes\s+command-turn-meter-scan/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.command-console-lights\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.command-turn-meter\s+i/s);
+  });
+
   it("fits the mobile strategy hand inside the screenshot viewport", () => {
     expect(appCss).toMatch(
       /@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.strategy-hand\s*{[^}]*display:\s*grid[^}]*grid-template-columns:\s*minmax\(58px,\s*0\.72fr\)\s+repeat\(3,\s*minmax\(0,\s*1fr\)\)[^}]*overflow:\s*hidden/s,
