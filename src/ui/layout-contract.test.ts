@@ -644,6 +644,19 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.main-menu button span\s*{[^}]*display:\s*none/s);
   });
 
+  it("v0.88 skins the management menu as a pixel command cabinet", () => {
+    expect(appSource).toContain('className="menu-layout pixel-menu-cabinet"');
+    expect(appSource).toContain('className="menu-panel pixel-menu-screen"');
+    expect(appCss).toMatch(/\.menu-layout\.pixel-menu-cabinet\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.menu-layout\.pixel-menu-cabinet::before\s*{[^}]*content:\s*""/s);
+    expect(appCss).toMatch(/\.menu-panel\.pixel-menu-screen\s*{[^}]*background:\s*linear-gradient/s);
+    expect(appCss).toMatch(/\.menu-panel\.pixel-menu-screen::before\s*{[^}]*repeating-linear-gradient/s);
+    expect(appCss).toMatch(/\.menu-panel\.pixel-menu-screen\s*>\s*\*\s*{[^}]*z-index:\s*1/s);
+    expect(appCss).toMatch(/\.main-menu button::after\s*{[^}]*content:\s*""/s);
+    expect(appCss).toMatch(/\.main-menu button\.active::after\s*{[^}]*background:\s*#73e08c/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-layout\.pixel-menu-cabinet::before\s*{[^}]*display:\s*none/s);
+  });
+
   it("puts quick state overlays inside the office playfield", () => {
     expect(gameChrome).toContain('className="office-hud"');
     expect(gameChrome).toContain('className="office-alert-strip"');

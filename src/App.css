@@ -5789,6 +5789,31 @@ p {
   padding: 6px;
 }
 
+.menu-layout.pixel-menu-cabinet {
+  background:
+    linear-gradient(180deg, rgba(255, 247, 223, 0.08), rgba(16, 28, 24, 0) 28px),
+    #20342d;
+  image-rendering: pixelated;
+  isolation: isolate;
+  position: relative;
+}
+
+.menu-layout.pixel-menu-cabinet::before {
+  background:
+    linear-gradient(90deg, #f2cf7f 0 18%, transparent 18% 24%, #73e08c 24% 36%, transparent 36% 44%, #f2cf7f 44% 58%, transparent 58% 66%, #df6b55 66% 72%, transparent 72% 100%),
+    #101c18;
+  border: 2px solid #0d1714;
+  box-shadow: 0 2px 0 rgba(255, 247, 223, 0.08);
+  content: "";
+  height: 5px;
+  left: 8px;
+  pointer-events: none;
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  z-index: 0;
+}
+
 .main-menu {
   background: #13261f;
   border: 2px solid #0d1714;
@@ -5834,14 +5859,34 @@ p {
   display: grid;
   gap: 4px 5px;
   grid-template-columns: auto minmax(0, 1fr);
+  image-rendering: pixelated;
   min-height: 46px;
+  overflow: hidden;
   padding: 5px 3px;
+  position: relative;
   text-align: left;
+}
+
+.main-menu button::after {
+  background: #9f6b3d;
+  border: 1px solid rgba(13, 23, 20, 0.72);
+  box-shadow: 0 0 0 1px rgba(255, 247, 223, 0.28);
+  content: "";
+  height: 5px;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 5px;
 }
 
 .main-menu button.active {
   background: var(--green);
   color: #fffdf5;
+}
+
+.main-menu button.active::after {
+  background: #73e08c;
+  box-shadow: 0 0 0 1px rgba(255, 247, 223, 0.62), 0 0 8px rgba(115, 224, 140, 0.55);
 }
 
 .main-menu button strong {
@@ -5883,6 +5928,35 @@ p {
   overflow: auto;
   padding: 6px;
   scrollbar-width: thin;
+}
+
+.menu-panel.pixel-menu-screen {
+  background:
+    linear-gradient(180deg, rgba(255, 253, 245, 0.95), rgba(239, 224, 184, 0.94)),
+    #fff7df;
+  box-shadow:
+    inset 0 0 0 3px rgba(255, 255, 255, 0.44),
+    inset 0 0 0 5px rgba(104, 77, 41, 0.08);
+  image-rendering: pixelated;
+  isolation: isolate;
+  position: relative;
+}
+
+.menu-panel.pixel-menu-screen::before {
+  background:
+    repeating-linear-gradient(0deg, rgba(61, 51, 35, 0.06) 0 1px, transparent 1px 8px),
+    linear-gradient(90deg, rgba(115, 224, 140, 0.08), transparent 34%, rgba(242, 207, 127, 0.09));
+  content: "";
+  inset: 0;
+  opacity: 0.62;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+
+.menu-panel.pixel-menu-screen > * {
+  position: relative;
+  z-index: 1;
 }
 
 .panel-grid {
@@ -11664,6 +11738,18 @@ p {
     gap: 4px;
     overflow: visible;
     padding: 4px;
+  }
+
+  .menu-layout.pixel-menu-cabinet::before {
+    display: none;
+  }
+
+  .menu-panel.pixel-menu-screen {
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.36);
+  }
+
+  .menu-panel.pixel-menu-screen::before {
+    opacity: 0.38;
   }
 
   .primary-menu-cluster,

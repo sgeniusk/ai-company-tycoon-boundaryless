@@ -157,9 +157,9 @@ function App() {
         />
       </div>
       <CommandRow gameState={gameState} setGameState={setGameState} onSave={handleSave} onLoad={handleLoad} />
-      <section className="menu-layout" aria-label="경영 메뉴">
+      <section className="menu-layout pixel-menu-cabinet" aria-label="경영 메뉴">
         <MainMenu activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-        <div className="menu-panel">{renderMenuContent(activeMenu, gameState, setGameState, locale, setActiveMenu)}</div>
+        <div className="menu-panel pixel-menu-screen">{renderMenuContent(activeMenu, gameState, setGameState, locale, setActiveMenu)}</div>
       </section>
       {tutorialGuide && !offlineSettlement && !worldRevealVisible && (
         <section className="helper-tutorial" role="dialog" aria-live="polite" aria-label="도우미 튜토리얼">
