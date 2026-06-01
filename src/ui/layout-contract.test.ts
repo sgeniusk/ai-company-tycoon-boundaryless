@@ -805,6 +805,19 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-object-activity-light/s);
   });
 
+  it("v0.91 gives active office objects production meters and packet sparks", () => {
+    expect(gameChrome).toContain("office-object-production-meter");
+    expect(gameChrome).toContain("office-object-packet-spark");
+    expect(appCss).toMatch(/\.office-object-production-meter\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.office-object\.pixel-office-object\.active\s+\.office-object-production-meter\s*{[^}]*animation:\s*office-object-production-meter/s);
+    expect(appCss).toMatch(/\.office-object-packet-spark\s*{[^}]*animation:\s*office-object-packet-spark/s);
+    expect(appCss).toMatch(/\.office-object\.pixel-office-object\.locked\s+\.office-object-production-meter/s);
+    expect(appCss).toMatch(/@keyframes\s+office-object-production-meter/s);
+    expect(appCss).toMatch(/@keyframes\s+office-object-packet-spark/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.office-object-packet-spark\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-object-production-meter/s);
+  });
+
   it("protects the playfield by narrowing the persistent console column", () => {
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*0\.94fr\)\s+minmax\(0,\s*1fr\)\s+clamp\(330px,\s*28vw,\s*390px\)/s);
     expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);

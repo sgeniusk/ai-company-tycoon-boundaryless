@@ -972,6 +972,8 @@ export function GameStage({
               >
                 <i aria-hidden="true" className="office-object-activity-light" />
                 <b aria-hidden="true" className="office-object-status-dot" />
+                <i aria-hidden="true" className="office-object-production-meter" />
+                <i aria-hidden="true" className="office-object-packet-spark" />
                 <small>{object.label}</small>
               </span>
             ))}
