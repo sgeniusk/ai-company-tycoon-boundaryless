@@ -61,6 +61,8 @@ Acceptance:
 
 ## v0.98 — Interaction Finish Pass
 
+> Status: CLOSED 2026-06-02. #1 overlay dismiss affordance + drain-dismiss reliability smoke (`c2e1503`); #2 Escape-to-dismiss + initial focus (`f2b503e`). Gate 53/647. Evidence `reports/qa/v0_98_block1_overlay_affordance_run.md`, `reports/qa/v0_98_block2_keyboard_dismiss_run.md`. Optional follow-up: focus restoration on close.
+
 Goal: make important flows feel intentionally game-like.
 
 Planned work:
@@ -75,6 +77,8 @@ Acceptance:
 - Regression tests cover known stuck-overlay bugs.
 
 ## v0.99 — Performance and Build Readiness
+
+> Status: CLOSED 2026-06-02 (`ab4e8cc`). game-logic manualChunk dropped the entry chunk 505->202 kB (no >500 kB warning); dist verified via preview; `reports/qa/SMOKE_INDEX.md` added. Gate 53/648.
 
 Goal: prepare for an RC build without visual regressions.
 

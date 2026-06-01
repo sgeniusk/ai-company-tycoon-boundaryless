@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-06-02",
-  "current_feature_id": "v0.98-alpha-interaction-finish-pass",
+  "current_feature_id": "v1.0-beta-rc",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -404,7 +404,7 @@
       "id": "v0.98-alpha-interaction-finish-pass",
       "name": "Interaction finish pass",
       "description": "Make important flows feel intentionally game-like: re-check modals/confirmations (milestone/reward/world-reveal), ensure every dismiss/confirm button closes its surface and does not trap input, add focused smoke checks for sensitive overlays, and improve button affordance/state feedback without adding tutorials.",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "P1",
       "dependencies": [
         "v0.97-alpha-pixel-art-consistency-sweep"
@@ -415,8 +415,50 @@
         "Regression tests cover known stuck-overlay bugs; a focused browser smoke exercises the sensitive overlays.",
         "harness:gate passes; visual-only / additive (simulation.ts/types.ts/data unchanged unless a real overlay bug requires a minimal fix)."
       ],
+      "evidence": [
+        "2026-06-02 #1 (c2e1503): overlay dismiss affordance (hover/active/focus-visible on the 3 dismiss buttons, reduced-motion guarded) + scripts/qa/check-v098-overlays.mjs drain-dismiss reliability smoke; gate 53/646. reports/qa/v0_98_block1_overlay_affordance_run.md.",
+        "2026-06-02 #2 (f2b503e): Escape-to-dismiss + initial focus on the dismiss button for BigEventModal/PayoffCelebrationModal/WorldRevealModal (hooks moved above BigEventModal early returns, additive); gate 53/647, build clean. Live verify: ESC drains overlays + initial focus lands. reports/qa/v0_98_block2_keyboard_dismiss_run.md."
+      ],
+      "next_step": "Interaction acceptance met (dismissible + keyboard + regression smoke). Optional follow-up: focus restoration on close."
+    },
+    {
+      "id": "v0.99-alpha-performance-build-readiness",
+      "name": "Performance and build readiness",
+      "description": "Prepare for an RC build without visual regressions: address or document the persistent Vite >500 kB chunk warning (manual chunking only if it does not destabilize routing/data loading), and make the QA smokes reproducible from tracked repo files (a compact smoke index instead of one-off /tmp scripts).",
+      "status": "completed",
+      "priority": "P1",
+      "dependencies": [
+        "v0.98-alpha-interaction-finish-pass"
+      ],
+      "definition_of_done": [
+        "Build still passes; either the chunk warning is reduced via safe manual chunking or a clear report explains why it is deferred.",
+        "QA smoke scripts are reproducible from tracked repo files (npm scripts / a smoke index).",
+        "harness:gate passes; no visual regression (first-screen + overlay smokes stay green)."
+      ],
+      "evidence": [
+        "2026-06-02 (ab4e8cc): vite.config manualChunks gained a game-logic chunk (src/game/*); the entry chunk dropped 505 kB -> 202 kB, no chunk exceeds 500 kB, the Vite >500 kB warning is gone. src/ui/build-config.test.ts locks it (RED->GREEN).",
+        "Production dist verified via preview: check-v096-first-screen (6 actors, overflow 0, 0 errors) + check-v098-overlays (3/3) pass against the built bundle.",
+        "reports/qa/SMOKE_INDEX.md added — tracked smoke index so future agents stop using one-off /tmp scripts. Gate 53/648."
+      ],
+      "next_step": "RC freeze: clean main pushed + deployed, desktop/mobile smoke screenshots, short release report with known issues."
+    },
+    {
+      "id": "v1.0-beta-rc",
+      "name": "v1.0 beta / RC freeze",
+      "description": "Freeze a coherent playable build for user review: clean main pushed and deployed, harness gate green, desktop/mobile smoke screenshots stored, and a short release report with known issues and next DLC/content candidates. Parallel calendar-bound track: real-human blind playtest + final source art (resolution up).",
+      "status": "in_progress",
+      "priority": "P1",
+      "dependencies": [
+        "v0.99-alpha-performance-build-readiness"
+      ],
+      "definition_of_done": [
+        "Clean main, pushed and deployed.",
+        "npm run harness:gate < /dev/null PASS.",
+        "Desktop and mobile smoke screenshots under reports/qa/screenshots/.",
+        "Short release report with known issues and next DLC/content candidates."
+      ],
       "evidence": [],
-      "next_step": "Write reports/codex-handoff/v0_98_*.md; audit the overlay dismiss paths (App.tsx modals + *Modal.tsx components); TDD-first."
+      "next_step": "USER CHECKPOINT: RC freeze + deploy + final-art/real-human-playtest are user-gated. Awaiting direction (deploy now? request final art? more polish?)."
     }
   ]
 }

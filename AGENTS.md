@@ -29,8 +29,8 @@ Keep startup context lean:
 
 ## Current Source Of Truth
 
-- Current version: `v0.97-alpha` (closed at `ba5b0b0`); entering `v0.98-alpha`
-- Current feature: `v0.98-alpha-interaction-finish-pass` (in progress) — overlay dismiss/confirm reliability (milestone/reward/world-reveal), focused overlay smoke, button affordance without tutorials. v0.96 first-screen composition + v0.97 pixel sweep (HUD richness + radius/motion tokens) shipped (history in git + reports/). Baseline 53 files / 645 tests. Active roadmap: reports/v0_96_plus_commercial_polish_roadmap.md.
+- Current version: `v0.99-alpha` (closed at `ab4e8cc`); RC prep `v1.0-beta-rc`
+- Current feature: `v1.0-beta-rc` (in progress, USER-GATED) — freeze a playable build for user review; deploy + final source art + real-human playtest are user-gated. Commercial polish v0.96 (first-screen) + v0.97 (pixel HUD/tokens) + v0.98 (interactions) + v0.99 (build readiness) shipped (history in git + reports/). Baseline 53 files / 648 tests. Active roadmap: reports/v0_96_plus_commercial_polish_roadmap.md.
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`
