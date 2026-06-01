@@ -101,6 +101,7 @@ export function PayoffCelebrationModal({
   const scenarioSeedId = isPayoffJuiceScenario() ? activeIds[0] : isMilestonesScenario() ? achievementMoments[0]?.id : undefined;
   const previousActiveIdsRef = useRef<Set<string> | undefined>(undefined);
   const previousAchievementIdsRef = useRef<Set<string> | undefined>(undefined);
+  const dismissRef = useRef<HTMLButtonElement>(null);
   const [queue, setQueue] = useState<PayoffCelebrationQueueEntry[]>(() =>
     scenarioSeedId ? [{ id: scenarioSeedId, variant: scenario === "milestones" ? "achievement" : "discovery" }] : [],
   );
@@ -158,6 +159,21 @@ export function PayoffCelebrationModal({
 
   const currentEntry = queue[0];
   const moment = currentEntry ? momentById.get(currentEntry.id) : undefined;
+
+  useEffect(() => {
+    if (!moment) return;
+
+    dismissRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setQueue((current) => current.slice(1));
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [moment]);
+
   if (!moment) return null;
 
   const remaining = queue.length;
@@ -198,7 +214,7 @@ export function PayoffCelebrationModal({
             </span>
           ))}
         </div>
-        <button type="button" className="payoff-celebration-dismiss" onClick={() => setQueue((current) => current.slice(1))}>
+        <button ref={dismissRef} type="button" className="payoff-celebration-dismiss" onClick={() => setQueue((current) => current.slice(1))}>
           확인
         </button>
       </div>

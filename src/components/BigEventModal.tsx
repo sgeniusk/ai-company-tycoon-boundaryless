@@ -1,5 +1,5 @@
 // v0.58 #5 — annual_challenger / late_boss 진입 시 발동되는 대형 사건 팝업. pendingChallengerEntryIds 큐 head를 읽어 1개만 표시, dismiss 시 shift.
-import type { CSSProperties, Dispatch, SetStateAction } from "react";
+import { useEffect, useRef, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import { competitors } from "../game/data";
 import { dismissChallengerEntry } from "../game/simulation";
 import type { GameState } from "../game/types";
@@ -19,7 +19,24 @@ export function BigEventModal({
   setGameState: Dispatch<SetStateAction<GameState>>;
   locale: LocaleCode;
 }) {
+  const dismissRef = useRef<HTMLButtonElement>(null);
   const pendingId = gameState.pendingChallengerEntryIds[0];
+  const shown = !!pendingId;
+
+  useEffect(() => {
+    if (!shown) return;
+
+    dismissRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setGameState((current) => dismissChallengerEntry(current));
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [setGameState, shown]);
+
   if (!pendingId) return null;
 
   const definition = competitors.find((competitor) => competitor.id === pendingId);
@@ -68,6 +85,7 @@ export function BigEventModal({
         </dl>
         <button
           type="button"
+          ref={dismissRef}
           className="big-event-dismiss"
           onClick={() => setGameState((current) => dismissChallengerEntry(current))}
         >

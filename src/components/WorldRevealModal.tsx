@@ -99,6 +99,7 @@ export function WorldRevealModal({
   gameState: GameState;
   onVisibilityChange?: (visible: boolean) => void;
 }) {
+  const dismissRef = useRef<HTMLButtonElement>(null);
   const [dismissedSeeds, setDismissedSeeds] = useState<Set<string>>(() => new Set());
   const [revealedCount, setRevealedCount] = useState(1);
   const previousDiscoveredArchetypeIdsRef = useRef<string[] | undefined>(getScenarioPreviousArchetypeIds());
@@ -143,6 +144,24 @@ export function WorldRevealModal({
     onVisibilityChange?.(shouldShow);
     return () => onVisibilityChange?.(false);
   }, [onVisibilityChange, shouldShow]);
+
+  useEffect(() => {
+    if (!shouldShow) return;
+
+    dismissRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setDismissedSeeds((current) => {
+          const next = new Set(current);
+          next.add(selection.seed);
+          return next;
+        });
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selection.seed, shouldShow]);
 
   if (!shouldShow) return null;
 
@@ -227,6 +246,7 @@ export function WorldRevealModal({
           </div>
         )}
         <button
+          ref={dismissRef}
           className="world-reveal-dismiss"
           onClick={() =>
             setDismissedSeeds((current) => {

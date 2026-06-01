@@ -480,6 +480,13 @@ describe("v0.13.3 compact game shell layout", () => {
     }
   });
 
+  it("v0.98 lets keyboard Escape dismiss the sensitive overlays", () => {
+    for (const src of [bigEventModal, payoffCelebrationModal, worldRevealModal]) {
+      expect(src).toMatch(/addEventListener\(\s*["']keydown["']/);
+      expect(src).toMatch(/["']Escape["']/);
+    }
+  });
+
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(8,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.resource-strip\s*{[^}]*overflow:\s*hidden/s);
