@@ -45,6 +45,8 @@ Acceptance:
 
 ## v0.97 — Pixel-Art Consistency Sweep
 
+> Status: CLOSED 2026-06-02. #1 desktop resource-HUD redesign (`4d0978b`) + #2 pixel token unification radius/motion (`ba5b0b0`). Gate 53/645. Soft shadows were already pixel-hard (0/125 blurred); gradient flattening deferred as optional low-value follow-up. Evidence `reports/qa/v0_97_block1_resource_hud_run.md`, `reports/qa/v0_97_block2_pixel_tokens_run.md`.
+
 Goal: remove remaining generic web-app visual language.
 
 Planned work:

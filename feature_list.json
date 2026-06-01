@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-06-02",
-  "current_feature_id": "v0.97-alpha-pixel-art-consistency-sweep",
+  "current_feature_id": "v0.98-alpha-interaction-finish-pass",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -382,7 +382,7 @@
       "id": "v0.97-alpha-pixel-art-consistency-sweep",
       "name": "Pixel-art consistency sweep",
       "description": "Remove remaining generic web-app visual language (soft SaaS shadows, card-like panels, inconsistent radii, non-stepped animations) and tighten pixel visual tokens. Includes a desktop resource-HUD layout redesign so pixel resource icons and +/- deltas can return on desktop without overflow (carried from v0.96).",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "P1",
       "dependencies": [
         "v0.96-alpha-first-screen-composition"
@@ -393,8 +393,30 @@
         "Browser screenshots show coherent pixel materials desktop/mobile; reduced-motion covered.",
         "harness:gate passes; visual-only (simulation.ts/types.ts/data unchanged)."
       ],
+      "evidence": [
+        "2026-06-02 #1 (4d0978b): desktop resource-HUD redesign — pixel icons + deltas restored on desktop (>1100px) via a compact micro-tile, mobile compaction kept; live verify 8/8 icons+deltas visible, overflow 0; gate 53/644.",
+        "2026-06-02 #2 (ba5b0b0): pixel token unification — --pixel-radius (35 usages, circles/speech-bubbles/pills preserved) + --pixel-steps motion (19 usages, fades/reduced-motion kept smooth); gate 53/645. reports/qa/v0_97_block2_pixel_tokens_run.md.",
+        "Scope chosen by user (radius + stepped motion); soft shadows already pixel-hard; gradient flattening deferred as optional low-value follow-up."
+      ],
+      "next_step": "Optional follow-up: flatten the few card-like panel gradients. Next milestone: v0.98 interaction finish pass."
+    },
+    {
+      "id": "v0.98-alpha-interaction-finish-pass",
+      "name": "Interaction finish pass",
+      "description": "Make important flows feel intentionally game-like: re-check modals/confirmations (milestone/reward/world-reveal), ensure every dismiss/confirm button closes its surface and does not trap input, add focused smoke checks for sensitive overlays, and improve button affordance/state feedback without adding tutorials.",
+      "status": "in_progress",
+      "priority": "P1",
+      "dependencies": [
+        "v0.97-alpha-pixel-art-consistency-sweep"
+      ],
+      "definition_of_done": [
+        "Milestone/reward/world-reveal surfaces are reliably dismissible; no stuck-overlay input traps.",
+        "Keyboard/touch target behavior remains usable.",
+        "Regression tests cover known stuck-overlay bugs; a focused browser smoke exercises the sensitive overlays.",
+        "harness:gate passes; visual-only / additive (simulation.ts/types.ts/data unchanged unless a real overlay bug requires a minimal fix)."
+      ],
       "evidence": [],
-      "next_step": "Write reports/codex-handoff/v0_97_*.md; Codex implements CSS + unit tests while Claude runs the browser smoke; TDD-first with layout-contract RED/GREEN."
+      "next_step": "Write reports/codex-handoff/v0_98_*.md; audit the overlay dismiss paths (App.tsx modals + *Modal.tsx components); TDD-first."
     }
   ]
 }

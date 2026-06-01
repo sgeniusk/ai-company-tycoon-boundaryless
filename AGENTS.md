@@ -29,8 +29,8 @@ Keep startup context lean:
 
 ## Current Source Of Truth
 
-- Current version: `v0.96-alpha` (closed at `d11eb13`); entering `v0.97-alpha`
-- Current feature: `v0.97-alpha-pixel-art-consistency-sweep` (in progress) — pixel-token consistency + a desktop resource-HUD redesign so pixel icons/deltas return without overflow (carried from v0.96). Roguelike v0.63–v0.67 and commercial polish v0.68–v0.95 shipped (history in git + reports/). Baseline 53 files / 643 tests. Active roadmap: reports/v0_96_plus_commercial_polish_roadmap.md.
+- Current version: `v0.97-alpha` (closed at `ba5b0b0`); entering `v0.98-alpha`
+- Current feature: `v0.98-alpha-interaction-finish-pass` (in progress) — overlay dismiss/confirm reliability (milestone/reward/world-reveal), focused overlay smoke, button affordance without tutorials. v0.96 first-screen composition + v0.97 pixel sweep (HUD richness + radius/motion tokens) shipped (history in git + reports/). Baseline 53 files / 645 tests. Active roadmap: reports/v0_96_plus_commercial_polish_roadmap.md.
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`
