@@ -344,6 +344,23 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.rival-incident-banner\s*{[^}]*position:\s*absolute/s);
   });
 
+  it("skins office controls as toy-like pixel command consoles", () => {
+    expect(gameChrome).toContain("office-action-slot-icon");
+    expect(gameChrome).toContain("office-action-slot-light");
+    expect(gameChrome).toContain("operation-command-signal");
+    expect(gameChrome).toContain("operation-card-status-pip");
+    expect(appCss).toMatch(/\.office-action-slot\s*{[^}]*grid-template-columns:\s*18px\s+minmax\(0,\s*1fr\)\s+6px/s);
+    expect(appCss).toMatch(/\.office-action-slot-icon\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.office-action-slot-light\s*{[^}]*animation:\s*office-control-light-blink/s);
+    expect(appCss).toMatch(/\.operation-command-panel\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.operation-command-signal\s*{[^}]*animation:\s*operation-command-signal-scan/s);
+    expect(appCss).toMatch(/\.operation-command-card\s*{[^}]*grid-template-columns:\s*8px\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.operation-card-status-pip\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/@keyframes\s+office-control-light-blink/s);
+    expect(appCss).toMatch(/@keyframes\s+operation-command-signal-scan/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-action-slot-light/s);
+  });
+
   it("surfaces v0.56 rival and staff incidents as readable screen moments", () => {
     expect(gameChrome).toContain("incident-screen-moment");
     expect(gameChrome).toContain("staff-event-panel");

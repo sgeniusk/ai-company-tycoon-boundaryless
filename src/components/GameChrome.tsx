@@ -1809,6 +1809,7 @@ function OperationCommandPanel({
 }) {
   return (
     <div className={`operation-command-panel risk-${plan.riskLevel}`} aria-label="월간 운영 의제">
+      <i aria-hidden="true" className="operation-command-signal" />
       <div className="operation-command-header">
         <span>운영 의제</span>
         <strong>{plan.headline}</strong>
@@ -1817,6 +1818,7 @@ function OperationCommandPanel({
       <div className="operation-command-grid">
         {plan.focusCards.slice(0, 3).map((card) => (
           <button className={`operation-command-card severity-${card.severity}`} key={card.id} onClick={() => onOpenMenu(card.targetMenu)} type="button">
+            <i aria-hidden="true" className="operation-card-status-pip" />
             <strong>{card.title}</strong>
             <span>{card.actionLabel}</span>
           </button>
@@ -1916,8 +1918,10 @@ function OfficeActionSlots({
     <div className="office-action-slot-grid" aria-label="사무실 액션 슬롯">
       {slots.map((slot) => (
         <button className={`office-action-slot slot-${slot.id} tone-${slot.tone}`} key={slot.id} onClick={() => onOpenMenu(slot.menu)} type="button">
+          <CommercialUiIcon className="office-action-slot-icon" iconId={menuIconIds[slot.menu]} />
           <strong>{slot.label}</strong>
           <span>{slot.detail}</span>
+          <b aria-hidden="true" className="office-action-slot-light" />
         </button>
       ))}
     </div>
