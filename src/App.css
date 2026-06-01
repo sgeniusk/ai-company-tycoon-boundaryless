@@ -11,6 +11,8 @@
   --red: #b84c38;
   --mint: #dff1df;
   --shadow: 0 4px 0 #2f2a22;
+  --pixel-radius: 3px;
+  --pixel-steps: steps(6);
   --shell-width: 1366px;
   --shell-height: 768px;
   --mobile-shell-width: 390px;
@@ -41,13 +43,13 @@ body {
 
 button {
   border: 2px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   box-shadow: 0 3px 0 var(--line);
   cursor: pointer;
   font: inherit;
   min-height: 38px;
   padding: 0 12px;
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  transition: transform 120ms var(--pixel-steps), box-shadow 120ms var(--pixel-steps);
 }
 
 button:hover:not(:disabled) {
@@ -469,7 +471,7 @@ button:disabled {
 .top-market-suite .market-share-panel,
 .top-market-suite .rival-archetype-panel {
   border-color: rgba(255, 253, 245, 0.16);
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   box-shadow: inset 0 0 0 1px rgba(255, 253, 245, 0.04);
   margin: 0;
   min-height: 0;
@@ -547,7 +549,7 @@ p {
 .status-pill {
   background: var(--mint);
   border: 2px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   color: var(--green-dark);
   font-size: 0.68rem;
   font-weight: 900;
@@ -3399,7 +3401,7 @@ p {
 }
 
 .opening-fantasy-signal {
-  animation: opening-signal-enter 400ms ease-out both;
+  animation: opening-signal-enter 400ms var(--pixel-steps) both;
 }
 
 @keyframes opening-signal-enter {
@@ -4367,7 +4369,7 @@ p {
 .workforce-mix-badge {
   background: #e4f1ed;
   border: 1px solid #9fcbbd;
-  border-radius: 4px;
+  border-radius: var(--pixel-radius);
   color: #285946;
   flex: 0 0 auto;
   padding: 1px 4px;
@@ -4549,7 +4551,7 @@ p {
 }
 
 .release-spotlight {
-  animation: release-pop 900ms ease-out both;
+  animation: release-pop 900ms var(--pixel-steps) both;
   background: #1e2b24;
   border-color: #f2cf7f;
   color: #fff7df;
@@ -4650,7 +4652,7 @@ p {
 }
 
 .launch-impact-panel {
-  animation: launch-impact-enter 360ms ease-out both;
+  animation: launch-impact-enter 360ms var(--pixel-steps) both;
 }
 
 @keyframes launch-impact-enter {
@@ -4683,7 +4685,7 @@ p {
 }
 
 .launch-impact-badges span {
-  animation: launch-badge-pop 360ms ease-out both;
+  animation: launch-badge-pop 360ms var(--pixel-steps) both;
 }
 
 .launch-impact-badges span:nth-child(1) {
@@ -4902,7 +4904,7 @@ p {
 }
 
 .card-impact-arrow {
-  animation: card-impact-arrow-pulse 1400ms ease-in-out infinite;
+  animation: card-impact-arrow-pulse 1400ms var(--pixel-steps) infinite;
   color: #b8530f;
   font-size: 0.78rem;
   font-style: normal;
@@ -5386,7 +5388,7 @@ p {
 .campaign-aftermath-panel {
   background: #f7fbf4;
   border: 2px solid rgba(93, 137, 87, 0.28);
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 8px;
   padding: 10px;
@@ -5512,7 +5514,7 @@ p {
 
 .ending-target-result-panel {
   border: 2px solid rgba(93, 137, 87, 0.28);
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 8px;
   padding: 10px;
@@ -7737,7 +7739,7 @@ p {
 }
 
 .year-two-kickoff {
-  animation: year-two-kickoff-enter 420ms ease-out both;
+  animation: year-two-kickoff-enter 420ms var(--pixel-steps) both;
   background: #eaf6f7;
   border: 2px solid #66a9ad;
   color: #173f43;
@@ -7761,7 +7763,7 @@ p {
   align-items: center;
   background: #fffdf7;
   border: 1px solid #86bdc0;
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   display: flex;
   flex-wrap: wrap;
   gap: 4px 8px;
@@ -7778,7 +7780,7 @@ p {
 }
 
 .year-two-next-flow li.year-two-flow-arrow {
-  animation: card-impact-arrow-pulse 1400ms ease-in-out infinite;
+  animation: card-impact-arrow-pulse 1400ms var(--pixel-steps) infinite;
   color: #b8530f;
   font-size: 0.78rem;
   font-style: normal;
@@ -8834,7 +8836,7 @@ p {
 .rival-wave-list article {
   background: #f7ead0;
   border: 2px solid #d8c49b;
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 4px;
   min-height: 58px;
@@ -9647,7 +9649,7 @@ p {
 .upgrade-row {
   background: #fffdf7;
   border: 2px solid #d8c49b;
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 10px;
   padding: 12px;
@@ -9975,7 +9977,7 @@ p {
 .ranking-card {
   background: #fffdf7;
   border: 2px solid #d8c49b;
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 10px;
   padding: 12px;
@@ -10029,7 +10031,7 @@ p {
 
 .signal-badge {
   border: 2px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   color: #2e2415;
   font-size: 0.68rem;
   font-style: normal;
@@ -11656,7 +11658,7 @@ p {
   align-items: center;
   background: #fffdf5;
   border: 2px solid #88b957;
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 4px 8px;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -11680,7 +11682,7 @@ p {
 }
 
 .release-progress-bar i {
-  animation: release-progress-fill 540ms ease-out both;
+  animation: release-progress-fill 540ms var(--pixel-steps) both;
   background: linear-gradient(90deg, #88b957 0%, #4d8f33 100%);
   display: block;
   height: 100%;
@@ -11727,7 +11729,7 @@ p {
 .strategy-card {
   background: #fffdf7;
   border: 2px solid #d8c49b;
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 9px;
   min-height: 190px;
@@ -11835,7 +11837,7 @@ p {
 
 .reward-choice.rarity-rare::after {
   background: #3f6fc4;
-  border-radius: 4px;
+  border-radius: var(--pixel-radius);
   color: #fffdf7;
   content: "희귀";
   font-size: 0.58rem;
@@ -11856,7 +11858,7 @@ p {
 
 .reward-choice.rarity-epic::after {
   background: linear-gradient(135deg, #d59a3d 0%, #8a4dc9 100%);
-  border-radius: 4px;
+  border-radius: var(--pixel-radius);
   color: #fffdf7;
   content: "특수";
   font-size: 0.6rem;
@@ -11888,7 +11890,7 @@ p {
   align-items: center;
   background: #fff5e6;
   border: 1px solid #f0c47a;
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 4px 7px;
   grid-template-columns: auto auto minmax(0, 1fr);
@@ -11904,7 +11906,7 @@ p {
 }
 
 .reward-effects-arrow {
-  animation: card-impact-arrow-pulse 1400ms ease-in-out infinite;
+  animation: card-impact-arrow-pulse 1400ms var(--pixel-steps) infinite;
   color: #b8530f;
   font-size: 0.82rem;
   font-style: normal;
@@ -11933,7 +11935,7 @@ p {
   align-items: center;
   background: #fffdf7;
   border: 2px solid #d8c49b;
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 8px;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -13516,7 +13518,7 @@ p {
 .rival-archetype-panel {
   background: rgba(20, 28, 42, 0.62);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 6px;
   margin-top: 6px;
@@ -13553,7 +13555,7 @@ p {
 .rival-archetype-card {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 5px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 4px;
   padding: 6px 7px;
@@ -13677,14 +13679,14 @@ p {
 .big-event-card {
   background: linear-gradient(180deg, rgba(28, 38, 58, 0.97), rgba(18, 26, 42, 0.97));
   border: 2px solid rgba(255, 180, 58, 0.55);
-  border-radius: 10px;
+  border-radius: var(--pixel-radius);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   display: grid;
   gap: 10px;
   max-width: 440px;
   padding: 18px 20px;
   width: 100%;
-  animation: big-event-pop-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: big-event-pop-in 320ms var(--pixel-steps);
 }
 
 @keyframes big-event-pop-in {
@@ -13751,7 +13753,7 @@ p {
 
 .big-event-meta {
   background: rgba(0, 0, 0, 0.28);
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 4px;
   margin: 0;
@@ -13786,14 +13788,14 @@ p {
 .big-event-dismiss {
   background: rgba(255, 180, 58, 0.92);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   color: #25190a;
   cursor: pointer;
   font-size: 0.74rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   padding: 9px 14px;
-  transition: background 160ms ease, transform 120ms ease;
+  transition: background 160ms ease, transform 120ms var(--pixel-steps);
 }
 
 .big-event-dismiss:hover {
@@ -13825,7 +13827,7 @@ p {
 .payoff-celebration-card {
   background: linear-gradient(180deg, rgba(31, 28, 40, 0.98), rgba(18, 22, 34, 0.98));
   border: 2px solid rgba(255, 180, 58, 0.58);
-  border-radius: 10px;
+  border-radius: var(--pixel-radius);
   box-shadow: 0 20px 58px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   display: grid;
   gap: 10px;
@@ -13838,13 +13840,13 @@ p {
 }
 
 .payoff-celebration-card.payoff-celebration-combo {
-  animation: payoff-celebration-pop 360ms cubic-bezier(0.22, 1, 0.36, 1), reward-rarity-epic-pulse 1800ms ease-in-out infinite;
+  animation: payoff-celebration-pop 360ms var(--pixel-steps), reward-rarity-epic-pulse 1800ms ease-in-out infinite;
   border-color: rgba(255, 118, 52, 0.82);
   box-shadow: 0 20px 58px rgba(111, 34, 12, 0.48), 0 0 0 1px rgba(255, 118, 52, 0.2) inset;
 }
 
 .payoff-celebration-card.payoff-celebration-synergy {
-  animation: payoff-celebration-pop 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: payoff-celebration-pop 300ms var(--pixel-steps);
   border-color: rgba(155, 191, 119, 0.78);
 }
 
@@ -13854,7 +13856,7 @@ p {
 }
 
 .payoff-celebration-card.payoff-celebration-achievement {
-  animation: payoff-celebration-pop 320ms cubic-bezier(0.22, 1, 0.36, 1), reward-rarity-rare-glow 1600ms ease-in-out infinite;
+  animation: payoff-celebration-pop 320ms var(--pixel-steps), reward-rarity-rare-glow 1600ms ease-in-out infinite;
   border-color: rgba(255, 198, 76, 0.92);
   box-shadow: 0 20px 58px rgba(82, 62, 10, 0.52), 0 0 0 1px rgba(255, 198, 76, 0.28) inset;
 }
@@ -13877,7 +13879,7 @@ p {
   background-repeat: no-repeat;
   background-size: var(--celebration-emblem-size);
   border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38), 0 0 0 2px rgba(255, 255, 255, 0.04) inset;
   display: block;
   flex: 0 0 64px;
@@ -13896,7 +13898,7 @@ p {
 
 .payoff-celebration-pill,
 .payoff-celebration-queue {
-  border-radius: 4px;
+  border-radius: var(--pixel-radius);
   font-size: 0.58rem;
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -13930,7 +13932,7 @@ p {
 }
 
 .payoff-celebration-flare {
-  animation: payoff-celebration-flare 1600ms ease-in-out infinite;
+  animation: payoff-celebration-flare 1600ms var(--pixel-steps) infinite;
   background: radial-gradient(circle, rgba(255, 222, 143, 0.95) 0%, rgba(255, 118, 52, 0.35) 42%, rgba(255, 118, 52, 0) 68%);
   display: block;
   height: 42px;
@@ -13997,7 +13999,7 @@ p {
 .payoff-celebration-dismiss {
   background: rgba(255, 180, 58, 0.94);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   color: #25190a;
   cursor: pointer;
   font-size: 0.74rem;
@@ -14018,10 +14020,10 @@ p {
 }
 
 .world-reveal-card {
-  animation: payoff-celebration-pop 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: payoff-celebration-pop 340ms var(--pixel-steps);
   background: linear-gradient(180deg, rgba(22, 31, 42, 0.98), rgba(12, 19, 30, 0.98));
   border: 2px solid rgba(98, 205, 196, 0.68);
-  border-radius: 10px;
+  border-radius: var(--pixel-radius);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.68), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
   display: grid;
   gap: 12px;
@@ -14042,7 +14044,7 @@ p {
 
 .world-reveal-pill,
 .world-reveal-seed {
-  border-radius: 4px;
+  border-radius: var(--pixel-radius);
   font-size: 0.58rem;
   font-weight: 900;
   letter-spacing: 0.04em;
@@ -14064,7 +14066,7 @@ p {
 }
 
 .world-reveal-flare {
-  animation: payoff-celebration-flare 1700ms ease-in-out infinite;
+  animation: payoff-celebration-flare 1700ms var(--pixel-steps) infinite;
   background: radial-gradient(circle, rgba(161, 245, 225, 0.95) 0%, rgba(98, 205, 196, 0.34) 45%, rgba(98, 205, 196, 0) 70%);
   display: block;
   height: 44px;
@@ -14092,7 +14094,7 @@ p {
 .world-reveal-tier {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 4px;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -14134,7 +14136,7 @@ p {
 .world-reveal-ending-target {
   background: rgba(165, 211, 116, 0.16);
   border: 1px solid rgba(165, 211, 116, 0.72);
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 5px;
   min-width: 0;
@@ -14173,7 +14175,7 @@ p {
 .archetype-discovery-panel {
   background: rgba(255, 204, 91, 0.1);
   border: 1px solid rgba(255, 204, 91, 0.5);
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 9px;
   min-width: 0;
@@ -14207,7 +14209,7 @@ p {
 .archetype-discovery-grid article {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 204, 91, 0.38);
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 5px;
   min-width: 0;
@@ -14226,13 +14228,13 @@ p {
   align-items: start;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   display: grid;
   gap: 6px;
   grid-template-columns: 44px minmax(0, 1fr);
   min-width: 0;
   padding: 10px;
-  transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease;
+  transition: opacity 180ms ease, transform 180ms var(--pixel-steps), border-color 180ms ease;
 }
 
 .world-reveal-axis-stamp {
@@ -14241,7 +14243,7 @@ p {
   background-repeat: no-repeat;
   background-size: var(--world-reveal-stamp-size);
   border: 1px solid rgba(161, 245, 225, 0.28);
-  border-radius: 8px;
+  border-radius: var(--pixel-radius);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
   display: block;
   grid-row: 1 / span 4;
@@ -14310,7 +14312,7 @@ p {
 .world-reveal-dismiss {
   background: rgba(98, 205, 196, 0.96);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--pixel-radius);
   color: #061f24;
   cursor: pointer;
   font-size: 0.74rem;

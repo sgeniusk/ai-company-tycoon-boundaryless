@@ -273,7 +273,7 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.office-wall\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.workforce-mix-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.workforce-mix-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
-    expect(appCss).toMatch(/\.workforce-mix-badge\s*{[^}]*border-radius:\s*4px/s);
+    expect(appCss).toMatch(/\.workforce-mix-badge\s*{[^}]*border-radius:\s*var\(--pixel-radius\)/s);
     expect(appCss).toMatch(/\.workforce-mix-metric\s*{[^}]*white-space:\s*nowrap/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.workforce-mix-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.workforce-mix-row\s*{[^}]*grid-template-columns:\s*minmax\(72px,\s*0\.78fr\)\s+minmax\(0,\s*1fr\)/s);
@@ -462,6 +462,15 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(
       /@media\s*\(min-width:\s*1101px\)[\s\S]*?\.first-screen-composition\b[\s\S]*?\.resource-tile/s,
     );
+  });
+
+  it("v0.97 unifies pixel radius and stepped motion tokens", () => {
+    // 단일 반경 토큰이 정의된다.
+    expect(appCss).toMatch(/--pixel-radius:\s*\d/);
+    // UI 프리미티브가 토큰을 쓴다(예 버튼/패널). 최소 몇 곳 이상.
+    expect((appCss.match(/border-radius:\s*var\(--pixel-radius\)/g) ?? []).length).toBeGreaterThanOrEqual(8);
+    // stepped 모션 토큰/타이밍이 정의·사용된다.
+    expect(appCss).toMatch(/--pixel-steps?:\s*steps\(/);
   });
 
   it("moves resources into a compact bottom HUD instead of a tall web sidebar", () => {
