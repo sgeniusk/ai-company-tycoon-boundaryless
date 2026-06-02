@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type Dispatch, type SetStateAction } from "react";
 import { agentTypes, assetManifest, competitors, domains, resources } from "../game/data";
 import { chooseCardReward, getCardRewardChoiceCheck, getStrategyCardById, playStrategyCard } from "../game/deckbuilding";
 import { resolveDevelopmentPuzzle } from "../game/development-puzzle";
@@ -100,7 +100,6 @@ import type {
   OfficeEventReactionStatus,
   OfficeSceneActorStatus,
   OfficeSceneObjectStatus,
-  OperationsCommandPlan,
   ReleaseGrowthPath,
   SpriteAnimationDefinition,
   SpriteSheetDefinition,
@@ -673,6 +672,8 @@ export function GameStage({
   const [activeStageTab, setActiveStageTab] = useState<StageSideTabId>("guide");
   const [alphaRunFeedback, setAlphaRunFeedback] = useState<string>();
   const [selectedOfficeActorId, setSelectedOfficeActorId] = useState<string>();
+  const [statusPopupOpen, setStatusPopupOpen] = useState(false);
+  const statusPopupDismissRef = useRef<HTMLButtonElement>(null);
   const focusedOfficeActor = visibleOfficeActors.find((actor) => actor.id === selectedOfficeActorId) ?? defaultFocusedOfficeActor;
   const hasResultPanel = finale.isFinal || Boolean(gameState.lastRelease) || runSummary.isFinal;
   const showEndingReplayReadinessStrip =
@@ -692,6 +693,20 @@ export function GameStage({
       setSelectedOfficeActorId(undefined);
     }
   }, [selectedOfficeActorId, visibleOfficeActorIds, visibleOfficeActors]);
+
+  useEffect(() => {
+    if (!statusPopupOpen) return undefined;
+
+    statusPopupDismissRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setStatusPopupOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [statusPopupOpen]);
 
   const getStageTabHint = (tabId: StageSideTabId) => {
     if (tabId === "guide") return `${alphaRunRoadmapProgress}%`;
@@ -940,6 +955,21 @@ export function GameStage({
     setActiveStageTab("guide");
   };
 
+  const nextOperationCard = operationsPlan.focusCards[0];
+  const nextActionTargetMenu = guidance.menu ?? nextOperationCard?.targetMenu;
+  const nextActionTitle = guidance.priorityLabel ?? nextOperationCard?.title ?? operationsPlan.headline;
+  const nextActionLabel = guidance.actionLabel ?? nextOperationCard?.actionLabel ?? "현황 보기";
+  const nextActionDetail = guidance.helperText ?? nextOperationCard?.actionLabel ?? operationsPlan.summary;
+  const handleNextActionChip = () => {
+    if (nextActionTargetMenu) {
+      setActiveMenu(nextActionTargetMenu);
+      return;
+    }
+
+    setActiveStageTab("guide");
+    setStatusPopupOpen(true);
+  };
+
   return (
     <section className="game-stage" aria-label="AI 회사 사무실">
       <div className={`office-scene pixel-office-theater office-level-${officeExpansion.level} office-phase-${phase.id}`}>
@@ -998,14 +1028,16 @@ export function GameStage({
               <small>{officeHudProjectMeta}</small>
             </span>
           </div>
-          <OfficeActionSlots
-            activeProject={Boolean(activeProject)}
-            hasDecorationRoom={placedOfficeItems.length < officeDecorationSlots}
-            hasHireRoom={gameState.hiredAgents.length < officeHireCapacity}
-            onOpenMenu={setActiveMenu}
-          />
+          <button className="office-decor-button" onClick={() => setActiveMenu("shop")} type="button">
+            <span aria-hidden="true">🎨</span>
+            <strong>꾸미기</strong>
+          </button>
+          <button className="next-action-chip" onClick={handleNextActionChip} title={nextActionDetail} type="button">
+            <span>다음 행동</span>
+            <strong>{nextActionLabel}</strong>
+            <small>{nextActionTitle}</small>
+          </button>
           <RivalIncidentBanner gameState={gameState} />
-          <OperationCommandPanel plan={operationsPlan} onOpenMenu={setActiveMenu} />
           <OfficeEventReactionLayer reactions={officeScenePlan.eventReactions} />
           <OfficeWorkBeatLayer activeObjectCount={officeScenePlan.activeObjectCount} />
           <OfficeTaskLinkLayer actors={visibleOfficeActors} objects={officeScenePlan.objects} />
@@ -1099,7 +1131,19 @@ export function GameStage({
         </div>
       </div>
 
-      <div className="stage-side">
+      {statusPopupOpen && (
+        <div className="stage-status-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="stage-status-popup-title">
+          <section className="stage-status-popup-card" aria-label="사무실 현황 팝업">
+            <header className="stage-status-popup-header">
+              <div>
+                <p className="stage-status-popup-kicker">Office status</p>
+                <h2 id="stage-status-popup-title">사무실 현황</h2>
+              </div>
+              <button ref={statusPopupDismissRef} className="stage-status-popup-dismiss" onClick={() => setStatusPopupOpen(false)} type="button">
+                닫기
+              </button>
+            </header>
+            <div className="stage-side">
         <div className="stage-side-tabs" role="tablist" aria-label="보조 정보">
           {stageSideTabs.map((tab) => (
             <button
@@ -1547,7 +1591,10 @@ export function GameStage({
             </>
           )}
         </div>
-      </div>
+            </div>
+          </section>
+        </div>
+      )}
     </section>
   );
 }
@@ -1893,35 +1940,6 @@ function OfficeTaskLinkLayer({
   );
 }
 
-function OperationCommandPanel({
-  plan,
-  onOpenMenu,
-}: {
-  plan: OperationsCommandPlan;
-  onOpenMenu: Dispatch<SetStateAction<MenuId>>;
-}) {
-  return (
-    <div className={`operation-command-panel risk-${plan.riskLevel}`} aria-label="월간 운영 의제">
-      <i aria-hidden="true" className="operation-command-signal" />
-      <div className="operation-command-header">
-        <span>운영 의제</span>
-        <strong>{plan.headline}</strong>
-        <small>{plan.summary}</small>
-      </div>
-      <div className="operation-command-grid">
-        {plan.focusCards.slice(0, 3).map((card) => (
-          <button className={`operation-command-card severity-${card.severity}`} key={card.id} onClick={() => onOpenMenu(card.targetMenu)} type="button">
-            <i aria-hidden="true" className="operation-card-status-pip" />
-            <strong>{card.title}</strong>
-            <span>{card.actionLabel}</span>
-          </button>
-        ))}
-      </div>
-      <small className="operation-command-safeguard">{plan.activeSafeguards[0] ?? plan.nextMilestone}</small>
-    </div>
-  );
-}
-
 function OfficeActorFocusPanel({
   actor,
   gameState,
@@ -1985,38 +2003,6 @@ function OfficeActorFocusPanel({
           )}
         </div>
       )}
-    </div>
-  );
-}
-
-function OfficeActionSlots({
-  activeProject,
-  hasDecorationRoom,
-  hasHireRoom,
-  onOpenMenu,
-}: {
-  activeProject: boolean;
-  hasDecorationRoom: boolean;
-  hasHireRoom: boolean;
-  onOpenMenu: Dispatch<SetStateAction<MenuId>>;
-}) {
-  const slots: Array<{ id: string; label: string; detail: string; menu: MenuId; tone: string }> = [
-    { id: "hire", label: "고용", detail: hasHireRoom ? "빈 자리" : "정원", menu: "agents", tone: hasHireRoom ? "ready" : "locked" },
-    { id: "build", label: "개발", detail: activeProject ? "진행 중" : "제품", menu: "products", tone: activeProject ? "working" : "ready" },
-    { id: "deck", label: "전략", detail: "카드", menu: "deck", tone: "deck" },
-    { id: "decor", label: "꾸미기", detail: hasDecorationRoom ? "슬롯" : "효과", menu: "shop", tone: hasDecorationRoom ? "ready" : "locked" },
-  ];
-
-  return (
-    <div className="office-action-slot-grid" aria-label="사무실 액션 슬롯">
-      {slots.map((slot) => (
-        <button className={`office-action-slot slot-${slot.id} tone-${slot.tone}`} key={slot.id} onClick={() => onOpenMenu(slot.menu)} type="button">
-          <CommercialUiIcon className="office-action-slot-icon" iconId={menuIconIds[slot.menu]} />
-          <strong>{slot.label}</strong>
-          <span>{slot.detail}</span>
-          <b aria-hidden="true" className="office-action-slot-light" />
-        </button>
-      ))}
     </div>
   );
 }

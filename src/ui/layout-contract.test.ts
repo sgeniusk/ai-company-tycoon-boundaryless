@@ -337,30 +337,28 @@ describe("v0.13.3 compact game shell layout", () => {
   });
 
   it("turns the office playfield into a clickable game surface", () => {
-    expect(gameChrome).toContain("OfficeActionSlots");
+    expect(gameChrome).toContain("next-action-chip");
+    expect(gameChrome).toContain("office-decor-button");
     expect(gameChrome).toContain("RivalIncidentBanner");
-    expect(gameChrome).toContain("office-action-slot-grid");
+    expect(gameChrome).toContain("setStatusPopupOpen(true)");
+    expect(gameChrome).toContain("setActiveMenu(\"shop\")");
     expect(gameChrome).toContain("rival-incident-banner");
-    expect(appCss).toMatch(/\.office-action-slot-grid\s*{[^}]*position:\s*absolute/s);
-    expect(appCss).toMatch(/\.office-action-slot\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.next-action-chip\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.office-decor-button\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.rival-incident-banner\s*{[^}]*position:\s*absolute/s);
   });
 
   it("skins office controls as toy-like pixel command consoles", () => {
-    expect(gameChrome).toContain("office-action-slot-icon");
-    expect(gameChrome).toContain("office-action-slot-light");
-    expect(gameChrome).toContain("operation-command-signal");
-    expect(gameChrome).toContain("operation-card-status-pip");
-    expect(appCss).toMatch(/\.office-action-slot\s*{[^}]*grid-template-columns:\s*18px\s+minmax\(0,\s*1fr\)\s+6px/s);
-    expect(appCss).toMatch(/\.office-action-slot-icon\s*{[^}]*image-rendering:\s*pixelated/s);
-    expect(appCss).toMatch(/\.office-action-slot-light\s*{[^}]*animation:\s*office-control-light-blink/s);
-    expect(appCss).toMatch(/\.operation-command-panel\s*{[^}]*image-rendering:\s*pixelated/s);
-    expect(appCss).toMatch(/\.operation-command-signal\s*{[^}]*animation:\s*operation-command-signal-scan/s);
-    expect(appCss).toMatch(/\.operation-command-card\s*{[^}]*grid-template-columns:\s*8px\s+minmax\(0,\s*1fr\)/s);
-    expect(appCss).toMatch(/\.operation-card-status-pip\s*{[^}]*image-rendering:\s*pixelated/s);
-    expect(appCss).toMatch(/@keyframes\s+office-control-light-blink/s);
-    expect(appCss).toMatch(/@keyframes\s+operation-command-signal-scan/s);
-    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-action-slot-light/s);
+    expect(gameChrome).toContain("nextActionTargetMenu");
+    expect(gameChrome).toContain("nextOperationCard");
+    expect(gameChrome).toContain("statusPopupDismissRef");
+    expect(gameChrome).toContain("stage-status-popup-dismiss");
+    expect(appCss).toMatch(/\.next-action-chip\s*{[^}]*border:\s*3px solid #f2cf7f/s);
+    expect(appCss).toMatch(/\.office-decor-button\s*{[^}]*grid-template-columns:\s*auto\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.stage-status-popup-card\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.stage-status-popup-card\s*{[^}]*box-shadow:/s);
+    expect(appCss).toMatch(/@keyframes\s+stage-status-popup-pop/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.stage-status-popup-card/s);
   });
 
   it("surfaces v0.56 rival and staff incidents as readable screen moments", () => {
@@ -960,7 +958,7 @@ describe("v0.13.3 compact game shell layout", () => {
   it("protects the playfield by removing the persistent console column", () => {
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
     expect(appCss).not.toMatch(/\.app-shell\s*{[^}]*grid-template-columns:[^}]*clamp\(330px,\s*28vw,\s*390px\)/s);
-    expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);
+    expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
   });
 
   it("keeps mobile chrome compact enough for the office scene to remain visible", () => {
@@ -1639,8 +1637,9 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("OfficeActorFocusPanel");
     expect(gameChrome).toContain("setSelectedOfficeActorId");
     expect(gameChrome).toContain("getOperationsCommandPlan");
-    expect(gameChrome).toContain("OperationCommandPanel");
-    expect(gameChrome).toContain("operation-command-panel");
+    expect(gameChrome).toContain("nextOperationCard");
+    expect(gameChrome).toContain("next-action-chip");
+    expect(gameChrome).toContain("stage-status-popup-overlay");
     expect(gameChrome).toContain("staffAftermathSummary");
     expect(gameChrome).toContain("monthly-staff-aftermath-row");
     expect(appCss).toMatch(/\.office-zone-panel\s*{[^}]*display:\s*grid/s);
@@ -1653,8 +1652,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.actor-focus-meters\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/@keyframes\s+pixel-actor-work/s);
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)\s*{[\s\S]*\.staff-sprite\.pixel-actor\s*{[^}]*animation:\s*none/s);
-    expect(appCss).toMatch(/\.operation-command-panel\s*{[^}]*position:\s*absolute/s);
-    expect(appCss).toMatch(/\.operation-command-grid\s*{[^}]*grid-template-columns:/s);
+    expect(appCss).toMatch(/\.next-action-chip\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.stage-status-popup-overlay\s*{[^}]*position:\s*fixed/s);
     expect(appCss).toMatch(/\.monthly-staff-aftermath-row\s*{/s);
     expect(gameChrome).toContain("getAgentRestCheck");
     expect(gameChrome).toContain("getAgentSalaryNegotiationCheck");
@@ -1820,6 +1819,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.annual-nearmiss-relief\s+strong\s*{[^}]*overflow-wrap:\s*anywhere/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.annual-nearmiss-relief\s*{[^}]*grid-template-columns:\s*1fr/s);
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.annual-nearmiss-relief/s);
+  });
+
+  it("v1.0 block2 gives the office the full stage and moves the side panel into a popup", () => {
+    expect(gameChrome).toMatch(/stage-status|status-popup|stage-side-popup/);
+    expect(gameChrome).toMatch(/next-action-chip|다음 행동/);
+    expect(gameChrome).toMatch(/office-decor-button|꾸미기/);
+    expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+    expect(appCss).not.toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);
+    expect(gameChrome).not.toContain("<OfficeActionSlots");
+    expect(gameChrome).not.toContain("<OperationCommandPanel");
   });
 
   it("v0.58 #4 differentiates rival-counter strategy cards with a derive-only pressure badge in deck and reward UI", () => {
