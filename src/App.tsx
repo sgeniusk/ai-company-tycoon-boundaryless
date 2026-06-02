@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { CommandRow, EventPanels, GameStage, MainMenu, ResourceStrip, TopBar } from "./components/GameChrome";
-import { renderMenuContent } from "./components/MenuPanels";
+import { useEffect, useMemo, useState, type CSSProperties, type SetStateAction } from "react";
+import { CommandRow, EventPanels, GameStage, MenuLauncherBar, ResourceStrip, TopBar } from "./components/GameChrome";
+import { MenuPopupModal } from "./components/MenuPopupModal";
 import { createBlindPlaytestObserverSummary, type BlindPlaytestObserverSummary } from "./game/blind-playtest-observer";
 import { assetManifest, products } from "./game/data";
 import { applyOfflineSettlement, calculateOfflineSettlement, type OfflineSettlement } from "./game/offline";
@@ -65,6 +65,7 @@ function App() {
   const [initialSession] = useState(createInitialSession);
   const [gameState, setGameState] = useState<GameState>(initialSession.state);
   const [activeMenu, setActiveMenu] = useState<MenuId>(initialSession.activeMenu);
+  const [isMenuPopupOpen, setMenuPopupOpen] = useState(false);
   const [qaScenarioLabel] = useState(initialSession.qaScenarioLabel);
   const [shouldAutoSave] = useState(initialSession.shouldAutoSave);
   const [offlineSettlement, setOfflineSettlement] = useState<OfflineSettlement | undefined>(initialSession.offlineSettlement);
@@ -81,9 +82,14 @@ function App() {
     [gameState],
   );
 
+  const openMenu = (action: SetStateAction<MenuId>) => {
+    setActiveMenu(action);
+    setMenuPopupOpen(true);
+  };
+
   const handleTutorialAction = () => {
     if (!tutorialGuide) return;
-    setActiveMenu(tutorialGuide.targetMenu);
+    openMenu(tutorialGuide.targetMenu);
     setGameState((current) => dismissTutorialGuide(tutorialGuide.id, current));
   };
 
@@ -147,7 +153,7 @@ function App() {
         onToggleLocale={() => setLocale((current) => (current === "ko" ? "en" : "ko"))}
       />
       <ResourceStrip gameState={gameState} />
-      <GameStage gameState={gameState} qaScenarioLabel={qaScenarioLabel} setGameState={setGameState} setActiveMenu={setActiveMenu} />
+      <GameStage gameState={gameState} qaScenarioLabel={qaScenarioLabel} setGameState={setGameState} setActiveMenu={openMenu} />
       <div className="event-stack playfield-event-rail office-sightline-event-rail">
         <EventPanels
           gameState={gameState}
@@ -157,10 +163,17 @@ function App() {
         />
       </div>
       <CommandRow gameState={gameState} setGameState={setGameState} onSave={handleSave} onLoad={handleLoad} />
-      <section className="menu-layout pixel-menu-cabinet" aria-label="경영 메뉴">
-        <MainMenu activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
-        <div className="menu-panel pixel-menu-screen">{renderMenuContent(activeMenu, gameState, setGameState, locale, setActiveMenu)}</div>
-      </section>
+      <MenuLauncherBar activeMenu={isMenuPopupOpen ? activeMenu : null} onOpen={openMenu} />
+      {isMenuPopupOpen && (
+        <MenuPopupModal
+          activeMenu={activeMenu}
+          gameState={gameState}
+          locale={locale}
+          setActiveMenu={openMenu}
+          setGameState={setGameState}
+          onDismiss={() => setMenuPopupOpen(false)}
+        />
+      )}
       {tutorialGuide && !offlineSettlement && !worldRevealVisible && (
         <section className="helper-tutorial" role="dialog" aria-live="polite" aria-label="도우미 튜토리얼">
           <div className="helper-portrait helper-portrait-art" style={helperPortraitStyle} aria-hidden="true">

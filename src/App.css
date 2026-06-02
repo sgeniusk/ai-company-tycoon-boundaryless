@@ -66,11 +66,13 @@ button:disabled {
   display: grid;
   gap: 8px;
   grid-template-areas:
-    "top top top"
-    "stage stage menu"
-    "resources commands menu";
-  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1fr) clamp(330px, 28vw, 390px);
-  grid-template-rows: minmax(54px, auto) minmax(0, 1fr) minmax(58px, auto);
+    "top"
+    "stage"
+    "resources"
+    "commands"
+    "launcher";
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(54px, auto) minmax(0, 1fr) minmax(58px, auto) minmax(58px, auto) minmax(56px, auto);
   height: 100dvh;
   margin: 0 auto;
   max-width: 1366px;
@@ -84,7 +86,7 @@ button:disabled {
 }
 
 .app-shell.v034-game-shell.first-screen-composition {
-  grid-template-rows: minmax(54px, auto) minmax(0, 1fr) minmax(58px, auto);
+  grid-template-rows: minmax(54px, auto) minmax(0, 1fr) minmax(58px, auto) minmax(58px, auto) minmax(56px, auto);
 }
 
 .app-shell.v034-game-shell.first-screen-composition .game-stage,
@@ -97,9 +99,9 @@ button:disabled {
 .app-shell.v034-game-shell.first-screen-composition .resource-strip,
 .app-shell.v034-game-shell.first-screen-composition .command-row,
 .app-shell.v034-game-shell.first-screen-composition .event-stack,
-.app-shell.v034-game-shell.first-screen-composition .menu-layout,
 .app-shell.v034-game-shell.first-screen-composition .menu-panel,
-.app-shell.v034-game-shell.first-screen-composition .main-menu {
+.app-shell.v034-game-shell.first-screen-composition .main-menu,
+.app-shell.v034-game-shell.first-screen-composition .menu-launcher-bar {
   min-width: 0;
   overflow: hidden;
 }
@@ -111,8 +113,8 @@ button:disabled {
 .app-shell.v034-game-shell.first-screen-composition .resource-strip *,
 .app-shell.v034-game-shell.first-screen-composition .command-row *,
 .app-shell.v034-game-shell.first-screen-composition .event-stack *,
-.app-shell.v034-game-shell.first-screen-composition .menu-layout *,
-.app-shell.v034-game-shell.first-screen-composition .menu-panel * {
+.app-shell.v034-game-shell.first-screen-composition .menu-panel *,
+.app-shell.v034-game-shell.first-screen-composition .menu-launcher-bar * {
   min-width: 0;
 }
 
@@ -126,7 +128,6 @@ button:disabled {
 .app-shell.v034-game-shell.first-screen-composition .event-stack small,
 .app-shell.v034-game-shell.first-screen-composition .event-stack p,
 .app-shell.v034-game-shell.first-screen-composition .event-stack h2,
-.app-shell.v034-game-shell.first-screen-composition .menu-layout button,
 .app-shell.v034-game-shell.first-screen-composition .menu-panel span,
 .app-shell.v034-game-shell.first-screen-composition .menu-panel strong,
 .app-shell.v034-game-shell.first-screen-composition .menu-panel small,
@@ -135,7 +136,8 @@ button:disabled {
 .app-shell.v034-game-shell.first-screen-composition .menu-panel h3,
 .app-shell.v034-game-shell.first-screen-composition .menu-panel li,
 .app-shell.v034-game-shell.first-screen-composition .menu-panel em,
-.app-shell.v034-game-shell.first-screen-composition .menu-panel code {
+.app-shell.v034-game-shell.first-screen-composition .menu-panel code,
+.app-shell.v034-game-shell.first-screen-composition .menu-launcher-bar button {
   max-width: 100%;
   overflow-wrap: anywhere;
 }
@@ -144,7 +146,8 @@ button:disabled {
 .app-shell.v034-game-shell.first-screen-composition .resource-value,
 .app-shell.v034-game-shell.first-screen-composition .resource-delta,
 .app-shell.v034-game-shell.first-screen-composition .command-row p,
-.app-shell.v034-game-shell.first-screen-composition .menu-group-label {
+.app-shell.v034-game-shell.first-screen-composition .menu-group-label,
+.app-shell.v034-game-shell.first-screen-composition .menu-launcher-group-label {
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -173,7 +176,7 @@ button:disabled {
 
 @media (max-width: 1100px) {
   .app-shell.v034-game-shell.first-screen-composition {
-    grid-template-rows: auto minmax(0, 1fr) auto auto minmax(180px, 34dvh);
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
   }
 
   .app-shell.v034-game-shell.first-screen-composition .resource-tile span,
@@ -265,12 +268,12 @@ button:disabled {
 
 @media (max-width: 700px) {
   .app-shell.v034-game-shell.first-screen-composition {
-    grid-template-rows: minmax(78px, auto) minmax(250px, 1fr) auto minmax(74px, auto) minmax(150px, 24dvh);
+    grid-template-rows: minmax(78px, auto) minmax(250px, 1fr) auto minmax(74px, auto) minmax(58px, auto);
   }
 }
 
 .game-stage,
-.menu-layout,
+.menu-launcher-bar,
 .resource-strip,
 .command-row {
   min-width: 0;
@@ -289,7 +292,8 @@ button:disabled {
 .panel,
 .resource-tile,
 .game-stage,
-.event-panel {
+.event-panel,
+.menu-launcher-bar {
   border: 3px solid var(--line);
   background: var(--panel);
   box-shadow: var(--shadow);
@@ -6621,44 +6625,6 @@ p {
   min-height: 34px;
 }
 
-.menu-layout {
-  background: #20342d;
-  border: 3px solid var(--line);
-  box-shadow: var(--shadow);
-  display: grid;
-  gap: 6px;
-  grid-area: menu;
-  grid-template-columns: 70px minmax(0, 1fr);
-  min-height: 0;
-  overflow: hidden;
-  padding: 6px;
-}
-
-.menu-layout.pixel-menu-cabinet {
-  background:
-    linear-gradient(180deg, rgba(255, 247, 223, 0.08), rgba(16, 28, 24, 0) 28px),
-    #20342d;
-  image-rendering: pixelated;
-  isolation: isolate;
-  position: relative;
-}
-
-.menu-layout.pixel-menu-cabinet::before {
-  background:
-    linear-gradient(90deg, #f2cf7f 0 18%, transparent 18% 24%, #73e08c 24% 36%, transparent 36% 44%, #f2cf7f 44% 58%, transparent 58% 66%, #df6b55 66% 72%, transparent 72% 100%),
-    #101c18;
-  border: 2px solid #0d1714;
-  box-shadow: 0 2px 0 rgba(255, 247, 223, 0.08);
-  content: "";
-  height: 5px;
-  left: 8px;
-  pointer-events: none;
-  position: absolute;
-  right: 8px;
-  top: 6px;
-  z-index: 0;
-}
-
 .main-menu {
   background: #13261f;
   border: 2px solid #0d1714;
@@ -6763,6 +6729,120 @@ p {
   letter-spacing: 0;
   padding: 3px 2px 0;
   text-align: center;
+}
+
+.menu-launcher-bar {
+  align-items: stretch;
+  background:
+    linear-gradient(180deg, rgba(255, 247, 223, 0.08), rgba(16, 28, 24, 0) 30px),
+    #20342d;
+  display: grid;
+  gap: 6px;
+  grid-area: launcher;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 1.18fr) minmax(0, 0.82fr);
+  image-rendering: pixelated;
+  min-height: 56px;
+  overflow: hidden;
+  padding: 6px;
+}
+
+.menu-launcher-group {
+  align-items: center;
+  background: #13261f;
+  border: 2px solid #0d1714;
+  box-shadow: inset 0 0 0 2px rgba(255, 247, 223, 0.08);
+  display: grid;
+  gap: 5px;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-width: 0;
+  padding: 5px;
+}
+
+.menu-launcher-group-label {
+  color: #f2cf7f;
+  font-size: 0.6rem;
+  font-weight: 1000;
+  letter-spacing: 0;
+  line-height: 1;
+  text-align: center;
+  writing-mode: vertical-rl;
+}
+
+.menu-launcher-buttons {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.menu-launcher-group-meta .menu-launcher-buttons {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.menu-launcher-button {
+  align-content: center;
+  align-items: center;
+  background: #f2cf7f;
+  border-width: 2px;
+  display: grid;
+  gap: 2px 5px;
+  grid-template-columns: auto minmax(0, 1fr);
+  image-rendering: pixelated;
+  min-height: 40px;
+  overflow: hidden;
+  padding: 4px 5px;
+  position: relative;
+  text-align: left;
+}
+
+.menu-launcher-button::after {
+  background: #9f6b3d;
+  border: 1px solid rgba(13, 23, 20, 0.72);
+  box-shadow: 0 0 0 1px rgba(255, 247, 223, 0.28);
+  content: "";
+  height: 5px;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 5px;
+}
+
+.menu-launcher-button strong,
+.menu-launcher-button span {
+  display: block;
+  grid-column: 2;
+  line-height: 1.05;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-launcher-button strong {
+  font-size: 0.74rem;
+}
+
+.menu-launcher-button span {
+  font-size: 0.56rem;
+  font-weight: 900;
+  opacity: 0.78;
+}
+
+.menu-launcher-button.active {
+  background: var(--green);
+  color: #fffdf5;
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+.menu-launcher-button.active::after {
+  background: #73e08c;
+  box-shadow: 0 0 0 1px rgba(255, 247, 223, 0.62), 0 0 8px rgba(115, 224, 140, 0.55);
+}
+
+.menu-launcher-button:focus-visible {
+  outline: 3px solid #fffdf5;
+  outline-offset: 2px;
 }
 
 .menu-panel {
@@ -12312,9 +12392,9 @@ p {
       "stage"
       "resources"
       "commands"
-      "menu";
+      "launcher";
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr) auto auto minmax(180px, 34dvh);
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
     height: 100dvh;
     max-width: none;
     max-height: none;
@@ -12331,7 +12411,7 @@ p {
   .game-stage,
   .dashboard-grid,
   .event-panel,
-  .menu-layout,
+  .menu-launcher-bar,
   .panel-grid.two-col {
     grid-template-columns: 1fr;
   }
@@ -12342,7 +12422,7 @@ p {
     overflow: hidden;
   }
 
-  .menu-layout,
+  .menu-launcher-bar,
   .stage-side {
     min-height: 0;
     overflow: hidden;
@@ -12451,6 +12531,15 @@ p {
     overflow: auto;
   }
 
+  .menu-launcher-bar {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .menu-launcher-group {
+    min-width: 220px;
+  }
+
   .menu-group-label {
     text-align: center;
   }
@@ -12480,7 +12569,7 @@ p {
   }
 
   .app-shell {
-    grid-template-rows: minmax(78px, auto) minmax(250px, 1fr) auto minmax(74px, auto) minmax(150px, 24dvh);
+    grid-template-rows: minmax(78px, auto) minmax(250px, 1fr) auto minmax(74px, auto) minmax(58px, auto);
     justify-self: start;
     margin: 0;
     max-height: var(--mobile-shell-height);
@@ -12637,7 +12726,30 @@ p {
     padding: 4px;
   }
 
-  .menu-layout.pixel-menu-cabinet::before {
+  .menu-launcher-bar {
+    gap: 5px;
+    grid-auto-columns: minmax(210px, 72vw);
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    min-height: 58px;
+    overflow-x: auto;
+    padding: 5px;
+  }
+
+  .menu-launcher-group {
+    min-width: 0;
+  }
+
+  .menu-launcher-buttons {
+    gap: 4px;
+  }
+
+  .menu-launcher-button {
+    min-height: 38px;
+    padding: 4px;
+  }
+
+  .menu-launcher-button span {
     display: none;
   }
 
@@ -13658,6 +13770,111 @@ p {
   }
 }
 
+.menu-popup-overlay {
+  align-items: center;
+  animation: menu-popup-fade-in 180ms ease-out;
+  background: rgba(6, 10, 20, 0.64);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  pointer-events: auto;
+  position: fixed;
+  z-index: 1180;
+}
+
+@keyframes menu-popup-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.menu-popup-card {
+  animation: menu-popup-pop-in 260ms var(--pixel-steps);
+  background:
+    linear-gradient(180deg, rgba(255, 247, 223, 0.08), rgba(16, 28, 24, 0) 34px),
+    #20342d;
+  border: 3px solid var(--line);
+  border-radius: var(--pixel-radius);
+  box-shadow: 0 16px 0 rgba(20, 18, 14, 0.72), 0 24px 60px rgba(0, 0, 0, 0.58);
+  display: grid;
+  gap: 8px;
+  max-height: min(700px, 92dvh);
+  min-height: 0;
+  overflow: hidden;
+  padding: 8px;
+  width: min(900px, 92vw);
+}
+
+@keyframes menu-popup-pop-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.menu-popup-header {
+  align-items: center;
+  background: #13261f;
+  border: 2px solid #0d1714;
+  box-shadow: inset 0 0 0 2px rgba(255, 247, 223, 0.08);
+  color: #fffdf5;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 8px 10px;
+}
+
+.menu-popup-header h2 {
+  color: #fffdf5;
+  font-size: 1.02rem;
+  line-height: 1.1;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.menu-popup-kicker {
+  color: #f2cf7f;
+  font-size: 0.58rem;
+  font-weight: 1000;
+  letter-spacing: 0.04em;
+  margin: 0 0 2px;
+  text-transform: uppercase;
+}
+
+.menu-popup-dismiss {
+  background: rgba(255, 180, 58, 0.94);
+  border: 2px solid #0d1714;
+  border-radius: var(--pixel-radius);
+  color: #25190a;
+  flex: 0 0 auto;
+  font-size: 0.74rem;
+  font-weight: 1000;
+  min-height: 34px;
+  padding: 7px 12px;
+  transition: background 160ms ease, box-shadow 120ms var(--pixel-steps), transform 120ms var(--pixel-steps);
+}
+
+.menu-popup-dismiss:hover {
+  background: rgba(255, 200, 100, 0.98);
+  transform: translateY(-1px);
+}
+
+.menu-popup-dismiss:active {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.16) inset;
+  transform: translateY(1px);
+}
+
+.menu-popup-dismiss:focus-visible {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18), 0 0 0 7px rgba(255, 180, 58, 0.52);
+  outline: 3px solid #fffdf5;
+  outline-offset: 3px;
+}
+
+.menu-popup-body {
+  max-height: min(610px, calc(92dvh - 96px));
+  min-height: 0;
+  overflow: auto;
+}
+
 .big-event-overlay {
   align-items: center;
   background: rgba(6, 10, 20, 0.78);
@@ -14348,6 +14565,8 @@ p {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .menu-popup-overlay,
+  .menu-popup-card,
   .payoff-celebration-card,
   .payoff-celebration-card.payoff-celebration-combo,
   .payoff-celebration-card.payoff-celebration-synergy,
@@ -14360,6 +14579,8 @@ p {
     animation: none;
   }
 
+  .menu-popup-dismiss:hover,
+  .menu-popup-dismiss:active,
   .big-event-dismiss:hover,
   .big-event-dismiss:active,
   .payoff-celebration-dismiss:hover,
@@ -14371,6 +14592,32 @@ p {
 }
 
 @media (max-width: 700px) {
+  .menu-popup-overlay {
+    align-items: end;
+    padding: 0;
+  }
+
+  .menu-popup-card {
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+    max-height: 92dvh;
+    padding: 6px;
+    width: 100vw;
+  }
+
+  .menu-popup-header {
+    padding: 7px 8px;
+  }
+
+  .menu-popup-header h2 {
+    font-size: 0.92rem;
+  }
+
+  .menu-popup-body {
+    max-height: calc(92dvh - 82px);
+  }
+
   .big-event-card {
     max-width: 100%;
     padding: 14px 16px;

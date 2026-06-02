@@ -107,7 +107,7 @@ import type {
 } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, statusLabel } from "../ui/formatters";
-import { menus, orderedResourceIds, type MenuId } from "../ui/menu";
+import { menuGroupLabels, menus, orderedResourceIds, type MenuGroup, type MenuId } from "../ui/menu";
 import { MarketSharePanel } from "./MarketSharePanel";
 import { RivalArchetypePanel } from "./RivalArchetypePanel";
 import { BigEventModal } from "./BigEventModal";
@@ -395,6 +395,7 @@ const priorityResourceIds = new Set(["cash", "users", "trust", "compute"]);
 const primaryMenuIds: MenuId[] = ["company", "products", "deck", "agents"];
 const secondaryMenuIds: MenuId[] = ["research", "shop", "competition", "log"];
 const mobileTabMenuIds: MenuId[] = ["company", "products", "deck", "agents"];
+const menuLauncherGroupOrder: MenuGroup[] = ["core", "operations", "meta"];
 
 function getMenuById(menuId: MenuId) {
   return menus.find((menu) => menu.id === menuId);
@@ -3086,6 +3087,45 @@ export function MainMenu({
         <span className="menu-group-label">보조</span>
         {secondaryMenuIds.map((menuId) => renderMenuButton(menuId))}
       </div>
+    </nav>
+  );
+}
+
+export function MenuLauncherBar({
+  activeMenu,
+  onOpen,
+}: {
+  activeMenu: MenuId | null;
+  onOpen: Dispatch<SetStateAction<MenuId>>;
+}) {
+  return (
+    <nav className="menu-launcher-bar" aria-label="하단 경영 메뉴 런처">
+      {menuLauncherGroupOrder.map((group) => {
+        const groupMenus = menus.filter((menu) => menu.group === group);
+
+        return (
+          <div className={`menu-launcher-group menu-launcher-group-${group}`} key={group}>
+            <span className="menu-launcher-group-label">{menuGroupLabels[group]}</span>
+            <div className="menu-launcher-buttons">
+              {groupMenus.map((menu) => (
+                <button
+                  aria-label={`메뉴 열기: ${menu.label}`}
+                  aria-pressed={activeMenu === menu.id}
+                  className={["menu-launcher-button", activeMenu === menu.id ? "active" : "", `menu-group-${menu.group}`].filter(Boolean).join(" ")}
+                  data-menu-id={menu.id}
+                  key={menu.id}
+                  onClick={() => onOpen(menu.id)}
+                  type="button"
+                >
+                  <CommercialUiIcon className="menu-icon" iconId={menuIconIds[menu.id]} />
+                  <strong>{menu.label}</strong>
+                  <span>{menu.hint}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </nav>
   );
 }

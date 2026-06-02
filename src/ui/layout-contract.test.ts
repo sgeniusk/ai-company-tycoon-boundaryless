@@ -22,9 +22,11 @@ const qaScenarios = readFileSync(new URL("../game/qa-scenarios.ts", import.meta.
 describe("v0.13.3 compact game shell layout", () => {
   it("keeps desktop play inside a fixed HUD, stage, and menu grid", () => {
     expect(appCss).toContain("grid-template-areas:");
-    expect(appCss).toContain("\"top top top\"");
-    expect(appCss).toContain("\"stage stage menu\"");
-    expect(appCss).toContain("\"resources commands menu\"");
+    expect(appCss).toContain("\"top\"");
+    expect(appCss).toContain("\"stage\"");
+    expect(appCss).toContain("\"resources\"");
+    expect(appCss).toContain("\"commands\"");
+    expect(appCss).toContain("\"launcher\"");
     expect(appCss).toContain("height: 100dvh");
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*overflow:\s*hidden/s);
     expect(appCss).toMatch(/\.menu-panel\s*{[^}]*overflow:\s*auto/s);
@@ -435,12 +437,12 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.app-shell\.v034-game-shell\.first-screen-composition\b/);
 
     // 데스크톱에서 오피스 스테이지가 지배적 중앙 영역으로 유지된다
-    // (named grid area 보존, 오피스 행이 유연한 1fr, 메뉴는 사이드 컬럼).
+    // (named grid area 보존, 오피스 행이 유연한 1fr, 메뉴는 팝업으로 이동).
     expect(appCss).toMatch(
-      /\.app-shell\s*\{[\s\S]*?grid-template-areas:[\s\S]*?"stage stage menu"[\s\S]*?"resources commands menu"/s,
+      /\.app-shell\s*\{[\s\S]*?grid-template-areas:[\s\S]*?"top"[\s\S]*?"stage"[\s\S]*?"resources"[\s\S]*?"commands"[\s\S]*?"launcher"/s,
     );
     expect(appCss).toMatch(
-      /\.app-shell\s*\{[\s\S]*?grid-template-rows:\s*minmax\(54px,\s*auto\)\s+minmax\(0,\s*1fr\)\s+minmax\(58px,\s*auto\)/s,
+      /\.app-shell\s*\{[\s\S]*?grid-template-rows:\s*minmax\(54px,\s*auto\)\s+minmax\(0,\s*1fr\)\s+minmax\(58px,\s*auto\)\s+minmax\(58px,\s*auto\)\s+minmax\(56px,\s*auto\)/s,
     );
 
     // 이벤트 레일이 오피스를 오버레이(stage 영역 공유)한다 — 오피스 행을 빼앗지 않는다.
@@ -451,6 +453,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(
       /\.app-shell\.v034-game-shell\.first-screen-composition\b[\s\S]*?(min-width:\s*0|overflow:\s*hidden|overflow:\s*auto|text-overflow:\s*ellipsis|overflow-wrap)/s,
     );
+  });
+
+  it("v1.0 routes menus into a popup launcher instead of a persistent menu column", () => {
+    // 상시 메뉴 컬럼 제거 — App.tsx 에 menu-layout 섹션이 없다.
+    expect(appSource).not.toContain("menu-layout pixel-menu-cabinet");
+    // 하단 런처 바 + 팝업 셸 마커 존재.
+    expect(appSource).toMatch(/menu-launcher-bar|MenuLauncherBar/);
+    expect(appSource).toMatch(/menu-popup|MenuPopupModal/);
+    // 그리드에 menu 영역이 없다(오피스 전체 폭).
+    expect(appCss).not.toMatch(/grid-template-areas:[\s\S]*?stage stage menu/s);
   });
 
   it("v0.97 keeps desktop resource-HUD pixel icons and deltas visible", () => {
@@ -544,7 +556,7 @@ describe("v0.13.3 compact game shell layout", () => {
 
   it("prevents narrow screens from creating horizontal page overflow", () => {
     expect(appCss).toMatch(/\.app-shell\s*{[^}]*width:\s*min\(100%,\s*1366px\)/s);
-    expect(appCss).toMatch(/\.game-stage,\s*\.menu-layout,\s*\.resource-strip,\s*\.command-row\s*{[^}]*min-width:\s*0/s);
+    expect(appCss).toMatch(/\.game-stage,\s*\.menu-launcher-bar,\s*\.resource-strip,\s*\.command-row\s*{[^}]*min-width:\s*0/s);
     expect(appCss).toMatch(/\.resource-tile,\s*\.office-scene,\s*\.stage-side,\s*\.menu-panel,\s*\.panel\s*{[^}]*min-width:\s*0/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)\s*{[\s\S]*\.app-shell\s*{[^}]*width:\s*100vw/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.app-shell\s*{[^}]*width:\s*min\(100vw,\s*390px\)/s);
@@ -741,25 +753,28 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.highlight-moment-card\.tone-positive/s);
   });
 
-  it("frames the right management surface as an in-game console", () => {
-    expect(appCss).toMatch(/\.menu-layout\s*{[^}]*background:\s*#20342d/s);
-    expect(appCss).toMatch(/\.menu-layout\s*{[^}]*border:\s*3px solid var\(--line\)/s);
+  it("frames the bottom launcher and popup surface as in-game command hardware", () => {
+    expect(appCss).toMatch(/\.menu-launcher-bar\s*{[^}]*background:[^}]*#20342d/s);
+    expect(appCss).toMatch(/\.menu-launcher-bar\s*{[^}]*grid-area:\s*launcher/s);
+    expect(appCss).toMatch(/\.menu-popup-card\s*{[^}]*background:[^}]*#20342d/s);
+    expect(appCss).toMatch(/\.menu-popup-card\s*{[^}]*border:\s*3px solid var\(--line\)/s);
     expect(appCss).toMatch(/\.menu-panel\s*{[^}]*background:\s*#fff7df/s);
     expect(appCss).toMatch(/\.menu-panel\s*{[^}]*border:\s*2px solid var\(--line\)/s);
-    expect(appCss).toMatch(/\.main-menu button span\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/\.menu-launcher-button span\s*{[^}]*font-size:\s*0\.56rem/s);
   });
 
-  it("v0.88 skins the management menu as a pixel command cabinet", () => {
-    expect(appSource).toContain('className="menu-layout pixel-menu-cabinet"');
-    expect(appSource).toContain('className="menu-panel pixel-menu-screen"');
-    expect(appCss).toMatch(/\.menu-layout\.pixel-menu-cabinet\s*{[^}]*image-rendering:\s*pixelated/s);
-    expect(appCss).toMatch(/\.menu-layout\.pixel-menu-cabinet::before\s*{[^}]*content:\s*""/s);
+  it("v1.0 skins the launcher and popup menu as pixel command hardware", () => {
+    expect(appSource).toContain("<MenuLauncherBar");
+    expect(appSource).toContain("<MenuPopupModal");
+    expect(gameChrome).toContain("menu-launcher-bar");
+    expect(gameChrome).toContain("menuLauncherGroupOrder");
+    expect(appCss).toMatch(/\.menu-launcher-bar\s*{[^}]*image-rendering:\s*pixelated/s);
+    expect(appCss).toMatch(/\.menu-launcher-button::after\s*{[^}]*content:\s*""/s);
     expect(appCss).toMatch(/\.menu-panel\.pixel-menu-screen\s*{[^}]*background:\s*linear-gradient/s);
     expect(appCss).toMatch(/\.menu-panel\.pixel-menu-screen::before\s*{[^}]*repeating-linear-gradient/s);
     expect(appCss).toMatch(/\.menu-panel\.pixel-menu-screen\s*>\s*\*\s*{[^}]*z-index:\s*1/s);
-    expect(appCss).toMatch(/\.main-menu button::after\s*{[^}]*content:\s*""/s);
-    expect(appCss).toMatch(/\.main-menu button\.active::after\s*{[^}]*background:\s*#73e08c/s);
-    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-layout\.pixel-menu-cabinet::before\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/\.menu-launcher-button\.active::after\s*{[^}]*background:\s*#73e08c/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-launcher-bar\s*{[^}]*grid-auto-flow:\s*column/s);
   });
 
   it("puts quick state overlays inside the office playfield", () => {
@@ -942,8 +957,9 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.office-object-production-meter/s);
   });
 
-  it("protects the playfield by narrowing the persistent console column", () => {
-    expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*0\.94fr\)\s+minmax\(0,\s*1fr\)\s+clamp\(330px,\s*28vw,\s*390px\)/s);
+  it("protects the playfield by removing the persistent console column", () => {
+    expect(appCss).toMatch(/\.app-shell\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+    expect(appCss).not.toMatch(/\.app-shell\s*{[^}]*grid-template-columns:[^}]*clamp\(330px,\s*28vw,\s*390px\)/s);
     expect(appCss).toMatch(/\.game-stage\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.72fr\)\s+minmax\(230px,\s*0\.48fr\)/s);
   });
 
