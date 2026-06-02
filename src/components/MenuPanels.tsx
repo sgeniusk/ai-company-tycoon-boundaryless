@@ -165,6 +165,8 @@ import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, itemCategoryLabel, itemTargetLabel, statLabel } from "../ui/formatters";
 import { menus, type MenuId } from "../ui/menu";
 import { CampaignShockPanel } from "./CampaignShockPanel";
+import { MarketSharePanel } from "./MarketSharePanel";
+import { RivalArchetypePanel } from "./RivalArchetypePanel";
 
 let menuRunSeedCounter = 0;
 
@@ -3578,6 +3580,8 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
 
   return (
     <div className="panel-grid two-col">
+      <MarketSharePanel gameState={gameState} locale={locale} />
+      <RivalArchetypePanel gameState={gameState} locale={locale} />
       <section className="panel">
         <div className="panel-heading">
           <h2>경쟁사 랭킹</h2>

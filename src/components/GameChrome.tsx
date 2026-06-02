@@ -107,8 +107,6 @@ import type {
 import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, statusLabel } from "../ui/formatters";
 import { menuGroupLabels, menus, orderedResourceIds, type MenuGroup, type MenuId } from "../ui/menu";
-import { MarketSharePanel } from "./MarketSharePanel";
-import { RivalArchetypePanel } from "./RivalArchetypePanel";
 import { BigEventModal } from "./BigEventModal";
 import { PayoffCelebrationModal } from "./PayoffCelebrationModal";
 import { WorldRevealModal } from "./WorldRevealModal";
@@ -492,10 +490,6 @@ export function TopBar({
         </div>
         <CompetitorHudStrip gameState={gameState} locale={locale} />
       </div>
-      <aside className="top-market-suite" aria-label="시장 정보">
-        <MarketSharePanel gameState={gameState} locale={locale} />
-        <RivalArchetypePanel gameState={gameState} locale={locale} />
-      </aside>
     </section>
   );
 }

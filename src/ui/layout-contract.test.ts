@@ -63,16 +63,21 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("top-run-metrics");
     expect(gameChrome).toContain("top-progress-rail");
     expect(gameChrome).toContain("top-secondary-status");
-    expect(gameChrome).toContain("top-market-suite");
     expect(gameChrome).toContain("캠페인 진행 {calendar.progressPercent}%");
-    expect(appCss).toMatch(/\.top-bar\s*{[^}]*grid-template-columns:\s*minmax\(180px,\s*0\.72fr\)\s+minmax\(0,\s*1\.12fr\)\s+minmax\(340px,\s*0\.92fr\)/s);
+    expect(appCss).toMatch(/\.top-bar\s*{[^}]*grid-template-columns:\s*minmax\(180px,\s*0\.72fr\)\s+minmax\(0,\s*1\.12fr\)/s);
+    expect(appCss).toMatch(/\.top-bar\s*{[^}]*min-height:\s*96px/s);
     expect(appCss).toMatch(/\.top-brand-panel\s*{[^}]*background:\s*linear-gradient/s);
     expect(appCss).toMatch(/\.top-brand-crest\s*{[^}]*background-image:\s*var\(--brand-crest-image\)/s);
     expect(appCss).toMatch(/\.top-brand-crest\s*{[^}]*image-rendering:\s*pixelated/s);
     expect(appCss).toMatch(/\.top-run-metrics\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.top-progress-fill\s*{[^}]*transition:\s*width\s+320ms\s+ease/s);
-    expect(appCss).toMatch(/\.top-market-suite\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1\.12fr\)\s+minmax\(0,\s*0\.88fr\)/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*900px\)[\s\S]*\.top-bar\s*{[^}]*grid-template-columns:\s*1fr/s);
+  });
+
+  it("v1.0 block3 moves the market suite out of the top bar into competition", () => {
+    expect(gameChrome).not.toContain("top-market-suite");
+    expect(menuPanels).toMatch(/MarketSharePanel/);
+    expect(menuPanels).toMatch(/RivalArchetypePanel/);
   });
 
   it("skins bottom HUD resources, command buttons, and menu rails with a UI icon atlas", () => {
@@ -1696,8 +1701,8 @@ describe("v0.13.3 compact game shell layout", () => {
   });
 
   it("v0.58 #1 visualizes market share with derive-only data and top-pressure highlight", () => {
-    expect(gameChrome).toContain("MarketSharePanel");
-    expect(gameChrome).toContain("<MarketSharePanel gameState={gameState} locale={locale} />");
+    expect(menuPanels).toContain("MarketSharePanel");
+    expect(menuPanels).toContain("<MarketSharePanel gameState={gameState} locale={locale} />");
     expect(marketSharePanel).toContain("getPlayerMarketShare");
     expect(marketSharePanel).toContain("getCompetitionSeasonBrief");
     expect(marketSharePanel).toContain("competitorStates");
@@ -1727,8 +1732,8 @@ describe("v0.13.3 compact game shell layout", () => {
   });
 
   it("v0.58 #3 surfaces rival archetype and weakness in a derive-only panel mounted next to market share", () => {
-    expect(gameChrome).toContain("RivalArchetypePanel");
-    expect(gameChrome).toContain("<RivalArchetypePanel gameState={gameState} locale={locale} />");
+    expect(menuPanels).toContain("RivalArchetypePanel");
+    expect(menuPanels).toContain("<RivalArchetypePanel gameState={gameState} locale={locale} />");
     expect(rivalArchetypePanel).toContain("getRivalCounterPlans");
     expect(rivalArchetypePanel).toContain("archetype_key");
     expect(rivalArchetypePanel).toContain("weakness_key");
