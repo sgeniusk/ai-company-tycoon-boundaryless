@@ -152,7 +152,7 @@ button:disabled {
   text-overflow: ellipsis;
 }
 
-.app-shell.v034-game-shell.first-screen-composition .command-action span,
+/* 전략 카드 손패 라벨·활성 제품 텍스트는 좁아서 항상 숨김. */
 .app-shell.v034-game-shell.first-screen-composition .hand-count,
 .app-shell.v034-game-shell.first-screen-composition .strategy-hand-card strong,
 .app-shell.v034-game-shell.first-screen-composition .strategy-hand-card small,
@@ -160,13 +160,23 @@ button:disabled {
   display: none;
 }
 
-.app-shell.v034-game-shell.first-screen-composition .command-row {
-  grid-template-columns: minmax(42px, 0.36fr) minmax(0, 2.2fr) repeat(3, minmax(36px, 0.22fr));
+/* 데스크톱: 커맨드 버튼은 아이콘 위 작은 라벨(다음 달·새 게임·저장·불러오기)로 정체를 보인다. min-width 로 손패에 찌그러지지 않게. */
+.app-shell.v034-game-shell.first-screen-composition .command-action {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  justify-items: center;
+  min-width: 46px;
+  row-gap: 1px;
 }
 
-.app-shell.v034-game-shell.first-screen-composition .command-action {
-  grid-template-columns: 24px;
-  justify-items: center;
+.app-shell.v034-game-shell.first-screen-composition .command-action span {
+  font-size: 0.5rem;
+  line-height: 1;
+  max-width: 100%;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-shell.v034-game-shell.first-screen-composition .event-stack.office-sightline-event-rail .event-choices strong,
@@ -197,6 +207,20 @@ button:disabled {
     text-overflow: ellipsis;
     white-space: nowrap;
     word-break: normal;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .command-action span {
+    display: none;
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .command-row {
+    grid-template-columns: minmax(42px, 0.36fr) minmax(0, 2.2fr) repeat(3, minmax(36px, 0.22fr));
+  }
+
+  .app-shell.v034-game-shell.first-screen-composition .command-action {
+    grid-template-columns: 24px;
+    grid-template-rows: auto;
+    justify-items: center;
   }
 }
 
