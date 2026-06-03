@@ -179,6 +179,13 @@ button:disabled {
   white-space: nowrap;
 }
 
+/* 데스크톱(>1100px)에서는 손패가 빠져 자리가 나므로 보조 버튼(새 게임·저장·불러오기) 라벨도 켠다. */
+@media (min-width: 1101px) {
+  .app-shell.v034-game-shell.first-screen-composition .command-row .secondary-action span {
+    display: block;
+  }
+}
+
 .app-shell.v034-game-shell.first-screen-composition .event-stack.office-sightline-event-rail .event-choices strong,
 .app-shell.v034-game-shell.first-screen-composition .event-stack.office-sightline-event-rail .event-choice-summary {
   white-space: normal;

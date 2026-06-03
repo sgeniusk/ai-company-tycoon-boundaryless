@@ -2959,7 +2959,6 @@ export function CommandRow({
         <CommercialUiIcon className="command-icon" iconId="next" />
         <span>다음 달</span>
       </button>
-      <StrategyHand gameState={gameState} />
       <button aria-label="새 게임" className="secondary-action command-action" onClick={() => setGameState(createInitialState())}>
         <CommercialUiIcon className="command-icon" iconId="newGame" />
         <span>새 게임</span>
@@ -3074,9 +3073,11 @@ export function MainMenu({
 export function MenuLauncherBar({
   activeMenu,
   onOpen,
+  handCount = 0,
 }: {
   activeMenu: MenuId | null;
   onOpen: Dispatch<SetStateAction<MenuId>>;
+  handCount?: number;
 }) {
   return (
     <nav className="menu-launcher-bar" aria-label="하단 경영 메뉴 런처">
@@ -3098,6 +3099,9 @@ export function MenuLauncherBar({
                   type="button"
                 >
                   <CommercialUiIcon className="menu-icon" iconId={menuIconIds[menu.id]} />
+                  {menu.id === "deck" && handCount > 0 ? (
+                    <b className="hand-count-badge" aria-label={`손패 ${handCount}장`}>{handCount}</b>
+                  ) : null}
                   <strong>{menu.label}</strong>
                   <span>{menu.hint}</span>
                 </button>

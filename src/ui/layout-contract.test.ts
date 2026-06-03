@@ -1836,6 +1836,13 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).not.toContain("<OperationCommandPanel");
   });
 
+  it("v1.0 block5 takes the strategy hand out of the command row and labels the controls", () => {
+    const commandRowBody = gameChrome.slice(gameChrome.indexOf("function CommandRow"), gameChrome.indexOf("function StrategyHand"));
+    expect(commandRowBody).not.toContain("<StrategyHand");
+    expect(gameChrome).toContain("hand-count-badge");
+    expect(appCss).toMatch(/@media\s*\(min-width:\s*1101px\)[\s\S]*?\.command-row\s+\.secondary-action span\s*{[^}]*display:\s*block/s);
+  });
+
   it("v0.58 #4 differentiates rival-counter strategy cards with a derive-only pressure badge in deck and reward UI", () => {
     expect(menuPanels).toContain("isCounterCard");
     expect(menuPanels).toContain("getRivalCounterSignal");

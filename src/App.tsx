@@ -163,7 +163,11 @@ function App() {
         />
       </div>
       <CommandRow gameState={gameState} setGameState={setGameState} onSave={handleSave} onLoad={handleLoad} />
-      <MenuLauncherBar activeMenu={isMenuPopupOpen ? activeMenu : null} onOpen={openMenu} />
+      <MenuLauncherBar
+        activeMenu={isMenuPopupOpen ? activeMenu : null}
+        handCount={gameState.roguelite.deck.hand.length}
+        onOpen={openMenu}
+      />
       {isMenuPopupOpen && (
         <MenuPopupModal
           activeMenu={activeMenu}
