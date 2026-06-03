@@ -29,8 +29,8 @@ Keep startup context lean:
 
 ## Current Source Of Truth
 
-- Current version: `v0.99-alpha` (closed at `ab4e8cc`); RC prep `v1.0-beta-rc`
-- Current feature: `v1.0-beta-rc` (in progress, USER-GATED) — freeze a playable build for user review; deploy + final source art + real-human playtest are user-gated. Commercial polish v0.96 (first-screen) + v0.97 (pixel HUD/tokens) + v0.98 (interactions) + v0.99 (build readiness) shipped (history in git + reports/). Baseline 53 files / 648 tests. Active roadmap: reports/v0_96_plus_commercial_polish_roadmap.md.
+- Current version: `v1.0` track — `v1.0-office-first-menu-redesign` (in progress, latest `dc615eb`)
+- Current feature: `v1.0-office-first-menu-redesign` — menus into dismissible popups behind a grouped bottom launcher so the office dominates the first screen. First-screen shell DONE (#1-#5, officeVisibleFraction 0.24→0.403, command controls labeled); REMAINING #6 꾸미기/shop split, #7 기록 subtabs, #8 popup-interior clarity sweep + mobile + pixel polish. Codex handoffs ready: reports/codex-handoff/v1_0_block6_decor_split.md, _block7_log_subtabs.md, _block8_popup_polish_mobile.md. Master plan: reports/v1_0_completion_plan.md. Baseline 53 files / 652 tests. RC track (production promote / final art / playtest) is user-gated. Commercial polish v0.96-v0.99 + v1.0-beta preview shipped (git + reports/).
 - Current stack: Vite + React + TypeScript
 - Working directory: `/Users/taewookkim/dev/ai-company-tycoon` (moved from Downloads on 2026-05-26)
 - Main gate: `npm run harness:gate`

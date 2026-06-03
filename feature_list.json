@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-06-02",
-  "current_feature_id": "v1.0-beta-rc",
+  "last_updated": "2026-06-03",
+  "current_feature_id": "v1.0-office-first-menu-redesign",
   "features": [
     {
       "id": "harness-2026-05-23-context-budget",
@@ -459,6 +459,27 @@
       ],
       "evidence": [],
       "next_step": "USER CHECKPOINT: RC freeze + deploy + final-art/real-human-playtest are user-gated. Awaiting direction (deploy now? request final art? more polish?)."
+    },
+    {
+      "id": "v1.0-office-first-menu-redesign",
+      "name": "Office-first menu popup redesign",
+      "description": "Move the always-on menu/side panels into dismissible popups behind a grouped bottom launcher so the office scene dominates the first screen. Approved design: reports/v1_0_menu_uiux_design_review.md. Completion plan + remaining block queue: reports/v1_0_completion_plan.md.",
+      "status": "in_progress",
+      "priority": "P1",
+      "dependencies": [
+        "v1.0-beta-rc"
+      ],
+      "definition_of_done": [
+        "Menu column removed; menus open as dismissible popups from a grouped bottom launcher; office is the dominant first-screen element (officeVisibleFraction >= 0.40).",
+        "Office overlays slimmed (next-action chip + 꾸미기 office button); stage-side -> status popup; market suite -> competition popup; top bar compact.",
+        "Command controls labeled; strategy hand -> deck popup + hand-count badge.",
+        "REMAINING: 꾸미기/shop view split (block 6), 기록 timeline/도감/업적 subtabs (block 7), popup-interior clarity sweep + mobile full-sheet + pixel polish (block 8).",
+        "All visual/additive (simulation.ts/types.ts/data unchanged); harness:gate green per block."
+      ],
+      "evidence": [
+        "2026-06-02/03 shipped blocks #1-#5: deb7c9d (popup shell+launcher), 64b5321 (office full width+chip+decor button), ecc48ed (market suite->competition, top bar 224->147), 8c77563 (다음 달 label), dc615eb (command 4 labels + strategy hand->deck badge). officeVisibleFraction 0.24 -> 0.403. Gate 53/652, additive. reports/qa/v1_0_block*_run.md."
+      ],
+      "next_step": "Codex handoffs ready: reports/codex-handoff/v1_0_block6_decor_split.md, v1_0_block7_log_subtabs.md, v1_0_block8_popup_polish_mobile.md. Then RC track (production promote / final art / real-human playtest) is user-gated."
     }
   ]
 }

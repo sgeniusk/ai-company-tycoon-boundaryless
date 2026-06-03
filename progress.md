@@ -1,48 +1,51 @@
 # Progress - AI Company Tycoon: Boundaryless
 
-Last Updated: 2026-06-02
+Last Updated: 2026-06-03
 
 ## Current State
 
-- Current version: `v0.99-alpha` (closed); RC prep — `v1.0-beta-rc` (in progress, USER-GATED)
-- Current feature: `v1.0-beta-rc` — freeze a coherent playable build for user review (deploy, final art, real-human playtest are user-gated). Awaiting user direction.
-- Latest commit: `ab4e8cc` (v0.99 build readiness). Branch `main`, synced with `origin/main`.
+- Current version: `v1.0` track — `v1.0-office-first-menu-redesign` (in progress)
+- Current feature: office-first menu popup redesign. First-screen shell DONE; popup-interior / 기록 / 꾸미기 / mobile / polish REMAINING.
+- Latest commit: `dc615eb` (command-row clarity). Branch `main`, synced with `origin/main`.
 - Stack: Vite + React + TypeScript
 - Local dev: `npm run dev -- --port 5201`; preview built dist: `npm run preview -- --port 5223`
-- Main QA route: `http://127.0.0.1:5201/?scenario=office-visuals`
-- Full gate: `npm run harness:gate < /dev/null` (baseline 53 files / 648 tests)
-- Smoke index: `reports/qa/SMOKE_INDEX.md`
+- Full gate: `npm run harness:gate < /dev/null` (baseline 53 files / 652 tests, no chunk warning)
+- Smoke index: `reports/qa/SMOKE_INDEX.md` (Claude runs the browser smokes — Codex sandbox blocks Chromium localhost)
+- Latest preview: `https://ai-company-tycoon-2g7zgvqcu-gomgomee-s-projects.vercel.app`
 
-## Shipped this session (commercial polish v0.96-v0.99; detail in git + reports/qa/)
+## Master plan
 
-- v0.96 first-screen composition (`d11eb13`) — office-dominant stage + event-rail overlay locked, crowding guard, first-viewport smoke.
-- v0.97 pixel consistency — #1 desktop resource-HUD redesign (`4d0978b`), #2 pixel token unification radius+motion (`ba5b0b0`).
-- v0.98 interaction finish — #1 overlay dismiss affordance + reliability smoke (`c2e1503`), #2 Escape-to-dismiss + initial focus (`f2b503e`).
-- v0.99 build readiness (`ab4e8cc`) — game-logic manualChunk (entry 505->202 kB, chunk warning gone), SMOKE_INDEX.md.
-- Earlier tracks (roguelike v0.63-v0.67, polish v0.68-v0.95) in git + reports/.
+- Completion plan + remaining block queue: **`reports/v1_0_completion_plan.md`**
+- Approved design: `reports/v1_0_menu_uiux_design_review.md`
+- Earlier roadmap: `reports/v0_96_plus_commercial_polish_roadmap.md`
 
-## RC Readiness (v1.0-beta gate)
+## Redesign blocks shipped (this session, detail in reports/qa/v1_0_block*_run.md)
 
-- Clean main, pushed + synced with origin. ✅
-- `npm run harness:gate` PASS (53 files / 648 tests, build clean, no chunk warning). ✅
-- Desktop/mobile smoke screenshots in `reports/qa/screenshots/`. ✅
-- Remaining (USER-GATED): deploy to Vercel, request final source art (`docs/ANTIGRAVITY_ART_BRIEF.md`; gate `npm run qa:asset-handoff`), real-human blind playtest, short release report.
+- #1 `deb7c9d` — menu column removed → grouped bottom launcher + popup shell (MenuPopupModal, activePopupMenu, openMenu wrapper).
+- #2 `64b5321` — stage-side → status popup, office full stage width, OfficeActionSlots+OperationCommandPanel → "다음 행동" chip, 꾸미기 office button.
+- #3 `ecc48ed` — market suite → competition popup, top bar 224→147px (officeVisibleFraction 0.29→0.376).
+- #4 `8c77563` — desktop "다음 달" label restored.
+- #5 `dc615eb` — command 4 buttons labeled + strategy hand → deck popup + 손패 count badge (officeVisibleFraction → 0.403).
+- (Earlier: v0.96–v0.99 commercial polish + v1.0-beta preview/release report `397ba67`.)
 
-## Blockers / Notes
+## REMAINING (Codex handoffs ready)
 
-- None blocking. Codex CLI sandbox blocks Chromium localhost (`ERR_ACCESS_DENIED`) and may hang on a spawned dev server — hand Codex CSS/TSX + unit tests only; Claude runs the browser smokes (see SMOKE_INDEX.md).
+1. **Block 6** `reports/codex-handoff/v1_0_block6_decor_split.md` — split ShopPanel into 상점(buy) vs 꾸미기(office decoration) views.
+2. **Block 7** `reports/codex-handoff/v1_0_block7_log_subtabs.md` — 기록 popup → 타임라인/도감/업적 subtabs.
+3. **Block 8** `reports/codex-handoff/v1_0_block8_popup_polish_mobile.md` — popup-interior clarity sweep + mobile full-sheet + pixel polish + reduced-motion.
+4. **RC track (USER-GATED)** — production promote (`vercel deploy --prod`), final source art (`qa:asset-handoff`), real-human playtest, v1.0 release report/tag.
 
-## Verification Evidence
+## Workflow / Blockers
 
-- v0.96 `d11eb13` gate 53/643; v0.97 `4d0978b` 53/644, `ba5b0b0` 53/645; v0.98 `c2e1503` 53/646, `f2b503e` 53/647; v0.99 `ab4e8cc` 53/648 (entry chunk 202 kB, no >500 kB warning, dist smokes pass). All visual/additive — simulation.ts/types.ts/data unchanged across the v0.96-v0.99 polish track.
+- None blocking. **Codex CLI sandbox blocks Chromium localhost and sometimes hangs at `phase: starting` (21–33 min seen this session).** Hand Codex CSS/TSX + unit tests ONLY; Claude runs all browser smokes + screenshots. If Codex hangs, cancel via the companion and have Claude implement directly.
+- All redesign work is visual/additive — simulation.ts/types.ts/data unchanged.
 
 ## Recommended Next Step
 
-USER CHECKPOINT — v1.0-beta/RC is a freeze-for-review milestone. Options: (a) deploy current main to Vercel + write the release report; (b) request final source art (resolution up) per `docs/ANTIGRAVITY_ART_BRIEF.md`; (c) more polish (e.g. deferred v0.97 gradient flattening, focus-restoration follow-up). Awaiting direction.
+Next session: pick up Block 6 (꾸미기/shop split) from its handoff. Drive Codex (medium, CSS/TSX+tests only) → Claude verifies on the live server (smokes in SMOKE_INDEX.md) → Lore commit → continue blocks 7, 8. Then surface the RC track to the user.
 
 ## Next Session Start
 
-1. Read `AGENTS.md`, `feature_list.json`, this file.
-2. Check `git status --short`.
-3. Run `npm run harness:gate` baseline (53 files / 648 tests).
-4. v1.0-beta/RC is user-gated — confirm direction before deploy/final-art.
+1. Read `AGENTS.md`, `feature_list.json`, this file, `reports/v1_0_completion_plan.md`.
+2. `git status --short`; `npm run harness:gate` baseline (53 files / 652 tests).
+3. Start Block 6 handoff. Codex codes CSS/TSX+tests; Claude runs browser smokes + commits.
