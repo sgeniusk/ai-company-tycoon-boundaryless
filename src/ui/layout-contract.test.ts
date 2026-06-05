@@ -10,6 +10,7 @@ const campaignEndingSource = readFileSync(new URL("../game/campaign-ending.ts", 
 const metaProgressionSource = readFileSync(new URL("../game/meta-progression.ts", import.meta.url), "utf8");
 const betaReadinessSource = readFileSync(new URL("../game/beta-readiness.ts", import.meta.url), "utf8");
 const menuPanels = readFileSync(new URL("../components/MenuPanels.tsx", import.meta.url), "utf8");
+const menuPopupModal = readFileSync(new URL("../components/MenuPopupModal.tsx", import.meta.url), "utf8");
 const campaignShockPanel = readFileSync(new URL("../components/CampaignShockPanel.tsx", import.meta.url), "utf8");
 const playtestObserver = readFileSync(new URL("../game/blind-playtest-observer.ts", import.meta.url), "utf8");
 const marketSharePanel = readFileSync(new URL("../components/MarketSharePanel.tsx", import.meta.url), "utf8");
@@ -276,14 +277,37 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("workforce-mix-badge");
     expect(gameChrome).toContain("workforce-mix-metric");
     expect(gameChrome).toContain("getWorkforceMixSummary");
-    expect(gameChrome).toContain("ROBOT");
-    expect(appCss).toMatch(/\.office-wall\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(gameChrome).toContain("row.kind === \"robot\"");
+    expect(gameChrome).toContain("office-scoreboard");
+    expect(gameChrome).toContain("scoreboard-rank-row");
+    expect(appCss).toMatch(/\.office-scene\s*{[^}]*grid-template-rows:\s*clamp\(96px,\s*17%,\s*140px\)\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.office-wall\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/\.scoreboard-rank-row\s*{[^}]*grid-template-columns:\s*max-content\s+max-content\s+minmax\(0,\s*1fr\)/s);
     expect(appCss).toMatch(/\.workforce-mix-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.workforce-mix-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/\.workforce-mix-badge\s*{[^}]*border-radius:\s*var\(--pixel-radius\)/s);
     expect(appCss).toMatch(/\.workforce-mix-metric\s*{[^}]*white-space:\s*nowrap/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.workforce-mix-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.workforce-mix-row\s*{[^}]*grid-template-columns:\s*minmax\(72px,\s*0\.78fr\)\s+minmax\(0,\s*1fr\)/s);
+  });
+
+  it("v1.0 CD-1 renders the national-ranking LED scoreboard", () => {
+    expect(gameChrome).toContain("deriveNationalRanking");
+    expect(gameChrome).toContain("buildScoreboardMarquee");
+    expect(gameChrome).toContain("const nationalRanking = deriveNationalRanking(gameState)");
+    expect(gameChrome).toContain("const scoreboardMarquee = buildScoreboardMarquee(gameState)");
+    expect(gameChrome).toContain("aria-label=\"전국 AI 기업 랭킹\"");
+    expect(gameChrome).toContain("scoreboard-live-badge");
+    expect(gameChrome).toContain("LIVE");
+    expect(gameChrome).toContain("scoreboard-rank-number");
+    expect(gameChrome).toContain("#{nationalRanking.rank}");
+    expect(gameChrome).toContain("nationalRanking.total.toLocaleString(\"en-US\")");
+    expect(gameChrome).toContain("scoreboard-marquee");
+    expect(gameChrome).toContain("scoreboardMarquee.join(\" · \")");
+    expect(appCss).toMatch(/\.office-scoreboard\s*{[^}]*border-radius:\s*var\(--pixel-radius\)/s);
+    expect(appCss).toMatch(/\.scoreboard-live-badge\s*{[^}]*animation:\s*scoreboard-live-blink\s+1\.4s\s+var\(--pixel-steps\)\s+infinite/s);
+    expect(appCss).toMatch(/\.scoreboard-marquee span\s*{[^}]*animation:\s*scoreboard-marquee-scroll\s+13s\s+linear\s+infinite/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.scoreboard-live-badge,[\s\S]*\.scoreboard-marquee span\s*{[^}]*animation:\s*none/s);
   });
 
   it("surfaces beta readiness signals from the multi-ending track in the guide", () => {
@@ -351,6 +375,51 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.next-action-chip\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.office-decor-button\s*{[^}]*position:\s*absolute/s);
     expect(appCss).toMatch(/\.rival-incident-banner\s*{[^}]*position:\s*absolute/s);
+  });
+
+  it("v1.0 rc leaves persistent choice and pressure markers on the office board", () => {
+    expect(gameChrome).toContain("OfficePersistenceMarkerLayer");
+    expect(gameChrome).toContain("officePersistenceMarkers");
+    expect(gameChrome).toContain("office-persistence-markers");
+    expect(gameChrome).toContain("오피스 선택 흔적");
+    expect(gameChrome).toContain("getRivalCounterPlans");
+    expect(gameChrome).toContain("gameState.roguelite.pendingCardReward");
+    expect(gameChrome).toContain("gameState.annualDirective");
+    expect(gameChrome).toContain("selectedGrowthPath.title");
+    expect(gameChrome).toContain("latestActiveProduct");
+    expect(gameChrome).not.toContain(".filter((marker): marker is OfficePersistenceMarker => Boolean(marker)).slice(0, 5)");
+    expect(appCss).toMatch(/\.office-persistence-markers\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.office-persistence-markers\s*{[^}]*pointer-events:\s*none/s);
+    expect(appCss).toMatch(/\.office-persistence-marker\s*{[^}]*left:\s*var\(--marker-x\)/s);
+    expect(appCss).toMatch(/\.office-persistence-marker\.marker-rival/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.office-persistence-marker small\s*{[^}]*display:\s*none/s);
+  });
+
+  it("v1.0 rc promotes reward growth and event choices into a mobile decision layer", () => {
+    expect(gameChrome).toContain("decision-layer-card");
+    expect(gameChrome).toContain("decision-primary-action");
+    expect(gameChrome).toContain("primaryStaffOptionId");
+    expect(gameChrome).toContain("primaryRivalChoiceId");
+    expect(gameChrome).toContain("primaryWorldChoiceId");
+    expect(gameChrome).toContain("focusGrowthDecisionLayer");
+    expect(gameChrome).toContain(".first-growth-fast-start, .growth-path-card.decision-primary");
+    expect(gameChrome).toMatch(/guidance\.id === "choose_growth_path"[\s\S]*setActiveStageTab\("results"\)[\s\S]*setStatusPopupOpen\(true\)[\s\S]*focusGrowthDecisionLayer\(\)/);
+    expect(gameChrome).toMatch(/const handleNextActionChip[\s\S]*guidance\.id === "choose_growth_path"[\s\S]*setActiveStageTab\("results"\)[\s\S]*setStatusPopupOpen\(true\)[\s\S]*focusGrowthDecisionLayer\(\)/);
+    expect(gameChrome).toContain("decision-primary");
+    expect(menuPanels).toContain("primaryRewardCardId");
+    expect(menuPanels).toContain("card.id === primaryRewardCardId");
+    expect(appCss).toMatch(/\.decision-layer-card\s*{[^}]*border-width:\s*3px/s);
+    expect(appCss).toMatch(/\.event-choices button\.decision-primary\s*{[^}]*background:\s*#e0f1dc/s);
+    expect(appCss).toMatch(/\.reward-choice\.decision-primary\s*{[^}]*order:\s*-1/s);
+    expect(appCss).toMatch(/\.growth-path-card\.decision-primary\s*{[^}]*order:\s*-1/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)[\s\S]*\.event-choices button\.decision-primary\s*{[^}]*grid-column:\s*1\s*\/\s*-1/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*1100px\)[\s\S]*\.event-choices button\.decision-primary \.event-choice-summary\s*{[^}]*display:\s*block/s);
+  });
+
+  it("v1.0 rc formats rival momentum without raw float tails", () => {
+    expect(gameChrome).toContain("formatCompactDecimal");
+    expect(gameChrome).toContain("formatCompactDecimal(targetState.momentum)");
+    expect(gameChrome).not.toContain("모멘텀 ${targetState.momentum}");
   });
 
   it("skins office controls as toy-like pixel command consoles", () => {
@@ -508,13 +577,16 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.resource-tile\s*{[^}]*min-height:\s*42px/s);
   });
 
-  it("keeps the mobile bottom economy HUD as a complete two-row pixel board", () => {
+  it("keeps the mobile bottom economy HUD as a one-row compact signal strip", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
-    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*grid-template-rows:\s*repeat\(2,\s*minmax\(42px,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*grid-template-rows:\s*42px/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*grid-auto-rows:\s*0/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*height:\s*42px/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*max-height:\s*42px/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*grid-auto-flow:\s*row/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-strip\s*{[^}]*overflow:\s*hidden/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-tile\s*{[^}]*grid-template-columns:\s*18px\s+minmax\(0,\s*1fr\)/s);
-    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-icon\s*{[^}]*transform:\s*scale\(0\.82\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-tile:nth-child\(n \+ 5\)\s*{[^}]*display:\s*none/s);
     expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-delta\s*{[^}]*display:\s*none/s);
   });
 
@@ -777,7 +849,132 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.menu-panel\.pixel-menu-screen::before\s*{[^}]*repeating-linear-gradient/s);
     expect(appCss).toMatch(/\.menu-panel\.pixel-menu-screen\s*>\s*\*\s*{[^}]*z-index:\s*1/s);
     expect(appCss).toMatch(/\.menu-launcher-button\.active::after\s*{[^}]*background:\s*#73e08c/s);
-    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-launcher-bar\s*{[^}]*grid-auto-flow:\s*column/s);
+    expect(gameChrome).toContain("mobile-menu-dock");
+    expect(gameChrome).toContain("mobileDrawerMenuGroups");
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.mobile-menu-dock\s*{[^}]*grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\)/s);
+  });
+
+  it("v1.0 mobile-first makes menu popups full-sheet and launcher access grouped", () => {
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-overlay\s*{[^}]*align-items:\s*stretch/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-overlay\s*{[^}]*overflow:\s*hidden/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-card\s*{[^}]*height:\s*100dvh/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-card\s*{[^}]*width:\s*100vw/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-header\s*{[^}]*position:\s*sticky/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-dismiss\s*{[^}]*min-height:\s*44px/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-body\s*{[^}]*overflow-x:\s*hidden/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-body\s*{[^}]*overscroll-behavior:\s*contain/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-launcher-group\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.mobile-dock-button\s*{[^}]*text-align:\s*center/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.mobile-dock-button span\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.mobile-menu-drawer\.open\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.mobile-menu-drawer-items\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.app-shell\.v034-game-shell\.first-screen-composition \.menu-popup-body\.menu-panel\s*{[^}]*overflow-x:\s*hidden/s);
+    expect(appCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.menu-popup-overlay[\s\S]*animation:\s*none/s);
+  });
+
+  it("restores the standalone mobile first screen with floating HUD, FAB, and grouped launcher", () => {
+    expect(gameChrome).toContain("mobile-hud-star");
+    expect(gameChrome).toContain("data-resource-id={resourceId}");
+    expect(gameChrome).toContain("mobile-top-more-button");
+    expect(gameChrome).toContain("`mobile-dock-${item.id}`");
+    expect(appCss).toMatch(/\.mobile-hud-star\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.app-shell\.v034-game-shell\.first-screen-composition\s*{[^}]*grid-template-areas:\s*"stage"/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.app-shell\.v034-game-shell\.first-screen-composition \.game-stage\s*{[^}]*height:\s*100dvh/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.app-shell\.v034-game-shell\.first-screen-composition \.office-scene\.pixel-office-theater\s*{[^}]*min-height:\s*100dvh/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.resource-tile\.resource-cash,[\s\S]*\.resource-tile\.resource-users,[\s\S]*\.resource-tile\.resource-compute\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.next-action-chip span::after\s*{[^}]*content:\s*"목표"/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.command-row \.primary-action::before\s*{[^}]*content:\s*"다음 행동"/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.office-scene\.pixel-office-theater\s*{[^}]*grid-template-rows:\s*clamp\(78px,\s*10dvh,\s*92px\)\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.office-scoreboard\s*{[^}]*min-height:\s*42px/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.app-shell\.v034-game-shell\.first-screen-composition \.scoreboard-rank-number\s*{[^}]*font-size:\s*clamp\(0\.9rem,\s*4vw,\s*1\.08rem\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.app-shell\.v034-game-shell\.first-screen-composition \.scoreboard-marquee\s*{[^}]*font-size:\s*0\.46rem/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.launch-screen\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.helper-tutorial\s*{[^}]*max-width:\s*min\(218px,\s*calc\(100vw - 132px\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.helper-copy p:last-of-type\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.alpha-run-focus-strip,[\s\S]*\.rival-incident-banner\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.mobile-menu-dock\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(0,\s*1fr\)\s+78px\s+minmax\(0,\s*1fr\)\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.mobile-menu-dock::before\s*{[^}]*grid-column:\s*3/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.mobile-top-more-button\s*{[^}]*position:\s*relative/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.office-workbeat-layer,[\s\S]*\.office-task-link-layer\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.mobile-menu-drawer\s*{[^}]*transform:\s*translateY\(calc\(100% \+ 16px\)\)/s);
+  });
+
+  it("v1.0 CD-2 restores the floating resource HUD, goal ribbon, and 꾸미기 on the mobile first screen", () => {
+    // Brand pill (crest + N★) shown over the office
+    expect(appCss).toMatch(/\.app-shell\.v034-game-shell\.first-screen-composition \.top-bar\s*{[^}]*display:\s*block/s);
+    // 3 core resource chips float as a row (resource-strip un-hidden)
+    expect(appCss).toMatch(/\.app-shell\.v034-game-shell\.first-screen-composition \.resource-strip\s*{[^}]*display:\s*flex/s);
+    // 꾸미기 quick tool shown (top-right)
+    expect(appCss).toMatch(/\.app-shell\.v034-game-shell\.first-screen-composition \.office-decor-button\s*{[^}]*display:\s*inline-flex/s);
+    // Goal ribbon ("이번 달 목표") restored bottom-left, no longer in the hidden group
+    expect(appCss).toMatch(/\.app-shell\.v034-game-shell\.first-screen-composition \.turn-goal-strip\s*{[^}]*left:\s*max\(10px/s);
+    // LED scoreboard nudged below the top HUD so they do not collide
+    expect(appCss).toMatch(/\.app-shell\.v034-game-shell\.first-screen-composition \.office-scoreboard\s*{[^}]*transform:\s*translateY\(34px\)/s);
+    // CD-2b: the ＋ tray reveals the 5 secondary resources behind the pinned 3-core chips
+    expect(gameChrome).toContain("resource-tray-toggle");
+    expect(gameChrome).toContain("resource-tray-popover");
+    expect(gameChrome).toContain("orderedResourceIds.slice(3)");
+    expect(appCss).toMatch(/\.app-shell\.v034-game-shell\.first-screen-composition \.resource-tray-toggle\s*{[^}]*display:\s*grid/s);
+  });
+
+  it("v1.0 mobile-first compresses chrome so the office dominates the first screen", () => {
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.app-shell\.v034-game-shell\.first-screen-composition\s*{[^}]*grid-template-rows:\s*auto\s+minmax\(340px,\s*1fr\)\s+auto\s+auto\s+minmax\(58px,\s*auto\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.top-command-center\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.top-brand-panel\s*{[^}]*grid-template-columns:\s*52px\s+minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.resource-strip\s*{[^}]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.resource-strip\s*{[^}]*height:\s*42px/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.resource-tile:nth-child\(n \+ 5\)\s*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.app-shell\.v034-game-shell\.first-screen-composition \.command-row\s*{[^}]*grid-template-columns:\s*minmax\(116px,\s*1fr\)\s+repeat\(3,\s*42px\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)\s*{[\s\S]*\.command-row p\s*{[^}]*display:\s*none/s);
+  });
+
+  it("v1.0 block6 splits the shop launcher from the office decor entry point", () => {
+    expect(appSource).toMatch(/const openMenu[\s\S]*setShopInitialView\("shop"\)[\s\S]*setMenuPopupOpen\(true\)/s);
+    expect(appSource).toMatch(/const openDecorMenu[\s\S]*setShopInitialView\("decor"\)[\s\S]*setActiveMenu\("shop"\)/s);
+    expect(appSource).toContain("shopInitialView={shopInitialView}");
+    expect(gameChrome).toMatch(/office-decor-button[\s\S]*onOpenDecorMenu/);
+    expect(menuPopupModal).toContain("shopInitialView?: ShopPanelView");
+    expect(menuPopupModal).toContain("renderMenuContent(activeMenu, gameState, setGameState, locale, setActiveMenu, shopInitialView)");
+    expect(menuPanels).toMatch(/ShopPanel[\s\S]*initialView:\s*ShopPanelView/);
+    expect(menuPanels).toContain("shop-view-shell");
+    expect(menuPanels).toContain("decor-view");
+    expect(menuPanels).toContain("사무실 꾸미기");
+    expect(menuPanels).toContain("아이템 상점");
+    expect(menuPanels).toMatch(/activeMenu === "shop"[\s\S]*initialView=\{shopInitialView\}/);
+    expect(appCss).toMatch(/\.shop-view-shell\s*{[^}]*display:\s*grid/s);
+  });
+
+  it("v1.0 block7 splits the log popup into timeline collection and achievements subtabs", () => {
+    expect(menuPanels).toMatch(/log-subtab|timeline-tab|collection-tab|achievement-tab/);
+    expect(menuPanels).toMatch(/discoveredArchetypeIds|아키타입 도감|도감/);
+    expect(menuPanels).toMatch(/unlockedAchievements|achievementStatuses|업적/);
+    expect(appCss).toMatch(/\.log-subtab-bar\s*{[^}]*display:/s);
+  });
+
+  it("v1.0 block8 keeps popup interiors readable and status popups mobile-sheet safe", () => {
+    const firstScreenDesktopSlice = appCss.slice(
+      appCss.indexOf(".app-shell.v034-game-shell.first-screen-composition"),
+      appCss.indexOf("@media (max-width: 1100px)"),
+    );
+
+    expect(firstScreenDesktopSlice).not.toMatch(/\.menu-panel[^{}]*(?:span|strong|small|p|h2|h3|li|em|code)[^{]*{[^}]*display:\s*none/s);
+    expect(firstScreenDesktopSlice).not.toMatch(/\.menu-popup-body[^{]*{[^}]*display:\s*none/s);
+    expect(appCss).toMatch(/\.menu-popup-card\s*{[^}]*border-radius:\s*var\(--pixel-radius\)/s);
+    expect(appCss).toMatch(/\.menu-popup-card\s*{[^}]*box-shadow:[^}]*0 16px 0/s);
+    expect(appCss).not.toMatch(/\.menu-popup-card\s*{[\s\S]*?box-shadow:[\s\S]*0 24px 60px/);
+    expect(appCss).toMatch(/\.stage-status-popup-card\s*{[^}]*border-radius:\s*var\(--pixel-radius\)/s);
+    expect(appCss).toMatch(/\.stage-status-popup-card \.stage-side\s*{[^}]*overflow:\s*auto/s);
+    expect(appCss).toMatch(/\.stage-status-popup-dismiss:focus-visible\s*{[^}]*outline:\s*3px solid var\(--green-dark\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.stage-status-popup-overlay\s*{[^}]*align-items:\s*stretch/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.stage-status-popup-overlay\s*{[^}]*overflow:\s*hidden/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.stage-status-popup-card\s*{[^}]*height:\s*100dvh/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.stage-status-popup-card\s*{[^}]*width:\s*100vw/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.stage-status-popup-header\s*{[^}]*position:\s*sticky/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.stage-status-popup-dismiss\s*{[^}]*min-height:\s*44px/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.stage-status-popup-card \.stage-side\s*{[^}]*overflow-x:\s*hidden/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.stage-status-popup-card \.stage-side\s*{[^}]*overscroll-behavior:\s*contain/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-body \.renewal-option-grid\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.menu-popup-body \.idea-action-row\s*{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
   });
 
   it("puts quick state overlays inside the office playfield", () => {
@@ -1008,6 +1205,23 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(menuPanels).toContain("startProductProject(starterProduct");
     expect(appCss).toMatch(/\.first-project-launchpad\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.first-project-launchpad\s+button\s*{[^}]*background:\s*var\(--green\)/s);
+  });
+
+  it("v1.0 rc compresses products shop and deck around recommended actions", () => {
+    expect(menuPanels).toContain("rc-action-brief");
+    expect(menuPanels).toContain("product-action-brief");
+    expect(menuPanels).toContain("shop-action-brief");
+    expect(menuPanels).toContain("deck-action-brief");
+    expect(menuPanels).toContain("RC 액션 브리프");
+    expect(menuPanels).toContain("에이전트 먼저 고용");
+    expect(menuPanels).toContain("추천 3개");
+    expect(menuPanels).toContain("먼저 제품 프로젝트 시작");
+    expect(menuPanels).toContain("추천 제품 시작");
+    expect(menuPanels).toContain("구매");
+    expect(menuPanels).toContain("자동 선택 이슈 해결");
+    expect(appCss).toMatch(/\.rc-action-brief\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.rc-action-grid\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media \(max-width:\s*520px\)[\s\S]*\.rc-action-grid[\s\S]*grid-template-columns:\s*1fr/s);
   });
 
   it("turns completed research into a product-candidate launchpad", () => {
@@ -1591,6 +1805,28 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/@media\s*\(max-width:\s*520px\)[\s\S]*\.beta-completion-crest-grid\s*{[^}]*grid-template-columns:\s*1fr/s);
   });
 
+  it("turns the final result into a payoff report before the next run", () => {
+    expect(gameChrome).toContain("finale-payoff-report");
+    expect(gameChrome).toContain("피날레 페이오프 리포트");
+    expect(gameChrome).toContain("finaleRepresentativeProducts");
+    expect(gameChrome).toContain("finaleTopRivalName");
+    expect(gameChrome).toContain("finaleCrisisTitle");
+    expect(gameChrome).toContain("finaleNextRunLabel");
+    expect(gameChrome).toContain("대표 제품");
+    expect(gameChrome).toContain("최고 경쟁사");
+    expect(gameChrome).toContain("마지막 위기");
+    expect(gameChrome).toContain("평가 랭크");
+    expect(gameChrome).toContain("다음 런 후크");
+    expect(gameChrome).toContain("handleStartEndingRouteRun");
+    expect(gameChrome).toContain('nextActionTitle = finale.isFinal ? "10년 결과 보기"');
+    expect(gameChrome).toContain('nextActionLabel = finale.isFinal ? "피날레 리포트"');
+    expect(gameChrome).toMatch(/if \(finale\.isFinal\)[\s\S]*setActiveStageTab\("results"\)[\s\S]*setStatusPopupOpen\(true\)/);
+    expect(appCss).toMatch(/\.finale-payoff-report\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.finale-payoff-grid\s*{[^}]*grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.finale-payoff-grid button\s*{[^}]*background:\s*var\(--green\)/s);
+    expect(appCss).toContain(".ending-report-grid,\n  .finale-payoff-grid,\n  .campaign-aftermath-grid");
+  });
+
   it("surfaces campaign shock pacing inside the company console", () => {
     expect(menuPanels).toContain("<CampaignShockPanel");
     expect(campaignShockPanel).toContain("getCampaignShockForecast");
@@ -1598,6 +1834,30 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(campaignShockPanel).toContain("campaign-shock-action-grid");
     expect(appCss).toMatch(/\.campaign-shock-panel\s*{[^}]*display:\s*grid/s);
     expect(appCss).toMatch(/\.campaign-shock-action-grid\s*{[^}]*grid-template-columns:/s);
+  });
+
+  it("v1.0 rc explains rival and world-event causality before player choices", () => {
+    expect(menuPanels).toContain("rival-causality-brief");
+    expect(menuPanels).toContain("topRivalCounterPlan");
+    expect(menuPanels).toContain("왜 변했나");
+    expect(menuPanels).toContain("다음 위협");
+    expect(menuPanels).toContain("대응 추천");
+    expect(menuPanels).toContain("plan.reason");
+    expect(campaignShockPanel).toContain("campaign-shock-causality");
+    expect(campaignShockPanel).toContain("shock.pressure_summary");
+    expect(bigEventModal).toContain("big-event-causality");
+    expect(bigEventModal).toContain("nextThreatLabel");
+    expect(bigEventModal).toContain("formatDomainNames");
+    expect(worldRevealModal).toContain("world-reveal-causality-strip");
+    expect(worldRevealModal).toContain("revealWhyLabel");
+    expect(worldRevealModal).toContain("formatWorldHeadwindLabel");
+    expect(worldRevealModal).toContain("challengeHeadwindLabel");
+    expect(worldRevealModal).toContain("counterRecommendation");
+    expect(appCss).toMatch(/\.rival-causality-brief\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.campaign-shock-causality\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/\.big-event-causality\s*{[^}]*display:\s*grid/s);
+    expect(appCss).toMatch(/\.world-reveal-causality-strip\s*{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(appCss).toMatch(/@media\s*\(max-width:\s*700px\)[\s\S]*\.rival-causality-brief,[\s\S]*\.world-reveal-causality-strip[\s\S]*grid-template-columns:\s*1fr/s);
   });
 
   it("adds recruitment channels and contract badges to the agent console", () => {
@@ -1641,6 +1901,10 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(gameChrome).toContain("pixel-actor");
     expect(gameChrome).toContain("OfficeActorFocusPanel");
     expect(gameChrome).toContain("setSelectedOfficeActorId");
+    expect(gameChrome).toContain("selectedOfficeActor");
+    expect(gameChrome).toContain("getActorBubbleStyle");
+    expect(gameChrome).toContain("comic-speech-bubble");
+    expect(gameChrome).toContain("actor-comic-line");
     expect(gameChrome).toContain("getOperationsCommandPlan");
     expect(gameChrome).toContain("nextOperationCard");
     expect(gameChrome).toContain("next-action-chip");
@@ -1653,6 +1917,8 @@ describe("v0.13.3 compact game shell layout", () => {
     expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\s*{[^}]*animation:/s);
     expect(appCss).toMatch(/\.staff-sprite\.pixel-actor\s*{[^}]*pointer-events:\s*auto/s);
     expect(appCss).toMatch(/\.office-actor-focus-panel\s*{[^}]*position:\s*absolute/s);
+    expect(appCss).toMatch(/\.office-actor-focus-panel\.comic-speech-bubble\s*{[^}]*left:\s*clamp\(16px,\s*var\(--bubble-x\),\s*calc\(100% - 250px\)\)/s);
+    expect(appCss).toMatch(/\.office-actor-focus-panel\.comic-speech-bubble::after\s*{[^}]*transform:\s*rotate\(45deg\)/s);
     expect(appCss).toMatch(/\.project-stack\s*{[^}]*pointer-events:\s*none/s);
     expect(appCss).toMatch(/\.actor-focus-meters\s*{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
     expect(appCss).toMatch(/@keyframes\s+pixel-actor-work/s);

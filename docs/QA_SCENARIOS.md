@@ -234,7 +234,7 @@ Expected:
 - The year-two-product-issue-result route should open on the deck menu and show the issue-result ribbon after the 2nd-year product's first development issue raises progress and quality.
 - The year-two-product-launch-impact route should open on the company menu after `기업 업무 에이전트` ships, remove its active project, show it in active products, and keep its pending card reward visible.
 - The office-visuals route remains the visual reference for rival/staff incidents and office screen readability.
-- The office-visuals route should keep the 4-column office wall HUD visible with location, `TEAM`, `AI OPS`, and `ROBOT`.
+- The office-visuals route should keep the top LED `office-scoreboard` visible with time, team, AI, `ROBOT`, market share, and trust signals above the lower office floor.
 - The office-visuals route should show a readable `직원 화면 사건` panel and `경쟁사 화면 사건` panel in the main stage event stack.
 - The staff incident panel should expose direct resolution choices, and the rival incident panel should identify the competitor pressure.
 - Real-user results should be recorded with `docs/BLIND_PLAYTEST_CHECKLIST.md`, not replaced by AI persona QA.

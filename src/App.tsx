@@ -17,7 +17,7 @@ import { getTutorialGuide } from "./game/tutorial-guide";
 import type { GameState } from "./game/types";
 import { shouldShowWorldReveal } from "./game/world-reveal";
 import type { LocaleCode } from "./i18n";
-import type { MenuId } from "./ui/menu";
+import type { MenuId, ShopPanelView } from "./ui/menu";
 
 const saveKey = "ai-company-tycoon-alpha-save";
 const helperPortraitSheet = assetManifest.sprite_sheets.helper_portraits_v074_atlas;
@@ -65,6 +65,7 @@ function App() {
   const [initialSession] = useState(createInitialSession);
   const [gameState, setGameState] = useState<GameState>(initialSession.state);
   const [activeMenu, setActiveMenu] = useState<MenuId>(initialSession.activeMenu);
+  const [shopInitialView, setShopInitialView] = useState<ShopPanelView>("shop");
   const [isMenuPopupOpen, setMenuPopupOpen] = useState(false);
   const [qaScenarioLabel] = useState(initialSession.qaScenarioLabel);
   const [shouldAutoSave] = useState(initialSession.shouldAutoSave);
@@ -83,7 +84,14 @@ function App() {
   );
 
   const openMenu = (action: SetStateAction<MenuId>) => {
+    setShopInitialView("shop");
     setActiveMenu(action);
+    setMenuPopupOpen(true);
+  };
+
+  const openDecorMenu = () => {
+    setShopInitialView("decor");
+    setActiveMenu("shop");
     setMenuPopupOpen(true);
   };
 
@@ -153,7 +161,13 @@ function App() {
         onToggleLocale={() => setLocale((current) => (current === "ko" ? "en" : "ko"))}
       />
       <ResourceStrip gameState={gameState} />
-      <GameStage gameState={gameState} qaScenarioLabel={qaScenarioLabel} setGameState={setGameState} setActiveMenu={openMenu} />
+      <GameStage
+        gameState={gameState}
+        onOpenDecorMenu={openDecorMenu}
+        qaScenarioLabel={qaScenarioLabel}
+        setGameState={setGameState}
+        setActiveMenu={openMenu}
+      />
       <div className="event-stack playfield-event-rail office-sightline-event-rail">
         <EventPanels
           gameState={gameState}
@@ -166,6 +180,7 @@ function App() {
       <MenuLauncherBar
         activeMenu={isMenuPopupOpen ? activeMenu : null}
         handCount={gameState.roguelite.deck.hand.length}
+        onHome={() => setMenuPopupOpen(false)}
         onOpen={openMenu}
       />
       {isMenuPopupOpen && (
@@ -175,6 +190,7 @@ function App() {
           locale={locale}
           setActiveMenu={openMenu}
           setGameState={setGameState}
+          shopInitialView={shopInitialView}
           onDismiss={() => setMenuPopupOpen(false)}
         />
       )}

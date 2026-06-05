@@ -1,7 +1,7 @@
 import { useEffect, useRef, type Dispatch, type SetStateAction } from "react";
 import type { GameState } from "../game/types";
 import type { LocaleCode } from "../i18n";
-import { menus, type MenuId } from "../ui/menu";
+import { menus, type MenuId, type ShopPanelView } from "../ui/menu";
 import { renderMenuContent } from "./MenuPanels";
 
 export function MenuPopupModal({
@@ -10,6 +10,7 @@ export function MenuPopupModal({
   locale,
   setActiveMenu,
   setGameState,
+  shopInitialView = "shop",
   onDismiss,
 }: {
   activeMenu: MenuId;
@@ -17,6 +18,7 @@ export function MenuPopupModal({
   locale: LocaleCode;
   setActiveMenu: Dispatch<SetStateAction<MenuId>>;
   setGameState: Dispatch<SetStateAction<GameState>>;
+  shopInitialView?: ShopPanelView;
   onDismiss: () => void;
 }) {
   const dismissRef = useRef<HTMLButtonElement>(null);
@@ -48,7 +50,7 @@ export function MenuPopupModal({
           </button>
         </header>
         <div className="menu-popup-body menu-panel pixel-menu-screen">
-          {renderMenuContent(activeMenu, gameState, setGameState, locale, setActiveMenu)}
+          {renderMenuContent(activeMenu, gameState, setGameState, locale, setActiveMenu, shopInitialView)}
         </div>
       </section>
     </div>

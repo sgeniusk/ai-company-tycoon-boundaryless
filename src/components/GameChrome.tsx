@@ -23,6 +23,7 @@ import {
 import { getNextRunSetupPlan, getRunInsightReward, resetRunWithMetaUnlocks } from "../game/meta-progression";
 import { rollRunModifierSelection, type RunModifierSelectionInput } from "../game/run-modifiers";
 import { getReleaseImpactSummary, type ReleaseImpactSummary } from "../game/release-impact";
+import { getRivalCounterPlans } from "../game/rival-counters";
 import { getRunSummary } from "../game/run-summary";
 import { getBetaReadinessSummary, type BetaReadinessSummary } from "../game/beta-readiness";
 import {
@@ -60,7 +61,6 @@ import {
   getYearTwoProductRecommendation,
   getYearTwoProductIssueRecommendation,
   getCompanyStage,
-  getAiOperationCapacity,
   getAgentRestCheck,
   getAgentRestCost,
   getAgentSalaryNegotiationCheck,
@@ -74,6 +74,7 @@ import {
   getOperationsCommandPlan,
   getPlacedOfficeItems,
   getPlayerMarketShare,
+  getProductLevel,
   getStaffIncidentBriefs,
   getStaffIncidentResolutionOptions,
   getWorkforceMixSummary,
@@ -105,13 +106,25 @@ import type {
   SpriteSheetDefinition,
 } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
-import { formatCost, formatEffects, statusLabel } from "../ui/formatters";
+import { formatCompactDecimal, formatCost, formatEffects, statusLabel } from "../ui/formatters";
 import { menuGroupLabels, menus, orderedResourceIds, type MenuGroup, type MenuId } from "../ui/menu";
+import { buildScoreboardMarquee, deriveNationalRanking } from "../ui/scoreboard-ranking";
 import { BigEventModal } from "./BigEventModal";
 import { PayoffCelebrationModal } from "./PayoffCelebrationModal";
 import { WorldRevealModal } from "./WorldRevealModal";
 
 let nextRunSeedCounter = 0;
+
+type OfficePersistenceMarkerTone = "product" | "reward" | "strategy" | "directive" | "rival" | "crisis";
+
+interface OfficePersistenceMarker {
+  id: string;
+  tone: OfficePersistenceMarkerTone;
+  label: string;
+  detail: string;
+  x: number;
+  y: number;
+}
 
 function createEphemeralRunModifierSelection(source: string) {
   nextRunSeedCounter += 1;
@@ -393,6 +406,16 @@ const primaryMenuIds: MenuId[] = ["company", "products", "deck", "agents"];
 const secondaryMenuIds: MenuId[] = ["research", "shop", "competition", "log"];
 const mobileTabMenuIds: MenuId[] = ["company", "products", "deck", "agents"];
 const menuLauncherGroupOrder: MenuGroup[] = ["core", "operations", "meta"];
+const mobileDockMenuItems: Array<{ id: MenuId; label: string; hint: string; activeWhen: MenuId[] }> = [
+  { id: "company", label: "회사", hint: "현황", activeWhen: ["company"] },
+  { id: "agents", label: "성장", hint: "팀/연구", activeWhen: ["agents", "research", "shop"] },
+];
+const mobileDrawerMenuGroups: Array<{ label: string; menuIds: MenuId[] }> = [
+  { label: "관리", menuIds: ["products", "deck", "agents"] },
+  { label: "연구 · 상점", menuIds: ["research", "shop"] },
+  { label: "정보 · 기록", menuIds: ["competition", "log"] },
+];
+const mobileDrawerMenuIds = new Set(mobileDrawerMenuGroups.flatMap((group) => group.menuIds));
 
 function getMenuById(menuId: MenuId) {
   return menus.find((menu) => menu.id === menuId);
@@ -443,6 +466,9 @@ export function TopBar({
     <section className="top-bar" aria-label="회사 상태">
       <div className="top-brand-panel">
         <span className="top-brand-crest" style={getBrandCrestStyle()} aria-hidden="true" />
+        <span className="mobile-hud-star" aria-label={`회사 등급 ${getCompanyStarRating(gameState)}성`}>
+          {getCompanyStarRating(gameState)}★
+        </span>
         <div className="top-brand-copy">
           <p className="eyebrow">AI 컴퍼니 타이쿤 알파</p>
           <h1>경계 없는 회사</h1>
@@ -495,6 +521,9 @@ export function TopBar({
 }
 
 export function ResourceStrip({ gameState }: { gameState: GameState }) {
+  const [trayOpen, setTrayOpen] = useState(false);
+  // 코어 3종(자금/이용자/연산력)은 상단 고정, 나머지 보조 자원은 ＋ 트레이에 접는다.
+  const secondaryResourceIds = orderedResourceIds.slice(3);
   return (
     <section className="resource-strip" aria-label="자원">
       {orderedResourceIds.map((resourceId) => {
@@ -504,12 +533,13 @@ export function ResourceStrip({ gameState }: { gameState: GameState }) {
           "resource-tile",
           priorityResourceIds.has(resourceId) ? "priority" : "",
           isResourceCritical(gameState, resourceId) ? "critical" : "",
+          `resource-${resourceId}`,
         ]
           .filter(Boolean)
           .join(" ");
 
         return (
-          <article className={tileClass} key={resourceId}>
+          <article className={tileClass} data-resource-id={resourceId} key={resourceId}>
             <CommercialUiIcon className="resource-icon" iconId={resourceIconIds[resourceId] ?? "market"} />
             <span>{resources[resourceId].name}</span>
             <strong>{formatResource(resourceId, gameState.resources[resourceId] ?? 0)}</strong>
@@ -519,6 +549,30 @@ export function ResourceStrip({ gameState }: { gameState: GameState }) {
           </article>
         );
       })}
+      <button
+        className="resource-tray-toggle"
+        onClick={() => setTrayOpen((open) => !open)}
+        aria-expanded={trayOpen}
+        aria-label={trayOpen ? "보조 자원 접기" : "보조 자원 더보기"}
+        type="button"
+      >
+        {trayOpen ? "×" : "＋"}
+      </button>
+      {trayOpen && (
+        <div className="resource-tray-popover" role="group" aria-label="보조 자원">
+          {secondaryResourceIds.map((resourceId) => (
+            <div
+              className={`resource-tray-item${isResourceCritical(gameState, resourceId) ? " critical" : ""}`}
+              key={resourceId}
+            >
+              <span className="resource-tray-label">{resources[resourceId].name}</span>
+              <span className="resource-tray-value">
+                {formatResource(resourceId, gameState.resources[resourceId] ?? 0)}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -564,11 +618,13 @@ function CompetitorHudStrip({ gameState, locale }: { gameState: GameState; local
 
 export function GameStage({
   gameState,
+  onOpenDecorMenu,
   qaScenarioLabel,
   setGameState,
   setActiveMenu,
 }: {
   gameState: GameState;
+  onOpenDecorMenu?: () => void;
   qaScenarioLabel?: string;
   setGameState: Dispatch<SetStateAction<GameState>>;
   setActiveMenu: Dispatch<SetStateAction<MenuId>>;
@@ -582,8 +638,6 @@ export function GameStage({
   const firstRewardRecommendation = getFirstRewardRecommendation(gameState);
   const firstGrowthRecommendation = getFirstGrowthRecommendation(gameState);
   const yearTwoProductRecommendation = getYearTwoProductRecommendation(gameState);
-  const aiWorkforceCount = workforceMix.rows.find((row) => row.kind === "ai_agent")?.count ?? 0;
-  const robotWorkforceCount = workforceMix.rows.find((row) => row.kind === "robot")?.count ?? 0;
   const openingObjectives = getOpeningObjectives(gameState);
   const alphaRunRoadmap = getAlphaRunRoadmap(gameState);
   const alphaRunRoadmapProgress = getAlphaRunRoadmapProgress(gameState);
@@ -629,6 +683,27 @@ export function GameStage({
   const endingDiscoveryUnlocks = endingDiscovery
     ? getEndingRouteUnlockRecommendations(endingDiscovery.condition, gameState, gameState.roguelite.founderInsight + getRunInsightReward(gameState))
     : [];
+  const finaleRepresentativeProducts = finale.isFinal
+    ? gameState.activeProducts
+        .map((productId) => availableProducts.find((product) => product.id === productId))
+        .filter((product): product is NonNullable<typeof product> => Boolean(product))
+        .slice(0, 3)
+    : [];
+  const finaleTopCompetitorState = finale.isFinal
+    ? [...gameState.competitorStates].sort((first, second) => second.marketShare - first.marketShare || second.momentum - first.momentum)[0]
+    : undefined;
+  const finaleTopCompetitor = finaleTopCompetitorState
+    ? competitors.find((competitor) => competitor.id === finaleTopCompetitorState.id)
+    : undefined;
+  const finaleTopRivalName = finaleTopCompetitor
+    ? t(finaleTopCompetitor.name_key)
+    : finaleTopCompetitorState?.id ?? "경쟁 기록 없음";
+  const finaleWarningSignal =
+    finale.aftermath.signals.find((signal) => signal.tone === "warning") ?? finale.aftermath.signals[finale.aftermath.signals.length - 1];
+  const finaleCrisisTitle = gameState.currentEvent?.name ?? gameState.lastMonthReport?.staffAftermathSummary ?? finaleWarningSignal?.label ?? "운영 압박";
+  const finaleCrisisDetail = gameState.currentEvent?.description ?? finaleWarningSignal?.detail ?? "다음 12개월의 운영 리스크를 다시 점검하세요.";
+  const finaleNextRunLabel = endingRouteQuickStart?.label.replace("엔딩 목표: ", "") ?? betaReadinessSummary.nextTargetLabel;
+  const finaleNextRunDetail = endingRouteQuickStart?.description ?? betaReadinessSummary.nextTargetRouteLabel;
   const activeEndingReplayBrief = getActiveEndingReplayBrief(gameState);
   const missingActiveEndingRequirements = activeEndingReplayBrief?.requirements.filter((requirement) => !requirement.complete).slice(0, 3) ?? [];
   const activeEndingResultRequirements = missingActiveEndingRequirements.length
@@ -659,8 +734,87 @@ export function GameStage({
       : activeProject && activeProjectProduct
         ? `${activeProjectProduct.name} 출시까지 ${Math.max(0, 100 - Math.round(activeProject.progress))}%`
         : guidance.actionLabel;
-  const growthPathCardClass = (pathId: string) =>
-    ["growth-path-card", chosenGrowthPathId === pathId ? "selected" : "", chosenGrowthPathId && chosenGrowthPathId !== pathId ? "locked" : ""]
+  const latestActiveProduct = activeProducts[activeProducts.length - 1];
+  const nationalRanking = deriveNationalRanking(gameState);
+  const scoreboardMarquee = buildScoreboardMarquee(gameState);
+  const scoreboardMarqueeText = scoreboardMarquee.join(" · ");
+  const rankingDeltaLabel =
+    nationalRanking.delta > 0
+      ? `▲${nationalRanking.delta}`
+      : nationalRanking.delta < 0
+        ? `▼${Math.abs(nationalRanking.delta)}`
+        : "—";
+  const rankingDeltaTone = nationalRanking.delta > 0 ? "up" : nationalRanking.delta < 0 ? "down" : "flat";
+  const topOfficeRivalCounter = getRivalCounterPlans(gameState, 1)[0];
+  const officePersistenceMarkers: OfficePersistenceMarker[] = [
+    latestActiveProduct
+      ? {
+          id: "product",
+          tone: "product",
+          label: latestActiveProduct.name,
+          detail: `출시 흔적 · Lv.${getProductLevel(latestActiveProduct.id, gameState)}`,
+          x: 68,
+          y: 44,
+        }
+      : undefined,
+    gameState.roguelite.pendingCardReward
+      ? {
+          id: "reward",
+          tone: "reward",
+          label: "보상 대기",
+          detail: `${gameState.roguelite.pendingCardReward.productName} · ${gameState.roguelite.pendingCardReward.offeredCardIds.length}장`,
+          x: 50,
+          y: 34,
+        }
+      : undefined,
+    selectedGrowthPath
+      ? {
+          id: "strategy",
+          tone: "strategy",
+          label: selectedGrowthPath.title,
+          detail: `전략 정체성 · ${selectedGrowthPath.bonusDescription}`,
+          x: 42,
+          y: 68,
+        }
+      : undefined,
+    gameState.annualDirective
+      ? {
+          id: "directive",
+          tone: "directive",
+          label: gameState.annualDirective.title,
+          detail: `연간 지시 · ${gameState.annualDirective.expiresMonth}개월차까지`,
+          x: 23,
+          y: 70,
+        }
+      : undefined,
+    topOfficeRivalCounter
+      ? {
+          id: "rival",
+          tone: "rival",
+          label: topOfficeRivalCounter.competitorName,
+          detail: `압박 ${topOfficeRivalCounter.pressureScore} · ${topOfficeRivalCounter.label}`,
+          x: 75,
+          y: 70,
+        }
+      : undefined,
+    gameState.currentEvent || staffAftermathSummary
+      ? {
+          id: "crisis",
+          tone: "crisis",
+          label: gameState.currentEvent?.name ?? "위기 잔상",
+          detail: staffAftermathSummary ?? "이번 달 선택으로 복구 경로가 갈립니다.",
+          x: 30,
+          y: 46,
+        }
+      : undefined,
+  ].filter((marker): marker is OfficePersistenceMarker => Boolean(marker));
+  const growthPathCardClass = (pathId: string, index = 0) =>
+    [
+      "growth-path-card",
+      !chosenGrowthPathId && index === 0 ? "decision-primary" : "",
+      chosenGrowthPathId === pathId ? "selected" : "",
+      chosenGrowthPathId && chosenGrowthPathId !== pathId ? "locked" : "",
+    ]
       .filter(Boolean)
       .join(" ");
   const [activeStageTab, setActiveStageTab] = useState<StageSideTabId>("guide");
@@ -668,7 +822,8 @@ export function GameStage({
   const [selectedOfficeActorId, setSelectedOfficeActorId] = useState<string>();
   const [statusPopupOpen, setStatusPopupOpen] = useState(false);
   const statusPopupDismissRef = useRef<HTMLButtonElement>(null);
-  const focusedOfficeActor = visibleOfficeActors.find((actor) => actor.id === selectedOfficeActorId) ?? defaultFocusedOfficeActor;
+  const selectedOfficeActor = selectedOfficeActorId ? visibleOfficeActors.find((actor) => actor.id === selectedOfficeActorId) : undefined;
+  const focusedOfficeActor = selectedOfficeActor ?? defaultFocusedOfficeActor;
   const hasResultPanel = finale.isFinal || Boolean(gameState.lastRelease) || runSummary.isFinal;
   const showEndingReplayReadinessStrip =
     hasResultPanel &&
@@ -709,9 +864,25 @@ export function GameStage({
     return hasResultPanel ? "새 소식" : "대기";
   };
 
+  const focusGrowthDecisionLayer = () => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document
+          .querySelector<HTMLElement>(".first-growth-fast-start, .growth-path-card.decision-primary")
+          ?.scrollIntoView({ block: "center" });
+      });
+    });
+  };
+
   const handleGuidanceAction = () => {
     if (guidance.id === "advance_project") {
       setGameState((current) => advanceToFirstLaunch(current));
+      return;
+    }
+    if (guidance.id === "choose_growth_path") {
+      setActiveStageTab("results");
+      setStatusPopupOpen(true);
+      focusGrowthDecisionLayer();
       return;
     }
     if (guidance.id === "advance_annual_review") {
@@ -950,11 +1121,26 @@ export function GameStage({
   };
 
   const nextOperationCard = operationsPlan.focusCards[0];
-  const nextActionTargetMenu = guidance.menu ?? nextOperationCard?.targetMenu;
-  const nextActionTitle = guidance.priorityLabel ?? nextOperationCard?.title ?? operationsPlan.headline;
-  const nextActionLabel = guidance.actionLabel ?? nextOperationCard?.actionLabel ?? "현황 보기";
-  const nextActionDetail = guidance.helperText ?? nextOperationCard?.actionLabel ?? operationsPlan.summary;
+  const nextActionTargetMenu = finale.isFinal ? undefined : guidance.menu ?? nextOperationCard?.targetMenu;
+  const nextActionTitle = finale.isFinal ? "10년 결과 보기" : guidance.priorityLabel ?? nextOperationCard?.title ?? operationsPlan.headline;
+  const nextActionLabel = finale.isFinal ? "피날레 리포트" : guidance.actionLabel ?? nextOperationCard?.actionLabel ?? "현황 보기";
+  const nextActionDetail = finale.isFinal
+    ? `${finale.endingName} · ${finale.rank}랭크 · ${finale.score}점`
+    : guidance.helperText ?? nextOperationCard?.actionLabel ?? operationsPlan.summary;
   const handleNextActionChip = () => {
+    if (finale.isFinal) {
+      setActiveStageTab("results");
+      setStatusPopupOpen(true);
+      return;
+    }
+
+    if (guidance.id === "choose_growth_path") {
+      setActiveStageTab("results");
+      setStatusPopupOpen(true);
+      focusGrowthDecisionLayer();
+      return;
+    }
+
     if (nextActionTargetMenu) {
       setActiveMenu(nextActionTargetMenu);
       return;
@@ -968,10 +1154,20 @@ export function GameStage({
     <section className="game-stage" aria-label="AI 회사 사무실">
       <div className={`office-scene pixel-office-theater office-level-${officeExpansion.level} office-phase-${phase.id}`}>
         <div className="office-wall">
-          <span>{location.name}</span>
-          <span>TEAM {gameState.hiredAgents.length}/{officeHireCapacity}</span>
-          <span>AI OPS {aiWorkforceCount}/{getAiOperationCapacity(gameState)}</span>
-          <span>ROBOT {robotWorkforceCount}</span>
+          <div className="office-scoreboard" aria-label="전국 AI 기업 랭킹">
+            <div className="scoreboard-led-header">
+              <span className="scoreboard-rank-tag">전국 AI 기업 랭킹</span>
+              <span className="scoreboard-live-badge">LIVE</span>
+            </div>
+            <div className="scoreboard-rank-row">
+              <strong className="scoreboard-rank-number">#{nationalRanking.rank}</strong>
+              <span className="scoreboard-rank-total">/ {nationalRanking.total.toLocaleString("en-US")}사</span>
+              <span className={`scoreboard-rank-delta delta-${rankingDeltaTone}`}>{rankingDeltaLabel}</span>
+            </div>
+            <div className="scoreboard-marquee" aria-label="전국 랭킹 속보">
+              <span>{scoreboardMarqueeText}</span>
+            </div>
+          </div>
         </div>
         <div className="office-floor">
           <OfficeIsometricBackdrop />
@@ -1005,6 +1201,7 @@ export function GameStage({
           </div>
           <OfficeDecorAssetLayer placedOfficeItems={placedOfficeItems} />
           <OfficeGraphicAssetWall />
+          <OfficePersistenceMarkerLayer markers={officePersistenceMarkers} />
           {qaScenarioLabel && <OfficeSpriteSheetInspector />}
           <div className="office-hud" aria-label="사무실 빠른 상태">
             <span>
@@ -1022,7 +1219,7 @@ export function GameStage({
               <small>{officeHudProjectMeta}</small>
             </span>
           </div>
-          <button className="office-decor-button" onClick={() => setActiveMenu("shop")} type="button">
+          <button className="office-decor-button" onClick={onOpenDecorMenu ?? (() => setActiveMenu("shop"))} type="button">
             <span aria-hidden="true">🎨</span>
             <strong>꾸미기</strong>
           </button>
@@ -1042,7 +1239,7 @@ export function GameStage({
               const agentSpriteFrameStyle = getAgentSpriteFrameStyle(agentSprite, actor);
               const fallbackActorFrameStyle = agentSpriteFrameStyle ? undefined : getFallbackActorSpriteFrameStyle(actor);
               const actorSpriteFrameStyle = agentSpriteFrameStyle ?? fallbackActorFrameStyle;
-              const isSelected = focusedOfficeActor?.id === actor.id;
+              const isSelected = selectedOfficeActor?.id === actor.id;
               const actorPoseClass = actor.reactionPose ? `actor-pose-${actor.reactionPose}` : "actor-pose-base";
 
               return (
@@ -1051,7 +1248,7 @@ export function GameStage({
                   aria-pressed={isSelected}
                   className={`staff-sprite pixel-actor staff-${index} actor-kind-${actor.kind} actor-state-${actor.state} ${actorPoseClass} ${isSelected ? "selected" : ""} ${actor.state === "working" ? "working" : "idle"} ${actorSpriteFrameStyle ? "sprite-sheet-frame" : ""} ${agentSpriteFrameStyle ? "sprite-sheet-animated" : ""} ${fallbackActorFrameStyle ? "actor-fallback-sheet" : ""} ${agentSprite?.body_class ?? ""}`}
                   key={actor.id}
-                  onClick={() => setSelectedOfficeActorId(actor.id)}
+                  onClick={() => setSelectedOfficeActorId((current) => (current === actor.id ? undefined : actor.id))}
                   style={
                     {
                       ...assetPaletteVars(agentSprite?.palette),
@@ -1084,12 +1281,13 @@ export function GameStage({
               );
             })}
           </div>
-          {focusedOfficeActor && (
+          {selectedOfficeActor && (
             <OfficeActorFocusPanel
-              actor={focusedOfficeActor}
+              actor={selectedOfficeActor}
               gameState={gameState}
               onCareAction={setGameState}
               onOpenMenu={setActiveMenu}
+              style={getActorBubbleStyle(selectedOfficeActor)}
             />
           )}
           <div className="server-rack">
@@ -1262,6 +1460,52 @@ export function GameStage({
           )}
           {activeStageTab === "results" && (
             <>
+              {finale.isFinal && (
+                <div className="finale-payoff-report" aria-label="피날레 페이오프 리포트">
+                  <div className="finale-payoff-header">
+                    <p className="eyebrow">피날레 페이오프 리포트</p>
+                    <strong>{finale.rank}랭크 · {finale.endingName}</strong>
+                    <span>{finale.score}점으로 닫힌 이번 회사의 제품, 경쟁, 위기, 다음 런 후크를 한눈에 정리합니다.</span>
+                  </div>
+                  <div className="finale-payoff-grid">
+                    <span className="primary">
+                      <strong>대표 제품</strong>
+                      <small>
+                        {finaleRepresentativeProducts.length
+                          ? finaleRepresentativeProducts
+                              .map((product) => `${product.name} Lv.${getProductLevel(product.id, gameState)}`)
+                              .join(" / ")
+                          : "출시 제품 없음"}
+                      </small>
+                    </span>
+                    <span>
+                      <strong>최고 경쟁사</strong>
+                      <small>
+                        {finaleTopCompetitorState
+                          ? `${finaleTopRivalName} · 점유 ${Math.round(finaleTopCompetitorState.marketShare)}% · ${finaleTopCompetitorState.lastMove}`
+                          : finaleTopRivalName}
+                      </small>
+                    </span>
+                    <span>
+                      <strong>마지막 위기</strong>
+                      <small>{finaleCrisisTitle} · {finaleCrisisDetail}</small>
+                    </span>
+                    <span>
+                      <strong>평가 랭크</strong>
+                      <small>{finale.rank} · {finale.score}점 · {endingDiscovery?.rewardDeltaLabel ?? betaReadinessSummary.statusLabel}</small>
+                    </span>
+                    <span className="next-run">
+                      <strong>다음 런 후크</strong>
+                      <small>{finaleNextRunLabel} · {finaleNextRunDetail}</small>
+                      {endingRouteQuickStart?.runModifierSelection && (
+                        <button onClick={handleStartEndingRouteRun} type="button">
+                          후크로 재시작
+                        </button>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              )}
               {finale.isFinal && <BetaCompletionCrest finale={finale} summary={betaReadinessSummary} endingDiscovery={endingDiscovery} />}
               {showEndingReplayReadinessStrip && (
                 <EndingReplayReadinessStrip
@@ -1463,10 +1707,10 @@ export function GameStage({
                   {gameState.lastRelease.growthPaths?.length > 0 && (
                     <div className="growth-fork-list">
                       <p className="eyebrow">다음 성장 분기</p>
-                      {gameState.lastRelease.growthPaths.map((path) => (
+                      {gameState.lastRelease.growthPaths.map((path, index) => (
                         <button
                           aria-pressed={chosenGrowthPathId === path.id}
-                          className={growthPathCardClass(path.id)}
+                          className={growthPathCardClass(path.id, index)}
                           key={path.id}
                           onClick={() => handleGrowthPathClick(path)}
                         >
@@ -1791,6 +2035,30 @@ function OfficeGraphicAssetWall() {
   );
 }
 
+function OfficePersistenceMarkerLayer({ markers }: { markers: OfficePersistenceMarker[] }) {
+  if (markers.length === 0) return null;
+
+  return (
+    <div className="office-persistence-markers" aria-label="오피스 선택 흔적">
+      {markers.map((marker) => (
+        <span
+          className={`office-persistence-marker marker-${marker.tone}`}
+          key={marker.id}
+          style={
+            {
+              "--marker-x": `${marker.x}%`,
+              "--marker-y": `${marker.y}%`,
+            } as CSSProperties
+          }
+        >
+          <strong>{marker.label}</strong>
+          <small>{marker.detail}</small>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function OfficeEventReactionLayer({ reactions }: { reactions: OfficeEventReactionStatus[] }) {
   if (reactions.length === 0) return null;
 
@@ -1934,16 +2202,28 @@ function OfficeTaskLinkLayer({
   );
 }
 
+function getActorBubbleStyle(actor: OfficeSceneActorStatus): CSSProperties {
+  const bubbleX = Math.max(8, Math.min(actor.x, 72));
+  const bubbleY = Math.max(20, Math.min(actor.y, 84));
+
+  return {
+    "--bubble-x": `${bubbleX}%`,
+    "--bubble-y": `${bubbleY}%`,
+  } as CSSProperties;
+}
+
 function OfficeActorFocusPanel({
   actor,
   gameState,
   onCareAction,
   onOpenMenu,
+  style,
 }: {
   actor: OfficeSceneActorStatus;
   gameState: GameState;
   onCareAction: Dispatch<SetStateAction<GameState>>;
   onOpenMenu: Dispatch<SetStateAction<MenuId>>;
+  style?: CSSProperties;
 }) {
   const kindLabel = actor.kind === "human" ? "사람" : actor.kind === "robot" ? "로봇" : "AI";
   const energyTone = actor.energy <= 30 ? "danger" : actor.energy <= 55 ? "watch" : "safe";
@@ -1954,14 +2234,25 @@ function OfficeActorFocusPanel({
   const restCost = agent ? getAgentRestCost(agent) : {};
   const salaryNegotiationCost = agent ? getAgentSalaryNegotiationCost(agent) : {};
   const hasDirectCareAction = Boolean(agent && (restCheck.ok || salaryNegotiationCheck.ok));
+  const comicLine =
+    actor.state === "warning"
+      ? `${actor.focusLabel}. 지금은 ${actor.actionLabel}이 필요해요.`
+      : actor.state === "resting"
+        ? `잠깐 숨 고르는 중이에요. ${actor.assignmentLabel}은 정리해둘게요.`
+        : actor.kind === "robot"
+          ? `삐빅. ${actor.activity}`
+          : actor.kind === "ai_agent"
+            ? `${actor.assignmentLabel} 처리 중. 결과 신호를 전광판에 올릴게요.`
+            : `${actor.assignmentLabel} 진행 중이에요. 다음 선택을 알려주세요.`;
 
   return (
-    <div className={`office-actor-focus-panel actor-focus-${actor.state}`} aria-live="polite">
+    <div className={`office-actor-focus-panel comic-speech-bubble actor-focus-${actor.state}`} aria-live="polite" style={style}>
       <div>
         <span>{actor.focusLabel} · {kindLabel}</span>
         <strong>{actor.name}</strong>
         <small>{actor.assignmentLabel}</small>
       </div>
+      <p className="actor-comic-line">{comicLine}</p>
       <div className="actor-focus-meters">
         <span className={`meter-${energyTone}`}>
           체력 <i style={{ "--meter-value": `${actor.energy}%` } as CSSProperties} />
@@ -2014,7 +2305,7 @@ function RivalIncidentBanner({ gameState }: { gameState: GameState }) {
     : `${t(definition.name_key)} ${targetState.marketShare}%`;
   const detail = gameState.currentRivalEvent
     ? t(gameState.currentRivalEvent.description_key)
-    : `모멘텀 ${targetState.momentum} · 최근 움직임 ${targetState.lastMove}`;
+    : `모멘텀 ${formatCompactDecimal(targetState.momentum)} · 최근 움직임 ${targetState.lastMove}`;
 
   return (
     <div className="rival-incident-banner" style={{ "--rival-color": definition.color } as CSSProperties} aria-live="polite">
@@ -2295,7 +2586,7 @@ function FirstRewardFastStart({
   const disabledReason = recommendation.check.reasons.join(" / ");
 
   return (
-    <div className="first-reward-fast-start" aria-label="추천 첫 보상">
+    <div className="first-reward-fast-start decision-layer-card" aria-label="추천 첫 보상">
       <div>
         <p className="eyebrow">출시 보상 러시</p>
         <strong>{recommendation.title}: {recommendation.card.name}</strong>
@@ -2308,6 +2599,7 @@ function FirstRewardFastStart({
       </div>
       <button
         aria-label="첫 보상 바로 선택"
+        className="decision-primary-action"
         disabled={!recommendation.check.ok}
         onClick={onChoose}
         title={disabledReason || "보상 카드를 덱에 넣고 성장 분기로 이동"}
@@ -2329,7 +2621,7 @@ function FirstGrowthFastStart({
   const disabledReason = recommendation.check.reasons.join(" / ");
 
   return (
-    <div className="first-growth-fast-start" aria-label="추천 성장 분기">
+    <div className="first-growth-fast-start decision-layer-card" aria-label="추천 성장 분기">
       <div>
         <p className="eyebrow">성장 분기 러시</p>
         <strong>{recommendation.title}: {recommendation.path.title}</strong>
@@ -2342,6 +2634,7 @@ function FirstGrowthFastStart({
       </div>
       <button
         aria-label="성장 분기 바로 선택"
+        className="decision-primary-action"
         disabled={!recommendation.check.ok}
         onClick={onChoose}
         title={disabledReason || "성장 분기를 고르고 다음 행동 메뉴로 이동"}
@@ -2844,6 +3137,12 @@ export function EventPanels({
   const staffIncidents = getStaffIncidentBriefs(gameState);
   const primaryStaffIncident = staffIncidents[0];
   const primaryStaffIncidentOptions = primaryStaffIncident ? getStaffIncidentResolutionOptions(primaryStaffIncident.id, gameState) : [];
+  const primaryStaffOptionId =
+    primaryStaffIncidentOptions.find((option) => option.recommended && option.available)?.id
+    ?? primaryStaffIncidentOptions.find((option) => option.available)?.id
+    ?? primaryStaffIncidentOptions[0]?.id;
+  const primaryRivalChoiceId = gameState.currentRivalEvent?.choices[0]?.id;
+  const primaryWorldChoiceId = gameState.currentEvent?.choices[0]?.id;
   const currentRivalDefinition = competitors.find((competitor) => competitor.id === gameState.currentRivalEvent?.competitor_id);
 
   return (
@@ -2867,7 +3166,7 @@ export function EventPanels({
           <div className="event-choices staff-event-actions">
             {primaryStaffIncidentOptions.map((option) => (
               <button
-                className={option.recommended ? "recommended" : undefined}
+                className={[option.recommended ? "recommended" : "", option.id === primaryStaffOptionId ? "decision-primary" : ""].filter(Boolean).join(" ") || undefined}
                 disabled={!option.available || gameState.status !== "playing"}
                 key={option.id}
                 onClick={() => setGameState((current) => resolveStaffIncident(primaryStaffIncident.id, option.id, current))}
@@ -2897,7 +3196,11 @@ export function EventPanels({
           </div>
           <div className="event-choices">
             {gameState.currentRivalEvent.choices.map((choice) => (
-              <button key={choice.id} onClick={() => setGameState((current) => resolveRivalEventChoice(choice, current))}>
+              <button
+                className={choice.id === primaryRivalChoiceId ? "decision-primary" : undefined}
+                key={choice.id}
+                onClick={() => setGameState((current) => resolveRivalEventChoice(choice, current))}
+              >
                 <strong>{t(choice.text_key, locale)}</strong>
                 <span className="event-choice-summary">{t(choice.description_key, locale)}</span>
               </button>
@@ -2916,7 +3219,11 @@ export function EventPanels({
           </div>
           <div className="event-choices">
             {gameState.currentEvent.choices.map((choice) => (
-              <button key={choice.id} onClick={() => setGameState((current) => resolveEventChoice(choice, current))}>
+              <button
+                className={choice.id === primaryWorldChoiceId ? "decision-primary" : undefined}
+                key={choice.id}
+                onClick={() => setGameState((current) => resolveEventChoice(choice, current))}
+              >
                 <strong>{choice.text}</strong>
                 <span className="event-choice-summary">{choice.description}</span>
               </button>
@@ -3073,14 +3380,101 @@ export function MainMenu({
 export function MenuLauncherBar({
   activeMenu,
   onOpen,
+  onHome,
   handCount = 0,
 }: {
   activeMenu: MenuId | null;
   onOpen: Dispatch<SetStateAction<MenuId>>;
+  onHome: () => void;
   handCount?: number;
 }) {
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const handleOpen = (menuId: MenuId) => {
+    setMobileDrawerOpen(false);
+    onOpen(menuId);
+  };
+  const handleHome = () => {
+    setMobileDrawerOpen(false);
+    onHome();
+  };
+  const isDockItemActive = (item: (typeof mobileDockMenuItems)[number]) => Boolean(activeMenu && item.activeWhen.includes(activeMenu));
+  const isMoreActive =
+    Boolean(activeMenu && mobileDrawerMenuIds.has(activeMenu)) && !mobileDockMenuItems.some((item) => isDockItemActive(item));
+
   return (
     <nav className="menu-launcher-bar" aria-label="하단 경영 메뉴 런처">
+      <div className="mobile-menu-dock" aria-label="모바일 핵심 메뉴">
+        <button
+          aria-pressed={activeMenu === null}
+          className={["mobile-dock-button", "mobile-home-button", activeMenu === null ? "active" : ""].filter(Boolean).join(" ")}
+          onClick={handleHome}
+          type="button"
+        >
+          <strong>운영</strong>
+          <span>오피스</span>
+        </button>
+        {mobileDockMenuItems.map((item) => (
+          <button
+            aria-label={`메뉴 열기: ${item.label}`}
+            aria-pressed={isDockItemActive(item)}
+            className={["mobile-dock-button", `mobile-dock-${item.id}`, isDockItemActive(item) ? "active" : ""].filter(Boolean).join(" ")}
+            data-menu-id={item.id}
+            key={item.label}
+            onClick={() => handleOpen(item.id)}
+            type="button"
+          >
+            <strong>{item.label}</strong>
+            <span>{item.hint}</span>
+          </button>
+        ))}
+        <button
+          aria-controls="mobile-menu-drawer"
+          aria-expanded={mobileDrawerOpen}
+          aria-pressed={isMoreActive || mobileDrawerOpen}
+          className={["mobile-dock-button", "mobile-more-dock-button", "mobile-top-more-button", isMoreActive || mobileDrawerOpen ? "active" : ""].filter(Boolean).join(" ")}
+          onClick={() => setMobileDrawerOpen((current) => !current)}
+          type="button"
+        >
+          <strong>메뉴</strong>
+          <span>메뉴</span>
+        </button>
+      </div>
+      <div className={`mobile-menu-drawer ${mobileDrawerOpen ? "open" : ""}`} id="mobile-menu-drawer" aria-label="보조 메뉴">
+        <span className="mobile-menu-drawer-grip" aria-hidden="true" />
+        <button className="mobile-menu-drawer-close" onClick={() => setMobileDrawerOpen(false)} type="button">
+          닫기 ×
+        </button>
+        {mobileDrawerMenuGroups.map((group) => (
+          <section className="mobile-menu-drawer-group" key={group.label} aria-label={group.label}>
+            <p>{group.label}</p>
+            <div className="mobile-menu-drawer-items">
+              {group.menuIds.map((menuId) => {
+                const menu = getMenuById(menuId);
+                if (!menu) return null;
+                return (
+                  <button
+                    aria-label={`메뉴 열기: ${menu.label}`}
+                    aria-pressed={activeMenu === menu.id}
+                    className={["mobile-menu-drawer-item", activeMenu === menu.id ? "active" : ""].filter(Boolean).join(" ")}
+                    data-menu-id={menu.id}
+                    key={menu.id}
+                    onClick={() => handleOpen(menu.id)}
+                    type="button"
+                  >
+                    <CommercialUiIcon className="menu-icon" iconId={menuIconIds[menu.id]} />
+                    {menu.id === "deck" && handCount > 0 ? (
+                      <b className="hand-count-badge" aria-label={`손패 ${handCount}장`}>
+                        {handCount}
+                      </b>
+                    ) : null}
+                    <strong>{menu.label}</strong>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+      </div>
       {menuLauncherGroupOrder.map((group) => {
         const groupMenus = menus.filter((menu) => menu.group === group);
 
@@ -3095,7 +3489,7 @@ export function MenuLauncherBar({
                   className={["menu-launcher-button", activeMenu === menu.id ? "active" : "", `menu-group-${menu.group}`].filter(Boolean).join(" ")}
                   data-menu-id={menu.id}
                   key={menu.id}
-                  onClick={() => onOpen(menu.id)}
+                  onClick={() => handleOpen(menu.id)}
                   type="button"
                 >
                   <CommercialUiIcon className="menu-icon" iconId={menuIconIds[menu.id]} />

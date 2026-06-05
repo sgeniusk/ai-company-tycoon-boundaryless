@@ -388,7 +388,7 @@ describe("v0.34.9 staff incident drama", () => {
       ...hired,
       competitorStates: hired.competitorStates.map((competitor) =>
         competitor.id === "competitor_jemiinni"
-          ? { ...competitor, marketShare: 44, score: 190, momentum: 8, lastMove: "개발자 도구 시장 핵심 인재 영입전" }
+          ? { ...competitor, marketShare: 44.444444, score: 190, momentum: 8.123456, lastMove: "개발자 도구 시장 핵심 인재 영입전" }
           : competitor,
       ),
       hiredAgents: hired.hiredAgents.map((agent) => ({ ...agent, level: 4, loyalty: 38, energy: 72 })),
@@ -405,7 +405,9 @@ describe("v0.34.9 staff incident drama", () => {
     expect(poaching?.sourceCompetitorName).toContain("제미있니");
     expect(poaching?.description).toContain("제미있니");
     expect(poaching?.offerLabel).toContain("연봉");
-    expect(poaching?.stakesLabel).toContain("점유 44%");
+    expect(poaching?.stakesLabel).toContain("점유 44.44%");
+    expect(poaching?.stakesLabel).toContain("모멘텀 +8.12");
+    expect(poaching?.stakesLabel).not.toMatch(/\d+\.\d{3,}/);
     expect(poaching?.triggerLabel).toContain("제안");
   });
 

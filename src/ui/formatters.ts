@@ -46,10 +46,24 @@ export function itemTargetLabel(target: string): string {
   return labels[target] ?? target;
 }
 
+export function formatCompactDecimal(value: number): string {
+  return Number(value.toFixed(2)).toLocaleString("ko-KR", {
+    maximumFractionDigits: 2,
+  });
+}
+
 export function formatCost(cost: ResourceMap): string {
   return Object.entries(cost)
     .map(([resourceId, value]) => `${resources[resourceId]?.name ?? resourceId} ${formatResource(resourceId, value)}`)
     .join(", ");
+}
+
+function formatEffectAmount(value: number): string {
+  const normalized = Number(value.toFixed(2));
+  const sign = normalized > 0 ? "+" : normalized < 0 ? "-" : "";
+  const formatted = formatCompactDecimal(Math.abs(normalized));
+
+  return `${sign}${formatted}`;
 }
 
 export function formatEffects(effects: Record<string, number>): string {
@@ -65,8 +79,7 @@ export function formatEffects(effects: Record<string, number>): string {
 
   return Object.entries(effects)
     .map(([key, value]) => {
-      const sign = value >= 0 ? "+" : "";
-      return `${resources[key]?.name ?? effectLabels[key] ?? statLabel(key)} ${sign}${value}`;
+      return `${resources[key]?.name ?? effectLabels[key] ?? statLabel(key)} ${formatEffectAmount(value)}`;
     })
     .join(", ");
 }

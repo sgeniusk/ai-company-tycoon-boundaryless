@@ -11,6 +11,9 @@ yarn-error.log*
 # Tooling caches (OMC project memory, local sessions)
 .omc/
 
+# Playwright MCP browser-QA scratch (snapshots, console logs)
+.playwright-mcp/
+
 # Local playtest CLI logs (not for repo)
 reports/playtests/*_cli.log
 reports/playtests/*_cli.log.*

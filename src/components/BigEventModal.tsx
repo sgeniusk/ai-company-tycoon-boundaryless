@@ -1,6 +1,6 @@
 // v0.58 #5 — annual_challenger / late_boss 진입 시 발동되는 대형 사건 팝업. pendingChallengerEntryIds 큐 head를 읽어 1개만 표시, dismiss 시 shift.
 import { useEffect, useRef, type CSSProperties, type Dispatch, type SetStateAction } from "react";
-import { competitors } from "../game/data";
+import { competitors, domains } from "../game/data";
 import { dismissChallengerEntry } from "../game/simulation";
 import type { GameState } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
@@ -49,6 +49,10 @@ export function BigEventModal({
   const archetype = t(definition.archetype_key, locale);
   const weakness = t(definition.weakness_key, locale);
   const remaining = gameState.pendingChallengerEntryIds.length;
+  const entryMonth = definition.entry_month ?? gameState.month;
+  const focusDomainLabel = formatDomainNames(definition.focus_domains, 2);
+  const nextThreatLabel = `${focusDomainLabel} 선점 압박 · 점유 ${definition.starting_market_share}% · 성장 ${definition.monthly_growth}/월`;
+  const counterRecommendation = `약점 ${weakness} 기준으로 경쟁 메뉴에서 대응 카드와 겹치는 제품을 먼저 확보`;
 
   return (
     <div
@@ -73,6 +77,20 @@ export function BigEventModal({
         </header>
         <h2 id="big-event-title" className="big-event-name">{name}</h2>
         <p className="big-event-announcement">{announcement}</p>
+        <div className="big-event-causality" aria-label="신규 경쟁사 인과 요약">
+          <span>
+            <strong>왜 등장</strong>
+            {entryMonth}개월차 시장 확장 신호가 {archetype} 경쟁사를 불러왔습니다.
+          </span>
+          <span>
+            <strong>다음 위협</strong>
+            {nextThreatLabel}
+          </span>
+          <span>
+            <strong>대응 추천</strong>
+            {counterRecommendation}
+          </span>
+        </div>
         <dl className="big-event-meta">
           <div className="big-event-meta-row">
             <dt className="big-event-meta-label">성향</dt>
@@ -94,4 +112,12 @@ export function BigEventModal({
       </div>
     </div>
   );
+}
+
+function formatDomainNames(domainIds: string[], max = 3): string {
+  const names = domainIds
+    .slice(0, max)
+    .map((domainId) => domains.find((domain) => domain.id === domainId)?.name)
+    .filter((name): name is string => Boolean(name));
+  return names.length ? names.join(", ") : "미확인 시장";
 }

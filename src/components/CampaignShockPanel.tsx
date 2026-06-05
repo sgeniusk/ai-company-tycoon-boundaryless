@@ -30,6 +30,20 @@ export function CampaignShockPanel({ gameState, setActiveMenu }: CampaignShockPa
         <span>{formatEffects(shock.resource_effects)}</span>
         <span>경쟁 모멘텀 +{shock.rival_momentum_delta}</span>
       </div>
+      <div className="campaign-shock-causality" aria-label="시장 충격 인과 요약">
+        <span>
+          <strong>왜 발생</strong>
+          {shock.pressure_summary}
+        </span>
+        <span>
+          <strong>다음 위협</strong>
+          {formatNameList(shock.affectedDomainNames, 2)} 영역 경쟁 모멘텀 +{shock.rival_momentum_delta}
+        </span>
+        <span>
+          <strong>대응 추천</strong>
+          제품 {formatNameList(shock.recommendedProductNames, 2)} · 연구 {formatNameList(shock.recommendedCapabilityNames, 2)}
+        </span>
+      </div>
       <div className="campaign-shock-action-grid">
         <button onClick={() => setActiveMenu?.("products")} type="button">
           <strong>제품 대응</strong>

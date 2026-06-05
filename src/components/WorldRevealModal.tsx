@@ -5,7 +5,8 @@ import { DEFAULT_RUN_MODIFIER_SELECTION } from "../game/run-modifiers";
 import { formatResource } from "../game/simulation";
 import { getDerivedArchetypes, getNewlyDiscoveredArchetypes } from "../game/tag-derivation";
 import { shouldShowWorldReveal } from "../game/world-reveal";
-import type { GameState, RunModifierOptionDefinition, RunModifiersState } from "../game/types";
+import type { GameState, ResourceMap, RunModifierOptionDefinition, RunModifiersState } from "../game/types";
+import { formatEffects } from "../ui/formatters";
 
 type RevealAxisId = "city" | "world" | "market" | "founder";
 
@@ -83,6 +84,11 @@ function getDeltaEntries(option?: RunModifierOptionDefinition): string[] {
   return [...resourceEntries, ...capabilityEntries];
 }
 
+function formatWorldHeadwindLabel(effects: ResourceMap): string {
+  const label = formatEffects(effects).trim();
+  return label || "변화 없음";
+}
+
 function getScenario(): string | undefined {
   if (typeof window === "undefined") return undefined;
   return new URLSearchParams(window.location.search).get("scenario") ?? undefined;
@@ -118,6 +124,20 @@ export function WorldRevealModal({
   const endingReplayBrief = useMemo(() => getActiveEndingReplayBrief(gameState), [gameState]);
   const challengeTier = difficultyTiers.find((tier) => tier.id === selection.challengeTier) ?? difficultyTiers.find((tier) => tier.id === "standard");
   const shouldShow = shouldShowWorldReveal(gameState, dismissedSeeds);
+  const nonStandardAxes = axes.filter((axis) => axis.option?.id !== axis.defaultId);
+  const primaryNonStandardAxis = nonStandardAxes[0];
+  const challengeHeadwindLabel = challengeTier ? formatWorldHeadwindLabel(challengeTier.monthly_headwind) : "변화 없음";
+  const revealWhyLabel = nonStandardAxes.length > 0
+    ? `${nonStandardAxes.length}개 축이 기준선에서 벗어났습니다.`
+    : `${challengeTier?.name ?? "표준"} 티어 기준 세계입니다.`;
+  const nextThreatLabel = challengeHeadwindLabel !== "변화 없음"
+    ? `월간 역풍: ${challengeHeadwindLabel}`
+    : primaryNonStandardAxis?.option
+      ? `${primaryNonStandardAxis.label}: ${primaryNonStandardAxis.option.description}`
+      : "기준선 세계라 초반 제품 출시 속도가 핵심입니다.";
+  const counterRecommendation = endingReplayBrief?.openingMoves[0] ?? (primaryNonStandardAxis?.option
+    ? `${primaryNonStandardAxis.label} 보정에 맞춰 첫 제품과 연구를 조정`
+    : "첫 제품 출시와 기초 연구를 먼저 안정화");
 
   useEffect(() => {
     if (!shouldShow) return;
@@ -196,6 +216,20 @@ export function WorldRevealModal({
             ))}
           </div>
         )}
+        <div className="world-reveal-causality-strip" aria-label="세계 변수 인과 요약">
+          <span>
+            <strong>왜 이 세계?</strong>
+            {revealWhyLabel}
+          </span>
+          <span>
+            <strong>다음 위협</strong>
+            {nextThreatLabel}
+          </span>
+          <span>
+            <strong>대응 추천</strong>
+            {counterRecommendation}
+          </span>
+        </div>
         <div className="world-reveal-grid" aria-label="이번 런 모디파이어">
           {axes.map((axis, index) => {
             const revealed = index < revealedCount;

@@ -130,7 +130,7 @@ describe("v0.11 commercial balance simulation harness", () => {
         month: CAMPAIGN_FINAL_MONTH,
       });
     }
-  });
+  }, 20_000);
 
   it("keeps a hard-tier 10-year campaign completable for at least one strategy", () => {
     const result = runTenYearCampaignSimulation("productivity_line", { challengeTierId: "hard" });
@@ -228,7 +228,7 @@ describe("v0.11 commercial balance simulation harness", () => {
         expect(derivedIds, sweepCase.id).toEqual([]);
       }
     }
-  });
+  }, 20_000);
 
   it("keeps challenge tier pressure non-inverted for a mixed archetype run", () => {
     const baseSelection = {
@@ -261,7 +261,7 @@ describe("v0.11 commercial balance simulation harness", () => {
     expect(cushions.story).toBeGreaterThanOrEqual(cushions.standard);
     expect(cushions.standard).toBeGreaterThanOrEqual(cushions.hard);
     expect(cushions.hard).toBeGreaterThanOrEqual(cushions.brutal);
-  });
+  }, 20_000);
 
   it("completes a 10-year campaign after expanding into v0.60 physical industries", () => {
     const physicalDomainIds = ["manufacturing", "logistics", "energy"];

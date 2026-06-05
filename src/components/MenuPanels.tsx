@@ -163,7 +163,7 @@ import type {
 } from "../game/types";
 import { t, type LocaleCode } from "../i18n";
 import { formatCost, formatEffects, itemCategoryLabel, itemTargetLabel, statLabel } from "../ui/formatters";
-import { menus, type MenuId } from "../ui/menu";
+import { menus, type MenuId, type ShopPanelView } from "../ui/menu";
 import { CampaignShockPanel } from "./CampaignShockPanel";
 import { MarketSharePanel } from "./MarketSharePanel";
 import { RivalArchetypePanel } from "./RivalArchetypePanel";
@@ -349,6 +349,7 @@ export function renderMenuContent(
   setGameState: Dispatch<SetStateAction<GameState>>,
   locale: LocaleCode,
   setActiveMenu?: Dispatch<SetStateAction<MenuId>>,
+  shopInitialView: ShopPanelView = "shop",
 ) {
   if (activeMenu === "company") {
     const growthObjectives = getGrowthPathObjectives(gameState);
@@ -863,7 +864,7 @@ export function renderMenuContent(
   }
 
   if (activeMenu === "shop") {
-    return <ShopPanel gameState={gameState} setGameState={setGameState} />;
+    return <ShopPanel gameState={gameState} initialView={shopInitialView} setGameState={setGameState} />;
   }
 
   if (activeMenu === "competition") {
@@ -911,6 +912,9 @@ function DeckPanel({
   const resolveCheck = activeProject ? getDevelopmentPuzzleResolveCheck(activeProject.id, selectedPuzzleTileIds, gameState) : undefined;
   const recommendedPuzzleTileIds = puzzle ? puzzle.tiles.slice(0, Math.min(4, selectionLimit)).map((tile) => tile.id) : [];
   const recommendedPuzzleTiles = puzzle ? puzzle.tiles.filter((tile) => recommendedPuzzleTileIds.includes(tile.id)) : [];
+  const recommendedResolveCheck = activeProject
+    ? getDevelopmentPuzzleResolveCheck(activeProject.id, recommendedPuzzleTileIds, gameState)
+    : undefined;
   const activeIssueResult = activeProject && gameState.lastDevelopmentPuzzle?.projectId === activeProject.id
     ? gameState.lastDevelopmentPuzzle
     : undefined;
@@ -918,6 +922,17 @@ function DeckPanel({
     ? activeIssueResult.tiles.filter((tile) => activeIssueResult.selectedTileIds.includes(tile.id))
     : [];
   const topRivalCounter = getRivalCounterPlans(gameState, 1)[0];
+  const primaryRewardCardId =
+    pendingReward?.offeredCardIds.find((cardId) => {
+      const card = getStrategyCardById(cardId);
+      return card ? Boolean(getAnnualDirectiveRewardBiasMatch(card, gameState)) : false;
+    })
+    ?? pendingReward?.offeredCardIds.find((cardId) => {
+      const card = getStrategyCardById(cardId);
+      return Boolean(card && isCounterCard(card) && rivalCounterSignal !== "none");
+    })
+    ?? pendingReward?.offeredCardIds.find((cardId) => getCardRewardChoiceCheck(cardId, gameState).ok)
+    ?? pendingReward?.offeredCardIds[0];
   const archetypeSummary = getDeckArchetypeSummary(gameState);
   const deckSynergySummary = getDeckSynergySummary(gameState);
   const starterDeckOptions = getAvailableStarterDecks(gameState);
@@ -1031,6 +1046,70 @@ function DeckPanel({
         <div className="panel-heading">
           <h2>전략 덱</h2>
           <p>카드는 제품 개발에 직접 개입하는 짧은 선택지입니다. 비용과 효과가 즉시 반영됩니다.</p>
+        </div>
+        <div className="rc-action-brief deck-action-brief" aria-label="전략 덱 추천 행동">
+          <div className="rc-action-main">
+            <p className="eyebrow">RC 액션 브리프</p>
+            <h3>
+              {pendingReward
+                ? "보상부터 선택"
+                : activeProject && activeProduct
+                  ? "추천 첫 개발 이슈"
+                  : "먼저 제품 프로젝트 시작"}
+            </h3>
+            <span>
+              {pendingReward
+                ? `${pendingReward.productName} 출시 보상이 대기 중입니다. 보상 선택 후 성장 분기와 다음 런 설계가 이어집니다.`
+                : activeProject && activeProduct
+                  ? `${activeProduct.name} 진행 ${Math.round(activeProject.progress)}% · 추천 이슈를 해결하면 진행도와 완성도가 바로 오릅니다.`
+                  : "덱은 제품 프로젝트가 있을 때 가장 강합니다. 제품 메뉴에서 첫 프로젝트를 만든 뒤 카드 이슈를 해결하세요."}
+            </span>
+          </div>
+          <div className="rc-action-grid">
+            {pendingReward && (
+              <article className="primary">
+                <strong>보상 선택 대기</strong>
+                <span>{pendingReward.offeredCardIds.length}장 후보 · 이번 런 색을 정합니다.</span>
+                <small>아래 보상 카드 3장 중 1장을 선택하세요.</small>
+              </article>
+            )}
+            {activeProject && activeProduct && (
+              <article className={!pendingReward ? "primary" : ""}>
+                <strong>추천 이슈</strong>
+                <span>
+                  {recommendedPuzzleTiles.length
+                    ? recommendedPuzzleTiles.map((tile) => tile.label).join(", ")
+                    : "추천 이슈 준비 중"}
+                </span>
+                <small>현재 진행 {Math.round(activeProject.progress)}% · 완성도 {Math.round(activeProject.quality)}</small>
+                <button
+                  disabled={!recommendedResolveCheck?.ok || gameState.status !== "playing"}
+                  onClick={() => setGameState((current) => resolveDevelopmentPuzzle(activeProject.id, recommendedPuzzleTileIds, current))}
+                  type="button"
+                >
+                  자동 선택 이슈 해결
+                </button>
+              </article>
+            )}
+            {!activeProject && !pendingReward && (
+              <article className="primary">
+                <strong>제품 프로젝트 없음</strong>
+                <span>카드 선택 전에 제품 메뉴에서 첫 프로젝트를 시작하세요.</span>
+                <button onClick={() => setActiveMenu?.("products")} type="button">
+                  제품 메뉴 열기
+                </button>
+              </article>
+            )}
+            {topRivalCounter && (
+              <article>
+                <strong>경쟁 압박</strong>
+                <span>{topRivalCounter.competitorName} · {topRivalCounter.reason}</span>
+                <button onClick={() => setActiveMenu?.("competition")} type="button">
+                  대응 카드 보기
+                </button>
+              </article>
+            )}
+          </div>
         </div>
         <div className="run-summary-strip">
           <span>런 {gameState.roguelite.runNumber}</span>
@@ -1396,7 +1475,10 @@ function DeckPanel({
                 const effects = getStrategyCardEffects(card, gameState);
                 const biasMatch = getAnnualDirectiveRewardBiasMatch(card, gameState);
                 return (
-                  <article className={`strategy-card reward-choice rarity-${card.rarity}${isCounterCard(card) && rivalCounterSignal !== "none" ? ` strategy-card-counter strategy-card-counter-${rivalCounterSignal}` : ""}`} key={card.id}>
+                  <article
+                    className={`strategy-card reward-choice rarity-${card.rarity}${card.id === primaryRewardCardId ? " decision-primary" : ""}${isCounterCard(card) && rivalCounterSignal !== "none" ? ` strategy-card-counter strategy-card-counter-${rivalCounterSignal}` : ""}`}
+                    key={card.id}
+                  >
                     <p className="item-meta">
                       {card.category} / {card.rarity}
                       {isCounterCard(card) && rivalCounterSignal !== "none" && (
@@ -1918,6 +2000,13 @@ function ProductsPanel({
   const starterAgents = gameState.hiredAgents.filter((agent) => starterAgentIds.includes(agent.id));
   const starterCheck = starterProduct ? getProductProjectCheck(starterProduct, gameState, starterAgentIds) : undefined;
   const starterForecast = starterProduct ? getProductProjectForecast(starterProduct, gameState, starterAgentIds) : undefined;
+  const activeProductProject = gameState.productProjects[0];
+  const activeProductProjectDefinition = activeProductProject
+    ? availableProducts.find((product) => product.id === activeProductProject.productId)
+    : undefined;
+  const firstReleasedProduct = gameState.activeProducts[0]
+    ? availableProducts.find((product) => product.id === gameState.activeProducts[0])
+    : undefined;
   const shouldShowStarterLaunchpad =
     Boolean(starterProduct) &&
     gameState.hiredAgents.length > 0 &&
@@ -1959,6 +2048,72 @@ function ProductsPanel({
           <span>{strategyFocus.reason}</span>
         </div>
       )}
+      <div className="rc-action-brief product-action-brief" aria-label="제품 개발 추천 행동">
+        <div className="rc-action-main">
+          <p className="eyebrow">RC 액션 브리프</p>
+          <h3>
+            {activeProductProject && activeProductProjectDefinition
+              ? "제품 개발 진행 중"
+              : gameState.hiredAgents.length
+                ? "이번 달 추천 제품"
+                : "첫 제품 전 준비"}
+          </h3>
+          <span>
+            {activeProductProject && activeProductProjectDefinition
+              ? `${activeProductProjectDefinition.name} 진행 ${Math.round(activeProductProject.progress)}% · 덱 이슈 해결이 다음 행동입니다.`
+              : gameState.hiredAgents.length
+                ? "추천 제품, 자동 팀, 막힌 이유를 먼저 확인한 뒤 깊은 제품 목록으로 내려가세요."
+                : "제품 개발은 최소 1명 투입이 필요합니다. 첫 채용을 끝내면 추천 제품을 바로 시작할 수 있습니다."}
+          </span>
+        </div>
+        <div className="rc-action-grid">
+          {!gameState.hiredAgents.length && (
+            <article className="primary">
+              <strong>에이전트 먼저 고용</strong>
+              <span>제품 개발은 최소 1명 투입 필요</span>
+              <button onClick={() => setActiveMenu?.("agents")} type="button">
+                에이전트 보기
+              </button>
+            </article>
+          )}
+          {starterProduct && starterCheck && starterForecast && (
+            <article className={gameState.hiredAgents.length && !activeProductProject ? "primary" : ""}>
+              <strong>추천 첫 제품</strong>
+              <span>{starterProduct.name} · 예상 {starterForecast.estimatedMonths}개월 · 리뷰 {starterForecast.expectedReviewGrade}</span>
+              <small>
+                {starterCheck.ok
+                  ? `자동 팀 ${starterAgents.length ? starterAgents.map((agent) => agent.name).join(", ") : "대기 중"}`
+                  : `막힌 이유: ${starterCheck.reasons.slice(0, 2).join(" / ")}`}
+              </small>
+              <button
+                disabled={!starterCheck.ok || gameState.status !== "playing"}
+                onClick={() => setGameState((current) => startProductProject(starterProduct, current, starterAgentIds))}
+                type="button"
+              >
+                추천 제품 시작
+              </button>
+            </article>
+          )}
+          {activeProductProject && activeProductProjectDefinition && (
+            <article className="primary">
+              <strong>다음 개발 이슈</strong>
+              <span>{activeProductProjectDefinition.name} · 진행 {Math.round(activeProductProject.progress)}% · 완성도 {Math.round(activeProductProject.quality)}</span>
+              <button onClick={() => setActiveMenu?.("deck")} type="button">
+                덱에서 해결
+              </button>
+            </article>
+          )}
+          {firstReleasedProduct && !activeProductProject && (
+            <article>
+              <strong>출시 제품 관리</strong>
+              <span>{firstReleasedProduct.name} Lv.{getProductLevel(firstReleasedProduct.id, gameState)} · 리뉴얼 후보를 확인하세요.</span>
+              <button onClick={() => setSelectedDomainFilterId(firstReleasedProduct.domain)} type="button">
+                제품 목록 보기
+              </button>
+            </article>
+          )}
+        </div>
+      </div>
       {shouldShowResearchProductStarted && lastCapabilityUpgrade && researchProductStarted && researchProductStartedProject && (
         <div className="research-product-started-ribbon" aria-label="신제품 개발 시작">
           <div>
@@ -3177,7 +3332,16 @@ function getProductCandidateRequirement(gameState: GameState) {
   return undefined;
 }
 
-function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameState: Dispatch<SetStateAction<GameState>> }) {
+function ShopPanel({
+  gameState,
+  initialView,
+  setGameState,
+}: {
+  gameState: GameState;
+  initialView: ShopPanelView;
+  setGameState: Dispatch<SetStateAction<GameState>>;
+}) {
+  const [shopView, setShopView] = useState<ShopPanelView>(initialView);
   const [categoryFilter, setCategoryFilter] = useState("all");
   const itemRows = getItemContentRows(gameState);
   const recommendations = getFoundationRecommendations(gameState, 5);
@@ -3197,322 +3361,424 @@ function ShopPanel({ gameState, setGameState }: { gameState: GameState; setGameS
   const officeSynergySummary = getOfficeSynergySummary(gameState);
   const officeGrowthPlan = getOfficeGrowthPlan(gameState);
   const officeZonePlan = officeGrowthPlan.zonePlan;
+  const recommendedShopRows = recommendations.items.slice(0, 3);
+  const firstBuyableRecommendation =
+    recommendedShopRows.find((row) => row.available && !row.owned) ??
+    itemRows.find((row) => row.available && !row.owned);
+  const firstPlaceableOfficeItem = itemRows.find((row) => row.placeableInOffice);
+
+  useEffect(() => {
+    setShopView(initialView);
+  }, [initialView]);
 
   return (
-    <div className="panel-grid two-col">
+    <div className={`shop-view-shell ${shopView === "decor" ? "decor-view" : "shop-view"}`}>
+      <div className="shop-view-tabs content-filter" role="tablist" aria-label="상점 보기 선택">
+        <button
+          aria-selected={shopView === "shop"}
+          className={shopView === "shop" ? "selected" : ""}
+          onClick={() => setShopView("shop")}
+          type="button"
+        >
+          상점
+        </button>
+        <button
+          aria-selected={shopView === "decor"}
+          className={shopView === "decor" ? "selected" : ""}
+          onClick={() => setShopView("decor")}
+          type="button"
+        >
+          꾸미기
+        </button>
+      </div>
+      <div className="panel-grid two-col">
       <section className="panel">
         <div className="panel-heading">
-          <h2>아이템 상점</h2>
-          <p>장비와 사무실 물건은 에이전트 특색과 회사 분위기를 만듭니다.</p>
+          <h2>{shopView === "decor" ? "사무실 꾸미기" : "아이템 상점"}</h2>
+          <p>
+            {shopView === "decor"
+              ? "사무실 물건, 배치 슬롯, 운영 구획을 한곳에서 정리합니다."
+              : "에이전트 장비와 운영 아이템을 구매합니다."}
+          </p>
         </div>
-        <div className="shop-office-brief">
-          <strong>{officeExpansion.name}</strong>
-          <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
-          <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
-          <span>구획 {officeZonePlan.active.length}개</span>
-          <span>{officeSynergySummary.active.length ? `시너지 ${officeSynergySummary.active.length}개` : "시너지 준비 중"}</span>
-        </div>
-        <div className="office-growth-planner compact-planner">
-          <div className="office-growth-header">
-            <p className="eyebrow">사무실 성장</p>
-            <strong>{officeGrowthPlan.primaryAction.label}</strong>
-            <span>{officeGrowthPlan.primaryAction.reason}</span>
-          </div>
-          <div className="office-choice-grid">
-            {officeGrowthPlan.nextExpansion && (
-              <article className={officeGrowthPlan.nextExpansion.available ? "" : "locked"}>
-                <p className="item-meta">확장</p>
-                <strong>{officeGrowthPlan.nextExpansion.name}</strong>
-                <span>고용 +{officeGrowthPlan.nextExpansion.hireCapacityGain} · 장식 +{officeGrowthPlan.nextExpansion.decorationSlotGain}</span>
-              </article>
-            )}
-            {officeGrowthPlan.nextSynergy && (
-              <article>
-                <p className="item-meta">다음 조합</p>
-                <strong>{officeGrowthPlan.nextSynergy.title}</strong>
-                <span>{officeGrowthPlan.nextSynergy.recommendedItems[0]?.name ?? officeGrowthPlan.nextSynergy.progressLabel}</span>
-              </article>
-            )}
-          </div>
-        </div>
-        <div className="foundation-panel compact">
-          <div>
-            <p className="eyebrow">상점 추천</p>
-            <h3>{recommendations.phase.label}</h3>
-            <span>{recommendations.phase.description}</span>
-          </div>
-          <div className="recommendation-list">
-            {recommendations.items.map((row) => (
-              <span key={row.item.id}>{row.item.name} · {row.recommendationReason}</span>
-            ))}
-          </div>
-        </div>
-        <div className="content-filter" role="tablist" aria-label="아이템 카테고리 필터">
-          {itemCategories.map((category) => (
-            <button
-              aria-selected={categoryFilter === category}
-              className={categoryFilter === category ? "selected" : ""}
-              key={category}
-              onClick={() => setCategoryFilter(category)}
-              type="button"
-            >
-              {category === "all" ? "전체" : itemCategoryLabel(category)}
-            </button>
-          ))}
-        </div>
-        <div className="item-grid">
-          {filteredItemRows.map((row) => (
-            <ItemCard contentRow={row} item={row.item} gameState={gameState} setGameState={setGameState} key={row.item.id} />
-          ))}
-        </div>
-      </section>
-      <section className="panel">
-        <div className="panel-heading">
-          <h2>인벤토리와 투자</h2>
-          <p>보유 아이템, 사무실 확장, 장식 배치, 자동화 투자를 함께 봅니다.</p>
-        </div>
-        <div className="office-upgrade-panel">
-          <div className="office-growth-planner">
-            <div className="office-growth-header">
-              <p className="eyebrow">사무실 성장 플래너</p>
-              <strong>{officeGrowthPlan.primaryAction.label}</strong>
-              <span>{officeGrowthPlan.primaryAction.reason}</span>
+        {shopView === "decor" ? (
+          <>
+            <div className="shop-office-brief decor-view-brief">
+              <strong>{officeExpansion.name}</strong>
+              <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
+              <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
+              <span>구획 {officeZonePlan.active.length}개</span>
+              <span>{officeSynergySummary.active.length ? `시너지 ${officeSynergySummary.active.length}개` : "시너지 준비 중"}</span>
             </div>
-            <div className="office-choice-grid">
-              {officeGrowthPlan.nextExpansion && (
-                <article className={officeGrowthPlan.nextExpansion.available ? "" : "locked"}>
-                  <p className="item-meta">다음 사무실</p>
-                  <strong>{officeGrowthPlan.nextExpansion.name}</strong>
-                  <span>
-                    고용 +{officeGrowthPlan.nextExpansion.hireCapacityGain} · 장식 +{officeGrowthPlan.nextExpansion.decorationSlotGain}
-                  </span>
-                  <small>
-                    월간 {Object.keys(officeGrowthPlan.nextExpansion.monthlyEffects).length ? formatEffects(officeGrowthPlan.nextExpansion.monthlyEffects) : "없음"} · 비용 {formatCost(officeGrowthPlan.nextExpansion.cost)}
-                  </small>
-                </article>
-              )}
-              {officeGrowthPlan.nextRelocation && (
-                <article className={officeGrowthPlan.nextRelocation.available ? "" : "locked"}>
-                  <p className="item-meta">다음 지역</p>
-                  <strong>{officeGrowthPlan.nextRelocation.name}</strong>
-                  <span>
-                    AI 운용 {officeGrowthPlan.nextRelocation.aiOperationGain >= 0 ? "+" : ""}{officeGrowthPlan.nextRelocation.aiOperationGain} · 월비 {Math.round(officeGrowthPlan.nextRelocation.monthlyCostModifierDelta * 100)}%
-                  </span>
-                  <small>
-                    {officeGrowthPlan.nextRelocation.region} · 비용 {formatCost(officeGrowthPlan.nextRelocation.cost)}
-                  </small>
-                </article>
-              )}
-            </div>
-            {officeGrowthPlan.nextSynergy && (
-              <div className="office-recommendation-list">
-                <div>
-                  <strong>다음 조합: {officeGrowthPlan.nextSynergy.title}</strong>
-                  <span>{officeGrowthPlan.nextSynergy.progressLabel}</span>
-                </div>
-                {officeGrowthPlan.nextSynergy.recommendedItems.map((recommendation) => {
-                  const item = items.find((entry) => entry.id === recommendation.id);
-
-                  return (
-                    <article key={recommendation.id}>
-                      <div>
-                        <strong>{recommendation.name}</strong>
-                        <span>{recommendation.recommendationReason}</span>
-                        <small>{formatEffects(recommendation.effects)} · {recommendation.owned ? "보유" : formatCost(recommendation.cost)}</small>
-                      </div>
-                      {item && (
-                        <button
-                          disabled={!recommendation.available || gameState.status !== "playing"}
-                          onClick={() => setGameState((current) => recommendation.owned ? placeOfficeItem(item, current) : buyItem(item, current))}
-                          type="button"
-                        >
-                          {recommendation.owned ? "배치" : "구매"}
-                        </button>
-                      )}
-                    </article>
-                  );
-                })}
+            <div className="office-growth-planner compact-planner">
+              <div className="office-growth-header">
+                <p className="eyebrow">사무실 성장</p>
+                <strong>{officeGrowthPlan.primaryAction.label}</strong>
+                <span>{officeGrowthPlan.primaryAction.reason}</span>
               </div>
-            )}
-          </div>
-          <div className="office-summary-card">
-            <strong>{officeExpansion.name}</strong>
-            <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
-            <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
-            <span>구획 {officeZonePlan.active.length}</span>
-            <span>월간 {Object.keys(officeMonthlyEffects).length ? formatEffects(officeMonthlyEffects) : "없음"}</span>
-          </div>
-          <div className="office-zone-panel compact">
-            <div>
-              <p className="eyebrow">운영 구획</p>
-              <strong>{officeZonePlan.operationLabel}</strong>
-              <span>다음 확장과 채용이 열어주는 실제 사무실 기능입니다.</span>
-            </div>
-            <div className="office-zone-grid">
-              {officeZonePlan.active.slice(0, 3).map((zone) => (
-                <article className="active" key={zone.id}>
-                  <strong>{zone.title}</strong>
-                  <span>{formatEffects(zone.monthly_effects)}</span>
-                </article>
-              ))}
-              {officeZonePlan.nextZone && (
-                <article className="locked">
-                  <strong>{officeZonePlan.nextZone.title}</strong>
-                  <span>{officeZonePlan.nextZone.progressLabel}</span>
-                </article>
-              )}
-            </div>
-          </div>
-          <div className="office-synergy-panel">
-            <div>
-              <p className="eyebrow">장식 조합</p>
-              <strong>{officeSynergySummary.active.length ? `${officeSynergySummary.active.length}개 시너지 가동` : "시너지 준비 중"}</strong>
-              <span>
-                월간 효과 {Object.keys(officeSynergySummary.totalMonthlyEffects).length ? formatEffects(officeSynergySummary.totalMonthlyEffects) : "없음"}
-              </span>
-            </div>
-            {officeSynergySummary.active.slice(0, 2).map((synergy) => (
-              <article className="active" key={synergy.id}>
-                <strong>{synergy.title}</strong>
-                <span>{formatEffects(synergy.monthly_effects)}</span>
-              </article>
-            ))}
-            {officeSynergySummary.active.length === 0 && officeSynergySummary.nextCandidate && (
-              <article>
-                <strong>다음 후보: {officeSynergySummary.nextCandidate.title}</strong>
-                <span>{officeSynergySummary.nextCandidate.progressLabel}</span>
-              </article>
-            )}
-          </div>
-          {nextOfficeExpansion ? (
-            <article className="office-expansion-card">
-              <div>
-                <p className="item-meta">다음 확장</p>
-                <h3>{nextOfficeExpansion.name}</h3>
-                <p>{nextOfficeExpansion.description}</p>
-                <span>
-                  고용 {nextOfficeExpansion.hire_capacity}명 · 장식 {nextOfficeExpansion.decoration_slots}칸 · 월간 {formatEffects(nextOfficeExpansion.monthly_effects)} · 비용 {formatCost(nextOfficeExpansion.cost)}
-                </span>
+              <div className="office-choice-grid">
+                {officeGrowthPlan.nextExpansion && (
+                  <article className={officeGrowthPlan.nextExpansion.available ? "" : "locked"}>
+                    <p className="item-meta">확장</p>
+                    <strong>{officeGrowthPlan.nextExpansion.name}</strong>
+                    <span>고용 +{officeGrowthPlan.nextExpansion.hireCapacityGain} · 장식 +{officeGrowthPlan.nextExpansion.decorationSlotGain}</span>
+                  </article>
+                )}
+                {officeGrowthPlan.nextSynergy && (
+                  <article>
+                    <p className="item-meta">다음 조합</p>
+                    <strong>{officeGrowthPlan.nextSynergy.title}</strong>
+                    <span>{officeGrowthPlan.nextSynergy.recommendedItems[0]?.name ?? officeGrowthPlan.nextSynergy.progressLabel}</span>
+                  </article>
+                )}
               </div>
-              <button
-                disabled={!nextOfficeCheck?.ok || gameState.status !== "playing"}
-                onClick={() => setGameState((current) => buyOfficeExpansion(nextOfficeExpansion, current))}
-                type="button"
-              >
-                확장
-              </button>
-              {nextOfficeCheck && !nextOfficeCheck.ok && <small>{nextOfficeCheck.reasons.join(" / ")}</small>}
-            </article>
-          ) : (
-            <p className="empty-note">현재 가능한 최대 사무실입니다. 이제 콘텐츠와 장식을 더 늘릴 차례입니다.</p>
-          )}
-        </div>
-        <div className="decor-management">
-          <div className="decor-section">
-            <h3>배치된 장식</h3>
-            {placedOfficeItems.length ? (
-              placedOfficeItems.map((item) => (
-                <article key={item.id}>
-                  <div>
-                    <strong>{item.name}</strong>
-                    <span>{formatEffects(item.effects)}</span>
-                  </div>
-                  <button onClick={() => setGameState((current) => unplaceOfficeItem(item.id, current))} type="button">
-                    보관
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="rc-action-brief shop-action-brief" aria-label="상점 추천 행동">
+              <div className="rc-action-main">
+                <p className="eyebrow">RC 액션 브리프</p>
+                <h3>추천 3개 먼저 확인</h3>
+                <span>필터와 전체 아이템 목록 전에 지금 살 것, 보유 장식을 어디로 보낼지부터 결정합니다.</span>
+              </div>
+              <div className="rc-action-grid">
+                <article className="primary">
+                  <strong>추천 3개</strong>
+                  <span>
+                    {recommendedShopRows.length
+                      ? recommendedShopRows.map((row) => row.item.name).join(", ")
+                      : "현재 단계 추천 아이템 없음"}
+                  </span>
+                  <small>{recommendations.phase.label} · {recommendations.phase.description}</small>
+                </article>
+                <article>
+                  <strong>지금 구매</strong>
+                  <span>
+                    {firstBuyableRecommendation
+                      ? `${firstBuyableRecommendation.item.name} · ${firstBuyableRecommendation.recommendationReason}`
+                      : "구매 가능한 추천 아이템이 없습니다."}
+                  </span>
+                  <button
+                    disabled={!firstBuyableRecommendation || gameState.status !== "playing"}
+                    onClick={() =>
+                      setGameState((current) => {
+                        const item = firstBuyableRecommendation?.item;
+                        return item ? buyItem(item, current) : current;
+                      })
+                    }
+                    type="button"
+                  >
+                    구매
                   </button>
                 </article>
-              ))
-            ) : (
-              <p>사무실 아이템을 구매하면 빈 슬롯에 자동 배치됩니다.</p>
-            )}
-          </div>
-          <div className="decor-section">
-            <h3>보관 중 장식</h3>
-            {storedOfficeItems.length ? (
-              storedOfficeItems.map((item) => {
-                const placeCheck = getPlaceOfficeItemCheck(item, gameState);
-                return (
-                  <article key={item.id}>
+                <article>
+                  <strong>꾸미기/배치</strong>
+                  <span>
+                    {firstPlaceableOfficeItem
+                      ? `${firstPlaceableOfficeItem.item.name} 배치 가능`
+                      : storedOfficeItems.length
+                        ? `보관 장식 ${storedOfficeItems.length}개 확인`
+                        : "구매 후 꾸미기 탭에서 사무실 효과를 정리하세요."}
+                  </span>
+                  <button onClick={() => setShopView("decor")} type="button">
+                    꾸미기 보기
+                  </button>
+                </article>
+              </div>
+            </div>
+            <div className="foundation-panel compact">
+              <div>
+                <p className="eyebrow">상점 추천</p>
+                <h3>{recommendations.phase.label}</h3>
+                <span>{recommendations.phase.description}</span>
+              </div>
+              <div className="recommendation-list">
+                {recommendations.items.map((row) => (
+                  <span key={row.item.id}>{row.item.name} · {row.recommendationReason}</span>
+                ))}
+              </div>
+            </div>
+            <div className="content-filter" role="tablist" aria-label="아이템 카테고리 필터">
+              {itemCategories.map((category) => (
+                <button
+                  aria-selected={categoryFilter === category}
+                  className={categoryFilter === category ? "selected" : ""}
+                  key={category}
+                  onClick={() => setCategoryFilter(category)}
+                  type="button"
+                >
+                  {category === "all" ? "전체" : itemCategoryLabel(category)}
+                </button>
+              ))}
+            </div>
+            <div className="item-grid">
+              {filteredItemRows.map((row) => (
+                <ItemCard contentRow={row} item={row.item} gameState={gameState} setGameState={setGameState} key={row.item.id} />
+              ))}
+            </div>
+          </>
+        )}
+      </section>
+      <section className="panel">
+        <div className="panel-heading">
+          <h2>{shopView === "decor" ? "배치와 구획" : "인벤토리와 투자"}</h2>
+          <p>
+            {shopView === "decor"
+              ? "보유 장식, 사무실 확장, 조합 효과를 관리합니다."
+              : "보유 아이템과 장착 대기 장비, 자동화 투자를 확인합니다."}
+          </p>
+        </div>
+        {shopView === "decor" ? (
+          <>
+            <div className="office-upgrade-panel">
+              <div className="office-growth-planner">
+                <div className="office-growth-header">
+                  <p className="eyebrow">사무실 성장 플래너</p>
+                  <strong>{officeGrowthPlan.primaryAction.label}</strong>
+                  <span>{officeGrowthPlan.primaryAction.reason}</span>
+                </div>
+                <div className="office-choice-grid">
+                  {officeGrowthPlan.nextExpansion && (
+                    <article className={officeGrowthPlan.nextExpansion.available ? "" : "locked"}>
+                      <p className="item-meta">다음 사무실</p>
+                      <strong>{officeGrowthPlan.nextExpansion.name}</strong>
+                      <span>
+                        고용 +{officeGrowthPlan.nextExpansion.hireCapacityGain} · 장식 +{officeGrowthPlan.nextExpansion.decorationSlotGain}
+                      </span>
+                      <small>
+                        월간 {Object.keys(officeGrowthPlan.nextExpansion.monthlyEffects).length ? formatEffects(officeGrowthPlan.nextExpansion.monthlyEffects) : "없음"} · 비용 {formatCost(officeGrowthPlan.nextExpansion.cost)}
+                      </small>
+                    </article>
+                  )}
+                  {officeGrowthPlan.nextRelocation && (
+                    <article className={officeGrowthPlan.nextRelocation.available ? "" : "locked"}>
+                      <p className="item-meta">다음 지역</p>
+                      <strong>{officeGrowthPlan.nextRelocation.name}</strong>
+                      <span>
+                        AI 운용 {officeGrowthPlan.nextRelocation.aiOperationGain >= 0 ? "+" : ""}{officeGrowthPlan.nextRelocation.aiOperationGain} · 월비 {Math.round(officeGrowthPlan.nextRelocation.monthlyCostModifierDelta * 100)}%
+                      </span>
+                      <small>
+                        {officeGrowthPlan.nextRelocation.region} · 비용 {formatCost(officeGrowthPlan.nextRelocation.cost)}
+                      </small>
+                    </article>
+                  )}
+                </div>
+                {officeGrowthPlan.nextSynergy && (
+                  <div className="office-recommendation-list">
                     <div>
+                      <strong>다음 조합: {officeGrowthPlan.nextSynergy.title}</strong>
+                      <span>{officeGrowthPlan.nextSynergy.progressLabel}</span>
+                    </div>
+                    {officeGrowthPlan.nextSynergy.recommendedItems.map((recommendation) => {
+                      const item = items.find((entry) => entry.id === recommendation.id);
+
+                      return (
+                        <article key={recommendation.id}>
+                          <div>
+                            <strong>{recommendation.name}</strong>
+                            <span>{recommendation.recommendationReason}</span>
+                            <small>{formatEffects(recommendation.effects)} · {recommendation.owned ? "보유" : formatCost(recommendation.cost)}</small>
+                          </div>
+                          {item && (
+                            <button
+                              disabled={!recommendation.available || gameState.status !== "playing"}
+                              onClick={() => setGameState((current) => recommendation.owned ? placeOfficeItem(item, current) : buyItem(item, current))}
+                              type="button"
+                            >
+                              {recommendation.owned ? "배치" : "구매"}
+                            </button>
+                          )}
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+              <div className="office-summary-card">
+                <strong>{officeExpansion.name}</strong>
+                <span>고용 {gameState.hiredAgents.length}/{getOfficeHireCapacity(gameState)}</span>
+                <span>장식 {placedOfficeItems.length}/{getOfficeDecorationSlots(gameState)}</span>
+                <span>구획 {officeZonePlan.active.length}</span>
+                <span>월간 {Object.keys(officeMonthlyEffects).length ? formatEffects(officeMonthlyEffects) : "없음"}</span>
+              </div>
+              <div className="office-zone-panel compact">
+                <div>
+                  <p className="eyebrow">운영 구획</p>
+                  <strong>{officeZonePlan.operationLabel}</strong>
+                  <span>다음 확장과 채용이 열어주는 실제 사무실 기능입니다.</span>
+                </div>
+                <div className="office-zone-grid">
+                  {officeZonePlan.active.slice(0, 3).map((zone) => (
+                    <article className="active" key={zone.id}>
+                      <strong>{zone.title}</strong>
+                      <span>{formatEffects(zone.monthly_effects)}</span>
+                    </article>
+                  ))}
+                  {officeZonePlan.nextZone && (
+                    <article className="locked">
+                      <strong>{officeZonePlan.nextZone.title}</strong>
+                      <span>{officeZonePlan.nextZone.progressLabel}</span>
+                    </article>
+                  )}
+                </div>
+              </div>
+              <div className="office-synergy-panel">
+                <div>
+                  <p className="eyebrow">장식 조합</p>
+                  <strong>{officeSynergySummary.active.length ? `${officeSynergySummary.active.length}개 시너지 가동` : "시너지 준비 중"}</strong>
+                  <span>
+                    월간 효과 {Object.keys(officeSynergySummary.totalMonthlyEffects).length ? formatEffects(officeSynergySummary.totalMonthlyEffects) : "없음"}
+                  </span>
+                </div>
+                {officeSynergySummary.active.slice(0, 2).map((synergy) => (
+                  <article className="active" key={synergy.id}>
+                    <strong>{synergy.title}</strong>
+                    <span>{formatEffects(synergy.monthly_effects)}</span>
+                  </article>
+                ))}
+                {officeSynergySummary.active.length === 0 && officeSynergySummary.nextCandidate && (
+                  <article>
+                    <strong>다음 후보: {officeSynergySummary.nextCandidate.title}</strong>
+                    <span>{officeSynergySummary.nextCandidate.progressLabel}</span>
+                  </article>
+                )}
+              </div>
+              {nextOfficeExpansion ? (
+                <article className="office-expansion-card">
+                  <div>
+                    <p className="item-meta">다음 확장</p>
+                    <h3>{nextOfficeExpansion.name}</h3>
+                    <p>{nextOfficeExpansion.description}</p>
+                    <span>
+                      고용 {nextOfficeExpansion.hire_capacity}명 · 장식 {nextOfficeExpansion.decoration_slots}칸 · 월간 {formatEffects(nextOfficeExpansion.monthly_effects)} · 비용 {formatCost(nextOfficeExpansion.cost)}
+                    </span>
+                  </div>
+                  <button
+                    disabled={!nextOfficeCheck?.ok || gameState.status !== "playing"}
+                    onClick={() => setGameState((current) => buyOfficeExpansion(nextOfficeExpansion, current))}
+                    type="button"
+                  >
+                    확장
+                  </button>
+                  {nextOfficeCheck && !nextOfficeCheck.ok && <small>{nextOfficeCheck.reasons.join(" / ")}</small>}
+                </article>
+              ) : (
+                <p className="empty-note">현재 가능한 최대 사무실입니다. 이제 콘텐츠와 장식을 더 늘릴 차례입니다.</p>
+              )}
+            </div>
+            <div className="decor-management">
+              <div className="decor-section">
+                <h3>배치된 장식</h3>
+                {placedOfficeItems.length ? (
+                  placedOfficeItems.map((item) => (
+                    <article key={item.id}>
+                      <div>
+                        <strong>{item.name}</strong>
+                        <span>{formatEffects(item.effects)}</span>
+                      </div>
+                      <button onClick={() => setGameState((current) => unplaceOfficeItem(item.id, current))} type="button">
+                        보관
+                      </button>
+                    </article>
+                  ))
+                ) : (
+                  <p>사무실 아이템을 구매하면 빈 슬롯에 자동 배치됩니다.</p>
+                )}
+              </div>
+              <div className="decor-section">
+                <h3>보관 중 장식</h3>
+                {storedOfficeItems.length ? (
+                  storedOfficeItems.map((item) => {
+                    const placeCheck = getPlaceOfficeItemCheck(item, gameState);
+                    return (
+                      <article key={item.id}>
+                        <div>
+                          <strong>{item.name}</strong>
+                          <span>{formatEffects(item.effects)}</span>
+                          {!placeCheck.ok && <small>{placeCheck.reasons[0]}</small>}
+                        </div>
+                        <button
+                          disabled={!placeCheck.ok || gameState.status !== "playing"}
+                          onClick={() => setGameState((current) => placeOfficeItem(item, current))}
+                          type="button"
+                        >
+                          배치
+                        </button>
+                      </article>
+                    );
+                  })
+                ) : (
+                  <p>보관 중인 사무실 장식이 없습니다.</p>
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="inventory-panel">
+              <div className="inventory-strip">
+                <span>보유 {ownedItems.length}</span>
+                <span>장착 대기 {unequippedAgentItems.length}</span>
+                <span>배치 장식 {placedOfficeItems.length}</span>
+              </div>
+              <div className="inventory-list">
+                {ownedItems.length ? (
+                  ownedItems.map((item) => (
+                    <article key={item.id}>
                       <strong>{item.name}</strong>
-                      <span>{formatEffects(item.effects)}</span>
-                      {!placeCheck.ok && <small>{placeCheck.reasons[0]}</small>}
+                      <span>{itemTargetLabel(item.target)} · {formatEffects(item.effects)}</span>
+                    </article>
+                  ))
+                ) : (
+                  <p>아직 보유한 아이템이 없습니다. 왼쪽 상점에서 구매하면 여기에 쌓입니다.</p>
+                )}
+              </div>
+            </div>
+            <div className="item-list compact">
+              {upgrades.slice(0, 8).map((upgrade) => {
+                const check = getUpgradeCheck(upgrade, gameState);
+
+                return (
+                  <article className="upgrade-row" key={upgrade.id}>
+                    <div>
+                      <h3>{upgrade.name}</h3>
+                      <p>{upgrade.description}</p>
                     </div>
                     <button
-                      disabled={!placeCheck.ok || gameState.status !== "playing"}
-                      onClick={() => setGameState((current) => placeOfficeItem(item, current))}
-                      type="button"
+                      disabled={!check.ok || gameState.status !== "playing"}
+                      onClick={() => setGameState((current) => buyUpgrade(upgrade, current))}
                     >
-                      배치
+                      투자
                     </button>
+                    {!check.ok && <span>{check.reasons[0]}</span>}
                   </article>
                 );
-              })
-            ) : (
-              <p>보관 중인 사무실 장식이 없습니다.</p>
-            )}
-          </div>
-        </div>
-        <div className="inventory-panel">
-          <div className="inventory-strip">
-            <span>보유 {ownedItems.length}</span>
-            <span>장착 대기 {unequippedAgentItems.length}</span>
-            <span>배치 장식 {placedOfficeItems.length}</span>
-          </div>
-          <div className="inventory-list">
-            {ownedItems.length ? (
-              ownedItems.map((item) => (
-                <article key={item.id}>
-                  <strong>{item.name}</strong>
-                  <span>{itemTargetLabel(item.target)} · {formatEffects(item.effects)}</span>
-                </article>
-              ))
-            ) : (
-              <p>아직 보유한 아이템이 없습니다. 왼쪽 상점에서 구매하면 여기에 쌓입니다.</p>
-            )}
-          </div>
-        </div>
-        <div className="item-list compact">
-          {upgrades.slice(0, 8).map((upgrade) => {
-            const check = getUpgradeCheck(upgrade, gameState);
+              })}
+              {automationUpgrades.slice(0, 4).map((upgrade) => {
+                const check = getAutomationUpgradeCheck(upgrade, gameState);
 
-            return (
-              <article className="upgrade-row" key={upgrade.id}>
-                <div>
-                  <h3>{upgrade.name}</h3>
-                  <p>{upgrade.description}</p>
-                </div>
-                <button
-                  disabled={!check.ok || gameState.status !== "playing"}
-                  onClick={() => setGameState((current) => buyUpgrade(upgrade, current))}
-                >
-                  투자
-                </button>
-                {!check.ok && <span>{check.reasons[0]}</span>}
-              </article>
-            );
-          })}
-          {automationUpgrades.slice(0, 4).map((upgrade) => {
-            const check = getAutomationUpgradeCheck(upgrade, gameState);
-
-            return (
-              <article className="upgrade-row automation-row" key={upgrade.id}>
-                <div>
-                  <h3>{upgrade.name}</h3>
-                  <p>{upgrade.monthly_benefit}</p>
-                </div>
-                <button
-                  disabled={!check.ok || gameState.status !== "playing"}
-                  onClick={() => setGameState((current) => buyAutomationUpgrade(upgrade, current))}
-                >
-                  자동화
-                </button>
-                {!check.ok && <span>{check.reasons[0]}</span>}
-              </article>
-            );
-          })}
-        </div>
+                return (
+                  <article className="upgrade-row automation-row" key={upgrade.id}>
+                    <div>
+                      <h3>{upgrade.name}</h3>
+                      <p>{upgrade.monthly_benefit}</p>
+                    </div>
+                    <button
+                      disabled={!check.ok || gameState.status !== "playing"}
+                      onClick={() => setGameState((current) => buyAutomationUpgrade(upgrade, current))}
+                    >
+                      자동화
+                    </button>
+                    {!check.ok && <span>{check.reasons[0]}</span>}
+                  </article>
+                );
+              })}
+            </div>
+          </>
+        )}
       </section>
+      </div>
     </div>
   );
 }
@@ -3569,6 +3835,9 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
   const seasonChallenges = getCompetitionSeasonChallenges(gameState);
   const rivalCounterPlans = getRivalCounterPlans(gameState);
   const strategyFocus = getAnnualStrategyMenuFocus(gameState, "competition");
+  const topRivalCounterPlan = rivalCounterPlans[0];
+  const topRivalCounterProductLabel = topRivalCounterPlan ? formatProductNames(topRivalCounterPlan.recommendedProductIds, 2) : "경쟁사 프로필";
+  const topRivalCounterCardLabel = topRivalCounterPlan ? formatCardNames(topRivalCounterPlan.counterCardIds, 2) : "대응 카드 없음";
   const orderedCompetitorStates = prioritizeAnnualStrategyFocus(gameState.competitorStates.map((competitor) => competitor.id), strategyFocus)
     .map((competitorId) => gameState.competitorStates.find((competitor) => competitor.id === competitorId))
     .filter((competitor): competitor is NonNullable<typeof competitor> => Boolean(competitor));
@@ -3597,6 +3866,26 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
               최대 압박: {seasonBrief.topPressure.competitorName} · 점유 {seasonBrief.topPressure.marketShare}% · {seasonBrief.topPressure.lastMove}
             </span>
           )}
+        </div>
+        <div className="rival-causality-brief" aria-label="경쟁 대응 인과 요약">
+          <span>
+            <strong>왜 변했나</strong>
+            {topRivalCounterPlan?.reason ?? seasonBrief.summary}
+          </span>
+          <span>
+            <strong>다음 위협</strong>
+            {topRivalCounterPlan
+              ? `${topRivalCounterPlan.competitorName} 압박 ${topRivalCounterPlan.pressureScore} · 제품 ${topRivalCounterProductLabel}`
+              : seasonBrief.topPressure
+                ? `${seasonBrief.topPressure.competitorName} 점유 ${seasonBrief.topPressure.marketShare}% 유지`
+                : "새 경쟁사 진입 전 시장 공백 유지"}
+          </span>
+          <span>
+            <strong>대응 추천</strong>
+            {topRivalCounterPlan
+              ? `카드 ${topRivalCounterCardLabel} · 연구 ${formatCapabilityNames(topRivalCounterPlan.recommendedCapabilityIds, 2)}`
+              : "제품 출시 후 경쟁 메뉴에서 첫 대응 플랜 확인"}
+          </span>
         </div>
         {seasonChallenges.length > 0 && (
           <div className="season-challenge-list">
@@ -3653,6 +3942,8 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
               <article key={plan.competitorId}>
                 <strong>{plan.competitorName} 대응 플랜</strong>
                 <span>{plan.label} · 압박 {plan.pressureScore}</span>
+                <small>왜: {plan.reason}</small>
+                <small>다음 위협: 제품 {formatProductNames(plan.recommendedProductIds, 2)} 선점 가능</small>
                 <small>카드 {formatCardNames(plan.counterCardIds, 2)} / 연구 {formatCapabilityNames(plan.recommendedCapabilityIds, 2)}</small>
               </article>
             ))}
@@ -3720,6 +4011,8 @@ function CompetitionPanel({ gameState, locale }: { gameState: GameState; locale:
                 {counterPlan && (
                   <div className="counter-plan-card">
                     <strong>추천 대응</strong>
+                    <small>왜: {counterPlan.reason}</small>
+                    <small>다음 위협: {counterPlan.competitorName} 압박 {counterPlan.pressureScore}</small>
                     <span>카드 {formatCardNames(counterPlan.counterCardIds, 2)}</span>
                     <span>제품 {formatProductNames(counterPlan.recommendedProductIds, 2)}</span>
                     <small>연구 {formatCapabilityNames(counterPlan.recommendedCapabilityIds, 2)}</small>
@@ -3767,33 +4060,132 @@ function boundarylessStatusLabel(status: "locked" | "unlocked" | "launched"): st
   return "잠김";
 }
 
+type LogSubtabId = "timeline" | "collection" | "achievements";
+
+const logSubtabs: Array<{ id: LogSubtabId; label: string; hint: string; className: string }> = [
+  { id: "timeline", label: "타임라인", hint: "최근 결정", className: "timeline-tab" },
+  { id: "collection", label: "도감", hint: "발견 수집", className: "collection-tab" },
+  { id: "achievements", label: "업적", hint: "상용 목표", className: "achievement-tab" },
+];
+
 function TimelinePanel({ gameState }: { gameState: GameState }) {
+  const [activeLogSubtab, setActiveLogSubtab] = useState<LogSubtabId>("timeline");
   const moments = getShareableMoments(gameState);
+  const payoffCollectionEntries = getPayoffCollectionEntries(gameState);
+  const discoveredPayoffCount = payoffCollectionEntries.filter((entry) => entry.discovered).length;
+  const archetypeCollectionEntries = getArchetypeCollectionEntries(gameState);
+  const discoveredArchetypeCount = archetypeCollectionEntries.filter((entry) => entry.discovered).length;
+  const achievementStatuses = getAchievementStatuses(gameState);
+  const unlockedAchievementCount = achievementStatuses.filter((achievement) => achievement.unlocked).length;
 
   return (
     <section className="panel timeline-panel">
       <div className="panel-heading">
         <h2>회사 기록</h2>
-        <p>결정의 결과가 즉시 기록됩니다.</p>
+        <p>타임라인, 발견 도감, 업적을 기록 팝업 안에서 확인합니다.</p>
       </div>
-      {moments.length > 0 && (
-        <div className="highlight-moment-grid">
-          {moments.map((moment) => (
-            <article className={`highlight-moment-card tone-${moment.tone}`} key={`${moment.type}-${moment.title}`}>
-              <div>
-                <strong>{moment.title}</strong>
-                <span>{moment.badge}</span>
-              </div>
-              <p>{moment.detail}</p>
-            </article>
-          ))}
+      <div className="log-subtab-bar" role="tablist" aria-label="기록 세부 탭">
+        {logSubtabs.map((tab) => (
+          <button
+            aria-selected={activeLogSubtab === tab.id}
+            className={`log-subtab-button ${tab.className}${activeLogSubtab === tab.id ? " active" : ""}`}
+            key={tab.id}
+            onClick={() => setActiveLogSubtab(tab.id)}
+            role="tab"
+            type="button"
+          >
+            <strong>{tab.label}</strong>
+            <span>{tab.hint}</span>
+          </button>
+        ))}
+      </div>
+      {activeLogSubtab === "timeline" && (
+        <div className="log-subtab-panel timeline-tab-panel" role="tabpanel">
+          {moments.length > 0 && (
+            <div className="highlight-moment-grid">
+              {moments.map((moment) => (
+                <article className={`highlight-moment-card tone-${moment.tone}`} key={`${moment.type}-${moment.title}`}>
+                  <div>
+                    <strong>{moment.title}</strong>
+                    <span>{moment.badge}</span>
+                  </div>
+                  <p>{moment.detail}</p>
+                </article>
+              ))}
+            </div>
+          )}
+          <ol className="timeline">
+            {gameState.timeline.map((entry, index) => (
+              <li key={`${entry}-${index}`}>{entry}</li>
+            ))}
+          </ol>
         </div>
       )}
-      <ol className="timeline">
-        {gameState.timeline.map((entry, index) => (
-          <li key={`${entry}-${index}`}>{entry}</li>
-        ))}
-      </ol>
+      {activeLogSubtab === "collection" && (
+        <div className="log-subtab-panel collection-tab-panel" role="tabpanel">
+          <div className="payoff-collection-panel" aria-label="페이오프 도감">
+            <div className="payoff-collection-heading">
+              <div>
+                <p className="eyebrow">페이오프 도감</p>
+                <strong>
+                  {discoveredPayoffCount} / {payoffCollectionEntries.length} 발견
+                </strong>
+              </div>
+              <span>처음 발동한 조합과 시너지가 공개됩니다.</span>
+            </div>
+            <div className="payoff-collection-grid">
+              {payoffCollectionEntries.map((entry) => (
+                <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
+                  <p className="item-meta">{entry.kind === "combo" ? "고위험 조합" : "산업 시너지"}</p>
+                  <strong>{entry.discovered ? entry.title : "???"}</strong>
+                  <span>{entry.discovered ? formatEffects(entry.monthlyEffects) : `${entry.requiredDomains.length}개 산업 조건`}</span>
+                  <small>{entry.discovered ? entry.riskLabel ?? entry.description : "발동하면 공개"}</small>
+                </article>
+              ))}
+            </div>
+          </div>
+          <div className="archetype-collection-panel" aria-label="아키타입 도감">
+            <div className="payoff-collection-heading">
+              <div>
+                <p className="eyebrow">아키타입 도감</p>
+                <strong>
+                  {discoveredArchetypeCount} / {archetypeCollectionEntries.length} 발견
+                </strong>
+              </div>
+              <span>런 태그 조합에서 한 번이라도 파생된 아키타입이 공개됩니다.</span>
+            </div>
+            <div className="archetype-collection-grid">
+              {archetypeCollectionEntries.map((entry) => (
+                <article className={entry.discovered ? "discovered" : "locked"} key={entry.id}>
+                  <p className="item-meta">{entry.yields.kind === "product" ? "제품 후보" : entry.yields.kind === "event" ? "이벤트 씨앗" : "보너스 씨앗"}</p>
+                  <strong>{entry.discovered ? entry.title : "???"}</strong>
+                  <span>{entry.discovered ? entry.yields.summary : `${entry.requires.length}개 태그 조건`}</span>
+                  <small>{entry.discovered ? entry.description : "새 런 조합에서 파생되면 공개"}</small>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+      {activeLogSubtab === "achievements" && (
+        <div className="log-subtab-panel achievement-tab-panel" role="tabpanel">
+          <div className="achievement-block">
+            <div>
+              <h3>업적</h3>
+              <strong>{unlockedAchievementCount}/{achievementStatuses.length}</strong>
+            </div>
+            <div className="achievement-list">
+              {achievementStatuses.map((achievement) => (
+                <article className={achievement.unlocked ? "complete" : achievement.ready ? "ready" : ""} key={achievement.id}>
+                  <strong>{achievement.title}</strong>
+                  <span>{achievement.progressLabel}</span>
+                  <small>{achievement.unlocked ? "완료" : achievement.description}</small>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

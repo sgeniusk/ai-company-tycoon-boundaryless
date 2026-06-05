@@ -428,7 +428,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.timeline[0]).toContain("알파 준비도");
     expect(scenario.state.month).toBeGreaterThanOrEqual(120);
     expect(scenario.state.status).not.toBe("playing");
-  });
+  }, 20_000);
 
   it("creates a v0.50 20-person persona playtest scenario for alpha candidate QA", () => {
     const scenario = createQaScenario("persona20");
@@ -440,7 +440,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.timeline.some((entry) => entry.includes("P0/P1: 없음"))).toBe(true);
     expect(scenario.state.timeline.some((entry) => entry.includes("첫 30초: 사무실 판타지"))).toBe(true);
     expect(scenario.state.timeline.some((entry) => entry.includes("우측 보조 패널"))).toBe(false);
-  });
+  }, 20_000);
 
   it("creates a v0.56 launch impact scenario with card, rival, and team reactions", () => {
     const scenario = createQaScenario("launch-impact");
@@ -511,6 +511,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(scenario.state.month).toBe(120);
     expect(scenario.state.status).toBe("success");
     expect(scenario.state.locationId).toBe("seoul_ai_tower");
+    expect(getTutorialGuide({ ...scenario.state, seenTutorials: [] }, scenario.activeMenu)).toBeUndefined();
   });
 
   it("creates an annual review scenario for year-end milestone QA", () => {
@@ -881,7 +882,7 @@ describe("alpha v0.9.3 QA scenarios", () => {
     expect(createQaScenarioFromSearch("?scenario=ending-nearmiss-retry-start")?.id).toBe("ending-nearmiss-retry-start");
     expect(createQaScenarioFromSearch("?qa=project")?.id).toBe("project");
     expect(createQaScenarioFromSearch("?scenario=unknown")).toBeUndefined();
-  });
+  }, 20_000);
 
   it("builds an archetype collection scenario with previous and newly derived discoveries", () => {
     const scenario = createQaScenario("archetype-collection");

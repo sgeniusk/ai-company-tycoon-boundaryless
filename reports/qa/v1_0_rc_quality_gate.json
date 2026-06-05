@@ -1,0 +1,40 @@
+{
+  "aiSlopCleaner": {
+    "status": "passed",
+    "evidence": "reports/qa/v1_0_rc_polish_cleanup.md: duplicate GameChrome number helper removed, fallback-like signals reviewed, office marker silent cap removed, no new dependencies or systems."
+  },
+  "verification": {
+    "status": "passed",
+    "commands": [
+      "npm test -- src/ui/formatters.test.ts --maxWorkers=1",
+      "npm test -- src/ui/layout-contract.test.ts -t \"v1.0 rc\" --maxWorkers=1",
+      "npm test -- src/game/staff-career.test.ts -t \"links poaching incidents to a concrete competitor offer\" --maxWorkers=1",
+      "npm test -- src/game/qa-scenarios.test.ts -t \"creates scenarios from URL search params for browser QA\" --maxWorkers=1",
+      "npm test -- src/game/qa-scenarios.test.ts -t \"creates a v0.20 alpha readiness scenario from the integrated harness\" --maxWorkers=1",
+      "npm test -- src/game/qa-scenarios.test.ts -t \"creates a v0.50 20-persona|creates a v0.50 20-person persona\" --maxWorkers=1",
+      "npm test -- src/game/run-simulator.test.ts -t \"sweeps v0.66 combined roguelike balance|checks v0.61 end-to-end coverage\" --maxWorkers=1",
+      "npm test -- src/game/run-simulator.test.ts -t \"keeps challenge tier pressure non-inverted\" --maxWorkers=1",
+      "npm test -- src/game/blind-playtest-records.test.ts -t \"extracts completed-session P0 and P1 findings\" --maxWorkers=1",
+      "npx tsc --noEmit --pretty false",
+      "npm run harness:gate"
+    ],
+    "evidence": "Final harness:gate passed 54 files / 663 tests, validate:data passed, beta readiness 15/15, route coverage 40/40, production build passed. Browser 390x844 smoke found longDecimals [] and overflow 0 across 7 routes; reward-picked next action opened popup with growth decision in viewport at y=622."
+  },
+  "codeReview": {
+    "recommendation": "APPROVE",
+    "architectStatus": "CLEAR",
+    "evidence": "Independent code-reviewer approved the full pass and delta review; architect review returned CLEAR after identifying non-blocking marker cap/docs drift, both addressed before final verification.",
+    "independentReview": {
+      "codeReviewer": {
+        "agentRole": "code-reviewer",
+        "agentId": "019e9306-6540-7a83-a1b8-a732727a9f42",
+        "evidence": "Initial review: no findings, VERDICT: APPROVE. Delta review after marker cap removal, staff poaching formatting, timeout budgets, and docs updates: no findings, VERDICT: APPROVE."
+      },
+      "architect": {
+        "agentRole": "architect",
+        "agentId": "019e9306-b994-7683-a6b1-6c719e09af38",
+        "evidence": "Architecture review: formatter reuse, state-derived office markers, and mobile decision focus fit boundaries; marker cap and stale boundary docs were non-blocking findings and were corrected; VERDICT: CLEAR."
+      }
+    }
+  }
+}

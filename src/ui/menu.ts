@@ -1,5 +1,6 @@
 export type MenuId = "company" | "products" | "deck" | "agents" | "research" | "shop" | "competition" | "log";
 export type MenuGroup = "core" | "operations" | "meta";
+export type ShopPanelView = "shop" | "decor";
 
 export const orderedResourceIds = ["cash", "users", "compute", "data", "talent", "trust", "hype", "automation"];
 

@@ -1,4 +1,5 @@
 import { getOfficeGrowthPlan } from "./simulation";
+import { CAMPAIGN_FINAL_MONTH } from "./campaign";
 import type { GameState, TutorialGuide } from "./types";
 
 interface TutorialGuideRule extends TutorialGuide {
@@ -6,6 +7,7 @@ interface TutorialGuideRule extends TutorialGuide {
 }
 
 const helperName = "미나";
+const lateGameTutorialCutoffMonth = CAMPAIGN_FINAL_MONTH - 12;
 
 const tutorialGuideRules: TutorialGuideRule[] = [
   {
@@ -93,6 +95,8 @@ export const tutorialGuideAuditRules = tutorialGuideRules.map(({ id, title, mess
 }));
 
 export function getTutorialGuide(state: GameState, activeMenu?: string): TutorialGuide | undefined {
+  if (state.status !== "playing" || state.month >= lateGameTutorialCutoffMonth) return undefined;
+
   const seen = new Set(state.seenTutorials ?? []);
   const guide = tutorialGuideRules.find((rule) => !seen.has(rule.id) && rule.visible(state, activeMenu));
   if (!guide) return undefined;

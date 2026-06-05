@@ -3944,10 +3944,22 @@ function formatResourceDelta(delta: ResourceMap): string {
   return Object.entries(delta)
     .map(([resourceId, amount]) => {
       const resourceName = resources[resourceId]?.name ?? resourceId;
-      const sign = amount >= 0 ? "+" : "";
-      return `${resourceName} ${sign}${amount.toLocaleString("ko-KR")}`;
+      return `${resourceName} ${formatDeltaAmount(amount)}`;
     })
     .join(", ");
+}
+
+function formatDeltaAmount(value: number): string {
+  const normalized = Number(value.toFixed(2));
+  const sign = normalized > 0 ? "+" : normalized < 0 ? "-" : "";
+
+  return `${sign}${formatPlainAmount(Math.abs(normalized))}`;
+}
+
+function formatPlainAmount(value: number): string {
+  return Number(value.toFixed(2)).toLocaleString("ko-KR", {
+    maximumFractionDigits: 2,
+  });
 }
 
 function negateCosts(costs: ResourceMap): ResourceMap {
@@ -5030,13 +5042,12 @@ function getStaffPoachingOffer(state: GameState, agent: HiredAgent, level: numbe
   const monthlyUpkeep = getHiredAgentMonthlyUpkeep(agent).cash ?? 180;
   const offerMultiplier = Number((1.15 + Math.min(0.7, pressure.marketShare / 100 + pressure.aggression * 0.04 + level * 0.03)).toFixed(2));
   const signingBonus = Math.max(600, Math.round(monthlyUpkeep * offerMultiplier * 2));
-  const momentumLabel = pressure.momentum >= 0 ? `+${pressure.momentum}` : `${pressure.momentum}`;
 
   return {
     sourceCompetitorId: pressure.id,
     sourceCompetitorName: pressure.name,
     offerLabel: `제안 조건: 연봉 x${offerMultiplier} · 사이닝 ${formatMoney(signingBonus)}`,
-    stakesLabel: `${pressure.name} 점유 ${pressure.marketShare}% · 모멘텀 ${momentumLabel}`,
+    stakesLabel: `${pressure.name} 점유 ${formatPlainAmount(pressure.marketShare)}% · 모멘텀 ${formatDeltaAmount(pressure.momentum)}`,
   };
 }
 

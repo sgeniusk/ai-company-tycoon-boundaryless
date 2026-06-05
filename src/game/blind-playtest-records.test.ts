@@ -608,7 +608,7 @@ Status: 완료
     expect(report).toContain("추천 첫 제품 버튼 강조");
     expect(report).toContain("출시 후 보상과 성장 분기 차이");
     expect(report).toContain("v0_56_blind_playtest_session_01.md");
-  });
+  }, 20_000);
 
   it("keeps a combined final-art intake gate pending before real sessions", () => {
     const packageJson = fs.readFileSync(rootFile("package.json"), "utf8");

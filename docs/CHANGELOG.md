@@ -4,6 +4,85 @@
 
 ---
 
+## [v1.0-office-first-menu-redesign] — 2026-06-05
+
+### 모바일 첫 화면 hard reset
+
+**변경:**
+- low-chrome 패스도 산만하다는 피드백을 반영해, 모바일 첫 화면의 상시 UI를 기본값에서 더 과감히 숨겼다.
+- 상단 브랜드/자원 strip, 목표 칩, 꾸미기 칩, 헬퍼 튜토리얼, 오브젝트/액터/작업 비트 라벨, task-link layer를 기본 모바일 첫 화면에서 숨겼다.
+- 상단 고정 `메뉴` 버튼을 없애고, 하단 독을 `운영/회사/성장/메뉴`로 정리했다.
+- 전광판은 250x42 작은 인월드 LED 오브젝트로 유지했다.
+
+**검증:**
+- CDP 390x844 smoke: document scrollWidth 390, scoreboard 250x42 at x=70/y=34, dock right=380, bottom menu right=373, visible helper/goal/decor/workbeat/task-link/labels 0
+- `npm test -- src/ui/layout-contract.test.ts -t "standalone mobile first screen" --maxWorkers=1` 통과
+- `npm test -- src/ui/layout-contract.test.ts -t "v1.0" --maxWorkers=1` 통과, 15 targeted tests
+- `npm run build` 통과
+- `npm run harness:gate` 통과, 54 files / 665 tests, data validation, beta readiness 15/15, production build
+- 스크린샷: `reports/qa/screenshots/v1_0_mobile_hard_reset_after_feedback_2.png`
+- 상세 리포트: `reports/qa/v1_0_mobile_hard_reset_after_feedback.md`
+
+### 모바일 첫 화면 low-chrome 피드백 재작업
+
+**변경:**
+- 사용자 피드백에 따라 모바일 첫 화면의 큰 전광판/베이지 버튼 패널 느낌을 줄이고, 사무실이 먼저 보이는 low-chrome 게임화면으로 재작업했다.
+- 모바일 전광판은 278x50 인월드 LED 오브젝트로 축소하고, metric cell은 모바일 첫 화면에서 숨겼다.
+- 상단 자원/메뉴/목표/꾸미기/헬퍼 칩을 어두운 compact HUD로 통일하고, 중앙 다음 행동 FAB는 78px로 줄였다.
+
+**검증:**
+- CDP 390x844 smoke: document scrollWidth 390, visible overflow 0, scoreboard 278x50 at x=56/y=69, resource strip right=314, top-right menu right=380, dock right=380
+- `npm test -- src/ui/layout-contract.test.ts -t "v1.0" --maxWorkers=1` 통과, 15 targeted tests
+- `npm run build` 통과
+- `npm run harness:gate` 통과, 54 files / 665 tests, data validation, beta readiness 15/15, production build
+- 스크린샷: `reports/qa/screenshots/v1_0_mobile_redo_after_feedback_3.png`
+- 상세 리포트: `reports/qa/v1_0_mobile_feedback_low_chrome_redo.md`
+
+### 모바일 게임화면 전광판/말풍선 패스
+
+**변경:**
+- 모바일 첫 화면을 상단 인월드 LED 전광판 + 하단 사무실 바닥 구조로 재정렬했다.
+- 직원 포커스 패널은 기본 고정 카드가 아니라, 액터를 눌렀을 때만 뜨는 만화풍 말풍선으로 바꿨다.
+- standalone 모바일 첫 화면에서 중복 `launch-screen`/`office-hud` 오버레이를 숨기고, 헬퍼 튜토리얼은 작은 말풍선 카드로 축소했다.
+
+**검증:**
+- Browser 390x844 smoke: 전광판 370x90 at y=84, office floor y=186부터 시작, actor click 후 `comic-speech-bubble` 1개/selected actor 1개
+- `npm test -- --run src/ui/layout-contract.test.ts` 통과, 140 tests
+- `npm run build` 통과
+- `npm run qa:office-visuals:screenshots` 통과
+- `npm run harness:gate` 통과, 54 files / 665 tests, data validation, beta readiness 15/15, production build
+- 상세 리포트: `reports/qa/v1_0_game_screen_scoreboard_bubble_run.md`
+
+### Standalone 모바일 첫 화면 복구
+
+**변경:**
+- 제공된 standalone 모바일 mockup의 핵심 구조를 실제 앱 모바일 첫 화면에 반영했다.
+- 모바일 app shell을 오피스 풀스크린 stage 중심으로 재구성하고, 상단 HUD/자원 strip/목표 리본/꾸미기 chip/중앙 다음 행동 FAB/4버튼 dock/상단 `더보기`/그룹 drawer로 정리했다.
+- 중복 안내 strip(`alpha-run-focus-strip`, `turn-goal-strip`, `rival-incident-banner`)은 모바일 첫 화면에서 숨겨 목표 리본과 FAB만 핵심 행동 안내로 남겼다.
+- 이후 전광판/말풍선 패스에서 중복 `launch-screen`은 모바일 첫 화면에서 숨기고 상단 `office-scoreboard`가 제품/운영 신호를 담당하도록 정리했다.
+
+**검증:**
+- Browser 390x844 smoke: office scene 390x844 / visible fraction 1.000, horizontal overflow 0, `더보기`와 launch LED 겹침 없음, drawer width 390 및 `제품/덱/에이전트/연구/상점/경쟁/기록` 표시
+- `npm test -- src/ui/layout-contract.test.ts` 통과, 140 tests
+- `npm run build` 통과
+- `npm run harness:gate` 통과, 54 files / 665 tests, data validation, beta readiness 15/15, production build
+- 상세 리포트: `reports/qa/v1_0_mobile_standalone_first_screen_run.md`
+
+### 모바일 첫 화면 크롬 압축
+
+**변경:**
+- 모바일 하단 런처를 `운영/회사/성장/시장/더보기` 텍스트 중심 독으로 유지하고, 보조 메뉴는 그룹형 하단 드로어로 이동했다.
+- 모바일 상단 바, 자원 HUD, 명령줄을 함께 압축해 오피스 화면이 버튼 UI에 덮이지 않도록 했다.
+- 자원 HUD 모바일 계약을 예전 2줄 보드에서 1줄 핵심 지표 strip으로 갱신했다.
+
+**검증:**
+- Browser smoke: top bar 74px, resource strip 42px, command row 50px, office scene 434px / shell fraction 0.591, horizontal overflow 0
+- `npm test -- src/ui/layout-contract.test.ts -t "v1.0" --maxWorkers=1` 통과, 15 targeted tests
+- `npm run harness:gate` 통과, 54 files / 664 tests, data validation, beta readiness 15/15, production build
+- 상세 리포트: `reports/qa/v1_0_mobile_chrome_compression_run.md`
+
+---
+
 ## [0.56-alpha] — 2026-05-21
 
 ### 30분 알파런 완료 후속 체인과 디브리프
