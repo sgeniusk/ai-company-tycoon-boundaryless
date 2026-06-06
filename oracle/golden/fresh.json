@@ -1,0 +1,185 @@
+[
+  {
+    "label": "init",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [],
+          "id": "competitor_chatgody",
+          "lastMove": "출시 준비 중",
+          "marketShare": 24,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 72
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_cloyi",
+          "lastMove": "출시 준비 중",
+          "marketShare": 17,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 60
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_jemiinni",
+          "lastMove": "출시 준비 중",
+          "marketShare": 21,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 68
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_novarun",
+          "lastMove": "출시 준비 중",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 52
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_automaru",
+          "lastMove": "출시 준비 중",
+          "marketShare": 14,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 58
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_modelforge",
+          "lastMove": "출시 준비 중",
+          "marketShare": 15,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 64
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_chipspark",
+          "lastMove": "출시 준비 중",
+          "marketShare": 13,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 66
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_vizionlab",
+          "lastMove": "출시 준비 중",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 55
+        }
+      ],
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "locationId": "rural_garage",
+      "marketShareHistory": [],
+      "month": 1,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": 12300,
+        "compute": 90,
+        "data": 50,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 300
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "회사는 작은 AI 생산성 도구 팀으로 시작했습니다."
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  }
+]

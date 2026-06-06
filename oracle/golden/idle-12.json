@@ -1,0 +1,4262 @@
+[
+  {
+    "label": "m1",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [],
+          "id": "competitor_chatgody",
+          "lastMove": "출시 준비 중",
+          "marketShare": 24,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 72
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_cloyi",
+          "lastMove": "출시 준비 중",
+          "marketShare": 17,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 60
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_jemiinni",
+          "lastMove": "출시 준비 중",
+          "marketShare": 21,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 68
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_novarun",
+          "lastMove": "출시 준비 중",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 52
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_automaru",
+          "lastMove": "출시 준비 중",
+          "marketShare": 14,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 58
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_modelforge",
+          "lastMove": "출시 준비 중",
+          "marketShare": 15,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 64
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_chipspark",
+          "lastMove": "출시 준비 중",
+          "marketShare": 13,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 66
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_vizionlab",
+          "lastMove": "출시 준비 중",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 55
+        }
+      ],
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "locationId": "rural_garage",
+      "marketShareHistory": [],
+      "month": 1,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": 12300,
+        "compute": 90,
+        "data": 50,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 300
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "회사는 작은 AI 생산성 도구 팀으로 시작했습니다."
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m2",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [],
+          "id": "competitor_chatgody",
+          "lastMove": "AI 글쓰기 비서 시장 진입 준비",
+          "marketShare": 13,
+          "momentum": 1.3,
+          "researchLevel": 1,
+          "score": 79
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_cloyi",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 64
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_jemiinni",
+          "lastMove": "AI 글쓰기 비서 시장 진입 준비",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 73
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_novarun",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 58
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_automaru",
+          "lastMove": "AI 코딩 조수 시장 진입 준비",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 62
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_modelforge",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 69
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_chipspark",
+          "lastMove": "파운데이션 모델 v0 시장 진입 준비",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 70
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_vizionlab",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 60
+        }
+      ],
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2798
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        }
+      ],
+      "month": 2,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": 9562,
+        "compute": 85,
+        "data": 51,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 380
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [
+            "rival_benchmark_room"
+          ],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "경쟁사 competitor_chatgody 예고: AI 글쓰기 비서 시장 진입 준비",
+        "경쟁사 competitor_jemiinni 예고: AI 글쓰기 비서 시장 진입 준비",
+        "경쟁사 competitor_automaru 예고: AI 코딩 조수 시장 진입 준비",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "2개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "회사는 작은 AI 생산성 도구 팀으로 시작했습니다."
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m3",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [],
+          "id": "competitor_chatgody",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 14,
+          "momentum": 2.145,
+          "researchLevel": 1,
+          "score": 87.3
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_cloyi",
+          "lastMove": "AI 글쓰기 비서 시장 진입 준비",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 68
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_jemiinni",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 78
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_novarun",
+          "lastMove": "AI 코딩 조수 시장 진입 준비",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 64
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_automaru",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 66
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_modelforge",
+          "lastMove": "파운데이션 모델 v0 시장 진입 준비",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 74
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_chipspark",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 74
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_vizionlab",
+          "lastMove": "썸네일 생성기 시장 진입 준비",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 1,
+          "score": 65
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2801
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        }
+      ],
+      "month": 3,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": 6821,
+        "compute": 80,
+        "data": 52,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 460
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_cloyi 예고: AI 글쓰기 비서 시장 진입 준비",
+        "경쟁사 competitor_novarun 예고: AI 코딩 조수 시장 진입 준비",
+        "경쟁사 competitor_modelforge 예고: 파운데이션 모델 v0 시장 진입 준비",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "3개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "경쟁사 competitor_chatgody 예고: AI 글쓰기 비서 시장 진입 준비",
+        "경쟁사 competitor_jemiinni 예고: AI 글쓰기 비서 시장 진입 준비"
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m4",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [],
+          "id": "competitor_chatgody",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 14,
+          "momentum": 2.69425,
+          "researchLevel": 2,
+          "score": 96.445
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_cloyi",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 72
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "AI 글쓰기 비서 시장 선점",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 83
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_novarun",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 70
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_automaru",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 70
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "파운데이션 모델 v0 시장 선점",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 79
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_chipspark",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 78
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_vizionlab",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 70
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2804
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        }
+      ],
+      "month": 4,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": 4077,
+        "compute": 75,
+        "data": 53,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 540
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_jemiinni 선점: AI 글쓰기 비서 시장 선점",
+        "경쟁사 competitor_modelforge 선점: 파운데이션 모델 v0 시장 선점",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "4개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_cloyi 예고: AI 글쓰기 비서 시장 진입 준비"
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m5",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [],
+          "id": "competitor_chatgody",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 15,
+          "momentum": 3.0512625000000004,
+          "researchLevel": 2,
+          "score": 106.13924999999999
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant"
+          ],
+          "id": "competitor_cloyi",
+          "lastMove": "AI 글쓰기 비서 시장 선점",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 76
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 88
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_novarun",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 76
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_automaru",
+          "lastMove": "AI 코딩 조수 시장 선점",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 74
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 84
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_chipspark",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 82
+        },
+        {
+          "claimedProducts": [
+            "thumbnail_generator"
+          ],
+          "id": "competitor_vizionlab",
+          "lastMove": "썸네일 생성기 시장 선점",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 75
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2806
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 5,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        }
+      ],
+      "month": 5,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": 1331,
+        "compute": 70,
+        "data": 54,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 620
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_cloyi 선점: AI 글쓰기 비서 시장 선점",
+        "경쟁사 competitor_automaru 선점: AI 코딩 조수 시장 선점",
+        "경쟁사 competitor_vizionlab 선점: 썸네일 생성기 시장 선점",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "5개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "경쟁사 이슈: talent_poach"
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m6",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [
+            "ai_writing_assistant"
+          ],
+          "id": "competitor_chatgody",
+          "lastMove": "AI 글쓰기 비서 시장 선점",
+          "marketShare": 15,
+          "momentum": 3.283320625,
+          "researchLevel": 2,
+          "score": 116.19051249999998
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant"
+          ],
+          "id": "competitor_cloyi",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 80
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 93
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_novarun",
+          "lastMove": "AI 코딩 조수 시장 선점",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 82
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_automaru",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 78
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 89
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0"
+          ],
+          "id": "competitor_chipspark",
+          "lastMove": "파운데이션 모델 v0 시장 선점",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 86
+        },
+        {
+          "claimedProducts": [
+            "thumbnail_generator"
+          ],
+          "id": "competitor_vizionlab",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 80
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2809
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 5,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 6,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        }
+      ],
+      "month": 6,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": -1418,
+        "compute": 65,
+        "data": 55,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 700
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_chatgody 선점: AI 글쓰기 비서 시장 선점",
+        "경쟁사 competitor_novarun 선점: AI 코딩 조수 시장 선점",
+        "경쟁사 competitor_chipspark 선점: 파운데이션 모델 v0 시장 선점",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "6개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "경쟁사 이슈: talent_poach"
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m7",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [
+            "ai_writing_assistant"
+          ],
+          "id": "competitor_chatgody",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 16,
+          "momentum": 3.43415840625,
+          "researchLevel": 2,
+          "score": 126.47383312499998
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant"
+          ],
+          "id": "competitor_cloyi",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 84
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "회의 요약 봇 시장 선점",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 98
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_novarun",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 88
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_automaru",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 82
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "AI 코딩 조수 시장 선점",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 94
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0"
+          ],
+          "id": "competitor_chipspark",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 90
+        },
+        {
+          "claimedProducts": [
+            "thumbnail_generator"
+          ],
+          "id": "competitor_vizionlab",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 2,
+          "score": 85
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2811
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 5,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 6,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 7,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        }
+      ],
+      "month": 7,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": -4169,
+        "compute": 60,
+        "data": 56,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 780
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_jemiinni 선점: 회의 요약 봇 시장 선점",
+        "경쟁사 competitor_modelforge 선점: AI 코딩 조수 시장 선점",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "7개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등"
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m8",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [
+            "ai_writing_assistant"
+          ],
+          "id": "competitor_chatgody",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 16,
+          "momentum": 3.5322029640625,
+          "researchLevel": 3,
+          "score": 136.90799153125
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot"
+          ],
+          "id": "competitor_cloyi",
+          "lastMove": "회의 요약 봇 시장 선점",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 88
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 103
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_novarun",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 94
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_automaru",
+          "lastMove": "고객지원 챗봇 시장 선점",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 86
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 99
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0"
+          ],
+          "id": "competitor_chipspark",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 94
+        },
+        {
+          "claimedProducts": [
+            "thumbnail_generator",
+            "short_video_editor"
+          ],
+          "id": "competitor_vizionlab",
+          "lastMove": "숏폼 영상 편집기 시장 선점",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 90
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2814
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 5,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 6,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 7,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 8,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        }
+      ],
+      "month": 8,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": -6923,
+        "compute": 55,
+        "data": 57,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 860
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_cloyi 선점: 회의 요약 봇 시장 선점",
+        "경쟁사 competitor_automaru 선점: 고객지원 챗봇 시장 선점",
+        "경쟁사 competitor_vizionlab 선점: 숏폼 영상 편집기 시장 선점",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "8개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "경쟁사 이슈: talent_poach"
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m9",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot"
+          ],
+          "id": "competitor_chatgody",
+          "lastMove": "회의 요약 봇 시장 선점",
+          "marketShare": 17,
+          "momentum": 3.595931926640625,
+          "researchLevel": 3,
+          "score": 147.44019449531248
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot"
+          ],
+          "id": "competitor_cloyi",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 92
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 108
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_novarun",
+          "lastMove": "고객지원 챗봇 시장 선점",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 100
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_automaru",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 90
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 104
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "frontier_reasoning_model"
+          ],
+          "id": "competitor_chipspark",
+          "lastMove": "프론티어 추론 모델 시장 선점",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 98
+        },
+        {
+          "claimedProducts": [
+            "thumbnail_generator",
+            "short_video_editor"
+          ],
+          "id": "competitor_vizionlab",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 95
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2817
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 5,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 6,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 7,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 8,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 9,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        }
+      ],
+      "month": 9,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": -9680,
+        "compute": 50,
+        "data": 58,
+        "hype": 25,
+        "talent": 5,
+        "trust": 45,
+        "users": 940
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_chatgody 선점: 회의 요약 봇 시장 선점",
+        "경쟁사 competitor_novarun 선점: 고객지원 챗봇 시장 선점",
+        "경쟁사 competitor_chipspark 선점: 프론티어 추론 모델 시장 선점",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "9개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "경쟁사 이슈: talent_poach"
+      ],
+      "unlockedAchievements": [],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m10",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot"
+          ],
+          "id": "competitor_chatgody",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 17,
+          "momentum": 3.6373557523164064,
+          "researchLevel": 3,
+          "score": 158.0361264219531
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot"
+          ],
+          "id": "competitor_cloyi",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 96
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot",
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "AI 코딩 조수 시장 선점",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 113
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_novarun",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 106
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_automaru",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 94
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "ai_coding_assistant",
+            "frontier_reasoning_model"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "프론티어 추론 모델 시장 선점",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 109
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "frontier_reasoning_model"
+          ],
+          "id": "competitor_chipspark",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 102
+        },
+        {
+          "claimedProducts": [
+            "thumbnail_generator",
+            "short_video_editor"
+          ],
+          "id": "competitor_vizionlab",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 100
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2819
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 5,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 6,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 7,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 8,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 9,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        },
+        {
+          "month": 10,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        }
+      ],
+      "month": 10,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": -11239,
+        "compute": 45,
+        "data": 71,
+        "hype": 27,
+        "talent": 5,
+        "trust": 48,
+        "users": 1020
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "업적 달성: 시장 발판 - 보상 자금 +1,200, 화제성 +2",
+        "업적 달성: 10개월 생존 - 보상 신뢰 +3, 데이터 +12",
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_jemiinni 선점: AI 코딩 조수 시장 선점",
+        "경쟁사 competitor_modelforge 선점: 프론티어 추론 모델 시장 선점",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "10개월차: 아직 출시 제품이 없어 고정비만 발생했습니다."
+      ],
+      "unlockedAchievements": [
+        "market_foothold",
+        "ten_month_survivor"
+      ],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m11",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualReviewHistory": [],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot"
+          ],
+          "id": "competitor_chatgody",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 17,
+          "momentum": 3.664281239005664,
+          "researchLevel": 3,
+          "score": 168.6734821742695
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot",
+            "thumbnail_generator"
+          ],
+          "id": "competitor_cloyi",
+          "lastMove": "썸네일 생성기 시장 선점",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 100
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot",
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 118
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_novarun",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 112
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot",
+            "enterprise_workflow_agent"
+          ],
+          "id": "competitor_automaru",
+          "lastMove": "기업 업무 에이전트 시장 선점",
+          "marketShare": 10,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 98
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "ai_coding_assistant",
+            "frontier_reasoning_model"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 12,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 114
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "frontier_reasoning_model"
+          ],
+          "id": "competitor_chipspark",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 106
+        },
+        {
+          "claimedProducts": [
+            "thumbnail_generator",
+            "short_video_editor",
+            "autonomous_vehicle_stack"
+          ],
+          "id": "competitor_vizionlab",
+          "lastMove": "자율주행 AI 스택 시장 선점",
+          "marketShare": 11,
+          "momentum": 0,
+          "researchLevel": 3,
+          "score": 105
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2822
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 5,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 6,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 7,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 8,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 9,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        },
+        {
+          "month": 10,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        },
+        {
+          "month": 11,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        }
+      ],
+      "month": 11,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingChallengerEntryIds": [],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": -14001,
+        "compute": 40,
+        "data": 72,
+        "hype": 27,
+        "talent": 5,
+        "trust": 48,
+        "users": 1100
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_cloyi 선점: 썸네일 생성기 시장 선점",
+        "경쟁사 competitor_automaru 선점: 기업 업무 에이전트 시장 선점",
+        "경쟁사 competitor_vizionlab 선점: 자율주행 AI 스택 시장 선점",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +60, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2, 신뢰 -1",
+        "11개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "업적 달성: 시장 발판 - 보상 자금 +1,200, 화제성 +2"
+      ],
+      "unlockedAchievements": [
+        "market_foothold",
+        "ten_month_survivor"
+      ],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m12",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualDirective": {
+        "description": "심사 미달 후에도 지역 멘토가 붙어 생존 자금과 신뢰 회복 루트를 열어 줍니다.",
+        "expiresMonth": 24,
+        "monthlyEffects": {
+          "cash": 120,
+          "trust": 1
+        },
+        "recommendedMenu": "agents",
+        "reviewId": "year_1_local_demo_day",
+        "rewardBiasTags": [],
+        "rivalMomentumDelta": 2,
+        "source": "recovery",
+        "title": "차고 재정비 플랜",
+        "year": 1
+      },
+      "annualReviewHistory": [
+        {
+          "month": 12,
+          "passed": false,
+          "reviewId": "year_1_local_demo_day",
+          "reward": {
+            "cash": 900,
+            "hype": 2
+          },
+          "score": 67,
+          "summary": "지역 AI 데모데이 미달: 2/3개 목표 달성",
+          "title": "지역 AI 데모데이",
+          "year": 1
+        }
+      ],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_chatgody",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 15,
+          "momentum": 5.681782805353682,
+          "researchLevel": 4,
+          "score": 179.33776341327518
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot",
+            "thumbnail_generator"
+          ],
+          "id": "competitor_cloyi",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 9,
+          "momentum": 2,
+          "researchLevel": 4,
+          "score": 104
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot",
+            "ai_coding_assistant"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 10,
+          "momentum": 2,
+          "researchLevel": 4,
+          "score": 123
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_novarun",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 10,
+          "momentum": 2,
+          "researchLevel": 4,
+          "score": 118
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot",
+            "enterprise_workflow_agent"
+          ],
+          "id": "competitor_automaru",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 8,
+          "momentum": 2,
+          "researchLevel": 4,
+          "score": 102
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "ai_coding_assistant",
+            "frontier_reasoning_model"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 10,
+          "momentum": 2,
+          "researchLevel": 4,
+          "score": 119
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "frontier_reasoning_model",
+            "ai_training_chip"
+          ],
+          "id": "competitor_chipspark",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 9,
+          "momentum": 2,
+          "researchLevel": 4,
+          "score": 110
+        },
+        {
+          "claimedProducts": [
+            "thumbnail_generator",
+            "short_video_editor",
+            "autonomous_vehicle_stack"
+          ],
+          "id": "competitor_vizionlab",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 9,
+          "momentum": 2,
+          "researchLevel": 4,
+          "score": 110
+        },
+        {
+          "claimedProducts": [],
+          "id": "competitor_autonova_motors",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 8,
+          "momentum": 3.3,
+          "researchLevel": 3,
+          "score": 102
+        },
+        {
+          "claimedProducts": [
+            "warehouse_robot_fleet"
+          ],
+          "id": "competitor_brewchain",
+          "lastMove": "1년차 미달을 보고 시장 공세 강화",
+          "marketShare": 7,
+          "momentum": 3.3,
+          "researchLevel": 3,
+          "score": 87
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 60,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": -1,
+          "users": 80
+        },
+        "totalCost": 2824
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 5,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 6,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 7,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 8,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 9,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        },
+        {
+          "month": 10,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        },
+        {
+          "month": 11,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        },
+        {
+          "month": 12,
+          "player": 5,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        }
+      ],
+      "month": 12,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingAnnualDirectiveChoices": {
+        "month": 12,
+        "offeredDirectiveIds": [
+          "cashflow_discipline",
+          "trust_compound_program",
+          "product_launch_marathon"
+        ],
+        "reviewId": "year_1_local_demo_day",
+        "source": "recovery",
+        "year": 1
+      },
+      "pendingChallengerEntryIds": [
+        "competitor_autonova_motors",
+        "competitor_brewchain"
+      ],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": -15865,
+        "compute": 35,
+        "data": 73,
+        "hype": 29,
+        "talent": 5,
+        "trust": 48,
+        "users": 1180
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "연간 심사: 지역 AI 데모데이 미달: 2/3개 목표 달성",
+        "연간 지시: 차고 재정비 플랜",
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_chatgody 선점: 고객지원 챗봇 시장 선점",
+        "경쟁사 competitor_chipspark 선점: AI 학습 칩 시장 선점",
+        "경쟁사 competitor_brewchain 선점: 창고 로봇 플릿 시장 선점",
+        "강력한 신규 경쟁사 등장: 오토노바 모터스가 자율주행 시장에 뛰어들었습니다."
+      ],
+      "unlockedAchievements": [
+        "market_foothold",
+        "ten_month_survivor"
+      ],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  },
+  {
+    "label": "advanced-m13",
+    "state": {
+      "activeDevelopmentPuzzleModifiers": [],
+      "activeProducts": [],
+      "annualDirective": {
+        "description": "심사 미달 후에도 지역 멘토가 붙어 생존 자금과 신뢰 회복 루트를 열어 줍니다.",
+        "expiresMonth": 24,
+        "monthlyEffects": {
+          "cash": 120,
+          "trust": 1
+        },
+        "recommendedMenu": "agents",
+        "reviewId": "year_1_local_demo_day",
+        "rewardBiasTags": [],
+        "rivalMomentumDelta": 2,
+        "source": "recovery",
+        "title": "차고 재정비 플랜",
+        "year": 1
+      },
+      "annualReviewHistory": [
+        {
+          "month": 12,
+          "passed": false,
+          "reviewId": "year_1_local_demo_day",
+          "reward": {
+            "cash": 900,
+            "hype": 2
+          },
+          "score": 67,
+          "summary": "지역 AI 데모데이 미달: 2/3개 목표 달성",
+          "title": "지역 AI 데모데이",
+          "year": 1
+        }
+      ],
+      "campaignShockHistory": [],
+      "capabilities": {
+        "agent": 0,
+        "audio": 0,
+        "code": 1,
+        "enterprise": 0,
+        "language": 1,
+        "logistics": 0,
+        "manufacturing": 0,
+        "optimization": 0,
+        "robotics": 0,
+        "safety": 0,
+        "video": 0,
+        "vision": 0
+      },
+      "competitorStates": [
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_chatgody",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 15,
+          "momentum": 4.993158823479893,
+          "researchLevel": 4,
+          "score": 192.01954621862888
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot",
+            "thumbnail_generator"
+          ],
+          "id": "competitor_cloyi",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 9,
+          "momentum": 1.3,
+          "researchLevel": 4,
+          "score": 110
+        },
+        {
+          "claimedProducts": [
+            "ai_writing_assistant",
+            "meeting_summary_bot",
+            "ai_coding_assistant",
+            "thumbnail_generator"
+          ],
+          "id": "competitor_jemiinni",
+          "lastMove": "썸네일 생성기 시장 선점",
+          "marketShare": 10,
+          "momentum": 1.3,
+          "researchLevel": 4,
+          "score": 130
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot"
+          ],
+          "id": "competitor_novarun",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 1.3,
+          "researchLevel": 4,
+          "score": 126
+        },
+        {
+          "claimedProducts": [
+            "ai_coding_assistant",
+            "customer_support_chatbot",
+            "enterprise_workflow_agent"
+          ],
+          "id": "competitor_automaru",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 8,
+          "momentum": 1.3,
+          "researchLevel": 4,
+          "score": 108
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "ai_coding_assistant",
+            "frontier_reasoning_model"
+          ],
+          "id": "competitor_modelforge",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 10,
+          "momentum": 1.3,
+          "researchLevel": 4,
+          "score": 126
+        },
+        {
+          "claimedProducts": [
+            "foundation_model_v0",
+            "frontier_reasoning_model",
+            "ai_training_chip"
+          ],
+          "id": "competitor_chipspark",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 9,
+          "momentum": 1.3,
+          "researchLevel": 4,
+          "score": 116
+        },
+        {
+          "claimedProducts": [
+            "thumbnail_generator",
+            "short_video_editor",
+            "autonomous_vehicle_stack"
+          ],
+          "id": "competitor_vizionlab",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 9,
+          "momentum": 1.3,
+          "researchLevel": 4,
+          "score": 117
+        },
+        {
+          "claimedProducts": [
+            "autonomous_vehicle_stack"
+          ],
+          "id": "competitor_autonova_motors",
+          "lastMove": "자율주행 AI 스택 시장 선점",
+          "marketShare": 9,
+          "momentum": 2.145,
+          "researchLevel": 3,
+          "score": 113.3
+        },
+        {
+          "claimedProducts": [
+            "warehouse_robot_fleet"
+          ],
+          "id": "competitor_brewchain",
+          "lastMove": "기초 모델 연구 강화",
+          "marketShare": 8,
+          "momentum": 2.145,
+          "researchLevel": 3,
+          "score": 97.3
+        }
+      ],
+      "currentEvent": {
+        "choices": [
+          {
+            "description": "-3000 자금, +50 연산력",
+            "effects": {
+              "cash": -3000,
+              "compute": 50
+            },
+            "id": "buy_now",
+            "text": "가격이 더 오르기 전에 GPU를 확보한다"
+          },
+          {
+            "description": "-1000 자금, +10 데이터",
+            "effects": {
+              "cash": -1000,
+              "data": 10
+            },
+            "id": "optimize",
+            "text": "기존 모델을 최적화해 연산 사용량을 줄인다"
+          },
+          {
+            "description": "-15 연산력",
+            "effects": {
+              "compute": -15
+            },
+            "id": "wait_it_out",
+            "text": "가격이 내려가길 기다린다"
+          }
+        ],
+        "conditions": {
+          "min_month": 3
+        },
+        "description": "전 세계 GPU 품귀로 연산 비용이 크게 뛰었습니다.",
+        "id": "gpu_price_spike",
+        "name": "GPU 가격 폭등",
+        "weight": 8
+      },
+      "currentRivalEvent": {
+        "choices": [
+          {
+            "competitor_effects": {
+              "momentum": -3,
+              "score": -2
+            },
+            "description_key": "rivalEvents.talentPoach.counterOffer.description",
+            "effects": {
+              "cash": -1200,
+              "trust": 2
+            },
+            "id": "counter_offer",
+            "text_key": "rivalEvents.talentPoach.counterOffer.text"
+          },
+          {
+            "competitor_effects": {
+              "momentum": 2,
+              "score": 3
+            },
+            "description_key": "rivalEvents.talentPoach.letGo.description",
+            "effects": {
+              "cash": 600,
+              "talent": -1
+            },
+            "id": "let_go",
+            "text_key": "rivalEvents.talentPoach.letGo.text"
+          }
+        ],
+        "competitor_id": "competitor_novarun",
+        "conditions": {
+          "min_month": 4
+        },
+        "description_key": "rivalEvents.talentPoach.description",
+        "id": "talent_poach",
+        "name_key": "rivalEvents.talentPoach.name"
+      },
+      "discoveredPayoffIds": [],
+      "eventHistory": [],
+      "generatedProducts": [],
+      "hiredAgents": [],
+      "lastMonthReport": {
+        "computePressure": 0,
+        "generatedData": 0,
+        "newUsers": 0,
+        "revenue": 0,
+        "strategyEffects": {
+          "cash": 180,
+          "compute": -5,
+          "data": 1,
+          "hype": 2,
+          "trust": 0,
+          "users": 80
+        },
+        "totalCost": 2827
+      },
+      "locationId": "rural_garage",
+      "marketShareHistory": [
+        {
+          "month": 2,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 13
+        },
+        {
+          "month": 3,
+          "player": 9,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 4,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 14
+        },
+        {
+          "month": 5,
+          "player": 8,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 6,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 7,
+          "player": 7,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 8,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 16
+        },
+        {
+          "month": 9,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        },
+        {
+          "month": 10,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        },
+        {
+          "month": 11,
+          "player": 6,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 17
+        },
+        {
+          "month": 12,
+          "player": 5,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        },
+        {
+          "month": 13,
+          "player": 4,
+          "topRivalId": "competitor_chatgody",
+          "topRivalShare": 15
+        }
+      ],
+      "month": 13,
+      "office": {
+        "expansionId": "garage_lab",
+        "placedItemIds": []
+      },
+      "ownedItems": [],
+      "pendingAnnualDirectiveChoices": {
+        "month": 12,
+        "offeredDirectiveIds": [
+          "cashflow_discipline",
+          "trust_compound_program",
+          "product_launch_marathon"
+        ],
+        "reviewId": "year_1_local_demo_day",
+        "source": "recovery",
+        "year": 1
+      },
+      "pendingChallengerEntryIds": [
+        "competitor_autonova_motors",
+        "competitor_brewchain"
+      ],
+      "productLevels": {},
+      "productProjects": [],
+      "productReviews": {},
+      "purchasedAutomationUpgrades": [],
+      "purchasedUpgrades": [],
+      "recentStaffIncidentResolutions": [],
+      "resources": {
+        "automation": 0,
+        "cash": -18512,
+        "compute": 30,
+        "data": 74,
+        "hype": 29,
+        "talent": 5,
+        "trust": 49,
+        "users": 1260
+      },
+      "rivalEventHistory": [],
+      "roguelite": {
+        "deck": {
+          "discardPile": [],
+          "drawPile": [],
+          "hand": [
+            "prompt_sprint",
+            "gpu_burst",
+            "customer_interviews",
+            "safety_review",
+            "open_source_push",
+            "rival_benchmark_room"
+          ],
+          "playedThisTurn": []
+        },
+        "deckEditTokens": 0,
+        "discoveredArchetypeIds": [],
+        "discoveredEndingIds": [],
+        "founderInsight": 0,
+        "rewardHistory": [],
+        "runHistory": [],
+        "runNumber": 1,
+        "starterDeckId": "balanced_founder",
+        "unlockedMetaIds": [],
+        "upgradedCardIds": []
+      },
+      "runModifiers": {
+        "challengeTier": "standard",
+        "founderTraitId": "capitalist_founder",
+        "marketConditionId": "consumer_hype_cycle",
+        "seed": "oracle-fixed-001",
+        "startCityId": "san_francisco",
+        "tags": [
+          "city_san_francisco",
+          "frontier_cluster",
+          "talent_expensive",
+          "export_controls",
+          "compute_regional",
+          "consumer_hype",
+          "volatile_demand",
+          "capitalist_founder",
+          "fundraising_bias"
+        ],
+        "worldLoreId": "chip_war"
+      },
+      "seenTutorials": [],
+      "status": "playing",
+      "timeline": [
+        "경쟁사 이슈: talent_poach",
+        "이슈 발생: GPU 가격 폭등",
+        "경쟁사 competitor_jemiinni 선점: 썸네일 생성기 시장 선점",
+        "경쟁사 competitor_autonova_motors 선점: 자율주행 AI 스택 시장 선점",
+        "시즌 압박: 챗지오디 압박 대응",
+        "사무실 구획: 창업자 지휘 데스크 가동",
+        "전략 효과: 자금 +180, 신뢰 0, 데이터 +1, 연산력 -5, 이용자 +80, 화제성 +2",
+        "13개월차: 아직 출시 제품이 없어 고정비만 발생했습니다.",
+        "연간 심사: 지역 AI 데모데이 미달: 2/3개 목표 달성",
+        "연간 지시: 차고 재정비 플랜"
+      ],
+      "unlockedAchievements": [
+        "market_foothold",
+        "ten_month_survivor"
+      ],
+      "unlockedDomains": [
+        "foundation_models",
+        "personal_productivity"
+      ],
+      "worldEventHistory": []
+    }
+  }
+]
