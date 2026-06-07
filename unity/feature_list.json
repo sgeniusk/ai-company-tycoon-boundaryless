@@ -45,7 +45,7 @@
       "dependencies": ["feat-003"],
       "status": "in-progress",
       "owner": "Claude->Codex",
-      "evidence": "사운드+모션+아이콘(슬라이스51, 커밋897700d) 완료. 파티클 — FxManager 색종이 버스트(출시/승급/능력/도메인), 자동부트스트랩+GameEvents, GameScreen 무수정. 검증 EditMode 21/21. 시각확인 남음. progress.md 참고"
+      "evidence": "사운드+모션+아이콘(897700d)+파티클(748d1a8) 완료. 테마 — UiTheme 카이로소프트 팔레트(크림/틸/그린/골드), UiFactory+GameScreen 전면 적용. 검증 EditMode 21/21. 에디터 시각확인 + ④BGM(오디오 에셋) 남음. progress.md 참고"
     },
     {
       "id": "feat-005",

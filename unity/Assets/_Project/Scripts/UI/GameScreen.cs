@@ -57,7 +57,7 @@ namespace AICompanyTycoon.UI
         public void Build()
         {
             _canvas = UiFactory.CreateCanvas("AI Company Tycoon UI");
-            var root = UiFactory.Panel(_canvas.transform, new Color(0.05f, 0.06f, 0.09f, 1f));
+            var root = UiFactory.Panel(_canvas.transform, UiTheme.ScreenBg);
             root.name = "GameScreen";
             Stretch(root.GetComponent<RectTransform>());
             UiFactory.VBox(root.transform, 18, new RectOffset(28, 28, 28, 28));
@@ -173,12 +173,13 @@ namespace AICompanyTycoon.UI
 
         void BuildTopBar(Transform parent)
         {
-            var panel = UiFactory.Panel(parent, new Color(0.10f, 0.13f, 0.18f, 1f));
+            var panel = UiFactory.Panel(parent, UiTheme.HeaderBg);
             panel.name = "TopBar";
             AddLayout(panel, 150, 0);
             UiFactory.VBox(panel.transform, 4, new RectOffset(24, 24, 14, 14));
 
             var title = UiFactory.Label(panel.transform, "AI Company Tycoon", 42);
+            title.color = UiTheme.HeaderText;
             title.alignment = TextAnchor.MiddleLeft;
             AddLayout(title.gameObject, 54, 0);
 
@@ -188,16 +189,18 @@ namespace AICompanyTycoon.UI
             AddLayout(row, 52, 0);
 
             _monthLabel = UiFactory.Label(row.transform, "1월차", 30);
+            _monthLabel.color = UiTheme.HeaderText;
             AddLayout(_monthLabel.gameObject, 48, 1);
 
             _stageLabel = UiFactory.Label(row.transform, "차고 프로토타입", 28);
+            _stageLabel.color = UiTheme.HeaderText;
             _stageLabel.alignment = TextAnchor.MiddleRight;
             AddLayout(_stageLabel.gameObject, 48, 1);
         }
 
         void BuildResourceHud(Transform parent)
         {
-            var panel = UiFactory.Panel(parent, new Color(0.08f, 0.10f, 0.14f, 1f));
+            var panel = UiFactory.Panel(parent, UiTheme.HudBg);
             panel.name = "ResourceHud";
             AddLayout(panel, 365, 0);
             UiFactory.VBox(panel.transform, 8, new RectOffset(20, 20, 16, 16));
@@ -243,7 +246,7 @@ namespace AICompanyTycoon.UI
 
         void BuildContentArea(Transform parent)
         {
-            var frame = UiFactory.Panel(parent, new Color(0.07f, 0.08f, 0.11f, 1f));
+            var frame = UiFactory.Panel(parent, UiTheme.PanelBg);
             frame.name = "TabContentFrame";
             AddLayout(frame, 560, 1);
 
@@ -255,7 +258,7 @@ namespace AICompanyTycoon.UI
 
         void BuildMonthSummary(Transform parent)
         {
-            var panel = UiFactory.Panel(parent, new Color(0.10f, 0.11f, 0.15f, 1f));
+            var panel = UiFactory.Panel(parent, UiTheme.PanelBg);
             panel.name = "MonthSummary";
             AddLayout(panel, 180, 0);
             UiFactory.VBox(panel.transform, 8, new RectOffset(20, 20, 14, 14));
@@ -294,17 +297,17 @@ namespace AICompanyTycoon.UI
             AddLayout(fresh.button.gameObject, 96, 1);
 
             _statusLabel = UiFactory.Label(parent, "", 22);
-            _statusLabel.color = new Color(0.72f, 0.80f, 0.92f, 1f);
+            _statusLabel.color = UiTheme.TextSecondary;
             AddLayout(_statusLabel.gameObject, 36, 0);
         }
 
         void BuildEventModal(Transform parent)
         {
-            _eventModal = UiFactory.Panel(parent, new Color(0f, 0f, 0f, 0.72f));
+            _eventModal = UiFactory.Panel(parent, UiTheme.ModalScrim);
             _eventModal.name = "EventModal";
             Stretch(_eventModal.GetComponent<RectTransform>());
 
-            var card = UiFactory.Panel(_eventModal.transform, new Color(0.09f, 0.11f, 0.16f, 1f));
+            var card = UiFactory.Panel(_eventModal.transform, UiTheme.PanelBg);
             card.name = "EventCard";
             var rect = card.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(0.08f, 0.24f);
@@ -391,8 +394,8 @@ namespace AICompanyTycoon.UI
             {
                 var image = item.Value.GetComponent<Image>();
                 image.color = item.Key == tab
-                    ? new Color(0.28f, 0.38f, 0.56f, 1f)
-                    : new Color(0.16f, 0.20f, 0.29f, 1f);
+                    ? UiTheme.TabActive
+                    : UiTheme.TabInactive;
             }
         }
 
@@ -699,7 +702,7 @@ namespace AICompanyTycoon.UI
 
         Transform AddCard(Transform parent, Sprite icon, string title, string body)
         {
-            var card = UiFactory.Panel(parent, new Color(0.12f, 0.14f, 0.19f, 1f));
+            var card = UiFactory.Panel(parent, UiTheme.CardBg);
             UiFactory.VBox(card.transform, 8, new RectOffset(18, 18, 16, 16));
 
             if (icon != null)
@@ -712,13 +715,13 @@ namespace AICompanyTycoon.UI
                 UiFactory.Icon(header.transform, icon, 34);
 
                 var iconTitle = UiFactory.Label(header.transform, title, 30);
-                iconTitle.color = new Color(0.93f, 0.96f, 1f, 1f);
+                iconTitle.color = UiTheme.TextPrimary;
                 AddLayout(iconTitle.gameObject, 40, 1);
             }
             else
             {
                 var titleLabel = UiFactory.Label(card.transform, title, 30);
-                titleLabel.color = new Color(0.93f, 0.96f, 1f, 1f);
+                titleLabel.color = UiTheme.TextPrimary;
                 AddLayout(titleLabel.gameObject, 42, 0);
             }
 
@@ -733,7 +736,7 @@ namespace AICompanyTycoon.UI
         Text AddSmallText(Transform parent, string text)
         {
             var label = UiFactory.Label(parent, string.IsNullOrEmpty(text) ? "-" : text, 23);
-            label.color = new Color(0.78f, 0.84f, 0.92f, 1f);
+            label.color = UiTheme.TextSecondary;
             return label;
         }
 

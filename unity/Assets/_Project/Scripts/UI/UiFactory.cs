@@ -65,7 +65,7 @@ namespace AICompanyTycoon.UI
             label.font = LegacyFont;
             label.text = text;
             label.fontSize = fontSize;
-            label.color = Color.white;
+            label.color = UiTheme.TextPrimary;
             label.alignment = TextAnchor.MiddleLeft;
             label.horizontalOverflow = HorizontalWrapMode.Wrap;
             label.verticalOverflow = VerticalWrapMode.Overflow;
@@ -77,14 +77,14 @@ namespace AICompanyTycoon.UI
             var go = new GameObject("Button", typeof(RectTransform), typeof(Image), typeof(Button));
             go.transform.SetParent(parent, false);
             var image = go.GetComponent<Image>();
-            image.color = new Color(0.16f, 0.20f, 0.29f, 1f);
+            image.color = UiTheme.Button;
 
             var button = go.GetComponent<Button>();
             var colors = button.colors;
-            colors.normalColor = new Color(0.16f, 0.20f, 0.29f, 1f);
-            colors.highlightedColor = new Color(0.23f, 0.29f, 0.42f, 1f);
-            colors.pressedColor = new Color(0.10f, 0.14f, 0.20f, 1f);
-            colors.disabledColor = new Color(0.12f, 0.12f, 0.14f, 0.55f);
+            colors.normalColor = UiTheme.Button;
+            colors.highlightedColor = UiTheme.ButtonHover;
+            colors.pressedColor = UiTheme.ButtonPressed;
+            colors.disabledColor = UiTheme.ButtonDisabled;
             button.colors = colors;
 
             var textGo = new GameObject("Text", typeof(RectTransform), typeof(Text));
@@ -99,7 +99,7 @@ namespace AICompanyTycoon.UI
             label.font = LegacyFont;
             label.text = labelText;
             label.fontSize = 30;
-            label.color = Color.white;
+            label.color = UiTheme.ButtonText;
             label.alignment = TextAnchor.MiddleCenter;
             label.horizontalOverflow = HorizontalWrapMode.Wrap;
             label.verticalOverflow = VerticalWrapMode.Overflow;
