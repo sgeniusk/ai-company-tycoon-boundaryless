@@ -54,7 +54,7 @@
       "dependencies": ["feat-003"],
       "status": "in-progress",
       "owner": "Claude->Codex",
-      "evidence": "세이프에어리어 착수 — SafeAreaFitter(Screen.safeArea→anchor) + GameScreen 콘텐츠를 safe area에. 빌드 모듈(Android/iOS) 설치 확인. EditMode 21/21. 남음 — 번들ID/빌드스크립트/아이콘"
+      "evidence": "세이프에어리어(SafeAreaFitter, 021ac45) + 빌드셋업(PlatformSetup: 번들 com.gomgomee.aicompanytycoon, IL2CPP/ARM64/세로 + Android 빌드스크립트, ProjectSettings 반영) 완료. EditMode 21/21. 남음 — 아이콘/스플래시(1024), 실제 빌드(환경)"
     }
   ]
 }
