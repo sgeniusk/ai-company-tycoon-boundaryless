@@ -54,7 +54,7 @@
       "dependencies": ["feat-003"],
       "status": "in-progress",
       "owner": "Claude->Codex",
-      "evidence": "세이프에어리어(SafeAreaFitter, 021ac45) + 빌드셋업(PlatformSetup: 번들 com.gomgomee.aicompanytycoon, IL2CPP/ARM64/세로 + Android 빌드스크립트, ProjectSettings 반영) 완료. EditMode 21/21. 남음 — 아이콘/스플래시(1024), 실제 빌드(환경)"
+      "evidence": "세이프에어리어(021ac45)+빌드셋업(733e184)+실제 Android 빌드 성공(AICompanyTycoon.apk 35MB, IL2CPP/ARM64, BuildResult Succeeded, Unity 내장 SDK). EditMode 21/21. 남음 — 아이콘/스플래시(1024), 시각/실기기 확인"
     }
   ]
 }
