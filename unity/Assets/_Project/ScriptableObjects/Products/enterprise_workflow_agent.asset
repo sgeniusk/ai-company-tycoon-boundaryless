@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: enterprise_workflow_agent
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: enterprise_workflow_agent
+  displayName: "\uAE30\uC5C5 \uC5C5\uBB34 \uC5D0\uC774\uC804\uD2B8"
+  description: "\uAE30\uC5C5\uC758 \uBC18\uBCF5 \uC5C5\uBB34 \uD504\uB85C\uC138\uC2A4\uB97C
+    \uC790\uB3D9\uC73C\uB85C \uCC98\uB9AC\uD558\uB294 \uC790\uC728 \uC5D0\uC774\uC804\uD2B8\uC785\uB2C8\uB2E4."
+  domain: enterprise_automation
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 2
+  - capabilityId: enterprise
+    level: 1
+  trustRequirement: 70
+  launchCost:
+  - resource: 0
+    amount: 8000
+  - resource: 2
+    amount: 50
+  - resource: 3
+    amount: 30
+  baseRevenue: 3000
+  baseUsersPerMonth: 100
+  dataGeneratedPerMonth: 15
+  computePer1000Users: 30
+  hypeOnLaunch: 5
+  level: 1
+  tags:
+  - enterprise
+  - agent
+  - automation

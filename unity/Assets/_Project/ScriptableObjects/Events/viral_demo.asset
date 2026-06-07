@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc8c43a2eed342d1bf5308bf1be7aed, type: 3}
+  m_Name: viral_demo
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
+  id: viral_demo
+  displayName: "\uBC14\uC774\uB7F4 \uB370\uBAA8"
+  description: "\uC81C\uD488 \uD558\uB098\uAC00 \uC18C\uC15C \uBBF8\uB514\uC5B4\uC5D0\uC11C
+    \uD3ED\uBC1C\uC801\uC73C\uB85C \uD37C\uC84C\uC2B5\uB2C8\uB2E4. \uC218\uB9CE\uC740
+    \uC0AC\uB78C\uB4E4\uC774 \uC9C0\uCF1C\uBCF4\uACE0 \uC788\uC2B5\uB2C8\uB2E4."
+  weight: 10
+  conditions:
+  - key: min_month
+    value: 2
+  - key: min_products
+    value: 1
+  choices:
+  - id: ride_the_wave
+    text: "\uD30C\uB3C4\uB97C \uD0C4\uB2E4 - \uB178\uCD9C\uC744 \uCD5C\uB300\uD654"
+    description: "+15 \uD654\uC81C\uC131, +2000 \uC774\uC6A9\uC790, -20 \uC5F0\uC0B0\uB825"
+    effects:
+    - resource: 2
+      amount: -20
+    - resource: 6
+      amount: 15
+    - resource: 1
+      amount: 2000
+  - id: stay_cautious
+    text: "\uC2E0\uC911\uD558\uAC8C \uAC04\uB2E4 - \uAE30\uB300\uCE58\uB97C \uAD00\uB9AC"
+    description: "+5 \uD654\uC81C\uC131, +500 \uC774\uC6A9\uC790, +5 \uC2E0\uB8B0"
+    effects:
+    - resource: 6
+      amount: 5
+    - resource: 5
+      amount: 5
+    - resource: 1
+      amount: 500

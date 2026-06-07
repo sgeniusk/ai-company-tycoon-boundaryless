@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc8c43a2eed342d1bf5308bf1be7aed, type: 3}
+  m_Name: new_domain_opportunity
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
+  id: new_domain_opportunity
+  displayName: New Domain Opportunity
+  description: A new market is emerging that perfectly fits your capabilities.
+  weight: 5
+  conditions:
+  - key: min_capabilities
+    value: 2
+  - key: min_month
+    value: 5
+  choices:
+  - id: invest_early
+    text: Invest early to capture the market
+    description: -$3000, +10 Hype, +10 Data
+    effects:
+    - resource: 0
+      amount: -3000
+    - resource: 3
+      amount: 10
+    - resource: 6
+      amount: 10
+  - id: wait_and_see
+    text: Wait and see if the market matures
+    description: +5 Data (observation)
+    effects:
+    - resource: 3
+      amount: 5

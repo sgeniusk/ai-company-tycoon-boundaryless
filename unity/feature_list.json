@@ -1,0 +1,60 @@
+{
+  "_comment": "Unity 포트 피처 추적. status: not-started | ready | in-progress | done | blocked. evidence는 한 줄 + 링크. 활성(ready/in-progress) 5개 이하 유지.",
+  "milestone": "v0.1 Vertical Slice (세로 모바일 핵심 루프)",
+  "features": [
+    {
+      "id": "feat-000",
+      "name": "Project Setup (P0)",
+      "description": "Unity 6 프로젝트 생성, URP/2D/Input/uGUI+TMP/Test 패키지, 세로 모드, asmdef 폴더 구조, 코어 시드(GameModel/ResourceId/GameEvents/ResourceDef) + EditMode 스모크 테스트",
+      "dependencies": [],
+      "status": "done",
+      "owner": "Claude",
+      "evidence": "batchmode createProject exit0 + HarnessSetup.Setup 'Packages resolved OK'(URP17.4/input1.19/ugui2.0/test1.6) + 세로 설정. progress.md 참고"
+    },
+    {
+      "id": "feat-001",
+      "name": "Data Pipeline (P1)",
+      "description": "../data/*.json(resources/balance/products/capabilities/domains/events/upgrades/automation_upgrades/company_stages) -> ScriptableObject 스키마 + Editor 임포터 + DataCatalog. AutomationSystem 월별 보너스 하드코딩은 SO 필드로 데이터화",
+      "dependencies": ["feat-000"],
+      "status": "done",
+      "owner": "Codex (스펙: Claude)",
+      "evidence": "스키마9종(Claude)+임포터/DataCatalog/MiniJson/테스트(Codex). 120 SO 자산(R8/P36/C12/D15/U21/A6/E15/S6)+DataCatalog, EditMode 5/5 통과. Claude 권위검증"
+    },
+    {
+      "id": "feat-002",
+      "name": "Core Simulation Headless (P2)",
+      "description": "GameModel + 서비스(Resource/Month/Product/Capability/Domain/Upgrade/Automation/CompanyStage/RandomEvent/WinLoss) 월 진행 루프를 UI 없이 구현. ../scripts/systems/*.gd와 ../src/game/simulation.ts를 정답지로 balance.json 공식 재현. NUnit으로 한 게임 끝까지 시뮬레이션",
+      "dependencies": ["feat-001"],
+      "status": "done",
+      "owner": "Claude (영향도 높음)",
+      "evidence": "GameModel + 10 서비스 + MonthController 헤드리스. balance 공식 재현 + 36개월 플레이스루. EditMode 15/15 통과. Claude 직접"
+    },
+    {
+      "id": "feat-003",
+      "name": "Vertical Slice Mobile UI (P3)",
+      "description": "세로 uGUI — 자원 8종 HUD, 제품/능력/업그레이드 하단 탭, 다음 달 버튼, 월 요약, 이벤트 모달, 세이브/로드. 카드는 프리팹+풀링, 코어에 GameEvents로 연결",
+      "dependencies": ["feat-002"],
+      "status": "not-started",
+      "owner": "Claude->Codex",
+      "evidence": ""
+    },
+    {
+      "id": "feat-004",
+      "name": "Commercial Polish (P5)",
+      "description": "사운드(AudioManager), DOTween 모션, 파티클(FXManager), 카메라(Cinemachine), 햅틱, Localization(ko/en). public/assets 아이콘을 SpriteAtlas로. URP 2D 파이프라인 에셋 생성·할당",
+      "dependencies": ["feat-003"],
+      "status": "not-started",
+      "owner": "Claude->Codex",
+      "evidence": ""
+    },
+    {
+      "id": "feat-005",
+      "name": "Platform Build (P6)",
+      "description": "Android/iOS 빌드 파이프라인, 세이프에어리어, 아이콘/스플래시, 내부 테스트 트랙",
+      "dependencies": ["feat-003"],
+      "status": "not-started",
+      "owner": "Codex",
+      "evidence": ""
+    }
+  ]
+}

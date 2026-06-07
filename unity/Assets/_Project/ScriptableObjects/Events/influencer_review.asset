@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc8c43a2eed342d1bf5308bf1be7aed, type: 3}
+  m_Name: influencer_review
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
+  id: influencer_review
+  displayName: Influencer Review
+  description: A major tech influencer wants to review your product live.
+  weight: 10
+  conditions:
+  - key: min_month
+    value: 2
+  - key: min_products
+    value: 1
+  choices:
+  - id: accept_review
+    text: "Accept \u2014 let them show everything"
+    description: +12 Hype, +1500 Users
+    effects:
+    - resource: 6
+      amount: 12
+    - resource: 1
+      amount: 1500
+  - id: controlled_demo
+    text: Offer a controlled demo instead
+    description: +6 Hype, +500 Users, +3 Trust
+    effects:
+    - resource: 6
+      amount: 6
+    - resource: 5
+      amount: 3
+    - resource: 1
+      amount: 500

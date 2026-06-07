@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc8c43a2eed342d1bf5308bf1be7aed, type: 3}
+  m_Name: gpu_price_spike
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
+  id: gpu_price_spike
+  displayName: "GPU \uAC00\uACA9 \uD3ED\uB4F1"
+  description: "\uC804 \uC138\uACC4 GPU \uD488\uADC0\uB85C \uC5F0\uC0B0 \uBE44\uC6A9\uC774
+    \uD06C\uAC8C \uB6F0\uC5C8\uC2B5\uB2C8\uB2E4."
+  weight: 8
+  conditions:
+  - key: min_month
+    value: 3
+  choices:
+  - id: buy_now
+    text: "\uAC00\uACA9\uC774 \uB354 \uC624\uB974\uAE30 \uC804\uC5D0 GPU\uB97C \uD655\uBCF4\uD55C\uB2E4"
+    description: "-3000 \uC790\uAE08, +50 \uC5F0\uC0B0\uB825"
+    effects:
+    - resource: 0
+      amount: -3000
+    - resource: 2
+      amount: 50
+  - id: optimize
+    text: "\uAE30\uC874 \uBAA8\uB378\uC744 \uCD5C\uC801\uD654\uD574 \uC5F0\uC0B0
+      \uC0AC\uC6A9\uB7C9\uC744 \uC904\uC778\uB2E4"
+    description: "-1000 \uC790\uAE08, +10 \uB370\uC774\uD130"
+    effects:
+    - resource: 0
+      amount: -1000
+    - resource: 3
+      amount: 10
+  - id: wait_it_out
+    text: "\uAC00\uACA9\uC774 \uB0B4\uB824\uAC00\uAE38 \uAE30\uB2E4\uB9B0\uB2E4"
+    description: "-15 \uC5F0\uC0B0\uB825"
+    effects:
+    - resource: 2
+      amount: -15

@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8da21a4931bdb48019d16986e5d335fc, type: 3}
+  m_Name: safety
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.CapabilityDef
+  id: safety
+  displayName: "\uC548\uC804"
+  description: "AI \uC548\uC804\uC131, \uC815\uB82C, \uCF58\uD150\uCE20 \uD544\uD130\uB9C1
+    \uB2A5\uB825\uC785\uB2C8\uB2E4."
+  maxLevel: 4
+  upgradeCosts:
+  - amounts:
+    - resource: 0
+      amount: 1500
+    - resource: 3
+      amount: 10
+    - resource: 4
+      amount: 0
+  - amounts:
+    - resource: 0
+      amount: 3000
+    - resource: 3
+      amount: 20
+    - resource: 4
+      amount: 1
+  - amounts:
+    - resource: 0
+      amount: 6000
+    - resource: 3
+      amount: 40
+    - resource: 4
+      amount: 1
+  - amounts:
+    - resource: 0
+      amount: 12000
+    - resource: 3
+      amount: 80
+    - resource: 4
+      amount: 2
+  unlocksDomains: []
+  effectsPerLevel:
+  - resource: 5
+    amount: 3
+  icon: "\U0001F6E1\uFE0F"

@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc8c43a2eed342d1bf5308bf1be7aed, type: 3}
+  m_Name: regulatory_warning
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
+  id: regulatory_warning
+  displayName: Regulatory Warning
+  description: Government regulators issued a warning about AI safety standards.
+  weight: 6
+  conditions:
+  - key: min_month
+    value: 6
+  - key: min_users
+    value: 2000
+  choices:
+  - id: exceed_standards
+    text: Exceed all safety standards proactively
+    description: -$2000, +10 Trust, -3 Hype
+    effects:
+    - resource: 0
+      amount: -2000
+    - resource: 6
+      amount: -3
+    - resource: 5
+      amount: 10
+  - id: meet_minimum
+    text: Meet minimum requirements only
+    description: -$500, -3 Trust
+    effects:
+    - resource: 0
+      amount: -500
+    - resource: 5
+      amount: -3
+  - id: lobby
+    text: Lobby for industry-friendly regulations
+    description: -$1500, +5 Hype, -5 Trust
+    effects:
+    - resource: 0
+      amount: -1500
+    - resource: 6
+      amount: 5
+    - resource: 5
+      amount: -5

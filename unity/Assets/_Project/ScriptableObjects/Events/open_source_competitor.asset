@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc8c43a2eed342d1bf5308bf1be7aed, type: 3}
+  m_Name: open_source_competitor
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
+  id: open_source_competitor
+  displayName: Open Source Competitor
+  description: A strong open-source model just dropped. It matches your capabilities
+    for free.
+  weight: 9
+  conditions:
+  - key: min_month
+    value: 3
+  choices:
+  - id: differentiate
+    text: Double down on proprietary features and UX
+    description: -$2000, +5 Hype, -200 Users (some churn)
+    effects:
+    - resource: 0
+      amount: -2000
+    - resource: 6
+      amount: 5
+    - resource: 1
+      amount: -200
+  - id: embrace_open
+    text: Release your own open-source model to compete
+    description: +10 Hype, +5 Trust, -$1000, -500 Users
+    effects:
+    - resource: 0
+      amount: -1000
+    - resource: 6
+      amount: 10
+    - resource: 5
+      amount: 5
+    - resource: 1
+      amount: -500
+  - id: ignore
+    text: "Ignore it \u2014 focus on your roadmap"
+    description: -300 Users, -5 Hype (market shift)
+    effects:
+    - resource: 6
+      amount: -5
+    - resource: 1
+      amount: -300

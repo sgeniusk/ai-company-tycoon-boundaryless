@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61d2f3bf21f1f490b8e2c02a0c5f3f84, type: 3}
+  m_Name: education
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.DomainDef
+  id: education
+  displayName: "\uAD50\uC721"
+  description: "\uAC1C\uC778\uD654 \uD559\uC2B5\uACFC \uAD50\uC721 \uC11C\uBE44\uC2A4\uB97C
+    \uC81C\uACF5\uD558\uB294 \uC2DC\uC7A5\uC785\uB2C8\uB2E4."
+  unlockedByDefault: 0
+  unlockRequirements:
+  - capabilityId: language
+    level: 3
+  marketSize: medium
+  riskLevel: medium
+  icon: "\U0001F4DA"

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: barista_robot_cafe_chain
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: barista_robot_cafe_chain
+  displayName: "AI \uBC14\uB9AC\uC2A4\uD0C0 \uCE74\uD398 \uCCB4\uC778"
+  description: "AI \uD68C\uC0AC\uAC00 \uC65C \uCEE4\uD53C \uD504\uB79C\uCC28\uC774\uC988\uB97C
+    \uD558\uB294\uC9C0 \uC544\uBB34\uB3C4 \uBAA8\uB974\uC9C0\uB9CC \uC904\uC740 \uAE41\uB2C8\uB2E4."
+  domain: odd_industries
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 2
+  - capabilityId: robotics
+    level: 1
+  trustRequirement: 45
+  launchCost:
+  - resource: 0
+    amount: 16000
+  - resource: 2
+    amount: 50
+  - resource: 3
+    amount: 40
+  baseRevenue: 5200
+  baseUsersPerMonth: 700
+  dataGeneratedPerMonth: 16
+  computePer1000Users: 6
+  hypeOnLaunch: 25
+  level: 1
+  tags:
+  - consumer
+  - robotics
+  - coffee
+  - weird

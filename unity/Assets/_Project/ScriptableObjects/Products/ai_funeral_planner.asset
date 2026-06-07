@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: ai_funeral_planner
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: ai_funeral_planner
+  displayName: "AI \uC7A5\uB840 \uD50C\uB798\uB108"
+  description: "\uAC00\uC871\uC758 \uAE30\uB85D\uACFC \uC608\uC0B0, \uC608\uC2DD\uC744
+    \uC870\uC2EC\uC2A4\uB7FD\uAC8C \uC815\uB9AC\uD574\uC8FC\uB294 \uBBFC\uAC10\uD55C
+    \uC0DD\uD65C \uC0B0\uC5C5 AI\uC785\uB2C8\uB2E4. \uB18D\uB2F4\uCC98\uB7FC \uC2DC\uC791\uD588\uC9C0\uB9CC
+    \uC2E0\uB8B0\uAC00 \uD575\uC2EC\uC785\uB2C8\uB2E4."
+  domain: odd_industries
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 2
+  - capabilityId: language
+    level: 3
+  - capabilityId: safety
+    level: 3
+  trustRequirement: 88
+  launchCost:
+  - resource: 0
+    amount: 18000
+  - resource: 2
+    amount: 80
+  - resource: 3
+    amount: 70
+  baseRevenue: 6500
+  baseUsersPerMonth: 130
+  dataGeneratedPerMonth: 28
+  computePer1000Users: 16
+  hypeOnLaunch: 5
+  level: 2
+  tags:
+  - consumer
+  - language
+  - safety
+  - trust

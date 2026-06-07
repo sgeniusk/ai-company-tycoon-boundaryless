@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8da21a4931bdb48019d16986e5d335fc, type: 3}
+  m_Name: logistics
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.CapabilityDef
+  id: logistics
+  displayName: "\uBB3C\uB958"
+  description: "\uCC3D\uACE0, \uBC30\uC1A1, \uACF5\uAE09\uB9DD \uCD5C\uC801\uD654\uB97C
+    \uC81C\uD488\uD654\uD558\uB294 \uBB3C\uB9AC \uC6B4\uC601 \uB2A5\uB825\uC785\uB2C8\uB2E4."
+  maxLevel: 4
+  upgradeCosts:
+  - amounts:
+    - resource: 0
+      amount: 4500
+    - resource: 2
+      amount: 5
+    - resource: 3
+      amount: 35
+    - resource: 4
+      amount: 1
+  - amounts:
+    - resource: 0
+      amount: 9000
+    - resource: 2
+      amount: 15
+    - resource: 3
+      amount: 75
+    - resource: 4
+      amount: 2
+  - amounts:
+    - resource: 0
+      amount: 18000
+    - resource: 2
+      amount: 35
+    - resource: 3
+      amount: 150
+    - resource: 4
+      amount: 3
+  - amounts:
+    - resource: 0
+      amount: 36000
+    - resource: 2
+      amount: 65
+    - resource: 3
+      amount: 260
+    - resource: 4
+      amount: 4
+  unlocksDomains:
+  - level: 1
+    domainId: logistics
+  effectsPerLevel:
+  - resource: 7
+    amount: 2
+  - resource: 3
+    amount: 4
+  icon: "\U0001F69A"

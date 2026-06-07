@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: ai_pet_grooming_booth
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: ai_pet_grooming_booth
+  displayName: "AI \uBC18\uB824\uB3D9\uBB3C \uBBF8\uC6A9 \uBD80\uC2A4"
+  description: "\uD138 \uAE38\uC774\uC640 \uBC18\uB824\uB3D9\uBB3C \uCEE8\uB514\uC158\uC744
+    \uC77D\uACE0 \uC548\uC804\uD55C \uBBF8\uC6A9 \uB8E8\uD2F4\uC744 \uC81C\uC548\uD558\uB294
+    \uC774\uC0C1\uD558\uAC8C \uC778\uAE30 \uC788\uB294 \uC0DD\uD65C\uD615 \uB85C\uBD07
+    \uB9E4\uC7A5\uC785\uB2C8\uB2E4."
+  domain: odd_industries
+  requiredCapabilities:
+  - capabilityId: robotics
+    level: 1
+  - capabilityId: safety
+    level: 1
+  - capabilityId: vision
+    level: 1
+  trustRequirement: 45
+  launchCost:
+  - resource: 0
+    amount: 7600
+  - resource: 2
+    amount: 36
+  - resource: 3
+    amount: 30
+  baseRevenue: 2600
+  baseUsersPerMonth: 420
+  dataGeneratedPerMonth: 12
+  computePer1000Users: 8
+  hypeOnLaunch: 8
+  level: 1
+  tags:
+  - consumer
+  - robotics
+  - vision
+  - weird

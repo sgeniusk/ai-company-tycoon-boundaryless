@@ -1,0 +1,26 @@
+{
+    "name": "AICompanyTycoon.Tests.EditMode",
+    "rootNamespace": "AICompanyTycoon.Tests.EditMode",
+    "references": [
+        "AICompanyTycoon.Core",
+        "AICompanyTycoon.Data",
+        "AICompanyTycoon.Systems",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

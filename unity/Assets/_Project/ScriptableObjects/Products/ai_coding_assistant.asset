@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: ai_coding_assistant
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: ai_coding_assistant
+  displayName: "AI \uCF54\uB529 \uC870\uC218"
+  description: "\uAC1C\uBC1C\uC790\uB97C \uC704\uD55C \uCF54\uB4DC \uC0DD\uC131,
+    \uC790\uB3D9\uC644\uC131, \uB514\uBC84\uAE45 \uB3C4\uAD6C\uC785\uB2C8\uB2E4."
+  domain: developer_tools
+  requiredCapabilities:
+  - capabilityId: code
+    level: 1
+  trustRequirement: 30
+  launchCost:
+  - resource: 0
+    amount: 3000
+  - resource: 2
+    amount: 30
+  - resource: 3
+    amount: 15
+  baseRevenue: 1200
+  baseUsersPerMonth: 400
+  dataGeneratedPerMonth: 8
+  computePer1000Users: 15
+  hypeOnLaunch: 8
+  level: 1
+  tags:
+  - developer
+  - code
+  - tools

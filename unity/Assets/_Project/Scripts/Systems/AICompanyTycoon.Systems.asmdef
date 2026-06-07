@@ -1,0 +1,17 @@
+{
+    "name": "AICompanyTycoon.Systems",
+    "rootNamespace": "AICompanyTycoon.Systems",
+    "references": [
+        "AICompanyTycoon.Core",
+        "AICompanyTycoon.Data"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

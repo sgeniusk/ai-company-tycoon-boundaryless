@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: ai_writing_assistant
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: ai_writing_assistant
+  displayName: "AI \uAE00\uC4F0\uAE30 \uBE44\uC11C"
+  description: "\uCF58\uD150\uCE20 \uC791\uC131\uACFC \uD3B8\uC9D1\uC744 \uB3C4\uC640\uC8FC\uB294
+    AI \uAE00\uC4F0\uAE30 \uB3C4\uAD6C\uC785\uB2C8\uB2E4."
+  domain: personal_productivity
+  requiredCapabilities:
+  - capabilityId: language
+    level: 1
+  trustRequirement: 0
+  launchCost:
+  - resource: 0
+    amount: 2000
+  - resource: 2
+    amount: 20
+  - resource: 3
+    amount: 10
+  baseRevenue: 1600
+  baseUsersPerMonth: 500
+  dataGeneratedPerMonth: 5
+  computePer1000Users: 10
+  hypeOnLaunch: 5
+  level: 1
+  tags:
+  - consumer
+  - language
+  - writing

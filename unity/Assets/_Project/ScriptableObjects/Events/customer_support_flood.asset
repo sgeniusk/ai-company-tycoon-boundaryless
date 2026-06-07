@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc8c43a2eed342d1bf5308bf1be7aed, type: 3}
+  m_Name: customer_support_flood
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
+  id: customer_support_flood
+  displayName: Customer Support Flood
+  description: A product update caused a wave of support tickets. Users are confused.
+  weight: 6
+  conditions:
+  - key: min_products
+    value: 2
+  - key: min_users
+    value: 1000
+  choices:
+  - id: hire_support
+    text: Hire temporary support staff
+    description: -$1500, +3 Trust, -100 Users (some churn)
+    effects:
+    - resource: 0
+      amount: -1500
+    - resource: 5
+      amount: 3
+    - resource: 1
+      amount: -100
+  - id: ai_support
+    text: Deploy AI chatbot for support
+    description: -$800, -10 Compute, +3 Automation
+    effects:
+    - resource: 7
+      amount: 3
+    - resource: 0
+      amount: -800
+    - resource: 2
+      amount: -10

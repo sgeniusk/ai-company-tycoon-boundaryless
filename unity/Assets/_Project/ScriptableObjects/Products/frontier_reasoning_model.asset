@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: frontier_reasoning_model
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: frontier_reasoning_model
+  displayName: "\uD504\uB860\uD2F0\uC5B4 \uCD94\uB860 \uBAA8\uB378"
+  description: "\uBCF5\uC7A1\uD55C \uACC4\uD68D, \uCF54\uB529, \uC5F0\uAD6C \uBB38\uC81C\uB97C
+    \uD480\uAE30 \uC704\uD55C \uACE0\uC131\uB2A5 AI \uBAA8\uB378\uC785\uB2C8\uB2E4."
+  domain: foundation_models
+  requiredCapabilities:
+  - capabilityId: code
+    level: 2
+  - capabilityId: language
+    level: 3
+  - capabilityId: optimization
+    level: 1
+  trustRequirement: 60
+  launchCost:
+  - resource: 0
+    amount: 12000
+  - resource: 2
+    amount: 90
+  - resource: 3
+    amount: 80
+  baseRevenue: 4200
+  baseUsersPerMonth: 250
+  dataGeneratedPerMonth: 30
+  computePer1000Users: 45
+  hypeOnLaunch: 18
+  level: 1
+  tags:
+  - model
+  - core_ai
+  - reasoning
+  - research

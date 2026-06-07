@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a466c6b585723474cad477eda10cee73, type: 3}
+  m_Name: ai_bug_fixing
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AutomationDef
+  id: ai_bug_fixing
+  displayName: "AI \uBC84\uADF8 \uC218\uC815 \uC5D0\uC774\uC804\uD2B8"
+  description: "AI\uAC00 \uB2E8\uC21C \uBC84\uADF8\uB97C \uCC3E\uC544 \uC790\uB3D9\uC73C\uB85C
+    \uC218\uC815\uD569\uB2C8\uB2E4."
+  cost:
+  - resource: 0
+    amount: 4000
+  - resource: 2
+    amount: 20
+  - resource: 3
+    amount: 15
+  automationGain: 12
+  effects:
+  - resource: 5
+    amount: 3
+  monthlyEffects: []
+  requirements:
+  - key: min_automation
+    value: 10
+  - key: min_talent
+    value: 3
+  monthlyBenefitText: "\uC5F0\uC0B0 \uBE44\uC6A9 10% \uAC10\uC18C"

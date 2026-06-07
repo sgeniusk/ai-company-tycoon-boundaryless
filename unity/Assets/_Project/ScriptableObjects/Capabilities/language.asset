@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8da21a4931bdb48019d16986e5d335fc, type: 3}
+  m_Name: language
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.CapabilityDef
+  id: language
+  displayName: "\uC5B8\uC5B4"
+  description: "\uC790\uC5F0\uC5B4 \uC774\uD574\uC640 \uC0DD\uC131 \uB2A5\uB825\uC785\uB2C8\uB2E4."
+  maxLevel: 5
+  upgradeCosts:
+  - amounts:
+    - resource: 0
+      amount: 1500
+    - resource: 3
+      amount: 15
+    - resource: 4
+      amount: 0
+  - amounts:
+    - resource: 0
+      amount: 3000
+    - resource: 3
+      amount: 30
+    - resource: 4
+      amount: 1
+  - amounts:
+    - resource: 0
+      amount: 6000
+    - resource: 3
+      amount: 60
+    - resource: 4
+      amount: 1
+  - amounts:
+    - resource: 0
+      amount: 12000
+    - resource: 3
+      amount: 100
+    - resource: 4
+      amount: 2
+  - amounts:
+    - resource: 0
+      amount: 25000
+    - resource: 3
+      amount: 200
+    - resource: 4
+      amount: 3
+  unlocksDomains:
+  - level: 2
+    domainId: customer_support
+  - level: 3
+    domainId: education
+  effectsPerLevel: []
+  icon: "\U0001F4DD"

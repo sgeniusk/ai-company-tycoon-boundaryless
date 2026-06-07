@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a012c1fab9334c9a8a0f8b1f246fb8c, type: 3}
+  m_Name: BalanceConfig
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.BalanceConfig
+  baseMonthlyCashCost: 400
+  salaryPerTalent: 600
+  computeCostPer1000Users: 40
+  monthlyHypeDecay: 2
+  trustRecoveryThreshold: 50
+  trustRecoveryAmount: 1
+  growthRateBase: 1
+  hypeGrowthMultiplier: 1.3
+  trustMultiplierHighThreshold: 70
+  trustMultiplierLowThreshold: 30
+  trustEnterpriseBonus: 1.5
+  trustLowPenalty: 0.5
+  automationCostReductionPerPoint: 0.005
+  gameOverCashThreshold: -15000
+  gameOverTrustThreshold: 10
+  successUsersThreshold: 100000
+  successCashThreshold: 150000
+  successAutomationThreshold: 60
+  successMinProducts: 4
+  eventTriggerChance: 0.6
+  extra:
+  - key: staff_aftermath_burnout_project_progress_penalty
+    value: 6
+  - key: staff_aftermath_burnout_project_quality_penalty
+    value: 4
+  - key: staff_aftermath_discontent_project_progress_penalty
+    value: 3
+  - key: staff_aftermath_discontent_project_quality_penalty
+    value: 3
+  - key: staff_aftermath_poaching_project_progress_penalty
+    value: 4
+  - key: staff_aftermath_poaching_project_quality_penalty
+    value: 4
+  - key: users_per_compute_cost_unit
+    value: 1000

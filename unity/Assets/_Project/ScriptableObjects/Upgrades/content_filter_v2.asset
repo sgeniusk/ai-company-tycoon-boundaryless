@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40c61a84f46f74e37a5f0895eb8c0bb6, type: 3}
+  m_Name: content_filter_v2
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
+  id: content_filter_v2
+  displayName: Content Filter v2
+  description: Advanced multi-layer content safety system.
+  cost:
+  - resource: 0
+    amount: 2500
+  - resource: 3
+    amount: 15
+  effects:
+  - resource: 5
+    amount: 8
+  requirements:
+  - key: min_month
+    value: 4
+  oneTime: 1

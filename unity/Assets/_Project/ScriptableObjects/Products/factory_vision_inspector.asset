@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: factory_vision_inspector
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: factory_vision_inspector
+  displayName: "\uACF5\uC7A5 \uBE44\uC804 \uAC80\uC0AC\uAD00"
+  description: "\uC0DD\uC0B0 \uB77C\uC778\uC758 \uACB0\uD568 \uC774\uBBF8\uC9C0\uB97C
+    \uC2E4\uC2DC\uAC04\uC73C\uB85C \uBD84\uB958\uD558\uACE0 \uC791\uC5C5\uC790\uC5D0\uAC8C
+    \uC7AC\uAC80\uC218 \uC9C0\uC810\uC744 \uC54C\uB824\uC8FC\uB294 \uC0B0\uC5C5\uC6A9
+    AI\uC785\uB2C8\uB2E4."
+  domain: robotics
+  requiredCapabilities:
+  - capabilityId: optimization
+    level: 1
+  - capabilityId: robotics
+    level: 1
+  - capabilityId: vision
+    level: 2
+  trustRequirement: 55
+  launchCost:
+  - resource: 0
+    amount: 9200
+  - resource: 2
+    amount: 48
+  - resource: 3
+    amount: 42
+  baseRevenue: 3100
+  baseUsersPerMonth: 85
+  dataGeneratedPerMonth: 22
+  computePer1000Users: 16
+  hypeOnLaunch: 5
+  level: 1
+  tags:
+  - robotics
+  - vision
+  - quality
+  - enterprise

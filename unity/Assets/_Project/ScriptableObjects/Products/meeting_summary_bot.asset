@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: meeting_summary_bot
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: meeting_summary_bot
+  displayName: "\uD68C\uC758 \uC694\uC57D \uBD07"
+  description: "\uD68C\uC758 \uB0B4\uC6A9\uC744 \uC694\uC57D\uD558\uACE0 \uC2E4\uD589
+    \uACFC\uC81C\uB97C \uBF51\uC544\uC8FC\uB294 \uC5C5\uBB34 \uB3C4\uAD6C\uC785\uB2C8\uB2E4."
+  domain: personal_productivity
+  requiredCapabilities:
+  - capabilityId: language
+    level: 1
+  trustRequirement: 20
+  launchCost:
+  - resource: 0
+    amount: 1500
+  - resource: 2
+    amount: 15
+  - resource: 3
+    amount: 5
+  baseRevenue: 500
+  baseUsersPerMonth: 300
+  dataGeneratedPerMonth: 3
+  computePer1000Users: 8
+  hypeOnLaunch: 3
+  level: 1
+  tags:
+  - consumer
+  - language
+  - productivity

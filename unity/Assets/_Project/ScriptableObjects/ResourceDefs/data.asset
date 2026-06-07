@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b3f454125862446a83c243db55f7a76, type: 3}
+  m_Name: data
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ResourceDef
+  id: data
+  displayName: "\uB370\uC774\uD130"
+  description: "\uBAA8\uB378 \uAC1C\uC120\uACFC \uB2A5\uB825 \uC5F0\uAD6C\uC5D0 \uC4F0\uB294
+    \uD559\uC2B5, \uD53C\uB4DC\uBC31, \uC0AC\uC6A9 \uB370\uC774\uD130\uC785\uB2C8\uB2E4."
+  initialValue: 50
+  minValue: 0
+  maxValue: 999999
+  icon: "\U0001F4CA"
+  category: research

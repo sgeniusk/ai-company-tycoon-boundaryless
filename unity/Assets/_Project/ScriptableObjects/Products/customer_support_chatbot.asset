@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: customer_support_chatbot
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: customer_support_chatbot
+  displayName: "\uACE0\uAC1D\uC9C0\uC6D0 \uCC57\uBD07"
+  description: "\uACE0\uAC1D \uBB38\uC758\uC640 \uC9C0\uC6D0 \uD2F0\uCF13\uC744 \uCC98\uB9AC\uD558\uB294
+    AI \uCC57\uBD07\uC785\uB2C8\uB2E4."
+  domain: customer_support
+  requiredCapabilities:
+  - capabilityId: language
+    level: 2
+  trustRequirement: 40
+  launchCost:
+  - resource: 0
+    amount: 2500
+  - resource: 2
+    amount: 25
+  - resource: 3
+    amount: 10
+  baseRevenue: 1000
+  baseUsersPerMonth: 600
+  dataGeneratedPerMonth: 10
+  computePer1000Users: 12
+  hypeOnLaunch: 4
+  level: 1
+  tags:
+  - enterprise
+  - language
+  - support

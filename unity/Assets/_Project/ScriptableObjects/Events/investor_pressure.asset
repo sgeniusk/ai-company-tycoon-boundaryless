@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc8c43a2eed342d1bf5308bf1be7aed, type: 3}
+  m_Name: investor_pressure
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
+  id: investor_pressure
+  displayName: Investor Pressure
+  description: Investors are pushing for faster growth and higher revenue numbers.
+  weight: 7
+  conditions:
+  - key: min_month
+    value: 5
+  choices:
+  - id: aggressive_growth
+    text: "Promise aggressive growth \u2014 launch fast"
+    description: +$4000 funding, +8 Hype, -5 Trust (cutting corners)
+    effects:
+    - resource: 0
+      amount: 4000
+    - resource: 6
+      amount: 8
+    - resource: 5
+      amount: -5
+  - id: steady_path
+    text: Defend your steady approach
+    description: +$1500 funding, +3 Trust (less pressure)
+    effects:
+    - resource: 0
+      amount: 1500
+    - resource: 5
+      amount: 3

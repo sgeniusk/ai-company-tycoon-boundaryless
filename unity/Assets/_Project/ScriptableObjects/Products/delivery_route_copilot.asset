@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: delivery_route_copilot
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: delivery_route_copilot
+  displayName: "\uBC30\uC1A1 \uACBD\uB85C \uCF54\uD30C\uC77C\uB7FF"
+  description: "\uC18C\uADDC\uBAA8 \uBC30\uC1A1\uD300\uC758 \uACBD\uB85C\uC640 \uBC30\uCC28
+    \uC21C\uC11C\uB97C \uC790\uB3D9\uC73C\uB85C \uC870\uC815\uD574 \uC5F0\uB8CC\uC640
+    \uC2DC\uAC04\uC744 \uC544\uB07C\uB294 \uBAA8\uBE4C\uB9AC\uD2F0 \uC81C\uD488\uC785\uB2C8\uB2E4."
+  domain: mobility
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 1
+  - capabilityId: optimization
+    level: 1
+  trustRequirement: 20
+  launchCost:
+  - resource: 0
+    amount: 2800
+  - resource: 2
+    amount: 22
+  - resource: 3
+    amount: 18
+  baseRevenue: 950
+  baseUsersPerMonth: 140
+  dataGeneratedPerMonth: 9
+  computePer1000Users: 10
+  hypeOnLaunch: 3
+  level: 1
+  tags:
+  - mobility
+  - optimization
+  - agent
+  - operations

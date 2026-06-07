@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: household_helper_android
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: household_helper_android
+  displayName: "\uAC00\uC815\uC6A9 \uD5EC\uD37C \uC548\uB4DC\uB85C\uC774\uB4DC"
+  description: "\uC815\uB9AC, \uC2EC\uBD80\uB984, \uAC04\uB2E8\uD55C \uB3CC\uBD04
+    \uBCF4\uC870\uAE4C\uC9C0 \uCC98\uB9AC\uD558\uB294 \uACE0\uC2E0\uB8B0 \uAC00\uC815\uC6A9
+    \uB85C\uBD07\uC785\uB2C8\uB2E4. \uCD9C\uC2DC \uC804 \uC548\uC804 \uC2EC\uC0AC\uAC00
+    \uD68C\uC0AC\uC758 \uCCB4\uB825\uC744 \uC2DC\uD5D8\uD569\uB2C8\uB2E4."
+  domain: robotics
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 3
+  - capabilityId: robotics
+    level: 3
+  - capabilityId: safety
+    level: 2
+  - capabilityId: vision
+    level: 3
+  trustRequirement: 82
+  launchCost:
+  - resource: 0
+    amount: 30000
+  - resource: 2
+    amount: 120
+  - resource: 3
+    amount: 110
+  baseRevenue: 9800
+  baseUsersPerMonth: 180
+  dataGeneratedPerMonth: 42
+  computePer1000Users: 24
+  hypeOnLaunch: 9
+  level: 2
+  tags:
+  - robotics
+  - consumer
+  - safety
+  - hardware

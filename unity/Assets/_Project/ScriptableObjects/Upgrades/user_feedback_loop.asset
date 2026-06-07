@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40c61a84f46f74e37a5f0895eb8c0bb6, type: 3}
+  m_Name: user_feedback_loop
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
+  id: user_feedback_loop
+  displayName: User Feedback Loop
+  description: Collect and process user feedback for model improvement.
+  cost:
+  - resource: 0
+    amount: 1500
+  effects:
+  - resource: 3
+    amount: 15
+  - resource: 5
+    amount: 3
+  requirements:
+  - key: min_users
+    value: 500
+  oneTime: 1

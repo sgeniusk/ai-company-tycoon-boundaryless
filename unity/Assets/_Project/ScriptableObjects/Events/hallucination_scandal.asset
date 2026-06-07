@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc8c43a2eed342d1bf5308bf1be7aed, type: 3}
+  m_Name: hallucination_scandal
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
+  id: hallucination_scandal
+  displayName: Hallucination Scandal
+  description: Your AI generated false information that went viral. Media is covering
+    it.
+  weight: 8
+  conditions:
+  - key: min_hype
+    value: 15
+  - key: min_products
+    value: 1
+  choices:
+  - id: public_apology
+    text: Issue public apology and invest in safety
+    description: -5 Trust, -$1500, -5 Hype (but shows responsibility)
+    effects:
+    - resource: 0
+      amount: -1500
+    - resource: 6
+      amount: -5
+    - resource: 5
+      amount: -5
+  - id: downplay
+    text: "Downplay the issue \u2014 it's just AI being AI"
+    description: -15 Trust, -3 Hype (risky)
+    effects:
+    - resource: 6
+      amount: -3
+    - resource: 5
+      amount: -15
+  - id: transparency_report
+    text: Release a transparency report with technical details
+    description: -3 Trust, -$500, +5 Data (builds long-term credibility)
+    effects:
+    - resource: 0
+      amount: -500
+    - resource: 3
+      amount: 5
+    - resource: 5
+      amount: -3

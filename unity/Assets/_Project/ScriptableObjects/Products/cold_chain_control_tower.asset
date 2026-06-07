@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: cold_chain_control_tower
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: cold_chain_control_tower
+  displayName: "\uCF5C\uB4DC\uCCB4\uC778 \uAD00\uC81C \uD0C0\uC6CC"
+  description: "\uC628\uB3C4 \uBBFC\uAC10 \uC0C1\uD488\uC758 \uCC3D\uACE0, \uCC28\uB7C9,
+    \uC9C0\uC5F0 \uC704\uD5D8\uC744 \uCD94\uC801\uD574 \uC190\uC2E4\uC744 \uC904\uC774\uB294
+    \uACE0\uC2E0\uB8B0 \uACF5\uAE09\uB9DD \uC81C\uD488\uC785\uB2C8\uB2E4."
+  domain: logistics
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 2
+  - capabilityId: enterprise
+    level: 1
+  - capabilityId: logistics
+    level: 2
+  - capabilityId: optimization
+    level: 2
+  trustRequirement: 68
+  launchCost:
+  - resource: 0
+    amount: 22000
+  - resource: 2
+    amount: 85
+  - resource: 3
+    amount: 95
+  baseRevenue: 7300
+  baseUsersPerMonth: 80
+  dataGeneratedPerMonth: 32
+  computePer1000Users: 16
+  hypeOnLaunch: 5
+  level: 1
+  tags:
+  - logistics
+  - enterprise
+  - optimization
+  - supply_chain
