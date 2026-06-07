@@ -7,18 +7,23 @@ namespace AICompanyTycoon.UI
 {
     public static class UiFactory
     {
-        static Font _legacyFont;
+        static Font _uiFont;
 
+        // 한글 글리프가 있는 Noto Sans KR(Resources/Fonts/UiFont)을 쓰고, 없으면 내장 레거시 폰트로 폴백한다.
         public static Font LegacyFont
         {
             get
             {
-                if (_legacyFont == null)
+                if (_uiFont == null)
                 {
-                    _legacyFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                    _uiFont = Resources.Load<Font>("Fonts/UiFont");
+                    if (_uiFont == null)
+                    {
+                        _uiFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                    }
                 }
 
-                return _legacyFont;
+                return _uiFont;
             }
         }
 
