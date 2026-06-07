@@ -14,7 +14,7 @@
 - [x] feat-002 Core Simulation — GameModel + 10 서비스 + MonthController. balance 재현 + 36개월 플레이스루
 - [x] feat-003 Vertical Slice UI — 세로 uGUI(UiFactory/GameScreen/GameBootstrap) + SceneBuilder + SaveService/ResourceFormat. Game.unity 생성, EditMode 19/19, 전체 컴파일 통과
 ### 진행 중 (What's In Progress)
-- [ ] feat-004 상업 연출 — 사운드(절차적 SFX 7종 + AudioManager, GameEvents 배선) 완료. 남음 — DOTween 모션, 파티클, 카메라, 아이콘 아틀라스, URP 2D, BGM(AI/CC0)
+- [ ] feat-004 상업 연출 — 사운드(절차적 SFX 7종 + AudioManager) + 모션(자원 카운트업 ResourceTicker, 버튼 펀치 UiTween, 코드 트윈) 완료. 남음 — 파티클, 카메라, 아이콘 아틀라스, URP 2D, BGM(AI/CC0)
 ### 다음 (What's Next)
 1. VS 플레이 검증 — Game.unity 열고 Play (입력 Old 활성이라 클릭 동작). PlayMode 스모크 테스트로 런타임 배선 확인 중
 2. feat-004 상업 연출 — 사운드/DOTween/파티클/카메라/햅틱/로컬라이즈, public/assets 아이콘 SpriteAtlas, URP 2D 파이프라인 에셋
@@ -38,6 +38,7 @@
 - [x] `./init.sh` → EditMode 19/19 passed, UI 포함 전체 컴파일 통과
 - [x] PlayMode 2/2 passed — 부트스트랩→화면빌드→다음달 진행, 저장→불러오기 라운드트립(런타임 배선)
 - [x] 사운드 — EditMode 21/21 (SfxGen 절차적 합성기 + AudioManager, 전체 컴파일)
+- [x] 모션 — EditMode 21/21 + PlayMode 2/2 (ResourceTicker 카운트업 + UiTween 펀치, 화면 빌드 정상)
 - [x] feat-002/001 — 코어 15/15, 임포트 120 SO 자산
 - [x] 스코프 — data/·루트·Schema·코어 미수정(Codex는 UI/Editor만 추가)
 

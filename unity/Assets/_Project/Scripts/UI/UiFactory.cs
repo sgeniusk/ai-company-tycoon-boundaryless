@@ -104,6 +104,8 @@ namespace AICompanyTycoon.UI
             label.horizontalOverflow = HorizontalWrapMode.Wrap;
             label.verticalOverflow = VerticalWrapMode.Overflow;
 
+            button.onClick.AddListener(() => UiTween.Punch(go.transform));
+
             return (button, label);
         }
 

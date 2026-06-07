@@ -20,6 +20,7 @@ namespace AICompanyTycoon.UI
         SimulationContext _context;
         readonly SaveService _save;
         readonly Dictionary<ResourceId, Text> _resourceValues = new Dictionary<ResourceId, Text>();
+        readonly Dictionary<ResourceId, ResourceTicker> _resourceTickers = new Dictionary<ResourceId, ResourceTicker>();
         readonly Dictionary<string, Button> _tabButtons = new Dictionary<string, Button>();
 
         Canvas _canvas;
@@ -216,6 +217,10 @@ namespace AICompanyTycoon.UI
                 value.alignment = TextAnchor.MiddleRight;
                 AddLayout(value.gameObject, 34, 1);
                 _resourceValues[id] = value;
+
+                var ticker = value.gameObject.AddComponent<ResourceTicker>();
+                ticker.Init(id, value, _context != null ? _context.Model.Get(id) : 0);
+                _resourceTickers[id] = ticker;
             }
         }
 
@@ -486,9 +491,9 @@ namespace AICompanyTycoon.UI
 
             foreach (var id in ResourceIds.All)
             {
-                if (_resourceValues.TryGetValue(id, out var value))
+                if (_resourceTickers.TryGetValue(id, out var ticker))
                 {
-                    value.text = ResourceFormat.Format(id, _context.Model.Get(id));
+                    ticker.SetTarget(_context.Model.Get(id));
                 }
             }
         }
