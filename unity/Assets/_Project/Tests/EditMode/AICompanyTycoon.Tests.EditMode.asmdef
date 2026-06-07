@@ -5,6 +5,7 @@
         "AICompanyTycoon.Core",
         "AICompanyTycoon.Data",
         "AICompanyTycoon.Systems",
+        "AICompanyTycoon.Save",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

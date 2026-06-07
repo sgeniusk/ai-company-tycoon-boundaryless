@@ -1,0 +1,20 @@
+{
+    "name": "AICompanyTycoon.UI",
+    "rootNamespace": "AICompanyTycoon.UI",
+    "references": [
+        "AICompanyTycoon.Core",
+        "AICompanyTycoon.Data",
+        "AICompanyTycoon.Systems",
+        "AICompanyTycoon.Save",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

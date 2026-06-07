@@ -34,9 +34,9 @@
       "name": "Vertical Slice Mobile UI (P3)",
       "description": "세로 uGUI — 자원 8종 HUD, 제품/능력/업그레이드 하단 탭, 다음 달 버튼, 월 요약, 이벤트 모달, 세이브/로드. 카드는 프리팹+풀링, 코어에 GameEvents로 연결",
       "dependencies": ["feat-002"],
-      "status": "not-started",
+      "status": "done",
       "owner": "Claude->Codex",
-      "evidence": ""
+      "evidence": "uGUI VS(UiFactory/GameScreen980/GameBootstrap/SceneBuilder=Codex, SaveService/ResourceFormat=Claude). Unity 전체 컴파일 통과 + Game.unity 생성 + EditMode 19/19. 라인단위 리뷰. 온디바이스 플레이/입력백엔드는 후속"
     },
     {
       "id": "feat-004",

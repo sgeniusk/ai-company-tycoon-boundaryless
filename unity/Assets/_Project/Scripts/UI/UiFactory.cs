@@ -1,0 +1,136 @@
+// 레거시 유니티 UI 요소를 일관된 모바일 화면 구성으로 만드는 헬퍼입니다.
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+namespace AICompanyTycoon.UI
+{
+    public static class UiFactory
+    {
+        static Font _legacyFont;
+
+        public static Font LegacyFont
+        {
+            get
+            {
+                if (_legacyFont == null)
+                {
+                    _legacyFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                }
+
+                return _legacyFont;
+            }
+        }
+
+        public static Canvas CreateCanvas(string name)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            var canvas = go.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+            var scaler = go.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1080, 1920);
+            scaler.matchWidthOrHeight = 1f;
+
+            return canvas;
+        }
+
+        public static EventSystem EnsureEventSystem()
+        {
+            var existing = Object.FindAnyObjectByType<EventSystem>();
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            var go = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+            return go.GetComponent<EventSystem>();
+        }
+
+        public static GameObject Panel(Transform parent, Color color)
+        {
+            var go = new GameObject("Panel", typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(parent, false);
+            var image = go.GetComponent<Image>();
+            image.color = color;
+            return go;
+        }
+
+        public static Text Label(Transform parent, string text, int fontSize)
+        {
+            var go = new GameObject("Label", typeof(RectTransform), typeof(Text));
+            go.transform.SetParent(parent, false);
+            var label = go.GetComponent<Text>();
+            label.font = LegacyFont;
+            label.text = text;
+            label.fontSize = fontSize;
+            label.color = Color.white;
+            label.alignment = TextAnchor.MiddleLeft;
+            label.horizontalOverflow = HorizontalWrapMode.Wrap;
+            label.verticalOverflow = VerticalWrapMode.Overflow;
+            return label;
+        }
+
+        public static (Button button, Text label) Button(Transform parent, string labelText)
+        {
+            var go = new GameObject("Button", typeof(RectTransform), typeof(Image), typeof(Button));
+            go.transform.SetParent(parent, false);
+            var image = go.GetComponent<Image>();
+            image.color = new Color(0.16f, 0.20f, 0.29f, 1f);
+
+            var button = go.GetComponent<Button>();
+            var colors = button.colors;
+            colors.normalColor = new Color(0.16f, 0.20f, 0.29f, 1f);
+            colors.highlightedColor = new Color(0.23f, 0.29f, 0.42f, 1f);
+            colors.pressedColor = new Color(0.10f, 0.14f, 0.20f, 1f);
+            colors.disabledColor = new Color(0.12f, 0.12f, 0.14f, 0.55f);
+            button.colors = colors;
+
+            var textGo = new GameObject("Text", typeof(RectTransform), typeof(Text));
+            textGo.transform.SetParent(go.transform, false);
+            var textRect = textGo.GetComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(12, 6);
+            textRect.offsetMax = new Vector2(-12, -6);
+
+            var label = textGo.GetComponent<Text>();
+            label.font = LegacyFont;
+            label.text = labelText;
+            label.fontSize = 30;
+            label.color = Color.white;
+            label.alignment = TextAnchor.MiddleCenter;
+            label.horizontalOverflow = HorizontalWrapMode.Wrap;
+            label.verticalOverflow = VerticalWrapMode.Overflow;
+
+            return (button, label);
+        }
+
+        public static VerticalLayoutGroup VBox(Transform parent, float spacing, RectOffset padding)
+        {
+            var group = parent.gameObject.AddComponent<VerticalLayoutGroup>();
+            group.spacing = spacing;
+            group.padding = padding ?? new RectOffset();
+            group.childAlignment = TextAnchor.UpperLeft;
+            group.childControlWidth = true;
+            group.childControlHeight = true;
+            group.childForceExpandWidth = true;
+            group.childForceExpandHeight = false;
+            return group;
+        }
+
+        public static HorizontalLayoutGroup HBox(Transform parent, float spacing)
+        {
+            var group = parent.gameObject.AddComponent<HorizontalLayoutGroup>();
+            group.spacing = spacing;
+            group.padding = new RectOffset();
+            group.childAlignment = TextAnchor.MiddleLeft;
+            group.childControlWidth = true;
+            group.childControlHeight = true;
+            group.childForceExpandWidth = false;
+            group.childForceExpandHeight = true;
+            return group;
+        }
+    }
+}

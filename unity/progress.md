@@ -4,37 +4,40 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-07
-**활성 피처** — feat-002 코어 시뮬레이션 완료·검증 통과. 다음은 feat-003 Vertical Slice 모바일 UI.
-**현재 목표** — 헤드리스 코어를 세로 모바일 uGUI에 연결해 실기기에서 도는 VS를 만든다.
+**활성 피처** — feat-003 Vertical Slice UI 완료·검증 통과. v0.1 VS 코드 완성.
+**현재 목표** — VS 플레이 검증 후 feat-004 상업 연출 또는 feat-005 플랫폼 빌드로 진행.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
 - [x] P0 Project Setup — Unity 6000.4.10f1, URP17.4/2D/Input/TMP/Test, 세로 모드, asmdef, 코어 시드, 하네스
-- [x] feat-001 Data Pipeline — 스키마 9종 + 임포터/DataCatalog/MiniJson/테스트. 120 SO 자산 + DataCatalog
-- [x] feat-002 Core Simulation — GameModel + 10 서비스 + MonthController 헤드리스. balance 공식 재현 + 36개월 플레이스루. EditMode 15/15 통과
+- [x] feat-001 Data Pipeline — 스키마 9종 + 임포터/DataCatalog/MiniJson. 120 SO 자산
+- [x] feat-002 Core Simulation — GameModel + 10 서비스 + MonthController. balance 재현 + 36개월 플레이스루
+- [x] feat-003 Vertical Slice UI — 세로 uGUI(UiFactory/GameScreen/GameBootstrap) + SceneBuilder + SaveService/ResourceFormat. Game.unity 생성, EditMode 19/19, 전체 컴파일 통과
 ### 진행 중 (What's In Progress)
-- [ ] (없음 — feat-003 착수 대기)
+- [ ] (없음 — 다음 피처 선택 대기)
 ### 다음 (What's Next)
-1. feat-003 Vertical Slice 모바일 UI — 세로 uGUI(자원 HUD/탭/다음달/요약/이벤트 모달/세이브), GameEvents로 코어 연결. 아키텍처는 Claude, 뷰/프리팹 보일러플레이트는 Codex
-2. URP 2D 파이프라인 에셋 생성·할당 (UI 착수 직전)
-3. SaveService (GameModel 직렬화 → persistentDataPath)
+1. VS 플레이 검증 — Game.unity 열고 Play. 버튼 클릭이 되려면 Active Input Handling을 Both로 설정 필요
+2. feat-004 상업 연출 — 사운드/DOTween/파티클/카메라/햅틱/로컬라이즈, public/assets 아이콘 SpriteAtlas, URP 2D 파이프라인 에셋
+3. feat-005 플랫폼 — Android/iOS 빌드, 세이프에어리어
 
 ## 블로커 / 리스크
-- [ ] 운영 규칙 — Unity batchmode 검증은 한 번에 하나만. 다른 Unity 인스턴스 실행 중이면 대기한다 (동시 실행 시 라이선스 단일 인스턴스 핸드셰이크 루프, 2026-06-07 확인).
-- [ ] DOTween 미설치 — P5 OpenUPM. URP 2D 파이프라인 에셋 미할당(빌트인으로 동작).
+- [ ] 입력 백엔드 — 새 Input System만 설치돼 StandaloneInputModule(구 입력) 클릭이 안 될 수 있다. Player Settings의 Active Input Handling을 Both로 두거나 InputSystemUIInputModule로 교체 필요(플레이 검증 시).
+- [ ] 운영 규칙 — Unity batchmode 검증은 한 번에 하나만. 다른 Unity 인스턴스 실행 중이면 대기(동시 실행 시 라이선스 단일 인스턴스 핸드셰이크 루프).
+- [ ] DOTween 미설치(P5 OpenUPM). URP 2D 파이프라인 에셋 미할당(빌트인 동작).
 
 ## 내린 결정
 - 모노레포 unity/ 하위, 코어 헤드리스 순수 C#, 이벤트 정적 GameEvents 허브, 패키지 최소 세트.
-- 데이터는 JSON→SO 임포트(MiniJson). 자동화 월별효과는 SO로 데이터화.
-- 월 틱 순서는 Unity식으로 정리 — 비용·매출을 같은 틱에서 정산(Godot 시그널 순서 quirk 제거).
+- 데이터는 JSON→SO 임포트(MiniJson). 자동화 월별효과 데이터화. 월 틱은 비용·매출 같은 틱 정산.
+- VS UI는 프로그래매틱 레거시 uGUI(TMP는 P5에서). 화면은 SimulationContext + GameEvents에 배선.
 
 ## 이번 세션 수정 파일
-- feat-002 — Systems/ 13파일(서비스 10 + ThresholdEval/Rng/MonthController/SimulationContext) + SimulationTests + Systems asmdef + Tests asmdef 참조 추가.
+- feat-003 — UI/(UiFactory/GameScreen/GameBootstrap + asmdef), Editor/SceneBuilder, Save/(SaveService/SaveData), Core/ResourceFormat, EditMode 테스트 2종, Game.unity.
 
 ## 검증 증거
-- [x] `./init.sh` → EditMode 15/15 passed (코어 시뮬레이션 + 데이터 + 모델)
-- [x] feat-001 — DataImporter.ImportAll exit 0, 120 SO 자산 + DataCatalog
-- [x] 스코프 — data/·루트·Schema 미변경
+- [x] `SceneBuilder.CreateGameScene` → rc=0, Game.unity 생성
+- [x] `./init.sh` → EditMode 19/19 passed, UI 포함 전체 컴파일 통과
+- [x] feat-002/001 — 코어 15/15, 임포트 120 SO 자산
+- [x] 스코프 — data/·루트·Schema·코어 미수정(Codex는 UI/Editor만 추가)
 
 ## 다음 세션 메모
-`cd unity && ./init.sh` (다른 Unity 인스턴스 미실행 시). 이후 feat-003 VS UI 착수 — 코어는 `SimulationContext.Create(catalog)`로 진입한다.
+`cd unity && ./init.sh`(다른 Unity 미실행 시). VS 플레이는 Game.unity 열고 입력 백엔드 Both 설정 후 Play. 이후 feat-004/005.
