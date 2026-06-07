@@ -4,40 +4,30 @@
 
 ## 현재 목표 (Current Objective)
 - 목표 — Godot 프로토타입을 Unity 6 모바일 타이쿤으로 재설계.
-- 현재 상태 — v0.1 Vertical Slice 완성 + feat-004(사운드·모션)까지 완료·검증. **에디터에서 실제 플레이 확인 — 동작 OK, 외형은 미니멀(아트 미적용, 정상).**
-- 브랜치 / 커밋 — `main`, origin/main에 전부 푸시됨(작업 시작 시 `git pull`).
+- 현재 상태 — v0.1 VS + feat-004 사운드·모션 완료. **feat-004 아이콘 적용 코드 완료 + 검증 통과(EditMode 21/21, 슬라이스 51 스프라이트). 에디터 시각 확인만 남음.**
+- 브랜치 / 커밋 — `main`, origin/main 동기화(HEAD d3356a2). 아이콘 변경은 **미커밋**(시각 확인 후 커밋 예정).
 
-## 완료 (지금까지)
-- [x] P0 프로젝트 셋업 (Unity 6000.4.10f1, URP/2D/Input/TMP/Test, 세로, asmdef, 하네스)
-- [x] feat-001 데이터 파이프라인 (스키마 9종 + 임포터 + DataCatalog, 120 SO 자산)
-- [x] feat-002 코어 시뮬레이션 (GameModel + 10 서비스 + MonthController, balance 재현)
-- [x] feat-003 Vertical Slice UI (세로 uGUI + SceneBuilder + SaveService, Game.unity)
-- [x] feat-004 일부 — 사운드(SfxGen 절차적 SFX + AudioManager) + 모션(ResourceTicker 카운트업 + UiTween 펀치)
+## 이번 세션 한 일 (아이콘 적용 1·2차)
+- 정답지 — public/assets/ui/v07x-*-atlas.png(48px 균일 그리드). generate-*.mjs drawings 배열이 셀 순서. v071 0-7=자원((int)ResourceId), v079 0-14=도메인(domains.json 순), v080 0-11=능력(capabilities.json 순). 전부 데이터 순서 일치.
+- 신규 IconAtlasImporter.cs — 3장을 Resources/Art/UI로 복사+Grid 슬라이스, 셀에 ui_*/domain_*/cap_* 이름. AICT 메뉴 / executeMethod.
+- 신규 IconLibrary.cs — Resources.LoadAll로 이름→Sprite. Resource/Domain/Capability 헬퍼.
+- UiFactory.Icon — 정사각 아이콘. GameScreen — 자원 HUD + 제품·도메인·능력 카드 배선 + GetResourcePlainName.
+- 폴백 안전 — 스프라이트 없으면 null → 아이콘 숨기고 텍스트/이모지 유지.
 
-## 검증 증거
-| 체크 | 결과 |
-|---|---|
-| EditMode | 21/21 passed |
-| PlayMode | 2/2 passed |
-| 에디터 플레이 | Game.unity ▶ 동작 확인(루프·세이브·카운트업·펀치) |
-| git | origin/main 전부 푸시 완료 |
+## 검증 (통과)
+- `./init.sh` — EditMode 21/21, 컴파일 에러 0, spritesheet 경고 0. 새 4파일 정상 빌드.
+- IconAtlasImporter.ImportAll — exit0. 3 PNG 복사 + .meta 슬라이스 51 스프라이트(24/15/12), 이름 일치.
+- 남음 — 에디터 ▶ 플레이로 아이콘 시각 확인(셀 위치·외형). GUI라 batchmode 불가.
 
 ## 내린 결정
 - 모노레포 unity/ 하위, 코어 헤드리스 순수 C#, 이벤트 정적 GameEvents 허브.
-- 데이터 JSON→SO(MiniJson). 월 틱은 비용·매출 같은 틱 정산. UI는 프로그래매틱 레거시 uGUI(TMP는 후속).
-- SFX는 코드 생성(소유). 모션은 코드 트윈(DOTween 불필요).
-
-## 블로커 / 운영 (다음 세션이 먼저 처리)
-- **외형이 미니멀한 건 정상** — VS는 기능만 된 코드 UI다. `public/assets` 아트 아틀라스가 아직 미연결이라 React/카이로소프트와 달라 보인다. 다음 작업이 외형을 채운다.
-- **입력 백엔드 — Both 적용 권장(미적용)** — 에디터 첫 실행 시 새 Input System 경고가 뜬다. 현재 activeInputHandler=0(Old)이라 레거시 UI 클릭은 동작한다. Player Settings ▸ Active Input Handling을 **Both**로 바꾸면 경고가 사라지고 양쪽 동작한다(에디터 닫고 ProjectSettings `activeInputHandler:2`로 바꿔도 됨).
-- Unity batchmode 검증은 한 번에 하나만 — 다른 Unity 인스턴스(`titan breacker`, `sam defender logue`) 실행 중이면 라이선스 충돌. 비었는지 확인 후 검증.
-- BGM 미정(AI/CC0 루프 → `AudioManager.bgmClip`). DOTween 미설치(필요 시 OpenUPM). URP 2D 파이프라인 에셋 미할당(빌트인 동작).
+- 아이콘 — Resources/Art/UI 임포트 + Resources.LoadAll 이름 조회. 셀 이름은 데이터 키 규칙(ui_*/domain_*/cap_*)이라 매핑 자동.
 
 ## 다음 세션 시작 (Next Session)
 1. `cd unity && git pull`
-2. `cat CLAUDE.md AGENTS.md progress.md` 로 컨텍스트 로드
-3. 다른 Unity 미실행 확인 후 `./init.sh` (EditMode 21 baseline)
-4. `feature_list.json`에서 피처 선택
+2. 다른 Unity 미실행 확인 — `ps -axo command | grep "[U]nity.app/Contents/MacOS/Unity " | grep -i projectpath`
+3. 에디터 ▶ 플레이 — 자원 HUD·제품·도메인·능력 카드 아이콘 확인
+4. 좋으면 커밋(신규 .cs/.meta + Resources/Art + 수정 4파일) → ③ 파티클 착수
 
 ## 권장 다음 단계 (Recommended Next Step)
-**feat-004 — 아이콘 적용부터.** `public/assets`(제품·도메인·능력·UI·경쟁사·헬퍼·브랜드 아틀라스)를 Unity로 임포트해 SpriteAtlas로 묶고, 카드·HUD의 텍스트/이모지를 스프라이트로 교체한다 — 체감 외형 점프가 가장 크다. 이어서 파티클(출시·승급 버스트) → BGM 통합 → URP 2D 파이프라인 에셋 → 카이로소프트식 테마/레이아웃. 반복성 큰 부분은 `docs/codex-handoff/` 패턴으로 Codex(reasoning 매우 높음) 위임, 검증은 Claude가 `./init.sh`로 마감.
+에디터 시각 확인 후 커밋. 이어서 feat-004 ③ 파티클(출시·승급 버스트) → ④ BGM → ⑤ URP 2D 파이프라인 에셋 → ⑥ 카이로소프트식 테마. 반복성 큰 부분은 docs/codex-handoff/ 패턴으로 Codex 위임, 검증은 Claude가 ./init.sh로 마감.

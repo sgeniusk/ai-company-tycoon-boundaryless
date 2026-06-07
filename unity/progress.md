@@ -4,45 +4,48 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-07
-**활성 피처** — feat-004 상업 연출 진행 중. 사운드·모션 완료, 에디터 플레이 확인. 다음 = 아이콘 적용.
+**활성 피처** — feat-004 상업 연출. 사운드·모션 완료. **아이콘 적용 — 자원 HUD + 제품·도메인·능력 카드 코드 완료 + 검증 통과(EditMode 21/21, 슬라이스 51 스프라이트). 에디터 시각 확인만 남음.**
 **현재 목표** — feat-004 비주얼(아이콘 → 파티클 → BGM → 테마)로 상업적 외형을 입힌다.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
-- [x] P0 Project Setup — Unity 6000.4.10f1, URP17.4/2D/Input/TMP/Test, 세로 모드, asmdef, 코어 시드, 하네스
+- [x] P0 Project Setup — Unity 6000.4.10f1, URP17.4/2D/Input/TMP/Test, 세로 모드, asmdef, 하네스
 - [x] feat-001 Data Pipeline — 스키마 9종 + 임포터/DataCatalog/MiniJson. 120 SO 자산
-- [x] feat-002 Core Simulation — GameModel + 10 서비스 + MonthController. balance 재현 + 36개월 플레이스루
-- [x] feat-003 Vertical Slice UI — 세로 uGUI + SceneBuilder + SaveService. Game.unity, EditMode 19/19
-- [x] feat-004 사운드(절차적 SFX 7종 + AudioManager) + 모션(ResourceTicker 카운트업, UiTween 펀치). EditMode 21/21 + PlayMode 2/2. 에디터 플레이 확인(동작 OK)
+- [x] feat-002 Core Simulation — GameModel + 10 서비스 + MonthController. balance 재현 + 36개월
+- [x] feat-003 Vertical Slice UI — 세로 uGUI + SceneBuilder + SaveService. Game.unity
+- [x] feat-004 사운드(절차적 SFX 7종 + AudioManager) + 모션(ResourceTicker, UiTween). EditMode 21/21 + PlayMode 2/2
 ### 진행 중 (What's In Progress)
-- [ ] feat-004 상업 연출 — 남음(우선순위 순) — ① 아이콘 적용(public/assets → SpriteAtlas) ② 파티클(출시·승급) ③ BGM 통합 ④ URP 2D 파이프라인 에셋 ⑤ 카메라·카이로소프트식 테마
-### 다음 (What's Next)
-1. feat-004 아이콘 적용 — public/assets 아틀라스를 임포트해 카드·HUD 텍스트/이모지를 스프라이트로. 외형 점프 가장 큼
-2. 파티클 + BGM 통합
-3. feat-005 플랫폼 — Android/iOS 빌드, 세이프에어리어
+- [~] feat-004 아이콘 적용 — 자원 HUD(v071)+제품·도메인(v079)+능력(v080). 코드 완료 + 검증 통과. 에디터 시각 확인 후 [x] 처리
+- [ ] feat-004 남음(순서) — ③ 파티클(출시·승급) ④ BGM 통합 ⑤ URP 2D 파이프라인 에셋 ⑥ 카이로소프트식 테마
+
+## 다음 (What's Next)
+1. 에디터 ▶ 플레이로 아이콘 시각 확인(셀 위치·외형) → 커밋
+2. feat-004 ③ 파티클 착수 (출시·승급 버스트)
+3. feat-005 플랫폼 — Android/iOS 빌드
 
 ## 블로커 / 리스크
-- [ ] 외형 미니멀 — VS는 기능만 된 코드 UI. 아트 미적용이라 React/카이로소프트와 달라 보이는 게 정상. ①번 작업이 해소.
-- [ ] 입력 백엔드 — 현재 activeInputHandler=0(Old), 레거시 UI 클릭 동작. 경고 제거 + 양쪽 동작하려면 Active Input Handling을 Both(2)로 (다음 세션 적용 권장, 미적용).
-- [ ] 운영 규칙 — Unity batchmode 검증은 한 번에 하나만. 다른 Unity 인스턴스 실행 중이면 대기.
-- [ ] BGM 미정(AI/CC0). DOTween 미설치(필요 시 OpenUPM). URP 2D 파이프라인 에셋 미할당(빌트인 동작).
+- [x] 검증 블로커 해소 — Unity 비는 틈에 `./init.sh` + `ImportAll` 완료. 다른 프로젝트 Codex가 Unity 점유 시 재발 가능 — 검증 전 `ps -axo command | grep "[U]nity.app/Contents/MacOS/Unity " | grep -i projectpath`로 확인.
+- [ ] 시각 미확인 — 셀 y축 뒤집힘 계산(texHeight-(row+1)*cell)은 정적으로는 맞지만, 에디터 플레이로 아이콘이 의도한 셀과 맞는지 최종 확인 필요.
+- [ ] 입력 백엔드 — activeInputHandler=0(Old). 경고 제거+양쪽 동작은 Both(2)로 (미적용).
+- [ ] BGM 미정(AI/CC0). DOTween 미설치. URP 2D 파이프라인 에셋 미할당(빌트인 동작).
 
 ## 내린 결정
-- 모노레포 unity/ 하위, 코어 헤드리스 순수 C#, 이벤트 정적 GameEvents 허브, 패키지 최소 세트.
-- 데이터는 JSON→SO 임포트(MiniJson). 자동화 월별효과 데이터화. 월 틱은 비용·매출 같은 틱 정산.
-- VS UI는 프로그래매틱 레거시 uGUI(TMP는 후속). SFX 코드 생성, 모션 코드 트윈(DOTween 불필요).
+- 아이콘 아틀라스는 public/assets/ui/v07x-*-atlas.png(균일 그리드 48px). generate-*.mjs drawings 배열이 셀 순서 정답지.
+- 셀↔데이터 매핑 — v071 0-7 자원((int)ResourceId), v079 0-14 도메인(domains.json 순), v080 0-11 능력(capabilities.json 순). 전부 데이터 순서와 일치.
+- 임포트 — IconAtlasImporter가 Resources/Art/UI로 복사+Grid 슬라이스, 셀에 ui_*/domain_*/cap_* 이름 부여. 런타임 IconLibrary가 Resources.LoadAll로 이름 조회.
+- 폴백 안전 — 스프라이트 없으면 null → 아이콘 숨기고 기존 텍스트/이모지 유지. 컴파일·런타임 무손상.
 
-## 이번 세션 수정 파일 (커밋됨)
-- feat-004 사운드 — Presentation/(SfxGen, AudioManager) + SfxGenTests.
-- feat-004 모션 — UI/(UiTween, ResourceTicker) + GameScreen/UiFactory 배선.
-- feat-003 — UI/(UiFactory/GameScreen/GameBootstrap), Editor/SceneBuilder, Save/, Core/ResourceFormat, PlayMode 테스트, Game.unity.
+## 이번 세션 수정 파일 (검증 통과 · 커밋 예정)
+- 신규 — Assets/Editor/IconAtlasImporter.cs (v071/v079/v080 복사+그리드 슬라이스, AICT 메뉴 / executeMethod)
+- 신규 — Assets/_Project/Scripts/UI/IconLibrary.cs (Resources 스프라이트 조회 + Resource/Domain/Capability 매핑)
+- 신규 에셋 — Assets/_Project/Resources/Art/UI/v071·v079·v080 .png + .meta(슬라이스 51 스프라이트)
+- 수정 — UI/UiFactory.cs (Icon 헬퍼) + UI/GameScreen.cs (자원 HUD 아이콘 + AddCard 아이콘 오버로드 + 제품/도메인/능력 카드 배선 + GetResourcePlainName)
 
 ## 검증 증거
-- [x] `./init.sh` → EditMode 21/21 passed (UI 포함 전체 컴파일)
-- [x] PlayMode 2/2 passed — 부트스트랩→화면→다음달, 저장→불러오기
-- [x] 에디터 ▶ 플레이 — 루프·세이브·카운트업·펀치·효과음 동작 확인
-- [x] git — origin/main 전부 푸시, 로컬=원격
-- [x] 스코프 — data/·루트·Schema·코어 미수정
+- [x] 컴파일/EditMode — `./init.sh` 통과. EditMode 21/21, 컴파일 에러 0, spritesheet 경고 0. 새 4파일 정상 빌드.
+- [x] 아이콘 임포트/슬라이스 — IconAtlasImporter.ImportAll exit0. Resources/Art/UI에 3 PNG 복사 + .meta 슬라이스 51 스프라이트(v071 24/v079 15/v080 12), 이름 ui_*/domain_*/cap_* 일치.
+- [~] 에디터 시각 확인 — 남음(GUI). 플레이로 HUD·카드 아이콘 위치/외형 확인 권장.
+- [x] 스코프 — data/·루트·Core/Systems/Save·Schema 미수정. UI/Editor/Resources만.
 
 ## 다음 세션 메모
-`cd unity && git pull` → (다른 Unity 미실행 시) `./init.sh` → 아이콘 적용부터. 상세는 session-handoff.md.
+검증 통과 상태. 에디터 ▶ 플레이로 아이콘 시각 확인 → 커밋 → feat-004 ③ 파티클 착수. 상세는 session-handoff.md.

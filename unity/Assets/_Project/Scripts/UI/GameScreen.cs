@@ -210,7 +210,12 @@ namespace AICompanyTycoon.UI
                 UiFactory.HBox(row.transform, 10);
                 AddLayout(row, 36, 0);
 
-                var name = UiFactory.Label(row.transform, GetResourceName(id), 25);
+                // 스프라이트가 임포트돼 있으면 아이콘을 쓰고, 아니면 이름의 이모지 폴백을 쓴다.
+                var sprite = IconLibrary.Resource(id);
+                var icon = UiFactory.Icon(row.transform, sprite, 30);
+                icon.gameObject.SetActive(sprite != null);
+
+                var name = UiFactory.Label(row.transform, sprite != null ? GetResourcePlainName(id) : GetResourceName(id), 25);
                 AddLayout(name.gameObject, 34, 1);
 
                 var value = UiFactory.Label(row.transform, "", 25);
@@ -533,7 +538,7 @@ namespace AICompanyTycoon.UI
 
                 var active = _context.Products.IsActive(product.id);
                 var launchable = availableIds.Contains(product.id);
-                var card = AddCard(_productsContent, product.displayName, product.description);
+                var card = AddCard(_productsContent, IconLibrary.Domain(product.domain), product.displayName, product.description);
                 AddSmallText(card, "도메인 " + GetDomainName(product.domain) + " | 매출 " + FormatNumber(product.baseRevenue) + " | 이용자 +" + FormatNumber(product.baseUsersPerMonth));
                 AddSmallText(card, "출시 비용 " + FormatCosts(product.launchCost));
 
@@ -582,7 +587,7 @@ namespace AICompanyTycoon.UI
                 }
 
                 var state = _context.Domains.IsUnlocked(domain.id) ? "해금됨" : "잠김";
-                var card = AddCard(_capabilitiesContent, domain.displayName + " · " + state, domain.description);
+                var card = AddCard(_capabilitiesContent, IconLibrary.Domain(domain.id), domain.displayName + " · " + state, domain.description);
                 AddSmallText(card, "요구 능력 " + FormatCapabilityRequirements(domain.unlockRequirements));
             }
 
@@ -597,7 +602,7 @@ namespace AICompanyTycoon.UI
                 }
 
                 int level = _context.Capabilities.GetLevel(capability.id);
-                var card = AddCard(_capabilitiesContent, capability.displayName + " Lv." + level + "/" + capability.maxLevel, capability.description);
+                var card = AddCard(_capabilitiesContent, IconLibrary.Capability(capability.id), capability.displayName + " Lv." + level + "/" + capability.maxLevel, capability.description);
                 AddSmallText(card, "강화 비용 " + FormatCosts(_context.Capabilities.GetUpgradeCost(capability.id)));
 
                 var upgrade = UiFactory.Button(card, level >= capability.maxLevel ? "최대 레벨" : "강화");
@@ -689,12 +694,33 @@ namespace AICompanyTycoon.UI
 
         Transform AddCard(Transform parent, string title, string body)
         {
+            return AddCard(parent, null, title, body);
+        }
+
+        Transform AddCard(Transform parent, Sprite icon, string title, string body)
+        {
             var card = UiFactory.Panel(parent, new Color(0.12f, 0.14f, 0.19f, 1f));
             UiFactory.VBox(card.transform, 8, new RectOffset(18, 18, 16, 16));
 
-            var titleLabel = UiFactory.Label(card.transform, title, 30);
-            titleLabel.color = new Color(0.93f, 0.96f, 1f, 1f);
-            AddLayout(titleLabel.gameObject, 42, 0);
+            if (icon != null)
+            {
+                var header = new GameObject("CardHeader", typeof(RectTransform));
+                header.transform.SetParent(card.transform, false);
+                UiFactory.HBox(header.transform, 10);
+                AddLayout(header, 42, 0);
+
+                UiFactory.Icon(header.transform, icon, 34);
+
+                var iconTitle = UiFactory.Label(header.transform, title, 30);
+                iconTitle.color = new Color(0.93f, 0.96f, 1f, 1f);
+                AddLayout(iconTitle.gameObject, 40, 1);
+            }
+            else
+            {
+                var titleLabel = UiFactory.Label(card.transform, title, 30);
+                titleLabel.color = new Color(0.93f, 0.96f, 1f, 1f);
+                AddLayout(titleLabel.gameObject, 42, 0);
+            }
 
             if (!string.IsNullOrEmpty(body))
             {
@@ -854,12 +880,17 @@ namespace AICompanyTycoon.UI
             return "출시할 수 없습니다.";
         }
 
+        string GetResourcePlainName(ResourceId id)
+        {
+            var def = _context.Catalog.GetResource(ResourceIds.ToKey(id));
+            return def != null && !string.IsNullOrEmpty(def.displayName) ? def.displayName : id.ToString();
+        }
+
         string GetResourceName(ResourceId id)
         {
             var def = _context.Catalog.GetResource(ResourceIds.ToKey(id));
-            var name = def != null && !string.IsNullOrEmpty(def.displayName) ? def.displayName : id.ToString();
             var icon = def != null && !string.IsNullOrEmpty(def.icon) ? def.icon + " " : "";
-            return icon + name;
+            return icon + GetResourcePlainName(id);
         }
 
         string GetDomainName(string id)

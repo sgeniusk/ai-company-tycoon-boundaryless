@@ -134,5 +134,28 @@ namespace AICompanyTycoon.UI
             group.childForceExpandHeight = true;
             return group;
         }
+
+        // 정사각 아이콘 이미지. sprite 가 null 이면 투명하게 둬 임포트 전에도 깨지지 않는다.
+        public static Image Icon(Transform parent, Sprite sprite, float size)
+        {
+            var go = new GameObject("Icon", typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(parent, false);
+
+            var image = go.GetComponent<Image>();
+            image.sprite = sprite;
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+            image.color = sprite != null ? Color.white : new Color(1f, 1f, 1f, 0f);
+
+            var layout = go.AddComponent<LayoutElement>();
+            layout.minWidth = size;
+            layout.preferredWidth = size;
+            layout.minHeight = size;
+            layout.preferredHeight = size;
+            layout.flexibleWidth = 0;
+            layout.flexibleHeight = 0;
+
+            return image;
+        }
     }
 }
