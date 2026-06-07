@@ -43,9 +43,9 @@
       "name": "Commercial Polish (P5)",
       "description": "사운드(AudioManager), DOTween 모션, 파티클(FXManager), 카메라(Cinemachine), 햅틱, Localization(ko/en). public/assets 아이콘을 SpriteAtlas로. URP 2D 파이프라인 에셋 생성·할당",
       "dependencies": ["feat-003"],
-      "status": "not-started",
+      "status": "in-progress",
       "owner": "Claude->Codex",
-      "evidence": ""
+      "evidence": "사운드 착수 — 절차적 SFX 합성기(SfxGen) + AudioManager(GameEvents 구독, 자동 부트스트랩). BGM은 AI/CC0 루프 슬롯"
     },
     {
       "id": "feat-005",

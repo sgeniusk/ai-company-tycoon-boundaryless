@@ -6,6 +6,7 @@
         "AICompanyTycoon.Data",
         "AICompanyTycoon.Systems",
         "AICompanyTycoon.Save",
+        "AICompanyTycoon.Presentation",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
