@@ -60,14 +60,20 @@ namespace AICompanyTycoon.UI
             var root = UiFactory.Panel(_canvas.transform, UiTheme.ScreenBg);
             root.name = "GameScreen";
             Stretch(root.GetComponent<RectTransform>());
-            UiFactory.VBox(root.transform, 18, new RectOffset(28, 28, 28, 28));
 
-            BuildTopBar(root.transform);
-            BuildResourceHud(root.transform);
-            BuildTabs(root.transform);
-            BuildContentArea(root.transform);
-            BuildMonthSummary(root.transform);
-            BuildBottomBar(root.transform);
+            // 노치/홈 인디케이터를 피해 콘텐츠를 safe area 안에 담는다. 배경(root)은 화면 전체를 덮는다.
+            var safeArea = new GameObject("SafeArea", typeof(RectTransform), typeof(SafeAreaFitter));
+            safeArea.transform.SetParent(root.transform, false);
+            Stretch(safeArea.GetComponent<RectTransform>());
+            var content = safeArea.transform;
+            UiFactory.VBox(content, 18, new RectOffset(28, 28, 28, 28));
+
+            BuildTopBar(content);
+            BuildResourceHud(content);
+            BuildTabs(content);
+            BuildContentArea(content);
+            BuildMonthSummary(content);
+            BuildBottomBar(content);
             BuildEventModal(_canvas.transform);
             Subscribe();
         }

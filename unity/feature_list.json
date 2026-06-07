@@ -52,9 +52,9 @@
       "name": "Platform Build (P6)",
       "description": "Android/iOS 빌드 파이프라인, 세이프에어리어, 아이콘/스플래시, 내부 테스트 트랙",
       "dependencies": ["feat-003"],
-      "status": "not-started",
-      "owner": "Codex",
-      "evidence": ""
+      "status": "in-progress",
+      "owner": "Claude->Codex",
+      "evidence": "세이프에어리어 착수 — SafeAreaFitter(Screen.safeArea→anchor) + GameScreen 콘텐츠를 safe area에. 빌드 모듈(Android/iOS) 설치 확인. EditMode 21/21. 남음 — 번들ID/빌드스크립트/아이콘"
     }
   ]
 }
