@@ -29,3 +29,6 @@
 # 크래시 로그
 sysinfo.txt
 *.stackdump
+
+# Unity 빌드 임시
+.utmp/
