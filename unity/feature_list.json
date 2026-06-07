@@ -36,7 +36,7 @@
       "dependencies": ["feat-002"],
       "status": "done",
       "owner": "Claude->Codex",
-      "evidence": "uGUI VS(UiFactory/GameScreen980/GameBootstrap/SceneBuilder=Codex, SaveService/ResourceFormat=Claude). Unity 전체 컴파일 통과 + Game.unity 생성 + EditMode 19/19. 라인단위 리뷰. 온디바이스 플레이/입력백엔드는 후속"
+      "evidence": "uGUI VS(UiFactory/GameScreen980/GameBootstrap/SceneBuilder=Codex, SaveService/ResourceFormat=Claude). 컴파일 + Game.unity + EditMode 19/19 + PlayMode 2/2. 라인단위 리뷰. 입력 Old 활성으로 클릭 동작"
     },
     {
       "id": "feat-004",

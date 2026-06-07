@@ -1,0 +1,25 @@
+{
+    "name": "AICompanyTycoon.Tests.PlayMode",
+    "rootNamespace": "AICompanyTycoon.Tests.PlayMode",
+    "references": [
+        "AICompanyTycoon.Core",
+        "AICompanyTycoon.Data",
+        "AICompanyTycoon.Systems",
+        "AICompanyTycoon.Save",
+        "AICompanyTycoon.UI",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
