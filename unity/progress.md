@@ -15,7 +15,7 @@
 - [x] feat-005 아이콘/스플래시 — office 배경 임시(app_icon 1024 + splash 2560x1440). SetIcons(Android/iOS)+SplashScreen 배선. 최종 픽셀아트는 docs/backlog.md
 ### 진행 중 (What's In Progress)
 - [~] feat-005 플랫폼 — 빌드·아이콘/스플래시 완료. 남음 — 에디터/실기기 시각 확인(최종 아트는 backlog)
-- [~] 기존 에셋 반영 — 게임 배경(office) + 미반영 아틀라스 6개(v072/074/076/077/078/081, 신규 29셀, 총 80) 슬라이스 완료. 남음 — 직원/오브젝트 스프라이트 배치, 아틀라스 사용처(대응 화면). 막 강도 시각 조정.
+- [~] 기존 에셋 반영 — 게임 배경(office) + 아틀라스 6개(총 80셀) + 직원 캐릭터 씬(v076 actor, talent 수 연동). 남음 — office-objects/agents 스프라이트, 아틀라스 사용처. 시각 조정.
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)

@@ -37,6 +37,7 @@ namespace AICompanyTycoon.UI
         Transform _productsContent;
         Transform _capabilitiesContent;
         Transform _upgradesContent;
+        Transform _officeSceneContent;
 
         GameObject _eventModal;
         Text _eventTitle;
@@ -72,6 +73,7 @@ namespace AICompanyTycoon.UI
 
             BuildTopBar(content);
             BuildResourceHud(content);
+            BuildOfficeScene(content);
             BuildTabs(content);
             BuildContentArea(content);
             BuildMonthSummary(content);
@@ -94,6 +96,7 @@ namespace AICompanyTycoon.UI
         {
             UpdateTopBar();
             UpdateResourceHud();
+            RefreshOfficeScene();
             RefreshLists();
             UpdateSummary();
             UpdateEventModalFromContext();
@@ -201,6 +204,37 @@ namespace AICompanyTycoon.UI
             scrim.name = "BackgroundScrim";
             Stretch(scrim.GetComponent<RectTransform>());
             scrim.GetComponent<Image>().raycastTarget = false;
+        }
+
+        // office 배경 위에 직원 캐릭터(v076)를 세울 사무실 씬 영역. 채우기는 RefreshOfficeScene이 한다.
+        void BuildOfficeScene(Transform parent)
+        {
+            var panel = new GameObject("OfficeScene", typeof(RectTransform));
+            panel.transform.SetParent(parent, false);
+            var row = UiFactory.HBox(panel.transform, 14);
+            row.childAlignment = TextAnchor.LowerCenter;
+            AddLayout(panel, 150, 0);
+            _officeSceneContent = panel.transform;
+        }
+
+        // talent(인재) 수만큼 직원 캐릭터를 세운다. 스프라이트가 없으면(임포트 전) 빈 칸으로 안전.
+        void RefreshOfficeScene()
+        {
+            if (_officeSceneContent == null || _context == null)
+            {
+                return;
+            }
+
+            Clear(_officeSceneContent);
+            int talent = (int)_context.Model.Get(ResourceId.Talent);
+            int count = Mathf.Clamp(talent, 0, 6);
+            var kinds = new[] { "actor_human", "actor_ai", "actor_robot" };
+            for (int i = 0; i < count; i += 1)
+            {
+                var sprite = IconLibrary.Get(kinds[i % kinds.Length]);
+                var actor = UiFactory.Icon(_officeSceneContent, sprite, 120);
+                actor.gameObject.SetActive(sprite != null);
+            }
         }
 
         void BuildTopBar(Transform parent)
