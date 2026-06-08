@@ -61,6 +61,8 @@ namespace AICompanyTycoon.UI
             root.name = "GameScreen";
             Stretch(root.GetComponent<RectTransform>());
 
+            BuildOfficeBackground(root.transform);
+
             // 노치/홈 인디케이터를 피해 콘텐츠를 safe area 안에 담는다. 배경(root)은 화면 전체를 덮는다.
             var safeArea = new GameObject("SafeArea", typeof(RectTransform), typeof(SafeAreaFitter));
             safeArea.transform.SetParent(root.transform, false);
@@ -175,6 +177,30 @@ namespace AICompanyTycoon.UI
             {
                 UnityEngine.Object.Destroy(_canvas.gameObject);
             }
+        }
+
+        // 사무실 배경(v054)을 전체에 깔고 위에 반투명 막을 얹어 UI 가독성을 확보한다. 에셋이 없으면 단색 배경 유지.
+        void BuildOfficeBackground(Transform parent)
+        {
+            var tex = Resources.Load<Texture2D>("Art/Background/office");
+            if (tex == null)
+            {
+                return;
+            }
+
+            var bgGo = new GameObject("OfficeBackground", typeof(RectTransform), typeof(Image));
+            bgGo.transform.SetParent(parent, false);
+            Stretch(bgGo.GetComponent<RectTransform>());
+            var bgImage = bgGo.GetComponent<Image>();
+            bgImage.sprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            bgImage.preserveAspect = false;
+            bgImage.raycastTarget = false;
+
+            // 크림 톤 반투명 막 — office가 은은히 비치면서 텍스트는 읽히게 한다.
+            var scrim = UiFactory.Panel(parent, new Color(UiTheme.ScreenBg.r, UiTheme.ScreenBg.g, UiTheme.ScreenBg.b, 0.82f));
+            scrim.name = "BackgroundScrim";
+            Stretch(scrim.GetComponent<RectTransform>());
+            scrim.GetComponent<Image>().raycastTarget = false;
         }
 
         void BuildTopBar(Transform parent)
