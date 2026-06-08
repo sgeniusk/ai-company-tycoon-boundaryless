@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b6dfe0b0546274766b705300498f7008
+guid: cf45a71a74efd435982e8c1a361e5c1f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 48
+  spritePixelsToUnits: 40
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cap_language
+      name: react_codespark
       rect:
         serializedVersion: 2
         x: 0
-        y: 48
-        width: 48
-        height: 48
+        y: -8
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,20 +151,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8d6a6cceae7ce9630800000000000000
-      internalID: 3935802936177108696
+      spriteID: 
+      internalID: 5653465557215483263
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_code
+      name: react_idea
       rect:
         serializedVersion: 2
-        x: 48
-        y: 48
-        width: 48
-        height: 48
+        x: 40
+        y: -8
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,20 +173,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 18a85197c0c41f0a0800000000000000
-      internalID: -6849609941799040383
+      spriteID: 
+      internalID: 9094372865198769744
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_vision
+      name: react_coffee
       rect:
         serializedVersion: 2
-        x: 96
-        y: 48
-        width: 48
-        height: 48
+        x: 80
+        y: -8
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,20 +195,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 61155bb4d6fbfcc50800000000000000
-      internalID: 6687774447810990358
+      spriteID: 
+      internalID: 6057656559610471050
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_audio
+      name: react_alert
       rect:
         serializedVersion: 2
-        x: 144
-        y: 48
-        width: 48
-        height: 48
+        x: 120
+        y: -8
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -217,20 +217,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 63ea3138b0d542290800000000000000
-      internalID: -7916099940985360842
+      spriteID: 
+      internalID: 6481550479531977486
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_video
+      name: react_cheer
       rect:
         serializedVersion: 2
-        x: 192
-        y: 48
-        width: 48
-        height: 48
+        x: 160
+        y: -8
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -239,20 +239,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: db61601a3453591d0800000000000000
-      internalID: -3344708583672113475
+      spriteID: 
+      internalID: -7842904848370966091
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_agent
+      name: react_gear
       rect:
         serializedVersion: 2
-        x: 240
-        y: 48
-        width: 48
-        height: 48
+        x: 200
+        y: -8
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -261,140 +261,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: dc87452661bfd9060800000000000000
-      internalID: 6961996672542210253
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cap_enterprise
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 317e939a5b9d8a920800000000000000
-      internalID: 3001888525893887763
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cap_safety
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 05d05f164b0723440800000000000000
-      internalID: 4914114063454506320
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cap_optimization
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b104ed15e2455a450800000000000000
-      internalID: 6099373828261953563
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cap_robotics
-      rect:
-        serializedVersion: 2
-        x: 144
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a91d0b7735a45b6f0800000000000000
-      internalID: -669547247243832934
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cap_manufacturing
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b4f09aa4d7776d990800000000000000
-      internalID: -7361565160883286197
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cap_logistics
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a2f1623b58636a0c0800000000000000
-      internalID: -4564901224429248726
+      spriteID: 
+      internalID: 8322088429615572902
       vertices: []
       indices: 
       edges: []
@@ -413,18 +281,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      cap_agent: 6961996672542210253
-      cap_audio: -7916099940985360842
-      cap_code: -6849609941799040383
-      cap_enterprise: 3001888525893887763
-      cap_language: 3935802936177108696
-      cap_logistics: -4564901224429248726
-      cap_manufacturing: -7361565160883286197
-      cap_optimization: 6099373828261953563
-      cap_robotics: -669547247243832934
-      cap_safety: 4914114063454506320
-      cap_video: -3344708583672113475
-      cap_vision: 6687774447810990358
+      react_alert: 6481550479531977486
+      react_cheer: -7842904848370966091
+      react_codespark: 5653465557215483263
+      react_coffee: 6057656559610471050
+      react_gear: 8322088429615572902
+      react_idea: 9094372865198769744
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

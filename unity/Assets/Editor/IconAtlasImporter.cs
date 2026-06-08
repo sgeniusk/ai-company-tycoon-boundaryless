@@ -13,6 +13,7 @@ public static class IconAtlasImporter
     struct AtlasDef
     {
         public string fileName;
+        public string folder; // public/assets 하위 폴더 (기본 ui, v076만 sprites)
         public int cell;
         public int columns;
         public string[] names;
@@ -64,18 +65,72 @@ public static class IconAtlasImporter
                 "cap_enterprise", "cap_safety", "cap_optimization", "cap_robotics", "cap_manufacturing", "cap_logistics",
             },
         },
+        new AtlasDef
+        {
+            // v072 competitor-logo — 32px, 6x2=12. 경쟁사 로고(draw 호출 순서).
+            fileName = "v072-competitor-logo-atlas.png",
+            cell = 32,
+            columns = 6,
+            names = new[]
+            {
+                "comp_chatgody", "comp_cloyi", "comp_jemiinni", "comp_novarun", "comp_automaru", "comp_modelforge",
+                "comp_chipspark", "comp_vizionlab", "comp_autonova", "comp_brewchain", "comp_toycloud", "comp_ironoracle",
+            },
+        },
+        new AtlasDef
+        {
+            // v074 helper-portrait — 96px 단일. 헬퍼 Mina.
+            fileName = "v074-helper-portrait-atlas.png",
+            cell = 96,
+            columns = 1,
+            names = new[] { "helper_mina" },
+        },
+        new AtlasDef
+        {
+            // v076 workforce-actor — 76px, 3x1. 직원 액터(human/ai/robot). sprites 폴더.
+            fileName = "v076-workforce-actor-atlas.png",
+            folder = "sprites",
+            cell = 76,
+            columns = 3,
+            names = new[] { "actor_human", "actor_ai", "actor_robot" },
+        },
+        new AtlasDef
+        {
+            // v077 celebration-emblem — 80px, 3x1. synergy/combo/achievement.
+            fileName = "v077-celebration-emblem-atlas.png",
+            cell = 80,
+            columns = 3,
+            names = new[] { "celebrate_synergy", "celebrate_combo", "celebrate_achievement" },
+        },
+        new AtlasDef
+        {
+            // v078 world-reveal-stamp — 64px, 4x1. city/world/market/founder.
+            fileName = "v078-world-reveal-stamp-atlas.png",
+            cell = 64,
+            columns = 4,
+            names = new[] { "world_city", "world_world", "world_market", "world_founder" },
+        },
+        new AtlasDef
+        {
+            // v081 office-reaction — 40px, 6x1. 오피스 반응.
+            fileName = "v081-office-reaction-atlas.png",
+            cell = 40,
+            columns = 6,
+            names = new[] { "react_codespark", "react_idea", "react_coffee", "react_alert", "react_cheer", "react_gear" },
+        },
     };
 
     [MenuItem("AICT/Import Icon Atlases")]
     public static void ImportAll()
     {
         EnsureFolder(DestFolder);
-        var sourceRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "public", "assets", "ui"));
+        var assetsRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "public", "assets"));
 
         var imported = 0;
         foreach (var atlas in Atlases)
         {
-            var src = Path.Combine(sourceRoot, atlas.fileName);
+            var folder = string.IsNullOrEmpty(atlas.folder) ? "ui" : atlas.folder;
+            var src = Path.Combine(assetsRoot, folder, atlas.fileName);
             if (!File.Exists(src))
             {
                 Debug.LogWarning("[IconAtlasImporter] 원본 없음 - " + src);

@@ -15,7 +15,7 @@
 - [x] feat-005 아이콘/스플래시 — office 배경 임시(app_icon 1024 + splash 2560x1440). SetIcons(Android/iOS)+SplashScreen 배선. 최종 픽셀아트는 docs/backlog.md
 ### 진행 중 (What's In Progress)
 - [~] feat-005 플랫폼 — 빌드·아이콘/스플래시 완료. 남음 — 에디터/실기기 시각 확인(최종 아트는 backlog)
-- [~] 기존 에셋 반영 — 게임 화면 배경(office) GameScreen 반영(반투명 막). 남음 — 직원/오브젝트 스프라이트, 미반영 아틀라스(backlog). 막 강도 시각 조정.
+- [~] 기존 에셋 반영 — 게임 배경(office) + 미반영 아틀라스 6개(v072/074/076/077/078/081, 신규 29셀, 총 80) 슬라이스 완료. 남음 — 직원/오브젝트 스프라이트 배치, 아틀라스 사용처(대응 화면). 막 강도 시각 조정.
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)
@@ -44,6 +44,7 @@
 - [x] feat-005 세이프에어리어/빌드셋업 — EditMode 21/21, 컴파일 0
 - [x] feat-005 실제 빌드 — BuildResult Succeeded, APK 35MB(IL2CPP/ARM64)
 - [x] feat-005 아이콘/스플래시 — ApplyMobileSettings executeMethod 컴파일 0, SetIcons 적용(경고 없음), splash Sprite 변환
+- [x] 기존 에셋 반영 — 게임 배경 office EditMode 21/21. 미반영 아틀라스 6개 ImportAll 슬라이스(총 80셀, 신규 29 셀 수 일치), 컴파일 0
 - [~] 시각 확인 — 남음(에디터/시뮬레이터)
 - [x] 스코프 — data/·루트·Core/Systems/Save·Schema 미수정. UI/Editor/Resources/Art/ProjectSettings만
 

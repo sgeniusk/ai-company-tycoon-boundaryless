@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b6dfe0b0546274766b705300498f7008
+guid: 6789a201eb405480897e4c70b063495b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 48
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cap_language
+      name: comp_chatgody
       rect:
         serializedVersion: 2
         x: 0
-        y: 48
-        width: 48
-        height: 48
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,20 +151,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8d6a6cceae7ce9630800000000000000
-      internalID: 3935802936177108696
+      spriteID: 0a34e8059264b89c0800000000000000
+      internalID: -3923965507064151136
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_code
+      name: comp_cloyi
       rect:
         serializedVersion: 2
-        x: 48
-        y: 48
-        width: 48
-        height: 48
+        x: 32
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,20 +173,42 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 18a85197c0c41f0a0800000000000000
-      internalID: -6849609941799040383
+      spriteID: 5c7005d3669b62a00800000000000000
+      internalID: 731475838260742085
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_vision
+      name: comp_jemiinni
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b8184ae690b65a20800000000000000
+      internalID: 3050819959812266162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: comp_novarun
       rect:
         serializedVersion: 2
         x: 96
-        y: 48
-        width: 48
-        height: 48
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,20 +217,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 61155bb4d6fbfcc50800000000000000
-      internalID: 6687774447810990358
+      spriteID: 5a5de3cfc2e884cb0800000000000000
+      internalID: -4879493872394250843
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_audio
+      name: comp_automaru
       rect:
         serializedVersion: 2
-        x: 144
-        y: 48
-        width: 48
-        height: 48
+        x: 128
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -217,20 +239,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 63ea3138b0d542290800000000000000
-      internalID: -7916099940985360842
+      spriteID: f6e8970935d086bb0800000000000000
+      internalID: -4942685938481787281
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_video
+      name: comp_modelforge
       rect:
         serializedVersion: 2
-        x: 192
-        y: 48
-        width: 48
-        height: 48
+        x: 160
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -239,42 +261,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: db61601a3453591d0800000000000000
-      internalID: -3344708583672113475
+      spriteID: 9dc28bf55ce8d0110800000000000000
+      internalID: 1228795251707620569
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_agent
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 48
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: dc87452661bfd9060800000000000000
-      internalID: 6961996672542210253
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cap_enterprise
+      name: comp_chipspark
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -283,20 +283,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 317e939a5b9d8a920800000000000000
-      internalID: 3001888525893887763
+      spriteID: 90257b7477ae2c3e0800000000000000
+      internalID: -2034806283592838647
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_safety
+      name: comp_vizionlab
       rect:
         serializedVersion: 2
-        x: 48
+        x: 32
         y: 0
-        width: 48
-        height: 48
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -305,20 +305,42 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 05d05f164b0723440800000000000000
-      internalID: 4914114063454506320
+      spriteID: 4f761b57ca01b0ec0800000000000000
+      internalID: -3599765144257599500
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_optimization
+      name: comp_autonova
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d4d9076bec18c050800000000000000
+      internalID: 5820934315747955920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: comp_brewchain
       rect:
         serializedVersion: 2
         x: 96
         y: 0
-        width: 48
-        height: 48
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -327,20 +349,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b104ed15e2455a450800000000000000
-      internalID: 6099373828261953563
+      spriteID: bacf4f44a3ed45920800000000000000
+      internalID: 2978249595445116075
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_robotics
+      name: comp_toycloud
       rect:
         serializedVersion: 2
-        x: 144
+        x: 128
         y: 0
-        width: 48
-        height: 48
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -349,20 +371,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a91d0b7735a45b6f0800000000000000
-      internalID: -669547247243832934
+      spriteID: b21b77fbdf9d203e0800000000000000
+      internalID: -2088867593284243157
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cap_manufacturing
+      name: comp_ironoracle
       rect:
         serializedVersion: 2
-        x: 192
+        x: 160
         y: 0
-        width: 48
-        height: 48
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -371,30 +393,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b4f09aa4d7776d990800000000000000
-      internalID: -7361565160883286197
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cap_logistics
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a2f1623b58636a0c0800000000000000
-      internalID: -4564901224429248726
+      spriteID: 0ee9786edc373a260800000000000000
+      internalID: 7107651965093912288
       vertices: []
       indices: 
       edges: []
@@ -413,18 +413,18 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      cap_agent: 6961996672542210253
-      cap_audio: -7916099940985360842
-      cap_code: -6849609941799040383
-      cap_enterprise: 3001888525893887763
-      cap_language: 3935802936177108696
-      cap_logistics: -4564901224429248726
-      cap_manufacturing: -7361565160883286197
-      cap_optimization: 6099373828261953563
-      cap_robotics: -669547247243832934
-      cap_safety: 4914114063454506320
-      cap_video: -3344708583672113475
-      cap_vision: 6687774447810990358
+      comp_automaru: -4942685938481787281
+      comp_autonova: 5820934315747955920
+      comp_brewchain: 2978249595445116075
+      comp_chatgody: -3923965507064151136
+      comp_chipspark: -2034806283592838647
+      comp_cloyi: 731475838260742085
+      comp_ironoracle: 7107651965093912288
+      comp_jemiinni: 3050819959812266162
+      comp_modelforge: 1228795251707620569
+      comp_novarun: -4879493872394250843
+      comp_toycloud: -2088867593284243157
+      comp_vizionlab: -3599765144257599500
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

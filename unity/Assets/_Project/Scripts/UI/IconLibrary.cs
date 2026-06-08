@@ -13,6 +13,12 @@ namespace AICompanyTycoon.UI
             "Art/UI/v071-commercial-ui-atlas",
             "Art/UI/v079-product-domain-atlas",
             "Art/UI/v080-capability-research-atlas",
+            "Art/UI/v072-competitor-logo-atlas",
+            "Art/UI/v074-helper-portrait-atlas",
+            "Art/UI/v076-workforce-actor-atlas",
+            "Art/UI/v077-celebration-emblem-atlas",
+            "Art/UI/v078-world-reveal-stamp-atlas",
+            "Art/UI/v081-office-reaction-atlas",
         };
 
         static Dictionary<string, Sprite> _cache;
