@@ -4,7 +4,7 @@
 
 ## 현재 목표 (Current Objective)
 - 목표 — Godot 프로토타입을 Unity 6 모바일 타이쿤으로 재설계.
-- 현재 상태 — feat-004 비주얼 4커밋 완료. **feat-005 — 세이프에어리어·빌드셋업·실제 Android 빌드(APK 35MB) 성공. 아이콘/시각확인 남음.**
+- 현재 상태 — feat-004 비주얼 4커밋 완료. **feat-005 — 세이프에어리어·빌드셋업·빌드(35MB)·아이콘/스플래시 완료. 시각확인 + 최종 픽셀아트(backlog) 남음.**
 - 브랜치 / 커밋 — `main`. feat-004(4)+세이프에어리어(021ac45)+빌드셋업(733e184) 커밋. push 안 함.
 
 ## 이번 세션 한 일
@@ -29,4 +29,4 @@
 4. feat-005 아이콘/스플래시(1024 이미지) → PlayerSettings 아이콘 슬롯
 
 ## 권장 다음 단계 (Recommended Next Step)
-APK를 실기기에 설치해 v0.1 핵심 루프 10분 구동 확인 → 아이콘/스플래시. ④ BGM은 오디오 에셋 후. 재빌드는 AICT/Platform/Build Android. 반복성 큰 부분은 docs/codex-handoff/ 패턴으로 Codex 위임.
+에디터 ▶ 플레이 / Device Simulator로 시각 확인(Android 폰 불필요). 추후 할 일(픽셀아트 아이콘/기존 에셋 전부 반영/실기기/BGM/TMP)은 docs/backlog.md. 재빌드 AICT/Platform/Build Android. 반복성 큰 부분은 docs/codex-handoff/ 패턴으로 Codex 위임.

@@ -11,6 +11,8 @@ public static class PlatformSetup
     const string Product = "AI Company Tycoon";
     const string Company = "Gomgomee";
     const string GameScene = "Assets/_Project/Scenes/Game.unity";
+    const string IconPath = "Assets/_Project/Art/Branding/app_icon.png";
+    const string SplashPath = "Assets/_Project/Art/Branding/splash.png";
 
     [MenuItem("AICT/Platform/Apply Mobile Settings")]
     public static void ApplyMobileSettings()
@@ -32,8 +34,42 @@ public static class PlatformSetup
         PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
         PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel26;
 
+        ApplyBranding();
+
         AssetDatabase.SaveAssets();
         Debug.Log("[PlatformSetup] 모바일 PlayerSettings 적용 — " + BundleId);
+    }
+
+    // 앱 아이콘/스플래시 적용 (임시 — office 배경 활용. 최종 픽셀아트는 추후 세션에 교체).
+    static void ApplyBranding()
+    {
+        var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(IconPath);
+        if (icon != null)
+        {
+            var icons = new[] { icon };
+            PlayerSettings.SetIcons(NamedBuildTarget.Android, icons, IconKind.Application);
+            PlayerSettings.SetIcons(NamedBuildTarget.iOS, icons, IconKind.Application);
+        }
+        else
+        {
+            Debug.LogWarning("[PlatformSetup] 앱 아이콘 없음 — " + IconPath);
+        }
+
+        // 스플래시 배경은 Sprite여야 하므로 임포트 타입을 보장한 뒤 배선한다.
+        var splashImporter = AssetImporter.GetAtPath(SplashPath) as TextureImporter;
+        if (splashImporter != null && splashImporter.textureType != TextureImporterType.Sprite)
+        {
+            splashImporter.textureType = TextureImporterType.Sprite;
+            splashImporter.SaveAndReimport();
+        }
+
+        var splash = AssetDatabase.LoadAssetAtPath<Sprite>(SplashPath);
+        if (splash != null)
+        {
+            PlayerSettings.SplashScreen.show = true;
+            PlayerSettings.SplashScreen.background = splash;
+            PlayerSettings.SplashScreen.backgroundColor = new Color(0.906f, 0.863f, 0.757f, 1f);
+        }
     }
 
     [MenuItem("AICT/Platform/Build Android (APK)")]
