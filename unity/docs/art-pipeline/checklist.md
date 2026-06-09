@@ -28,12 +28,12 @@ React 소스(`public/assets/sprites`)에 풍부한 아트가 있으나 Unity 포
 
 ### 오피스 오브젝트 (책상/장비)
 - [x] 생성/임포트 핸드오프 — `../codex-handoff/v091-office-objects-gen.md` (경로1 기존 v054 임포트 + 경로2 신규 고해상)
-- [ ] **임포터 비정사각 셀 확장** (Codex 단순 코딩) — IconAtlasImporter가 256×192 칸 슬라이스 가능하게 (현 정사각 가정)
-- [ ] v054 칸 이름 확정 (Claude 디자인) — `ref/existing-v054-objects.png` 보고 21종 명명
-- [ ] 경로1 임포트 (Codex) — v054 → Unity, IconLibrary 경로
-- [ ] Unity 배치 (Claude 구도 조정) — 오피스 씬에 책상·장비 (현재 휑함)
-- [ ] 경로2 신규 고해상 생성 (외주) — v054 레퍼런스로 디테일 상향
-- [ ] 검증 (Claude) — 캡처 대조
+- [x] **임포터 비정사각 셀 확장** (Claude — 하네스) — IconAtlasImporter cellW/cellH + npotScale=None/maxTextureSize=4096. 커밋 993c470
+- [x] v054 칸 이름 확정 — `ref/v054-objects-grid.png` 기준 21종(0-20) + 빈칸 4
+- [x] 경로1 임포트 — v054 → Resources, IconLibrary 경로. 오브젝트 퍼레이드 21종 정상(`Logs/shots/09-object-parade.png`)
+- [x] Unity 배치 — BuildOfficeScene 2층(가구 백row + 직원). 책상/서버/화이트보드/서류책상 4종. 캡처 확인
+- [ ] 경로2 신규 고해상 생성 (외주) — v054 레퍼런스로 디테일 상향. 여전히 외주 대기
+- [~] 배치 미세조정 — 가구-직원 간격(office-first 큰 floor). 밴드 하향안은 라이선스 점유로 미검증, 보류
 
 ### 오피스 배경 (backdrop)
 - [ ] 현재 `Resources/Art/Background/office.png`(v054, 반투명 막). 고해상 교체(5120×2880→2560×1440) 검토
