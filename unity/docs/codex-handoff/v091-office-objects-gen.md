@@ -30,18 +30,23 @@ public int cellH;   // 0이면 cell 사용
 //   rows 계산도 cellH 기준
 ```
 
-### 1-B. v054 정의 추가 + 칸 이름
+### 1-B. v054 정의 추가 + 칸 이름 (Claude 확정 — `ref/v054-objects-grid.png` 인덱스 기준)
+0-20 오브젝트, 21-24 빈 칸. 좌→우·위→아래.
 ```csharp
 new AtlasDef {
     fileName = "v054-office-objects-final.png",
     folder = "sprites",   // public/assets/sprites
     cellW = 256, cellH = 192, columns = 5,
-    names = new[] { /* 25칸, 좌→우·위→아래. 빈 칸은 obj_emptyNN */
-      "obj_desk_laptop","obj_cabinet_dark","obj_desk_wood","obj_server_blue","obj_crate",
-      /* ...실제 시트(existing-v054-objects.png) 보고 21종 명명 + 빈 칸 placeholder... */ },
+    names = new[] {
+      "obj_desk_monitor",  "obj_server_dark",   "obj_cabinet_wood",  "obj_server_blue",   "obj_crate_brown",   // 0-4
+      "obj_desk_monitor_b","obj_server_slate",  "obj_cabinet_mint",  "obj_crate_low",     "obj_crate_red",     // 5-9
+      "obj_desk_green",    "obj_whiteboard_a",  "obj_whiteboard_b",  "obj_printer_blue",  "obj_server_amber",  // 10-14
+      "obj_glassboard_a",  "obj_printer_cyan",  "obj_desk_papers",   "obj_meeting_table", "obj_equipment_blue",// 15-19
+      "obj_glassboard_b",  "obj_empty21",       "obj_empty22",       "obj_empty23",       "obj_empty24",       // 20-24
+    },
 },
 ```
-> 정확한 칸별 이름은 `ref/existing-v054-objects.png`를 보고 Claude가 확정해 채운다(디자인 결정). Codex는 임포터 구조만.
+> 빈 칸(21-24)은 슬라이스되더라도 투명이라 사용처에서 무시. 배치(1-C)는 책상(0/5/10/17)·서버(1/3/6/14)·화이트보드(11/12)·회의테이블(18) 위주로.
 
 ### 1-C. IconLibrary 경로 + 오피스 배치
 - `IconLibrary.AtlasResourcePaths`에 `"Art/UI/v054-office-objects-final"` 추가
