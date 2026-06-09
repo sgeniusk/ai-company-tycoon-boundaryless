@@ -125,6 +125,55 @@ namespace AICompanyTycoon.Tests.PlayMode
             yield return null;
         }
 
+        // 액터 퍼레이드 — 직원 3종을 중립 배경에 크게 격리 렌더해 캐릭터시트 일관성 대조용으로 뜬다.
+        // 신규 아트(v090 등) 반입 후 docs/art-pipeline/ref/char-ref-8x.png와 before/after 비교.
+        [UnityTest]
+        public IEnumerator Capture_ActorParade()
+        {
+            if (!HasGraphics)
+            {
+                Assert.Ignore("그래픽 디바이스 없음 — 캡처 스킵(-nographics).");
+            }
+
+            var canvasGo = new GameObject("ActorParade", typeof(RectTransform), typeof(Canvas));
+            var canvas = canvasGo.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+            var bg = new GameObject("BG", typeof(RectTransform), typeof(Image));
+            bg.transform.SetParent(canvasGo.transform, false);
+            var bgRect = bg.GetComponent<RectTransform>();
+            bgRect.anchorMin = Vector2.zero;
+            bgRect.anchorMax = Vector2.one;
+            bgRect.offsetMin = Vector2.zero;
+            bgRect.offsetMax = Vector2.zero;
+            bg.GetComponent<Image>().color = new Color(0.98f, 0.969f, 0.875f, 1f); // cream
+
+            var keys = new[] { "actor_human", "actor_ai", "actor_robot" };
+            float[] cx = { 0.2f, 0.5f, 0.8f };
+            for (int i = 0; i < keys.Length; i++)
+            {
+                var sprite = IconLibrary.Get(keys[i]);
+                var go2 = new GameObject(keys[i], typeof(RectTransform), typeof(Image));
+                go2.transform.SetParent(canvasGo.transform, false);
+                var rect = go2.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(cx[i], 0.5f);
+                rect.anchorMax = new Vector2(cx[i], 0.5f);
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.sizeDelta = new Vector2(360, 360);
+                var img = go2.GetComponent<Image>();
+                img.sprite = sprite;
+                img.preserveAspect = true;
+                img.color = sprite != null ? Color.white : new Color(1f, 0f, 0f, 0.3f); // 누락 시 빨강 표시
+            }
+
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+            yield return CaptureCanvas(canvasGo, "08-actor-parade.png");
+
+            Object.Destroy(canvasGo);
+            yield return null;
+        }
+
         static IEnumerator WaitRealtime(float seconds)
         {
             float t = 0f;
