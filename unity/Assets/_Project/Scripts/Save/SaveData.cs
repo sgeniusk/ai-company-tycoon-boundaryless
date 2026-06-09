@@ -12,9 +12,27 @@ namespace AICompanyTycoon.Save
     }
 
     [Serializable]
+    public class CompetitorSave
+    {
+        public string id;
+        public double score;
+        public int marketShare;
+        public double momentum;
+    }
+
+    [Serializable]
+    public class MarketShareSave
+    {
+        public int month;
+        public int player;
+        public int topRivalShare;
+        public string topRivalId;
+    }
+
+    [Serializable]
     public class SaveData
     {
-        public int version = 1;
+        public int version = 2;
         public double cash;
         public double users;
         public double compute;
@@ -31,5 +49,7 @@ namespace AICompanyTycoon.Save
         public List<string> purchasedUpgrades = new List<string>();
         public List<string> purchasedAutomation = new List<string>();
         public List<string> triggeredEvents = new List<string>();
+        public List<CompetitorSave> competitorStates = new List<CompetitorSave>();
+        public List<MarketShareSave> marketShareHistory = new List<MarketShareSave>();
     }
 }

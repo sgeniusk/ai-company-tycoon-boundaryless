@@ -55,6 +55,15 @@
       "status": "in-progress",
       "owner": "Claude->Codex",
       "evidence": "세이프에어리어(021ac45)+빌드셋업(733e184)+빌드(APK 35MB)+아이콘/스플래시(office 임시, SetIcons+SplashScreen). EditMode 21/21. 남음 — 시각/실기기 확인, 최종 픽셀아트(docs/backlog.md)"
+    },
+    {
+      "id": "feat-006",
+      "name": "Claude Design 첫 화면 반영 (P7)",
+      "description": "reports/ 클로드 디자인 핸드오프(v1.0)를 Unity 포트로 충실히 이식. 오피스-퍼스트 레이아웃, LED 전국 랭킹 전광판(CD-1), 코어3 자원 HUD+트레이+목표리본(CD-2), 캐릭터/씬 생동감, 메뉴 재구성(CD-3). 경쟁사·시장점유율·전국랭킹 시스템 헤드리스 포팅 포함. derive-only/additive.",
+      "dependencies": ["feat-003"],
+      "status": "in-progress",
+      "owner": "Claude",
+      "evidence": "계획 수립 — reports/ 정본 5종 정독, docs/feat-006-checklist.md + context-notes.md 작성. 5블록(A 랭킹시스템·B 전광판·C 코어3HUD·D 생동감·E 메뉴). 시작 트랙 결정 대기."
     }
   ]
 }

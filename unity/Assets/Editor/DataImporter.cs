@@ -28,8 +28,9 @@ public static class DataImporter
         var automation = ImportAutomation();
         var events = ImportEvents();
         var stages = ImportStages();
+        var competitors = ImportCompetitors(ReadLocale("ko.json"));
 
-        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, balance);
+        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, balance);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -336,6 +337,36 @@ public static class DataImporter
         return imported;
     }
 
+    private static List<CompetitorDef> ImportCompetitors(Dictionary<string, object> locale)
+    {
+        var items = GetRootList("competitors.json", "competitors");
+        var imported = new List<CompetitorDef>();
+        EnsureFolder(ScriptableObjectRoot + "/Competitors");
+
+        foreach (var item in items)
+        {
+            var source = AsObject(item, "competitors item");
+            var id = GetString(source, "id");
+            var asset = LoadOrCreate<CompetitorDef>(ScriptableObjectRoot + "/Competitors/" + id + ".asset");
+            asset.id = id;
+            asset.displayName = ResolveLocale(locale, GetString(source, "name_key"), id);
+            asset.tagline = ResolveLocale(locale, GetString(source, "tagline_key"), "");
+            asset.focusDomains = ToStringList(GetOptionalList(source, "focus_domains"));
+            asset.color = GetString(source, "color");
+            asset.startingScore = GetDouble(source, "starting_score");
+            asset.startingMarketShare = GetInt(source, "starting_market_share");
+            asset.monthlyGrowth = GetDouble(source, "monthly_growth");
+            asset.aggression = GetDouble(source, "aggression");
+            asset.entryMonth = GetInt(source, "entry_month", 1);
+            asset.rivalTier = GetString(source, "rival_tier", "initial");
+            EditorUtility.SetDirty(asset);
+            imported.Add(asset);
+        }
+
+        SortById(imported);
+        return imported;
+    }
+
     private static void UpdateCatalog(
         List<ResourceDef> resources,
         List<ProductDef> products,
@@ -345,6 +376,7 @@ public static class DataImporter
         List<AutomationDef> automation,
         List<GameEventDef> events,
         List<CompanyStageDef> stages,
+        List<CompetitorDef> competitors,
         BalanceConfig balance)
     {
         EnsureFolder("Assets/_Project/Resources");
@@ -357,8 +389,37 @@ public static class DataImporter
         catalog.automation = automation;
         catalog.events = events;
         catalog.stages = stages;
+        catalog.competitors = competitors;
         catalog.balance = balance;
         EditorUtility.SetDirty(catalog);
+    }
+
+    // data/locales/{file} 평면 키-값 사전 로드 (경쟁사 표시명 해석용). 없으면 빈 사전.
+    private static Dictionary<string, object> ReadLocale(string fileName)
+    {
+        var path = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "data", "locales", fileName));
+        if (!File.Exists(path))
+        {
+            Debug.LogWarning("[DataImporter] 로케일 없음 - " + path);
+            return new Dictionary<string, object>();
+        }
+
+        return Json.Deserialize(File.ReadAllText(path)) as Dictionary<string, object> ?? new Dictionary<string, object>();
+    }
+
+    private static string ResolveLocale(Dictionary<string, object> locale, string key, string fallback)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            return fallback;
+        }
+
+        if (locale != null && locale.ContainsKey(key) && locale[key] != null)
+        {
+            return locale[key].ToString();
+        }
+
+        return fallback;
     }
 
     private static List<ResourceAmount> SeedMonthlyAutomationEffects(string id)
@@ -790,6 +851,12 @@ public static class DataImporter
         if (gameEvent != null)
         {
             return gameEvent.id;
+        }
+
+        var competitor = asset as CompetitorDef;
+        if (competitor != null)
+        {
+            return competitor.id;
         }
 
         return asset.name;

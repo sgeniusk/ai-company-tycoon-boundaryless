@@ -16,6 +16,7 @@ namespace AICompanyTycoon.Systems
         public AutomationService Automation;
         public CompanyStageService Stages;
         public RandomEventService Events;
+        public MarketService Market;
         public MonthController Month;
 
         public static SimulationContext Create(DataCatalog catalog, int seed = 12345)
@@ -30,8 +31,10 @@ namespace AICompanyTycoon.Systems
             ctx.Automation = new AutomationService(m, catalog, ctx.Resources);
             ctx.Stages = new CompanyStageService(m, catalog);
             ctx.Events = new RandomEventService(m, catalog, ctx.Resources, new SeededRng(seed));
-            ctx.Month = new MonthController(m, catalog, ctx.Resources, ctx.Products, ctx.Automation, ctx.Stages);
+            ctx.Market = new MarketService(m, catalog);
+            ctx.Month = new MonthController(m, catalog, ctx.Resources, ctx.Products, ctx.Automation, ctx.Stages, ctx.Market);
             ctx.Domains.InitDefaults();
+            ctx.Market.InitStates();
             return ctx;
         }
 

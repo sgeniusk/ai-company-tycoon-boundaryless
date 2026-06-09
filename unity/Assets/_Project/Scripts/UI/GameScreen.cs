@@ -180,6 +180,12 @@ namespace AICompanyTycoon.UI
 
             if (_save.Load(_context.Model))
             {
+                // 구버전 세이브 마이그레이션 — 경쟁사 데이터가 없으면 진입월 기준으로 재초기화
+                if (_context.Model.CompetitorStates.Count == 0)
+                {
+                    _context.Market.InitStates();
+                }
+
                 _lastSummary = null;
                 _terminal = false;
                 HideEventModal();

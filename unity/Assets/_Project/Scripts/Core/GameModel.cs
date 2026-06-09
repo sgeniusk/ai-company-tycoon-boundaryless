@@ -29,6 +29,10 @@ namespace AICompanyTycoon.Core
         public List<string> PurchasedAutomation = new List<string>();
         public List<string> TriggeredEvents = new List<string>();
 
+        // 시장 — 경쟁사 상태 + 점유율 히스토리 (전국 랭킹 전광판 파생용, feat-006 Block A)
+        public List<CompetitorState> CompetitorStates = new List<CompetitorState>();
+        public List<MarketShareEntry> MarketShareHistory = new List<MarketShareEntry>();
+
         public double Get(ResourceId id)
         {
             switch (id)

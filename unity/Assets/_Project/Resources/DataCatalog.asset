@@ -139,4 +139,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 96dcfdb915bff4db0874a30833395831, type: 2}
   - {fileID: 11400000, guid: cd7a1aabf9c224a58845068a074c7d27, type: 2}
   - {fileID: 11400000, guid: 9ba4ba9fa831541669c20fd09950e17e, type: 2}
+  competitors:
+  - {fileID: 11400000, guid: 49b04a15691134e518786623449d7afb, type: 2}
+  - {fileID: 11400000, guid: fec3782c815334076b33b5683576edd0, type: 2}
+  - {fileID: 11400000, guid: 014cdfa5395264d10a72781192edee11, type: 2}
+  - {fileID: 11400000, guid: 49cede5fd064b4834976c15095357d0a, type: 2}
+  - {fileID: 11400000, guid: 92e241e3903d84a55ad326b7c129ce59, type: 2}
+  - {fileID: 11400000, guid: 56582d49096ab4c3a8717d53fbb340ab, type: 2}
+  - {fileID: 11400000, guid: e85611afa47a54473b27adee4a0961da, type: 2}
+  - {fileID: 11400000, guid: 753597c8a244d4e7180068ac37e59db7, type: 2}
+  - {fileID: 11400000, guid: 703e0145f81d140758a261b3279f1234, type: 2}
+  - {fileID: 11400000, guid: e80ea05c67e7c41bc9094db2c6e49edb, type: 2}
+  - {fileID: 11400000, guid: 8aa28cf3fc1d9419d93e2f127648db27, type: 2}
+  - {fileID: 11400000, guid: 39bdc2096c000432d96ca7fc88d105d6, type: 2}
   balance: {fileID: 11400000, guid: cbf623b5993d649a58c9da9140901751, type: 2}

@@ -50,6 +50,10 @@ namespace AICompanyTycoon.Save
             };
             foreach (var kv in m.Capabilities)
                 d.capabilities.Add(new CapEntry { id = kv.Key, level = kv.Value });
+            foreach (var c in m.CompetitorStates)
+                d.competitorStates.Add(new CompetitorSave { id = c.id, score = c.score, marketShare = c.marketShare, momentum = c.momentum });
+            foreach (var h in m.MarketShareHistory)
+                d.marketShareHistory.Add(new MarketShareSave { month = h.month, player = h.player, topRivalShare = h.topRivalShare, topRivalId = h.topRivalId });
             return d;
         }
 
@@ -66,6 +70,14 @@ namespace AICompanyTycoon.Save
             m.Capabilities = new Dictionary<string, int>();
             if (d.capabilities != null)
                 foreach (var c in d.capabilities) m.Capabilities[c.id] = c.level;
+            m.CompetitorStates = new List<CompetitorState>();
+            if (d.competitorStates != null)
+                foreach (var c in d.competitorStates)
+                    m.CompetitorStates.Add(new CompetitorState { id = c.id, score = c.score, marketShare = c.marketShare, momentum = c.momentum });
+            m.MarketShareHistory = new List<MarketShareEntry>();
+            if (d.marketShareHistory != null)
+                foreach (var h in d.marketShareHistory)
+                    m.MarketShareHistory.Add(new MarketShareEntry { month = h.month, player = h.player, topRivalShare = h.topRivalShare, topRivalId = h.topRivalId });
         }
     }
 }

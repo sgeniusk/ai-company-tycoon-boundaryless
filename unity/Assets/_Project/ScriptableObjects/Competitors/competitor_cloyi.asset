@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 701125ccda93b43aa8c88d797394b073, type: 3}
+  m_Name: competitor_cloyi
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.CompetitorDef
+  id: competitor_cloyi
+  displayName: "\uD074\uB85C\uC774"
+  tagline: "\uAC10\uC131\uD615 \uCC3D\uC791 AI\uC640 \uAC1C\uC778 \uBE44\uC11C\uB97C
+    \uC55E\uC138\uC6B4 \uBE0C\uB79C\uB4DC"
+  focusDomains:
+  - creator_tools
+  - education
+  - personal_productivity
+  color: '#d87aa3'
+  startingScore: 60
+  startingMarketShare: 17
+  monthlyGrowth: 4
+  aggression: 2
+  entryMonth: 1
+  rivalTier: initial

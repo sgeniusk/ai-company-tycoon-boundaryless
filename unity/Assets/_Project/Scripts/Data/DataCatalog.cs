@@ -15,6 +15,7 @@ namespace AICompanyTycoon.Data
         public List<AutomationDef> automation = new List<AutomationDef>();
         public List<GameEventDef> events = new List<GameEventDef>();
         public List<CompanyStageDef> stages = new List<CompanyStageDef>();
+        public List<CompetitorDef> competitors = new List<CompetitorDef>();
         public BalanceConfig balance;
 
         public ResourceDef GetResource(string id)
@@ -55,6 +56,11 @@ namespace AICompanyTycoon.Data
         public CompanyStageDef GetStage(string id)
         {
             return stages.Find(item => item != null && item.id == id);
+        }
+
+        public CompetitorDef GetCompetitor(string id)
+        {
+            return competitors.Find(item => item != null && item.id == id);
         }
     }
 }

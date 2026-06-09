@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 701125ccda93b43aa8c88d797394b073, type: 3}
+  m_Name: competitor_jemiinni
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.CompetitorDef
+  id: competitor_jemiinni
+  displayName: "\uC81C\uBBF8\uC788\uB2C8"
+  tagline: "\uAC80\uC0C9, \uBA40\uD2F0\uBAA8\uB2EC, \uC2E4\uD5D8\uC2E4 \uAE30\uC220\uC744
+    \uBE60\uB974\uAC8C \uC5EE\uB294 \uC5F0\uAD6C\uD615 \uD68C\uC0AC"
+  focusDomains:
+  - personal_productivity
+  - developer_tools
+  - creator_tools
+  color: '#547ad8'
+  startingScore: 68
+  startingMarketShare: 21
+  monthlyGrowth: 5
+  aggression: 3
+  entryMonth: 1
+  rivalTier: initial

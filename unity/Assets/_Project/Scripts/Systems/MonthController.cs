@@ -32,11 +32,12 @@ namespace AICompanyTycoon.Systems
         readonly ProductService _p;
         readonly AutomationService _a;
         readonly CompanyStageService _s;
+        readonly MarketService _market;
 
         public MonthController(GameModel m, DataCatalog c, ResourceService r,
-            ProductService p, AutomationService a, CompanyStageService s)
+            ProductService p, AutomationService a, CompanyStageService s, MarketService market)
         {
-            _m = m; _c = c; _r = r; _p = p; _a = a; _s = s;
+            _m = m; _c = c; _r = r; _p = p; _a = a; _s = s; _market = market;
         }
 
         public MonthSummary AdvanceMonth()
@@ -73,6 +74,9 @@ namespace AICompanyTycoon.Systems
 
             // 6) 월 카운터 증가
             _m.CurrentMonth += 1;
+
+            // 6.5) 경쟁사 시장 진행 — 진입/성장/점유율/히스토리 (additive, 자원·승패 계산에 영향 없음)
+            if (_market != null) _market.AdvanceCompetitors();
 
             // 7) 회사 단계 승급
             _s.CheckAdvancement(s);
