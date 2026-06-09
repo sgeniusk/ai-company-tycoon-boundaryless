@@ -43,6 +43,7 @@ namespace AICompanyTycoon.UI
         Transform _capabilitiesContent;
         Transform _upgradesContent;
         Transform _officeSceneContent;
+        Transform _reactionLayer;
 
         GameObject _eventModal;
         Text _eventTitle;
@@ -233,6 +234,16 @@ namespace AICompanyTycoon.UI
             row.childAlignment = TextAnchor.LowerCenter;
             AddLayout(panel, 220, 0);
             _officeSceneContent = panel.transform;
+
+            // 리액션 버블 전용 오버레이 — 직원 스프라이트 위에 절대 위치로 띄운다.
+            var overlay = new GameObject("ReactionLayer", typeof(RectTransform));
+            overlay.transform.SetParent(panel.transform, false);
+            var overlayRect = overlay.GetComponent<RectTransform>();
+            overlayRect.anchorMin = Vector2.zero;
+            overlayRect.anchorMax = Vector2.one;
+            overlayRect.offsetMin = Vector2.zero;
+            overlayRect.offsetMax = Vector2.zero;
+            _reactionLayer = overlay.transform;
         }
 
         // talent(인재) 수만큼 직원 캐릭터를 세운다. 스프라이트가 없으면(임포트 전) 빈 칸으로 안전.
@@ -542,6 +553,7 @@ namespace AICompanyTycoon.UI
         {
             var stage = _context.Catalog.GetStage(stageId);
             SetStatus("회사 단계 상승 - " + (stage != null ? stage.displayName : stageId));
+            SpawnReaction("react_cheer");
             UpdateTopBar();
         }
 
@@ -549,6 +561,7 @@ namespace AICompanyTycoon.UI
         {
             var product = _context.Catalog.GetProduct(productId);
             SetStatus("제품 출시 - " + (product != null ? product.displayName : productId));
+            SpawnReaction("react_codespark");
             RefreshLists();
         }
 
@@ -556,6 +569,7 @@ namespace AICompanyTycoon.UI
         {
             var domain = _context.Catalog.GetDomain(domainId);
             SetStatus("도메인 해금 - " + (domain != null ? domain.displayName : domainId));
+            SpawnReaction("react_idea");
             RefreshLists();
         }
 
@@ -563,6 +577,7 @@ namespace AICompanyTycoon.UI
         {
             var capability = _context.Catalog.GetCapability(capabilityId);
             SetStatus("능력 강화 - " + (capability != null ? capability.displayName : capabilityId) + " Lv." + level);
+            SpawnReaction("react_idea");
             RefreshAll();
         }
 
@@ -958,6 +973,31 @@ namespace AICompanyTycoon.UI
             AddLayout(btn.button.gameObject, 84, 0);
 
             _resultModal.SetActive(false);
+        }
+
+        // 직원 위에 감정 이모트 버블을 랜덤 위치에 띄운다. 스프라이트 미임포트 시 조용히 무시.
+        void SpawnReaction(string spriteName)
+        {
+            if (_reactionLayer == null) return;
+            var sprite = IconLibrary.Get(spriteName);
+            if (sprite == null) return;
+
+            var go = new GameObject("Reaction_" + spriteName, typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
+            go.transform.SetParent(_reactionLayer, false);
+
+            var img = go.GetComponent<Image>();
+            img.sprite = sprite;
+            img.raycastTarget = false;
+            img.SetNativeSize();
+
+            // 오피스 씬 하단 중앙 기준, 랜덤 가로 오프셋
+            var rect = go.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(40f, 40f);
+            var xOffset = UnityEngine.Random.Range(-60f, 60f);
+            rect.anchoredPosition = new Vector2(xOffset, 30f);
+
+            var bubble = go.AddComponent<ReactionBubble>();
+            bubble.Init(1.6f);
         }
 
         void ShowResultModal(bool won, string outcome)
