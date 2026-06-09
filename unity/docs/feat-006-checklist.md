@@ -35,13 +35,16 @@
 - [x] 모달 등장 팝인 (UiTween.PopIn — 스케일 0.92→1 + 페이드, 이벤트/결과 모달)
 - [ ] 탭 전환 페이드 (후속 — 우선순위 낮음)
 - [ ] (선택) 배경 미세 모션/패럴랙스 (backlog)
-- [~] 검증 — EditMode 대기 중 (sam ini Unity 점유 해제 시 백그라운드 자동 실행)
+- [x] 검증 — EditMode 29/29 (라이선스 해제 후 실행 완료)
 
-## Block E — 메뉴·내비 재구성 (CD-3, office-first)
+## Block E — 메뉴·내비 재구성 (CD-3, office-first) ⏸ 보류 (사용자 지시 — 다음 세션)
+사용자가 'd까지 진행'으로 D에서 일단락. E는 화면 전체 free-float 재배치라 별도 세션에서. 정본 reports/codex-handoff에 CD-3 없음 — 마스터 plan(`reports/v1_0_claude_design_reflection_plan.md` CD-3 절)과 `reports/v1_0_menu_uiux_design_review.md` 참고해 스펙부터.
 - [ ] 하단 도크 4코어 탭 (운영·회사·성장·시장) + 다음행동 FAB
 - [ ] 보조 메뉴 드로어 그룹
 - [ ] 더보기 우상단 칩
 - [ ] officeFrac ≥ 0.40 회귀 확인
 
 ## 진행 로그
-- 2026-06-09 — 계획 수립, reports/ 정본 정독, 추적 문서 작성. 시작 트랙 결정 대기.
+- 2026-06-09 — 계획 수립, reports/ 정본 5종 정독, 추적 문서 작성.
+- 2026-06-09 — 전광판 트랙 Block A(랭킹시스템) + B(LED 전광판) 완료, EditMode 29/29.
+- 2026-06-09 — Block C(코어3 칩 HUD+트레이+목표리본) + D(직원 통통+모달 팝인) 완료. A~D 6커밋. E는 사용자 지시로 보류.

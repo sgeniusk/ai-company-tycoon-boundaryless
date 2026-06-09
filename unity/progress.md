@@ -4,8 +4,8 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-09
-**활성 피처** — feat-006 Claude Design 첫 화면 반영. 블록 A(랭킹)·B(전광판)·C(코어3 HUD)·D(생동감) 코드 완료. 남은 건 E(메뉴 재구성, free-float 레이아웃)뿐.
-**현재 목표** — 에디터 ▶ A~D 시각 확인 후 Block E 진행. 정본·결정은 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md.
+**활성 피처** — feat-006 Claude Design 첫 화면 반영. 블록 A(랭킹)·B(전광판)·C(코어3 HUD)·D(생동감) 완료, EditMode 29/29. Block E(메뉴 재구성)는 사용자 지시로 보류(다음 세션).
+**현재 목표** — 에디터 ▶ A~D 시각 확인. E는 보류. 정본·결정은 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -22,7 +22,7 @@
 
 ## 다음 (What's Next)
 1. 에디터 ▶ 플레이로 A~D 시각 확인 (전광판·코어3 칩 HUD·트레이·목표 리본·직원 통통·모달 팝인). `AICT > Import Icon Atlases` 먼저 1회
-2. Block E — 하단 도크 4코어 탭 + 다음행동 FAB + 더보기 드로어 (CD-3, office-first). 가장 큰 구조 변경
+2. (보류) Block E — 하단 도크 4코어 탭 + 다음행동 FAB + 더보기 드로어 (CD-3, office-first). 다음 세션. 스펙은 reports/v1_0_menu_uiux_design_review.md
 3. 추후 — docs/backlog.md (픽셀아트 아이콘, office-objects, 실기기/에뮬, BGM, TMP)
 
 ## 블로커 / 리스크
