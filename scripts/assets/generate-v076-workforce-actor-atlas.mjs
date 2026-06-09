@@ -99,6 +99,31 @@ function drawLine(x0, y0, x1, y1, color) {
   }
 }
 
+// 4px 굵기 팔다리용 선 — drawLine의 두꺼운 버전.
+function drawThickLine(x0, y0, x1, y1, color) {
+  let dx = Math.abs(x1 - x0);
+  const sx = x0 < x1 ? 1 : -1;
+  let dy = -Math.abs(y1 - y0);
+  const sy = y0 < y1 ? 1 : -1;
+  let error = dx + dy;
+  let x = x0;
+  let y = y0;
+
+  while (true) {
+    fillRect(x, y, 4, 4, color);
+    if (x === x1 && y === y1) break;
+    const e2 = 2 * error;
+    if (e2 >= dy) {
+      error += dy;
+      x += sx;
+    }
+    if (e2 <= dx) {
+      error += dx;
+      y += sy;
+    }
+  }
+}
+
 function frameX(frameIndex) {
   return frameIndex * frameSize;
 }
@@ -111,10 +136,10 @@ function drawShadow(originX) {
 function drawHumanOperator(originX) {
   drawShadow(originX);
 
-  fillRect(originX + 27, 56, 8, 10, palette.blueDark);
-  fillRect(originX + 43, 56, 8, 10, palette.blueDark);
-  fillRect(originX + 24, 65, 14, 4, palette.line);
-  fillRect(originX + 41, 65, 14, 4, palette.line);
+  fillRect(originX + 25, 56, 11, 10, palette.blueDark);
+  fillRect(originX + 42, 56, 11, 10, palette.blueDark);
+  fillRect(originX + 22, 65, 15, 4, palette.line);
+  fillRect(originX + 40, 65, 15, 4, palette.line);
 
   fillRect(originX + 24, 32, 30, 27, palette.mintDark);
   fillRect(originX + 28, 33, 22, 26, palette.mint);
@@ -122,10 +147,10 @@ function drawHumanOperator(originX) {
   fillRect(originX + 35, 34, 8, 23, palette.cream);
   fillRect(originX + 36, 38, 6, 3, palette.gold);
 
-  drawLine(originX + 24, 38, originX + 15, 50, palette.line);
-  drawLine(originX + 53, 38, originX + 62, 51, palette.line);
-  fillRect(originX + 13, 48, 9, 7, palette.skin);
-  fillRect(originX + 58, 49, 9, 7, palette.skin);
+  drawThickLine(originX + 24, 38, originX + 15, 50, palette.line);
+  drawThickLine(originX + 53, 38, originX + 62, 51, palette.line);
+  fillRect(originX + 11, 47, 11, 8, palette.skin);
+  fillRect(originX + 57, 48, 11, 8, palette.skin);
 
   fillRect(originX + 27, 15, 24, 20, palette.skin);
   strokeRect(originX + 26, 14, 26, 22, palette.line);
@@ -163,12 +188,12 @@ function drawAiAgent(originX) {
   fillRect(originX + 37, 8, 4, 6, palette.line);
   fillCircle(originX + 39, 7, 3, palette.gold);
 
-  drawLine(originX + 24, 43, originX + 13, 35, palette.line);
-  drawLine(originX + 53, 43, originX + 64, 35, palette.line);
-  fillRect(originX + 11, 32, 8, 8, palette.mint);
-  fillRect(originX + 60, 32, 8, 8, palette.mint);
-  fillRect(originX + 13, 34, 4, 4, palette.white);
-  fillRect(originX + 62, 34, 4, 4, palette.white);
+  drawThickLine(originX + 24, 43, originX + 13, 35, palette.line);
+  drawThickLine(originX + 53, 43, originX + 64, 35, palette.line);
+  fillRect(originX + 9, 30, 11, 11, palette.mint);
+  fillRect(originX + 58, 30, 11, 11, palette.mint);
+  fillRect(originX + 11, 32, 5, 5, palette.white);
+  fillRect(originX + 60, 32, 5, 5, palette.white);
 
   fillRect(originX + 15, 51, 9, 3, palette.mint);
   fillRect(originX + 57, 51, 9, 3, palette.gold);
@@ -198,12 +223,12 @@ function drawRobotUnit(originX) {
   fillRect(originX + 36, 9, 4, 6, palette.line);
   fillRect(originX + 34, 6, 8, 5, palette.red);
 
-  drawLine(originX + 24, 40, originX + 12, 49, palette.line);
-  drawLine(originX + 55, 40, originX + 66, 49, palette.line);
-  fillRect(originX + 9, 48, 9, 8, palette.steel);
-  fillRect(originX + 62, 48, 9, 8, palette.steel);
-  strokeRect(originX + 8, 47, 11, 10, palette.line);
-  strokeRect(originX + 61, 47, 11, 10, palette.line);
+  drawThickLine(originX + 24, 40, originX + 12, 49, palette.line);
+  drawThickLine(originX + 55, 40, originX + 66, 49, palette.line);
+  fillRect(originX + 7, 47, 12, 10, palette.steel);
+  fillRect(originX + 61, 47, 12, 10, palette.steel);
+  strokeRect(originX + 6, 46, 14, 12, palette.line);
+  strokeRect(originX + 60, 46, 14, 12, palette.line);
 }
 
 function crc32(buffer) {
