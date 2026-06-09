@@ -21,6 +21,8 @@ namespace AICompanyTycoon.UI
         readonly SaveService _save;
         readonly Dictionary<ResourceId, Text> _resourceValues = new Dictionary<ResourceId, Text>();
         readonly Dictionary<ResourceId, ResourceTicker> _resourceTickers = new Dictionary<ResourceId, ResourceTicker>();
+        readonly Dictionary<ResourceId, Text> _deltaLabels = new Dictionary<ResourceId, Text>();
+        readonly Dictionary<ResourceId, double> _prevValues = new Dictionary<ResourceId, double>();
         readonly Dictionary<string, Button> _tabButtons = new Dictionary<string, Button>();
 
         Canvas _canvas;
@@ -28,6 +30,9 @@ namespace AICompanyTycoon.UI
         Text _stageLabel;
         Text _summaryLabel;
         Text _statusLabel;
+        GameObject _resultModal;
+        Text _resultTitle;
+        Text _resultMessage;
         Button _nextMonthButton;
         Text _nextMonthLabel;
 
@@ -79,6 +84,7 @@ namespace AICompanyTycoon.UI
             BuildMonthSummary(content);
             BuildBottomBar(content);
             BuildEventModal(_canvas.transform);
+            BuildResultModal(_canvas.transform);
             Subscribe();
         }
 
@@ -87,7 +93,9 @@ namespace AICompanyTycoon.UI
             _context = context;
             _lastSummary = null;
             _terminal = false;
+            _prevValues.Clear();
             HideEventModal();
+            if (_resultModal != null) _resultModal.SetActive(false);
             SetStatus("새 회사를 시작했습니다.");
             RefreshAll();
         }
@@ -96,6 +104,7 @@ namespace AICompanyTycoon.UI
         {
             UpdateTopBar();
             UpdateResourceHud();
+            UpdateResourceDeltas();
             RefreshOfficeScene();
             RefreshLists();
             UpdateSummary();
@@ -117,6 +126,10 @@ namespace AICompanyTycoon.UI
                 return;
             }
 
+            // 증감 계산용 스냅샷
+            foreach (var id in ResourceIds.All)
+                _prevValues[id] = _context.Model.Get(id);
+
             _lastSummary = _context.Month.AdvanceMonth();
             _terminal = _lastSummary.GameOver || _lastSummary.GameWon;
             SetStatus("월간 정산이 완료되었습니다.");
@@ -132,6 +145,11 @@ namespace AICompanyTycoon.UI
             }
 
             RefreshAll();
+
+            if (_terminal)
+            {
+                ShowResultModal(_lastSummary.GameWon, _lastSummary.Outcome);
+            }
         }
 
         public void HandleSave()
@@ -295,6 +313,15 @@ namespace AICompanyTycoon.UI
                 var ticker = value.gameObject.AddComponent<ResourceTicker>();
                 ticker.Init(id, value, _context != null ? _context.Model.Get(id) : 0);
                 _resourceTickers[id] = ticker;
+
+                // 월별 증감 표시 — 초기에는 숨겨둔다.
+                var delta = UiFactory.Label(row.transform, "", 20);
+                delta.alignment = TextAnchor.MiddleRight;
+                var deltaLayout = delta.gameObject.AddComponent<LayoutElement>();
+                deltaLayout.minHeight = 34;
+                deltaLayout.preferredWidth = 52;
+                deltaLayout.flexibleWidth = 0;
+                _deltaLabels[id] = delta;
             }
         }
 
@@ -895,6 +922,84 @@ namespace AICompanyTycoon.UI
             }
 
             UpdateNextMonthButton();
+        }
+
+        // 승리/패배 결과 전용 모달 — 게임 종료 시 오버레이로 표시한다.
+        void BuildResultModal(Transform parent)
+        {
+            _resultModal = UiFactory.Panel(parent, UiTheme.ModalScrim);
+            _resultModal.name = "ResultModal";
+            Stretch(_resultModal.GetComponent<RectTransform>());
+
+            var card = UiFactory.Panel(_resultModal.transform, UiTheme.PanelBg);
+            card.name = "ResultCard";
+            var rect = card.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.08f, 0.28f);
+            rect.anchorMax = new Vector2(0.92f, 0.74f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            UiFactory.VBox(card.transform, 22, new RectOffset(32, 32, 36, 32));
+
+            _resultTitle = UiFactory.Label(card.transform, "", 54);
+            _resultTitle.alignment = TextAnchor.MiddleCenter;
+            AddLayout(_resultTitle.gameObject, 74, 0);
+
+            _resultMessage = UiFactory.Label(card.transform, "", 27);
+            _resultMessage.alignment = TextAnchor.MiddleCenter;
+            _resultMessage.color = UiTheme.TextSecondary;
+            AddLayout(_resultMessage.gameObject, 110, 1);
+
+            var btn = UiFactory.Button(card.transform, "새 게임 시작");
+            btn.button.onClick.AddListener(() =>
+            {
+                _resultModal.SetActive(false);
+                ReplaceContext(SimulationContext.Create(_context.Catalog));
+            });
+            AddLayout(btn.button.gameObject, 84, 0);
+
+            _resultModal.SetActive(false);
+        }
+
+        void ShowResultModal(bool won, string outcome)
+        {
+            if (_resultModal == null) return;
+            _resultTitle.text = won ? "🏆 축하합니다!" : "💸 게임 오버";
+            _resultTitle.color = won ? UiTheme.TabActive : new Color(0.84f, 0.28f, 0.22f);
+            _resultMessage.text = !string.IsNullOrEmpty(outcome)
+                ? outcome
+                : (won ? "AI 기업 성장에 성공했습니다." : "회사가 어려운 상황에 처했습니다.");
+            _resultModal.SetActive(true);
+        }
+
+        // 이전 달 대비 자원 증감을 HUD 우측에 +/- 색상으로 표시한다.
+        void UpdateResourceDeltas()
+        {
+            if (_context == null || _prevValues.Count == 0)
+            {
+                foreach (var kv in _deltaLabels) kv.Value.text = "";
+                return;
+            }
+
+            foreach (var id in ResourceIds.All)
+            {
+                if (!_deltaLabels.TryGetValue(id, out var label)) continue;
+                if (!_prevValues.TryGetValue(id, out var prev)) { label.text = ""; continue; }
+                var delta = _context.Model.Get(id) - prev;
+                if (Math.Abs(delta) < 0.5) { label.text = ""; continue; }
+                label.text = FormatDelta(id, delta);
+                label.color = delta > 0
+                    ? new Color(0.18f, 0.68f, 0.30f)
+                    : new Color(0.84f, 0.22f, 0.18f);
+            }
+        }
+
+        string FormatDelta(ResourceId id, double delta)
+        {
+            var sign = delta > 0 ? "+" : "-";
+            var abs = Math.Abs(delta);
+            return id == ResourceId.Cash
+                ? sign + "$" + FormatNumber(abs)
+                : sign + FormatNumber(abs);
         }
 
         void UpdateNextMonthButton()
