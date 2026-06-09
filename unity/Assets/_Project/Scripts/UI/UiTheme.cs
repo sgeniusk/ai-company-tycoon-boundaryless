@@ -42,6 +42,15 @@ namespace AICompanyTycoon.UI
         public static readonly Color DeltaDown = Hex("f07183");
         public static readonly Color DeltaFlat = Hex("9bb0a6");
 
+        // 코어3 자원 칩 HUD (CD-2) — 어두운 칩 + 청록 보더, 값 색(cash 초록/나머지 골드/임계 빨강)
+        public static readonly Color HudChipBg = Hex("111e1a", 0.86f);
+        public static readonly Color HudChipBorder = Hex("5fd2b4", 0.85f);
+        public static readonly Color ChipCashText = Hex("7fe0a0");
+        public static readonly Color ChipGoldText = Hex("f2cd5e");
+        public static readonly Color ChipCritical = Hex("e85a4a");
+        public static readonly Color CrestGold = Hex("f2a93b");
+        public static readonly Color GoalAccent = Hex("f2a93b");
+
         static Color Hex(string hex, float a = 1f)
         {
             return new Color(

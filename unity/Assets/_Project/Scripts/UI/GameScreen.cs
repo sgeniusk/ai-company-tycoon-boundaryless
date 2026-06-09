@@ -38,6 +38,12 @@ namespace AICompanyTycoon.UI
         Text _scoreDelta;
         Text _scoreMarquee;
         Marquee _marquee;
+        Text _crestLabel;
+        Button _trayToggle;
+        Text _trayToggleLabel;
+        GameObject _resourceTray;
+        bool _trayOpen;
+        Text _goalRibbonText;
         Button _nextMonthButton;
         Text _nextMonthLabel;
 
@@ -85,6 +91,7 @@ namespace AICompanyTycoon.UI
             BuildTopBar(content);
             BuildResourceHud(content);
             BuildScoreboard(content);
+            BuildGoalRibbon(content);
             BuildOfficeScene(content);
             BuildTabs(content);
             BuildContentArea(content);
@@ -113,6 +120,7 @@ namespace AICompanyTycoon.UI
             UpdateResourceHud();
             UpdateResourceDeltas();
             RefreshScoreboard();
+            RefreshGoalRibbon();
             RefreshOfficeScene();
             RefreshLists();
             UpdateSummary();
@@ -418,47 +426,263 @@ namespace AICompanyTycoon.UI
             AddLayout(_stageLabel.gameObject, 48, 1);
         }
 
+        // CD-2 코어3 자원 HUD — 레벨 크레스트 + cash/users/compute 칩 + ＋트레이(보조 5종) + 꾸미기.
         void BuildResourceHud(Transform parent)
         {
-            var panel = UiFactory.Panel(parent, UiTheme.HudBg);
-            panel.name = "ResourceHud";
-            AddLayout(panel, 365, 0);
-            UiFactory.VBox(panel.transform, 8, new RectOffset(20, 20, 16, 16));
+            var panel = new GameObject("ResourceHud", typeof(RectTransform));
+            panel.transform.SetParent(parent, false);
+            UiFactory.VBox(panel.transform, 8, new RectOffset());
 
             _resourceValues.Clear();
-            foreach (var id in ResourceIds.All)
+
+            // 상단 스트립 — 크레스트 + 코어3 칩 + ＋ + 꾸미기
+            var strip = new GameObject("CoreStrip", typeof(RectTransform));
+            strip.transform.SetParent(panel.transform, false);
+            var stripBox = UiFactory.HBox(strip.transform, 8);
+            stripBox.childAlignment = TextAnchor.MiddleLeft;
+            AddLayout(strip, 76, 0);
+
+            _crestLabel = BuildCrest(strip.transform);
+            BuildResourceChip(strip.transform, ResourceId.Cash, true);
+            BuildResourceChip(strip.transform, ResourceId.Users, true);
+            BuildResourceChip(strip.transform, ResourceId.Compute, true);
+
+            (_trayToggle, _trayToggleLabel) = UiFactory.Button(strip.transform, "＋");
+            _trayToggle.onClick.AddListener(ToggleTray);
+            AddLayoutFixed(_trayToggle.gameObject, 64, 64);
+
+            var decor = UiFactory.Button(strip.transform, "🎨");
+            decor.button.onClick.AddListener(() => SetStatus("꾸미기는 곧 추가됩니다."));
+            AddLayoutFixed(decor.button.gameObject, 64, 64);
+
+            // 보조 5종 트레이 — 기본 숨김, ＋ 토글로 노출
+            _resourceTray = new GameObject("ResourceTray", typeof(RectTransform));
+            _resourceTray.transform.SetParent(panel.transform, false);
+            var trayBox = UiFactory.HBox(_resourceTray.transform, 8);
+            trayBox.childAlignment = TextAnchor.MiddleLeft;
+            AddLayout(_resourceTray, 64, 0);
+            BuildResourceChip(_resourceTray.transform, ResourceId.Data, false);
+            BuildResourceChip(_resourceTray.transform, ResourceId.Talent, false);
+            BuildResourceChip(_resourceTray.transform, ResourceId.Trust, false);
+            BuildResourceChip(_resourceTray.transform, ResourceId.Hype, false);
+            BuildResourceChip(_resourceTray.transform, ResourceId.Automation, false);
+            _resourceTray.SetActive(false);
+        }
+
+        // 레벨 크레스트 칩 (N★). 값은 UpdateResourceHud에서 회사 단계로 갱신.
+        Text BuildCrest(Transform parent)
+        {
+            var chip = UiFactory.Panel(parent, UiTheme.HudChipBg);
+            chip.name = "LevelCrest";
+            AddOutline(chip, UiTheme.CrestGold);
+            UiFactory.HBox(chip.transform, 0);
+            AddLayoutFixed(chip, 70, 64);
+
+            var label = UiFactory.Label(chip.transform, "1★", 28);
+            label.color = UiTheme.CrestGold;
+            label.alignment = TextAnchor.MiddleCenter;
+            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(label.gameObject, 60, 1);
+            return label;
+        }
+
+        // 자원 칩 — 아이콘(없으면 이름) + 값(+ticker) + 월 델타. core면 크게, 트레이면 작게.
+        void BuildResourceChip(Transform parent, ResourceId id, bool core)
+        {
+            var chip = UiFactory.Panel(parent, UiTheme.HudChipBg);
+            chip.name = ResourceIds.ToKey(id) + "Chip";
+            AddOutline(chip, UiTheme.HudChipBorder);
+            var box = UiFactory.HBox(chip.transform, 6);
+            box.padding = new RectOffset(10, 10, 4, 4);
+            AddLayout(chip, core ? 64 : 60, 1);
+
+            var sprite = IconLibrary.Resource(id);
+            if (sprite != null)
             {
-                var row = new GameObject(ResourceIds.ToKey(id) + "Row", typeof(RectTransform));
-                row.transform.SetParent(panel.transform, false);
-                UiFactory.HBox(row.transform, 10);
-                AddLayout(row, 36, 0);
-
-                // 스프라이트가 임포트돼 있으면 아이콘을 쓰고, 아니면 이름의 이모지 폴백을 쓴다.
-                var sprite = IconLibrary.Resource(id);
-                var icon = UiFactory.Icon(row.transform, sprite, 30);
-                icon.gameObject.SetActive(sprite != null);
-
-                var name = UiFactory.Label(row.transform, sprite != null ? GetResourcePlainName(id) : GetResourceName(id), 25);
-                AddLayout(name.gameObject, 34, 1);
-
-                var value = UiFactory.Label(row.transform, "", 25);
-                value.alignment = TextAnchor.MiddleRight;
-                AddLayout(value.gameObject, 34, 1);
-                _resourceValues[id] = value;
-
-                var ticker = value.gameObject.AddComponent<ResourceTicker>();
-                ticker.Init(id, value, _context != null ? _context.Model.Get(id) : 0);
-                _resourceTickers[id] = ticker;
-
-                // 월별 증감 표시 — 초기에는 숨겨둔다.
-                var delta = UiFactory.Label(row.transform, "", 20);
-                delta.alignment = TextAnchor.MiddleRight;
-                var deltaLayout = delta.gameObject.AddComponent<LayoutElement>();
-                deltaLayout.minHeight = 34;
-                deltaLayout.preferredWidth = 52;
-                deltaLayout.flexibleWidth = 0;
-                _deltaLabels[id] = delta;
+                UiFactory.Icon(chip.transform, sprite, core ? 30 : 26);
             }
+            else
+            {
+                var nm = UiFactory.Label(chip.transform, GetResourcePlainName(id), 18);
+                nm.color = UiTheme.TextSecondary;
+                nm.horizontalOverflow = HorizontalWrapMode.Overflow;
+                AddLayout(nm.gameObject, 30, 0);
+            }
+
+            var value = UiFactory.Label(chip.transform, "", core ? 26 : 22);
+            value.color = ChipColor(id, false);
+            value.alignment = TextAnchor.MiddleLeft;
+            value.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(value.gameObject, 34, 1);
+            _resourceValues[id] = value;
+
+            var ticker = value.gameObject.AddComponent<ResourceTicker>();
+            ticker.Init(id, value, _context != null ? _context.Model.Get(id) : 0);
+            _resourceTickers[id] = ticker;
+
+            var delta = UiFactory.Label(chip.transform, "", 18);
+            delta.alignment = TextAnchor.MiddleRight;
+            var dl = delta.gameObject.AddComponent<LayoutElement>();
+            dl.minHeight = 30;
+            dl.preferredWidth = 44;
+            dl.flexibleWidth = 0;
+            _deltaLabels[id] = delta;
+        }
+
+        // ＋트레이 토글 — 보조 5종 노출/숨김. 열 때 표시값을 현재값으로 스냅(숨김 중 ticker 정지 보정).
+        void ToggleTray()
+        {
+            _trayOpen = !_trayOpen;
+            if (_resourceTray != null)
+            {
+                _resourceTray.SetActive(_trayOpen);
+            }
+
+            if (_trayToggleLabel != null)
+            {
+                _trayToggleLabel.text = _trayOpen ? "×" : "＋";
+            }
+
+            if (_trayOpen)
+            {
+                SnapTrayValues();
+            }
+        }
+
+        void SnapTrayValues()
+        {
+            if (_context == null)
+            {
+                return;
+            }
+
+            foreach (var id in new[] { ResourceId.Data, ResourceId.Talent, ResourceId.Trust, ResourceId.Hype, ResourceId.Automation })
+            {
+                if (_resourceTickers.TryGetValue(id, out var t) && _resourceValues.TryGetValue(id, out var lbl))
+                {
+                    t.Init(id, lbl, _context.Model.Get(id));
+                }
+            }
+        }
+
+        Color ChipColor(ResourceId id, bool critical)
+        {
+            if (critical)
+            {
+                return UiTheme.ChipCritical;
+            }
+
+            return id == ResourceId.Cash ? UiTheme.ChipCashText : UiTheme.ChipGoldText;
+        }
+
+        bool IsCritical(ResourceId id)
+        {
+            if (_context == null)
+            {
+                return false;
+            }
+
+            var b = _context.Catalog.balance;
+            if (id == ResourceId.Cash)
+            {
+                return _context.Model.Cash < 1000;
+            }
+
+            if (id == ResourceId.Trust && b != null)
+            {
+                return _context.Model.Trust < b.gameOverTrustThreshold;
+            }
+
+            return false;
+        }
+
+        int GetStarRating()
+        {
+            if (_context == null)
+            {
+                return 1;
+            }
+
+            var stage = _context.Catalog.GetStage(_context.Model.CompanyStageId);
+            return stage != null ? Mathf.Clamp(stage.order + 1, 1, 6) : 1;
+        }
+
+        static void AddOutline(GameObject go, Color color)
+        {
+            var img = go.GetComponent<Image>();
+            if (img == null)
+            {
+                return;
+            }
+
+            var outline = go.AddComponent<Outline>();
+            outline.effectColor = color;
+            outline.effectDistance = new Vector2(2, -2);
+        }
+
+        // CD-2 목표 리본 — 골드 좌측 강조 + `이번 달 목표` 태그 + 휴리스틱 목표 문구.
+        void BuildGoalRibbon(Transform parent)
+        {
+            var panel = UiFactory.Panel(parent, UiTheme.PanelBg);
+            panel.name = "GoalRibbon";
+            AddLayout(panel, 56, 0);
+            var box = UiFactory.HBox(panel.transform, 10);
+            box.padding = new RectOffset(14, 16, 8, 8);
+            box.childAlignment = TextAnchor.MiddleLeft;
+
+            var accent = UiFactory.Panel(panel.transform, UiTheme.GoalAccent);
+            AddLayoutFixed(accent, 6, 38);
+
+            var tag = UiFactory.Label(panel.transform, "이번 달 목표", 18);
+            tag.color = UiTheme.GoalAccent;
+            tag.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(tag.gameObject, 38, 0);
+
+            _goalRibbonText = UiFactory.Label(panel.transform, "", 24);
+            _goalRibbonText.color = UiTheme.TextPrimary;
+            _goalRibbonText.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(_goalRibbonText.gameObject, 38, 1);
+        }
+
+        void RefreshGoalRibbon()
+        {
+            if (_goalRibbonText == null || _context == null)
+            {
+                return;
+            }
+
+            _goalRibbonText.text = GetMonthlyGoalText();
+        }
+
+        // guidance 시스템이 없는 Unity 포트용 목표 휴리스틱 — 가장 시급한 다음 행동을 한 줄로.
+        string GetMonthlyGoalText()
+        {
+            var m = _context.Model;
+            if (m.ActiveProducts.Count == 0)
+            {
+                return "첫 제품을 출시해 매출을 만드세요";
+            }
+
+            if (m.Cash < 0)
+            {
+                return "자금이 마이너스 — 비용을 줄이세요";
+            }
+
+            var b = _context.Catalog.balance;
+            if (b != null && m.Trust < b.gameOverTrustThreshold + 10)
+            {
+                return "신뢰를 회복해 위기를 넘기세요";
+            }
+
+            foreach (var cap in _context.Catalog.capabilities)
+            {
+                if (cap != null && _context.Capabilities.CanUpgrade(cap.id))
+                {
+                    return cap.displayName + " 능력을 강화해 보세요";
+                }
+            }
+
+            return "시장 점유율을 끌어올리세요";
         }
 
         void BuildTabs(Transform parent)
@@ -736,6 +960,16 @@ namespace AICompanyTycoon.UI
                 {
                     ticker.SetTarget(_context.Model.Get(id));
                 }
+
+                if (_resourceValues.TryGetValue(id, out var value))
+                {
+                    value.color = ChipColor(id, IsCritical(id));
+                }
+            }
+
+            if (_crestLabel != null)
+            {
+                _crestLabel.text = GetStarRating() + "★";
             }
         }
 
