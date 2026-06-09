@@ -2,6 +2,12 @@
 
 분업 — 이미지 생성은 Codex/agy CLI 외주, 캐릭터시트·검증·일관성 수정은 Claude. 단순 임포터 코딩은 Codex. 정본 바이블 `character-sheet.md`, 외주 계약 `../../../docs/ANTIGRAVITY_ART_BRIEF.md`.
 
+## 기존 아트 인벤토리 (2026-06-09 발견 — Unity 미반영)
+React 소스(`public/assets/sprites`)에 풍부한 아트가 있으나 Unity 포트엔 office 배경만 반영됨. 신규 생성의 **레퍼런스(실루엣·팔레트 앵커)** 이자 **임시 임포트** 후보.
+- `v053-agents-event-poses-final.png` 576×4800 — **5포즈(idle/work/card_use/cheer/alert) × 캐릭터 × 3프레임 = 75프레임 @192px**. 브리프 캐릭터시트 계약 그대로. 시각 `ref/existing-v053-poses-sample.png`
+- `v054-office-objects-final.png` 1280×960 — 오피스 오브젝트 25칸(256×192, ~21종). 시각 `ref/existing-v054-objects.png`
+- 판단 — 기존은 카이로소프트 수준. 북극성("카이로소프트보다 세밀")엔 못 미쳐 **최종 목표 아님**. 레퍼런스+임시용.
+
 ## 워크플로 (자산 1종당)
 1. Claude — 캐릭터시트/스펙으로 핸드오프 작성 (`../codex-handoff/`)
 2. Codex/agy — 이미지 생성 → `public/assets/...`
@@ -18,14 +24,16 @@
 - [ ] **Tier1 생성 (외주 대기)** — v090 고해상 idle 3종 (256px). Codex/agy
 - [ ] Tier1 Unity 임포트 (Codex) — IconAtlasImporter v090 정의 + IconLibrary 경로
 - [ ] Tier1 Claude 검증 — 퍼레이드/오피스 캡처 대조, 일관성 수정
-- [ ] Tier2 — 5포즈 애니 시트(1152×9600 계약). 후속 (Unity 애니 통합 필요)
+- [ ] Tier2 — 5포즈 애니 시트(1152×9600 계약). **기존 v053(576×4800)이 레퍼런스로 존재**. 후속 (Unity 포즈/애니 통합 + 고해상 생성)
 
 ### 오피스 오브젝트 (책상/장비)
-- [ ] 캐릭터시트格 스펙 — ANTIGRAVITY_ART_BRIEF §오피스 오브젝트 계약(2560×1920) 기반 바이블 항목
-- [ ] 생성 핸드오프
-- [ ] 생성 (외주) — 책상·의자·화이트보드·서버랙·GPU·차고 소품
-- [ ] Unity 배치 — office-objects를 오피스 씬에 (현재 휑함)
-- [ ] 검증
+- [x] 생성/임포트 핸드오프 — `../codex-handoff/v091-office-objects-gen.md` (경로1 기존 v054 임포트 + 경로2 신규 고해상)
+- [ ] **임포터 비정사각 셀 확장** (Codex 단순 코딩) — IconAtlasImporter가 256×192 칸 슬라이스 가능하게 (현 정사각 가정)
+- [ ] v054 칸 이름 확정 (Claude 디자인) — `ref/existing-v054-objects.png` 보고 21종 명명
+- [ ] 경로1 임포트 (Codex) — v054 → Unity, IconLibrary 경로
+- [ ] Unity 배치 (Claude 구도 조정) — 오피스 씬에 책상·장비 (현재 휑함)
+- [ ] 경로2 신규 고해상 생성 (외주) — v054 레퍼런스로 디테일 상향
+- [ ] 검증 (Claude) — 캡처 대조
 
 ### 오피스 배경 (backdrop)
 - [ ] 현재 `Resources/Art/Background/office.png`(v054, 반투명 막). 고해상 교체(5120×2880→2560×1440) 검토
