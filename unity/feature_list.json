@@ -63,7 +63,7 @@
       "dependencies": ["feat-003"],
       "status": "in-progress",
       "owner": "Claude",
-      "evidence": "계획 수립 — reports/ 정본 5종 정독, docs/feat-006-checklist.md + context-notes.md 작성. 5블록(A 랭킹시스템·B 전광판·C 코어3HUD·D 생동감·E 메뉴). 시작 트랙 결정 대기."
+      "evidence": "A 랭킹시스템(CompetitorDef 12사+MarketService+ScoreboardRanking, MarketTests 8)·B LED전광판(LiveBlink+Marquee)·C 코어3칩HUD+트레이+목표리본·D 직원통통(StaffBob)+모달팝인 코드 완료. EditMode 29/29. 남음 — E 메뉴 재구성(CD-3) + 에디터 시각 확인. docs/feat-006-checklist.md"
     }
   ]
 }

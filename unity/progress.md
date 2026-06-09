@@ -4,24 +4,25 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-09
-**활성 피처** — feat-006 Claude Design 첫 화면 반영. 전광판 트랙(A 랭킹시스템 + B LED 전광판 UI) 코드 완료. 남은 블록 C(코어3 HUD)·D(생동감)·E(메뉴 재구성).
-**현재 목표** — Block B 전광판 에디터 ▶ 시각 확인 후 Block C 또는 D 진행. 정본·결정은 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md.
+**활성 피처** — feat-006 Claude Design 첫 화면 반영. 블록 A(랭킹)·B(전광판)·C(코어3 HUD)·D(생동감) 코드 완료. 남은 건 E(메뉴 재구성, free-float 레이아웃)뿐.
+**현재 목표** — 에디터 ▶ A~D 시각 확인 후 Block E 진행. 정본·결정은 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
 - [x] P0~feat-003 — 셋업/데이터/코어/VS UI (이전 세션)
 - [x] feat-004 사운드·모션 + 아이콘(897700d)·파티클(748d1a8)·테마(eb23a22)·한글폰트(e36ccf8)
 - [x] feat-005 세이프에어리어(021ac45) + 빌드셋업(733e184) + Android 빌드(APK 35MB) + 아이콘/스플래시(office 임시)
-- [x] feat-006 Block A — 경쟁사·시장점유율·전국랭킹 헤드리스 (CompetitorDef 12사 + MarketService + ScoreboardRanking, EditMode 29/29). 커밋 후 DataImporter.ImportAll로 DataCatalog 반영
-- [x] feat-006 Block B — LED 전광판 UI (LiveBlink 점멸 + Marquee 흐름 + #랭크/총사/델타, GameScreen.BuildScoreboard). 컴파일 그린, 시각 확인 대기
+- [x] feat-006 Block A — 경쟁사·시장점유율·전국랭킹 헤드리스 (CompetitorDef 12사 + MarketService + ScoreboardRanking, EditMode 29/29). DataImporter.ImportAll로 DataCatalog 반영
+- [x] feat-006 Block B — LED 전광판 UI (LiveBlink 점멸 + Marquee 흐름 + #랭크/총사/델타)
+- [x] feat-006 Block C — 코어3 칩 HUD + ＋트레이 + 목표 리본 + 크레스트 (세로 8-리스트 대체)
+- [x] feat-006 Block D — 직원 통통 모션(StaffBob) + 모달 팝인(UiTween.PopIn)
 ### 진행 중 (What's In Progress)
-- [~] feat-006 전광판 트랙 — A·B 코드 완료. 남음 — 에디터 ▶ 전광판 시각 확인(LED·점멸·마퀴)
-- [~] feat-006 남은 블록 — C 코어3 HUD+트레이+목표리본 / D 캐릭터·씬 생동감 / E 메뉴 재구성. 정본 reports/v1_0_*
+- [~] feat-006 — A~D 코드 완료(EditMode 29/29). 남음 — 에디터 ▶ 시각 확인 + Block E(메뉴 재구성/free-float 레이아웃)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)
-1. 에디터 ▶ 플레이로 전광판(LED 랭킹·LIVE 점멸·마퀴) 시각 확인. `AICT > Import Icon Atlases`도 먼저 1회
-2. Block C(코어3 HUD) 또는 D(생동감) 진행 — 사용자 선택
+1. 에디터 ▶ 플레이로 A~D 시각 확인 (전광판·코어3 칩 HUD·트레이·목표 리본·직원 통통·모달 팝인). `AICT > Import Icon Atlases` 먼저 1회
+2. Block E — 하단 도크 4코어 탭 + 다음행동 FAB + 더보기 드로어 (CD-3, office-first). 가장 큰 구조 변경
 3. 추후 — docs/backlog.md (픽셀아트 아이콘, office-objects, 실기기/에뮬, BGM, TMP)
 
 ## 블로커 / 리스크
