@@ -33,6 +33,11 @@ namespace AICompanyTycoon.UI
         GameObject _resultModal;
         Text _resultTitle;
         Text _resultMessage;
+        Text _scoreRank;
+        Text _scoreTotal;
+        Text _scoreDelta;
+        Text _scoreMarquee;
+        Marquee _marquee;
         Button _nextMonthButton;
         Text _nextMonthLabel;
 
@@ -79,6 +84,7 @@ namespace AICompanyTycoon.UI
 
             BuildTopBar(content);
             BuildResourceHud(content);
+            BuildScoreboard(content);
             BuildOfficeScene(content);
             BuildTabs(content);
             BuildContentArea(content);
@@ -106,6 +112,7 @@ namespace AICompanyTycoon.UI
             UpdateTopBar();
             UpdateResourceHud();
             UpdateResourceDeltas();
+            RefreshScoreboard();
             RefreshOfficeScene();
             RefreshLists();
             UpdateSummary();
@@ -229,6 +236,118 @@ namespace AICompanyTycoon.UI
             scrim.name = "BackgroundScrim";
             Stretch(scrim.GetComponent<RectTransform>());
             scrim.GetComponent<Image>().raycastTarget = false;
+        }
+
+        // CD-1 전국 AI 기업 랭킹 LED 전광판 — 태그+LIVE 점멸 / #랭크 /총사 ▲델타 / 흐르는 마퀴.
+        void BuildScoreboard(Transform parent)
+        {
+            var panel = UiFactory.Panel(parent, UiTheme.ScoreboardBg);
+            panel.name = "Scoreboard";
+            AddLayout(panel, 150, 0);
+            UiFactory.VBox(panel.transform, 6, new RectOffset(22, 22, 12, 12));
+
+            // 1행 — 태그 + LIVE 뱃지(점멸)
+            var top = new GameObject("ScoreTop", typeof(RectTransform));
+            top.transform.SetParent(panel.transform, false);
+            UiFactory.HBox(top.transform, 10);
+            AddLayout(top, 34, 0);
+
+            var tag = UiFactory.Label(top.transform, "전국 AI 기업 랭킹", 24);
+            tag.color = UiTheme.ScoreboardTag;
+            tag.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(tag.gameObject, 32, 1);
+
+            var badge = UiFactory.Panel(top.transform, UiTheme.ScoreboardLive);
+            badge.name = "LiveBadge";
+            badge.AddComponent<CanvasGroup>();
+            badge.AddComponent<LiveBlink>();
+            AddLayoutFixed(badge, 74, 32);
+            var liveText = UiFactory.Label(badge.transform, "LIVE", 20);
+            liveText.color = UiTheme.ScoreboardLiveText;
+            liveText.alignment = TextAnchor.MiddleCenter;
+            liveText.horizontalOverflow = HorizontalWrapMode.Overflow;
+            liveText.raycastTarget = false;
+            Stretch(liveText.GetComponent<RectTransform>());
+
+            // 2행 — #랭크 / 총사 ▲델타
+            var rankRow = new GameObject("ScoreRank", typeof(RectTransform));
+            rankRow.transform.SetParent(panel.transform, false);
+            UiFactory.HBox(rankRow.transform, 10);
+            AddLayout(rankRow, 52, 0);
+
+            _scoreRank = UiFactory.Label(rankRow.transform, "#—", 44);
+            _scoreRank.color = UiTheme.ScoreboardRank;
+            _scoreRank.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(_scoreRank.gameObject, 50, 0);
+
+            _scoreTotal = UiFactory.Label(rankRow.transform, "/ —사", 24);
+            _scoreTotal.color = UiTheme.ScoreboardTag;
+            _scoreTotal.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(_scoreTotal.gameObject, 50, 0);
+
+            _scoreDelta = UiFactory.Label(rankRow.transform, "—", 26);
+            _scoreDelta.color = UiTheme.DeltaFlat;
+            _scoreDelta.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(_scoreDelta.gameObject, 50, 1);
+
+            // 3행 — 마퀴 (RectMask2D 클리핑 + 우→좌 흐름)
+            var viewport = new GameObject("MarqueeViewport", typeof(RectTransform), typeof(RectMask2D));
+            viewport.transform.SetParent(panel.transform, false);
+            AddLayout(viewport, 30, 0);
+            var viewportRect = viewport.GetComponent<RectTransform>();
+
+            var contentGo = new GameObject("MarqueeText", typeof(RectTransform), typeof(Text));
+            contentGo.transform.SetParent(viewport.transform, false);
+            var contentRect = contentGo.GetComponent<RectTransform>();
+            contentRect.anchorMin = new Vector2(0, 0.5f);
+            contentRect.anchorMax = new Vector2(0, 0.5f);
+            contentRect.pivot = new Vector2(0, 0.5f);
+            contentRect.sizeDelta = new Vector2(2400, 28);
+
+            _scoreMarquee = contentGo.GetComponent<Text>();
+            _scoreMarquee.font = UiFactory.LegacyFont;
+            _scoreMarquee.fontSize = 22;
+            _scoreMarquee.color = UiTheme.ScoreboardMarquee;
+            _scoreMarquee.alignment = TextAnchor.MiddleLeft;
+            _scoreMarquee.horizontalOverflow = HorizontalWrapMode.Overflow;
+            _scoreMarquee.verticalOverflow = VerticalWrapMode.Overflow;
+            _scoreMarquee.raycastTarget = false;
+            _scoreMarquee.text = "";
+
+            _marquee = viewport.AddComponent<Marquee>();
+            _marquee.Init(contentRect, viewportRect, _scoreMarquee);
+        }
+
+        // 전광판 값 갱신 — 파생 모듈에서 전국 랭킹 + 마퀴를 읽어 라벨에 반영.
+        void RefreshScoreboard()
+        {
+            if (_scoreRank == null || _context == null || _context.Market == null)
+            {
+                return;
+            }
+
+            var nr = ScoreboardRanking.DeriveNationalRanking(_context.Market, _context.Model);
+            var ci = System.Globalization.CultureInfo.InvariantCulture;
+            _scoreRank.text = "#" + nr.rank.ToString("N0", ci);
+            _scoreTotal.text = "/ " + nr.total.ToString("N0", ci) + "사";
+            if (nr.delta > 0)
+            {
+                _scoreDelta.text = "▲" + nr.delta;
+                _scoreDelta.color = UiTheme.DeltaUp;
+            }
+            else if (nr.delta < 0)
+            {
+                _scoreDelta.text = "▼" + System.Math.Abs(nr.delta);
+                _scoreDelta.color = UiTheme.DeltaDown;
+            }
+            else
+            {
+                _scoreDelta.text = "—";
+                _scoreDelta.color = UiTheme.DeltaFlat;
+            }
+
+            var lines = ScoreboardRanking.BuildScoreboardMarquee(_context.Market, _context.Model, _context.Catalog);
+            _scoreMarquee.text = string.Join("    ·    ", lines);
         }
 
         // office 배경 위에 직원 캐릭터(v076)를 세울 사무실 씬 영역. 채우기는 RefreshOfficeScene이 한다.
@@ -1231,6 +1350,23 @@ namespace AICompanyTycoon.UI
             layout.preferredHeight = minHeight;
             layout.flexibleWidth = flexibility;
             layout.flexibleHeight = flexibility;
+        }
+
+        // 고정 크기 레이아웃 (LIVE 뱃지처럼 늘어나면 안 되는 요소).
+        static void AddLayoutFixed(GameObject go, float width, float height)
+        {
+            var layout = go.GetComponent<LayoutElement>();
+            if (layout == null)
+            {
+                layout = go.AddComponent<LayoutElement>();
+            }
+
+            layout.minWidth = width;
+            layout.preferredWidth = width;
+            layout.minHeight = height;
+            layout.preferredHeight = height;
+            layout.flexibleWidth = 0;
+            layout.flexibleHeight = 0;
         }
     }
 }

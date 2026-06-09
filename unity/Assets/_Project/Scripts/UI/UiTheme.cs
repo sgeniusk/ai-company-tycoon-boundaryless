@@ -31,6 +31,17 @@ namespace AICompanyTycoon.UI
         // 모달 뒤 어둡게 까는 막
         public static readonly Color ModalScrim = new Color(0.16f, 0.12f, 0.07f, 0.68f);
 
+        // 전광판 (CD-1 LED) — 다크 그린 패널 + 네온 토큰
+        public static readonly Color ScoreboardBg = Hex("101f1d", 0.95f);
+        public static readonly Color ScoreboardTag = Hex("5fd2b4");
+        public static readonly Color ScoreboardRank = Hex("f2a93b");
+        public static readonly Color ScoreboardMarquee = Hex("f2cd5e");
+        public static readonly Color ScoreboardLive = Hex("dc3f52");
+        public static readonly Color ScoreboardLiveText = Hex("fdf6e3");
+        public static readonly Color DeltaUp = Hex("56d07a");
+        public static readonly Color DeltaDown = Hex("f07183");
+        public static readonly Color DeltaFlat = Hex("9bb0a6");
+
         static Color Hex(string hex, float a = 1f)
         {
             return new Color(

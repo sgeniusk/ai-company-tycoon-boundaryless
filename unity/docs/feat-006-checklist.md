@@ -10,13 +10,15 @@
 - [x] GameModel에 CompetitorStates + MarketShareHistory 추가 (월 정산 시 append, save v2 마이그레이션)
 - [x] EditMode 테스트 — MarketTests 8종 (순위·점유율·진입·마퀴·세이브 라운드트립). 29/29 통과
 
-## Block B — LED 전광판 UI (CD-1)
-- [ ] 전광판 패널 — 다크 LED, 도트매트릭스, 글로우, 하드섀도
-- [ ] 상단 — `전국 AI 기업 랭킹` 태그 + LIVE 점멸 뱃지 (코루틴 1.4s)
-- [ ] 랭크 행 — 골드 `#랭크` + `/ N,NNN사` + ▲/▼/— 델타 색분기
-- [ ] 마퀴 — 우→좌 흐름 (코루틴 13s 루프), 클리핑
-- [ ] 오피스 씬 상단에 배치, officeFrac 유지
-- [ ] EditMode 그린 + 커밋
+## Block B — LED 전광판 UI (CD-1) ✅ 코드 완료 (시각 확인 대기)
+- [x] 전광판 패널 — 다크 그린 LED(ScoreboardBg #101f1d), 하드 배치 (도트매트릭스 텍스처는 backlog)
+- [x] 상단 — `전국 AI 기업 랭킹` 태그(청록) + LIVE 점멸 뱃지 (LiveBlink, 1.4s steps)
+- [x] 랭크 행 — 골드 `#랭크`(44pt) + `/ N,NNN사` + ▲/▼/— 델타 색분기(초록/로즈/회색)
+- [x] 마퀴 — 우→좌 흐름 (Marquee 컴포넌트, 13s, RectMask2D 클리핑)
+- [x] 오피스 씬 상단(ResourceHud 아래)에 배치
+- [x] EditMode 29/29 그린
+- [ ] 에디터 ▶ 시각 확인 — LED 가독·LIVE 점멸·마퀴 흐름 (사용자 Play)
+- 남음(backlog) — 도트매트릭스/스캔라인 텍스처, 모바일 컴팩트 푸트프린트
 
 ## Block C — 코어3 자원 HUD + ＋트레이 + 목표 리본 (CD-2)
 - [ ] 코어 3 칩 (cash 초록/나머지 골드, 아이콘+값+델타, 임계 빨강)
