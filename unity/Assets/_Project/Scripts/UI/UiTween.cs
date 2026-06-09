@@ -32,6 +32,29 @@ namespace AICompanyTycoon.UI
             if (cg != null) Runner.StartCoroutine(FadeCo(cg, dur, delay));
         }
 
+        // 모달 카드 등장 — 스케일 0.92→1 + 페이드 0→1 동시에.
+        public static void PopIn(Transform t, CanvasGroup cg, float dur = 0.16f)
+        {
+            if (t != null) Runner.StartCoroutine(PopInCo(t, cg, dur));
+        }
+
+        static IEnumerator PopInCo(Transform t, CanvasGroup cg, float dur)
+        {
+            float e = 0f;
+            if (cg != null) cg.alpha = 0f;
+            t.localScale = Vector3.one * 0.92f;
+            while (e < dur)
+            {
+                e += Time.unscaledDeltaTime;
+                float k = Mathf.Clamp01(e / dur);
+                t.localScale = Vector3.one * Mathf.Lerp(0.92f, 1f, k);
+                if (cg != null) cg.alpha = k;
+                yield return null;
+            }
+            t.localScale = Vector3.one;
+            if (cg != null) cg.alpha = 1f;
+        }
+
         static IEnumerator PunchCo(Transform t, float amount, float dur)
         {
             float half = Mathf.Max(0.01f, dur * 0.5f);

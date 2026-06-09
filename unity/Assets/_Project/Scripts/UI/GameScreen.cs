@@ -394,8 +394,39 @@ namespace AICompanyTycoon.UI
             for (int i = 0; i < count; i += 1)
             {
                 var sprite = IconLibrary.Get(kinds[i % kinds.Length]);
-                var actor = UiFactory.Icon(_officeSceneContent, sprite, 120);
-                actor.gameObject.SetActive(sprite != null);
+
+                // 레이아웃 셀(HBox가 위치 제어) — 내부 아이콘은 비제어라 StaffBob이 자유롭게 흔든다.
+                var cell = new GameObject("ActorCell", typeof(RectTransform));
+                cell.transform.SetParent(_officeSceneContent, false);
+                var cellLayout = cell.AddComponent<LayoutElement>();
+                cellLayout.minWidth = 120;
+                cellLayout.preferredWidth = 120;
+                cellLayout.minHeight = 132;
+                cellLayout.preferredHeight = 132;
+                cellLayout.flexibleWidth = 0;
+                cellLayout.flexibleHeight = 0;
+
+                var iconGo = new GameObject("Actor", typeof(RectTransform), typeof(Image));
+                iconGo.transform.SetParent(cell.transform, false);
+                var rect = iconGo.GetComponent<RectTransform>();
+                rect.anchorMin = new Vector2(0.5f, 0f);
+                rect.anchorMax = new Vector2(0.5f, 0f);
+                rect.pivot = new Vector2(0.5f, 0f);
+                rect.sizeDelta = new Vector2(120, 120);
+                rect.anchoredPosition = Vector2.zero;
+
+                var img = iconGo.GetComponent<Image>();
+                img.sprite = sprite;
+                img.preserveAspect = true;
+                img.raycastTarget = false;
+                img.color = sprite != null ? Color.white : new Color(1f, 1f, 1f, 0f);
+
+                if (sprite != null)
+                {
+                    iconGo.AddComponent<StaffBob>().Init(i * 0.9f);
+                }
+
+                cell.SetActive(sprite != null);
             }
         }
 
@@ -1260,6 +1291,7 @@ namespace AICompanyTycoon.UI
             }
 
             _eventModal.SetActive(true);
+            PopInCard(_eventModal, "EventCard");
             _eventTitle.text = ev.displayName;
             _eventDescription.text = ev.description;
             Clear(_eventChoices);
@@ -1368,6 +1400,30 @@ namespace AICompanyTycoon.UI
                 ? outcome
                 : (won ? "AI 기업 성장에 성공했습니다." : "회사가 어려운 상황에 처했습니다.");
             _resultModal.SetActive(true);
+            PopInCard(_resultModal, "ResultCard");
+        }
+
+        // 모달 카드를 스케일+페이드로 등장시킨다. CanvasGroup이 없으면 추가.
+        void PopInCard(GameObject modal, string cardName)
+        {
+            if (modal == null)
+            {
+                return;
+            }
+
+            var card = modal.transform.Find(cardName);
+            if (card == null)
+            {
+                return;
+            }
+
+            var cg = card.GetComponent<CanvasGroup>();
+            if (cg == null)
+            {
+                cg = card.gameObject.AddComponent<CanvasGroup>();
+            }
+
+            UiTween.PopIn(card, cg);
         }
 
         // 이전 달 대비 자원 증감을 HUD 우측에 +/- 색상으로 표시한다.
