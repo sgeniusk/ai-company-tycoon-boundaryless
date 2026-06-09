@@ -1786,10 +1786,35 @@ namespace AICompanyTycoon.UI
             var parts = new List<string>();
             foreach (var threshold in thresholds)
             {
-                parts.Add(threshold.key + " " + FormatNumber(threshold.value));
+                parts.Add(FormatThreshold(threshold.key, threshold.value));
             }
 
             return string.Join(", ", parts);
+        }
+
+        // 요구조건 min_* 키를 한글로. 자원 키는 GetResourcePlainName 재사용, 개수형 키(개월/제품/능력/도메인)는 별도 표기.
+        string FormatThreshold(string key, double value)
+        {
+            switch (key)
+            {
+                case "min_month":
+                    return FormatNumber(value) + "개월차 이상";
+                case "min_products":
+                    return "제품 " + FormatNumber(value) + "개 이상";
+                case "min_capabilities":
+                    return "능력 " + FormatNumber(value) + "개 이상";
+                case "min_domains":
+                    return "도메인 " + FormatNumber(value) + "개 이상";
+            }
+
+            var resourceKey = !string.IsNullOrEmpty(key) && key.StartsWith("min_") ? key.Substring(4) : key;
+            if (ResourceIds.TryParse(resourceKey, out var resource))
+            {
+                return GetResourcePlainName(resource) + " " + FormatNumber(value) + "↑";
+            }
+
+            // 미지의 키라도 원시 min_ 접두사는 노출하지 않는다.
+            return resourceKey + " " + FormatNumber(value);
         }
 
         string FormatMoney(double value)
