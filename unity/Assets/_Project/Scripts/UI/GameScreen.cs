@@ -489,9 +489,12 @@ namespace AICompanyTycoon.UI
             _trayToggle.onClick.AddListener(ToggleTray);
             AddLayoutFixed(_trayToggle.gameObject, 64, 64);
 
-            var decor = UiFactory.Button(strip.transform, "🎨");
+            // 꾸미기(준비 중) — 이모지 🎨는 Noto Sans KR에 글리프가 없어 한글 라벨로 둔다.
+            var decor = UiFactory.Button(strip.transform, "꾸미기");
+            decor.label.fontSize = 18;
+            decor.label.horizontalOverflow = HorizontalWrapMode.Overflow;
             decor.button.onClick.AddListener(() => SetStatus("꾸미기는 곧 추가됩니다."));
-            AddLayoutFixed(decor.button.gameObject, 64, 64);
+            AddLayoutFixed(decor.button.gameObject, 92, 64);
 
             // 보조 5종 트레이 — 기본 숨김, ＋ 토글로 노출
             _resourceTray = new GameObject("ResourceTray", typeof(RectTransform));
@@ -918,7 +921,7 @@ namespace AICompanyTycoon.UI
 
         GameObject CreateScrollPanel(Transform parent, string name, out Transform content)
         {
-            var root = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(ScrollRect));
+            var root = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(ScrollRect), typeof(CanvasGroup));
             root.transform.SetParent(parent, false);
             Stretch(root.GetComponent<RectTransform>());
             root.GetComponent<Image>().color = Color.clear;
@@ -974,13 +977,17 @@ namespace AICompanyTycoon.UI
 
         void OpenMenu(string tab)
         {
+            bool wasOpen = _menuOpen;
             _activeTab = tab;
             _menuOpen = true;
             CloseMore();
             if (_menuPopup != null)
             {
                 _menuPopup.SetActive(true);
-                PopInCard(_menuPopup, "MenuCard");
+                if (!wasOpen)
+                {
+                    PopInCard(_menuPopup, "MenuCard");   // 새로 열 때만 카드 팝인
+                }
             }
 
             if (_menuTitle != null)
@@ -989,7 +996,29 @@ namespace AICompanyTycoon.UI
             }
 
             SetActivePanel(tab);
+            if (wasOpen)
+            {
+                FadeActivePanel();   // 이미 열린 상태에서 탭만 바꾸면 콘텐츠 크로스페이드 (Block D 탭 전환 페이드)
+            }
             UpdateDockHighlight();
+        }
+
+        // 탭 전환 시 활성 콘텐츠 패널만 살짝 페이드인한다(카드 전체 재팝인 없이).
+        void FadeActivePanel()
+        {
+            var panel = _activeTab == ProductsTab ? _productsPanel
+                : _activeTab == CapabilitiesTab ? _capabilitiesPanel
+                : _upgradesPanel;
+            if (panel == null)
+            {
+                return;
+            }
+
+            var cg = panel.GetComponent<CanvasGroup>();
+            if (cg != null)
+            {
+                UiTween.FadeIn(cg, 0.16f);
+            }
         }
 
         void CloseMenu()

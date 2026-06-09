@@ -7,6 +7,7 @@
         "AICompanyTycoon.Systems",
         "AICompanyTycoon.Save",
         "AICompanyTycoon.UI",
+        "UnityEngine.UI",
         "UnityEngine.TestRunner"
     ],
     "includePlatforms": [],

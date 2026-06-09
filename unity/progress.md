@@ -4,8 +4,8 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-09
-**활성 피처** — feat-006 Claude Design 첫 화면 반영. 블록 A~E 전부 코드 완료, EditMode 29/29. office-first 레이아웃·전광판·코어3 HUD·생동감·하단 도크 내비 모두 이식.
-**현재 목표** — 에디터 ▶ A~E 시각 확인(헤드리스라 미확인). 정본·결정은 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md.
+**활성 피처** — feat-006 Claude Design 첫 화면 반영. 블록 A~E **시각 확인 완료**(헤드리스 캡처 하네스로 7장 육안 대조). EditMode 29/29 유지. office-first·전광판·코어3 HUD·생동감·하단 도크 모두 이식+검증.
+**현재 목표** — feat-006 핵심 완료. 남은 건 backlog 아트뿐(픽셀아트 아이콘·office-objects·도트매트릭스 텍스처·BGM·실기기). 정본 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md(시각 검증 하네스 사용법 포함).
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -18,13 +18,13 @@
 - [x] feat-006 Block D — 직원 통통 모션(StaffBob) + 모달 팝인(UiTween.PopIn)
 - [x] feat-006 Block E — 하단 도크(2|FAB|2) + 다음달 FAB 펄스 + 탭 팝업(MenuPopup) + 더보기 드로어, office-first(office flex 1)
 ### 진행 중 (What's In Progress)
-- [~] feat-006 — A~E 전 블록 코드 완료(EditMode 29/29). 남음 — 에디터 ▶ 시각 확인(헤드리스 미확인)
+- [x] feat-006 — A~E 코드 완료 + **시각 확인 완료**(헤드리스 캡처). 버그 1건 수정·탭 페이드 추가. 남은 건 backlog 아트뿐
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)
-1. 에디터 ▶ 플레이로 A~E 시각 확인 (오피스 지배·전광판·코어3 칩 HUD·도크·FAB 펄스·탭 팝업·더보기). `AICT > Import Icon Atlases` 먼저 1회
-2. 시각 피드백으로 A~E 다듬기 (칩 크기·색·순위 수치 감·도크 레이아웃 등 토큰/상수 조정)
-3. 추후 — docs/backlog.md (픽셀아트 아이콘, office-objects, 실기기/에뮬, BGM, TMP, 도트매트릭스 전광판 텍스처)
+1. 캡처에서 발견된 스코프 외 데이터 이슈(별도 피처) — 업그레이드 설명 한/영 혼용, 카드 요구조건 원시 키 노출(`min_month`/`min_users`/`min_talent` → 한글화). upgrades 데이터/리스트 렌더 영역.
+2. 추후 아트 — docs/backlog.md (픽셀아트 아이콘, office-objects 책상/장비, 도트매트릭스 전광판 텍스처, BGM, TMP, 실기기/에뮬)
+3. 시각 회귀 — 이후 UI 변경 시 `ScreenshotCaptureTests` 재실행해 캡처 대조(체크리스트에 명령). 재시작 전 다른 Unity 미실행 확인.
 
 ## 블로커 / 리스크
 - [ ] 시각 미확인 — 아이콘 셀/테마 색/파티클/한글/세이프에어리어/스플래시는 에디터·시뮬레이터 확인 남음.
@@ -49,8 +49,9 @@
 - [x] feat-005 실제 빌드 — BuildResult Succeeded, APK 35MB(IL2CPP/ARM64)
 - [x] feat-005 아이콘/스플래시 — ApplyMobileSettings executeMethod 컴파일 0, SetIcons 적용(경고 없음), splash Sprite 변환
 - [x] 기존 에셋 반영 — 게임 배경 office EditMode 21/21. 미반영 아틀라스 6개 ImportAll 슬라이스(총 80셀, 신규 29 셀 수 일치), 컴파일 0
-- [~] 시각 확인 — 남음(에디터/시뮬레이터)
-- [x] 스코프 — data/·루트·Core/Systems/Save·Schema 미수정. UI/Editor/Resources/Art/ProjectSettings만
+- [x] 시각 확인(feat-006 A~E) — 헤드리스 캡처 7장 육안 대조. office-first·LED 전광판(랭크/마퀴)·코어3 HUD·＋트레이·도크/FAB·팝업/드로어 확인. 폰트(Noto KR 한글 선명)·테마·픽셀 아이콘도 함께 확인. 도구 — ScreenshotCaptureTests(PlayMode, graphics)
+- [~] 실기기/노치 세이프에어리어 — 헤드리스는 Screen.safeArea=풀스크린이라 미확인(실기기 남음)
+- [x] 스코프 — data/·루트·Core/Systems/Save·Schema 미수정. UI/Tests만(feat-006 수정)
 
 ## 다음 세션 메모
 feat-005 거의 완료(빌드+아이콘/스플래시). 다음 — 에디터/시뮬레이터 시각 확인. 추후 할 일 전체는 docs/backlog.md(픽셀아트 아이콘/기존 에셋 전부 반영/실기기/BGM/TMP). 상세는 session-handoff.md.

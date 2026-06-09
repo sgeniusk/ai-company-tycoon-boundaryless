@@ -61,9 +61,9 @@
       "name": "Claude Design 첫 화면 반영 (P7)",
       "description": "reports/ 클로드 디자인 핸드오프(v1.0)를 Unity 포트로 충실히 이식. 오피스-퍼스트 레이아웃, LED 전국 랭킹 전광판(CD-1), 코어3 자원 HUD+트레이+목표리본(CD-2), 캐릭터/씬 생동감, 메뉴 재구성(CD-3). 경쟁사·시장점유율·전국랭킹 시스템 헤드리스 포팅 포함. derive-only/additive.",
       "dependencies": ["feat-003"],
-      "status": "in-progress",
+      "status": "done",
       "owner": "Claude",
-      "evidence": "A~E 전 블록 코드 완료. A 랭킹시스템(MarketService+ScoreboardRanking, MarketTests 8)·B LED전광판(LiveBlink+Marquee)·C 코어3칩HUD+트레이+목표리본·D 직원통통(StaffBob)+모달팝인·E 하단도크(2|FAB|2)+FAB펄스+탭팝업+더보기드로어+office-first. EditMode 29/29. 남음 — 에디터 ▶ 시각 확인(헤드리스 미확인). docs/feat-006-checklist.md"
+      "evidence": "A~E 코드 완료 + 시각 확인 완료. A 랭킹시스템(MarketService+ScoreboardRanking, MarketTests 8)·B LED전광판(LiveBlink+Marquee)·C 코어3칩HUD+트레이+목표리본·D 직원통통(StaffBob)+모달팝인+탭전환페이드·E 하단도크(2|FAB|2)+FAB펄스+탭팝업+더보기드로어+office-first. EditMode 29/29. 헤드리스 캡처 하네스(ScreenshotCaptureTests)로 7장 육안 대조 — 버그1 수정(꾸미기 이모지→한글). 남은 폴리시는 backlog 아트. docs/feat-006-checklist.md"
     }
   ]
 }
