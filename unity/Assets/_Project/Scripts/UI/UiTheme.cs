@@ -5,13 +5,13 @@ namespace AICompanyTycoon.UI
 {
     public static class UiTheme
     {
-        // 배경/면 — 따뜻한 크림 사무실 톤
+        // 배경/면 — 따뜻한 크림 사무실 톤. 패널은 반투명이라 office 배경이 비친다.
         public static readonly Color ScreenBg = Hex("e7dcc1");
-        public static readonly Color HeaderBg = Hex("3f8a7c");
+        public static readonly Color HeaderBg = Hex("3f8a7c", 0.94f);
         public static readonly Color HeaderText = Hex("fdf6e3");
-        public static readonly Color PanelBg = Hex("f6eeda");
-        public static readonly Color HudBg = Hex("f1e7cd");
-        public static readonly Color CardBg = Hex("fffdf6");
+        public static readonly Color PanelBg = Hex("f6eeda", 0.80f);
+        public static readonly Color HudBg = Hex("f1e7cd", 0.82f);
+        public static readonly Color CardBg = Hex("fffdf6", 0.88f);
 
         // 버튼 — 채도 있는 그린
         public static readonly Color Button = Hex("57a468");
@@ -31,13 +31,13 @@ namespace AICompanyTycoon.UI
         // 모달 뒤 어둡게 까는 막
         public static readonly Color ModalScrim = new Color(0.16f, 0.12f, 0.07f, 0.68f);
 
-        static Color Hex(string hex)
+        static Color Hex(string hex, float a = 1f)
         {
             return new Color(
                 int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255f,
                 int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber) / 255f,
                 int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber) / 255f,
-                1f);
+                a);
         }
     }
 }

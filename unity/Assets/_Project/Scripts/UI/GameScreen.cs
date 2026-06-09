@@ -199,8 +199,8 @@ namespace AICompanyTycoon.UI
             bgImage.preserveAspect = false;
             bgImage.raycastTarget = false;
 
-            // 크림 톤 반투명 막 — office가 은은히 비치면서 텍스트는 읽히게 한다.
-            var scrim = UiFactory.Panel(parent, new Color(UiTheme.ScreenBg.r, UiTheme.ScreenBg.g, UiTheme.ScreenBg.b, 0.82f));
+            // 크림 톤 반투명 막 — office가 비치면서 텍스트는 읽히게 한다.
+            var scrim = UiFactory.Panel(parent, new Color(UiTheme.ScreenBg.r, UiTheme.ScreenBg.g, UiTheme.ScreenBg.b, 0.55f));
             scrim.name = "BackgroundScrim";
             Stretch(scrim.GetComponent<RectTransform>());
             scrim.GetComponent<Image>().raycastTarget = false;
@@ -213,7 +213,7 @@ namespace AICompanyTycoon.UI
             panel.transform.SetParent(parent, false);
             var row = UiFactory.HBox(panel.transform, 14);
             row.childAlignment = TextAnchor.LowerCenter;
-            AddLayout(panel, 150, 0);
+            AddLayout(panel, 220, 0);
             _officeSceneContent = panel.transform;
         }
 
