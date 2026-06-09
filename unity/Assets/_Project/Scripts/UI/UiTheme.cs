@@ -51,6 +51,9 @@ namespace AICompanyTycoon.UI
         public static readonly Color CrestGold = Hex("f2a93b");
         public static readonly Color GoalAccent = Hex("f2a93b");
 
+        // 하단 도크 (CD-3 office-first 내비)
+        public static readonly Color DockBg = Hex("24332f", 0.96f);
+
         static Color Hex(string hex, float a = 1f)
         {
             return new Color(

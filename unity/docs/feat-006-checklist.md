@@ -37,14 +37,20 @@
 - [ ] (선택) 배경 미세 모션/패럴랙스 (backlog)
 - [x] 검증 — EditMode 29/29 (라이선스 해제 후 실행 완료)
 
-## Block E — 메뉴·내비 재구성 (CD-3, office-first) ⏸ 보류 (사용자 지시 — 다음 세션)
-사용자가 'd까지 진행'으로 D에서 일단락. E는 화면 전체 free-float 재배치라 별도 세션에서. 정본 reports/codex-handoff에 CD-3 없음 — 마스터 plan(`reports/v1_0_claude_design_reflection_plan.md` CD-3 절)과 `reports/v1_0_menu_uiux_design_review.md` 참고해 스펙부터.
-- [ ] 하단 도크 4코어 탭 (운영·회사·성장·시장) + 다음행동 FAB
-- [ ] 보조 메뉴 드로어 그룹
-- [ ] 더보기 우상단 칩
-- [ ] officeFrac ≥ 0.40 회귀 확인
+## Block E — 메뉴·내비 재구성 (CD-3, office-first) ✅ 코드 완료 (시각 확인 대기)
+React 8메뉴 IA를 Unity 단순 구조(3 콘텐츠 탭)에 맞춰 충실 적응.
+- [x] 하단 도크 — 대칭 2|FAB|2 ([제품][능력] [다음달 FAB] [업그레이드][더보기])
+- [x] 다음달 FAB — 중앙 큰 버튼 + 펄스 링(FabPulse 확장·페이드)
+- [x] 탭 콘텐츠 = 오피스 위 팝업(MenuPopup) — 닫으면 오피스 깨끗. 스크림 클릭/✕로 닫기
+- [x] 더보기 드로어 — 저장/불러오기/새 게임 (BottomBar 보조 액션 이전)
+- [x] office-first — OfficeScene flex 1로 남는 세로 공간 차지(주인공). 월요약 슬림화(180→96)
+- [x] 도크 탭 하이라이트(colors.normalColor), 팝업 PopIn 등장
+- [x] EditMode 29/29, 컴파일 정상
+- [ ] 에디터 ▶ 시각 확인 — 오피스 지배·도크·FAB 펄스·팝업/드로어 열고닫기
+- 분기 메모 — React의 4코어탭(운영·회사·성장·시장)+7메뉴 드로어는 Unity 콘텐츠가 3탭뿐이라 [제품·능력·업그레이드]로 적응. 꾸미기는 Block C에서 플레이스홀더 처리.
 
 ## 진행 로그
 - 2026-06-09 — 계획 수립, reports/ 정본 5종 정독, 추적 문서 작성.
 - 2026-06-09 — 전광판 트랙 Block A(랭킹시스템) + B(LED 전광판) 완료, EditMode 29/29.
-- 2026-06-09 — Block C(코어3 칩 HUD+트레이+목표리본) + D(직원 통통+모달 팝인) 완료. A~D 6커밋. E는 사용자 지시로 보류.
+- 2026-06-09 — Block C(코어3 칩 HUD+트레이+목표리본) + D(직원 통통+모달 팝인) 완료. A~D 6커밋.
+- 2026-06-09 — Block E(하단 도크+FAB 펄스+탭 팝업+더보기 드로어, office-first) 완료. EditMode 29/29. feat-006 A~E 전 블록 코드 완료. 시각 확인만 남음.

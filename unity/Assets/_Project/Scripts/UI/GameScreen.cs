@@ -61,6 +61,11 @@ namespace AICompanyTycoon.UI
         Text _eventDescription;
         Transform _eventChoices;
 
+        GameObject _menuPopup;
+        Text _menuTitle;
+        GameObject _moreDrawer;
+        bool _menuOpen;
+
         MonthSummary _lastSummary;
         string _activeTab = ProductsTab;
         bool _terminal;
@@ -92,13 +97,15 @@ namespace AICompanyTycoon.UI
             BuildResourceHud(content);
             BuildScoreboard(content);
             BuildGoalRibbon(content);
-            BuildOfficeScene(content);
-            BuildTabs(content);
-            BuildContentArea(content);
+            BuildOfficeScene(content);   // office-first — 남는 공간을 차지하는 주인공
             BuildMonthSummary(content);
-            BuildBottomBar(content);
+            BuildStatusLine(content);
+            BuildBottomDock(content);    // CD-3 하단 도크 — 탭 + 다음달 FAB + 더보기
+            BuildMenuPopup(_canvas.transform);   // 탭 콘텐츠는 오피스 위 팝업으로
+            BuildMoreDrawer(_canvas.transform);  // 저장/불러오기/새 게임 드로어
             BuildEventModal(_canvas.transform);
             BuildResultModal(_canvas.transform);
+            SetActivePanel(_activeTab);
             Subscribe();
         }
 
@@ -365,7 +372,7 @@ namespace AICompanyTycoon.UI
             panel.transform.SetParent(parent, false);
             var row = UiFactory.HBox(panel.transform, 14);
             row.childAlignment = TextAnchor.LowerCenter;
-            AddLayout(panel, 220, 0);
+            AddLayout(panel, 260, 1); // office-first — flex 1로 남는 세로 공간을 차지
             _officeSceneContent = panel.transform;
 
             // 리액션 버블 전용 오버레이 — 직원 스프라이트 위에 절대 위치로 띄운다.
@@ -716,73 +723,167 @@ namespace AICompanyTycoon.UI
             return "시장 점유율을 끌어올리세요";
         }
 
-        void BuildTabs(Transform parent)
+        // CD-3 하단 도크 — 대칭 2|FAB|2. [제품][능력] [다음달 FAB] [업그레이드][더보기].
+        void BuildBottomDock(Transform parent)
         {
-            var row = new GameObject("Tabs", typeof(RectTransform));
-            row.transform.SetParent(parent, false);
-            UiFactory.HBox(row.transform, 12);
-            AddLayout(row, 82, 0);
+            var dock = UiFactory.Panel(parent, UiTheme.DockBg);
+            dock.name = "BottomDock";
+            AddLayout(dock, 132, 0);
+            var box = UiFactory.HBox(dock.transform, 8);
+            box.padding = new RectOffset(14, 14, 14, 14);
+            box.childAlignment = TextAnchor.MiddleCenter;
 
-            AddTabButton(row.transform, ProductsTab, "제품");
-            AddTabButton(row.transform, CapabilitiesTab, "능력");
-            AddTabButton(row.transform, UpgradesTab, "업그레이드");
+            AddDockTab(dock.transform, ProductsTab, "제품");
+            AddDockTab(dock.transform, CapabilitiesTab, "능력");
+            BuildFab(dock.transform);
+            AddDockTab(dock.transform, UpgradesTab, "업그레이드");
+
+            var more = UiFactory.Button(dock.transform, "더보기");
+            more.button.onClick.AddListener(ToggleMore);
+            AddLayout(more.button.gameObject, 96, 1);
         }
 
-        void BuildContentArea(Transform parent)
+        void AddDockTab(Transform parent, string key, string label)
         {
-            var frame = UiFactory.Panel(parent, UiTheme.PanelBg);
-            frame.name = "TabContentFrame";
-            AddLayout(frame, 560, 1);
-
-            _productsPanel = CreateScrollPanel(frame.transform, "ProductsPanel", out _productsContent);
-            _capabilitiesPanel = CreateScrollPanel(frame.transform, "CapabilitiesPanel", out _capabilitiesContent);
-            _upgradesPanel = CreateScrollPanel(frame.transform, "UpgradesPanel", out _upgradesContent);
-            SetActiveTab(ProductsTab);
+            var pair = UiFactory.Button(parent, label);
+            pair.button.onClick.AddListener(() => ToggleMenu(key));
+            AddLayout(pair.button.gameObject, 96, 1);
+            _tabButtons[key] = pair.button;
         }
 
+        // 중앙 다음 달 FAB — 펄스 링(뒤) + 큰 버튼(앞).
+        void BuildFab(Transform parent)
+        {
+            var cell = new GameObject("FabCell", typeof(RectTransform));
+            cell.transform.SetParent(parent, false);
+            AddLayoutFixed(cell, 200, 104);
+
+            var ring = new GameObject("FabRing", typeof(RectTransform), typeof(Image));
+            ring.transform.SetParent(cell.transform, false);
+            var ringRect = ring.GetComponent<RectTransform>();
+            ringRect.anchorMin = new Vector2(0.5f, 0.5f);
+            ringRect.anchorMax = new Vector2(0.5f, 0.5f);
+            ringRect.pivot = new Vector2(0.5f, 0.5f);
+            ringRect.sizeDelta = new Vector2(184, 96);
+            var ringImg = ring.GetComponent<Image>();
+            ringImg.color = new Color(UiTheme.Button.r, UiTheme.Button.g, UiTheme.Button.b, 0.5f);
+            ringImg.raycastTarget = false;
+            ring.AddComponent<FabPulse>();
+
+            (_nextMonthButton, _nextMonthLabel) = UiFactory.Button(cell.transform, "다음 달");
+            var btnRect = _nextMonthButton.GetComponent<RectTransform>();
+            btnRect.anchorMin = new Vector2(0.5f, 0.5f);
+            btnRect.anchorMax = new Vector2(0.5f, 0.5f);
+            btnRect.pivot = new Vector2(0.5f, 0.5f);
+            btnRect.sizeDelta = new Vector2(184, 96);
+            _nextMonthLabel.fontSize = 34;
+            _nextMonthButton.onClick.AddListener(HandleAdvanceMonth);
+        }
+
+        // 월 요약 — 오피스 아래 슬림 한 줄 (office-first라 높이 축소).
         void BuildMonthSummary(Transform parent)
         {
             var panel = UiFactory.Panel(parent, UiTheme.PanelBg);
             panel.name = "MonthSummary";
-            AddLayout(panel, 180, 0);
-            UiFactory.VBox(panel.transform, 8, new RectOffset(20, 20, 14, 14));
+            AddLayout(panel, 96, 0);
+            UiFactory.VBox(panel.transform, 4, new RectOffset(18, 18, 10, 10));
 
-            var title = UiFactory.Label(panel.transform, "월 요약", 30);
-            AddLayout(title.gameObject, 38, 0);
-
-            _summaryLabel = UiFactory.Label(panel.transform, "아직 월을 넘기지 않았습니다.", 24);
-            AddLayout(_summaryLabel.gameObject, 100, 1);
+            _summaryLabel = UiFactory.Label(panel.transform, "아직 월을 넘기지 않았습니다.", 22);
+            AddLayout(_summaryLabel.gameObject, 70, 1);
         }
 
-        void BuildBottomBar(Transform parent)
+        void BuildStatusLine(Transform parent)
         {
-            var panel = new GameObject("BottomBar", typeof(RectTransform));
-            panel.transform.SetParent(parent, false);
-            UiFactory.HBox(panel.transform, 10);
-            AddLayout(panel, 110, 0);
+            _statusLabel = UiFactory.Label(parent, "", 22);
+            _statusLabel.color = UiTheme.TextSecondary;
+            _statusLabel.alignment = TextAnchor.MiddleCenter;
+            AddLayout(_statusLabel.gameObject, 32, 0);
+        }
 
-            (_nextMonthButton, _nextMonthLabel) = UiFactory.Button(panel.transform, "다음 달");
-            _nextMonthButton.onClick.AddListener(HandleAdvanceMonth);
-            AddLayout(_nextMonthButton.gameObject, 96, 1);
+        // CD-3 탭 콘텐츠 팝업 — 오피스 위에 시트로 뜬다. 닫으면 오피스가 깨끗.
+        void BuildMenuPopup(Transform parent)
+        {
+            _menuPopup = UiFactory.Panel(parent, UiTheme.ModalScrim);
+            _menuPopup.name = "MenuPopup";
+            Stretch(_menuPopup.GetComponent<RectTransform>());
+            var scrim = _menuPopup.AddComponent<Button>();
+            scrim.transition = Selectable.Transition.None;
+            scrim.onClick.AddListener(CloseMenu);
 
-            var save = UiFactory.Button(panel.transform, "저장");
-            save.button.onClick.AddListener(HandleSave);
-            AddLayout(save.button.gameObject, 96, 1);
+            var card = UiFactory.Panel(_menuPopup.transform, UiTheme.PanelBg);
+            card.name = "MenuCard";
+            var rect = card.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.04f, 0.12f);
+            rect.anchorMax = new Vector2(0.96f, 0.80f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            UiFactory.VBox(card.transform, 12, new RectOffset(20, 20, 18, 18));
 
-            var load = UiFactory.Button(panel.transform, "불러오기");
-            load.button.onClick.AddListener(HandleLoad);
-            AddLayout(load.button.gameObject, 96, 1);
+            var header = new GameObject("MenuHeader", typeof(RectTransform));
+            header.transform.SetParent(card.transform, false);
+            UiFactory.HBox(header.transform, 10);
+            AddLayout(header, 56, 0);
+            _menuTitle = UiFactory.Label(header.transform, "제품", 34);
+            _menuTitle.color = UiTheme.TextPrimary;
+            AddLayout(_menuTitle.gameObject, 52, 1);
+            var close = UiFactory.Button(header.transform, "✕");
+            close.button.onClick.AddListener(CloseMenu);
+            AddLayoutFixed(close.button.gameObject, 64, 52);
 
-            var fresh = UiFactory.Button(panel.transform, "새 게임");
+            var body = new GameObject("MenuBody", typeof(RectTransform));
+            body.transform.SetParent(card.transform, false);
+            AddLayout(body, 600, 1);
+            _productsPanel = CreateScrollPanel(body.transform, "ProductsPanel", out _productsContent);
+            _capabilitiesPanel = CreateScrollPanel(body.transform, "CapabilitiesPanel", out _capabilitiesContent);
+            _upgradesPanel = CreateScrollPanel(body.transform, "UpgradesPanel", out _upgradesContent);
+
+            _menuPopup.SetActive(false);
+        }
+
+        // 더보기 드로어 — 저장/불러오기/새 게임.
+        void BuildMoreDrawer(Transform parent)
+        {
+            _moreDrawer = UiFactory.Panel(parent, UiTheme.ModalScrim);
+            _moreDrawer.name = "MoreDrawer";
+            Stretch(_moreDrawer.GetComponent<RectTransform>());
+            var scrim = _moreDrawer.AddComponent<Button>();
+            scrim.transition = Selectable.Transition.None;
+            scrim.onClick.AddListener(CloseMore);
+
+            var card = UiFactory.Panel(_moreDrawer.transform, UiTheme.PanelBg);
+            card.name = "MoreCard";
+            var rect = card.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.14f, 0.30f);
+            rect.anchorMax = new Vector2(0.86f, 0.72f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            UiFactory.VBox(card.transform, 12, new RectOffset(24, 24, 22, 22));
+
+            var title = UiFactory.Label(card.transform, "더보기", 32);
+            title.alignment = TextAnchor.MiddleCenter;
+            AddLayout(title.gameObject, 46, 0);
+
+            var save = UiFactory.Button(card.transform, "저장");
+            save.button.onClick.AddListener(() => { HandleSave(); CloseMore(); });
+            AddLayout(save.button.gameObject, 80, 0);
+
+            var load = UiFactory.Button(card.transform, "불러오기");
+            load.button.onClick.AddListener(() => { HandleLoad(); CloseMore(); });
+            AddLayout(load.button.gameObject, 80, 0);
+
+            var fresh = UiFactory.Button(card.transform, "새 게임");
             fresh.button.onClick.AddListener(() =>
             {
                 ReplaceContext(SimulationContext.Create(_context.Catalog));
+                CloseMore();
             });
-            AddLayout(fresh.button.gameObject, 96, 1);
+            AddLayout(fresh.button.gameObject, 80, 0);
 
-            _statusLabel = UiFactory.Label(parent, "", 22);
-            _statusLabel.color = UiTheme.TextSecondary;
-            AddLayout(_statusLabel.gameObject, 36, 0);
+            var close = UiFactory.Button(card.transform, "닫기");
+            close.button.onClick.AddListener(CloseMore);
+            AddLayout(close.button.gameObject, 72, 0);
+
+            _moreDrawer.SetActive(false);
         }
 
         void BuildEventModal(Transform parent)
@@ -859,27 +960,102 @@ namespace AICompanyTycoon.UI
             return root;
         }
 
-        void AddTabButton(Transform parent, string key, string label)
+        // 도크 탭 토글 — 같은 탭이 열려 있으면 닫고, 아니면 그 탭으로 연다.
+        void ToggleMenu(string tab)
         {
-            var pair = UiFactory.Button(parent, label);
-            pair.button.onClick.AddListener(() => SetActiveTab(key));
-            AddLayout(pair.button.gameObject, 74, 1);
-            _tabButtons[key] = pair.button;
+            if (_menuOpen && _activeTab == tab)
+            {
+                CloseMenu();
+                return;
+            }
+
+            OpenMenu(tab);
         }
 
-        void SetActiveTab(string tab)
+        void OpenMenu(string tab)
+        {
+            _activeTab = tab;
+            _menuOpen = true;
+            CloseMore();
+            if (_menuPopup != null)
+            {
+                _menuPopup.SetActive(true);
+                PopInCard(_menuPopup, "MenuCard");
+            }
+
+            if (_menuTitle != null)
+            {
+                _menuTitle.text = TabTitle(tab);
+            }
+
+            SetActivePanel(tab);
+            UpdateDockHighlight();
+        }
+
+        void CloseMenu()
+        {
+            _menuOpen = false;
+            if (_menuPopup != null)
+            {
+                _menuPopup.SetActive(false);
+            }
+
+            UpdateDockHighlight();
+        }
+
+        // 팝업 안에서 어느 콘텐츠 패널을 보일지만 토글 (팝업 가시성과 분리 — RefreshLists에서도 호출).
+        void SetActivePanel(string tab)
         {
             _activeTab = tab;
             if (_productsPanel != null) _productsPanel.SetActive(tab == ProductsTab);
             if (_capabilitiesPanel != null) _capabilitiesPanel.SetActive(tab == CapabilitiesTab);
             if (_upgradesPanel != null) _upgradesPanel.SetActive(tab == UpgradesTab);
+        }
 
+        void UpdateDockHighlight()
+        {
             foreach (var item in _tabButtons)
             {
-                var image = item.Value.GetComponent<Image>();
-                image.color = item.Key == tab
-                    ? UiTheme.TabActive
-                    : UiTheme.TabInactive;
+                bool active = _menuOpen && item.Key == _activeTab;
+                var colors = item.Value.colors;
+                colors.normalColor = active ? UiTheme.TabActive : UiTheme.Button;
+                colors.selectedColor = colors.normalColor;
+                item.Value.colors = colors;
+            }
+        }
+
+        string TabTitle(string tab)
+        {
+            if (tab == ProductsTab) return "제품";
+            if (tab == CapabilitiesTab) return "능력";
+            return "업그레이드";
+        }
+
+        void ToggleMore()
+        {
+            if (_moreDrawer == null)
+            {
+                return;
+            }
+
+            bool open = !_moreDrawer.activeSelf;
+            if (open)
+            {
+                CloseMenu();
+                _moreDrawer.SetActive(true);
+                PopInCard(_moreDrawer, "MoreCard");
+            }
+            else
+            {
+                _moreDrawer.SetActive(false);
+            }
+        }
+
+        void CloseMore()
+        {
+            if (_moreDrawer != null)
+            {
+                _moreDrawer.SetActive(false);
             }
         }
 
@@ -1014,7 +1190,7 @@ namespace AICompanyTycoon.UI
             BuildProductCards();
             BuildCapabilityCards();
             BuildUpgradeCards();
-            SetActiveTab(_activeTab);
+            SetActivePanel(_activeTab);
         }
 
         void BuildProductCards()

@@ -4,8 +4,8 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-09
-**활성 피처** — feat-006 Claude Design 첫 화면 반영. 블록 A(랭킹)·B(전광판)·C(코어3 HUD)·D(생동감) 완료, EditMode 29/29. Block E(메뉴 재구성)는 사용자 지시로 보류(다음 세션).
-**현재 목표** — 에디터 ▶ A~D 시각 확인. E는 보류. 정본·결정은 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md.
+**활성 피처** — feat-006 Claude Design 첫 화면 반영. 블록 A~E 전부 코드 완료, EditMode 29/29. office-first 레이아웃·전광판·코어3 HUD·생동감·하단 도크 내비 모두 이식.
+**현재 목표** — 에디터 ▶ A~E 시각 확인(헤드리스라 미확인). 정본·결정은 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -16,14 +16,15 @@
 - [x] feat-006 Block B — LED 전광판 UI (LiveBlink 점멸 + Marquee 흐름 + #랭크/총사/델타)
 - [x] feat-006 Block C — 코어3 칩 HUD + ＋트레이 + 목표 리본 + 크레스트 (세로 8-리스트 대체)
 - [x] feat-006 Block D — 직원 통통 모션(StaffBob) + 모달 팝인(UiTween.PopIn)
+- [x] feat-006 Block E — 하단 도크(2|FAB|2) + 다음달 FAB 펄스 + 탭 팝업(MenuPopup) + 더보기 드로어, office-first(office flex 1)
 ### 진행 중 (What's In Progress)
-- [~] feat-006 — A~D 코드 완료(EditMode 29/29). 남음 — 에디터 ▶ 시각 확인 + Block E(메뉴 재구성/free-float 레이아웃)
+- [~] feat-006 — A~E 전 블록 코드 완료(EditMode 29/29). 남음 — 에디터 ▶ 시각 확인(헤드리스 미확인)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)
-1. 에디터 ▶ 플레이로 A~D 시각 확인 (전광판·코어3 칩 HUD·트레이·목표 리본·직원 통통·모달 팝인). `AICT > Import Icon Atlases` 먼저 1회
-2. (보류) Block E — 하단 도크 4코어 탭 + 다음행동 FAB + 더보기 드로어 (CD-3, office-first). 다음 세션. 스펙은 reports/v1_0_menu_uiux_design_review.md
-3. 추후 — docs/backlog.md (픽셀아트 아이콘, office-objects, 실기기/에뮬, BGM, TMP)
+1. 에디터 ▶ 플레이로 A~E 시각 확인 (오피스 지배·전광판·코어3 칩 HUD·도크·FAB 펄스·탭 팝업·더보기). `AICT > Import Icon Atlases` 먼저 1회
+2. 시각 피드백으로 A~E 다듬기 (칩 크기·색·순위 수치 감·도크 레이아웃 등 토큰/상수 조정)
+3. 추후 — docs/backlog.md (픽셀아트 아이콘, office-objects, 실기기/에뮬, BGM, TMP, 도트매트릭스 전광판 텍스처)
 
 ## 블로커 / 리스크
 - [ ] 시각 미확인 — 아이콘 셀/테마 색/파티클/한글/세이프에어리어/스플래시는 에디터·시뮬레이터 확인 남음.
