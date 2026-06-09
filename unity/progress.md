@@ -3,24 +3,26 @@
 재시작 상태용이다. 전체 이력 아님. 오래된 증거는 CHANGELOG로. (≤120줄)
 
 ## 현재 상태 (Current State)
-**마지막 갱신** — 2026-06-08
-**활성 피처** — feat-005 플랫폼. 세이프에어리어·빌드셋업·실제 빌드(APK 35MB)·아이콘/스플래시 완료. 남은 건 시각 확인 + 최종 픽셀아트(backlog).
-**현재 목표** — feat-005 마무리. 추후 할 일은 docs/backlog.md.
+**마지막 갱신** — 2026-06-09
+**활성 피처** — feat-006 Claude Design 첫 화면 반영. 전광판 트랙(A 랭킹시스템 + B LED 전광판 UI) 코드 완료. 남은 블록 C(코어3 HUD)·D(생동감)·E(메뉴 재구성).
+**현재 목표** — Block B 전광판 에디터 ▶ 시각 확인 후 Block C 또는 D 진행. 정본·결정은 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
 - [x] P0~feat-003 — 셋업/데이터/코어/VS UI (이전 세션)
 - [x] feat-004 사운드·모션 + 아이콘(897700d)·파티클(748d1a8)·테마(eb23a22)·한글폰트(e36ccf8)
-- [x] feat-005 세이프에어리어(021ac45) + 빌드셋업(733e184) + 실제 Android 빌드(APK 35MB, BuildResult Succeeded)
-- [x] feat-005 아이콘/스플래시 — office 배경 임시(app_icon 1024 + splash 2560x1440). SetIcons(Android/iOS)+SplashScreen 배선. 최종 픽셀아트는 docs/backlog.md
+- [x] feat-005 세이프에어리어(021ac45) + 빌드셋업(733e184) + Android 빌드(APK 35MB) + 아이콘/스플래시(office 임시)
+- [x] feat-006 Block A — 경쟁사·시장점유율·전국랭킹 헤드리스 (CompetitorDef 12사 + MarketService + ScoreboardRanking, EditMode 29/29). 커밋 후 DataImporter.ImportAll로 DataCatalog 반영
+- [x] feat-006 Block B — LED 전광판 UI (LiveBlink 점멸 + Marquee 흐름 + #랭크/총사/델타, GameScreen.BuildScoreboard). 컴파일 그린, 시각 확인 대기
 ### 진행 중 (What's In Progress)
-- [~] feat-005 플랫폼 — 빌드·아이콘/스플래시 완료. 남음 — 에디터/실기기 시각 확인(최종 아트는 backlog)
-- [~] 기존 에셋 반영 — 게임 배경(office) + 아틀라스 6개(총 80셀) + 직원 캐릭터 씬(v076 actor, talent 수 연동). 남음 — office-objects/agents 스프라이트, 아틀라스 사용처. 시각 조정.
+- [~] feat-006 전광판 트랙 — A·B 코드 완료. 남음 — 에디터 ▶ 전광판 시각 확인(LED·점멸·마퀴)
+- [~] feat-006 남은 블록 — C 코어3 HUD+트레이+목표리본 / D 캐릭터·씬 생동감 / E 메뉴 재구성. 정본 reports/v1_0_*
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)
-1. 에디터 ▶ 플레이 / Device Simulator로 비주얼·세이프에어리어 시각 확인 (Android 폰 불필요)
-2. 추후 — docs/backlog.md (픽셀아트 아이콘, 기존 에셋 전부 반영, 실기기/에뮬, BGM, TMP)
+1. 에디터 ▶ 플레이로 전광판(LED 랭킹·LIVE 점멸·마퀴) 시각 확인. `AICT > Import Icon Atlases`도 먼저 1회
+2. Block C(코어3 HUD) 또는 D(생동감) 진행 — 사용자 선택
+3. 추후 — docs/backlog.md (픽셀아트 아이콘, office-objects, 실기기/에뮬, BGM, TMP)
 
 ## 블로커 / 리스크
 - [ ] 시각 미확인 — 아이콘 셀/테마 색/파티클/한글/세이프에어리어/스플래시는 에디터·시뮬레이터 확인 남음.
