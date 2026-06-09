@@ -14,7 +14,9 @@ public static class IconAtlasImporter
     {
         public string fileName;
         public string folder; // public/assets 하위 폴더 (기본 ui, v076만 sprites)
-        public int cell;
+        public int cell;      // 정사각 셀 한 변. 비정사각이면 cellW/cellH 사용.
+        public int cellW;     // 0이면 cell 사용
+        public int cellH;     // 0이면 cell 사용
         public int columns;
         public string[] names;
     }
@@ -118,6 +120,23 @@ public static class IconAtlasImporter
             columns = 6,
             names = new[] { "react_codespark", "react_idea", "react_coffee", "react_alert", "react_cheer", "react_gear" },
         },
+        new AtlasDef
+        {
+            // v054 office-objects — 256x192 비정사각, 5x5=25칸(0-20 오브젝트, 21-24 빈칸). 책상/서버/캐비닛/화이트보드/프린터/회의테이블.
+            fileName = "v054-office-objects-final.png",
+            folder = "sprites",
+            cellW = 256,
+            cellH = 192,
+            columns = 5,
+            names = new[]
+            {
+                "obj_desk_monitor", "obj_server_dark", "obj_cabinet_wood", "obj_server_blue", "obj_crate_brown",
+                "obj_desk_monitor_b", "obj_server_slate", "obj_cabinet_mint", "obj_crate_low", "obj_crate_red",
+                "obj_desk_green", "obj_whiteboard_a", "obj_whiteboard_b", "obj_printer_blue", "obj_server_amber",
+                "obj_glassboard_a", "obj_printer_cyan", "obj_desk_papers", "obj_meeting_table", "obj_equipment_blue",
+                "obj_glassboard_b", "obj_empty21", "obj_empty22", "obj_empty23", "obj_empty24",
+            },
+        },
     };
 
     [MenuItem("AICT/Import Icon Atlases")]
@@ -160,16 +179,22 @@ public static class IconAtlasImporter
             return;
         }
 
+        // 정사각이면 cell, 비정사각이면 cellW/cellH 를 쓴다.
+        int cw = atlas.cellW > 0 ? atlas.cellW : atlas.cell;
+        int ch = atlas.cellH > 0 ? atlas.cellH : atlas.cell;
+
         importer.textureType = TextureImporterType.Sprite;
         importer.spriteImportMode = SpriteImportMode.Multiple;
         importer.filterMode = FilterMode.Point;
         importer.textureCompression = TextureImporterCompression.Uncompressed;
         importer.mipmapEnabled = false;
-        importer.spritePixelsPerUnit = atlas.cell;
+        importer.npotScale = TextureImporterNPOTScale.None; // NPOT(예: 1280x960) 시 스케일 금지 — rect가 어긋나지 않게
+        importer.maxTextureSize = 4096;
+        importer.spritePixelsPerUnit = ch;
 
-        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+        // 높이는 그리드에서 결정적으로 계산한다(첫 임포트 시 tex.height가 스케일/지연으로 틀어질 수 있음). 아틀라스는 tight-packed.
         int rows = Mathf.CeilToInt(atlas.names.Length / (float)atlas.columns);
-        int texHeight = tex != null ? tex.height : rows * atlas.cell;
+        int texHeight = rows * ch;
 
         var sheet = new List<SpriteMetaData>(atlas.names.Length);
         for (int i = 0; i < atlas.names.Length; i += 1)
@@ -180,7 +205,7 @@ public static class IconAtlasImporter
             sheet.Add(new SpriteMetaData
             {
                 name = atlas.names[i],
-                rect = new Rect(col * atlas.cell, texHeight - (row + 1) * atlas.cell, atlas.cell, atlas.cell),
+                rect = new Rect(col * cw, texHeight - (row + 1) * ch, cw, ch),
                 alignment = (int)SpriteAlignment.Center,
                 pivot = new Vector2(0.5f, 0.5f),
             });

@@ -19,6 +19,7 @@ namespace AICompanyTycoon.UI
             "Art/UI/v077-celebration-emblem-atlas",
             "Art/UI/v078-world-reveal-stamp-atlas",
             "Art/UI/v081-office-reaction-atlas",
+            "Art/UI/v054-office-objects-final",
         };
 
         static Dictionary<string, Sprite> _cache;

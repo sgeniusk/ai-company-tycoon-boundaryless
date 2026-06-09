@@ -365,17 +365,29 @@ namespace AICompanyTycoon.UI
             _scoreMarquee.text = string.Join("    ·    ", lines);
         }
 
-        // office 배경 위에 직원 캐릭터(v076)를 세울 사무실 씬 영역. 채우기는 RefreshOfficeScene이 한다.
+        // office 배경 위에 직원 캐릭터(v076)를 세울 사무실 씬 영역. 가구(뒤) + 직원(앞) 2층.
         void BuildOfficeScene(Transform parent)
         {
             var panel = new GameObject("OfficeScene", typeof(RectTransform));
             panel.transform.SetParent(parent, false);
-            var row = UiFactory.HBox(panel.transform, 14);
-            row.childAlignment = TextAnchor.LowerCenter;
             AddLayout(panel, 260, 1); // office-first — flex 1로 남는 세로 공간을 차지
-            _officeSceneContent = panel.transform;
 
-            // 리액션 버블 전용 오버레이 — 직원 스프라이트 위에 절대 위치로 띄운다.
+            // 1층(뒤) — v054 오피스 가구를 상단~중단 밴드에 깔아 사무실감을 준다.
+            BuildOfficeFurniture(panel.transform);
+
+            // 2층(앞) — 직원 row. 전체 스트레치 + 하단 중앙 정렬. RefreshOfficeScene이 채운다.
+            var actorRow = new GameObject("ActorRow", typeof(RectTransform));
+            actorRow.transform.SetParent(panel.transform, false);
+            var aRect = actorRow.GetComponent<RectTransform>();
+            aRect.anchorMin = Vector2.zero;
+            aRect.anchorMax = Vector2.one;
+            aRect.offsetMin = Vector2.zero;
+            aRect.offsetMax = Vector2.zero;
+            var row = UiFactory.HBox(actorRow.transform, 14);
+            row.childAlignment = TextAnchor.LowerCenter;
+            _officeSceneContent = actorRow.transform; // Clear는 직원만 비운다(가구·오버레이 보존)
+
+            // 리액션 버블 전용 오버레이 — 최상단(직원 위)에 절대 위치로 띄운다.
             var overlay = new GameObject("ReactionLayer", typeof(RectTransform));
             overlay.transform.SetParent(panel.transform, false);
             var overlayRect = overlay.GetComponent<RectTransform>();
@@ -384,6 +396,46 @@ namespace AICompanyTycoon.UI
             overlayRect.offsetMin = Vector2.zero;
             overlayRect.offsetMax = Vector2.zero;
             _reactionLayer = overlay.transform;
+        }
+
+        // v054 오브젝트 몇 개를 직원 뒤 밴드에 등각 배치한다(정적 앰비언스). 스프라이트 없으면 건너뛴다.
+        void BuildOfficeFurniture(Transform parent)
+        {
+            var band = new GameObject("Furniture", typeof(RectTransform));
+            band.transform.SetParent(parent, false);
+            var rect = band.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.05f, 0.32f);
+            rect.anchorMax = new Vector2(0.95f, 0.72f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            var box = UiFactory.HBox(band.transform, 18);
+            box.childAlignment = TextAnchor.MiddleCenter;
+
+            var items = new[] { "obj_desk_monitor", "obj_server_blue", "obj_whiteboard_a", "obj_desk_papers" };
+            foreach (var key in items)
+            {
+                var sprite = IconLibrary.Get(key);
+                if (sprite == null)
+                {
+                    continue;
+                }
+
+                var go = new GameObject(key, typeof(RectTransform), typeof(Image));
+                go.transform.SetParent(band.transform, false);
+                var img = go.GetComponent<Image>();
+                img.sprite = sprite;
+                img.preserveAspect = true;
+                img.raycastTarget = false;
+                img.color = new Color(1f, 1f, 1f, 0.94f); // 살짝 가라앉혀 직원이 앞으로 읽히게
+
+                var le = go.AddComponent<LayoutElement>();
+                le.minWidth = 168;
+                le.preferredWidth = 168;
+                le.minHeight = 126;
+                le.preferredHeight = 126;
+                le.flexibleWidth = 0;
+                le.flexibleHeight = 0;
+            }
         }
 
         // talent(인재) 수만큼 직원 캐릭터를 세운다. 스프라이트가 없으면(임포트 전) 빈 칸으로 안전.

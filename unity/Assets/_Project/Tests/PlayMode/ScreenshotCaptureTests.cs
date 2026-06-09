@@ -174,6 +174,64 @@ namespace AICompanyTycoon.Tests.PlayMode
             yield return null;
         }
 
+        // 오브젝트 퍼레이드 — v054 오피스 오브젝트 21종을 그리드로 렌더해 슬라이스/임포트 검증.
+        [UnityTest]
+        public IEnumerator Capture_ObjectParade()
+        {
+            if (!HasGraphics)
+            {
+                Assert.Ignore("그래픽 디바이스 없음 — 캡처 스킵(-nographics).");
+            }
+
+            var canvasGo = new GameObject("ObjectParade", typeof(RectTransform), typeof(Canvas));
+            var canvas = canvasGo.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+            var bg = new GameObject("BG", typeof(RectTransform), typeof(Image));
+            bg.transform.SetParent(canvasGo.transform, false);
+            var bgRect = bg.GetComponent<RectTransform>();
+            bgRect.anchorMin = Vector2.zero;
+            bgRect.anchorMax = Vector2.one;
+            bgRect.offsetMin = Vector2.zero;
+            bgRect.offsetMax = Vector2.zero;
+            bg.GetComponent<Image>().color = new Color(0.98f, 0.969f, 0.875f, 1f);
+
+            var keys = new[]
+            {
+                "obj_desk_monitor", "obj_server_dark", "obj_cabinet_wood", "obj_server_blue",
+                "obj_crate_brown", "obj_desk_monitor_b", "obj_server_slate", "obj_cabinet_mint",
+                "obj_crate_low", "obj_crate_red", "obj_desk_green", "obj_whiteboard_a",
+                "obj_whiteboard_b", "obj_printer_blue", "obj_server_amber", "obj_glassboard_a",
+                "obj_printer_cyan", "obj_desk_papers", "obj_meeting_table", "obj_equipment_blue",
+                "obj_glassboard_b",
+            };
+            int cols = 4;
+            for (int i = 0; i < keys.Length; i++)
+            {
+                var sprite = IconLibrary.Get(keys[i]);
+                var go2 = new GameObject(keys[i], typeof(RectTransform), typeof(Image));
+                go2.transform.SetParent(canvasGo.transform, false);
+                var rect = go2.GetComponent<RectTransform>();
+                float fx = 0.13f + (i % cols) * 0.25f;
+                float fy = 0.9f - (i / cols) * 0.15f;
+                rect.anchorMin = new Vector2(fx, fy);
+                rect.anchorMax = new Vector2(fx, fy);
+                rect.pivot = new Vector2(0.5f, 0.5f);
+                rect.sizeDelta = new Vector2(240, 180);
+                var img = go2.GetComponent<Image>();
+                img.sprite = sprite;
+                img.preserveAspect = true;
+                img.color = sprite != null ? Color.white : new Color(1f, 0f, 0f, 0.3f);
+            }
+
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+            yield return CaptureCanvas(canvasGo, "09-object-parade.png");
+
+            Object.Destroy(canvasGo);
+            yield return null;
+        }
+
         static IEnumerator WaitRealtime(float seconds)
         {
             float t = 0f;

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 774c36738e9c74211bf1eeddbad81fb7
+guid: bf51ef28a330e49c983ce7ddf3b90dd6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 48
+  spritePixelsToUnits: 192
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -136,13 +136,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ui_cash
+      name: obj_desk_monitor
       rect:
         serializedVersion: 2
         x: 0
-        y: 96
-        width: 48
-        height: 48
+        y: 768
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,20 +151,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9cfcbb4f1e5094560800000000000000
-      internalID: 7298371139162329033
+      spriteID: 7593a6b95d7a209e0800000000000000
+      internalID: -1656577177041618601
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_users
+      name: obj_server_dark
       rect:
         serializedVersion: 2
-        x: 48
-        y: 96
-        width: 48
-        height: 48
+        x: 256
+        y: 768
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,20 +173,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: dbfb25a61a68bc4f0800000000000000
-      internalID: -807403680351207491
+      spriteID: dd0d2c5fb10ac69d0800000000000000
+      internalID: -2779670828046692131
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_compute
+      name: obj_cabinet_wood
       rect:
         serializedVersion: 2
-        x: 96
-        y: 96
-        width: 48
-        height: 48
+        x: 512
+        y: 768
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,20 +195,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cd15ce773e1674db0800000000000000
-      internalID: -4807766447597268516
+      spriteID: 851da0c75ab3cccf0800000000000000
+      internalID: -230743898966011560
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_data
+      name: obj_server_blue
       rect:
         serializedVersion: 2
-        x: 144
-        y: 96
-        width: 48
-        height: 48
+        x: 768
+        y: 768
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -217,20 +217,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9e06cad8e38f06610800000000000000
-      internalID: 1612561614147182825
+      spriteID: 64ea930837250e0b0800000000000000
+      internalID: -5701466472225067450
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_talent
+      name: obj_crate_brown
       rect:
         serializedVersion: 2
-        x: 192
-        y: 96
-        width: 48
-        height: 48
+        x: 1024
+        y: 768
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -239,86 +239,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3e5e6989bbcccd9d0800000000000000
-      internalID: -2748096566511868445
+      spriteID: b131a92bd8a02a900800000000000000
+      internalID: 694128896271586075
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_trust
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 96
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a4d449a20fcff9160800000000000000
-      internalID: 7034619251412716874
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ui_hype
-      rect:
-        serializedVersion: 2
-        x: 288
-        y: 96
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c60b55931b2bb83a0800000000000000
-      internalID: -6662034749523644308
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ui_automation
-      rect:
-        serializedVersion: 2
-        x: 336
-        y: 96
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 79072228ecdfe81d0800000000000000
-      internalID: -3346458409701314409
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ui_company
+      name: obj_desk_monitor_b
       rect:
         serializedVersion: 2
         x: 0
-        y: 48
-        width: 48
-        height: 48
+        y: 576
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -327,20 +261,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e6e3764c495f23530800000000000000
-      internalID: 3833396252144778862
+      spriteID: 500c491a8e4238e80800000000000000
+      internalID: -8177651916812795899
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_launch
+      name: obj_server_slate
       rect:
         serializedVersion: 2
-        x: 48
-        y: 48
-        width: 48
-        height: 48
+        x: 256
+        y: 576
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -349,20 +283,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6ff1be87803ba75d0800000000000000
-      internalID: -3063939747502415882
+      spriteID: 2bd01d79e3c3a2640800000000000000
+      internalID: 5055919771209502130
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_deck
+      name: obj_cabinet_mint
       rect:
         serializedVersion: 2
-        x: 96
-        y: 48
-        width: 48
-        height: 48
+        x: 512
+        y: 576
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -371,20 +305,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 02bdd4e2f5b375d10800000000000000
-      internalID: 2114223830058523424
+      spriteID: 103560cf9fdbbc910800000000000000
+      internalID: 1858788152593240833
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_agent
+      name: obj_crate_low
       rect:
         serializedVersion: 2
-        x: 144
-        y: 48
-        width: 48
-        height: 48
+        x: 768
+        y: 576
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -393,20 +327,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7adeb451a88249170800000000000000
-      internalID: 8184210996366929319
+      spriteID: dfb363446b37db3c0800000000000000
+      internalID: -4342187239049643011
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_research
+      name: obj_crate_red
       rect:
         serializedVersion: 2
-        x: 192
-        y: 48
-        width: 48
-        height: 48
+        x: 1024
+        y: 576
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -415,20 +349,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3d48d6a3ab886e760800000000000000
-      internalID: 7486821763975578835
+      spriteID: 3705e935796a546e0800000000000000
+      internalID: -1853892502719934349
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_shop
+      name: obj_desk_green
       rect:
         serializedVersion: 2
-        x: 240
-        y: 48
-        width: 48
-        height: 48
+        x: 0
+        y: 384
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -437,20 +371,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5ac7d35c8fdd63fc0800000000000000
-      internalID: -3515378398585324379
+      spriteID: a10a78f4e04f8c470800000000000000
+      internalID: 8415244246042779674
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_trophy
+      name: obj_whiteboard_a
       rect:
         serializedVersion: 2
-        x: 288
-        y: 48
-        width: 48
-        height: 48
+        x: 256
+        y: 384
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -459,20 +393,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 24bda50edfd833230800000000000000
-      internalID: 3617391047238933314
+      spriteID: 2c3d1e80bab674240800000000000000
+      internalID: 4775904312182297538
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_log
+      name: obj_whiteboard_b
       rect:
         serializedVersion: 2
-        x: 336
-        y: 48
-        width: 48
-        height: 48
+        x: 512
+        y: 384
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -481,20 +415,174 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 84404c2ab3513ee90800000000000000
-      internalID: -6997726050125609912
+      spriteID: f1b14baa1e365f9a0800000000000000
+      internalID: -6199939491122898145
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_calendar
+      name: obj_printer_blue
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 384
+        width: 256
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c59424d9f5b84510800000000000000
+      internalID: 1533675757730305477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: obj_server_amber
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 384
+        width: 256
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98f680f81db4b19c0800000000000000
+      internalID: -3955484484294905975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: obj_glassboard_a
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 256
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9748aeb5384a5940800000000000000
+      internalID: 5285616508341864349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: obj_printer_cyan
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 192
+        width: 256
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33b7c58b67768f0c0800000000000000
+      internalID: -4541766464606274765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: obj_desk_papers
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 192
+        width: 256
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1b7329a255825260800000000000000
+      internalID: 7084871753878698781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: obj_meeting_table
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 192
+        width: 256
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c6f7eba270323d30800000000000000
+      internalID: 4409640254217647812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: obj_equipment_blue
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 192
+        width: 256
+        height: 192
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0ea07674f26272a0800000000000000
+      internalID: -6741216890121572850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: obj_glassboard_b
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 48
-        height: 48
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -503,20 +591,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 695b23618059a11c0800000000000000
-      internalID: -4532146213030283882
+      spriteID: c20b740d3d41a4010800000000000000
+      internalID: 1173773552848449580
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_spark
+      name: obj_empty21
       rect:
         serializedVersion: 2
-        x: 48
+        x: 256
         y: 0
-        width: 48
-        height: 48
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -525,20 +613,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2b406238013090ff0800000000000000
-      internalID: -69520949792865102
+      spriteID: 5e313a5c46b0d2300800000000000000
+      internalID: 228851683506197477
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_save
+      name: obj_empty22
       rect:
         serializedVersion: 2
-        x: 96
+        x: 512
         y: 0
-        width: 48
-        height: 48
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -547,20 +635,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c92f8b497a521d710800000000000000
-      internalID: 1716194334689784476
+      spriteID: 68949a24cfd276590800000000000000
+      internalID: -7681120077983692410
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_load
+      name: obj_empty23
       rect:
         serializedVersion: 2
-        x: 144
+        x: 768
         y: 0
-        width: 48
-        height: 48
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -569,20 +657,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 71d1ec49249660c10800000000000000
-      internalID: 2019417217607539991
+      spriteID: 59acc8e62c9fd0990800000000000000
+      internalID: -7417998397735646571
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_globe
+      name: obj_empty24
       rect:
         serializedVersion: 2
-        x: 192
+        x: 1024
         y: 0
-        width: 48
-        height: 48
+        width: 256
+        height: 192
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -591,74 +679,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 57aaf33691b6e9880800000000000000
-      internalID: -8602320481447597451
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ui_chart
-      rect:
-        serializedVersion: 2
-        x: 240
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 172e05c1107016d90800000000000000
-      internalID: -7106391035662507407
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ui_warning
-      rect:
-        serializedVersion: 2
-        x: 288
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 293a4a2ee8ee9a150800000000000000
-      internalID: 5884496685591470994
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ui_crest
-      rect:
-        serializedVersion: 2
-        x: 336
-        y: 0
-        width: 48
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ebcce92fe4e245390800000000000000
-      internalID: -7830582935477629762
+      spriteID: a673aac9888465a60800000000000000
+      internalID: 7662391567598630762
       vertices: []
       indices: 
       edges: []
@@ -677,30 +699,31 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ui_agent: 8184210996366929319
-      ui_automation: -3346458409701314409
-      ui_calendar: -4532146213030283882
-      ui_cash: 7298371139162329033
-      ui_chart: -7106391035662507407
-      ui_company: 3833396252144778862
-      ui_compute: -4807766447597268516
-      ui_crest: -7830582935477629762
-      ui_data: 1612561614147182825
-      ui_deck: 2114223830058523424
-      ui_globe: -8602320481447597451
-      ui_hype: -6662034749523644308
-      ui_launch: -3063939747502415882
-      ui_load: 2019417217607539991
-      ui_log: -6997726050125609912
-      ui_research: 7486821763975578835
-      ui_save: 1716194334689784476
-      ui_shop: -3515378398585324379
-      ui_spark: -69520949792865102
-      ui_talent: -2748096566511868445
-      ui_trophy: 3617391047238933314
-      ui_trust: 7034619251412716874
-      ui_users: -807403680351207491
-      ui_warning: 5884496685591470994
+      obj_cabinet_mint: 1858788152593240833
+      obj_cabinet_wood: -230743898966011560
+      obj_crate_brown: 694128896271586075
+      obj_crate_low: -4342187239049643011
+      obj_crate_red: -1853892502719934349
+      obj_desk_green: 8415244246042779674
+      obj_desk_monitor: -1656577177041618601
+      obj_desk_monitor_b: -8177651916812795899
+      obj_desk_papers: 7084871753878698781
+      obj_empty21: 228851683506197477
+      obj_empty22: -7681120077983692410
+      obj_empty23: -7417998397735646571
+      obj_empty24: 7662391567598630762
+      obj_equipment_blue: -6741216890121572850
+      obj_glassboard_a: 5285616508341864349
+      obj_glassboard_b: 1173773552848449580
+      obj_meeting_table: 4409640254217647812
+      obj_printer_blue: 1533675757730305477
+      obj_printer_cyan: -4541766464606274765
+      obj_server_amber: -3955484484294905975
+      obj_server_blue: -5701466472225067450
+      obj_server_dark: -2779670828046692131
+      obj_server_slate: 5055919771209502130
+      obj_whiteboard_a: 4775904312182297538
+      obj_whiteboard_b: -6199939491122898145
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
