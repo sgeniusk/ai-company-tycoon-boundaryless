@@ -98,6 +98,15 @@ public static class IconAtlasImporter
         },
         new AtlasDef
         {
+            // v090 workforce-actor 고해상 — 256px, 3x1. v076 드롭인 교체본(같은 셀 이름, IconLibrary 경로로 선택).
+            fileName = "v090-workforce-actor-hires.png",
+            folder = "sprites",
+            cell = 256,
+            columns = 3,
+            names = new[] { "actor_human", "actor_ai", "actor_robot" },
+        },
+        new AtlasDef
+        {
             // v077 celebration-emblem — 80px, 3x1. synergy/combo/achievement.
             fileName = "v077-celebration-emblem-atlas.png",
             cell = 80,
