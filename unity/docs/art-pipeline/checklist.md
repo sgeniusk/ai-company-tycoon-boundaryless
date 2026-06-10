@@ -21,7 +21,7 @@ React 소스(`public/assets/sprites`)에 풍부한 아트가 있으나 Unity 포
 - [x] 시각 레퍼런스 — `ref/char-ref-8x.png`(기존 8배), `ref/palette.png`
 - [x] 검증 하네스 — `ScreenshotCaptureTests.Capture_ActorParade`(3종 격리 캡처 → `Logs/shots/08-actor-parade.png`)
 - [x] Tier1 생성 핸드오프 — `../codex-handoff/v090-actor-hires-gen.md`
-- [ ] **Tier1 생성 (외주 대기)** — v090 고해상 idle 3종 (256px). Codex/agy
+- [x] **Tier1 생성 완료 (2026-06-11)** — v090 고해상 idle 3종 (256px). Codex 절차 생성(`scripts/assets/generate-v090-workforce-actor-hires.mjs`, 결정적). 바이블 식별 마커 육안 확인
 - [ ] Tier1 Unity 임포트 (Codex) — IconAtlasImporter v090 정의 + IconLibrary 경로
 - [ ] Tier1 Claude 검증 — 퍼레이드/오피스 캡처 대조, 일관성 수정
 - [ ] Tier2 — 5포즈 애니 시트(1152×9600 계약). **기존 v053(576×4800)이 레퍼런스로 존재**. 후속 (Unity 포즈/애니 통합 + 고해상 생성)
