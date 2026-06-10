@@ -3,7 +3,7 @@
 재시작 상태용이다. 전체 이력 아님. 오래된 증거는 CHANGELOG로. (≤120줄)
 
 ## 현재 상태 (Current State)
-**마지막 갱신** — 2026-06-09
+**마지막 갱신** — 2026-06-10
 **활성 피처** — feat-006 Claude Design 첫 화면 반영. 블록 A~E **시각 확인 완료**(헤드리스 캡처 하네스로 7장 육안 대조). EditMode 29/29 유지. office-first·전광판·코어3 HUD·생동감·하단 도크 모두 이식+검증.
 **현재 목표** — feat-006 핵심 완료. 남은 건 backlog 아트뿐(픽셀아트 아이콘·office-objects·도트매트릭스 텍스처·BGM·실기기). 정본 docs/feat-006-context-notes.md, 체크리스트 docs/feat-006-checklist.md(시각 검증 하네스 사용법 포함).
 
@@ -17,13 +17,15 @@
 - [x] feat-006 Block C — 코어3 칩 HUD + ＋트레이 + 목표 리본 + 크레스트 (세로 8-리스트 대체)
 - [x] feat-006 Block D — 직원 통통 모션(StaffBob) + 모달 팝인(UiTween.PopIn)
 - [x] feat-006 Block E — 하단 도크(2|FAB|2) + 다음달 FAB 펄스 + 탭 팝업(MenuPopup) + 더보기 드로어, office-first(office flex 1)
+- [x] 데이터 한글화(업그레이드/자동화) — 업그레이드 15종·자동화 3종 표시명·설명(+monthly_benefit)을 정본 JSON+SO 한글 재시드. 근본원인은 정본 `data/upgrades.json`·`automation_upgrades.json`이 앞 일부만 번역된 부분 번역(임포터·SO는 정상 미러링, "다른 영문 소스" 아님). 블래스트 반경 0(C#/테스트/루트 영문 의존 없음), products/domains/capabilities/resources/stages는 이미 완전 한글 확인. SO 18개 raw-UTF-8 재시드(DataCatalog는 GUID 참조라 무변경). **Unity 검증 완료** — EditMode 29/29 + 05-upgrades.png 한글 표시명·설명 렌더 확인. 커밋 77a5f10(Claude 검증·정본반영)
+- [x] 아트 — v054 오피스 오브젝트 21종 Unity 임포트(IconAtlasImporter 비정사각 cellW/cellH) + 오피스 가구 배치(가구 백row+직원 front 2층, ReactionLayer Clear 잠재버그 수정). 커밋 993c470. EditMode 29/29 + 오브젝트 퍼레이드(09)·오피스 캡처 검증
 ### 진행 중 (What's In Progress)
 - [x] feat-006 — A~E 코드 완료 + **시각 확인 완료**(헤드리스 캡처). 버그 1건 수정·탭 페이드 추가. 남은 건 backlog 아트뿐
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)
-1. 캡처에서 발견된 스코프 외 데이터 이슈(별도 피처) — 업그레이드 설명 한/영 혼용, 카드 요구조건 원시 키 노출(`min_month`/`min_users`/`min_talent` → 한글화). upgrades 데이터/리스트 렌더 영역.
-2. **아트 파이프라인 (진행 중)** — `docs/art-pipeline/`(분업: 이미지 생성 Codex/agy 외주, 캐릭터시트·검증 Claude). 직원 액터 바이블+핸드오프(v090) 완료, 오피스 오브젝트 핸드오프(v091) 완료. 다음 — Codex/agy 생성 또는 기존 v053/v054 임시 임포트(Codex). 발견 — 기존 풍부한 아트(v053 5포즈·v054 오브젝트)가 Unity 미반영, 레퍼런스+임시용.
+1. **이벤트 한/영 혼용(`data/events.json`)** — 15종 중 13종(`viral_demo`·`gpu_price_spike` 외) name/description/choices 영문. 업그레이드와 같은 부분 번역 패턴이나 서사 분량이 커 별도 작업. (업그레이드 표시명·설명 혼용 + 요구조건 원시 키 노출 `min_month` 등은 해결됨 — 후자는 45b5aa6)
+2. **아트 파이프라인 (진행 중)** — `docs/art-pipeline/`(분업: 이미지 생성 Codex/agy 외주, 캐릭터시트·검증 Claude). 직원 액터 바이블+핸드오프(v090) 완료, 오피스 오브젝트 핸드오프(v091) 완료. **v054 오피스 오브젝트는 Unity 임포트·배치 완료(993c470)**. 다음 — 신규 고해상 생성(v090 액터/v091 오브젝트)은 Codex/agy 외주 대기, 기존 v053 5포즈 시트는 임시 임포트 후보(레퍼런스로 보유).
 3. 시각 회귀 — 이후 UI/아트 변경 시 `ScreenshotCaptureTests` 재실행해 캡처 대조(체크리스트에 명령). 재시작 전 다른 Unity 미실행 확인.
 
 ## 블로커 / 리스크
