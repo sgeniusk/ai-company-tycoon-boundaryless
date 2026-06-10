@@ -40,10 +40,13 @@
 - 빌드 — PlatformSetup(Editor) PlayerSettings + BuildPipeline. 번들 com.gomgomee.aicompanytycoon, IL2CPP/ARM64/세로. Unity 내장 SDK로 빌드 성공.
 - 아이콘/스플래시 — office 배경 임시(Art/Branding/app_icon·splash), PlatformSetup.ApplyBranding. 최종 픽셀아트는 backlog.
 
-## 이번 세션 수정 파일
-- 커밋됨 — 897700d/748d1a8/eb23a22/e36ccf8(feat-004), 021ac45(세이프에어리어), 733e184(빌드셋업), afb07bc(빌드 docs), cb916d4(.utmp)
-- 커밋 예정 — PlatformSetup(ApplyBranding) + Art/Branding(app_icon/splash) + ProjectSettings(아이콘/스플래시) + docs/backlog.md
-- 빌드 산출물 — Builds/Android/AICompanyTycoon.apk 35MB (gitignore)
+## 이번 세션 수정 파일 (2026-06-10, 10커밋 — origin/main 푸시 완료)
+- feat-006 마무리 — `0bd60f4`(시각확인+꾸미기버그+탭페이드)
+- 시각 검증 하네스 — `ScreenshotCaptureTests`(PlayMode, 카메라+RT 1080x1920). 헤드리스로 게임 화면 캡처해 육안 검증
+- 아트 파이프라인 — `b3ff541`(캐릭터시트 바이블+핸드오프 v090+검증 하네스)·`367878a`(v091 핸드오프+기존아트 인벤토리)·`08a72d2`(v054 칸이름)
+- v054 오피스 오브젝트 — `993c470`(임포터 비정사각+임포트+가구배치)·`714d215`(체크리스트)·`bf78a80`(가구 밴드 하향)
+- 한글화 검증·정본반영 — `45b5aa6`(요구조건 키)·`77a5f10`(표시명·설명 재시드, 병렬 Codex 구현→Claude 검증)·`e7913c3`(progress)
+- 작업 트리 완전 클린
 
 ## 검증 증거
 - [x] feat-004 비주얼 — 각 EditMode 21/21, 아이콘 슬라이스 51, 폰트 dynamic. 4커밋
@@ -55,5 +58,15 @@
 - [~] 실기기/노치 세이프에어리어 — 헤드리스는 Screen.safeArea=풀스크린이라 미확인(실기기 남음)
 - [x] 스코프 — data/·루트·Core/Systems/Save·Schema 미수정. UI/Tests만(feat-006 수정)
 
-## 다음 세션 메모
-feat-005 거의 완료(빌드+아이콘/스플래시). 다음 — 에디터/시뮬레이터 시각 확인. 추후 할 일 전체는 docs/backlog.md(픽셀아트 아이콘/기존 에셋 전부 반영/실기기/BGM/TMP). 상세는 session-handoff.md.
+## 다음 세션 메모 (할일 정리 — 2026-06-10)
+feat-006 완료 + 한글화(요구조건·표시명) 검증·반영 + v054 오피스 오브젝트 임포트·배치 완료. 모두 origin/main 푸시됨, 트리 클린.
+
+**우선순위 할일**
+1. **events.json 한/영 혼용** — 15종 중 13종(`viral_demo`·`gpu_price_spike` 외) name/description/choices 영문. 업그레이드와 같은 부분 번역 패턴. 데이터 로컬라이즈라 Codex 위임 후보(Claude 검증). 서사 분량 큼.
+2. **신규 고해상 아트 생성 (외주)** — v090 직원 액터 / v091 오피스 오브젝트. 핸드오프 준비됨(`docs/codex-handoff/`), Codex/agy 이미지 생성 대기. 반입되면 Claude가 `Capture_ActorParade`(08)·`Capture_ObjectParade`(09)·오피스 캡처로 일관성 검증·수정. 정본 바이블 `docs/art-pipeline/character-sheet.md`.
+3. **v053 5포즈 시트** — 임시 임포트 후보(레퍼런스 `ref/existing-v053-poses-sample.png` 보유). Tier2 애니 통합은 후속.
+4. **backlog** — BGM(외부 오디오), 실기기/노치 세이프에어리어, 최종 픽셀아트 아이콘/스플래시, 도트매트릭스 전광판 텍스처, TMP. 상세 `docs/backlog.md`·`docs/art-pipeline/checklist.md`.
+
+**검증 하네스 (필독)** — 시각 검증은 `ScreenshotCaptureTests`(PlayMode, **`-nographics` 빼고** 실행, macOS Metal 오프스크린). 산출 `Logs/shots/*.png`. 사용법 `docs/feat-006-checklist.md`. **시작 전 `ps`로 다른 Unity(titan breaker/sam defender 등) 미실행 확인** — 단일 라이선스 트랩.
+
+**분업** — 이미지 생성·단순 데이터/코딩은 Codex/agy 외주, 캐릭터시트·하네스·검증·정본반영은 Claude.
