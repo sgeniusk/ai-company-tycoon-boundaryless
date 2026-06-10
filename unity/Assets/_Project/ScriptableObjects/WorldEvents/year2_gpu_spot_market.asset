@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78372b23d7e334a04908fd3ebb8f4a2d, type: 3}
+  m_Name: year2_gpu_spot_market
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.WorldEventDef
+  id: year2_gpu_spot_market
+  title: "GPU \uD604\uBB3C\uAC00 \uAE09\uB4F1"
+  description: "\uB2E8\uAE30 \uC784\uB300 GPU \uAC00\uACA9\uC774 \uD280\uBA70 \uC2E4\uD5D8
+    \uC608\uC0B0\uC744 \uB2E4\uC2DC \uC870\uC815\uD574\uC57C \uD569\uB2C8\uB2E4."
+  trigger: "2-4\uB144\uCC28 \uC778\uD504\uB77C \uAC00\uACA9 \uBCC0\uC218"
+  yearMin: 2
+  yearMax: 4
+  resourceEffects:
+  - resource: 0
+    amount: -2800
+  - resource: 2
+    amount: -28
+  - resource: 6
+    amount: 2
+  worldLoreTags:
+  - compute_expensive
+  - gpu_scarcity

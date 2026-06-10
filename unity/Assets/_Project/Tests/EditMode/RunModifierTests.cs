@@ -151,6 +151,35 @@ namespace AICompanyTycoon.Tests.EditMode
         }
 
         [Test]
+        public void AdvanceMonth_TagEffects_ApplyMonthlyDelta()
+        {
+            var c = Catalog();
+            var baseCtx = SimulationContext.Create(c);
+            var runCtx = SimulationContext.Create(c, 12345, new RunModifierInput { WorldLoreId = "chip_war" });
+            // 시작 델타·클램프 간섭 제거 — 두 모델 모두 동일 연산력에서 출발시켜 월간 효과만 잰다.
+            baseCtx.Model.Compute = 50;
+            runCtx.Model.Compute = 50;
+            baseCtx.Month.AdvanceMonth();
+            runCtx.Month.AdvanceMonth();
+            // chip_war 태그 — export_controls(-3) + compute_regional(-2) = 연산력 -5/월.
+            Assert.AreEqual(baseCtx.Model.Compute - 5, runCtx.Model.Compute, 0.001);
+        }
+
+        [Test]
+        public void AdvanceMonth_StandardRun_TagsAreInert()
+        {
+            var c = Catalog();
+            var withTags = SimulationContext.Create(c);
+            var without = SimulationContext.Create(c);
+            without.Model.RunModifiers.Tags.Clear(); // 태그 제거 모델과 결과 동일 = 표준 런 회귀 없음
+            withTags.Month.AdvanceMonth();
+            without.Month.AdvanceMonth();
+            foreach (var r in c.resources)
+                if (r != null && ResourceIds.TryParse(r.id, out var id))
+                    Assert.AreEqual(without.Model.Get(id), withTags.Model.Get(id), 0.001, r.id);
+        }
+
+        [Test]
         public void Sanitize_UnknownIds_FallBackToDefaults()
         {
             var c = Catalog();

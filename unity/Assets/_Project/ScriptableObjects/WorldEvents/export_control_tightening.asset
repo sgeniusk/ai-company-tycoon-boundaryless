@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78372b23d7e334a04908fd3ebb8f4a2d, type: 3}
+  m_Name: export_control_tightening
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.WorldEventDef
+  id: export_control_tightening
+  title: "\uC218\uCD9C\uD1B5\uC81C \uAC15\uD654"
+  description: "\uACE0\uC131\uB2A5 \uCE69 \uBC18\uCD9C \uADDC\uC81C\uAC00 \uB354
+    \uBE61\uBE61\uD574\uC9C0\uBA70 \uCEF4\uD4E8\uD2B8 \uC870\uB2EC\uC774 \uB2E4\uC2DC
+    \uACBD\uC0C9\uB429\uB2C8\uB2E4."
+  trigger: "2-5\uB144\uCC28 \uCE69 \uC218\uCD9C\uD1B5\uC81C \uBCC0\uC218"
+  yearMin: 2
+  yearMax: 5
+  resourceEffects:
+  - resource: 0
+    amount: -1800
+  - resource: 2
+    amount: -32
+  worldLoreTags:
+  - export_controls

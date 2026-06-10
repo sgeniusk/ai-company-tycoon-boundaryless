@@ -31,8 +31,9 @@ public static class DataImporter
         var competitors = ImportCompetitors(ReadLocale("ko.json"));
         var runModifiers = ImportRunModifiers();
         var runTagEffects = ImportRunTagEffects();
+        var worldEvents = ImportWorldEvents();
 
-        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, balance);
+        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, balance);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -423,6 +424,34 @@ public static class DataImporter
         return asset;
     }
 
+    // world_events.json -> WorldEventDef (feat-007 블록 #3). 배열 순서 유지 (스케줄 동률 시 id 비교라 순서 무관하나 일관성 위해).
+    private static List<WorldEventDef> ImportWorldEvents()
+    {
+        var items = GetRootList("world_events.json", "world_events");
+        var imported = new List<WorldEventDef>();
+        EnsureFolder(ScriptableObjectRoot + "/WorldEvents");
+
+        foreach (var item in items)
+        {
+            var source = AsObject(item, "world_events item");
+            var id = GetString(source, "id");
+            var asset = LoadOrCreate<WorldEventDef>(ScriptableObjectRoot + "/WorldEvents/" + id + ".asset");
+            asset.id = id;
+            asset.title = GetString(source, "title");
+            asset.description = GetString(source, "description");
+            asset.trigger = GetString(source, "trigger");
+            var range = GetOptionalList(source, "year_range");
+            asset.yearMin = range != null && range.Count > 0 ? (int)ToDouble(range[0], id + ".year_range[0]") : 1;
+            asset.yearMax = range != null && range.Count > 1 ? (int)ToDouble(range[1], id + ".year_range[1]") : 10;
+            asset.resourceEffects = ToResourceAmounts(GetOptionalObject(source, "resource_effects"), id + ".resource_effects");
+            asset.worldLoreTags = ToStringList(GetOptionalList(source, "world_lore_tags"));
+            EditorUtility.SetDirty(asset);
+            imported.Add(asset);
+        }
+
+        return imported;
+    }
+
     private static void UpdateCatalog(
         List<ResourceDef> resources,
         List<ProductDef> products,
@@ -435,6 +464,7 @@ public static class DataImporter
         List<CompetitorDef> competitors,
         List<RunModifierOptionDef> runModifierOptions,
         RunTagEffectsConfig runTagEffects,
+        List<WorldEventDef> worldEvents,
         BalanceConfig balance)
     {
         EnsureFolder("Assets/_Project/Resources");
@@ -450,6 +480,7 @@ public static class DataImporter
         catalog.competitors = competitors;
         catalog.runModifierOptions = runModifierOptions;
         catalog.runTagEffects = runTagEffects;
+        catalog.worldEvents = worldEvents;
         catalog.balance = balance;
         EditorUtility.SetDirty(catalog);
     }

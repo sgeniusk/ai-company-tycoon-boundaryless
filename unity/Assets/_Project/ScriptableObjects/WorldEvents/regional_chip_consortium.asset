@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78372b23d7e334a04908fd3ebb8f4a2d, type: 3}
+  m_Name: regional_chip_consortium
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.WorldEventDef
+  id: regional_chip_consortium
+  title: "\uC9C0\uC5ED \uCE69 \uCEE8\uC18C\uC2DC\uC5C4"
+  description: "\uC9C0\uC5ED \uACF5\uAE09\uB9DD \uB3D9\uB9F9\uC774 \uCD9C\uBC94\uD574
+    \uCEF4\uD4E8\uD2B8\uB97C \uD655\uBCF4\uD558\uC9C0\uB9CC \uC911\uB9BD\uC131 \uB17C\uB780\uB3C4
+    \uB530\uB77C\uC635\uB2C8\uB2E4."
+  trigger: "5-8\uB144\uCC28 \uC9C0\uC5ED \uCEF4\uD4E8\uD2B8 \uBCC0\uC218"
+  yearMin: 5
+  yearMax: 8
+  resourceEffects:
+  - resource: 2
+    amount: 30
+  - resource: 5
+    amount: -2
+  worldLoreTags:
+  - compute_regional

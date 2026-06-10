@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78372b23d7e334a04908fd3ebb8f4a2d, type: 3}
+  m_Name: year1_open_model_release
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.WorldEventDef
+  id: year1_open_model_release
+  title: "\uACF5\uAC1C \uBAA8\uB378 \uAE5C\uC9DD \uACF5\uAC1C"
+  description: "\uCEE4\uBBA4\uB2C8\uD2F0\uAC00 \uC4F8 \uB9CC\uD55C \uACF5\uAC1C \uBAA8\uB378\uC744
+    \uB0B4\uB193\uC73C\uBA70 \uC791\uC740 \uD300\uB3C4 \uC2E4\uD5D8 \uC18D\uB3C4\uB97C
+    \uC62C\uB9BD\uB2C8\uB2E4."
+  trigger: "1-3\uB144\uCC28 \uC5F0\uAD6C \uC0DD\uD0DC\uACC4 \uBCC0\uC218"
+  yearMin: 1
+  yearMax: 3
+  resourceEffects:
+  - resource: 3
+    amount: 28
+  - resource: 6
+    amount: 2
+  worldLoreTags:
+  - open_source_heaven
+  - community_models

@@ -61,6 +61,7 @@ namespace AICompanyTycoon.Save
                 marketConditionId = rm.MarketConditionId, founderTraitId = rm.FounderTraitId,
                 challengeTier = rm.ChallengeTier, tags = new List<string>(rm.Tags),
             };
+            d.worldEventHistory = new List<string>(m.WorldEventHistory);
             return d;
         }
 
@@ -99,6 +100,7 @@ namespace AICompanyTycoon.Save
                     ChallengeTier = string.IsNullOrEmpty(rm.challengeTier) ? RunModifiersState.DefaultChallengeTier : rm.challengeTier,
                     Tags = new List<string>(rm.tags ?? new List<string>()),
                 };
+            m.WorldEventHistory = new List<string>(d.worldEventHistory ?? new List<string>());
         }
     }
 }

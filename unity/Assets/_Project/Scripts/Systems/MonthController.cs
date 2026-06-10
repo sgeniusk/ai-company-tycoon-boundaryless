@@ -22,6 +22,7 @@ namespace AICompanyTycoon.Systems
         public bool GameWon;
         public string Outcome;
         public string StageChangedTo;
+        public List<string> WorldEventTitles = new List<string>(); // 이번 달 발동한 세계 이벤트 (feat-007)
     }
 
     public class MonthController
@@ -66,6 +67,9 @@ namespace AICompanyTycoon.Systems
             // 3) 자동화 월별 보너스
             _a.ApplyMonthly();
 
+            // 3.5) 런 모디파이어 월간 효과 — 활성 태그의 tag_effects 합산 (feat-007 블록 #2). 표준 런 태그는 효과 0.
+            ApplyRunModifierMonthly();
+
             // 4) 화제성 감쇠
             if (_m.Hype > 0) _r.Add(ResourceId.Hype, -b.monthlyHypeDecay);
 
@@ -74,6 +78,9 @@ namespace AICompanyTycoon.Systems
 
             // 6) 월 카운터 증가
             _m.CurrentMonth += 1;
+
+            // 6.2) 연중 세계 이벤트 — 시드 파생 스케줄 도래분 발동 (feat-007 블록 #3, React applyDueWorldEvents 대응)
+            s.WorldEventTitles = WorldEventService.ApplyDue(_m, _c, _r);
 
             // 6.5) 경쟁사 시장 진행 — 진입/성장/점유율/히스토리 (additive, 자원·승패 계산에 영향 없음)
             if (_market != null) _market.AdvanceCompetitors();
@@ -89,6 +96,19 @@ namespace AICompanyTycoon.Systems
             GameEvents.RaiseMonthAdvanced(_m.CurrentMonth);
             GameEvents.RaiseResourcesUpdated();
             return s;
+        }
+
+        void ApplyRunModifierMonthly()
+        {
+            var tags = _m.RunModifiers != null ? _m.RunModifiers.Tags : null;
+            var cfg = _c != null ? _c.runTagEffects : null;
+            if (tags == null || cfg == null) return;
+            foreach (var tag in tags)
+            {
+                var fx = cfg.GetEffect(tag);
+                if (fx == null) continue;
+                foreach (var e in fx.monthlyEffects) _r.Add(e.resource, e.amount);
+            }
         }
 
         void CheckGameOver(MonthSummary s, BalanceConfig b)

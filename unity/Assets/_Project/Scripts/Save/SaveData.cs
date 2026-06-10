@@ -65,5 +65,6 @@ namespace AICompanyTycoon.Save
         public List<CompetitorSave> competitorStates = new List<CompetitorSave>();
         public List<MarketShareSave> marketShareHistory = new List<MarketShareSave>();
         public RunModifiersSave runModifiers = new RunModifiersSave();
+        public List<string> worldEventHistory = new List<string>();
     }
 }

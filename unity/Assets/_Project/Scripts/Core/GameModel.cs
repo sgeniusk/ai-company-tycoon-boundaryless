@@ -36,6 +36,9 @@ namespace AICompanyTycoon.Core
         // 런 모디파이어 — 이번 런의 굴린 세계 (feat-007 블록 #1). 기본 런은 효과 0.
         public RunModifiersState RunModifiers = new RunModifiersState();
 
+        // 발동된 연중 세계 이벤트 id (최신이 앞, feat-007 블록 #3 중복 방지)
+        public List<string> WorldEventHistory = new List<string>();
+
         public double Get(ResourceId id)
         {
             switch (id)

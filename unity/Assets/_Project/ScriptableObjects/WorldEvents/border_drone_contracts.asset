@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78372b23d7e334a04908fd3ebb8f4a2d, type: 3}
+  m_Name: border_drone_contracts
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.WorldEventDef
+  id: border_drone_contracts
+  title: "\uAD6D\uACBD \uB4DC\uB860 \uC870\uB2EC \uBB38\uC758"
+  description: "\uAD6D\uACBD \uAE34\uC7A5\uC774 \uB192\uC544\uC9C0\uBA70 \uAD6D\uBC29
+    \uB4DC\uB860 \uC870\uB2EC \uBB38\uC758\uAC00 \uBAB0\uB9AC\uC9C0\uB9CC, \uD68C\uC0AC\uC758
+    \uC911\uB9BD\uC131\uACFC \uC548\uC804 \uC6D0\uCE59\uC774 \uC2DC\uD5D8\uB300\uC5D0
+    \uC624\uB985\uB2C8\uB2E4."
+  trigger: "6-9\uB144\uCC28 \uAD6D\uBC29 \uC870\uB2EC \uBCC0\uC218"
+  yearMin: 6
+  yearMax: 9
+  resourceEffects:
+  - resource: 7
+    amount: 2
+  - resource: 0
+    amount: 4200
+  - resource: 5
+    amount: -4
+  - resource: 1
+    amount: 260
+  worldLoreTags:
+  - embodied_demand
+  - hardware_capital
+  - export_controls

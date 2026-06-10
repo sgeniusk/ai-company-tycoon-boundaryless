@@ -18,6 +18,7 @@ namespace AICompanyTycoon.Data
         public List<CompetitorDef> competitors = new List<CompetitorDef>();
         public List<RunModifierOptionDef> runModifierOptions = new List<RunModifierOptionDef>();
         public RunTagEffectsConfig runTagEffects;
+        public List<WorldEventDef> worldEvents = new List<WorldEventDef>();
         public BalanceConfig balance;
 
         public ResourceDef GetResource(string id)
