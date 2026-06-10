@@ -404,12 +404,12 @@ namespace AICompanyTycoon.UI
             var band = new GameObject("Furniture", typeof(RectTransform));
             band.transform.SetParent(parent, false);
             var rect = band.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.05f, 0.32f);
-            rect.anchorMax = new Vector2(0.95f, 0.72f);
+            rect.anchorMin = new Vector2(0.05f, 0.12f);
+            rect.anchorMax = new Vector2(0.95f, 0.44f);
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
             var box = UiFactory.HBox(band.transform, 18);
-            box.childAlignment = TextAnchor.MiddleCenter;
+            box.childAlignment = TextAnchor.LowerCenter; // 직원 바닥선 가까이 — 워크스페이스로 묶이게
 
             var items = new[] { "obj_desk_monitor", "obj_server_blue", "obj_whiteboard_a", "obj_desk_papers" };
             foreach (var key in items)
