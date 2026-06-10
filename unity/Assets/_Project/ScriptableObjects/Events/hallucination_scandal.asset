@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: hallucination_scandal
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: hallucination_scandal
-  displayName: Hallucination Scandal
-  description: Your AI generated false information that went viral. Media is covering
-    it.
+  displayName: "AI \uD658\uAC01 \uC18C\uB3D9"
+  description: "AI\uAC00 \uC5C9\uB6B1\uD55C \uC815\uBCF4\uB97C \uB9CC\uB4E4\uC5B4\uB0C8\uACE0,
+    \uADF8\uAC8C \uBC14\uC774\uB7F4\uC744 \uD0D4\uC2B5\uB2C8\uB2E4. \uC5B8\uB860\uC774
+    \uC6B0\uB974\uB974 \uBAB0\uB824\uC635\uB2C8\uB2E4."
   weight: 8
   conditions:
   - key: min_hype
@@ -24,8 +25,9 @@ MonoBehaviour:
     value: 1
   choices:
   - id: public_apology
-    text: Issue public apology and invest in safety
-    description: -5 Trust, -$1500, -5 Hype (but shows responsibility)
+    text: "\uACF5\uC2DD \uC0AC\uACFC\uD558\uACE0 \uC548\uC804\uD300\uC5D0 \uD22C\uC790\uD55C\uB2E4"
+    description: "-5 \uC2E0\uB8B0, -1500 \uC790\uAE08, -5 \uD654\uC81C\uC131 (\uCC45\uC784\uAC10\uC740
+      \uBCF4\uC5EC\uC90C)"
     effects:
     - resource: 0
       amount: -1500
@@ -34,16 +36,19 @@ MonoBehaviour:
     - resource: 5
       amount: -5
   - id: downplay
-    text: "Downplay the issue \u2014 it's just AI being AI"
-    description: -15 Trust, -3 Hype (risky)
+    text: "\uBCC4\uC77C \uC544\uB2C8\uB77C\uACE0 \uB118\uAE34\uB2E4 - AI\uAC00 \uADF8\uB7F4
+      \uC218\uB3C4 \uC788\uC8E0"
+    description: "-15 \uC2E0\uB8B0, -3 \uD654\uC81C\uC131 (\uC704\uD5D8)"
     effects:
     - resource: 6
       amount: -3
     - resource: 5
       amount: -15
   - id: transparency_report
-    text: Release a transparency report with technical details
-    description: -3 Trust, -$500, +5 Data (builds long-term credibility)
+    text: "\uAE30\uC220 \uC124\uBA85\uC774 \uB2F4\uAE34 \uD22C\uBA85\uC131 \uBCF4\uACE0\uC11C\uB97C
+      \uACF5\uAC1C\uD55C\uB2E4"
+    description: "-3 \uC2E0\uB8B0, -500 \uC790\uAE08, +5 \uB370\uC774\uD130 (\uC7A5\uAE30
+      \uC2E0\uB8B0 \uC313\uAE30)"
     effects:
     - resource: 0
       amount: -500

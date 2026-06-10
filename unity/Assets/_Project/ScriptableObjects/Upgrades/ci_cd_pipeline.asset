@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: ci_cd_pipeline
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: ci_cd_pipeline
-  displayName: "CI/CD 파이프라인"
-  description: "테스트와 배포를 자동화하는 파이프라인입니다."
+  displayName: "CI/CD \uD30C\uC774\uD504\uB77C\uC778"
+  description: "\uD14C\uC2A4\uD2B8\uC640 \uBC30\uD3EC\uB97C \uC790\uB3D9\uD654\uD558\uB294
+    \uD30C\uC774\uD504\uB77C\uC778\uC785\uB2C8\uB2E4."
   cost:
   - resource: 0
     amount: 2000

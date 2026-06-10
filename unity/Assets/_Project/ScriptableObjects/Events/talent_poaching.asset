@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: talent_poaching
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: talent_poaching
-  displayName: Talent Poaching
-  description: A big tech company is trying to hire your best researchers.
+  displayName: "\uC778\uC7AC \uC2A4\uCE74\uC6B0\uD2B8 \uACF5\uC138"
+  description: "\uBE45\uD14C\uD06C\uAC00 \uC6B0\uB9AC \uD575\uC2EC \uC5F0\uAD6C\uC6D0\uC744
+    \uB370\uB824\uAC00\uB824\uACE0 \uD569\uB2C8\uB2E4."
   weight: 7
   conditions:
   - key: min_month
@@ -23,22 +24,24 @@ MonoBehaviour:
     value: 3
   choices:
   - id: counter_offer
-    text: Counter-offer with higher salary and equity
-    description: -$2000 (retain talent)
+    text: "\uB354 \uB192\uC740 \uC5F0\uBD09\uACFC \uC9C0\uBD84\uC73C\uB85C \uB9DE\uBD88
+      \uC81C\uC548"
+    description: "-2000 \uC790\uAE08 (\uC778\uC7AC \uBD99\uC7A1\uAE30)"
     effects:
     - resource: 0
       amount: -2000
   - id: let_them_go
-    text: "Let them go \u2014 hire fresh talent later"
-    description: -1 Talent
+    text: "\uBCF4\uB0B8\uB2E4 - \uC0C8 \uC778\uC7AC\uB294 \uB098\uC911\uC5D0 \uBF51\uC790"
+    description: "-1 \uC778\uC7AC"
     effects:
     - resource: 0
       amount: 0
     - resource: 4
       amount: -1
   - id: improve_culture
-    text: Improve company culture and mission clarity
-    description: -$800, +3 Hype (team morale boost)
+    text: "\uD68C\uC0AC \uBB38\uD654\uC640 \uBBF8\uC158\uC744 \uB354 \uB610\uB837\uD558\uAC8C
+      \uB9CC\uB4E0\uB2E4"
+    description: "-800 \uC790\uAE08, +3 \uD654\uC81C\uC131 (\uD300 \uC0AC\uAE30 \uC0C1\uC2B9)"
     effects:
     - resource: 0
       amount: -800

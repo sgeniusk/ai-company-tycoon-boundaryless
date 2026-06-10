@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: influencer_review
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: influencer_review
-  displayName: Influencer Review
-  description: A major tech influencer wants to review your product live.
+  displayName: "\uC778\uD50C\uB8E8\uC5B8\uC11C \uB9AC\uBDF0"
+  description: "\uB300\uD615 \uD14C\uD06C \uC778\uD50C\uB8E8\uC5B8\uC11C\uAC00 \uC6B0\uB9AC
+    \uC81C\uD488\uC744 \uB77C\uC774\uBE0C\uB85C \uB9AC\uBDF0\uD558\uACE0 \uC2F6\uC5B4
+    \uD569\uB2C8\uB2E4."
   weight: 10
   conditions:
   - key: min_month
@@ -23,16 +25,16 @@ MonoBehaviour:
     value: 1
   choices:
   - id: accept_review
-    text: "Accept \u2014 let them show everything"
-    description: +12 Hype, +1500 Users
+    text: "\uC218\uB77D\uD55C\uB2E4 - \uC804\uBD80 \uBCF4\uC5EC\uC900\uB2E4"
+    description: "+12 \uD654\uC81C\uC131, +1500 \uC774\uC6A9\uC790"
     effects:
     - resource: 6
       amount: 12
     - resource: 1
       amount: 1500
   - id: controlled_demo
-    text: Offer a controlled demo instead
-    description: +6 Hype, +500 Users, +3 Trust
+    text: "\uD1B5\uC81C\uB41C \uB370\uBAA8\uB97C \uC81C\uC548\uD55C\uB2E4"
+    description: "+6 \uD654\uC81C\uC131, +500 \uC774\uC6A9\uC790, +3 \uC2E0\uB8B0"
     effects:
     - resource: 6
       amount: 6

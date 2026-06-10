@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: data_partnership
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: data_partnership
-  displayName: "데이터 파트너십"
-  description: "데이터 공급사와 제휴해 학습 데이터를 확보합니다."
+  displayName: "\uB370\uC774\uD130 \uD30C\uD2B8\uB108\uC2ED"
+  description: "\uB370\uC774\uD130 \uACF5\uAE09\uC0AC\uC640 \uC81C\uD734\uD574 \uD559\uC2B5
+    \uB370\uC774\uD130\uB97C \uD655\uBCF4\uD569\uB2C8\uB2E4."
   cost:
   - resource: 0
     amount: 2000

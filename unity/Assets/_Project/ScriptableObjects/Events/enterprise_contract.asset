@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: enterprise_contract
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: enterprise_contract
-  displayName: Enterprise Contract Offer
-  description: A Fortune 500 company wants to use your AI. They need reliability
-    guarantees.
+  displayName: "\uB300\uAE30\uC5C5 \uACC4\uC57D \uC81C\uC548"
+  description: "\uD3EC\uCD98 500 \uAE30\uC5C5\uC774 \uC6B0\uB9AC AI\uB97C \uC4F0\uACE0
+    \uC2F6\uB2E4\uACE0 \uD569\uB2C8\uB2E4. \uB2E8, \uC548\uC815\uC131 \uBCF4\uC99D\uC774
+    \uD544\uC694\uD569\uB2C8\uB2E4."
   weight: 7
   conditions:
   - key: min_month
@@ -24,8 +25,10 @@ MonoBehaviour:
     value: 40
   choices:
   - id: accept_contract
-    text: "Accept the contract \u2014 deliver on their terms"
-    description: +$5000, +5 Trust, -1 Talent (dedicated to client)
+    text: "\uACC4\uC57D\uC744 \uBC1B\uB294\uB2E4 - \uACE0\uAC1D \uC870\uAC74\uC5D0
+      \uB9DE\uCDB0 \uB0A9\uD488"
+    description: "+5000 \uC790\uAE08, +5 \uC2E0\uB8B0, -1 \uC778\uC7AC (\uC804\uB2F4
+      \uC778\uB825 \uD22C\uC785)"
     effects:
     - resource: 0
       amount: 5000
@@ -34,16 +37,17 @@ MonoBehaviour:
     - resource: 5
       amount: 5
   - id: negotiate
-    text: Negotiate for better terms and more time
-    description: +$3000, +3 Trust (less pressure)
+    text: "\uC870\uAC74\uACFC \uC77C\uC815\uC744 \uB354 \uC88B\uAC8C \uD611\uC0C1\uD55C\uB2E4"
+    description: "+3000 \uC790\uAE08, +3 \uC2E0\uB8B0 (\uBD80\uB2F4\uC740 \uB0AE\uC544\uC9D0)"
     effects:
     - resource: 0
       amount: 3000
     - resource: 5
       amount: 3
   - id: decline
-    text: "Decline \u2014 we're not ready for enterprise yet"
-    description: -3 Hype (missed opportunity)
+    text: "\uAC70\uC808\uD55C\uB2E4 - \uC544\uC9C1 \uB300\uAE30\uC5C5 \uB300\uC751\uC740
+      \uC774\uB974\uB2E4"
+    description: "-3 \uD654\uC81C\uC131 (\uAE30\uD68C\uB294 \uB193\uCE68)"
     effects:
     - resource: 6
       amount: -3

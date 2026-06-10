@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: data_privacy_investigation
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: data_privacy_investigation
-  displayName: Data Privacy Investigation
-  description: Regulators are investigating how you collect and use training data.
+  displayName: "\uB370\uC774\uD130 \uAC1C\uC778\uC815\uBCF4 \uC870\uC0AC"
+  description: "\uADDC\uC81C \uAE30\uAD00\uC774 \uD559\uC2B5 \uB370\uC774\uD130 \uC218\uC9D1\uACFC
+    \uC0AC\uC6A9 \uBC29\uC2DD\uC744 \uB4E4\uC5EC\uB2E4\uBCF4\uAE30 \uC2DC\uC791\uD588\uC2B5\uB2C8\uB2E4."
   weight: 6
   conditions:
   - key: min_data
@@ -23,8 +24,10 @@ MonoBehaviour:
     value: 4
   choices:
   - id: full_compliance
-    text: "Full compliance \u2014 hire lawyers, audit everything"
-    description: -$3000, +8 Trust, -10 Data (some data deleted)
+    text: "\uC804\uBA74 \uD611\uC870 - \uBCC0\uD638\uC0AC\uB97C \uBD80\uB974\uACE0
+      \uC804\uBD80 \uAC10\uC0AC\uD55C\uB2E4"
+    description: "-3000 \uC790\uAE08, +8 \uC2E0\uB8B0, -10 \uB370\uC774\uD130 (\uC77C\uBD80
+      \uB370\uC774\uD130 \uC0AD\uC81C)"
     effects:
     - resource: 0
       amount: -3000
@@ -33,8 +36,8 @@ MonoBehaviour:
     - resource: 5
       amount: 8
   - id: minimal_response
-    text: "Minimal response \u2014 provide required documents only"
-    description: -$500, -5 Trust (risky if they dig deeper)
+    text: "\uCD5C\uC18C \uB300\uC751 - \uC694\uAD6C \uBB38\uC11C\uB9CC \uC81C\uCD9C\uD55C\uB2E4"
+    description: "-500 \uC790\uAE08, -5 \uC2E0\uB8B0 (\uB354 \uD30C\uBA74 \uC704\uD5D8)"
     effects:
     - resource: 0
       amount: -500

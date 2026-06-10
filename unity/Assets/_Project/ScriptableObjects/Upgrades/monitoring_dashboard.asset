@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: monitoring_dashboard
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: monitoring_dashboard
-  displayName: "모니터링 대시보드"
-  description: "실시간으로 시스템을 모니터링하고 경보를 보냅니다."
+  displayName: "\uBAA8\uB2C8\uD130\uB9C1 \uB300\uC2DC\uBCF4\uB4DC"
+  description: "\uC2E4\uC2DC\uAC04\uC73C\uB85C \uC2DC\uC2A4\uD15C\uC744 \uBAA8\uB2C8\uD130\uB9C1\uD558\uACE0
+    \uACBD\uBCF4\uB97C \uBCF4\uB0C5\uB2C8\uB2E4."
   cost:
   - resource: 0
     amount: 1500

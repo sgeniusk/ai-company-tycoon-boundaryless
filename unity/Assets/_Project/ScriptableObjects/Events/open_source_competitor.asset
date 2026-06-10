@@ -13,17 +13,19 @@ MonoBehaviour:
   m_Name: open_source_competitor
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: open_source_competitor
-  displayName: Open Source Competitor
-  description: A strong open-source model just dropped. It matches your capabilities
-    for free.
+  displayName: "\uC624\uD508\uC18C\uC2A4 \uACBD\uC7C1\uC790"
+  description: "\uAC15\uB825\uD55C \uC624\uD508\uC18C\uC2A4 \uBAA8\uB378\uC774 \uACF5\uAC1C\uB418\uC5C8\uC2B5\uB2C8\uB2E4.
+    \uBB34\uB8CC\uC778\uB370 \uC6B0\uB9AC \uAE30\uB2A5\uACFC \uB9DE\uBA39\uC2B5\uB2C8\uB2E4."
   weight: 9
   conditions:
   - key: min_month
     value: 3
   choices:
   - id: differentiate
-    text: Double down on proprietary features and UX
-    description: -$2000, +5 Hype, -200 Users (some churn)
+    text: "\uB3C5\uC790 \uAE30\uB2A5\uACFC \uC0AC\uC6A9\uC131\uC5D0 \uB354 \uD798\uC744
+      \uC2E3\uB294\uB2E4"
+    description: "-2000 \uC790\uAE08, +5 \uD654\uC81C\uC131, -200 \uC774\uC6A9\uC790
+      (\uC77C\uBD80 \uC774\uD0C8)"
     effects:
     - resource: 0
       amount: -2000
@@ -32,8 +34,10 @@ MonoBehaviour:
     - resource: 1
       amount: -200
   - id: embrace_open
-    text: Release your own open-source model to compete
-    description: +10 Hype, +5 Trust, -$1000, -500 Users
+    text: "\uC6B0\uB9AC\uB3C4 \uC624\uD508\uC18C\uC2A4 \uBAA8\uB378\uC744 \uACF5\uAC1C\uD574
+      \uB9DE\uBD99\uB294\uB2E4"
+    description: "+10 \uD654\uC81C\uC131, +5 \uC2E0\uB8B0, -1000 \uC790\uAE08, -500
+      \uC774\uC6A9\uC790"
     effects:
     - resource: 0
       amount: -1000
@@ -44,8 +48,9 @@ MonoBehaviour:
     - resource: 1
       amount: -500
   - id: ignore
-    text: "Ignore it \u2014 focus on your roadmap"
-    description: -300 Users, -5 Hype (market shift)
+    text: "\uBB34\uC2DC\uD558\uACE0 \uB85C\uB4DC\uB9F5\uC5D0 \uC9D1\uC911\uD55C\uB2E4"
+    description: "-300 \uC774\uC6A9\uC790, -5 \uD654\uC81C\uC131 (\uC2DC\uC7A5 \uD750\uB984
+      \uBCC0\uD654)"
     effects:
     - resource: 6
       amount: -5

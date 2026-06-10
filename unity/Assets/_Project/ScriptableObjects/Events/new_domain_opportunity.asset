@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: new_domain_opportunity
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: new_domain_opportunity
-  displayName: New Domain Opportunity
-  description: A new market is emerging that perfectly fits your capabilities.
+  displayName: "\uC0C8 \uBD84\uC57C \uAE30\uD68C"
+  description: "\uC6B0\uB9AC \uC5ED\uB7C9\uACFC \uB531 \uB9DE\uB294 \uC0C8 \uC2DC\uC7A5\uC774
+    \uB5A0\uC624\uB974\uACE0 \uC788\uC2B5\uB2C8\uB2E4."
   weight: 5
   conditions:
   - key: min_capabilities
@@ -23,8 +24,8 @@ MonoBehaviour:
     value: 5
   choices:
   - id: invest_early
-    text: Invest early to capture the market
-    description: -$3000, +10 Hype, +10 Data
+    text: "\uCD08\uAE30 \uD22C\uC790\uB85C \uC2DC\uC7A5\uC744 \uC120\uC810\uD55C\uB2E4"
+    description: "-3000 \uC790\uAE08, +10 \uD654\uC81C\uC131, +10 \uB370\uC774\uD130"
     effects:
     - resource: 0
       amount: -3000
@@ -33,8 +34,8 @@ MonoBehaviour:
     - resource: 6
       amount: 10
   - id: wait_and_see
-    text: Wait and see if the market matures
-    description: +5 Data (observation)
+    text: "\uC2DC\uC7A5\uC774 \uBB34\uB974\uC775\uB294\uC9C0 \uC9C0\uCF1C\uBCF8\uB2E4"
+    description: "+5 \uB370\uC774\uD130 (\uAD00\uCC30)"
     effects:
     - resource: 3
       amount: 5

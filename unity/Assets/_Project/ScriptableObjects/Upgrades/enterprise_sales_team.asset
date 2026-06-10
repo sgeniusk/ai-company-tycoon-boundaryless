@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: enterprise_sales_team
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: enterprise_sales_team
-  displayName: "기업 영업팀"
-  description: "전담 기업 영업팀을 꾸립니다."
+  displayName: "\uAE30\uC5C5 \uC601\uC5C5\uD300"
+  description: "\uC804\uB2F4 \uAE30\uC5C5 \uC601\uC5C5\uD300\uC744 \uAFB8\uB9BD\uB2C8\uB2E4."
   cost:
   - resource: 0
     amount: 4000

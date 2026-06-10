@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: synthetic_data_pipeline
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: synthetic_data_pipeline
-  displayName: "합성 데이터 파이프라인"
-  description: "학습용 합성 데이터를 자동으로 생성합니다."
+  displayName: "\uD569\uC131 \uB370\uC774\uD130 \uD30C\uC774\uD504\uB77C\uC778"
+  description: "\uD559\uC2B5\uC6A9 \uD569\uC131 \uB370\uC774\uD130\uB97C \uC790\uB3D9\uC73C\uB85C
+    \uC0DD\uC131\uD569\uB2C8\uB2E4."
   cost:
   - resource: 0
     amount: 3500

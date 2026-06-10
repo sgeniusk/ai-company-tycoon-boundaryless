@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: developer_conference
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: developer_conference
-  displayName: "개발자 콘퍼런스"
-  description: "주요 기술 콘퍼런스에서 제품을 발표합니다."
+  displayName: "\uAC1C\uBC1C\uC790 \uCF58\uD37C\uB7F0\uC2A4"
+  description: "\uC8FC\uC694 \uAE30\uC220 \uCF58\uD37C\uB7F0\uC2A4\uC5D0\uC11C \uC81C\uD488\uC744
+    \uBC1C\uD45C\uD569\uB2C8\uB2E4."
   cost:
   - resource: 0
     amount: 2500

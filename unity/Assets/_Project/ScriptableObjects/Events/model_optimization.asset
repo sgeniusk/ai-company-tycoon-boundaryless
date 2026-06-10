@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: model_optimization
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: model_optimization
-  displayName: Model Optimization Discovery
-  description: An engineer found a way to reduce inference costs by 30%.
+  displayName: "\uBAA8\uB378 \uCD5C\uC801\uD654 \uBC1C\uACAC"
+  description: "\uC5D4\uC9C0\uB2C8\uC5B4\uAC00 \uCD94\uB860 \uBE44\uC6A9\uC744 30%
+    \uC904\uC77C \uBC29\uBC95\uC744 \uCC3E\uC544\uB0C8\uC2B5\uB2C8\uB2E4."
   weight: 6
   conditions:
   - key: min_month
@@ -23,16 +24,17 @@ MonoBehaviour:
     value: 2
   choices:
   - id: implement_now
-    text: Implement immediately across all products
-    description: +20 Compute, -$500 (implementation cost)
+    text: "\uBAA8\uB4E0 \uC81C\uD488\uC5D0 \uC989\uC2DC \uC801\uC6A9\uD55C\uB2E4"
+    description: "+20 \uC5F0\uC0B0\uB825, -500 \uC790\uAE08 (\uC801\uC6A9 \uBE44\uC6A9)"
     effects:
     - resource: 0
       amount: -500
     - resource: 2
       amount: 20
   - id: research_further
-    text: Research further for even bigger gains
-    description: +15 Data, +5 Compute (delayed but bigger payoff)
+    text: "\uB354 \uD070 \uD6A8\uACFC\uB97C \uB178\uB9AC\uACE0 \uCD94\uAC00 \uC5F0\uAD6C\uD55C\uB2E4"
+    description: "+15 \uB370\uC774\uD130, +5 \uC5F0\uC0B0\uB825 (\uB2A6\uC9C0\uB9CC
+      \uBCF4\uC0C1\uC740 \uD07C)"
     effects:
     - resource: 2
       amount: 5

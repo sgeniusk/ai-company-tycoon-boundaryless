@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: regulatory_warning
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: regulatory_warning
-  displayName: Regulatory Warning
-  description: Government regulators issued a warning about AI safety standards.
+  displayName: "\uADDC\uC81C \uACBD\uACE0"
+  description: "\uC815\uBD80 \uADDC\uC81C \uAE30\uAD00\uC774 AI \uC548\uC804 \uAE30\uC900\uC5D0
+    \uB300\uD574 \uACBD\uACE0\uB97C \uBC1C\uD45C\uD588\uC2B5\uB2C8\uB2E4."
   weight: 6
   conditions:
   - key: min_month
@@ -23,8 +24,9 @@ MonoBehaviour:
     value: 2000
   choices:
   - id: exceed_standards
-    text: Exceed all safety standards proactively
-    description: -$2000, +10 Trust, -3 Hype
+    text: "\uC120\uC81C\uC801\uC73C\uB85C \uBAA8\uB4E0 \uC548\uC804 \uAE30\uC900\uC744
+      \uB6F0\uC5B4\uB118\uB294\uB2E4"
+    description: "-2000 \uC790\uAE08, +10 \uC2E0\uB8B0, -3 \uD654\uC81C\uC131"
     effects:
     - resource: 0
       amount: -2000
@@ -33,16 +35,16 @@ MonoBehaviour:
     - resource: 5
       amount: 10
   - id: meet_minimum
-    text: Meet minimum requirements only
-    description: -$500, -3 Trust
+    text: "\uCD5C\uC18C \uC694\uAD6C\uC0AC\uD56D\uB9CC \uB9DE\uCD98\uB2E4"
+    description: "-500 \uC790\uAE08, -3 \uC2E0\uB8B0"
     effects:
     - resource: 0
       amount: -500
     - resource: 5
       amount: -3
   - id: lobby
-    text: Lobby for industry-friendly regulations
-    description: -$1500, +5 Hype, -5 Trust
+    text: "\uC5C5\uACC4 \uCE5C\uD654\uC801 \uADDC\uC81C\uB97C \uC704\uD574 \uB85C\uBE44\uD55C\uB2E4"
+    description: "-1500 \uC790\uAE08, +5 \uD654\uC81C\uC131, -5 \uC2E0\uB8B0"
     effects:
     - resource: 0
       amount: -1500

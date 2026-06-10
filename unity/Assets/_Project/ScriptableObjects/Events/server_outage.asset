@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: server_outage
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: server_outage
-  displayName: Server Outage
-  description: Your servers went down for 6 hours. Users are frustrated.
+  displayName: "\uC11C\uBC84 \uC7A5\uC560"
+  description: "\uC11C\uBC84\uAC00 6\uC2DC\uAC04 \uB3D9\uC548 \uBA48\uCDC4\uC2B5\uB2C8\uB2E4.
+    \uC774\uC6A9\uC790\uB4E4\uC758 \uBD88\uB9CC\uC774 \uC3DF\uC544\uC9D1\uB2C8\uB2E4."
   weight: 7
   conditions:
   - key: min_month
@@ -23,8 +24,8 @@ MonoBehaviour:
     value: 500
   choices:
   - id: invest_infra
-    text: Invest heavily in infrastructure redundancy
-    description: -$2500, +30 Compute, -3 Trust
+    text: "\uC778\uD504\uB77C \uC774\uC911\uD654\uC5D0 \uD06C\uAC8C \uD22C\uC790\uD55C\uB2E4"
+    description: "-2500 \uC790\uAE08, +30 \uC5F0\uC0B0\uB825, -3 \uC2E0\uB8B0"
     effects:
     - resource: 0
       amount: -2500
@@ -33,8 +34,8 @@ MonoBehaviour:
     - resource: 5
       amount: -3
   - id: apologize_credits
-    text: Apologize and offer service credits
-    description: -$1000, -5 Trust, -3 Hype
+    text: "\uC0AC\uACFC\uD558\uACE0 \uC11C\uBE44\uC2A4 \uD06C\uB808\uB527\uC744 \uC9C0\uAE09\uD55C\uB2E4"
+    description: "-1000 \uC790\uAE08, -5 \uC2E0\uB8B0, -3 \uD654\uC81C\uC131"
     effects:
     - resource: 0
       amount: -1000

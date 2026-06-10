@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: customer_support_flood
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: customer_support_flood
-  displayName: Customer Support Flood
-  description: A product update caused a wave of support tickets. Users are confused.
+  displayName: "\uACE0\uAC1D\uC9C0\uC6D0 \uBB38\uC758 \uD3ED\uC8FC"
+  description: "\uC81C\uD488 \uC5C5\uB370\uC774\uD2B8 \uD6C4 \uC9C0\uC6D0 \uD2F0\uCF13\uC774
+    \uC6B0\uB974\uB974 \uC3DF\uC544\uC84C\uC2B5\uB2C8\uB2E4. \uC774\uC6A9\uC790\uB4E4\uC774
+    \uD5F7\uAC08\uB824\uD569\uB2C8\uB2E4."
   weight: 6
   conditions:
   - key: min_products
@@ -23,8 +25,9 @@ MonoBehaviour:
     value: 1000
   choices:
   - id: hire_support
-    text: Hire temporary support staff
-    description: -$1500, +3 Trust, -100 Users (some churn)
+    text: "\uC784\uC2DC \uACE0\uAC1D\uC9C0\uC6D0 \uC778\uB825\uC744 \uACE0\uC6A9\uD55C\uB2E4"
+    description: "-1500 \uC790\uAE08, +3 \uC2E0\uB8B0, -100 \uC774\uC6A9\uC790 (\uC77C\uBD80
+      \uC774\uD0C8)"
     effects:
     - resource: 0
       amount: -1500
@@ -33,8 +36,8 @@ MonoBehaviour:
     - resource: 1
       amount: -100
   - id: ai_support
-    text: Deploy AI chatbot for support
-    description: -$800, -10 Compute, +3 Automation
+    text: "AI \uCC57\uBD07\uC744 \uACE0\uAC1D\uC9C0\uC6D0\uC5D0 \uD22C\uC785\uD55C\uB2E4"
+    description: "-800 \uC790\uAE08, -10 \uC5F0\uC0B0\uB825, +3 \uC790\uB3D9\uD654"
     effects:
     - resource: 7
       amount: 3

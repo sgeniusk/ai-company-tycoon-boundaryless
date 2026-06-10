@@ -13,16 +13,19 @@ MonoBehaviour:
   m_Name: investor_pressure
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.GameEventDef
   id: investor_pressure
-  displayName: Investor Pressure
-  description: Investors are pushing for faster growth and higher revenue numbers.
+  displayName: "\uD22C\uC790\uC790 \uC555\uBC15"
+  description: "\uD22C\uC790\uC790\uB4E4\uC774 \uB354 \uBE60\uB978 \uC131\uC7A5\uACFC
+    \uB192\uC740 \uB9E4\uCD9C \uC22B\uC790\uB97C \uC694\uAD6C\uD569\uB2C8\uB2E4."
   weight: 7
   conditions:
   - key: min_month
     value: 5
   choices:
   - id: aggressive_growth
-    text: "Promise aggressive growth \u2014 launch fast"
-    description: +$4000 funding, +8 Hype, -5 Trust (cutting corners)
+    text: "\uACF5\uACA9\uC801 \uC131\uC7A5\uC744 \uC57D\uC18D\uD55C\uB2E4 - \uBE60\uB974\uAC8C
+      \uCD9C\uC2DC"
+    description: "+4000 \uC790\uAE08 \uC870\uB2EC, +8 \uD654\uC81C\uC131, -5 \uC2E0\uB8B0
+      (\uBB34\uB9AC\uD55C \uC18D\uB3C4\uC804)"
     effects:
     - resource: 0
       amount: 4000
@@ -31,8 +34,9 @@ MonoBehaviour:
     - resource: 5
       amount: -5
   - id: steady_path
-    text: Defend your steady approach
-    description: +$1500 funding, +3 Trust (less pressure)
+    text: "\uCC28\uBD84\uD55C \uC131\uC7A5 \uB178\uC120\uC744 \uC9C0\uD0A8\uB2E4"
+    description: "+1500 \uC790\uAE08 \uC870\uB2EC, +3 \uC2E0\uB8B0 (\uBD80\uB2F4\uC740
+      \uB0AE\uC544\uC9D0)"
     effects:
     - resource: 0
       amount: 1500

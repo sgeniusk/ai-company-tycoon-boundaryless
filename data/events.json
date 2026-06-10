@@ -50,304 +50,304 @@
     },
     {
       "id": "hallucination_scandal",
-      "name": "Hallucination Scandal",
-      "description": "Your AI generated false information that went viral. Media is covering it.",
+      "name": "AI 환각 소동",
+      "description": "AI가 엉뚱한 정보를 만들어냈고, 그게 바이럴을 탔습니다. 언론이 우르르 몰려옵니다.",
       "conditions": {"min_products": 1, "min_hype": 15},
       "weight": 8,
       "choices": [
         {
           "id": "public_apology",
-          "text": "Issue public apology and invest in safety",
+          "text": "공식 사과하고 안전팀에 투자한다",
           "effects": {"trust": -5, "cash": -1500, "hype": -5},
-          "description": "-5 Trust, -$1500, -5 Hype (but shows responsibility)"
+          "description": "-5 신뢰, -1500 자금, -5 화제성 (책임감은 보여줌)"
         },
         {
           "id": "downplay",
-          "text": "Downplay the issue — it's just AI being AI",
+          "text": "별일 아니라고 넘긴다 - AI가 그럴 수도 있죠",
           "effects": {"trust": -15, "hype": -3},
-          "description": "-15 Trust, -3 Hype (risky)"
+          "description": "-15 신뢰, -3 화제성 (위험)"
         },
         {
           "id": "transparency_report",
-          "text": "Release a transparency report with technical details",
+          "text": "기술 설명이 담긴 투명성 보고서를 공개한다",
           "effects": {"trust": -3, "cash": -500, "data": 5},
-          "description": "-3 Trust, -$500, +5 Data (builds long-term credibility)"
+          "description": "-3 신뢰, -500 자금, +5 데이터 (장기 신뢰 쌓기)"
         }
       ]
     },
     {
       "id": "enterprise_contract",
-      "name": "Enterprise Contract Offer",
-      "description": "A Fortune 500 company wants to use your AI. They need reliability guarantees.",
+      "name": "대기업 계약 제안",
+      "description": "포춘 500 기업이 우리 AI를 쓰고 싶다고 합니다. 단, 안정성 보증이 필요합니다.",
       "conditions": {"min_trust": 40, "min_month": 4},
       "weight": 7,
       "choices": [
         {
           "id": "accept_contract",
-          "text": "Accept the contract — deliver on their terms",
+          "text": "계약을 받는다 - 고객 조건에 맞춰 납품",
           "effects": {"cash": 5000, "trust": 5, "talent": -1},
-          "description": "+$5000, +5 Trust, -1 Talent (dedicated to client)"
+          "description": "+5000 자금, +5 신뢰, -1 인재 (전담 인력 투입)"
         },
         {
           "id": "negotiate",
-          "text": "Negotiate for better terms and more time",
+          "text": "조건과 일정을 더 좋게 협상한다",
           "effects": {"cash": 3000, "trust": 3},
-          "description": "+$3000, +3 Trust (less pressure)"
+          "description": "+3000 자금, +3 신뢰 (부담은 낮아짐)"
         },
         {
           "id": "decline",
-          "text": "Decline — we're not ready for enterprise yet",
+          "text": "거절한다 - 아직 대기업 대응은 이르다",
           "effects": {"hype": -3},
-          "description": "-3 Hype (missed opportunity)"
+          "description": "-3 화제성 (기회는 놓침)"
         }
       ]
     },
     {
       "id": "open_source_competitor",
-      "name": "Open Source Competitor",
-      "description": "A strong open-source model just dropped. It matches your capabilities for free.",
+      "name": "오픈소스 경쟁자",
+      "description": "강력한 오픈소스 모델이 공개되었습니다. 무료인데 우리 기능과 맞먹습니다.",
       "conditions": {"min_month": 3},
       "weight": 9,
       "choices": [
         {
           "id": "differentiate",
-          "text": "Double down on proprietary features and UX",
+          "text": "독자 기능과 사용성에 더 힘을 싣는다",
           "effects": {"cash": -2000, "hype": 5, "users": -200},
-          "description": "-$2000, +5 Hype, -200 Users (some churn)"
+          "description": "-2000 자금, +5 화제성, -200 이용자 (일부 이탈)"
         },
         {
           "id": "embrace_open",
-          "text": "Release your own open-source model to compete",
+          "text": "우리도 오픈소스 모델을 공개해 맞붙는다",
           "effects": {"hype": 10, "trust": 5, "cash": -1000, "users": -500},
-          "description": "+10 Hype, +5 Trust, -$1000, -500 Users"
+          "description": "+10 화제성, +5 신뢰, -1000 자금, -500 이용자"
         },
         {
           "id": "ignore",
-          "text": "Ignore it — focus on your roadmap",
+          "text": "무시하고 로드맵에 집중한다",
           "effects": {"users": -300, "hype": -5},
-          "description": "-300 Users, -5 Hype (market shift)"
+          "description": "-300 이용자, -5 화제성 (시장 흐름 변화)"
         }
       ]
     },
     {
       "id": "data_privacy_investigation",
-      "name": "Data Privacy Investigation",
-      "description": "Regulators are investigating how you collect and use training data.",
+      "name": "데이터 개인정보 조사",
+      "description": "규제 기관이 학습 데이터 수집과 사용 방식을 들여다보기 시작했습니다.",
       "conditions": {"min_data": 50, "min_month": 4},
       "weight": 6,
       "choices": [
         {
           "id": "full_compliance",
-          "text": "Full compliance — hire lawyers, audit everything",
+          "text": "전면 협조 - 변호사를 부르고 전부 감사한다",
           "effects": {"cash": -3000, "trust": 8, "data": -10},
-          "description": "-$3000, +8 Trust, -10 Data (some data deleted)"
+          "description": "-3000 자금, +8 신뢰, -10 데이터 (일부 데이터 삭제)"
         },
         {
           "id": "minimal_response",
-          "text": "Minimal response — provide required documents only",
+          "text": "최소 대응 - 요구 문서만 제출한다",
           "effects": {"cash": -500, "trust": -5},
-          "description": "-$500, -5 Trust (risky if they dig deeper)"
+          "description": "-500 자금, -5 신뢰 (더 파면 위험)"
         }
       ]
     },
     {
       "id": "influencer_review",
-      "name": "Influencer Review",
-      "description": "A major tech influencer wants to review your product live.",
+      "name": "인플루언서 리뷰",
+      "description": "대형 테크 인플루언서가 우리 제품을 라이브로 리뷰하고 싶어 합니다.",
       "conditions": {"min_products": 1, "min_month": 2},
       "weight": 10,
       "choices": [
         {
           "id": "accept_review",
-          "text": "Accept — let them show everything",
+          "text": "수락한다 - 전부 보여준다",
           "effects": {"hype": 12, "users": 1500},
-          "description": "+12 Hype, +1500 Users"
+          "description": "+12 화제성, +1500 이용자"
         },
         {
           "id": "controlled_demo",
-          "text": "Offer a controlled demo instead",
+          "text": "통제된 데모를 제안한다",
           "effects": {"hype": 6, "users": 500, "trust": 3},
-          "description": "+6 Hype, +500 Users, +3 Trust"
+          "description": "+6 화제성, +500 이용자, +3 신뢰"
         }
       ]
     },
     {
       "id": "server_outage",
-      "name": "Server Outage",
-      "description": "Your servers went down for 6 hours. Users are frustrated.",
+      "name": "서버 장애",
+      "description": "서버가 6시간 동안 멈췄습니다. 이용자들의 불만이 쏟아집니다.",
       "conditions": {"min_users": 500, "min_month": 3},
       "weight": 7,
       "choices": [
         {
           "id": "invest_infra",
-          "text": "Invest heavily in infrastructure redundancy",
+          "text": "인프라 이중화에 크게 투자한다",
           "effects": {"cash": -2500, "compute": 30, "trust": -3},
-          "description": "-$2500, +30 Compute, -3 Trust"
+          "description": "-2500 자금, +30 연산력, -3 신뢰"
         },
         {
           "id": "apologize_credits",
-          "text": "Apologize and offer service credits",
+          "text": "사과하고 서비스 크레딧을 지급한다",
           "effects": {"cash": -1000, "trust": -5, "hype": -3},
-          "description": "-$1000, -5 Trust, -3 Hype"
+          "description": "-1000 자금, -5 신뢰, -3 화제성"
         }
       ]
     },
     {
       "id": "talent_poaching",
-      "name": "Talent Poaching",
-      "description": "A big tech company is trying to hire your best researchers.",
+      "name": "인재 스카우트 공세",
+      "description": "빅테크가 우리 핵심 연구원을 데려가려고 합니다.",
       "conditions": {"min_talent": 3, "min_month": 3},
       "weight": 7,
       "choices": [
         {
           "id": "counter_offer",
-          "text": "Counter-offer with higher salary and equity",
+          "text": "더 높은 연봉과 지분으로 맞불 제안",
           "effects": {"cash": -2000},
-          "description": "-$2000 (retain talent)"
+          "description": "-2000 자금 (인재 붙잡기)"
         },
         {
           "id": "let_them_go",
-          "text": "Let them go — hire fresh talent later",
+          "text": "보낸다 - 새 인재는 나중에 뽑자",
           "effects": {"talent": -1, "cash": 0},
-          "description": "-1 Talent"
+          "description": "-1 인재"
         },
         {
           "id": "improve_culture",
-          "text": "Improve company culture and mission clarity",
+          "text": "회사 문화와 미션을 더 또렷하게 만든다",
           "effects": {"cash": -800, "hype": 3},
-          "description": "-$800, +3 Hype (team morale boost)"
+          "description": "-800 자금, +3 화제성 (팀 사기 상승)"
         }
       ]
     },
     {
       "id": "breakthrough_research",
-      "name": "Breakthrough Research",
-      "description": "Your research team made an unexpected breakthrough in model efficiency!",
+      "name": "연구 돌파구",
+      "description": "연구팀이 모델 효율을 크게 높이는 뜻밖의 발견을 했습니다!",
       "conditions": {"min_talent": 3, "min_month": 4},
       "weight": 5,
       "choices": [
         {
           "id": "publish_paper",
-          "text": "Publish the research — gain reputation",
+          "text": "논문으로 공개한다 - 명성을 얻는다",
           "effects": {"hype": 8, "trust": 5, "data": 15},
-          "description": "+8 Hype, +5 Trust, +15 Data"
+          "description": "+8 화제성, +5 신뢰, +15 데이터"
         },
         {
           "id": "keep_secret",
-          "text": "Keep it proprietary — competitive advantage",
+          "text": "비공개로 둔다 - 경쟁 우위를 챙긴다",
           "effects": {"compute": 25, "data": 20},
-          "description": "+25 Compute, +20 Data (internal use only)"
+          "description": "+25 연산력, +20 데이터 (내부 전용)"
         }
       ]
     },
     {
       "id": "investor_pressure",
-      "name": "Investor Pressure",
-      "description": "Investors are pushing for faster growth and higher revenue numbers.",
+      "name": "투자자 압박",
+      "description": "투자자들이 더 빠른 성장과 높은 매출 숫자를 요구합니다.",
       "conditions": {"min_month": 5},
       "weight": 7,
       "choices": [
         {
           "id": "aggressive_growth",
-          "text": "Promise aggressive growth — launch fast",
+          "text": "공격적 성장을 약속한다 - 빠르게 출시",
           "effects": {"cash": 4000, "hype": 8, "trust": -5},
-          "description": "+$4000 funding, +8 Hype, -5 Trust (cutting corners)"
+          "description": "+4000 자금 조달, +8 화제성, -5 신뢰 (무리한 속도전)"
         },
         {
           "id": "steady_path",
-          "text": "Defend your steady approach",
+          "text": "차분한 성장 노선을 지킨다",
           "effects": {"cash": 1500, "trust": 3},
-          "description": "+$1500 funding, +3 Trust (less pressure)"
+          "description": "+1500 자금 조달, +3 신뢰 (부담은 낮아짐)"
         }
       ]
     },
     {
       "id": "model_optimization",
-      "name": "Model Optimization Discovery",
-      "description": "An engineer found a way to reduce inference costs by 30%.",
+      "name": "모델 최적화 발견",
+      "description": "엔지니어가 추론 비용을 30% 줄일 방법을 찾아냈습니다.",
       "conditions": {"min_talent": 2, "min_month": 3},
       "weight": 6,
       "choices": [
         {
           "id": "implement_now",
-          "text": "Implement immediately across all products",
+          "text": "모든 제품에 즉시 적용한다",
           "effects": {"compute": 20, "cash": -500},
-          "description": "+20 Compute, -$500 (implementation cost)"
+          "description": "+20 연산력, -500 자금 (적용 비용)"
         },
         {
           "id": "research_further",
-          "text": "Research further for even bigger gains",
+          "text": "더 큰 효과를 노리고 추가 연구한다",
           "effects": {"data": 15, "compute": 5},
-          "description": "+15 Data, +5 Compute (delayed but bigger payoff)"
+          "description": "+15 데이터, +5 연산력 (늦지만 보상은 큼)"
         }
       ]
     },
     {
       "id": "customer_support_flood",
-      "name": "Customer Support Flood",
-      "description": "A product update caused a wave of support tickets. Users are confused.",
+      "name": "고객지원 문의 폭주",
+      "description": "제품 업데이트 후 지원 티켓이 우르르 쏟아졌습니다. 이용자들이 헷갈려합니다.",
       "conditions": {"min_users": 1000, "min_products": 2},
       "weight": 6,
       "choices": [
         {
           "id": "hire_support",
-          "text": "Hire temporary support staff",
+          "text": "임시 고객지원 인력을 고용한다",
           "effects": {"cash": -1500, "trust": 3, "users": -100},
-          "description": "-$1500, +3 Trust, -100 Users (some churn)"
+          "description": "-1500 자금, +3 신뢰, -100 이용자 (일부 이탈)"
         },
         {
           "id": "ai_support",
-          "text": "Deploy AI chatbot for support",
+          "text": "AI 챗봇을 고객지원에 투입한다",
           "effects": {"cash": -800, "compute": -10, "automation": 3},
-          "description": "-$800, -10 Compute, +3 Automation"
+          "description": "-800 자금, -10 연산력, +3 자동화"
         }
       ]
     },
     {
       "id": "new_domain_opportunity",
-      "name": "New Domain Opportunity",
-      "description": "A new market is emerging that perfectly fits your capabilities.",
+      "name": "새 분야 기회",
+      "description": "우리 역량과 딱 맞는 새 시장이 떠오르고 있습니다.",
       "conditions": {"min_month": 5, "min_capabilities": 2},
       "weight": 5,
       "choices": [
         {
           "id": "invest_early",
-          "text": "Invest early to capture the market",
+          "text": "초기 투자로 시장을 선점한다",
           "effects": {"cash": -3000, "hype": 10, "data": 10},
-          "description": "-$3000, +10 Hype, +10 Data"
+          "description": "-3000 자금, +10 화제성, +10 데이터"
         },
         {
           "id": "wait_and_see",
-          "text": "Wait and see if the market matures",
+          "text": "시장이 무르익는지 지켜본다",
           "effects": {"data": 5},
-          "description": "+5 Data (observation)"
+          "description": "+5 데이터 (관찰)"
         }
       ]
     },
     {
       "id": "regulatory_warning",
-      "name": "Regulatory Warning",
-      "description": "Government regulators issued a warning about AI safety standards.",
+      "name": "규제 경고",
+      "description": "정부 규제 기관이 AI 안전 기준에 대해 경고를 발표했습니다.",
       "conditions": {"min_month": 6, "min_users": 2000},
       "weight": 6,
       "choices": [
         {
           "id": "exceed_standards",
-          "text": "Exceed all safety standards proactively",
+          "text": "선제적으로 모든 안전 기준을 뛰어넘는다",
           "effects": {"cash": -2000, "trust": 10, "hype": -3},
-          "description": "-$2000, +10 Trust, -3 Hype"
+          "description": "-2000 자금, +10 신뢰, -3 화제성"
         },
         {
           "id": "meet_minimum",
-          "text": "Meet minimum requirements only",
+          "text": "최소 요구사항만 맞춘다",
           "effects": {"cash": -500, "trust": -3},
-          "description": "-$500, -3 Trust"
+          "description": "-500 자금, -3 신뢰"
         },
         {
           "id": "lobby",
-          "text": "Lobby for industry-friendly regulations",
+          "text": "업계 친화적 규제를 위해 로비한다",
           "effects": {"cash": -1500, "hype": 5, "trust": -5},
-          "description": "-$1500, +5 Hype, -5 Trust"
+          "description": "-1500 자금, +5 화제성, -5 신뢰"
         }
       ]
     }

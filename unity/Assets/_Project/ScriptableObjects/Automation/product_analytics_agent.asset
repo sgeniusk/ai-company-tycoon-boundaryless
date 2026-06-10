@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: product_analytics_agent
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AutomationDef
   id: product_analytics_agent
-  displayName: "제품 분석 에이전트"
-  description: "AI가 제품 지표를 분석해 개선점을 제안합니다."
+  displayName: "\uC81C\uD488 \uBD84\uC11D \uC5D0\uC774\uC804\uD2B8"
+  description: "AI\uAC00 \uC81C\uD488 \uC9C0\uD45C\uB97C \uBD84\uC11D\uD574 \uAC1C\uC120\uC810\uC744
+    \uC81C\uC548\uD569\uB2C8\uB2E4."
   cost:
   - resource: 0
     amount: 3500
@@ -34,4 +35,4 @@ MonoBehaviour:
     value: 15
   - key: min_products
     value: 2
-  monthlyBenefitText: "매월 데이터 +5"
+  monthlyBenefitText: "\uB9E4\uC6D4 \uB370\uC774\uD130 +5"

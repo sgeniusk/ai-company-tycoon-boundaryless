@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: content_filter_v1
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: content_filter_v1
-  displayName: "콘텐츠 필터 v1"
-  description: "유해한 출력을 막는 기본 콘텐츠 필터링입니다."
+  displayName: "\uCF58\uD150\uCE20 \uD544\uD130 v1"
+  description: "\uC720\uD574\uD55C \uCD9C\uB825\uC744 \uB9C9\uB294 \uAE30\uBCF8 \uCF58\uD150\uCE20
+    \uD544\uD130\uB9C1\uC785\uB2C8\uB2E4."
   cost:
   - resource: 0
     amount: 1000

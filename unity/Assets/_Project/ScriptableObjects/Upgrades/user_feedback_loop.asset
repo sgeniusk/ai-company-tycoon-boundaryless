@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: user_feedback_loop
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: user_feedback_loop
-  displayName: "사용자 피드백 루프"
-  description: "사용자 피드백을 모아 모델 개선에 활용합니다."
+  displayName: "\uC0AC\uC6A9\uC790 \uD53C\uB4DC\uBC31 \uB8E8\uD504"
+  description: "\uC0AC\uC6A9\uC790 \uD53C\uB4DC\uBC31\uC744 \uBAA8\uC544 \uBAA8\uB378
+    \uAC1C\uC120\uC5D0 \uD65C\uC6A9\uD569\uB2C8\uB2E4."
   cost:
   - resource: 0
     amount: 1500
