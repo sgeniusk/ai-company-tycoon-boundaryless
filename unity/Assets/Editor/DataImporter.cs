@@ -29,8 +29,10 @@ public static class DataImporter
         var events = ImportEvents();
         var stages = ImportStages();
         var competitors = ImportCompetitors(ReadLocale("ko.json"));
+        var runModifiers = ImportRunModifiers();
+        var runTagEffects = ImportRunTagEffects();
 
-        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, balance);
+        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, balance);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -367,6 +369,60 @@ public static class DataImporter
         return imported;
     }
 
+    // run_modifiers.json 4축(start_cities/world_lore/market_conditions/founder_traits) -> RunModifierOptionDef (feat-007).
+    private static List<RunModifierOptionDef> ImportRunModifiers()
+    {
+        var root = ReadJsonObject("run_modifiers.json");
+        var imported = new List<RunModifierOptionDef>();
+        EnsureFolder(ScriptableObjectRoot + "/RunModifiers");
+
+        foreach (var axis in new[] { "start_cities", "world_lore", "market_conditions", "founder_traits" })
+        {
+            var items = GetList(root, axis);
+            foreach (var item in items)
+            {
+                var source = AsObject(item, "run_modifiers." + axis);
+                var id = GetString(source, "id");
+                var asset = LoadOrCreate<RunModifierOptionDef>(ScriptableObjectRoot + "/RunModifiers/" + axis + "_" + id + ".asset");
+                asset.id = id;
+                asset.axis = axis;
+                asset.displayName = GetString(source, "name");
+                asset.description = GetString(source, "description");
+                var deltas = GetOptionalObject(source, "starting_deltas");
+                asset.startingResourceDeltas = ToResourceAmounts(
+                    deltas == null ? null : GetOptionalObject(deltas, "resources"), axis + "." + id + ".resources");
+                asset.startingCapabilityDeltas = ToCapabilityLevels(
+                    deltas == null ? null : GetOptionalObject(deltas, "capabilities"));
+                asset.tags = ToStringList(GetOptionalList(source, "tags"));
+                EditorUtility.SetDirty(asset);
+                imported.Add(asset);
+            }
+        }
+
+        return imported;
+    }
+
+    // run_modifiers.json tag_effects -> RunTagEffectsConfig 단일 SO (feat-007, 블록 #2 틱 훅 소비).
+    private static RunTagEffectsConfig ImportRunTagEffects()
+    {
+        var root = ReadJsonObject("run_modifiers.json");
+        var source = GetObject(root, "tag_effects");
+        var asset = LoadOrCreate<RunTagEffectsConfig>(ScriptableObjectRoot + "/RunTagEffectsConfig.asset");
+        asset.effects = new List<RunTagEffect>();
+
+        foreach (var tag in SortedKeys(source))
+        {
+            asset.effects.Add(new RunTagEffect
+            {
+                tag = tag,
+                monthlyEffects = ToResourceAmounts(AsObject(source[tag], "tag_effects." + tag), "tag_effects." + tag)
+            });
+        }
+
+        EditorUtility.SetDirty(asset);
+        return asset;
+    }
+
     private static void UpdateCatalog(
         List<ResourceDef> resources,
         List<ProductDef> products,
@@ -377,6 +433,8 @@ public static class DataImporter
         List<GameEventDef> events,
         List<CompanyStageDef> stages,
         List<CompetitorDef> competitors,
+        List<RunModifierOptionDef> runModifierOptions,
+        RunTagEffectsConfig runTagEffects,
         BalanceConfig balance)
     {
         EnsureFolder("Assets/_Project/Resources");
@@ -390,6 +448,8 @@ public static class DataImporter
         catalog.events = events;
         catalog.stages = stages;
         catalog.competitors = competitors;
+        catalog.runModifierOptions = runModifierOptions;
+        catalog.runTagEffects = runTagEffects;
         catalog.balance = balance;
         EditorUtility.SetDirty(catalog);
     }

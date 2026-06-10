@@ -54,6 +54,13 @@ namespace AICompanyTycoon.Save
                 d.competitorStates.Add(new CompetitorSave { id = c.id, score = c.score, marketShare = c.marketShare, momentum = c.momentum });
             foreach (var h in m.MarketShareHistory)
                 d.marketShareHistory.Add(new MarketShareSave { month = h.month, player = h.player, topRivalShare = h.topRivalShare, topRivalId = h.topRivalId });
+            var rm = m.RunModifiers ?? new RunModifiersState();
+            d.runModifiers = new RunModifiersSave
+            {
+                seed = rm.Seed, startCityId = rm.StartCityId, worldLoreId = rm.WorldLoreId,
+                marketConditionId = rm.MarketConditionId, founderTraitId = rm.FounderTraitId,
+                challengeTier = rm.ChallengeTier, tags = new List<string>(rm.Tags),
+            };
             return d;
         }
 
@@ -78,6 +85,20 @@ namespace AICompanyTycoon.Save
             if (d.marketShareHistory != null)
                 foreach (var h in d.marketShareHistory)
                     m.MarketShareHistory.Add(new MarketShareEntry { month = h.month, player = h.player, topRivalShare = h.topRivalShare, topRivalId = h.topRivalId });
+            // 런 모디파이어 — 구세이브/결손 필드는 기본값. id 유효성 재검증은 카탈로그 가진 쪽에서 RunModifierService.Sanitize로.
+            var rm = d.runModifiers;
+            m.RunModifiers = rm == null
+                ? new RunModifiersState()
+                : new RunModifiersState
+                {
+                    Seed = string.IsNullOrEmpty(rm.seed) ? RunModifiersState.DefaultSeed : rm.seed,
+                    StartCityId = string.IsNullOrEmpty(rm.startCityId) ? RunModifiersState.DefaultStartCityId : rm.startCityId,
+                    WorldLoreId = string.IsNullOrEmpty(rm.worldLoreId) ? RunModifiersState.DefaultWorldLoreId : rm.worldLoreId,
+                    MarketConditionId = string.IsNullOrEmpty(rm.marketConditionId) ? RunModifiersState.DefaultMarketConditionId : rm.marketConditionId,
+                    FounderTraitId = string.IsNullOrEmpty(rm.founderTraitId) ? RunModifiersState.DefaultFounderTraitId : rm.founderTraitId,
+                    ChallengeTier = string.IsNullOrEmpty(rm.challengeTier) ? RunModifiersState.DefaultChallengeTier : rm.challengeTier,
+                    Tags = new List<string>(rm.tags ?? new List<string>()),
+                };
         }
     }
 }

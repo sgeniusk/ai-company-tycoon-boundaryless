@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c52546ad4e084711b0af0a1261a3f4e, type: 3}
+  m_Name: world_lore_privacy_fortress
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.RunModifierOptionDef
+  id: privacy_fortress
+  displayName: "\uD504\uB77C\uC774\uBC84\uC2DC \uC694\uC0C8"
+  description: "\uAC1C\uC778\uC815\uBCF4 \uCCA0\uBCBD\uBC95\uC774 \uB370\uC774\uD130
+    \uC218\uC9D1\uC744 \uB9C9\uC9C0\uB9CC \uC2E0\uB8B0 \uD504\uB9AC\uBBF8\uC5C4\uC744
+    \uB9CC\uB4ED\uB2C8\uB2E4."
+  axis: world_lore
+  startingResourceDeltas:
+  - resource: 3
+    amount: -12
+  - resource: 5
+    amount: 6
+  startingCapabilityDeltas: []
+  tags:
+  - privacy_strict
+  - consent_economy

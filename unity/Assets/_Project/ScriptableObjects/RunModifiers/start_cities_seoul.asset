@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c52546ad4e084711b0af0a1261a3f4e, type: 3}
+  m_Name: start_cities_seoul
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.RunModifierOptionDef
+  id: seoul
+  displayName: "\uC11C\uC6B8"
+  description: "\uAE30\uC5C5 \uACE0\uAC1D\uACFC AI \uC778\uC7AC\uD480\uC774 \uAC00\uAE4C\uC6B4
+    \uBC00\uB3C4 \uB192\uC740 \uC2DC\uC791\uC9C0\uC785\uB2C8\uB2E4."
+  axis: start_cities
+  startingResourceDeltas:
+  - resource: 0
+    amount: 700
+  - resource: 4
+    amount: 1
+  - resource: 5
+    amount: 2
+  startingCapabilityDeltas:
+  - capabilityId: enterprise
+    level: 1
+  tags:
+  - city_seoul
+  - enterprise_access
+  - talent_dense

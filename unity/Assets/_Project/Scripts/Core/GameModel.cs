@@ -33,6 +33,9 @@ namespace AICompanyTycoon.Core
         public List<CompetitorState> CompetitorStates = new List<CompetitorState>();
         public List<MarketShareEntry> MarketShareHistory = new List<MarketShareEntry>();
 
+        // 런 모디파이어 — 이번 런의 굴린 세계 (feat-007 블록 #1). 기본 런은 효과 0.
+        public RunModifiersState RunModifiers = new RunModifiersState();
+
         public double Get(ResourceId id)
         {
             switch (id)

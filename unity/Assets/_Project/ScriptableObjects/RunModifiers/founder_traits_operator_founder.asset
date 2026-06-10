@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c52546ad4e084711b0af0a1261a3f4e, type: 3}
+  m_Name: founder_traits_operator_founder
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.RunModifierOptionDef
+  id: operator_founder
+  displayName: "\uC624\uD37C\uB808\uC774\uD130 \uCC3D\uC5C5\uC790"
+  description: "\uBC88\uC728 \uAD00\uB9AC\uC640 \uAFB8\uC900\uD55C \uC720\uC785 \uC6B4\uC601\uC5D0
+    \uAC15\uD55C \uCC3D\uC5C5\uC790\uC785\uB2C8\uB2E4."
+  axis: founder_traits
+  startingResourceDeltas:
+  - resource: 0
+    amount: 1500
+  - resource: 1
+    amount: 80
+  startingCapabilityDeltas: []
+  tags:
+  - operator_founder
+  - efficiency_bias

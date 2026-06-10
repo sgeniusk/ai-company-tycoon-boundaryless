@@ -16,6 +16,8 @@ namespace AICompanyTycoon.Data
         public List<GameEventDef> events = new List<GameEventDef>();
         public List<CompanyStageDef> stages = new List<CompanyStageDef>();
         public List<CompetitorDef> competitors = new List<CompetitorDef>();
+        public List<RunModifierOptionDef> runModifierOptions = new List<RunModifierOptionDef>();
+        public RunTagEffectsConfig runTagEffects;
         public BalanceConfig balance;
 
         public ResourceDef GetResource(string id)
@@ -61,6 +63,16 @@ namespace AICompanyTycoon.Data
         public CompetitorDef GetCompetitor(string id)
         {
             return competitors.Find(item => item != null && item.id == id);
+        }
+
+        public List<RunModifierOptionDef> GetRunOptions(string axis)
+        {
+            return runModifierOptions.FindAll(item => item != null && item.axis == axis);
+        }
+
+        public RunModifierOptionDef GetRunOption(string axis, string id)
+        {
+            return runModifierOptions.Find(item => item != null && item.axis == axis && item.id == id);
         }
     }
 }

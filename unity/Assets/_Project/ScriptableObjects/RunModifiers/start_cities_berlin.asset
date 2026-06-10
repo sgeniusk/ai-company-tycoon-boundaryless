@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c52546ad4e084711b0af0a1261a3f4e, type: 3}
+  m_Name: start_cities_berlin
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.RunModifierOptionDef
+  id: berlin
+  displayName: "\uBCA0\uB97C\uB9B0"
+  description: "\uD504\uB77C\uC774\uBC84\uC2DC\uC640 \uC624\uD508\uC18C\uC2A4 \uBB38\uD654\uAC00
+    \uAC15\uD574 \uB370\uC774\uD130 \uAC10\uAC01\uC740 \uC88B\uC9C0\uB9CC \uD654\uC81C\uC131\uC740
+    \uCC28\uBD84\uD55C \uC2DC\uC791\uC9C0\uC785\uB2C8\uB2E4."
+  axis: start_cities
+  startingResourceDeltas:
+  - resource: 3
+    amount: 12
+  - resource: 6
+    amount: -2
+  startingCapabilityDeltas:
+  - capabilityId: safety
+    level: 1
+  tags:
+  - city_berlin
+  - oss_culture
+  - privacy_culture

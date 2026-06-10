@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c52546ad4e084711b0af0a1261a3f4e, type: 3}
+  m_Name: start_cities_san_francisco
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.RunModifierOptionDef
+  id: san_francisco
+  displayName: "\uC0CC\uD504\uB780\uC2DC\uC2A4\uCF54"
+  description: "\uD504\uB7F0\uD2F0\uC5B4 \uC778\uC7AC\uC640 \uCEF4\uD4E8\uD2B8 \uB124\uD2B8\uC6CC\uD06C\uAC00
+    \uAC00\uAE5D\uC9C0\uB9CC \uC2DC\uC791 \uBE44\uC6A9\uC774 \uB192\uC740 \uD074\uB7EC\uC2A4\uD130\uC785\uB2C8\uB2E4."
+  axis: start_cities
+  startingResourceDeltas:
+  - resource: 0
+    amount: -800
+  - resource: 2
+    amount: 20
+  - resource: 6
+    amount: 3
+  - resource: 4
+    amount: 2
+  startingCapabilityDeltas:
+  - capabilityId: code
+    level: 1
+  tags:
+  - city_san_francisco
+  - frontier_cluster
+  - talent_expensive

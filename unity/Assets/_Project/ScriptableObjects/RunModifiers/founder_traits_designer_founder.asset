@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c52546ad4e084711b0af0a1261a3f4e, type: 3}
+  m_Name: founder_traits_designer_founder
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.RunModifierOptionDef
+  id: designer_founder
+  displayName: "\uB514\uC790\uC774\uB108 \uCC3D\uC5C5\uC790"
+  description: "UX \uAC10\uAC01\uACFC \uD654\uC81C\uC131\uC740 \uAC15\uD558\uC9C0\uB9CC
+    \uC778\uD504\uB77C \uAE30\uBC18\uC740 \uC57D\uD558\uAC8C \uC2DC\uC791\uD569\uB2C8\uB2E4."
+  axis: founder_traits
+  startingResourceDeltas:
+  - resource: 2
+    amount: -5
+  - resource: 6
+    amount: 6
+  - resource: 1
+    amount: 120
+  startingCapabilityDeltas: []
+  tags:
+  - designer_founder
+  - ux_bias

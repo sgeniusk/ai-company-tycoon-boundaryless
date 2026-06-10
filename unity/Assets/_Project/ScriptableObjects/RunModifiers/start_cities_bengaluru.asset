@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c52546ad4e084711b0af0a1261a3f4e, type: 3}
+  m_Name: start_cities_bengaluru
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.RunModifierOptionDef
+  id: bengaluru
+  displayName: "\uBCB5\uAC08\uB8E8\uB8E8"
+  description: "\uC800\uBE44\uC6A9 \uC778\uC7AC\uD480\uACFC \uBE60\uB978 \uAD6C\uD604
+    \uBB38\uD654\uB85C \uCD08\uBC18 \uD300 \uD6A8\uC728\uC774 \uC88B\uC740 \uC2DC\uC791\uC9C0\uC785\uB2C8\uB2E4."
+  axis: start_cities
+  startingResourceDeltas:
+  - resource: 0
+    amount: 400
+  - resource: 4
+    amount: 2
+  startingCapabilityDeltas:
+  - capabilityId: code
+    level: 1
+  tags:
+  - city_bengaluru
+  - talent_cheap
+  - low_burn

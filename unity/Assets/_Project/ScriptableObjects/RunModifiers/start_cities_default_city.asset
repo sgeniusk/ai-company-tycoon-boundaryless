@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c52546ad4e084711b0af0a1261a3f4e, type: 3}
+  m_Name: start_cities_default_city
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.RunModifierOptionDef
+  id: default_city
+  displayName: "\uD45C\uC900 \uC2DC\uC791 \uB3C4\uC2DC"
+  description: "\uAE30\uC874 \uCC28\uACE0 \uC2DC\uC791\uACFC \uB3D9\uC77C\uD55C \uAE30\uC900\uC120\uC785\uB2C8\uB2E4.
+    \uBE14\uB85D #1 \uAE30\uBCF8 \uB7F0\uC740 \uC774 \uD56D\uBAA9\uC744 \uC0AC\uC6A9\uD574
+    \uD50C\uB808\uC774 \uC218\uCE58\uB97C \uBC14\uAFB8\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
+  axis: start_cities
+  startingResourceDeltas: []
+  startingCapabilityDeltas: []
+  tags:
+  - default_city

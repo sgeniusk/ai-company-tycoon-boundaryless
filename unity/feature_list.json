@@ -64,6 +64,24 @@
       "status": "done",
       "owner": "Claude",
       "evidence": "A~E 코드 완료 + 시각 확인 완료. A 랭킹시스템(MarketService+ScoreboardRanking, MarketTests 8)·B LED전광판(LiveBlink+Marquee)·C 코어3칩HUD+트레이+목표리본·D 직원통통(StaffBob)+모달팝인+탭전환페이드·E 하단도크(2|FAB|2)+FAB펄스+탭팝업+더보기드로어+office-first. EditMode 29/29. 헤드리스 캡처 하네스(ScreenshotCaptureTests)로 7장 육안 대조 — 버그1 수정(꾸미기 이모지→한글). 남은 폴리시는 backlog 아트. docs/feat-006-checklist.md"
+    },
+    {
+      "id": "feat-007",
+      "name": "리플레이성 척추 포팅 — 런 모디파이어 (P8)",
+      "description": "React판 v0.63 검증 설계를 Unity 헤드리스 코어로 이식. 블록 #1 런 모디파이어 4축 선택 엔진(시드 결정론)+세이브, #2 월간 tag_effects 틱 훅(additive), #3 연중 세계 이벤트(world_events.json 26종), #4 세계 뽑기 리빌 UI. 정답지 ../src/game/run-modifiers.ts, 정본 ../data/run_modifiers.json. 설계 docs/feat-007-context-notes.md",
+      "dependencies": ["feat-002", "feat-003"],
+      "status": "in-progress",
+      "owner": "Claude (영향도 높음)",
+      "evidence": "블록 #1 완료(2026-06-11) — 4축 SO+임포터(옵션 40+tag_effects 40), RunModifierService(FNV-1a 시드 결정론, React 동일), SaveData v3 구세이브 마이그레이션, SimulationContext runInput(기본 런 불변). ImportAll exit0 + EditMode 38/38(신규 RunModifierTests 9). 남음 — #2 틱 훅, #3 세계 이벤트, #4 리빌 UI"
+    },
+    {
+      "id": "feat-008",
+      "name": "리플레이성 심화 — 난이도·태그 파생·멀티 엔딩 (P9)",
+      "description": "feat-007 척추 위에 React판 v0.65~0.67 이식 — 난이도 티어(difficulty_tiers.json, 보상 배수), 태그 파생 아키타입(derivation_rules.json, 발견 도감), 멀티 엔딩(endings.json). 데이터 정본 전부 루트에 존재",
+      "dependencies": ["feat-007"],
+      "status": "not-started",
+      "owner": "Claude->Codex",
+      "evidence": ""
     }
   ]
 }

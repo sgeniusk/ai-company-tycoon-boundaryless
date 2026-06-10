@@ -1,0 +1,191 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d8207be216048409dc3d9170d2277a, type: 3}
+  m_Name: RunTagEffectsConfig
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.RunTagEffectsConfig
+  effects:
+  - tag: alphago_stall
+    monthlyEffects:
+    - resource: 3
+      amount: -2
+  - tag: community_models
+    monthlyEffects:
+    - resource: 2
+      amount: 2
+    - resource: 3
+      amount: 2
+  - tag: compute_expensive
+    monthlyEffects:
+    - resource: 2
+      amount: -8
+  - tag: compute_regional
+    monthlyEffects:
+    - resource: 2
+      amount: -2
+  - tag: consent_economy
+    monthlyEffects:
+    - resource: 5
+      amount: 1
+  - tag: consumer_hype
+    monthlyEffects:
+    - resource: 6
+      amount: 2
+    - resource: 1
+      amount: 80
+  - tag: data_scarce
+    monthlyEffects:
+    - resource: 3
+      amount: -3
+  - tag: demand_surge
+    monthlyEffects:
+    - resource: 1
+      amount: 80
+  - tag: disciplined_market
+    monthlyEffects:
+    - resource: 5
+      amount: 1
+  - tag: distribution_easy
+    monthlyEffects:
+    - resource: 1
+      amount: 60
+  - tag: distribution_locked
+    monthlyEffects:
+    - resource: 1
+      amount: -30
+  - tag: domestic_scale
+    monthlyEffects:
+    - resource: 1
+      amount: 50
+  - tag: efficiency_bias
+    monthlyEffects:
+    - resource: 0
+      amount: 30
+  - tag: embodied_demand
+    monthlyEffects:
+    - resource: 1
+      amount: 40
+  - tag: enterprise_winter
+    monthlyEffects:
+    - resource: 0
+      amount: -80
+    - resource: 5
+      amount: 1
+    - resource: 1
+      amount: -30
+  - tag: export_controls
+    monthlyEffects:
+    - resource: 2
+      amount: -3
+  - tag: funding_drought
+    monthlyEffects:
+    - resource: 0
+      amount: -50
+  - tag: funding_drought_world
+    monthlyEffects:
+    - resource: 0
+      amount: -60
+  - tag: gpu_scarcity
+    monthlyEffects:
+    - resource: 2
+      amount: -4
+  - tag: hardware_capital
+    monthlyEffects:
+    - resource: 2
+      amount: 2
+  - tag: high_churn
+    monthlyEffects:
+    - resource: 5
+      amount: -1
+  - tag: long_sales_cycle
+    monthlyEffects:
+    - resource: 0
+      amount: -40
+    - resource: 1
+      amount: -20
+  - tag: market_boom
+    monthlyEffects:
+    - resource: 0
+      amount: 100
+    - resource: 6
+      amount: 1
+    - resource: 1
+      amount: 100
+  - tag: open_source_heaven
+    monthlyEffects:
+    - resource: 3
+      amount: 4
+  - tag: oss_culture
+    monthlyEffects:
+    - resource: 3
+      amount: 2
+  - tag: output_dense
+    monthlyEffects:
+    - resource: 3
+      amount: 2
+  - tag: platform_tax
+    monthlyEffects:
+    - resource: 0
+      amount: -30
+  - tag: privacy_strict
+    monthlyEffects:
+    - resource: 3
+      amount: -2
+  - tag: reg_crackdown
+    monthlyEffects:
+    - resource: 6
+      amount: -2
+  - tag: regulation_heavy
+    monthlyEffects:
+    - resource: 6
+      amount: -1
+  - tag: research_fast
+    monthlyEffects:
+    - resource: 3
+      amount: 3
+  - tag: research_slow
+    monthlyEffects:
+    - resource: 3
+      amount: -3
+    - resource: 6
+      amount: -1
+  - tag: safety_first
+    monthlyEffects:
+    - resource: 5
+      amount: 1
+  - tag: safety_scrutiny
+    monthlyEffects:
+    - resource: 6
+      amount: -1
+  - tag: skeptic_market
+    monthlyEffects:
+    - resource: 6
+      amount: -1
+  - tag: synthetic_premium
+    monthlyEffects:
+    - resource: 0
+      amount: -20
+  - tag: talent_war
+    monthlyEffects:
+    - resource: 0
+      amount: -40
+  - tag: trust_premium
+    monthlyEffects:
+    - resource: 5
+      amount: 1
+  - tag: trust_west_penalty
+    monthlyEffects:
+    - resource: 5
+      amount: -1
+  - tag: volatile_demand
+    monthlyEffects:
+    - resource: 5
+      amount: -1

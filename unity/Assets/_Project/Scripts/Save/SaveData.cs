@@ -29,10 +29,23 @@ namespace AICompanyTycoon.Save
         public string topRivalId;
     }
 
+    // 런 모디파이어 세이브 (feat-007). 구세이브(필드 없음)는 기본값으로 로드된다.
+    [Serializable]
+    public class RunModifiersSave
+    {
+        public string seed = "standard";
+        public string startCityId = "default_city";
+        public string worldLoreId = "standard";
+        public string marketConditionId = "steady_market";
+        public string founderTraitId = "no_founder";
+        public string challengeTier = "standard";
+        public List<string> tags = new List<string>();
+    }
+
     [Serializable]
     public class SaveData
     {
-        public int version = 2;
+        public int version = 3;
         public double cash;
         public double users;
         public double compute;
@@ -51,5 +64,6 @@ namespace AICompanyTycoon.Save
         public List<string> triggeredEvents = new List<string>();
         public List<CompetitorSave> competitorStates = new List<CompetitorSave>();
         public List<MarketShareSave> marketShareHistory = new List<MarketShareSave>();
+        public RunModifiersSave runModifiers = new RunModifiersSave();
     }
 }
