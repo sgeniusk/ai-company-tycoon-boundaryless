@@ -66,6 +66,10 @@ namespace AICompanyTycoon.UI
         GameObject _moreDrawer;
         bool _menuOpen;
 
+        GameObject _worldRevealModal;  // 세계 뽑기 리빌 (feat-007 블록 #4)
+        Transform _worldRevealRows;
+        Text _worldRevealSeed;
+
         MonthSummary _lastSummary;
         string _activeTab = ProductsTab;
         bool _terminal;
@@ -103,6 +107,7 @@ namespace AICompanyTycoon.UI
             BuildBottomDock(content);    // CD-3 하단 도크 — 탭 + 다음달 FAB + 더보기
             BuildMenuPopup(_canvas.transform);   // 탭 콘텐츠는 오피스 위 팝업으로
             BuildMoreDrawer(_canvas.transform);  // 저장/불러오기/새 게임 드로어
+            BuildWorldRevealModal(_canvas.transform); // 세계 뽑기 리빌 (feat-007)
             BuildEventModal(_canvas.transform);
             BuildResultModal(_canvas.transform);
             SetActivePanel(_activeTab);
@@ -926,11 +931,14 @@ namespace AICompanyTycoon.UI
             load.button.onClick.AddListener(() => { HandleLoad(); CloseMore(); });
             AddLayout(load.button.gameObject, 80, 0);
 
-            var fresh = UiFactory.Button(card.transform, "새 게임");
+            // 새 게임 = 세계 굴리기 — 시드 런으로 4축을 굴리고 리빌을 보여준다 (feat-007 블록 #4, 로그라이크 루프).
+            var fresh = UiFactory.Button(card.transform, "새 게임 (세계 굴리기)");
             fresh.button.onClick.AddListener(() =>
             {
-                ReplaceContext(SimulationContext.Create(_context.Catalog));
+                var seed = "run-" + UnityEngine.Random.Range(100000, 999999);
+                ReplaceContext(SimulationContext.Create(_context.Catalog, 12345, new RunModifierInput { Seed = seed }));
                 CloseMore();
+                ShowWorldReveal();
             });
             AddLayout(fresh.button.gameObject, 80, 0);
 
@@ -939,6 +947,91 @@ namespace AICompanyTycoon.UI
             AddLayout(close.button.gameObject, 72, 0);
 
             _moreDrawer.SetActive(false);
+        }
+
+        // 세계 뽑기 리빌 — 굴린 4축(도시/세계관/시장/창업자)을 v078 스탬프와 함께 보여준다 (feat-007 블록 #4).
+        void BuildWorldRevealModal(Transform parent)
+        {
+            _worldRevealModal = UiFactory.Panel(parent, UiTheme.ModalScrim);
+            _worldRevealModal.name = "WorldRevealModal";
+            Stretch(_worldRevealModal.GetComponent<RectTransform>());
+
+            var card = UiFactory.Panel(_worldRevealModal.transform, UiTheme.PanelBg);
+            card.name = "WorldRevealCard";
+            var rect = card.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.08f, 0.16f);
+            rect.anchorMax = new Vector2(0.92f, 0.84f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            UiFactory.VBox(card.transform, 14, new RectOffset(26, 26, 24, 24));
+
+            var title = UiFactory.Label(card.transform, "새로운 세계", 36);
+            title.fontStyle = FontStyle.Bold;
+            title.alignment = TextAnchor.MiddleCenter;
+            AddLayout(title.gameObject, 52, 0);
+
+            _worldRevealSeed = UiFactory.Label(card.transform, "", 22);
+            _worldRevealSeed.alignment = TextAnchor.MiddleCenter;
+            _worldRevealSeed.color = UiTheme.TextSecondary;
+            AddLayout(_worldRevealSeed.gameObject, 30, 0);
+
+            var rows = new GameObject("Rows", typeof(RectTransform));
+            rows.transform.SetParent(card.transform, false);
+            UiFactory.VBox(rows.transform, 12, new RectOffset(0, 0, 0, 0));
+            var rowsLayout = rows.AddComponent<LayoutElement>();
+            rowsLayout.flexibleHeight = 1;
+            _worldRevealRows = rows.transform;
+
+            var start = UiFactory.Button(card.transform, "이 세계로 시작!");
+            start.button.onClick.AddListener(() => _worldRevealModal.SetActive(false));
+            AddLayout(start.button.gameObject, 84, 0);
+
+            _worldRevealModal.SetActive(false);
+        }
+
+        // 리빌 모달을 현재 런 상태로 채워 연다. 표준 런이면 보여줄 게 없어 열지 않는다 (React shouldShowWorldReveal 대응).
+        public void ShowWorldReveal()
+        {
+            if (_worldRevealModal == null || _context == null) return;
+            var run = _context.Model.RunModifiers;
+            if (run == null || run.IsDefaultRun()) return;
+
+            Clear(_worldRevealRows);
+            _worldRevealSeed.text = "시드 " + run.Seed;
+            AddWorldRevealRow("world_city", "시작 도시", _context.Catalog.GetRunOption("start_cities", run.StartCityId));
+            AddWorldRevealRow("world_world", "세계관", _context.Catalog.GetRunOption("world_lore", run.WorldLoreId));
+            AddWorldRevealRow("world_market", "시장 상황", _context.Catalog.GetRunOption("market_conditions", run.MarketConditionId));
+            AddWorldRevealRow("world_founder", "창업자", _context.Catalog.GetRunOption("founder_traits", run.FounderTraitId));
+
+            _worldRevealModal.SetActive(true);
+            PopInCard(_worldRevealModal, "WorldRevealCard");
+        }
+
+        void AddWorldRevealRow(string stampName, string axisLabel, RunModifierOptionDef option)
+        {
+            var row = new GameObject("RevealRow", typeof(RectTransform));
+            row.transform.SetParent(_worldRevealRows, false);
+            UiFactory.HBox(row.transform, 14);
+            var rowLayout = row.AddComponent<LayoutElement>();
+            rowLayout.minHeight = 108;
+            rowLayout.preferredHeight = 108;
+
+            UiFactory.Icon(row.transform, IconLibrary.Get(stampName), 72);
+
+            var texts = new GameObject("Texts", typeof(RectTransform));
+            texts.transform.SetParent(row.transform, false);
+            UiFactory.VBox(texts.transform, 2, new RectOffset(0, 0, 4, 4));
+            var textsLayout = texts.AddComponent<LayoutElement>();
+            textsLayout.flexibleWidth = 1;
+
+            var name = option != null ? option.displayName : "?";
+            var headline = UiFactory.Label(texts.transform, axisLabel + " — " + name, 26);
+            headline.fontStyle = FontStyle.Bold;
+            AddLayout(headline.gameObject, 34, 0);
+
+            var desc = UiFactory.Label(texts.transform, option != null ? option.description : "", 21);
+            desc.color = UiTheme.TextSecondary;
+            AddLayout(desc.gameObject, 0, 1);
         }
 
         void BuildEventModal(Transform parent)

@@ -131,11 +131,11 @@ public static class IconAtlasImporter
         },
         new AtlasDef
         {
-            // v054 office-objects — 256x192 비정사각, 5x5=25칸(0-20 오브젝트, 21-24 빈칸). 책상/서버/캐비닛/화이트보드/프린터/회의테이블.
-            fileName = "v054-office-objects-final.png",
+            // v091 office-objects 고해상 — 384x288 비정사각, 5x5=25칸(0-20 오브젝트, 21-24 빈칸). v054 드롭인 교체본(같은 라인업·칸 순서).
+            fileName = "v091-office-objects-hires.png",
             folder = "sprites",
-            cellW = 256,
-            cellH = 192,
+            cellW = 384,
+            cellH = 288,
             columns = 5,
             names = new[]
             {

@@ -32,7 +32,7 @@ React 소스(`public/assets/sprites`)에 풍부한 아트가 있으나 Unity 포
 - [x] v054 칸 이름 확정 — `ref/v054-objects-grid.png` 기준 21종(0-20) + 빈칸 4
 - [x] 경로1 임포트 — v054 → Resources, IconLibrary 경로. 오브젝트 퍼레이드 21종 정상(`Logs/shots/09-object-parade.png`)
 - [x] Unity 배치 — BuildOfficeScene 2층(가구 백row + 직원). 책상/서버/화이트보드/서류책상 4종. 캡처 확인
-- [ ] 경로2 신규 고해상 생성 (외주) — v054 레퍼런스로 디테일 상향. 여전히 외주 대기
+- [x] 경로2 신규 고해상 생성 완료 (2026-06-11) — Codex 절차 향상(generate-v091-office-objects-hires.mjs, 소스 512x384→384x288 + 디테일 패스, 결정적). Unity 임포터 v054→v091 드롭인 교체 + 오브젝트 퍼레이드(09)·메인(01) 캡처 검증
 - [~] 배치 미세조정 — 가구-직원 간격(office-first 큰 floor). 밴드 하향안은 라이선스 점유로 미검증, 보류
 
 ### 오피스 배경 (backdrop)

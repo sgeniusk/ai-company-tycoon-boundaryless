@@ -121,6 +121,15 @@ namespace AICompanyTycoon.Tests.PlayMode
                 yield return CaptureCanvas(canvasGo, "06-more-drawer.png");
             }
 
+            // 7) 세계 굴리기 리빌 — 새 게임 버튼으로 시드 런을 굴려 리빌 모달 캡처 (feat-007 블록 #4)
+            var rollNew = FindButton(canvasGo, "새 게임 (세계 굴리기)");
+            if (rollNew != null)
+            {
+                rollNew.onClick.Invoke();
+                yield return WaitRealtime(0.4f);
+                yield return CaptureCanvas(canvasGo, "07-world-reveal.png");
+            }
+
             Object.Destroy(go);
             yield return null;
         }

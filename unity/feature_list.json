@@ -70,9 +70,9 @@
       "name": "리플레이성 척추 포팅 — 런 모디파이어 (P8)",
       "description": "React판 v0.63 검증 설계를 Unity 헤드리스 코어로 이식. 블록 #1 런 모디파이어 4축 선택 엔진(시드 결정론)+세이브, #2 월간 tag_effects 틱 훅(additive), #3 연중 세계 이벤트(world_events.json 26종), #4 세계 뽑기 리빌 UI. 정답지 ../src/game/run-modifiers.ts, 정본 ../data/run_modifiers.json. 설계 docs/feat-007-context-notes.md",
       "dependencies": ["feat-002", "feat-003"],
-      "status": "in-progress",
+      "status": "done",
       "owner": "Claude (영향도 높음)",
-      "evidence": "블록 #1 완료(2026-06-11) — 4축 SO+임포터(옵션 40+tag_effects 40), RunModifierService(FNV-1a 시드 결정론, React 동일), SaveData v3 구세이브 마이그레이션, SimulationContext runInput(기본 런 불변). ImportAll exit0 + EditMode 38/38(신규 RunModifierTests 9). 남음 — #2 틱 훅, #3 세계 이벤트, #4 리빌 UI"
+      "evidence": "4블록 완료(2026-06-11) — #1 4축 선택 엔진(FNV-1a 시드 결정론, SaveData v3 마이그레이션, RunModifierTests 9) #2 월간 tag_effects 틱 훅(표준 런 무효과 동치 테스트) #3 WorldEventDef 30종+WorldEventService(시드 파생 연 1건, React 교차 픽스처 일치, WorldEventTests 6) #4 세계 뽑기 리빌 모달(더보기 새 게임=세계 굴리기, v078 스탬프, 07-world-reveal 캡처 검증). EditMode 46/46 + PlayMode 캡처 10장. docs/feat-007-checklist.md"
     },
     {
       "id": "feat-008",

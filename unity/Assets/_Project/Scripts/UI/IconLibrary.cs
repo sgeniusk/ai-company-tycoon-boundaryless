@@ -19,7 +19,7 @@ namespace AICompanyTycoon.UI
             "Art/UI/v077-celebration-emblem-atlas",
             "Art/UI/v078-world-reveal-stamp-atlas",
             "Art/UI/v081-office-reaction-atlas",
-            "Art/UI/v054-office-objects-final",
+            "Art/UI/v091-office-objects-hires", // v054 드롭인 교체 (고해상 384x288, 같은 셀 이름)
         };
 
         static Dictionary<string, Sprite> _cache;
