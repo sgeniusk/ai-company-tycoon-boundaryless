@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: brand_building
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: brand_building
-  displayName: Brand Building
-  description: Invest in long-term brand recognition.
+  displayName: "브랜드 구축"
+  description: "장기적인 브랜드 인지도에 투자합니다."
   cost:
   - resource: 0
     amount: 2000

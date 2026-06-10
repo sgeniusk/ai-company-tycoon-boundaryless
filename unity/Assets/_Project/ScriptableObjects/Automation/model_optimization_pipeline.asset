@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: model_optimization_pipeline
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AutomationDef
   id: model_optimization_pipeline
-  displayName: Model Optimization Pipeline
-  description: Automated model training and optimization.
+  displayName: "모델 최적화 파이프라인"
+  description: "모델 학습과 최적화를 자동으로 수행합니다."
   cost:
   - resource: 0
     amount: 5000
@@ -34,4 +34,4 @@ MonoBehaviour:
     value: 25
   - key: min_month
     value: 5
-  monthlyBenefitText: +10 Compute per month
+  monthlyBenefitText: "매월 연산력 +10"

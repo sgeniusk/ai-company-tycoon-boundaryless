@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: auto_scaling
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: auto_scaling
-  displayName: Auto-Scaling Infrastructure
-  description: Automatically scale compute based on demand.
+  displayName: "자동 확장 인프라"
+  description: "수요에 따라 연산력을 자동으로 늘립니다."
   cost:
   - resource: 0
     amount: 3000

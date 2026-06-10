@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: developer_conference
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: developer_conference
-  displayName: Developer Conference
-  description: Present at a major tech conference.
+  displayName: "개발자 콘퍼런스"
+  description: "주요 기술 콘퍼런스에서 제품을 발표합니다."
   cost:
   - resource: 0
     amount: 2500

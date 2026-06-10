@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: hire_researchers
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: hire_researchers
-  displayName: Hire AI Researchers
-  description: Recruit top AI researchers.
+  displayName: "AI 연구자 영입"
+  description: "최고 수준의 AI 연구자를 영입합니다."
   cost:
   - resource: 0
     amount: 3000

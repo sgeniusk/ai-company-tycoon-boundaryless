@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: autonomous_sales_agent
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AutomationDef
   id: autonomous_sales_agent
-  displayName: Autonomous Sales Agent
-  description: AI handles sales outreach and qualification.
+  displayName: "자율 영업 에이전트"
+  description: "AI가 영업 발굴과 자격 검증을 처리합니다."
   cost:
   - resource: 0
     amount: 6000
@@ -38,4 +38,4 @@ MonoBehaviour:
     value: 6
   - key: min_trust
     value: 50
-  monthlyBenefitText: +$1000 revenue per month
+  monthlyBenefitText: "매월 매출 +$1000"

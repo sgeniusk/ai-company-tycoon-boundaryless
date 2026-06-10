@@ -32,33 +32,33 @@
     },
     {
       "id": "product_analytics_agent",
-      "name": "Product Analytics Agent",
-      "description": "AI analyzes product metrics and suggests improvements.",
+      "name": "제품 분석 에이전트",
+      "description": "AI가 제품 지표를 분석해 개선점을 제안합니다.",
       "cost": {"cash": 3500, "compute": 15, "data": 20},
       "automation_gain": 10,
       "effects": {"data": 15},
       "requirements": {"min_automation": 15, "min_products": 2},
-      "monthly_benefit": "+5 Data per month"
+      "monthly_benefit": "매월 데이터 +5"
     },
     {
       "id": "model_optimization_pipeline",
-      "name": "Model Optimization Pipeline",
-      "description": "Automated model training and optimization.",
+      "name": "모델 최적화 파이프라인",
+      "description": "모델 학습과 최적화를 자동으로 수행합니다.",
       "cost": {"cash": 5000, "compute": 25, "data": 25},
       "automation_gain": 15,
       "effects": {"compute": 20},
       "requirements": {"min_automation": 25, "min_month": 5},
-      "monthly_benefit": "+10 Compute per month"
+      "monthly_benefit": "매월 연산력 +10"
     },
     {
       "id": "autonomous_sales_agent",
-      "name": "Autonomous Sales Agent",
-      "description": "AI handles sales outreach and qualification.",
+      "name": "자율 영업 에이전트",
+      "description": "AI가 영업 발굴과 자격 검증을 처리합니다.",
       "cost": {"cash": 6000, "compute": 20, "data": 15},
       "automation_gain": 15,
       "effects": {"trust": 3, "cash": 2000},
       "requirements": {"min_automation": 35, "min_trust": 50, "min_month": 6},
-      "monthly_benefit": "+$1000 revenue per month"
+      "monthly_benefit": "매월 매출 +$1000"
     }
   ]
 }

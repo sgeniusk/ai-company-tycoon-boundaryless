@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: social_media_campaign
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: social_media_campaign
-  displayName: Social Media Campaign
-  description: Launch a viral marketing campaign.
+  displayName: "소셜 미디어 캠페인"
+  description: "입소문을 노린 바이럴 마케팅 캠페인을 시작합니다."
   cost:
   - resource: 0
     amount: 1500

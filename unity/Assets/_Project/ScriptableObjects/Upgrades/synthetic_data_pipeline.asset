@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: synthetic_data_pipeline
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: synthetic_data_pipeline
-  displayName: Synthetic Data Pipeline
-  description: Generate synthetic training data automatically.
+  displayName: "합성 데이터 파이프라인"
+  description: "학습용 합성 데이터를 자동으로 생성합니다."
   cost:
   - resource: 0
     amount: 3500

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: red_team_program
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: red_team_program
-  displayName: Red Team Program
-  description: Hire security researchers to find vulnerabilities.
+  displayName: "레드팀 프로그램"
+  description: "보안 연구자를 고용해 취약점을 찾아냅니다."
   cost:
   - resource: 0
     amount: 3000

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: content_filter_v2
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: content_filter_v2
-  displayName: Content Filter v2
-  description: Advanced multi-layer content safety system.
+  displayName: "콘텐츠 필터 v2"
+  description: "여러 계층으로 작동하는 고급 콘텐츠 안전 시스템입니다."
   cost:
   - resource: 0
     amount: 2500

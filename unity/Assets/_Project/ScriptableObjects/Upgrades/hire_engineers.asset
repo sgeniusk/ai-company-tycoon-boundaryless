@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: hire_engineers
   m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.UpgradeDef
   id: hire_engineers
-  displayName: Hire Engineers
-  description: Recruit software engineers for product development.
+  displayName: "엔지니어 영입"
+  description: "제품 개발을 맡을 소프트웨어 엔지니어를 영입합니다."
   cost:
   - resource: 0
     amount: 2000
