@@ -103,7 +103,7 @@ namespace AICompanyTycoon.UI
             var label = textGo.GetComponent<Text>();
             label.font = LegacyFont;
             label.text = labelText;
-            label.fontSize = 30;
+            label.fontSize = 34; // 모바일 가독 — 버튼 라벨 기본 크기 (feat-009)
             label.color = UiTheme.ButtonText;
             label.alignment = TextAnchor.MiddleCenter;
             label.horizontalOverflow = HorizontalWrapMode.Wrap;

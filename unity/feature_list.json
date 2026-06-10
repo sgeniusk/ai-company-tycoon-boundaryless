@@ -82,6 +82,15 @@
       "status": "not-started",
       "owner": "Claude->Codex",
       "evidence": ""
+    },
+    {
+      "id": "feat-009",
+      "name": "모바일 가독성 + AI 비서 가이던스 FAB (P10)",
+      "description": "사용자 피드백(2026-06-11) — 전체 가독성 부족 + 가운데 버튼이 'AI가 다음 할 일을 제안하며 계속 바뀌는' React 가이던스 미이식. A 가독성 전면 패스(폰트 위계 최소 26, 패널 알파·텍스트 대비 상향, 66개소). B GuidanceService 헤드리스(React getGuidanceStep 적응) + FAB 라벨·톤·행동 바인딩 + 미나 AI 비서 리본.",
+      "dependencies": ["feat-006"],
+      "status": "done",
+      "owner": "Claude",
+      "evidence": "EditMode 50/50(신규 GuidanceTests 4 — 우선순위/seen 소화/진행 폴백/신뢰 경고) + 캡처 — 01-main(폰트·대비 상향, FAB '제품 출시', 미나 리본), 07-world-reveal(리빌 가독성). seen 집합은 월 진행 시 리셋, 제안 메뉴 열람 시 소화 — FAB 잠금 없음"
     }
   ]
 }

@@ -6,12 +6,20 @@ namespace AICompanyTycoon.UI
     public static class UiTheme
     {
         // 배경/면 — 따뜻한 크림 사무실 톤. 패널은 반투명이라 office 배경이 비친다.
+        // 가독성 패스(feat-009) — 알파를 올려 바쁜 office 위 텍스트 대비 확보. office-first는 씬 영역이 담당.
         public static readonly Color ScreenBg = Hex("e7dcc1");
-        public static readonly Color HeaderBg = Hex("3f8a7c", 0.94f);
+        public static readonly Color HeaderBg = Hex("3f8a7c", 0.96f);
         public static readonly Color HeaderText = Hex("fdf6e3");
-        public static readonly Color PanelBg = Hex("f6eeda", 0.80f);
-        public static readonly Color HudBg = Hex("f1e7cd", 0.82f);
-        public static readonly Color CardBg = Hex("fffdf6", 0.88f);
+        public static readonly Color PanelBg = Hex("f6eeda", 0.93f);
+        public static readonly Color HudBg = Hex("f1e7cd", 0.92f);
+        public static readonly Color CardBg = Hex("fffdf6", 0.96f);
+
+        // 모바일 가독 폰트 위계 (1080폭 기준, 실폰 ≈ px/3 pt). 최소 26 미만 금지.
+        public const int FontCaption = 26;
+        public const int FontBody = 30;
+        public const int FontEmphasis = 34;
+        public const int FontTitle = 40;
+        public const int FontDisplay = 52;
 
         // 버튼 — 채도 있는 그린
         public static readonly Color Button = Hex("57a468");
@@ -20,9 +28,9 @@ namespace AICompanyTycoon.UI
         public static readonly Color ButtonDisabled = Hex("c4bca9");
         public static readonly Color ButtonText = Hex("fdfaf0");
 
-        // 텍스트 — 밝은 배경 위 진한 브라운
-        public static readonly Color TextPrimary = Hex("3b3225");
-        public static readonly Color TextSecondary = Hex("6f6249");
+        // 텍스트 — 밝은 배경 위 진한 브라운. Secondary도 가독 대비를 위해 충분히 어둡게.
+        public static readonly Color TextPrimary = Hex("32291c");
+        public static readonly Color TextSecondary = Hex("5b4f38");
 
         // 강조 — 탭 활성/골드
         public static readonly Color TabActive = Hex("e08a3c");
@@ -53,6 +61,10 @@ namespace AICompanyTycoon.UI
 
         // 하단 도크 (CD-3 office-first 내비)
         public static readonly Color DockBg = Hex("24332f", 0.96f);
+
+        // 가이던스 FAB 톤 (feat-009) — 제안 성격별 색. primary는 Button 그린 재사용.
+        public static readonly Color FabWarning = Hex("d65745");
+        public static readonly Color FabSteady = Hex("3e7ba6");
 
         static Color Hex(string hex, float a = 1f)
         {
