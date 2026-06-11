@@ -120,6 +120,48 @@ namespace AICompanyTycoon.Tests.EditMode
         }
 
         [Test]
+        public void SnapshotDiff_DetectsTeaserToRevealedMoment()
+        {
+            var ctx = Fresh();
+            var before = ctx.Visibility.Snapshot();
+            ctx.Model.Capabilities["language"] = 2;
+            ctx.Domains.CheckAll();
+            var discovered = ctx.Visibility.DiffNewlyDiscovered(before);
+            Assert.IsTrue(discovered.Exists(p => p.id == "customer_support_chatbot"),
+                "language 2 해금으로 customer_support_chatbot가 ???→실명 전환돼야 한다.");
+        }
+
+        [Test]
+        public void SnapshotDiff_NoChange_ReturnsEmpty()
+        {
+            var ctx = Fresh();
+            var before = ctx.Visibility.Snapshot();
+            Assert.AreEqual(0, ctx.Visibility.DiffNewlyDiscovered(before).Count);
+        }
+
+        [Test]
+        public void PreviewNextLevel_ShowsDomainUnlock()
+        {
+            var ctx = Fresh();
+            // language 1→2면 customer_support 도메인이 열린다.
+            var preview = ctx.Visibility.PreviewNextLevel("language");
+            Assert.IsTrue(preview.Domains.Exists(d => d.id == "customer_support"));
+        }
+
+        [Test]
+        public void PreviewNextLevel_ShowsProductUnlock_WhenLastMissingCapability()
+        {
+            var ctx = Fresh();
+            // frontier_reasoning_model 요구 language 3 / code 2 / optimization 1 — language만 남긴 상태.
+            ctx.Model.Capabilities["language"] = 2;
+            ctx.Model.Capabilities["code"] = 2;
+            ctx.Model.Capabilities["optimization"] = 1;
+            ctx.Domains.CheckAll();
+            var preview = ctx.Visibility.PreviewNextLevel("language");
+            Assert.IsTrue(preview.Products.Exists(p => p.id == "frontier_reasoning_model"));
+        }
+
+        [Test]
         public void Counters_ReportDiscoveredTotalAndHidden()
         {
             var ctx = Fresh();

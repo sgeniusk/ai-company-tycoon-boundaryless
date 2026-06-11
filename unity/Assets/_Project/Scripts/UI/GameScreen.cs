@@ -173,6 +173,8 @@ namespace AICompanyTycoon.UI
             foreach (var id in ResourceIds.All)
                 _prevValues[id] = _context.Model.Get(id);
 
+            var visibilityBefore = _context.Visibility.Snapshot(); // 해금 모먼트 감지 (feat-012 #4)
+
             _lastSummary = _context.Month.AdvanceMonth();
             _terminal = _lastSummary.GameOver || _lastSummary.GameWon;
             _seenGuidance.Clear(); // 새 달 — AI 비서 제안을 처음부터 다시 (feat-009)
@@ -190,6 +192,7 @@ namespace AICompanyTycoon.UI
 
             RefreshAll();
             ShowMonthlyDopamine(_lastSummary); // 수익 플로팅 + 환호 + 사건 토스트 (feat-010)
+            AnnounceDiscoveries(visibilityBefore); // ???→실명 해금 모먼트 (feat-012 #4)
 
             if (_terminal)
             {
@@ -1525,7 +1528,13 @@ namespace AICompanyTycoon.UI
         void OnDomainUnlocked(string domainId)
         {
             var domain = _context.Catalog.GetDomain(domainId);
-            SetStatus("도메인 해금 - " + (domain != null ? domain.displayName : domainId));
+            var domainName = domain != null ? domain.displayName : domainId;
+            SetStatus("도메인 해금 - " + domainName);
+            if (_toastRibbon != null)
+            {
+                _toastRibbon.Enqueue("새 분야 개척 — " + domainName + "!", UiTheme.GoalAccent); // feat-012 #4
+            }
+
             SpawnReaction("react_idea");
             RefreshLists();
         }
@@ -1809,6 +1818,10 @@ namespace AICompanyTycoon.UI
             var domainTitle = UiFactory.Label(_capabilitiesContent, "도메인", 36);
             AddLayout(domainTitle.gameObject, 44, 0);
 
+            // feat-012 — 도메인 리스트에도 같은 노출 상태 머신 적용 (제품 팝업과 정보 누출 일관성).
+            // 해금 도메인 먼저, ??? 티저는 뒤로.
+            int hiddenDomains = 0;
+            var teaserDomainIds = new List<string>();
             foreach (var domain in _context.Catalog.domains)
             {
                 if (domain == null)
@@ -1816,40 +1829,158 @@ namespace AICompanyTycoon.UI
                     continue;
                 }
 
-                var state = _context.Domains.IsUnlocked(domain.id) ? "해금됨" : "잠김";
-                var card = AddCard(_capabilitiesContent, IconLibrary.Domain(domain.id), domain.displayName + " · " + state, domain.description);
-                AddSmallText(card, "요구 능력 " + FormatCapabilityRequirements(domain.unlockRequirements));
-            }
-
-            var capabilityTitle = UiFactory.Label(_capabilitiesContent, "능력", 36);
-            AddLayout(capabilityTitle.gameObject, 44, 0);
-
-            foreach (var capability in _context.Catalog.capabilities)
-            {
-                if (capability == null)
+                var domainState = _context.Visibility.GetDomainState(domain.id);
+                if (domainState == VisibilityState.Hidden)
                 {
+                    hiddenDomains++;
                     continue;
                 }
 
-                int level = _context.Capabilities.GetLevel(capability.id);
-                var card = AddCard(_capabilitiesContent, IconLibrary.Capability(capability.id), capability.displayName + " Lv." + level + "/" + capability.maxLevel, capability.description);
-                AddSmallText(card, "강화 비용 " + FormatCosts(_context.Capabilities.GetUpgradeCost(capability.id)));
-
-                var upgrade = UiFactory.Button(card, level >= capability.maxLevel ? "최대 레벨" : "강화");
-                upgrade.button.interactable = _context.Capabilities.CanUpgrade(capability.id);
-                upgrade.button.onClick.AddListener(() =>
+                if (domainState == VisibilityState.Teaser)
                 {
-                    if (_context.Capabilities.Upgrade(capability.id))
-                    {
-                        RefreshAll();
-                    }
-                    else
-                    {
-                        SetStatus("강화 조건을 다시 확인하세요.");
-                    }
-                });
-                AddLayout(upgrade.button.gameObject, 64, 0);
+                    teaserDomainIds.Add(domain.id);
+                    continue;
+                }
+
+                var card = AddCard(_capabilitiesContent, IconLibrary.Domain(domain.id), domain.displayName + " · 해금됨", domain.description);
+                AddSmallText(card, "요구 능력 " + FormatCapabilityRequirements(domain.unlockRequirements));
             }
+
+            foreach (var domainId in teaserDomainIds)
+            {
+                var teaserCard = AddCard(_capabilitiesContent, "??? · 미지의 분야", null);
+                teaserCard.GetComponent<Image>().color = UiTheme.TeaserCardBg;
+                var hintCapability = _context.Visibility.GetTeaserHintCapability(domainId);
+                if (!string.IsNullOrEmpty(hintCapability))
+                {
+                    AddSmallText(teaserCard, "힌트 — " + GetCapabilityName(hintCapability) + " 연구를 진행해 보세요");
+                }
+            }
+
+            if (hiddenDomains > 0)
+            {
+                var counter = AddSmallText(_capabilitiesContent, "미지의 분야 " + hiddenDomains + "곳이 더 있습니다");
+                counter.alignment = TextAnchor.MiddleCenter;
+                AddLayout(counter.gameObject, 40, 0);
+            }
+
+            // feat-012 — category 그룹 헤더 (데이터의 category 4값 + 미분류 폴백).
+            var categoryOrder = new[] { "research", "applied", "industry", "business", "" };
+            var categoryNames = new Dictionary<string, string>
+            {
+                { "research", "연구 능력" },
+                { "applied", "응용 능력" },
+                { "industry", "산업 능력" },
+                { "business", "비즈니스 능력" },
+                { "", "능력" }
+            };
+
+            foreach (var category in categoryOrder)
+            {
+                bool headerAdded = false;
+                foreach (var capability in _context.Catalog.capabilities)
+                {
+                    if (capability == null)
+                    {
+                        continue;
+                    }
+
+                    var capabilityCategory = capability.category ?? "";
+                    bool matches = capabilityCategory == category
+                        || (category == "" && !categoryNames.ContainsKey(capabilityCategory));
+                    if (!matches)
+                    {
+                        continue;
+                    }
+
+                    if (!headerAdded)
+                    {
+                        var title = UiFactory.Label(_capabilitiesContent, categoryNames[category], 36);
+                        AddLayout(title.gameObject, 44, 0);
+                        headerAdded = true;
+                    }
+
+                    AddCapabilityCard(capability);
+                }
+            }
+        }
+
+        void AddCapabilityCard(CapabilityDef capability)
+        {
+            int level = _context.Capabilities.GetLevel(capability.id);
+            var card = AddCard(_capabilitiesContent, IconLibrary.Capability(capability.id), capability.displayName + " Lv." + level + "/" + capability.maxLevel, capability.description);
+            AddSmallText(card, "강화 비용 " + FormatCosts(_context.Capabilities.GetUpgradeCost(capability.id)));
+
+            // feat-012 #4 — "다음 레벨이 여는 것" 미리보기. 연구 동기를 카드에서 직접 보여준다.
+            if (level < capability.maxLevel)
+            {
+                var preview = _context.Visibility.PreviewNextLevel(capability.id);
+                if (!preview.IsEmpty)
+                {
+                    var parts = new List<string>();
+                    if (preview.Domains.Count > 0)
+                    {
+                        parts.Add("새 분야 " + preview.Domains.Count + "곳 해금");
+                    }
+
+                    foreach (var product in preview.Products)
+                    {
+                        parts.Add(product.displayName + " 해금");
+                    }
+
+                    var previewText = AddSmallText(card, "다음 Lv." + (level + 1) + " — " + string.Join(" · ", parts));
+                    previewText.color = UiTheme.GoalAccent;
+                }
+            }
+
+            var upgrade = UiFactory.Button(card, level >= capability.maxLevel ? "최대 레벨" : "강화");
+            upgrade.button.interactable = _context.Capabilities.CanUpgrade(capability.id);
+            upgrade.button.onClick.AddListener(() =>
+            {
+                var before = _context.Visibility.Snapshot();
+                if (_context.Capabilities.Upgrade(capability.id))
+                {
+                    RefreshAll();
+                    AnnounceDiscoveries(before);
+                }
+                else
+                {
+                    SetStatus("강화 조건을 다시 확인하세요.");
+                }
+            });
+            AddLayout(upgrade.button.gameObject, 64, 0);
+        }
+
+        // ???→실명 해금 모먼트 — 토스트 + 빅 축하 (feat-012 #4).
+        void AnnounceDiscoveries(Dictionary<string, VisibilityState> before)
+        {
+            if (before == null || _context == null)
+            {
+                return;
+            }
+
+            var discovered = _context.Visibility.DiffNewlyDiscovered(before);
+            if (discovered.Count == 0)
+            {
+                return;
+            }
+
+            if (_toastRibbon != null)
+            {
+                if (discovered.Count > 3)
+                {
+                    _toastRibbon.Enqueue("새 제품 " + discovered.Count + "종 발견!", UiTheme.CrestGold);
+                }
+                else
+                {
+                    foreach (var product in discovered)
+                    {
+                        _toastRibbon.Enqueue("새 제품 발견 — " + product.displayName + "!", UiTheme.CrestGold);
+                    }
+                }
+            }
+
+            SpawnCelebration("celebrate_combo", "새 제품 발견!");
         }
 
         void BuildUpgradeCards()

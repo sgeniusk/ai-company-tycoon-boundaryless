@@ -131,5 +131,77 @@ namespace AICompanyTycoon.Systems
                 if (d != null && GetDomainState(d.id) == VisibilityState.Hidden) n++;
             return n;
         }
+
+        // 해금 모먼트 감지용 — 전 제품 상태 스냅샷 (행동 전에 떠 두고 행동 후 Diff와 비교).
+        public Dictionary<string, VisibilityState> Snapshot()
+        {
+            var snap = new Dictionary<string, VisibilityState>();
+            foreach (var p in _c.products)
+                if (p != null) snap[p.id] = GetState(p);
+            return snap;
+        }
+
+        // 스냅샷 대비 새로 실명 공개(Revealed 이상)된 제품 — ???→실명 해금 모먼트 (feat-012 #4).
+        public List<ProductDef> DiffNewlyDiscovered(Dictionary<string, VisibilityState> before)
+        {
+            var list = new List<ProductDef>();
+            if (before == null) return list;
+            foreach (var p in _c.products)
+            {
+                if (p == null || GetState(p) < VisibilityState.Revealed) continue;
+                if (before.TryGetValue(p.id, out var prev) && prev >= VisibilityState.Revealed) continue;
+                list.Add(p);
+            }
+            return list;
+        }
+
+        // 능력 미리보기 결과 — 이 능력을 한 레벨 올리면 열리는 도메인/제품.
+        public class NextLevelPreview
+        {
+            public readonly List<DomainDef> Domains = new List<DomainDef>();
+            public readonly List<ProductDef> Products = new List<ProductDef>();
+            public bool IsEmpty => Domains.Count == 0 && Products.Count == 0;
+        }
+
+        // 능력 카드 "다음 레벨이 여는 것" — 연구 동기를 직접 보여준다 (feat-012 #4).
+        public NextLevelPreview PreviewNextLevel(string capabilityId)
+        {
+            var result = new NextLevelPreview();
+            int next = CapLevel(capabilityId) + 1;
+            int Have(string id) => id == capabilityId ? next : CapLevel(id);
+
+            foreach (var d in _c.domains)
+            {
+                if (d == null || _m.UnlockedDomains.Contains(d.id)) continue;
+                if (d.unlockRequirements == null || d.unlockRequirements.Count == 0) continue;
+                bool met = true, involves = false;
+                foreach (var req in d.unlockRequirements)
+                {
+                    if (req.capabilityId == capabilityId) involves = true;
+                    if (Have(req.capabilityId) < req.level) { met = false; break; }
+                }
+                if (met && involves) result.Domains.Add(d);
+            }
+
+            foreach (var p in _c.products)
+            {
+                if (p == null || GetState(p) != VisibilityState.Revealed) continue;
+                if (p.requiredCapabilities == null || p.requiredCapabilities.Count == 0) continue;
+                bool met = true, involves = false;
+                foreach (var rc in p.requiredCapabilities)
+                {
+                    if (rc.capabilityId == capabilityId) involves = true;
+                    if (Have(rc.capabilityId) < rc.level) { met = false; break; }
+                }
+                if (!met || !involves) continue;
+                bool prereqsLaunched = true;
+                if (p.prerequisiteProducts != null)
+                    foreach (var pre in p.prerequisiteProducts)
+                        if (!string.IsNullOrEmpty(pre) && !_m.ActiveProducts.Contains(pre)) { prereqsLaunched = false; break; }
+                if (prereqsLaunched) result.Products.Add(p);
+            }
+
+            return result;
+        }
     }
 }
