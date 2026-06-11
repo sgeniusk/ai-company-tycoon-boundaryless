@@ -43,9 +43,17 @@ namespace AICompanyTycoon.Save
     }
 
     [Serializable]
+    public class ShareholderSave
+    {
+        public string name;
+        public string kind;
+        public double equity;
+    }
+
+    [Serializable]
     public class SaveData
     {
-        public int version = 6;
+        public int version = 7;
         public double cash;
         public double users;
         public double compute;
@@ -66,6 +74,9 @@ namespace AICompanyTycoon.Save
         // 시설 (v6, feat-014 #2). 구세이브 officeLevel 0 → 성급 파생 마이그레이션, locationId 빈값 → 차고.
         public int officeLevel;
         public string locationId = "";
+        // 지분 (v7, feat-015). 구세이브 founderEquity 0 → 100%로 마이그레이션.
+        public double founderEquity;
+        public List<ShareholderSave> shareholders = new List<ShareholderSave>();
         public List<string> purchasedUpgrades = new List<string>();
         public List<string> purchasedAutomation = new List<string>();
         public List<string> triggeredEvents = new List<string>();

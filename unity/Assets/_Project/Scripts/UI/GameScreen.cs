@@ -2060,6 +2060,30 @@ namespace AICompanyTycoon.UI
         static string AgentRarityLabel(string rarity)
             => rarity == "uncommon" ? "고급" : rarity == "rare" ? "희귀" : rarity == "epic" ? "전설" : "일반";
 
+        // 경영정보 — 회사 가치·내 지분·내 자산·주주 명부 (feat-015 #1). 지분 가치가 자라는 게 보이는 카드.
+        void BuildEquitySection()
+        {
+            var title = UiFactory.Label(_upgradesContent, "경영정보", 36);
+            AddLayout(title.gameObject, 44, 0);
+
+            var card = AddCard(_upgradesContent, "회사 가치 " + FormatMoney(_context.Equity.GetValuation()),
+                "월매출·이용자·현금으로 평가한 기업 가치입니다. 매달 자랍니다.");
+            var equityLine = AddSmallText(card, "내 지분 " + _context.Model.FounderEquity.ToString("F0") + "% | 내 자산 " + FormatMoney(_context.Equity.GetFounderNetWorth()));
+            equityLine.color = UiTheme.GoalAccent;
+
+            if (_context.Model.Shareholders.Count == 0)
+            {
+                AddSmallText(card, "주주 — 창업자 단독 (100%)");
+            }
+            else
+            {
+                foreach (var sh in _context.Model.Shareholders)
+                {
+                    AddSmallText(card, "· " + sh.name + " — " + sh.equity.ToString("F0") + "%");
+                }
+            }
+        }
+
         // 인재 섹션 — 로스터 현황 + 채용 후보 3택1 (feat-014 #1).
         void BuildTalentSection()
         {
@@ -2290,6 +2314,7 @@ namespace AICompanyTycoon.UI
         {
             Clear(_upgradesContent);
 
+            BuildEquitySection();
             BuildTalentSection();
             BuildFacilitySection();
 

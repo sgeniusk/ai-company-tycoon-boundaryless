@@ -89,6 +89,28 @@ namespace AICompanyTycoon.Systems
         double UserMultiplier(string id) => 1.0 + System.Math.Max(0, GetLevel(id) - 1) * 0.25;
         double ComputeMultiplier(string id) => 1.0 + System.Math.Max(0, GetLevel(id) - 1) * 0.15;
 
+        // 예상 월매출 (derive-only) — 현재 포트폴리오·레벨·신뢰 기준. 밸류에이션(feat-015)과 기대수익 표기에 재사용.
+        public double EstimateMonthlyRevenue()
+        {
+            var b = _c.balance;
+            double trustMult = 1.0;
+            if (_m.Trust > b.trustMultiplierHighThreshold) trustMult = b.trustEnterpriseBonus;
+            else if (_m.Trust < b.trustMultiplierLowThreshold) trustMult = b.trustLowPenalty;
+
+            double revenue = 0;
+            foreach (var id in _m.ActiveProducts)
+            {
+                var p = _c.GetProduct(id);
+                if (p == null) continue;
+                bool isEnterprise = p.tags != null && p.tags.Contains("enterprise");
+                revenue += p.baseRevenue * RevenueMultiplier(id) * (isEnterprise ? trustMult : 1.0);
+            }
+
+            if (_m.ActiveProducts.Count > 0 && b.revenuePerThousandUsers > 0)
+                revenue += (_m.Users / 1000.0) * b.revenuePerThousandUsers;
+            return revenue;
+        }
+
         public List<ProductDef> GetAvailable()
         {
             var list = new List<ProductDef>();

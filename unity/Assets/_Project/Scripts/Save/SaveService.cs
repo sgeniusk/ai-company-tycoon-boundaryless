@@ -55,6 +55,9 @@ namespace AICompanyTycoon.Save
             d.hiredAgents = new List<string>(m.HiredAgentIds);
             d.officeLevel = m.OfficeLevel;
             d.locationId = m.LocationId;
+            d.founderEquity = m.FounderEquity;
+            foreach (var sh in m.Shareholders)
+                d.shareholders.Add(new ShareholderSave { name = sh.name, kind = sh.kind, equity = sh.equity });
             foreach (var c in m.CompetitorStates)
                 d.competitorStates.Add(new CompetitorSave { id = c.id, score = c.score, marketShare = c.marketShare, momentum = c.momentum });
             foreach (var h in m.MarketShareHistory)
@@ -92,6 +95,12 @@ namespace AICompanyTycoon.Save
             // 시설 (v6) — 구세이브(officeLevel 0)는 0으로 두고 RecruitService/OfficeService가 성급 파생으로 흡수.
             m.OfficeLevel = d.officeLevel;
             m.LocationId = string.IsNullOrEmpty(d.locationId) ? "rural_garage" : d.locationId;
+            // 지분 (v7) — 구세이브(0)는 창업자 100%.
+            m.FounderEquity = d.founderEquity <= 0 ? 100 : d.founderEquity;
+            m.Shareholders = new List<ShareholderEntry>();
+            if (d.shareholders != null)
+                foreach (var sh in d.shareholders)
+                    m.Shareholders.Add(new ShareholderEntry { name = sh.name, kind = sh.kind, equity = sh.equity });
             m.CompetitorStates = new List<CompetitorState>();
             if (d.competitorStates != null)
                 foreach (var c in d.competitorStates)

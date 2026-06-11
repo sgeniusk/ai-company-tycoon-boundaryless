@@ -4,6 +4,15 @@ using System.Collections.Generic;
 
 namespace AICompanyTycoon.Core
 {
+    // 외부 주주 한 명 — 개업 인터뷰·투자 라운드·상장에서 생긴다 (feat-015).
+    [Serializable]
+    public class ShareholderEntry
+    {
+        public string name;
+        public string kind; // angel / cofounder / bank / public
+        public double equity;
+    }
+
     [Serializable]
     public class GameModel
     {
@@ -32,6 +41,10 @@ namespace AICompanyTycoon.Core
         // 시설 (feat-014 #2) — 사무실 단계(구매형)와 본사 위치.
         public int OfficeLevel = 1;
         public string LocationId = "rural_garage";
+
+        // 지분 (feat-015 #1) — 창업자 지분 % + 외부 주주 명부. 불변식: 창업자 + 주주 합 = 100.
+        public double FounderEquity = 100;
+        public List<ShareholderEntry> Shareholders = new List<ShareholderEntry>();
         public List<string> PurchasedUpgrades = new List<string>();
         public List<string> PurchasedAutomation = new List<string>();
         public List<string> TriggeredEvents = new List<string>();
