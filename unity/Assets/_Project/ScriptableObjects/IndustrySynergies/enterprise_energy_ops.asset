@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08521f622d9ef488ba7a0ee067a7c5a9, type: 3}
+  m_Name: enterprise_energy_ops
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.IndustrySynergyDef
+  id: enterprise_energy_ops
+  title: "\uC5D4\uD130\uD504\uB77C\uC774\uC988 \uC5D0\uB108\uC9C0 \uC635\uC2A4"
+  description: "\uAE30\uC5C5 \uC790\uB3D9\uD654\uC640 \uC5D0\uB108\uC9C0 \uC81C\uC5B4\uAC00
+    \uACB0\uD569\uD574 \uB370\uC774\uD130\uC13C\uD130 \uC6B4\uC601 \uACC4\uC57D\uC758
+    \uC2E0\uB8B0\uB3C4\uB97C \uB192\uC785\uB2C8\uB2E4."
+  requiredDomains:
+  - enterprise_automation
+  - energy
+  monthlyEffects:
+  - resource: 7
+    amount: 1
+  - resource: 5
+    amount: 2
+  riskLabel: 
+  tags:
+  - enterprise
+  - energy
+  - operations

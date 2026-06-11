@@ -174,6 +174,7 @@ namespace AICompanyTycoon.UI
                 _prevValues[id] = _context.Model.Get(id);
 
             var visibilityBefore = _context.Visibility.Snapshot(); // 해금 모먼트 감지 (feat-012 #4)
+            var synergiesBefore = SnapshotActiveSynergies();       // 시너지 가동 감지 (feat-013 #1)
 
             _lastSummary = _context.Month.AdvanceMonth();
             _terminal = _lastSummary.GameOver || _lastSummary.GameWon;
@@ -193,6 +194,7 @@ namespace AICompanyTycoon.UI
             RefreshAll();
             ShowMonthlyDopamine(_lastSummary); // 수익 플로팅 + 환호 + 사건 토스트 (feat-010)
             AnnounceDiscoveries(visibilityBefore); // ???→실명 해금 모먼트 (feat-012 #4)
+            AnnounceSynergies(synergiesBefore);    // 시너지/콤보 가동 모먼트 (feat-013 #1)
 
             if (_terminal)
             {
@@ -1781,9 +1783,11 @@ namespace AICompanyTycoon.UI
                 launch.button.interactable = launchable;
                 launch.button.onClick.AddListener(() =>
                 {
+                    var synergiesBefore = SnapshotActiveSynergies(); // 출시가 콤보를 완성할 수 있다 (feat-013 #1)
                     if (_context.Products.Launch(product.id))
                     {
                         RefreshAll();
+                        AnnounceSynergies(synergiesBefore);
                     }
                     else
                     {
@@ -1864,6 +1868,26 @@ namespace AICompanyTycoon.UI
                 }
             });
             AddLayout(recruitButton.button.gameObject, 64, 0);
+
+            // feat-013 #1 — GPU 증설 카드. 연산력의 유일한 반복 공급원 (연구·강화의 연산 비용 충당).
+            var computeCard = AddCard(_capabilitiesContent, "GPU 증설", "데이터센터에 연산력을 증설합니다. 연구와 제품 강화에 필요합니다.");
+            AddSmallText(computeCard, "보유 연산력 " + FormatNumber(_context.Model.Get(ResourceId.Compute)) + " | 증설 +" + FormatNumber(_context.Recruit.GetComputePackAmount()) + " | 비용 " + FormatMoney(_context.Recruit.GetComputePackCost()));
+            var computeButton = UiFactory.Button(computeCard, "증설");
+            computeButton.button.interactable = _context.Recruit.CanBuyCompute();
+            computeButton.button.onClick.AddListener(() =>
+            {
+                if (_context.Recruit.BuyCompute())
+                {
+                    SetStatus("연산력을 증설했습니다.");
+                    SpawnReaction("react_idea");
+                    RefreshAll();
+                }
+                else
+                {
+                    SetStatus("증설 비용을 다시 확인하세요.");
+                }
+            });
+            AddLayout(computeButton.button.gameObject, 64, 0);
 
             var domainTitle = UiFactory.Label(_capabilitiesContent, "도메인", 36);
             AddLayout(domainTitle.gameObject, 44, 0);
@@ -1988,10 +2012,12 @@ namespace AICompanyTycoon.UI
             upgrade.button.onClick.AddListener(() =>
             {
                 var before = _context.Visibility.Snapshot();
+                var synergiesBefore = SnapshotActiveSynergies(); // 도메인 해금이 시너지를 완성할 수 있다 (feat-013 #1)
                 if (_context.Capabilities.Upgrade(capability.id))
                 {
                     RefreshAll();
                     AnnounceDiscoveries(before);
+                    AnnounceSynergies(synergiesBefore);
                 }
                 else
                 {
@@ -1999,6 +2025,40 @@ namespace AICompanyTycoon.UI
                 }
             });
             AddLayout(upgrade.button.gameObject, 64, 0);
+        }
+
+        // 산업 시너지/콤보 가동 모먼트 — 포트폴리오 완성이 눈에 보이는 페이오프가 된다 (feat-013 #1).
+        HashSet<string> SnapshotActiveSynergies()
+        {
+            var ids = new HashSet<string>();
+            foreach (var def in IndustrySynergyService.GetActive(_context.Model, _context.Catalog))
+                ids.Add(def.id);
+            return ids;
+        }
+
+        void AnnounceSynergies(HashSet<string> before)
+        {
+            if (before == null || _context == null)
+            {
+                return;
+            }
+
+            foreach (var def in IndustrySynergyService.GetActive(_context.Model, _context.Catalog))
+            {
+                if (before.Contains(def.id))
+                {
+                    continue;
+                }
+
+                bool isCombo = !string.IsNullOrEmpty(def.riskLabel);
+                if (_toastRibbon != null)
+                {
+                    _toastRibbon.Enqueue((isCombo ? "콤보 가동 — " : "시너지 가동 — ") + def.title + "!",
+                        isCombo ? UiTheme.ScoreboardRank : UiTheme.ScoreboardTag);
+                }
+
+                SpawnCelebration("celebrate_combo", def.title + " 가동!");
+            }
         }
 
         // ???→실명 해금 모먼트 — 토스트 + 빅 축하 (feat-012 #4).

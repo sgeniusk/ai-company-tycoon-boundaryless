@@ -64,6 +64,7 @@ namespace AICompanyTycoon.Tests.EditMode
 
             bool reached = false;
             int reachedMonth = 0;
+            var eventRng = new SeededRng(777); // 이벤트 발동 롤 — 결정론 (실플레이 동치)
             var yearTrace = new System.Text.StringBuilder();
             for (int month = 0; month < 120 && !reached; month++)
             {
@@ -83,112 +84,179 @@ namespace AICompanyTycoon.Tests.EditMode
                 // 이 경제 스케일(월 순이익 수백)에서 버퍼가 크면 복리 투자(레벨업→매출→재투자)가 영영 못 돈다.
                 double Buffer() => 1000;
 
-                // 2) 제품 강화 — 매출 엔진 (매출 +35%/Lv, React 동치). 가장 높은 ROI라 업그레이드보다 먼저.
-                bool leveledAny = true;
-                while (leveledAny)
+                double CashCostOf(List<Data.ResourceAmount> cost)
                 {
-                    leveledAny = false;
-                    foreach (var id in ctx.Model.ActiveProducts)
+                    double cashCost = 0;
+                    foreach (var a in cost)
+                        if (a.resource == Core.ResourceId.Cash) cashCost = a.amount;
+                    return cashCost;
+                }
+
+                bool CashOk(List<Data.ResourceAmount> cost)
+                    => ctx.Model.Get(Core.ResourceId.Cash) - CashCostOf(cost) >= Buffer();
+
+                // 2단계 페이즈 — 초반 30개월은 수익 엔진(레벨업) 우선, 이후 연구 집중.
+                // 비현금 자원(연산/데이터/인재)에 막히면 blocked에 기록해 4)에서 타깃 구매한다.
+                var blocked = new HashSet<Core.ResourceId>();
+                void NoteBlockers(List<Data.ResourceAmount> cost)
+                {
+                    foreach (var a in cost)
+                        if (a.resource != Core.ResourceId.Cash && ctx.Model.Get(a.resource) < a.amount)
+                            blocked.Add(a.resource);
+                }
+
+                void DoResearch()
+                {
+                    bool upgradedAny = true;
+                    while (upgradedAny)
                     {
-                        if (!ctx.Products.CanLevelUp(id)) continue;
-                        double cashCost = 0;
-                        foreach (var a in ctx.Products.GetLevelUpCost(id))
-                            if (a.resource == Core.ResourceId.Cash) cashCost = a.amount;
-                        if (ctx.Model.Get(Core.ResourceId.Cash) - cashCost < Buffer()) continue;
-                        if (ctx.Products.LevelUp(id)) { leveledAny = true; break; }
+                        upgradedAny = false;
+                        foreach (var kv in need)
+                        {
+                            if (ctx.Capabilities.GetLevel(kv.Key) >= kv.Value) continue;
+                            var cost = ctx.Capabilities.GetUpgradeCost(kv.Key);
+                            if (cost == null) continue;
+                            if (!ctx.Capabilities.CanUpgrade(kv.Key) || !CashOk(cost)) { NoteBlockers(cost); continue; }
+                            if (ctx.Capabilities.Upgrade(kv.Key)) upgradedAny = true;
+                        }
                     }
                 }
 
-                // 2.5) 자원 보충 업그레이드 — 연산/데이터/신뢰/자동화 공급원. 이용자·하이프 증가형은 제외
-                // (이용자는 연산 현금비용을 늘리는 부채, 인재는 talent 차단 시 별도 처리).
-                foreach (var u in ctx.Catalog.upgrades)
+                void DoLevelUps(double reserve)
                 {
-                    if (u == null || ctx.Upgrades.IsPurchased(u.id) || !ctx.Upgrades.CanPurchase(u.id)) continue;
-                    bool growsLiability = false;
-                    foreach (var e in u.effects)
-                        if (e.resource == Core.ResourceId.Users || e.resource == Core.ResourceId.Hype || e.resource == Core.ResourceId.Talent)
-                            growsLiability = true;
-                    if (growsLiability) continue;
-                    double cashCost = 0;
-                    foreach (var a in u.cost)
-                        if (a.resource == Core.ResourceId.Cash) cashCost = a.amount;
-                    if (ctx.Model.Get(Core.ResourceId.Cash) - cashCost < Buffer()) continue;
-                    ctx.Upgrades.Purchase(u.id);
+                    bool leveledMore = true;
+                    while (leveledMore)
+                    {
+                        leveledMore = false;
+                        foreach (var id in ctx.Model.ActiveProducts)
+                        {
+                            var cost = ctx.Products.GetLevelUpCost(id);
+                            if (cost == null) continue;
+                            if (!ctx.Products.CanLevelUp(id) || ctx.Model.Get(Core.ResourceId.Cash) - CashCostOf(cost) < reserve)
+                            {
+                                NoteBlockers(cost);
+                                continue;
+                            }
+                            if (ctx.Products.LevelUp(id)) { leveledMore = true; break; }
+                        }
+                    }
                 }
 
-                // 2.6) 자동화 업그레이드 — 비용 할인 + 월간 보너스.
+                bool incomePhase = month < 30;
+                if (incomePhase)
+                {
+                    DoLevelUps(Buffer());
+                    DoResearch();
+                }
+                else
+                {
+                    DoResearch();
+                    DoLevelUps(Buffer() + 6000);
+                }
+
+                // 3.9) 자동화 업그레이드 — 영구 비용 할인(연산비 포함, React 정렬 후 가치 상승). 회수 ~15개월이라 상시 구매.
                 foreach (var u in ctx.Catalog.automation)
                 {
-                    if (u == null || ctx.Automation.IsPurchased(u.id) || !ctx.Automation.CanPurchase(u.id)) continue;
-                    double cashCost = 0;
-                    foreach (var a in u.cost)
-                        if (a.resource == Core.ResourceId.Cash) cashCost = a.amount;
-                    if (ctx.Model.Get(Core.ResourceId.Cash) - cashCost < Buffer()) continue;
+                    if (u == null || ctx.Automation.IsPurchased(u.id)) continue;
+                    if (!ctx.Automation.CanPurchase(u.id)) { NoteBlockers(u.cost); continue; }
+                    if (ctx.Model.Get(Core.ResourceId.Cash) - CashCostOf(u.cost) < Buffer()) continue;
                     ctx.Automation.Purchase(u.id);
                 }
 
-                // 3) 능력 강화 — 목표 체인 우선, 그다음 전 능력 한 바퀴(수입 제품 폭 확보). 버퍼 유지.
-                bool CashOk(List<Data.ResourceAmount> cost)
+                // 4) 막힌 자원만 타깃 구매 — 연산/데이터는 해당 효과 업그레이드, 인재는 hire→채용.
+                if (blocked.Contains(Core.ResourceId.Compute) || blocked.Contains(Core.ResourceId.Data))
                 {
-                    double cashCost = 0;
-                    foreach (var a in cost)
-                        if (a.resource == Core.ResourceId.Cash) cashCost = a.amount;
-                    return ctx.Model.Get(Core.ResourceId.Cash) - cashCost >= Buffer();
-                }
-
-                bool upgradedAny = true;
-                while (upgradedAny)
-                {
-                    upgradedAny = false;
-                    foreach (var kv in need)
+                    foreach (var u in ctx.Catalog.upgrades)
                     {
-                        if (ctx.Capabilities.GetLevel(kv.Key) >= kv.Value) continue;
-                        var cost = ctx.Capabilities.GetUpgradeCost(kv.Key);
-                        if (cost == null || !ctx.Capabilities.CanUpgrade(kv.Key) || !CashOk(cost)) continue;
-                        if (ctx.Capabilities.Upgrade(kv.Key)) upgradedAny = true;
+                        if (u == null || ctx.Upgrades.IsPurchased(u.id) || !ctx.Upgrades.CanPurchase(u.id)) continue;
+                        bool helps = false, harms = false;
+                        foreach (var e in u.effects)
+                        {
+                            if (blocked.Contains(e.resource) && e.amount > 0) helps = true;
+                            if (e.resource == Core.ResourceId.Users || e.resource == Core.ResourceId.Hype) harms = true;
+                        }
+                        if (!helps || harms) continue;
+                        if (ctx.Model.Get(Core.ResourceId.Cash) - CashCostOf(u.cost) < Buffer()) continue;
+                        ctx.Upgrades.Purchase(u.id);
                     }
                 }
 
-                foreach (var cap in ctx.Catalog.capabilities)
+                if (blocked.Contains(Core.ResourceId.Compute))
                 {
-                    if (cap == null) continue;
-                    var cost = ctx.Capabilities.GetUpgradeCost(cap.id);
-                    if (cost == null || !ctx.Capabilities.CanUpgrade(cap.id) || !CashOk(cost)) continue;
-                    ctx.Capabilities.Upgrade(cap.id);
+                    // GPU 증설 — 연산력 팩 구매 (월 최대 4팩).
+                    for (int packs = 0; packs < 4 && ctx.Model.Get(Core.ResourceId.Cash) - ctx.Recruit.GetComputePackCost() >= Buffer(); packs++)
+                    {
+                        if (!ctx.Recruit.BuyCompute()) break;
+                    }
                 }
 
-                // 4) 필요한 강화가 talent에 막혀 있으면 — hire 업그레이드 우선, 그다음 채용.
-                bool talentBlocked = false;
-                foreach (var kv in need)
-                {
-                    if (ctx.Capabilities.GetLevel(kv.Key) >= kv.Value) continue;
-                    var cost = ctx.Capabilities.GetUpgradeCost(kv.Key);
-                    if (cost == null) continue;
-                    foreach (var a in cost)
-                        if (a.resource == Core.ResourceId.Talent && ctx.Model.Get(Core.ResourceId.Talent) < a.amount)
-                            talentBlocked = true;
-                }
-
-                if (talentBlocked)
+                if (blocked.Contains(Core.ResourceId.Talent))
                 {
                     foreach (var uid in new[] { "hire_engineers", "hire_researchers" })
                     {
                         if (ctx.Upgrades.IsPurchased(uid) || !ctx.Upgrades.CanPurchase(uid)) continue;
                         var u = ctx.Catalog.GetUpgrade(uid);
-                        double cashCost = 0;
-                        foreach (var a in u.cost)
-                            if (a.resource == Core.ResourceId.Cash) cashCost = a.amount;
-                        if (ctx.Model.Get(Core.ResourceId.Cash) - cashCost < Buffer()) continue;
+                        if (ctx.Model.Get(Core.ResourceId.Cash) - CashCostOf(u.cost) < Buffer()) continue;
                         ctx.Upgrades.Purchase(uid);
                     }
 
-                    if (ctx.Model.Get(Core.ResourceId.Cash) >= ctx.Recruit.GetCost() + Buffer())
+                    // 연구가 소모하는 만큼 따라붙게 다중 채용 (월 최대 4명).
+                    for (int hires = 0; hires < 4 && ctx.Model.Get(Core.ResourceId.Cash) >= ctx.Recruit.GetCost() + Buffer(); hires++)
                     {
-                        ctx.Recruit.Recruit();
+                        if (!ctx.Recruit.Recruit()) break;
+                    }
+                }
+
+                // 5) 번영기(현금 20K+ && 목표 체인 완료) — 폭 연구로 확장. 체인 완료 전 인재 누수 방지.
+                bool needComplete = true;
+                foreach (var kv in need)
+                    if (ctx.Capabilities.GetLevel(kv.Key) < kv.Value) { needComplete = false; break; }
+                if (needComplete && ctx.Model.Get(Core.ResourceId.Cash) > 20000)
+                {
+                    foreach (var u in ctx.Catalog.automation)
+                    {
+                        if (u == null || ctx.Automation.IsPurchased(u.id) || !ctx.Automation.CanPurchase(u.id)) continue;
+                        if (ctx.Model.Get(Core.ResourceId.Cash) - CashCostOf(u.cost) < 10000) continue;
+                        ctx.Automation.Purchase(u.id);
+                    }
+
+                    foreach (var cap in ctx.Catalog.capabilities)
+                    {
+                        if (cap == null) continue;
+                        var cost = ctx.Capabilities.GetUpgradeCost(cap.id);
+                        if (cost == null || !ctx.Capabilities.CanUpgrade(cap.id)) continue;
+                        if (ctx.Model.Get(Core.ResourceId.Cash) - CashCostOf(cost) < 10000) continue;
+                        ctx.Capabilities.Upgrade(cap.id);
                     }
                 }
 
                 var summary = ctx.Month.AdvanceMonth();
+
+                // 6) 이벤트 — 실플레이 동치 (UI는 월 60% 확률로 발동). 결정론 롤 + 현금 우선/신뢰 보호 선택.
+                if (eventRng.NextDouble() < ctx.Catalog.balance.eventTriggerChance && ctx.Events.Current == null)
+                {
+                    var triggered = ctx.Events.TryTrigger();
+                    if (triggered != null && triggered.choices.Count > 0)
+                    {
+                        string bestId = triggered.choices[0].id;
+                        double bestScore = double.MinValue;
+                        foreach (var choice in triggered.choices)
+                        {
+                            double cash = 0, trustDelta = 0;
+                            foreach (var e in choice.effects)
+                            {
+                                if (e.resource == Core.ResourceId.Cash) cash = e.amount;
+                                if (e.resource == Core.ResourceId.Trust) trustDelta = e.amount;
+                            }
+                            // 신뢰가 30 아래로 떨어질 선택은 회피 (저신뢰 페널티·게임오버 가드).
+                            double score = ctx.Model.Trust + trustDelta < 30 ? -1e9 + cash : cash + trustDelta * 50;
+                            if (score > bestScore) { bestScore = score; bestId = choice.id; }
+                        }
+
+                        ctx.Events.Resolve(bestId);
+                    }
+                }
+
                 if ((month + 1) % 12 == 0)
                 {
                     yearTrace.Append("\n").Append(month + 1).Append("개월 — 현금 ")
@@ -197,13 +265,14 @@ namespace AICompanyTycoon.Tests.EditMode
                         .Append(" 비용 ").Append(summary.TotalCashCost.ToString("F0"))
                         .Append(" 이용자 ").Append(ctx.Model.Get(Core.ResourceId.Users).ToString("F0"))
                         .Append(" 데이터 ").Append(ctx.Model.Get(Core.ResourceId.Data).ToString("F0"))
+                        .Append(" 연산 ").Append(ctx.Model.Get(Core.ResourceId.Compute).ToString("F0"))
                         .Append(" 인재 ").Append(ctx.Model.Get(Core.ResourceId.Talent).ToString("F0"))
                         .Append(" 출시 ").Append(ctx.Model.ActiveProducts.Count);
                 }
 
                 Assert.IsFalse(summary.GameOver,
                     month + 1 + "개월차 게임오버 — 목표 지향 봇 기준 경제가 테크트리 등반을 버티지 못한다." + yearTrace);
-                if (summary.GameWon) break;
+                // GameWon이어도 계속 — 이 게이트의 목적은 승리가 아니라 tier 4 트리 도달 측정이다.
 
                 if (ctx.Visibility.GetState(target) >= VisibilityState.Unlocked)
                 {
@@ -214,19 +283,16 @@ namespace AICompanyTycoon.Tests.EditMode
 
             if (!reached)
             {
+                // feat-013에서 복원된 Fail 게이트 — 깨지면 경제/트리 밸런스 회귀다 (기준 — 44개월차 해금).
                 var sb = new System.Text.StringBuilder();
-                sb.Append("[feat-013 대기] 120개월 안에 목표 tier 4 제품(").Append(target.id).Append(")이 해금되지 않았다.\n");
-                sb.Append("진단 — Unity 포트 경제는 이용자 증가(연산 현금비용)를 상쇄할 수익 스트림이 React 대비 부족해 ");
-                sb.Append("장기 잉여가 구조적으로 작다 (React는 사무실/성장경로/시너지 월간 효과 다층). ");
-                sb.Append("제품 레벨업·인재 채용·React 비용 공식 정렬(feat-012 #4)로 개선했지만 격차가 남는다. ");
-                sb.Append("경제 완주 가능성은 feat-013(사용자 방향 결정 필요)에서 닫는다. 이 테스트는 그때 Fail 게이트로 복원한다.\n");
+                sb.Append("120개월 안에 목표 tier 4 제품(").Append(target.id).Append(")이 해금되지 않았다 — 경제/트리 밸런스 회귀.\n");
                 sb.Append("최종 현금 ").Append(ctx.Model.Get(Core.ResourceId.Cash).ToString("F0"));
                 sb.Append(" | 인재 ").Append(ctx.Model.Get(Core.ResourceId.Talent).ToString("F0"));
                 sb.Append(" | 출시 ").Append(ctx.Model.ActiveProducts.Count).Append("종 | 필요 능력 — ");
                 foreach (var kv in need)
                     sb.Append(kv.Key).Append(":").Append(ctx.Capabilities.GetLevel(kv.Key)).Append("/").Append(kv.Value).Append(" ");
                 sb.Append(yearTrace);
-                Assert.Inconclusive(sb.ToString());
+                Assert.Fail(sb.ToString());
             }
 
             Debug.Log("[TechTreeReachability] " + target.id + " 해금 — " + reachedMonth + "개월차");

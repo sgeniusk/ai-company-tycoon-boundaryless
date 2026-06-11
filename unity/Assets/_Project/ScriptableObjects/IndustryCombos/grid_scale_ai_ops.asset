@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08521f622d9ef488ba7a0ee067a7c5a9, type: 3}
+  m_Name: grid_scale_ai_ops
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.IndustrySynergyDef
+  id: grid_scale_ai_ops
+  title: "\uADF8\uB9AC\uB4DC \uC2A4\uCF00\uC77C AI \uC635\uC2A4"
+  description: "\uC5D4\uD130\uD504\uB77C\uC774\uC988 \uC790\uB3D9\uD654\uC640 \uC5D0\uB108\uC9C0
+    \uC81C\uC5B4\uB97C \uBB36\uC5B4 \uB300\uD615 \uC804\uB825 \uC6B4\uC601 \uACC4\uC57D\uC744
+    \uB530\uB0C5\uB2C8\uB2E4."
+  requiredDomains:
+  - enterprise_automation
+  - energy
+  monthlyEffects:
+  - resource: 7
+    amount: 3
+  - resource: 0
+    amount: 610
+  - resource: 3
+    amount: -6
+  - resource: 5
+    amount: 5
+  riskLabel: "\uBCF4\uC218\uC801\uC778 \uACE0\uAC1D \uC694\uAD6C\uB85C \uC6B4\uC601
+    \uB370\uC774\uD130 \uC5EC\uC720\uBD84\uC774 \uBE60\uB974\uAC8C \uC904\uC5B4\uB4ED\uB2C8\uB2E4."
+  tags:
+  - enterprise
+  - energy
+  - operations

@@ -246,6 +246,16 @@ namespace AICompanyTycoon.Tests.EditMode
         }
 
         [Test]
+        public void BuyCompute_AddsComputePack()
+        {
+            var ctx = Fresh();
+            ctx.Model.Set(Core.ResourceId.Cash, 1e9);
+            double before = ctx.Model.Get(Core.ResourceId.Compute);
+            Assert.IsTrue(ctx.Recruit.BuyCompute());
+            Assert.AreEqual(before + ctx.Recruit.GetComputePackAmount(), ctx.Model.Get(Core.ResourceId.Compute), 0.001);
+        }
+
+        [Test]
         public void Recruit_Blocked_WhenCashInsufficient()
         {
             var ctx = Fresh();

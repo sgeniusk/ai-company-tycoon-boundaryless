@@ -35,8 +35,10 @@ public static class DataImporter
         var difficultyTiers = ImportDifficultyTiers();
         var archetypes = ImportArchetypes();
         var endings = ImportEndings();
+        var industrySynergies = ImportIndustrySynergyList("industry_synergies.json", "industry_synergies", "IndustrySynergies");
+        var industryCombos = ImportIndustrySynergyList("industry_combos.json", "industry_combos", "IndustryCombos");
 
-        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, difficultyTiers, archetypes, endings, balance);
+        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, difficultyTiers, archetypes, endings, industrySynergies, industryCombos, balance);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -91,6 +93,9 @@ public static class DataImporter
                     break;
                 case "compute_cost_per_1000_users":
                     asset.computeCostPer1000Users = value;
+                    break;
+                case "revenue_per_1000_users":
+                    asset.revenuePerThousandUsers = value;
                     break;
                 case "monthly_hype_decay":
                     asset.monthlyHypeDecay = value;
@@ -551,6 +556,32 @@ public static class DataImporter
         return imported;
     }
 
+    // 산업 시너지/콤보 임포트 (feat-013 #1) — 같은 스키마, 파일·폴더만 다르다.
+    private static List<IndustrySynergyDef> ImportIndustrySynergyList(string fileName, string rootKey, string folder)
+    {
+        var items = GetRootList(fileName, rootKey);
+        var imported = new List<IndustrySynergyDef>();
+        EnsureFolder(ScriptableObjectRoot + "/" + folder);
+
+        foreach (var item in items)
+        {
+            var source = AsObject(item, rootKey + " item");
+            var id = GetString(source, "id");
+            var asset = LoadOrCreate<IndustrySynergyDef>(ScriptableObjectRoot + "/" + folder + "/" + id + ".asset");
+            asset.id = id;
+            asset.title = GetString(source, "title");
+            asset.description = GetString(source, "description");
+            asset.requiredDomains = ToStringList(GetOptionalList(source, "required_domains"));
+            asset.monthlyEffects = ToResourceAmounts(GetOptionalObject(source, "monthly_effects"), id + ".monthly_effects");
+            asset.riskLabel = GetString(source, "risk_label");
+            asset.tags = ToStringList(GetOptionalList(source, "tags"));
+            EditorUtility.SetDirty(asset);
+            imported.Add(asset);
+        }
+
+        return imported;
+    }
+
     private static void UpdateCatalog(
         List<ResourceDef> resources,
         List<ProductDef> products,
@@ -567,6 +598,8 @@ public static class DataImporter
         List<DifficultyTierDef> difficultyTiers,
         List<ArchetypeDef> archetypes,
         List<EndingDef> endings,
+        List<IndustrySynergyDef> industrySynergies,
+        List<IndustrySynergyDef> industryCombos,
         BalanceConfig balance)
     {
         EnsureFolder("Assets/_Project/Resources");
@@ -586,6 +619,8 @@ public static class DataImporter
         catalog.difficultyTiers = difficultyTiers;
         catalog.archetypes = archetypes;
         catalog.endings = endings;
+        catalog.industrySynergies = industrySynergies;
+        catalog.industryCombos = industryCombos;
         catalog.balance = balance;
         EditorUtility.SetDirty(catalog);
     }

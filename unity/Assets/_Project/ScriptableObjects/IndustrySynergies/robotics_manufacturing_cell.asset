@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08521f622d9ef488ba7a0ee067a7c5a9, type: 3}
+  m_Name: robotics_manufacturing_cell
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.IndustrySynergyDef
+  id: robotics_manufacturing_cell
+  title: "\uB85C\uBD07 \uC81C\uC870 \uC140"
+  description: "\uB85C\uBD07 \uC81C\uD488\uACFC \uC81C\uC870 \uB77C\uC778\uC774 \uB9DE\uBB3C\uB824
+    \uC791\uC740 \uD300\uB3C4 \uBB3C\uB9AC \uC0DD\uC0B0 \uC2E4\uD5D8\uC744 \uBC18\uBCF5\uD560
+    \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+  requiredDomains:
+  - robotics
+  - manufacturing
+  monthlyEffects:
+  - resource: 7
+    amount: 2
+  - resource: 0
+    amount: 120
+  riskLabel: 
+  tags:
+  - robotics
+  - manufacturing
+  - automation

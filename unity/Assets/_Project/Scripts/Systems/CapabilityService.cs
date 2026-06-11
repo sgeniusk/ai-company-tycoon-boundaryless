@@ -51,8 +51,10 @@ namespace AICompanyTycoon.Systems
             if (cap.effectsPerLevel != null && cap.effectsPerLevel.Count > 0)
                 _r.ApplyEffects(cap.effectsPerLevel);
 
-            foreach (var du in cap.unlocksDomains)
-                if (du.level == newLevel) _d.TryUnlock(du.domainId);
+            // 전 도메인 재검사 (feat-013 #1 버그 수정) — 기존엔 이 능력의 unlocks_domains 매핑 레벨에서만
+            // TryUnlock해, 다중 요건 도메인(반도체=최적화2+코드2 등)이 연구 순서에 따라 영구 미해금됐다.
+            // TryUnlock이 도메인 요건 전체를 검증하므로 CheckAll이 정확하고, 이미 해금된 도메인은 no-op다.
+            _d.CheckAll();
 
             GameEvents.RaiseCapabilityUpgraded(id, newLevel);
             return true;

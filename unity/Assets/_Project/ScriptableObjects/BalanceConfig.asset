@@ -15,6 +15,7 @@ MonoBehaviour:
   baseMonthlyCashCost: 400
   salaryPerTalent: 600
   computeCostPer1000Users: 40
+  revenuePerThousandUsers: 55
   monthlyHypeDecay: 2
   trustRecoveryThreshold: 50
   trustRecoveryAmount: 1
@@ -33,6 +34,10 @@ MonoBehaviour:
   successMinProducts: 4
   eventTriggerChance: 0.6
   extra:
+  - key: compute_pack_amount
+    value: 40
+  - key: compute_pack_cost
+    value: 2500
   - key: recruit_base_cost
     value: 2500
   - key: recruit_cost_growth

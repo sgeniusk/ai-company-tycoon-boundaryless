@@ -1,6 +1,7 @@
-// 인재 채용 — 반복 가능한 talent 공급 액션. React hireAgent의 Unity 최소 포팅 (feat-012 #4 테크트리 도달성 보장).
-// 배경 — 능력 강화는 talent를 소모하는데 Unity 포트엔 공급원이 초기 3 + 채용 업그레이드 3뿐이라
-// tier 3~4 제품이 경제적으로 영구 도달 불가였다. 비용은 보유 talent 기하 증가 + 월급(salary_per_talent)으로 자체 균형.
+// 운영 조달 — 반복 인재 채용 + GPU 증설(연산력 팩) 액션 (feat-012/013 테크트리 도달성 보장).
+// 배경 — 능력·제품 강화는 talent/compute를 소모하는데 Unity 포트엔 반복 공급원이 없어
+// (talent 총 6, compute 일회성 +110뿐) tier 3~4 제품이 경제적으로 영구 도달 불가였다.
+// 채용 비용은 보유 talent 기하 증가 + 월급으로, GPU는 고정가 팩으로 자체 균형.
 using AICompanyTycoon.Core;
 using AICompanyTycoon.Data;
 
@@ -43,6 +44,21 @@ namespace AICompanyTycoon.Systems
             if (!CanRecruit()) return false;
             _r.Add(ResourceId.Cash, -GetCost());
             _r.Add(ResourceId.Talent, 1);
+            GameEvents.RaiseResourcesUpdated();
+            return true;
+        }
+
+        // GPU 증설 — 고정가 연산력 팩 (feat-013 #1). 연산력의 유일한 반복 공급원.
+        public double GetComputePackCost() => GetExtra("compute_pack_cost", 2500);
+        public double GetComputePackAmount() => GetExtra("compute_pack_amount", 40);
+
+        public bool CanBuyCompute() => _m.Get(ResourceId.Cash) >= GetComputePackCost();
+
+        public bool BuyCompute()
+        {
+            if (!CanBuyCompute()) return false;
+            _r.Add(ResourceId.Cash, -GetComputePackCost());
+            _r.Add(ResourceId.Compute, GetComputePackAmount());
             GameEvents.RaiseResourcesUpdated();
             return true;
         }

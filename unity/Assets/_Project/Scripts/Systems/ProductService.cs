@@ -107,7 +107,7 @@ namespace AICompanyTycoon.Systems
             if (_m.Trust > b.trustMultiplierHighThreshold) trustMult = b.trustEnterpriseBonus;
             else if (_m.Trust < b.trustMultiplierLowThreshold) trustMult = b.trustLowPenalty;
 
-            double revenue = 0, newUsers = 0, data = 0, computeCost = 0;
+            double revenue = 0, newUsers = 0, data = 0, computePressure = 0;
             foreach (var id in _m.ActiveProducts)
             {
                 var p = _c.GetProduct(id);
@@ -118,8 +118,18 @@ namespace AICompanyTycoon.Systems
                 revenue += p.baseRevenue * RevenueMultiplier(id) * pTrustMult;
                 newUsers += p.baseUsersPerMonth * UserMultiplier(id) * hypeMult;
                 data += p.dataGeneratedPerMonth;
-                computeCost += (_m.Users / 1000.0) * p.computePer1000Users * ComputeMultiplier(id) * 0.1;
+                computePressure += p.computePer1000Users * ComputeMultiplier(id);
             }
+
+            // 연산력 소모 — React computePressure 동치 (feat-013 #1 정렬). 기존(총 이용자 비례)은
+            // 누적 이용자가 연산력을 무한 잠식해 장기 연구·강화가 영구 차단되는 Godot 잔재였다.
+            double computeCost = _m.ActiveProducts.Count > 0
+                ? System.Math.Ceiling(computePressure * System.Math.Max(1.0, newUsers / 1000.0) * 0.08)
+                : 0;
+            // 이용자 수익화 (feat-013 #1) — 보유 이용자가 매출을 낸다. 제품이 하나라도 살아 있어야 과금이 돈다.
+            if (_m.ActiveProducts.Count > 0 && b.revenuePerThousandUsers > 0)
+                revenue += (_m.Users / 1000.0) * b.revenuePerThousandUsers;
+
             if (revenue > 0) _r.Add(ResourceId.Cash, revenue);
             if (newUsers > 0) _r.Add(ResourceId.Users, newUsers);
             if (data > 0) _r.Add(ResourceId.Data, data);

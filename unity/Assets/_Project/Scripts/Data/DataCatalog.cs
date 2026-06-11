@@ -22,6 +22,9 @@ namespace AICompanyTycoon.Data
         public List<DifficultyTierDef> difficultyTiers = new List<DifficultyTierDef>();
         public List<ArchetypeDef> archetypes = new List<ArchetypeDef>();
         public List<EndingDef> endings = new List<EndingDef>();
+        // 산업 시너지/콤보 (feat-013 #1) — 도메인 포트폴리오 월간 보상.
+        public List<IndustrySynergyDef> industrySynergies = new List<IndustrySynergyDef>();
+        public List<IndustrySynergyDef> industryCombos = new List<IndustrySynergyDef>();
         public BalanceConfig balance;
 
         public ResourceDef GetResource(string id)

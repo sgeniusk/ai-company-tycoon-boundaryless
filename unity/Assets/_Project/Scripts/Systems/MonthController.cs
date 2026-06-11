@@ -72,6 +72,9 @@ namespace AICompanyTycoon.Systems
             // 3.5) 런 모디파이어 월간 효과 — 활성 태그의 tag_effects 합산 (feat-007 블록 #2). 표준 런 태그는 효과 0.
             ApplyRunModifierMonthly();
 
+            // 3.6) 산업 시너지/콤보 월간 효과 — 도메인 포트폴리오 보상 (feat-013 #1, React 동치). 미활성이면 효과 0.
+            IndustrySynergyService.ApplyMonthly(_m, _c, _r);
+
             // 4) 화제성 감쇠
             if (_m.Hype > 0) _r.Add(ResourceId.Hype, -b.monthlyHypeDecay);
 

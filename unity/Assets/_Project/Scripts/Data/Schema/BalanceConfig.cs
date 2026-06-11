@@ -10,6 +10,9 @@ namespace AICompanyTycoon.Data
         public double baseMonthlyCashCost = 400;
         public double salaryPerTalent = 600;
         public double computeCostPer1000Users = 40;
+        // 이용자 수익화 (feat-013 #1) — 이용자 1000명당 월 매출. 0이면 기존 동작(이용자=순부채).
+        // 연산비 40/1000과 짝 — 자동화 할인 전 기준 순 +15/1000으로 성장이 자산이 된다.
+        public double revenuePerThousandUsers = 0;
         public double monthlyHypeDecay = 2;
         public double trustRecoveryThreshold = 50;
         public double trustRecoveryAmount = 1;

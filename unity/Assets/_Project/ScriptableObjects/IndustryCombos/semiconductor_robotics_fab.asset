@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08521f622d9ef488ba7a0ee067a7c5a9, type: 3}
+  m_Name: semiconductor_robotics_fab
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.IndustrySynergyDef
+  id: semiconductor_robotics_fab
+  title: "\uBC18\uB3C4\uCCB4 \uB85C\uBD07 \uD339"
+  description: "\uCE69 \uC124\uACC4\uC640 \uB85C\uBD07 \uC81C\uC870 \uC790\uB3D9\uD654\uB97C
+    \uACB0\uD569\uD574 \uACE0\uBD80\uAC00\uAC00\uCE58 \uD339 \uC6B4\uC601\uC73C\uB85C
+    \uB6F0\uC5B4\uB4ED\uB2C8\uB2E4."
+  requiredDomains:
+  - semiconductors
+  - robotics
+  - manufacturing
+  monthlyEffects:
+  - resource: 7
+    amount: 5
+  - resource: 0
+    amount: 820
+  - resource: 2
+    amount: 18
+  - resource: 4
+    amount: -3
+  riskLabel: "\uC804\uBB38 \uC778\uB825 \uC18C\uBAA8\uAC00 \uCEE4\uC838 \uCC44\uC6A9
+    \uD30C\uC774\uD504\uB77C\uC778\uC774 \uACC4\uC18D \uC555\uBC15\uBC1B\uC2B5\uB2C8\uB2E4."
+  tags:
+  - semiconductors
+  - robotics
+  - manufacturing
+  - fab
