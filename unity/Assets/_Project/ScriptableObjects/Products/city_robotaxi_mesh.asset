@@ -48,5 +48,10 @@ MonoBehaviour:
   - safety
   teaser: "\uB3C4\uC2DC\uC758 \uC2E0\uD638\uB4F1\uB4E4\uC774 \uBC24\uB9C8\uB2E4 \uBE44\uBC00
     \uD68C\uC758\uB97C \uC5FD\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - autonomous_vehicle_stack
+  - smart_bus_dispatch_os
+  - factory_vision_inspector
   tier: 4
+  maxLevel: 5
+  upgradeCostMultiplier: 2

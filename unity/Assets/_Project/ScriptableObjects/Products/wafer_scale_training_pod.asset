@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: wafer_scale_training_pod
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: wafer_scale_training_pod
+  displayName: "\uC6E8\uC774\uD37C \uC2A4\uCF00\uC77C \uD559\uC2B5 \uD3EC\uB4DC"
+  description: "\uCD08\uB300\uD615 \uBAA8\uB378 \uD559\uC2B5\uC744 \uD55C \uC7A5\uC758
+    \uAC70\uB300\uD55C \uAC00\uC18D\uAE30 \uBCF4\uB4DC\uCC98\uB7FC \uBB36\uC5B4 \uCC98\uB9AC\uD558\uB294
+    \uBC18\uB3C4\uCCB4 \uC778\uD504\uB77C \uC81C\uD488\uC785\uB2C8\uB2E4."
+  domain: semiconductors
+  requiredCapabilities:
+  - capabilityId: code
+    level: 4
+  - capabilityId: enterprise
+    level: 2
+  - capabilityId: manufacturing
+    level: 2
+  - capabilityId: optimization
+    level: 4
+  trustRequirement: 84
+  launchCost:
+  - resource: 0
+    amount: 52000
+  - resource: 2
+    amount: 190
+  - resource: 3
+    amount: 170
+  baseRevenue: 18500
+  baseUsersPerMonth: 40
+  dataGeneratedPerMonth: 55
+  computePer1000Users: 10
+  hypeOnLaunch: 16
+  level: 1
+  tags:
+  - hardware
+  - chip
+  - optimization
+  - infrastructure
+  teaser: "\uC11C\uBC84\uC2E4 \uD55C\uAC00\uC6B4\uB370 \uAC70\uB300\uD55C \uC740\uC0C9
+    \uCC45\uC7A5\uC774 \uB4E4\uC5B4\uC635\uB2C8\uB2E4."
+  prerequisiteProducts:
+  - neuromorphic_edge_chip
+  - wafer_defect_foundry_ai
+  - frontier_reasoning_model
+  tier: 4
+  maxLevel: 5
+  upgradeCostMultiplier: 2.1

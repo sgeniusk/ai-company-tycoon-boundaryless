@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: personal_ai_chief_of_staff
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: personal_ai_chief_of_staff
+  displayName: "\uAC1C\uC778 AI \uBE44\uC11C\uC2E4\uC7A5"
+  description: "\uBA54\uC77C, \uC77C\uC815, \uBB38\uC11C, \uD68C\uC758 \uD6C4\uC18D
+    \uC5C5\uBB34\uB97C \uD55C \uBA85\uC758 \uC804\uB2F4 \uBE44\uC11C\uCC98\uB7FC
+    \uBB36\uC5B4 \uCC98\uB9AC\uD558\uB294 \uC0DD\uC0B0\uC131 \uC81C\uD488\uC785\uB2C8\uB2E4."
+  domain: personal_productivity
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 2
+  - capabilityId: enterprise
+    level: 1
+  - capabilityId: language
+    level: 3
+  trustRequirement: 60
+  launchCost:
+  - resource: 0
+    amount: 8500
+  - resource: 2
+    amount: 55
+  - resource: 3
+    amount: 45
+  baseRevenue: 3200
+  baseUsersPerMonth: 420
+  dataGeneratedPerMonth: 20
+  computePer1000Users: 18
+  hypeOnLaunch: 7
+  level: 1
+  tags:
+  - consumer
+  - productivity
+  - agent
+  - language
+  teaser: "\uCE98\uB9B0\uB354 \uCE78\uB9C8\uB2E4 \uC791\uC740 \uB3C4\uC7A5\uC774
+    \uCC0D\uD788\uAE30 \uC2DC\uC791\uD569\uB2C8\uB2E4."
+  prerequisiteProducts:
+  - ai_writing_assistant
+  - meeting_summary_bot
+  - enterprise_workflow_agent
+  tier: 3
+  maxLevel: 4
+  upgradeCostMultiplier: 1.6

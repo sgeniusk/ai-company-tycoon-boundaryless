@@ -42,5 +42,9 @@ MonoBehaviour:
   - automation
   teaser: "\uBCF5\uC0AC\uAE30 \uC606 \uC5C5\uBB34 \uBAA9\uB85D\uC774 \uC2A4\uC2A4\uB85C
     \uC904\uC5B4\uB4DC\uB294 \uB4EF\uD569\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - customer_support_chatbot
+  - meeting_summary_bot
   tier: 2
+  maxLevel: 3
+  upgradeCostMultiplier: 1.5

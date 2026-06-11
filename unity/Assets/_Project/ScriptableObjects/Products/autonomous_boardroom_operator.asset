@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: autonomous_boardroom_operator
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: autonomous_boardroom_operator
+  displayName: "\uC790\uC728 \uC774\uC0AC\uD68C \uC6B4\uC601\uC790"
+  description: "\uC548\uAC74 \uC218\uC9D1, \uB9AC\uC2A4\uD06C \uAC80\uD1A0, \uC2E4\uD589
+    \uC9C0\uC2DC\uB97C \uC5F0\uACB0\uD574 \uAE30\uC5C5 \uC758\uC0AC\uACB0\uC815 \uD68C\uC758\uB97C
+    \uC6B4\uC601\uD558\uB294 \uACE0\uC2E0\uB8B0 \uC5D0\uC774\uC804\uD2B8\uC785\uB2C8\uB2E4."
+  domain: enterprise_automation
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 4
+  - capabilityId: enterprise
+    level: 3
+  - capabilityId: language
+    level: 3
+  - capabilityId: safety
+    level: 2
+  trustRequirement: 88
+  launchCost:
+  - resource: 0
+    amount: 22000
+  - resource: 2
+    amount: 120
+  - resource: 3
+    amount: 100
+  baseRevenue: 9000
+  baseUsersPerMonth: 90
+  dataGeneratedPerMonth: 40
+  computePer1000Users: 45
+  hypeOnLaunch: 11
+  level: 1
+  tags:
+  - enterprise
+  - agent
+  - automation
+  - trust
+  teaser: "\uC774\uC0AC\uD68C \uD14C\uC774\uBE14 \uC704 \uC758\uC0AC\uBD09\uC774
+    \uC2A4\uC2A4\uB85C \uC548\uAC74\uC744 \uC815\uB9AC\uD569\uB2C8\uB2E4."
+  prerequisiteProducts:
+  - enterprise_workflow_agent
+  - frontier_reasoning_model
+  tier: 4
+  maxLevel: 5
+  upgradeCostMultiplier: 2

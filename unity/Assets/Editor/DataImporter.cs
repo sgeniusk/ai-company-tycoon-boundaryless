@@ -181,6 +181,8 @@ public static class DataImporter
             asset.teaser = GetString(source, "teaser");
             asset.prerequisiteProducts = ToStringList(GetOptionalList(source, "prerequisite_products"));
             asset.tier = GetInt(source, "tier", 1);
+            asset.maxLevel = GetInt(source, "max_level", 1);
+            asset.upgradeCostMultiplier = GetDouble(source, "upgrade_cost_multiplier", 1.5);
             EditorUtility.SetDirty(asset);
             imported.Add(asset);
         }

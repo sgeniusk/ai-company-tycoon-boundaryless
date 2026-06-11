@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: autonomous_success_center
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: autonomous_success_center
+  displayName: "\uC790\uC728 \uACE0\uAC1D\uC131\uACF5 \uC13C\uD130"
+  description: "\uC9C0\uC6D0 \uD2F0\uCF13, \uACE0\uAC1D \uAC74\uAC15\uB3C4, \uAC31\uC2E0
+    \uC704\uD5D8\uC744 \uD55C \uBC88\uC5D0 \uC77D\uACE0 \uB300\uC751\uC548\uC744
+    \uC2E4\uD589\uD558\uB294 \uACE0\uAC1D \uC131\uACF5 \uC13C\uD130\uC785\uB2C8\uB2E4."
+  domain: customer_support
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 2
+  - capabilityId: enterprise
+    level: 2
+  - capabilityId: language
+    level: 3
+  - capabilityId: safety
+    level: 1
+  trustRequirement: 72
+  launchCost:
+  - resource: 0
+    amount: 11000
+  - resource: 2
+    amount: 65
+  - resource: 3
+    amount: 60
+  baseRevenue: 4200
+  baseUsersPerMonth: 160
+  dataGeneratedPerMonth: 30
+  computePer1000Users: 30
+  hypeOnLaunch: 8
+  level: 1
+  tags:
+  - enterprise
+  - language
+  - support
+  - agent
+  teaser: "\uACE0\uAC1D \uBB38\uC758\uD568 \uB4A4\uCABD\uC5D0 \uC870\uC6A9\uD55C
+    \uC0C1\uD669\uC2E4\uC774 \uC0DD\uACBC\uC2B5\uB2C8\uB2E4."
+  prerequisiteProducts:
+  - customer_support_chatbot
+  - enterprise_workflow_agent
+  tier: 3
+  maxLevel: 4
+  upgradeCostMultiplier: 1.7

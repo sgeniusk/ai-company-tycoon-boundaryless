@@ -42,3 +42,5 @@ MonoBehaviour:
     \uB0A8\uACA8 \uB450\uC5C8\uC2B5\uB2C8\uB2E4."
   prerequisiteProducts: []
   tier: 1
+  maxLevel: 3
+  upgradeCostMultiplier: 1.5

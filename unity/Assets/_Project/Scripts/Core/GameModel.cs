@@ -25,6 +25,8 @@ namespace AICompanyTycoon.Core
         public List<string> UnlockedDomains = new List<string>();
         public Dictionary<string, int> Capabilities = new Dictionary<string, int>();
         public List<string> ActiveProducts = new List<string>();
+        // 제품 레벨 (React productLevels 동치, feat-012 #4). 출시 제품의 기본 레벨은 1 (사전에 없으면 1로 취급).
+        public Dictionary<string, int> ProductLevels = new Dictionary<string, int>();
         public List<string> PurchasedUpgrades = new List<string>();
         public List<string> PurchasedAutomation = new List<string>();
         public List<string> TriggeredEvents = new List<string>();

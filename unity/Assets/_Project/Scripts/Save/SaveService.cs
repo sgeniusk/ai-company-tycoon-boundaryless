@@ -50,6 +50,8 @@ namespace AICompanyTycoon.Save
             };
             foreach (var kv in m.Capabilities)
                 d.capabilities.Add(new CapEntry { id = kv.Key, level = kv.Value });
+            foreach (var kv in m.ProductLevels)
+                d.productLevels.Add(new CapEntry { id = kv.Key, level = kv.Value });
             foreach (var c in m.CompetitorStates)
                 d.competitorStates.Add(new CompetitorSave { id = c.id, score = c.score, marketShare = c.marketShare, momentum = c.momentum });
             foreach (var h in m.MarketShareHistory)
@@ -78,6 +80,10 @@ namespace AICompanyTycoon.Save
             m.Capabilities = new Dictionary<string, int>();
             if (d.capabilities != null)
                 foreach (var c in d.capabilities) m.Capabilities[c.id] = c.level;
+            // 제품 레벨 (v4) — 구세이브는 빈 사전, 출시 제품은 GetLevel에서 1로 파생.
+            m.ProductLevels = new Dictionary<string, int>();
+            if (d.productLevels != null)
+                foreach (var p in d.productLevels) m.ProductLevels[p.id] = p.level;
             m.CompetitorStates = new List<CompetitorState>();
             if (d.competitorStates != null)
                 foreach (var c in d.competitorStates)

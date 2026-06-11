@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: hologram_story_studio
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: hologram_story_studio
+  displayName: "\uD640\uB85C\uADF8\uB7A8 \uC774\uC57C\uAE30 \uC2A4\uD29C\uB514\uC624"
+  description: "\uC9E7\uC740 \uC601\uC0C1\uACFC \uC774\uBBF8\uC9C0\uB97C \uBB34\uB300\uD615
+    \uD640\uB85C\uADF8\uB7A8 \uC774\uC57C\uAE30\uB85C \uC5EE\uB294 \uD06C\uB9AC\uC5D0\uC774\uD130
+    \uC2A4\uD29C\uB514\uC624\uC785\uB2C8\uB2E4."
+  domain: creator_tools
+  requiredCapabilities:
+  - capabilityId: language
+    level: 2
+  - capabilityId: video
+    level: 3
+  - capabilityId: vision
+    level: 3
+  trustRequirement: 55
+  launchCost:
+  - resource: 0
+    amount: 12000
+  - resource: 2
+    amount: 85
+  - resource: 3
+    amount: 70
+  baseRevenue: 4300
+  baseUsersPerMonth: 310
+  dataGeneratedPerMonth: 24
+  computePer1000Users: 35
+  hypeOnLaunch: 14
+  level: 1
+  tags:
+  - consumer
+  - video
+  - creative
+  - vision
+  teaser: "\uC791\uC740 \uBB34\uB300 \uC704 \uBE48 \uC870\uBA85\uC774 \uB300\uC0AC\uB97C
+    \uAE30\uB2E4\uB9BD\uB2C8\uB2E4."
+  prerequisiteProducts:
+  - thumbnail_generator
+  - short_video_editor
+  tier: 3
+  maxLevel: 4
+  upgradeCostMultiplier: 1.7

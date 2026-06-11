@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: self_refactor_dev_env
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: self_refactor_dev_env
+  displayName: "\uC790\uAC00 \uB9AC\uD329\uD130 \uAC1C\uBC1C \uD658\uACBD"
+  description: "\uD504\uB85C\uC81D\uD2B8 \uAD6C\uC870\uB97C \uC77D\uACE0 \uB9AC\uD329\uD130\uB9C1
+    \uACC4\uD68D, \uD14C\uC2A4\uD2B8, \uBC30\uD3EC \uCCB4\uD06C\uB97C \uC774\uC5B4\uC8FC\uB294
+    \uAC1C\uBC1C \uD658\uACBD\uC785\uB2C8\uB2E4."
+  domain: developer_tools
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 2
+  - capabilityId: code
+    level: 3
+  - capabilityId: optimization
+    level: 2
+  trustRequirement: 62
+  launchCost:
+  - resource: 0
+    amount: 10500
+  - resource: 2
+    amount: 70
+  - resource: 3
+    amount: 55
+  baseRevenue: 4000
+  baseUsersPerMonth: 220
+  dataGeneratedPerMonth: 20
+  computePer1000Users: 25
+  hypeOnLaunch: 10
+  level: 1
+  tags:
+  - developer
+  - code
+  - agent
+  - tools
+  teaser: "IDE \uC67C\uCABD \uD2B8\uB9AC\uAC00 \uBC24\uC0C8 \uAC00\uC9C0\uCE58\uAE30\uB97C
+    \uBC30\uC6C1\uB2C8\uB2E4."
+  prerequisiteProducts:
+  - ai_coding_assistant
+  - inference_cache_chiplet
+  tier: 3
+  maxLevel: 4
+  upgradeCostMultiplier: 1.7

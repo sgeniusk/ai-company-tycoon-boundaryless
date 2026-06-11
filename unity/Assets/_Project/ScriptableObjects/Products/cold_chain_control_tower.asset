@@ -48,5 +48,10 @@ MonoBehaviour:
   - supply_chain
   teaser: "\uCC28\uAC00\uC6B4 \uCC3D\uACE0\uC758 \uC628\uB3C4\uACC4\uAC00 \uBA3C
     \uC5EC\uD589 \uC77C\uC815\uC744 \uC77D\uC2B5\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - autonomous_fulfillment_router
+  - data_center_load_balancer
+  - smart_bus_dispatch_os
   tier: 4
+  maxLevel: 5
+  upgradeCostMultiplier: 1.8

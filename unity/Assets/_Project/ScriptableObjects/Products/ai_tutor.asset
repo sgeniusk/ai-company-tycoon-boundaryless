@@ -42,5 +42,9 @@ MonoBehaviour:
   - agent
   teaser: "\uAD50\uC2E4 \uB4A4\uD3B8 \uB178\uD2B8\uC5D0 \uD559\uC0DD\uBCC4 \uC791\uC740
     \uBCC4\uD45C\uAC00 \uBD99\uC2B5\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - classroom_quiz_copilot
+  - meeting_summary_bot
   tier: 2
+  maxLevel: 3
+  upgradeCostMultiplier: 1.5

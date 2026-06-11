@@ -45,5 +45,9 @@ MonoBehaviour:
   - safety
   teaser: "\uC8FC\uCC28\uC7A5 \uBC14\uB2E5\uC758 \uCC28\uC120\uB4E4\uC774 \uC870\uC6A9\uD788
     \uC11C\uB85C \uC774\uC57C\uAE30\uD569\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - delivery_route_copilot
+  - smart_bus_dispatch_os
   tier: 3
+  maxLevel: 4
+  upgradeCostMultiplier: 2

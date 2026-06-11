@@ -48,5 +48,10 @@ MonoBehaviour:
   - infrastructure
   teaser: "\uB3C4\uC2DC \uC804\uB825 \uC9C0\uB3C4\uC5D0 \uBC18\uC9DD\uC774\uB294
     \uD30C\uB3C4\uAC00 \uC624\uB974\uB0B4\uB9BD\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - data_center_load_balancer
+  - adaptive_factory_control_os
+  - autonomous_fulfillment_router
   tier: 4
+  maxLevel: 5
+  upgradeCostMultiplier: 2

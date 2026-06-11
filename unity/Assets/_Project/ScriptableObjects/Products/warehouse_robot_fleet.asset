@@ -45,5 +45,9 @@ MonoBehaviour:
   - hardware
   teaser: "\uCC3D\uACE0 \uBC14\uB2E5\uC5D0 \uC791\uC740 \uBC1C\uC790\uAD6D \uAC19\uC740
     \uACBD\uB85C\uAC00 \uB298\uC5B4\uB0A9\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - robot_reception_kiosk
+  - delivery_route_copilot
   tier: 3
+  maxLevel: 4
+  upgradeCostMultiplier: 1.8

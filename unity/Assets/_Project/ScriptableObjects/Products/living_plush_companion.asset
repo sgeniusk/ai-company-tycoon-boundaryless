@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: living_plush_companion
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: living_plush_companion
+  displayName: "\uC0B4\uC544\uC788\uB294 \uBD09\uC81C \uCE5C\uAD6C"
+  description: "\uC544\uC774\uC758 \uB180\uC774 \uB9E5\uB77D\uACFC \uBCF4\uD638\uC790
+    \uADDC\uCE59\uC744 \uD568\uAED8 \uAE30\uC5B5\uD574 \uB9E4\uC77C \uB2E4\uB978
+    \uB300\uD654\uB97C \uAC74\uB124\uB294 \uC548\uC804\uD615 \uC7A5\uB09C\uAC10\uC785\uB2C8\uB2E4."
+  domain: toys
+  requiredCapabilities:
+  - capabilityId: language
+    level: 3
+  - capabilityId: robotics
+    level: 1
+  - capabilityId: safety
+    level: 3
+  - capabilityId: vision
+    level: 3
+  trustRequirement: 80
+  launchCost:
+  - resource: 0
+    amount: 15000
+  - resource: 2
+    amount: 70
+  - resource: 3
+    amount: 70
+  baseRevenue: 5800
+  baseUsersPerMonth: 650
+  dataGeneratedPerMonth: 30
+  computePer1000Users: 18
+  hypeOnLaunch: 16
+  level: 1
+  tags:
+  - consumer
+  - toys
+  - language
+  - safety
+  teaser: "\uC778\uD615 \uB208\uB3D9\uC790\uC5D0 \uC624\uB298\uC758 \uB0A0\uC528\uAC00
+    \uC0B4\uC9DD \uBE44\uCE69\uB2C8\uB2E4."
+  prerequisiteProducts:
+  - toy_imagination_engine
+  - ai_tutor
+  - robot_reception_kiosk
+  tier: 4
+  maxLevel: 5
+  upgradeCostMultiplier: 1.7

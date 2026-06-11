@@ -1702,6 +1702,8 @@ namespace AICompanyTycoon.UI
                 return;
             }
 
+            // 지금 할 수 있는 것 먼저 — 상태 내림차순(출시>해금>실명>티저), 같으면 tier 얕은 순.
+            var rows = new List<(ProductDef product, VisibilityState state)>();
             foreach (var product in _context.Catalog.products)
             {
                 if (product == null || product.domain != domain.id)
@@ -1710,11 +1712,16 @@ namespace AICompanyTycoon.UI
                 }
 
                 var state = _context.Visibility.GetState(product);
-                if (state == VisibilityState.Hidden)
+                if (state != VisibilityState.Hidden)
                 {
-                    continue;
+                    rows.Add((product, state));
                 }
+            }
 
+            rows.Sort((a, b) => a.state != b.state ? b.state.CompareTo(a.state) : a.product.tier.CompareTo(b.product.tier));
+
+            foreach (var (product, state) in rows)
+            {
                 if (state == VisibilityState.Teaser)
                 {
                     AddTeaserCard(product);
@@ -1734,7 +1741,30 @@ namespace AICompanyTycoon.UI
 
             if (state == VisibilityState.Launched)
             {
-                AddSmallText(card, "상태 - 활성 제품");
+                // 제품 레벨업 (feat-012 #4) — 매출 +35%/Lv. 매출 엔진이 강화로 자란다.
+                int productLevel = _context.Products.GetLevel(product.id);
+                AddSmallText(card, "상태 - 활성 제품 Lv." + productLevel + "/" + product.maxLevel);
+                if (productLevel < product.maxLevel)
+                {
+                    AddSmallText(card, "강화 비용 " + FormatCosts(_context.Products.GetLevelUpCost(product.id)));
+                    var levelUp = UiFactory.Button(card, "제품 강화");
+                    levelUp.button.interactable = _context.Products.CanLevelUp(product.id);
+                    levelUp.button.onClick.AddListener(() =>
+                    {
+                        if (_context.Products.LevelUp(product.id))
+                        {
+                            SetStatus("제품 강화 - " + product.displayName + " Lv." + _context.Products.GetLevel(product.id));
+                            SpawnReaction("react_cheer");
+                            RefreshAll();
+                        }
+                        else
+                        {
+                            SetStatus("강화 비용을 다시 확인하세요.");
+                        }
+                    });
+                    AddLayout(levelUp.button.gameObject, 64, 0);
+                }
+
                 return;
             }
 
@@ -1814,6 +1844,26 @@ namespace AICompanyTycoon.UI
         void BuildCapabilityCards()
         {
             Clear(_capabilitiesContent);
+
+            // feat-012 #4 — 인재 채용 카드. 능력 강화의 talent 공급원 (반복 가능, 비용 기하 증가).
+            var recruitCard = AddCard(_capabilitiesContent, "인재 채용", "연구를 이어갈 인재를 영입합니다. 월급이 늘어나는 만큼 신중하게.");
+            AddSmallText(recruitCard, "보유 인재 " + FormatNumber(_context.Model.Get(ResourceId.Talent)) + " | 채용 비용 " + FormatMoney(_context.Recruit.GetCost()));
+            var recruitButton = UiFactory.Button(recruitCard, "채용");
+            recruitButton.button.interactable = _context.Recruit.CanRecruit();
+            recruitButton.button.onClick.AddListener(() =>
+            {
+                if (_context.Recruit.Recruit())
+                {
+                    SetStatus("새 인재가 합류했습니다.");
+                    SpawnReaction("react_cheer");
+                    RefreshAll();
+                }
+                else
+                {
+                    SetStatus("채용 비용을 다시 확인하세요.");
+                }
+            });
+            AddLayout(recruitButton.button.gameObject, 64, 0);
 
             var domainTitle = UiFactory.Label(_capabilitiesContent, "도메인", 36);
             AddLayout(domainTitle.gameObject, 44, 0);

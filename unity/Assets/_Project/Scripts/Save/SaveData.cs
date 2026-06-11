@@ -45,7 +45,7 @@ namespace AICompanyTycoon.Save
     [Serializable]
     public class SaveData
     {
-        public int version = 3;
+        public int version = 4;
         public double cash;
         public double users;
         public double compute;
@@ -59,6 +59,8 @@ namespace AICompanyTycoon.Save
         public List<string> unlockedDomains = new List<string>();
         public List<CapEntry> capabilities = new List<CapEntry>();
         public List<string> activeProducts = new List<string>();
+        // 제품 레벨 (v4, feat-012). 구세이브(필드 없음)는 빈 리스트 — 출시 제품은 레벨 1로 파생된다.
+        public List<CapEntry> productLevels = new List<CapEntry>();
         public List<string> purchasedUpgrades = new List<string>();
         public List<string> purchasedAutomation = new List<string>();
         public List<string> triggeredEvents = new List<string>();

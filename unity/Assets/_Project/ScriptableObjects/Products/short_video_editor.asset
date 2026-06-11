@@ -44,3 +44,5 @@ MonoBehaviour:
     \uC0B4\uC9DD \uB4E4\uC369\uC785\uB2C8\uB2E4."
   prerequisiteProducts: []
   tier: 1
+  maxLevel: 3
+  upgradeCostMultiplier: 1.5

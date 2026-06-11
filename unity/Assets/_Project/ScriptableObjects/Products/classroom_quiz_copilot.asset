@@ -46,3 +46,5 @@ MonoBehaviour:
     \uCDA4\uCDA5\uB2C8\uB2E4."
   prerequisiteProducts: []
   tier: 1
+  maxLevel: 3
+  upgradeCostMultiplier: 1.4

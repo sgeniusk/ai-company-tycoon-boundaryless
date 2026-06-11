@@ -47,5 +47,9 @@ MonoBehaviour:
   - weird
   teaser: "\uBC18\uB824\uB3D9\uBB3C \uC0AC\uC9C4 \uC606\uC5D0 \uBD80\uB4DC\uB7EC\uC6B4
     \uBE57\uC774 \uB193\uC5EC \uC788\uC2B5\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - robot_reception_kiosk
+  - thumbnail_generator
   tier: 3
+  maxLevel: 4
+  upgradeCostMultiplier: 1.6

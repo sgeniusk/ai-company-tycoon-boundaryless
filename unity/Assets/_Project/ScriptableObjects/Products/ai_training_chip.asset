@@ -44,5 +44,9 @@ MonoBehaviour:
   - infrastructure
   teaser: "\uC11C\uB78D \uC18D \uC791\uC740 \uBCF4\uB4DC\uAC00 \uC11C\uBC84\uC2E4
     \uC628\uB3C4\uB97C \uB0AE\uCD98\uB2E4\uB294 \uC18C\uBB38\uC785\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - foundation_model_v0
+  - ai_coding_assistant
   tier: 2
+  maxLevel: 4
+  upgradeCostMultiplier: 1.9

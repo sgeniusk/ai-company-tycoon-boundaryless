@@ -50,9 +50,11 @@ namespace AICompanyTycoon.Systems
             double baseCost = b.baseMonthlyCashCost;
             double salaryCost = _m.Talent * b.salaryPerTalent;
             double computeCost = (_m.Users / 1000.0) * b.computeCostPer1000Users;
-            double autoReduction = _m.Automation * b.automationCostReductionPerPoint;
-            double discountMult = System.Math.Max(0.0, 1.0 - autoReduction);
-            double totalCash = (baseCost + salaryCost) * discountMult + computeCost;
+            // React 동치 (feat-012 #4 밸런스 정렬) — 자동화 할인은 연산비 포함 전체에, 상한 75%.
+            // 기존(Godot 잔재)은 연산비를 할인 밖에 둬 자동화 투자가 이용자 증가를 못 따라가 장기 파산했다.
+            double autoReduction = System.Math.Min(0.75, System.Math.Max(0.0, _m.Automation * b.automationCostReductionPerPoint));
+            double discountMult = 1.0 - autoReduction;
+            double totalCash = (baseCost + salaryCost + computeCost) * discountMult;
             _r.Add(ResourceId.Cash, -totalCash);
             s.BaseCost = baseCost;
             s.SalaryCost = salaryCost;

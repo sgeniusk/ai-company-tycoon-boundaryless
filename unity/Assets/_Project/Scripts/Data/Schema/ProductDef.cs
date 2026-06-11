@@ -27,5 +27,8 @@ namespace AICompanyTycoon.Data
         public List<string> prerequisiteProducts = new List<string>();
         // feat-012 테크트리 — 트리 깊이 (1 차고 ~ 4 미래). 정렬·검증용.
         public int tier = 1;
+        // 제품 레벨업 (React 동치, feat-012 #4) — 최대 레벨과 강화 비용 배수 (launch_cost * 배수 * 현재레벨).
+        public int maxLevel = 1;
+        public double upgradeCostMultiplier = 1.5;
     }
 }

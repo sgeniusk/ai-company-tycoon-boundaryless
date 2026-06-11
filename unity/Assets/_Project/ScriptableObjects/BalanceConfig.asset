@@ -33,6 +33,10 @@ MonoBehaviour:
   successMinProducts: 4
   eventTriggerChance: 0.6
   extra:
+  - key: recruit_base_cost
+    value: 2500
+  - key: recruit_cost_growth
+    value: 1.25
   - key: staff_aftermath_burnout_project_progress_penalty
     value: 6
   - key: staff_aftermath_burnout_project_quality_penalty

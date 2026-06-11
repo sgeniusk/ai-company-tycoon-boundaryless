@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: ai_memory_theme_park
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: ai_memory_theme_park
+  displayName: "AI \uCD94\uC5B5 \uD14C\uB9C8\uD30C\uD06C"
+  description: "\uC0AC\uC9C4, \uC74C\uC131, \uC7A5\uC18C \uAE30\uB85D\uC744 \uC870\uC2EC\uC2A4\uB7FD\uAC8C
+    \uC5EE\uC5B4 \uAC00\uC871 \uB2E8\uC704\uC758 \uCCB4\uD5D8\uD615 \uCD94\uC5B5
+    \uACF5\uAC04\uC744 \uB9CC\uB4DC\uB294 \uAE30\uBB18\uD55C \uC11C\uBE44\uC2A4\uC785\uB2C8\uB2E4."
+  domain: odd_industries
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 3
+  - capabilityId: language
+    level: 3
+  - capabilityId: robotics
+    level: 1
+  - capabilityId: safety
+    level: 3
+  - capabilityId: vision
+    level: 3
+  trustRequirement: 90
+  launchCost:
+  - resource: 0
+    amount: 19000
+  - resource: 2
+    amount: 90
+  - resource: 3
+    amount: 85
+  baseRevenue: 6900
+  baseUsersPerMonth: 180
+  dataGeneratedPerMonth: 35
+  computePer1000Users: 18
+  hypeOnLaunch: 18
+  level: 1
+  tags:
+  - consumer
+  - memory
+  - vision
+  - weird
+  teaser: "\uB0A1\uC740 \uC0AC\uC9C4\uB4E4\uC774 \uB180\uC774\uACF5\uC6D0 \uC9C0\uB3C4\uCC98\uB7FC
+    \uC811\uD799\uB2C8\uB2E4."
+  prerequisiteProducts:
+  - ai_funeral_planner
+  - toy_imagination_engine
+  - pop_up_store_forecaster
+  tier: 4
+  maxLevel: 4
+  upgradeCostMultiplier: 1.8

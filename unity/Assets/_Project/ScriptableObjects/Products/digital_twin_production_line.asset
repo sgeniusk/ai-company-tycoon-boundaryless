@@ -49,5 +49,10 @@ MonoBehaviour:
   - enterprise
   teaser: "\uC720\uB9AC \uC0C1\uC790 \uC18D \uBBF8\uB2C8 \uACF5\uC7A5\uC774 \uC2E4\uC81C\uCC98\uB7FC
     \uC228\uC744 \uC27D\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - adaptive_factory_control_os
+  - factory_vision_inspector
+  - ai_training_chip
   tier: 4
+  maxLevel: 5
+  upgradeCostMultiplier: 1.9

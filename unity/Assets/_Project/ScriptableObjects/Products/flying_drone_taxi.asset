@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af843e00e98f340be9382871fc7e8fb3, type: 3}
+  m_Name: flying_drone_taxi
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ProductDef
+  id: flying_drone_taxi
+  displayName: "\uD50C\uB77C\uC789 \uB4DC\uB860 \uD0DD\uC2DC"
+  description: "\uB3C4\uC2EC \uC0C1\uACF5\uC758 \uC2B9\uAC1D \uC218\uC694, \uCC29\uB959\uC7A5,
+    \uC548\uC804 \uACBD\uB85C\uB97C \uC2E4\uC2DC\uAC04\uC73C\uB85C \uBB36\uB294 \uD56D\uACF5
+    \uBAA8\uBE4C\uB9AC\uD2F0 \uC11C\uBE44\uC2A4\uC785\uB2C8\uB2E4."
+  domain: mobility
+  requiredCapabilities:
+  - capabilityId: agent
+    level: 4
+  - capabilityId: optimization
+    level: 3
+  - capabilityId: safety
+    level: 3
+  - capabilityId: vision
+    level: 4
+  trustRequirement: 92
+  launchCost:
+  - resource: 0
+    amount: 42000
+  - resource: 2
+    amount: 170
+  - resource: 3
+    amount: 190
+  baseRevenue: 14000
+  baseUsersPerMonth: 85
+  dataGeneratedPerMonth: 58
+  computePer1000Users: 34
+  hypeOnLaunch: 20
+  level: 1
+  tags:
+  - mobility
+  - vision
+  - agent
+  - safety
+  teaser: "\uC625\uC0C1 \uC8FC\uCC28\uC7A5\uC5D0 \uBC14\uB78C \uBC29\uD5A5 \uD45C\uC9C0\uD310\uC774
+    \uC138\uC6CC\uC84C\uC2B5\uB2C8\uB2E4."
+  prerequisiteProducts:
+  - autonomous_vehicle_stack
+  - city_robotaxi_mesh
+  - data_center_load_balancer
+  tier: 4
+  maxLevel: 5
+  upgradeCostMultiplier: 2.1

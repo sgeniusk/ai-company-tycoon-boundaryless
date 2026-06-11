@@ -18,6 +18,7 @@
       "level": 1,
       "max_level": 5,
       "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": [],
       "tags": ["model", "core_ai", "language", "research"]
     },
     {
@@ -38,6 +39,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": [],
       "tags": ["consumer", "language", "writing"]
     },
     {
@@ -58,6 +60,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": [],
       "tags": ["consumer", "language", "productivity"]
     },
     {
@@ -78,6 +81,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": [],
       "tags": ["developer", "code", "tools"]
     },
     {
@@ -98,6 +102,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": [],
       "tags": ["enterprise", "language", "support"]
     },
     {
@@ -118,6 +123,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": [],
       "tags": ["consumer", "vision", "creative"]
     },
     {
@@ -138,6 +144,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": [],
       "tags": ["consumer", "video", "creative"]
     },
     {
@@ -158,6 +165,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": ["classroom_quiz_copilot", "meeting_summary_bot"],
       "tags": ["consumer", "education", "agent"]
     },
     {
@@ -178,6 +186,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": ["customer_support_chatbot", "meeting_summary_bot"],
       "tags": ["enterprise", "agent", "automation"]
     },
     {
@@ -198,6 +207,7 @@
       "level": 1,
       "max_level": 5,
       "upgrade_cost_multiplier": 1.8,
+      "prerequisite_products": ["foundation_model_v0", "inference_cache_chiplet"],
       "tags": ["model", "core_ai", "reasoning", "research"]
     },
     {
@@ -218,6 +228,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.9,
+      "prerequisite_products": ["foundation_model_v0", "ai_coding_assistant"],
       "tags": ["hardware", "chip", "optimization", "infrastructure"]
     },
     {
@@ -238,6 +249,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 2,
+      "prerequisite_products": ["delivery_route_copilot", "smart_bus_dispatch_os"],
       "tags": ["mobility", "vision", "agent", "safety"]
     },
     {
@@ -258,6 +270,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.8,
+      "prerequisite_products": ["robot_reception_kiosk", "delivery_route_copilot"],
       "tags": ["robotics", "automation", "operations", "hardware"]
     },
     {
@@ -278,6 +291,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": ["robot_reception_kiosk", "customer_support_chatbot"],
       "tags": ["consumer", "robotics", "coffee", "weird"]
     },
     {
@@ -298,6 +312,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.6,
+      "prerequisite_products": ["thumbnail_generator", "ai_writing_assistant", "classroom_quiz_copilot"],
       "tags": ["consumer", "toys", "language", "vision", "safety"]
     },
     {
@@ -318,6 +333,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.4,
+      "prerequisite_products": [],
       "tags": ["education", "language", "safety", "product"]
     },
     {
@@ -338,6 +354,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": [],
       "tags": ["mobility", "optimization", "agent", "operations"]
     },
     {
@@ -358,6 +375,7 @@
       "level": 1,
       "max_level": 3,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": [],
       "tags": ["robotics", "hardware", "language", "automation"]
     },
     {
@@ -378,6 +396,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.5,
+      "prerequisite_products": ["classroom_quiz_copilot", "ai_tutor"],
       "tags": ["education", "agent", "language", "consumer"]
     },
     {
@@ -398,6 +417,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": ["robot_reception_kiosk", "thumbnail_generator"],
       "tags": ["robotics", "vision", "quality", "enterprise"]
     },
     {
@@ -418,6 +438,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.8,
+      "prerequisite_products": ["foundation_model_v0", "ai_coding_assistant"],
       "tags": ["hardware", "chip", "optimization", "compute"]
     },
     {
@@ -438,6 +459,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": ["delivery_route_copilot"],
       "tags": ["mobility", "agent", "optimization", "operations"]
     },
     {
@@ -458,6 +480,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.6,
+      "prerequisite_products": ["robot_reception_kiosk", "thumbnail_generator"],
       "tags": ["consumer", "robotics", "vision", "weird"]
     },
     {
@@ -478,6 +501,7 @@
       "level": 2,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.6,
+      "prerequisite_products": ["ai_writing_assistant", "delivery_route_copilot"],
       "tags": ["consumer", "market", "agent", "weird"]
     },
     {
@@ -498,6 +522,7 @@
       "level": 2,
       "max_level": 5,
       "upgrade_cost_multiplier": 1.9,
+      "prerequisite_products": ["warehouse_robot_fleet", "factory_vision_inspector", "ai_pet_grooming_booth"],
       "tags": ["robotics", "consumer", "safety", "hardware"]
     },
     {
@@ -518,6 +543,7 @@
       "level": 3,
       "max_level": 5,
       "upgrade_cost_multiplier": 2.0,
+      "prerequisite_products": ["autonomous_vehicle_stack", "smart_bus_dispatch_os", "factory_vision_inspector"],
       "tags": ["mobility", "vision", "agent", "safety"]
     },
     {
@@ -538,6 +564,7 @@
       "level": 2,
       "max_level": 5,
       "upgrade_cost_multiplier": 1.9,
+      "prerequisite_products": ["ai_training_chip", "inference_cache_chiplet"],
       "tags": ["hardware", "chip", "optimization", "compute"]
     },
     {
@@ -558,6 +585,7 @@
       "level": 3,
       "max_level": 5,
       "upgrade_cost_multiplier": 1.9,
+      "prerequisite_products": ["ai_training_chip", "thumbnail_generator"],
       "tags": ["hardware", "chip", "vision", "quality"]
     },
     {
@@ -578,6 +606,7 @@
       "level": 2,
       "max_level": 5,
       "upgrade_cost_multiplier": 1.8,
+      "prerequisite_products": ["warehouse_robot_fleet", "factory_vision_inspector", "adaptive_factory_control_os"],
       "tags": ["robotics", "automation", "vision", "operations"]
     },
     {
@@ -598,6 +627,7 @@
       "level": 2,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": ["barista_robot_cafe_chain", "pop_up_store_forecaster", "customer_support_chatbot"],
       "tags": ["consumer", "language", "safety", "trust"]
     },
     {
@@ -618,6 +648,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.8,
+      "prerequisite_products": ["robot_reception_kiosk", "ai_training_chip"],
       "tags": ["manufacturing", "robotics", "optimization", "automation", "hardware"]
     },
     {
@@ -638,6 +669,7 @@
       "level": 1,
       "max_level": 5,
       "upgrade_cost_multiplier": 1.9,
+      "prerequisite_products": ["adaptive_factory_control_os", "factory_vision_inspector", "ai_training_chip"],
       "tags": ["manufacturing", "simulation", "vision", "optimization", "enterprise"]
     },
     {
@@ -658,6 +690,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": ["warehouse_robot_fleet", "smart_bus_dispatch_os"],
       "tags": ["logistics", "agent", "optimization", "operations"]
     },
     {
@@ -678,6 +711,7 @@
       "level": 1,
       "max_level": 5,
       "upgrade_cost_multiplier": 1.8,
+      "prerequisite_products": ["autonomous_fulfillment_router", "data_center_load_balancer", "smart_bus_dispatch_os"],
       "tags": ["logistics", "enterprise", "optimization", "supply_chain"]
     },
     {
@@ -698,6 +732,7 @@
       "level": 1,
       "max_level": 4,
       "upgrade_cost_multiplier": 1.8,
+      "prerequisite_products": ["inference_cache_chiplet", "enterprise_workflow_agent"],
       "tags": ["energy", "optimization", "infrastructure", "enterprise"]
     },
     {
@@ -718,7 +753,323 @@
       "level": 1,
       "max_level": 5,
       "upgrade_cost_multiplier": 2.0,
+      "prerequisite_products": ["data_center_load_balancer", "adaptive_factory_control_os", "autonomous_fulfillment_router"],
       "tags": ["energy", "agent", "optimization", "infrastructure"]
+    },
+    {
+      "id": "agi_research_copilot",
+      "name": "AGI 연구 보조",
+      "description": "대규모 모델 실험, 논문 가설, 안전 검토를 한 연구 루프로 묶는 미래형 연구 파트너입니다.",
+      "teaser": "잠긴 실험실 칠판에 원 하나가 계속 커집니다.",
+      "tier": 4,
+      "domain": "foundation_models",
+      "required_capabilities": {"language": 4, "code": 3, "optimization": 3, "safety": 2},
+      "launch_cost": {"cash": 24000, "compute": 160, "data": 150},
+      "base_revenue": 9200,
+      "base_users_per_month": 180,
+      "compute_per_1000_users": 60,
+      "data_generated_per_month": 50,
+      "hype_on_launch": 24,
+      "trust_requirement": 84,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 2.0,
+      "prerequisite_products": ["frontier_reasoning_model", "neuromorphic_edge_chip"],
+      "tags": ["model", "core_ai", "research", "safety"]
+    },
+    {
+      "id": "personal_ai_chief_of_staff",
+      "name": "개인 AI 비서실장",
+      "description": "메일, 일정, 문서, 회의 후속 업무를 한 명의 전담 비서처럼 묶어 처리하는 생산성 제품입니다.",
+      "teaser": "캘린더 칸마다 작은 도장이 찍히기 시작합니다.",
+      "tier": 3,
+      "domain": "personal_productivity",
+      "required_capabilities": {"language": 3, "agent": 2, "enterprise": 1},
+      "launch_cost": {"cash": 8500, "compute": 55, "data": 45},
+      "base_revenue": 3200,
+      "base_users_per_month": 420,
+      "compute_per_1000_users": 18,
+      "data_generated_per_month": 20,
+      "hype_on_launch": 7,
+      "trust_requirement": 60,
+      "level": 1,
+      "max_level": 4,
+      "upgrade_cost_multiplier": 1.6,
+      "prerequisite_products": ["ai_writing_assistant", "meeting_summary_bot", "enterprise_workflow_agent"],
+      "tags": ["consumer", "productivity", "agent", "language"]
+    },
+    {
+      "id": "hologram_story_studio",
+      "name": "홀로그램 이야기 스튜디오",
+      "description": "짧은 영상과 이미지를 무대형 홀로그램 이야기로 엮는 크리에이터 스튜디오입니다.",
+      "teaser": "작은 무대 위 빈 조명이 대사를 기다립니다.",
+      "tier": 3,
+      "domain": "creator_tools",
+      "required_capabilities": {"vision": 3, "video": 3, "language": 2},
+      "launch_cost": {"cash": 12000, "compute": 85, "data": 70},
+      "base_revenue": 4300,
+      "base_users_per_month": 310,
+      "compute_per_1000_users": 35,
+      "data_generated_per_month": 24,
+      "hype_on_launch": 14,
+      "trust_requirement": 55,
+      "level": 1,
+      "max_level": 4,
+      "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": ["thumbnail_generator", "short_video_editor"],
+      "tags": ["consumer", "video", "creative", "vision"]
+    },
+    {
+      "id": "self_refactor_dev_env",
+      "name": "자가 리팩터 개발 환경",
+      "description": "프로젝트 구조를 읽고 리팩터링 계획, 테스트, 배포 체크를 이어주는 개발 환경입니다.",
+      "teaser": "IDE 왼쪽 트리가 밤새 가지치기를 배웁니다.",
+      "tier": 3,
+      "domain": "developer_tools",
+      "required_capabilities": {"code": 3, "agent": 2, "optimization": 2},
+      "launch_cost": {"cash": 10500, "compute": 70, "data": 55},
+      "base_revenue": 4000,
+      "base_users_per_month": 220,
+      "compute_per_1000_users": 25,
+      "data_generated_per_month": 20,
+      "hype_on_launch": 10,
+      "trust_requirement": 62,
+      "level": 1,
+      "max_level": 4,
+      "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": ["ai_coding_assistant", "inference_cache_chiplet"],
+      "tags": ["developer", "code", "agent", "tools"]
+    },
+    {
+      "id": "autonomous_success_center",
+      "name": "자율 고객성공 센터",
+      "description": "지원 티켓, 고객 건강도, 갱신 위험을 한 번에 읽고 대응안을 실행하는 고객 성공 센터입니다.",
+      "teaser": "고객 문의함 뒤쪽에 조용한 상황실이 생겼습니다.",
+      "tier": 3,
+      "domain": "customer_support",
+      "required_capabilities": {"language": 3, "agent": 2, "enterprise": 2, "safety": 1},
+      "launch_cost": {"cash": 11000, "compute": 65, "data": 60},
+      "base_revenue": 4200,
+      "base_users_per_month": 160,
+      "compute_per_1000_users": 30,
+      "data_generated_per_month": 30,
+      "hype_on_launch": 8,
+      "trust_requirement": 72,
+      "level": 1,
+      "max_level": 4,
+      "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": ["customer_support_chatbot", "enterprise_workflow_agent"],
+      "tags": ["enterprise", "language", "support", "agent"]
+    },
+    {
+      "id": "ai_lab_school_network",
+      "name": "AI 실험학교 네트워크",
+      "description": "학교별 학습 실험을 연결해 커리큘럼, 튜터, 평가를 계속 조정하는 교육 네트워크입니다.",
+      "teaser": "빈 교실 여러 곳에 같은 실험 스티커가 붙습니다.",
+      "tier": 4,
+      "domain": "education",
+      "required_capabilities": {"language": 4, "agent": 3, "safety": 3, "vision": 2},
+      "launch_cost": {"cash": 12000, "compute": 70, "data": 65},
+      "base_revenue": 4200,
+      "base_users_per_month": 300,
+      "compute_per_1000_users": 22,
+      "data_generated_per_month": 28,
+      "hype_on_launch": 10,
+      "trust_requirement": 78,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 1.8,
+      "prerequisite_products": ["ai_tutor", "campus_study_planner", "toy_imagination_engine"],
+      "tags": ["education", "agent", "language", "safety"]
+    },
+    {
+      "id": "autonomous_boardroom_operator",
+      "name": "자율 이사회 운영자",
+      "description": "안건 수집, 리스크 검토, 실행 지시를 연결해 기업 의사결정 회의를 운영하는 고신뢰 에이전트입니다.",
+      "teaser": "이사회 테이블 위 의사봉이 스스로 안건을 정리합니다.",
+      "tier": 4,
+      "domain": "enterprise_automation",
+      "required_capabilities": {"agent": 4, "enterprise": 3, "language": 3, "safety": 2},
+      "launch_cost": {"cash": 22000, "compute": 120, "data": 100},
+      "base_revenue": 9000,
+      "base_users_per_month": 90,
+      "compute_per_1000_users": 45,
+      "data_generated_per_month": 40,
+      "hype_on_launch": 11,
+      "trust_requirement": 88,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 2.0,
+      "prerequisite_products": ["enterprise_workflow_agent", "frontier_reasoning_model"],
+      "tags": ["enterprise", "agent", "automation", "trust"]
+    },
+    {
+      "id": "wafer_scale_training_pod",
+      "name": "웨이퍼 스케일 학습 포드",
+      "description": "초대형 모델 학습을 한 장의 거대한 가속기 보드처럼 묶어 처리하는 반도체 인프라 제품입니다.",
+      "teaser": "서버실 한가운데 거대한 은색 책장이 들어옵니다.",
+      "tier": 4,
+      "domain": "semiconductors",
+      "required_capabilities": {"optimization": 4, "code": 4, "manufacturing": 2, "enterprise": 2},
+      "launch_cost": {"cash": 52000, "compute": 190, "data": 170},
+      "base_revenue": 18500,
+      "base_users_per_month": 40,
+      "compute_per_1000_users": 10,
+      "data_generated_per_month": 55,
+      "hype_on_launch": 16,
+      "trust_requirement": 84,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 2.1,
+      "prerequisite_products": ["neuromorphic_edge_chip", "wafer_defect_foundry_ai", "frontier_reasoning_model"],
+      "tags": ["hardware", "chip", "optimization", "infrastructure"]
+    },
+    {
+      "id": "flying_drone_taxi",
+      "name": "플라잉 드론 택시",
+      "description": "도심 상공의 승객 수요, 착륙장, 안전 경로를 실시간으로 묶는 항공 모빌리티 서비스입니다.",
+      "teaser": "옥상 주차장에 바람 방향 표지판이 세워졌습니다.",
+      "tier": 4,
+      "domain": "mobility",
+      "required_capabilities": {"vision": 4, "agent": 4, "optimization": 3, "safety": 3},
+      "launch_cost": {"cash": 42000, "compute": 170, "data": 190},
+      "base_revenue": 14000,
+      "base_users_per_month": 85,
+      "compute_per_1000_users": 34,
+      "data_generated_per_month": 58,
+      "hype_on_launch": 20,
+      "trust_requirement": 92,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 2.1,
+      "prerequisite_products": ["autonomous_vehicle_stack", "city_robotaxi_mesh", "data_center_load_balancer"],
+      "tags": ["mobility", "vision", "agent", "safety"]
+    },
+    {
+      "id": "humanoid_home_caregiver",
+      "name": "휴머노이드 가사로봇",
+      "description": "집 안 동선과 가족의 생활 패턴을 배워 돌봄과 가사를 보조하는 고신뢰 휴머노이드입니다.",
+      "teaser": "거실 소파 옆에 아주 공손한 발자국이 남았습니다.",
+      "tier": 4,
+      "domain": "robotics",
+      "required_capabilities": {"robotics": 4, "vision": 3, "agent": 4, "safety": 3},
+      "launch_cost": {"cash": 30000, "compute": 135, "data": 125},
+      "base_revenue": 9800,
+      "base_users_per_month": 150,
+      "compute_per_1000_users": 28,
+      "data_generated_per_month": 48,
+      "hype_on_launch": 14,
+      "trust_requirement": 92,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 2.0,
+      "prerequisite_products": ["household_helper_android", "frontier_reasoning_model", "factory_vision_inspector"],
+      "tags": ["robotics", "consumer", "safety", "hardware"]
+    },
+    {
+      "id": "ai_memory_theme_park",
+      "name": "AI 추억 테마파크",
+      "description": "사진, 음성, 장소 기록을 조심스럽게 엮어 가족 단위의 체험형 추억 공간을 만드는 기묘한 서비스입니다.",
+      "teaser": "낡은 사진들이 놀이공원 지도처럼 접힙니다.",
+      "tier": 4,
+      "domain": "odd_industries",
+      "required_capabilities": {"language": 3, "vision": 3, "agent": 3, "safety": 3, "robotics": 1},
+      "launch_cost": {"cash": 19000, "compute": 90, "data": 85},
+      "base_revenue": 6900,
+      "base_users_per_month": 180,
+      "compute_per_1000_users": 18,
+      "data_generated_per_month": 35,
+      "hype_on_launch": 18,
+      "trust_requirement": 90,
+      "level": 1,
+      "max_level": 4,
+      "upgrade_cost_multiplier": 1.8,
+      "prerequisite_products": ["ai_funeral_planner", "toy_imagination_engine", "pop_up_store_forecaster"],
+      "tags": ["consumer", "memory", "vision", "weird"]
+    },
+    {
+      "id": "living_plush_companion",
+      "name": "살아있는 봉제 친구",
+      "description": "아이의 놀이 맥락과 보호자 규칙을 함께 기억해 매일 다른 대화를 건네는 안전형 장난감입니다.",
+      "teaser": "인형 눈동자에 오늘의 날씨가 살짝 비칩니다.",
+      "tier": 4,
+      "domain": "toys",
+      "required_capabilities": {"language": 3, "vision": 3, "safety": 3, "robotics": 1},
+      "launch_cost": {"cash": 15000, "compute": 70, "data": 70},
+      "base_revenue": 5800,
+      "base_users_per_month": 650,
+      "compute_per_1000_users": 18,
+      "data_generated_per_month": 30,
+      "hype_on_launch": 16,
+      "trust_requirement": 80,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 1.7,
+      "prerequisite_products": ["toy_imagination_engine", "ai_tutor", "robot_reception_kiosk"],
+      "tags": ["consumer", "toys", "language", "safety"]
+    },
+    {
+      "id": "lights_out_microfactory",
+      "name": "무인 마이크로팩토리",
+      "description": "작은 주문을 자동 설계, 생산, 검수까지 이어 받아 불 꺼진 공장에서도 계속 돌리는 제조 제품입니다.",
+      "teaser": "불 꺼진 공장 안에서 컨베이어가 조용히 움직입니다.",
+      "tier": 4,
+      "domain": "manufacturing",
+      "required_capabilities": {"manufacturing": 4, "robotics": 3, "optimization": 3, "vision": 2},
+      "launch_cost": {"cash": 32000, "compute": 130, "data": 120},
+      "base_revenue": 10500,
+      "base_users_per_month": 65,
+      "compute_per_1000_users": 22,
+      "data_generated_per_month": 42,
+      "hype_on_launch": 12,
+      "trust_requirement": 82,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 2.0,
+      "prerequisite_products": ["digital_twin_production_line", "adaptive_factory_control_os", "warehouse_robot_fleet"],
+      "tags": ["manufacturing", "robotics", "optimization", "automation"]
+    },
+    {
+      "id": "predictive_port_network",
+      "name": "예측 항만 네트워크",
+      "description": "선박 도착, 컨테이너 적치, 냉장 화물을 한 지도에서 예측해 항만 병목을 줄이는 물류 제품입니다.",
+      "teaser": "항구의 컨테이너들이 출항 전부터 줄을 맞춥니다.",
+      "tier": 4,
+      "domain": "logistics",
+      "required_capabilities": {"logistics": 3, "agent": 3, "optimization": 3, "enterprise": 2},
+      "launch_cost": {"cash": 24000, "compute": 95, "data": 110},
+      "base_revenue": 7800,
+      "base_users_per_month": 75,
+      "compute_per_1000_users": 18,
+      "data_generated_per_month": 38,
+      "hype_on_launch": 9,
+      "trust_requirement": 76,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 1.9,
+      "prerequisite_products": ["cold_chain_control_tower", "autonomous_fulfillment_router", "smart_bus_dispatch_os"],
+      "tags": ["logistics", "enterprise", "optimization", "supply_chain"]
+    },
+    {
+      "id": "fusion_control_copilot",
+      "name": "핵융합 제어 보조",
+      "description": "실험로 센서와 전력 수요를 읽어 플라즈마 제어 후보를 제안하는 초고신뢰 에너지 AI입니다.",
+      "teaser": "작은 태양을 담은 유리병이 설계도에 그려집니다.",
+      "tier": 4,
+      "domain": "energy",
+      "required_capabilities": {"manufacturing": 4, "optimization": 4, "enterprise": 2, "safety": 2},
+      "launch_cost": {"cash": 36000, "compute": 155, "data": 130},
+      "base_revenue": 12500,
+      "base_users_per_month": 50,
+      "compute_per_1000_users": 28,
+      "data_generated_per_month": 44,
+      "hype_on_launch": 18,
+      "trust_requirement": 88,
+      "level": 1,
+      "max_level": 5,
+      "upgrade_cost_multiplier": 2.1,
+      "prerequisite_products": ["smart_grid_demand_orchestrator", "data_center_load_balancer", "digital_twin_production_line"],
+      "tags": ["energy", "optimization", "safety", "infrastructure"]
     }
   ]
 }

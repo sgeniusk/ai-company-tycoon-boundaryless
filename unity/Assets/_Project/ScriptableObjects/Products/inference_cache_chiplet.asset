@@ -44,5 +44,9 @@ MonoBehaviour:
   - compute
   teaser: "\uBC18\uBCF5\uB418\uB294 \uC9C8\uBB38\uB4E4\uC774 \uC791\uC740 \uC9C0\uB984\uAE38\uC744
     \uCC3E\uC544\uB0B8 \uB4EF\uD569\uB2C8\uB2E4."
-  prerequisiteProducts: []
+  prerequisiteProducts:
+  - foundation_model_v0
+  - ai_coding_assistant
   tier: 2
+  maxLevel: 4
+  upgradeCostMultiplier: 1.8

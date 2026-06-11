@@ -2,6 +2,8 @@
   "balance": {
     "base_monthly_cash_cost": 400,
     "salary_per_talent": 600,
+    "recruit_base_cost": 2500,
+    "recruit_cost_growth": 1.25,
     "compute_cost_per_1000_users": 40,
     "monthly_hype_decay": 2,
     "trust_recovery_threshold": 50,
