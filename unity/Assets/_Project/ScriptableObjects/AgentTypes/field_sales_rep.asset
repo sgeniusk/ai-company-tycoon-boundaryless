@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: field_sales_rep
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: field_sales_rep
+  displayName: "\uD604\uC7A5 \uC601\uC5C5 \uB2F4\uB2F9"
+  role: "\uC0AC\uB78C \uC9C1\uC6D0"
+  description: "\uC9C0\uBC29 \uD589\uC0AC\uC640 \uACE0\uAC1D\uC0AC\uB97C \uB3CC\uBA70
+    \uC544\uC9C1 \uC791\uC740 AI \uD68C\uC0AC\uB97C \uC9C1\uC811 \uC124\uBA85\uD558\uB294
+    \uC601\uC5C5 \uC778\uB825\uC785\uB2C8\uB2E4."
+  kind: human
+  rarity: uncommon
+  statResearch: 1
+  statEngineering: 1
+  statProduct: 4
+  statGrowth: 6
+  statSafety: 2
+  statOperations: 4
+  statCreativity: 4
+  statAutonomy: 2
+  hireCost:
+  - resource: 0
+    amount: 1100
+  unlockRequirements:
+  - key: min_products
+    value: 1
+  quirk: "\uC81C\uD488\uC774 \uD558\uB098\uB77C\uB3C4 \uC0DD\uAE34 \uB4A4 \uC774\uC6A9\uC790\uC640
+    \uACC4\uC57D\uC758 \uBD88\uC528\uB97C \uB9CC\uB4ED\uB2C8\uB2E4."

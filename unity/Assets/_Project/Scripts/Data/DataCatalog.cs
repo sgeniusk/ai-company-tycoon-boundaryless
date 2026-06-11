@@ -25,6 +25,9 @@ namespace AICompanyTycoon.Data
         // 산업 시너지/콤보 (feat-013 #1) — 도메인 포트폴리오 월간 보상.
         public List<IndustrySynergyDef> industrySynergies = new List<IndustrySynergyDef>();
         public List<IndustrySynergyDef> industryCombos = new List<IndustrySynergyDef>();
+        // 인재·사무실 (feat-014 #1) — 채용 3택1 후보 풀 + 정원.
+        public List<AgentTypeDef> agentTypes = new List<AgentTypeDef>();
+        public List<OfficeExpansionDef> officeExpansions = new List<OfficeExpansionDef>();
         public BalanceConfig balance;
 
         public ResourceDef GetResource(string id)
@@ -90,6 +93,11 @@ namespace AICompanyTycoon.Data
         public ArchetypeDef GetArchetype(string id)
         {
             return archetypes.Find(item => item != null && item.id == id);
+        }
+
+        public AgentTypeDef GetAgentType(string id)
+        {
+            return agentTypes.Find(item => item != null && item.id == id);
         }
     }
 }

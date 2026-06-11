@@ -51,8 +51,8 @@ namespace AICompanyTycoon.Tests.PlayMode
             // 상태 구동용 버튼 참조를 미리 확보(라벨이 ＋→× 등으로 바뀌어도 참조는 유지).
             var plus = FindButton(canvasGo, "＋");
             var tabProducts = FindButton(canvasGo, "제품");
-            var tabCapabilities = FindButton(canvasGo, "능력");
-            var tabUpgrades = FindButton(canvasGo, "업그레이드");
+            var tabCapabilities = FindButton(canvasGo, "연구"); // feat-014 #1 — 탭 라벨 개편
+            var tabUpgrades = FindButton(canvasGo, "경영");
             var menuClose = FindButton(canvasGo, "✕");
             var more = FindButton(canvasGo, "더보기");
 

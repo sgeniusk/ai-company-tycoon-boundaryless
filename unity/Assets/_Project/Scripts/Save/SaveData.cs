@@ -45,7 +45,7 @@ namespace AICompanyTycoon.Save
     [Serializable]
     public class SaveData
     {
-        public int version = 4;
+        public int version = 5;
         public double cash;
         public double users;
         public double compute;
@@ -61,6 +61,8 @@ namespace AICompanyTycoon.Save
         public List<string> activeProducts = new List<string>();
         // 제품 레벨 (v4, feat-012). 구세이브(필드 없음)는 빈 리스트 — 출시 제품은 레벨 1로 파생된다.
         public List<CapEntry> productLevels = new List<CapEntry>();
+        // 인재 로스터 (v5, feat-014). 구세이브는 빈 로스터 — 익명 talent로 무손실.
+        public List<string> hiredAgents = new List<string>();
         public List<string> purchasedUpgrades = new List<string>();
         public List<string> purchasedAutomation = new List<string>();
         public List<string> triggeredEvents = new List<string>();

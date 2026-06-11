@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35cb2a17f452b4b568fdcf9023dee731, type: 3}
+  m_Name: startup_suite
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.OfficeExpansionDef
+  id: startup_suite
+  level: 2
+  displayName: "\uC2A4\uD0C0\uD2B8\uC5C5 \uC2A4\uC704\uD2B8"
+  description: "\uD300\uC774 \uB3D9\uC2DC\uC5D0 \uC77C\uD560 \uD68C\uC758\uC2E4\uACFC
+    \uC7A5\uC2DD \uACF5\uAC04\uC774 \uC0DD\uAE30\uB294 \uC791\uC740 \uC0AC\uBB34\uC2E4\uC785\uB2C8\uB2E4."
+  hireCapacity: 5
+  decorationSlots: 5
+  cost:
+  - resource: 0
+    amount: 3500
+  unlockRequirements:
+  - key: min_products
+    value: 1
+  monthlyEffects:
+  - resource: 0
+    amount: 120
+  - resource: 1
+    amount: 40

@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: benchmark_analyst
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: benchmark_analyst
+  displayName: "\uBCA4\uCE58\uB9C8\uD06C \uBD84\uC11D \uC5D0\uC774\uC804\uD2B8"
+  role: "\uD3C9\uAC00\uD615 \uC5D0\uC774\uC804\uD2B8"
+  description: "\uACBD\uC7C1 \uBAA8\uB378, \uC81C\uD488 \uB9AC\uBDF0, \uD14C\uC2A4\uD130
+    \uBC18\uC751\uC744 \uD45C\uB85C \uC815\uB9AC\uD574 \uB2E4\uC74C \uAC1C\uBC1C
+    \uBC29\uD5A5\uC744 \uC81C\uC548\uD569\uB2C8\uB2E4."
+  kind: ai_agent
+  rarity: uncommon
+  statResearch: 7
+  statEngineering: 3
+  statProduct: 5
+  statGrowth: 4
+  statSafety: 3
+  statOperations: 4
+  statCreativity: 3
+  statAutonomy: 5
+  hireCost:
+  - resource: 0
+    amount: 2100
+  - resource: 3
+    amount: 8
+  unlockRequirements:
+  - key: min_month
+    value: 4
+  quirk: "\uD14C\uC2A4\uD130 \uBCF4\uACE0\uC11C\uB97C \uC81C\uD488 \uC22B\uC790\uB85C
+    \uBC14\uAFB8\uB294 \uB370 \uAC15\uD569\uB2C8\uB2E4."

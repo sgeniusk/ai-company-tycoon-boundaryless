@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: data_curator
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: data_curator
+  displayName: "\uB370\uC774\uD130 \uD050\uB808\uC774\uD130"
+  role: "\uB370\uC774\uD130\uD615 \uC5D0\uC774\uC804\uD2B8"
+  description: "\uD559\uC2B5 \uB370\uC774\uD130 \uD488\uC9C8\uC744 \uAD00\uB9AC\uD558\uACE0
+    \uD53C\uB4DC\uBC31 \uB8E8\uD504\uB97C \uC815\uB9AC\uD569\uB2C8\uB2E4."
+  kind: ai_agent
+  rarity: common
+  statResearch: 5
+  statEngineering: 3
+  statProduct: 3
+  statGrowth: 2
+  statSafety: 5
+  statOperations: 5
+  statCreativity: 2
+  statAutonomy: 4
+  hireCost:
+  - resource: 0
+    amount: 1300
+  - resource: 3
+    amount: 3
+  unlockRequirements: []
+  quirk: "\uC6D4\uAC04 \uB370\uC774\uD130 \uD68D\uB4DD\uB7C9\uC744 \uC548\uC815\uD654\uD569\uB2C8\uB2E4."

@@ -63,7 +63,8 @@ namespace AICompanyTycoon.Systems
             var costs = new List<ResourceAmount>();
             foreach (var c in p.launchCost)
                 costs.Add(new ResourceAmount { resource = c.resource, amount = System.Math.Round(c.amount * p.upgradeCostMultiplier * level) });
-            return costs;
+            // 로스터 engineering 합 → 현금 비용 할인 (feat-014 #1).
+            return RosterBonus.ApplyCashDiscount(costs, RosterBonus.GetEngineeringDiscount(_m, _c));
         }
 
         public bool CanLevelUp(string id)

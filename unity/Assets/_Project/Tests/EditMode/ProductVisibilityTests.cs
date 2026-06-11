@@ -234,18 +234,6 @@ namespace AICompanyTycoon.Tests.EditMode
         }
 
         [Test]
-        public void Recruit_AddsTalent_AndCostGrows()
-        {
-            var ctx = Fresh();
-            ctx.Model.Set(Core.ResourceId.Cash, 1e9);
-            double talentBefore = ctx.Model.Get(Core.ResourceId.Talent);
-            double costBefore = ctx.Recruit.GetCost();
-            Assert.IsTrue(ctx.Recruit.Recruit());
-            Assert.AreEqual(talentBefore + 1, ctx.Model.Get(Core.ResourceId.Talent), 0.001);
-            Assert.Greater(ctx.Recruit.GetCost(), costBefore, "채용 비용은 보유 인재 증가에 따라 올라야 한다.");
-        }
-
-        [Test]
         public void BuyCompute_AddsComputePack()
         {
             var ctx = Fresh();
@@ -253,15 +241,6 @@ namespace AICompanyTycoon.Tests.EditMode
             double before = ctx.Model.Get(Core.ResourceId.Compute);
             Assert.IsTrue(ctx.Recruit.BuyCompute());
             Assert.AreEqual(before + ctx.Recruit.GetComputePackAmount(), ctx.Model.Get(Core.ResourceId.Compute), 0.001);
-        }
-
-        [Test]
-        public void Recruit_Blocked_WhenCashInsufficient()
-        {
-            var ctx = Fresh();
-            ctx.Model.Set(Core.ResourceId.Cash, 0);
-            Assert.IsFalse(ctx.Recruit.CanRecruit());
-            Assert.IsFalse(ctx.Recruit.Recruit());
         }
 
         [Test]

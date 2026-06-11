@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: prompt_architect
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: prompt_architect
+  displayName: "\uD504\uB86C\uD504\uD2B8 \uC124\uACC4\uAC00"
+  role: "\uC81C\uD488 \uAE30\uD68D\uD615 \uC5D0\uC774\uC804\uD2B8"
+  description: "\uC0AC\uC6A9\uC790 \uC694\uAD6C\uB97C \uAD6C\uC870\uD654\uD574 \uC81C\uD488
+    \uAE30\uB2A5\uACFC \uB300\uD654 \uD750\uB984\uC73C\uB85C \uBC14\uAFC9\uB2C8\uB2E4."
+  kind: ai_agent
+  rarity: common
+  statResearch: 2
+  statEngineering: 2
+  statProduct: 6
+  statGrowth: 3
+  statSafety: 2
+  statOperations: 2
+  statCreativity: 6
+  statAutonomy: 4
+  hireCost:
+  - resource: 0
+    amount: 1200
+  unlockRequirements: []
+  quirk: "\uCD9C\uC2DC \uC804 \uC124\uBA85 \uBB38\uAD6C \uD488\uC9C8\uC744 \uC62C\uB9BD\uB2C8\uB2E4."

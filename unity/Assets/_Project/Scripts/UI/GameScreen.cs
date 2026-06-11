@@ -915,10 +915,11 @@ namespace AICompanyTycoon.UI
             box.padding = new RectOffset(14, 14, 14, 14);
             box.childAlignment = TextAnchor.MiddleCenter;
 
+            // feat-014 #1 — [제품·연구·경영]. 탭 키(id)는 세이브·가이던스 호환을 위해 유지, 라벨만 개편.
             AddDockTab(dock.transform, ProductsTab, "제품");
-            AddDockTab(dock.transform, CapabilitiesTab, "능력");
+            AddDockTab(dock.transform, CapabilitiesTab, "연구");
             BuildFab(dock.transform);
-            AddDockTab(dock.transform, UpgradesTab, "업그레이드");
+            AddDockTab(dock.transform, UpgradesTab, "경영");
 
             var more = UiFactory.Button(dock.transform, "더보기");
             more.button.onClick.AddListener(ToggleMore);
@@ -1404,8 +1405,8 @@ namespace AICompanyTycoon.UI
         string TabTitle(string tab)
         {
             if (tab == ProductsTab) return "제품";
-            if (tab == CapabilitiesTab) return "능력";
-            return "업그레이드";
+            if (tab == CapabilitiesTab) return "연구";
+            return "경영";
         }
 
         void ToggleMore()
@@ -1849,46 +1850,6 @@ namespace AICompanyTycoon.UI
         {
             Clear(_capabilitiesContent);
 
-            // feat-012 #4 — 인재 채용 카드. 능력 강화의 talent 공급원 (반복 가능, 비용 기하 증가).
-            var recruitCard = AddCard(_capabilitiesContent, "인재 채용", "연구를 이어갈 인재를 영입합니다. 월급이 늘어나는 만큼 신중하게.");
-            AddSmallText(recruitCard, "보유 인재 " + FormatNumber(_context.Model.Get(ResourceId.Talent)) + " | 채용 비용 " + FormatMoney(_context.Recruit.GetCost()));
-            var recruitButton = UiFactory.Button(recruitCard, "채용");
-            recruitButton.button.interactable = _context.Recruit.CanRecruit();
-            recruitButton.button.onClick.AddListener(() =>
-            {
-                if (_context.Recruit.Recruit())
-                {
-                    SetStatus("새 인재가 합류했습니다.");
-                    SpawnReaction("react_cheer");
-                    RefreshAll();
-                }
-                else
-                {
-                    SetStatus("채용 비용을 다시 확인하세요.");
-                }
-            });
-            AddLayout(recruitButton.button.gameObject, 64, 0);
-
-            // feat-013 #1 — GPU 증설 카드. 연산력의 유일한 반복 공급원 (연구·강화의 연산 비용 충당).
-            var computeCard = AddCard(_capabilitiesContent, "GPU 증설", "데이터센터에 연산력을 증설합니다. 연구와 제품 강화에 필요합니다.");
-            AddSmallText(computeCard, "보유 연산력 " + FormatNumber(_context.Model.Get(ResourceId.Compute)) + " | 증설 +" + FormatNumber(_context.Recruit.GetComputePackAmount()) + " | 비용 " + FormatMoney(_context.Recruit.GetComputePackCost()));
-            var computeButton = UiFactory.Button(computeCard, "증설");
-            computeButton.button.interactable = _context.Recruit.CanBuyCompute();
-            computeButton.button.onClick.AddListener(() =>
-            {
-                if (_context.Recruit.BuyCompute())
-                {
-                    SetStatus("연산력을 증설했습니다.");
-                    SpawnReaction("react_idea");
-                    RefreshAll();
-                }
-                else
-                {
-                    SetStatus("증설 비용을 다시 확인하세요.");
-                }
-            });
-            AddLayout(computeButton.button.gameObject, 64, 0);
-
             var domainTitle = UiFactory.Label(_capabilitiesContent, "도메인", 36);
             AddLayout(domainTitle.gameObject, 44, 0);
 
@@ -2093,11 +2054,153 @@ namespace AICompanyTycoon.UI
             SpawnCelebration("celebrate_combo", "새 제품 발견!");
         }
 
+        static string AgentKindLabel(string kind)
+            => kind == "human" ? "사람" : kind == "robot" ? "로봇" : "AI";
+
+        static string AgentRarityLabel(string rarity)
+            => rarity == "uncommon" ? "고급" : rarity == "rare" ? "희귀" : rarity == "epic" ? "전설" : "일반";
+
+        // 인재 섹션 — 로스터 현황 + 채용 후보 3택1 (feat-014 #1).
+        void BuildTalentSection()
+        {
+            var title = UiFactory.Label(_upgradesContent, "인재", 36);
+            AddLayout(title.gameObject, 44, 0);
+
+            var office = _context.Recruit.GetOffice();
+            int capacity = _context.Recruit.GetHireCapacity();
+            var rosterCard = AddCard(_upgradesContent, "우리 팀 " + _context.Model.HiredAgentIds.Count + "/" + capacity + "명",
+                (office != null ? office.displayName : "사무실") + " 기준 정원입니다. 회사가 성장하면 자리가 늘어납니다.");
+
+            foreach (var agentId in _context.Model.HiredAgentIds)
+            {
+                var agent = _context.Catalog.GetAgentType(agentId);
+                if (agent == null)
+                {
+                    continue;
+                }
+
+                AddSmallText(rosterCard, "· " + agent.displayName + " — " + agent.role + " (" + AgentKindLabel(agent.kind) + ")");
+            }
+
+            double researchDiscount = RosterBonus.GetResearchDiscount(_context.Model, _context.Catalog);
+            double engineeringDiscount = RosterBonus.GetEngineeringDiscount(_context.Model, _context.Catalog);
+            if (researchDiscount > 0 || engineeringDiscount > 0)
+            {
+                var bonus = AddSmallText(rosterCard, "팀 보너스 — 연구 비용 -" + (researchDiscount * 100).ToString("F0") + "% · 제품 강화 비용 -" + (engineeringDiscount * 100).ToString("F0") + "%");
+                bonus.color = UiTheme.GoalAccent;
+            }
+
+            var candidatesTitle = AddSmallText(_upgradesContent, "이번 후보 — 마음에 드는 인재를 영입하세요");
+            AddLayout(candidatesTitle.gameObject, 40, 0);
+
+            foreach (var candidate in _context.Recruit.GetCandidates())
+            {
+                var card = AddCard(_upgradesContent, IconLibrary.Capability("language"),
+                    candidate.displayName + " · " + AgentRarityLabel(candidate.rarity), candidate.role + " (" + AgentKindLabel(candidate.kind) + ")");
+                AddSmallText(card, "연구 " + candidate.statResearch + " | 개발 " + candidate.statEngineering + " | 제품 " + candidate.statProduct + " | 운영 " + candidate.statOperations);
+                if (!string.IsNullOrEmpty(candidate.quirk))
+                {
+                    var quirk = AddSmallText(card, candidate.quirk);
+                    quirk.fontStyle = FontStyle.Italic;
+                }
+
+                AddSmallText(card, "영입 비용 " + FormatCosts(candidate.hireCost));
+                var reason = _context.Recruit.GetHireLockReason(candidate);
+                if (reason != null)
+                {
+                    AddSmallText(card, "잠금 사유 - " + reason);
+                }
+
+                var hire = UiFactory.Button(card, "영입");
+                hire.button.interactable = reason == null;
+                var captured = candidate;
+                hire.button.onClick.AddListener(() =>
+                {
+                    if (_context.Recruit.Hire(captured))
+                    {
+                        SetStatus("새 인재 합류 — " + captured.displayName);
+                        if (_toastRibbon != null)
+                        {
+                            _toastRibbon.Enqueue("새 동료 — " + captured.displayName + " 합류!", UiTheme.ScoreboardTag);
+                        }
+
+                        SpawnReaction("react_cheer");
+                        RefreshAll();
+                    }
+                    else
+                    {
+                        SetStatus("영입 조건을 다시 확인하세요.");
+                    }
+                });
+                AddLayout(hire.button.gameObject, 64, 0);
+            }
+
+            // 프리랜서 계약 — 정원 없는 반복 talent 공급 (로스터 인재와 달리 능력치 보너스 없음).
+            var freelanceCard = AddCard(_upgradesContent, "프리랜서 계약", "단기 계약으로 인력을 충원합니다. 능력치 보너스는 없지만 자리를 차지하지 않습니다.");
+            AddSmallText(freelanceCard, "보유 인재 " + FormatNumber(_context.Model.Get(ResourceId.Talent)) + " | 계약 비용 " + FormatMoney(_context.Recruit.GetFreelanceCost()));
+            if (!_context.Recruit.CanHireFreelance())
+            {
+                AddSmallText(freelanceCard, "잠금 사유 - 자금 부족 (보유 " + FormatMoney(_context.Model.Get(ResourceId.Cash)) + ")");
+            }
+
+            var freelance = UiFactory.Button(freelanceCard, "계약");
+            freelance.button.interactable = _context.Recruit.CanHireFreelance();
+            freelance.button.onClick.AddListener(() =>
+            {
+                if (_context.Recruit.HireFreelance())
+                {
+                    SetStatus("프리랜서가 합류했습니다.");
+                    SpawnReaction("react_coffee");
+                    RefreshAll();
+                }
+                else
+                {
+                    SetStatus("계약 비용을 다시 확인하세요.");
+                }
+            });
+            AddLayout(freelance.button.gameObject, 64, 0);
+        }
+
+        // 시설 섹션 — GPU 증설 (사무실 업그레이드·본사 이전은 #2).
+        void BuildFacilitySection()
+        {
+            var title = UiFactory.Label(_upgradesContent, "시설", 36);
+            AddLayout(title.gameObject, 44, 0);
+
+            var computeCard = AddCard(_upgradesContent, "GPU 증설", "데이터센터에 연산력을 증설합니다. 연구와 제품 강화에 필요합니다.");
+            AddSmallText(computeCard, "보유 연산력 " + FormatNumber(_context.Model.Get(ResourceId.Compute)) + " | 증설 +" + FormatNumber(_context.Recruit.GetComputePackAmount()) + " | 비용 " + FormatMoney(_context.Recruit.GetComputePackCost()));
+            if (!_context.Recruit.CanBuyCompute())
+            {
+                AddSmallText(computeCard, "잠금 사유 - 자금 부족 (보유 " + FormatMoney(_context.Model.Get(ResourceId.Cash)) + ")");
+            }
+
+            var computeButton = UiFactory.Button(computeCard, "증설");
+            computeButton.button.interactable = _context.Recruit.CanBuyCompute();
+            computeButton.button.onClick.AddListener(() =>
+            {
+                if (_context.Recruit.BuyCompute())
+                {
+                    SetStatus("연산력을 증설했습니다.");
+                    SpawnReaction("react_idea");
+                    RefreshAll();
+                }
+                else
+                {
+                    SetStatus("증설 비용을 다시 확인하세요.");
+                }
+            });
+            AddLayout(computeButton.button.gameObject, 64, 0);
+        }
+
+        // 경영 탭 (feat-014 #1) — ① 인재(채용 3택1+로스터) ② 시설(GPU 증설, 사무실은 #2) ③ 전략·투자(기존 업그레이드/자동화).
         void BuildUpgradeCards()
         {
             Clear(_upgradesContent);
 
-            var upgradeTitle = UiFactory.Label(_upgradesContent, "일반 업그레이드", 36);
+            BuildTalentSection();
+            BuildFacilitySection();
+
+            var upgradeTitle = UiFactory.Label(_upgradesContent, "전략·투자", 36);
             AddLayout(upgradeTitle.gameObject, 44, 0);
 
             foreach (var upgrade in _context.Catalog.upgrades)

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: model_researcher
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: model_researcher
+  displayName: "\uBAA8\uB378 \uC5F0\uAD6C\uC6D0"
+  role: "\uC5F0\uAD6C\uD615 \uC5D0\uC774\uC804\uD2B8"
+  description: "\uC0C8\uB85C\uC6B4 AI \uB2A5\uB825\uACFC \uBAA8\uB378 \uD6A8\uC728\uC744
+    \uC5F0\uAD6C\uD569\uB2C8\uB2E4."
+  kind: ai_agent
+  rarity: rare
+  statResearch: 8
+  statEngineering: 4
+  statProduct: 2
+  statGrowth: 1
+  statSafety: 3
+  statOperations: 2
+  statCreativity: 5
+  statAutonomy: 3
+  hireCost:
+  - resource: 0
+    amount: 2200
+  - resource: 3
+    amount: 5
+  unlockRequirements:
+  - key: min_month
+    value: 2
+  quirk: "\uB2A5\uB825 \uC5F0\uAD6C \uBE44\uC6A9\uC744 \uCCB4\uAC10\uC0C1 \uB0AE\uCDB0\uC90D\uB2C8\uB2E4."

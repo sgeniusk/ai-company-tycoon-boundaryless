@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: rural_ops_helper
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: rural_ops_helper
+  displayName: "\uC2DC\uACE8 \uC6B4\uC601 \uB3C4\uC6B0\uBBF8"
+  role: "\uC0AC\uB78C \uC9C1\uC6D0"
+  description: "\uC601\uC218\uC99D, \uC804\uD654, \uC11C\uBC84 \uC7AC\uBD80\uD305,
+    \uD0DD\uBC30\uAE4C\uC9C0 \uB9E1\uB294 \uB9CC\uB2A5 \uC6B4\uC601 \uC778\uB825\uC785\uB2C8\uB2E4."
+  kind: human
+  rarity: common
+  statResearch: 1
+  statEngineering: 2
+  statProduct: 2
+  statGrowth: 2
+  statSafety: 3
+  statOperations: 5
+  statCreativity: 1
+  statAutonomy: 1
+  hireCost:
+  - resource: 0
+    amount: 520
+  unlockRequirements: []
+  quirk: "\uC6B4\uC601 \uC0AC\uACE0\uB97C \uC904\uC774\uACE0 \uCD08\uBC18 \uACE0\uC815
+    \uC5C5\uBB34\uB97C \uBC84\uD2F0\uAC8C \uD574 \uC90D\uB2C8\uB2E4."

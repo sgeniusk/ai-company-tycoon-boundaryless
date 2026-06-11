@@ -37,8 +37,10 @@ public static class DataImporter
         var endings = ImportEndings();
         var industrySynergies = ImportIndustrySynergyList("industry_synergies.json", "industry_synergies", "IndustrySynergies");
         var industryCombos = ImportIndustrySynergyList("industry_combos.json", "industry_combos", "IndustryCombos");
+        var agentTypes = ImportAgentTypes();
+        var officeExpansions = ImportOfficeExpansions();
 
-        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, difficultyTiers, archetypes, endings, industrySynergies, industryCombos, balance);
+        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, difficultyTiers, archetypes, endings, industrySynergies, industryCombos, agentTypes, officeExpansions, balance);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -556,6 +558,73 @@ public static class DataImporter
         return imported;
     }
 
+    // 인재 22종 임포트 (feat-014 #1) — 채용 3택1 후보 풀.
+    private static List<AgentTypeDef> ImportAgentTypes()
+    {
+        var items = GetRootList("agent_types.json", "agent_types");
+        var imported = new List<AgentTypeDef>();
+        EnsureFolder(ScriptableObjectRoot + "/AgentTypes");
+
+        foreach (var item in items)
+        {
+            var source = AsObject(item, "agent_types item");
+            var id = GetString(source, "id");
+            var asset = LoadOrCreate<AgentTypeDef>(ScriptableObjectRoot + "/AgentTypes/" + id + ".asset");
+            asset.id = id;
+            asset.displayName = GetString(source, "name");
+            asset.role = GetString(source, "role");
+            asset.description = GetString(source, "description");
+            asset.kind = GetString(source, "kind");
+            asset.rarity = GetString(source, "rarity");
+            var stats = GetOptionalObject(source, "stats") ?? new Dictionary<string, object>();
+            asset.statResearch = GetInt(stats, "research");
+            asset.statEngineering = GetInt(stats, "engineering");
+            asset.statProduct = GetInt(stats, "product");
+            asset.statGrowth = GetInt(stats, "growth");
+            asset.statSafety = GetInt(stats, "safety");
+            asset.statOperations = GetInt(stats, "operations");
+            asset.statCreativity = GetInt(stats, "creativity");
+            asset.statAutonomy = GetInt(stats, "autonomy");
+            asset.hireCost = ToResourceAmounts(GetOptionalObject(source, "hire_cost"), id + ".hire_cost");
+            asset.unlockRequirements = ToThresholds(GetOptionalObject(source, "unlock_requirements"));
+            asset.quirk = GetString(source, "quirk");
+            EditorUtility.SetDirty(asset);
+            imported.Add(asset);
+        }
+
+        SortById(imported);
+        return imported;
+    }
+
+    // 사무실 확장 6단계 임포트 (feat-014) — #1은 정원만 쓰고 구매는 #2.
+    private static List<OfficeExpansionDef> ImportOfficeExpansions()
+    {
+        var items = GetRootList("office_expansions.json", "office_expansions");
+        var imported = new List<OfficeExpansionDef>();
+        EnsureFolder(ScriptableObjectRoot + "/OfficeExpansions");
+
+        foreach (var item in items)
+        {
+            var source = AsObject(item, "office_expansions item");
+            var id = GetString(source, "id");
+            var asset = LoadOrCreate<OfficeExpansionDef>(ScriptableObjectRoot + "/OfficeExpansions/" + id + ".asset");
+            asset.id = id;
+            asset.level = GetInt(source, "level", 1);
+            asset.displayName = GetString(source, "name");
+            asset.description = GetString(source, "description");
+            asset.hireCapacity = GetInt(source, "hire_capacity", 3);
+            asset.decorationSlots = GetInt(source, "decoration_slots");
+            asset.cost = ToResourceAmounts(GetOptionalObject(source, "cost"), id + ".cost");
+            asset.unlockRequirements = ToThresholds(GetOptionalObject(source, "unlock_requirements"));
+            asset.monthlyEffects = ToResourceAmounts(GetOptionalObject(source, "monthly_effects"), id + ".monthly_effects");
+            EditorUtility.SetDirty(asset);
+            imported.Add(asset);
+        }
+
+        imported.Sort((a, b) => a.level.CompareTo(b.level));
+        return imported;
+    }
+
     // 산업 시너지/콤보 임포트 (feat-013 #1) — 같은 스키마, 파일·폴더만 다르다.
     private static List<IndustrySynergyDef> ImportIndustrySynergyList(string fileName, string rootKey, string folder)
     {
@@ -600,6 +669,8 @@ public static class DataImporter
         List<EndingDef> endings,
         List<IndustrySynergyDef> industrySynergies,
         List<IndustrySynergyDef> industryCombos,
+        List<AgentTypeDef> agentTypes,
+        List<OfficeExpansionDef> officeExpansions,
         BalanceConfig balance)
     {
         EnsureFolder("Assets/_Project/Resources");
@@ -621,6 +692,8 @@ public static class DataImporter
         catalog.endings = endings;
         catalog.industrySynergies = industrySynergies;
         catalog.industryCombos = industryCombos;
+        catalog.agentTypes = agentTypes;
+        catalog.officeExpansions = officeExpansions;
         catalog.balance = balance;
         EditorUtility.SetDirty(catalog);
     }

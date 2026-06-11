@@ -156,6 +156,17 @@
       "status": "done",
       "owner": "Claude",
       "evidence": "2026-06-11 a8cc105. TechTreeReachabilityTests Fail 게이트 복원·그린 — tier4 44개월 해금, 게임 승리 ~30개월대. EditMode 97/97. 후속 폴리시(시너지 도감 열람 UI·밸런스 체감 튜닝)는 backlog"
+    },
+    {
+      "id": "feat-014",
+      "name": "경영 탭 — 인재·사무실·전략 (P15)",
+      "description": "사용자 아이디어 덤프(2026-06-11) — 경영 탭 신설(인재/시설/전략), 채용 3택1+능력치+사무실 정원, 사무실 업그레이드·본사 이전, 경쟁사 견제 등 자본 전략, 성급별 해금(2성 확장/4성 데이터센터/5성 랜드마크), TOPS·기대수익 표기. 전부 React 정본 데이터 기존재(agent_types 22종·office_expansions 6단계·company_locations 5곳·rival_events·strategy_cards) — 포팅 중심. 설계 docs/feat-014-context-notes.md",
+      "dependencies": [
+        "feat-013"
+      ],
+      "status": "planned",
+      "owner": "사용자 설계 확정 대기",
+      "evidence": "설계 초안 작성. 즉답 패치 — 채용/GPU 카드 잠금 사유 표기 + 첫 채용비 4.9K→2.5K(기준 인재 초과분부터 기하 증가)"
     }
   ]
 }

@@ -25,7 +25,8 @@ namespace AICompanyTycoon.Systems
             if (cap == null) return null;
             int lv = GetLevel(id);
             if (lv >= cap.upgradeCosts.Count) return null;
-            return cap.upgradeCosts[lv].amounts;
+            // 로스터 research 합 → 현금 비용 할인 (feat-014 #1, SO 원본 비변형 사본).
+            return RosterBonus.ApplyCashDiscount(cap.upgradeCosts[lv].amounts, RosterBonus.GetResearchDiscount(_m, _c));
         }
 
         public bool CanUpgrade(string id)

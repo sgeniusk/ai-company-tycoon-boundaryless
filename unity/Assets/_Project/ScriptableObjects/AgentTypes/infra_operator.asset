@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: infra_operator
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: infra_operator
+  displayName: "\uC778\uD504\uB77C \uC624\uD37C\uB808\uC774\uD130"
+  role: "\uC6B4\uC601\uD615 \uC5D0\uC774\uC804\uD2B8"
+  description: "\uC11C\uBC84, GPU, \uC7A5\uC560 \uB300\uC751, \uBE44\uC6A9 \uCD5C\uC801\uD654\uB97C
+    \uB2F4\uB2F9\uD569\uB2C8\uB2E4."
+  kind: ai_agent
+  rarity: common
+  statResearch: 2
+  statEngineering: 6
+  statProduct: 1
+  statGrowth: 1
+  statSafety: 3
+  statOperations: 9
+  statCreativity: 2
+  statAutonomy: 5
+  hireCost:
+  - resource: 0
+    amount: 1500
+  - resource: 2
+    amount: 4
+  unlockRequirements: []
+  quirk: "\uC5F0\uC0B0\uB825 \uC555\uBC15\uACFC \uC11C\uBC84 \uC7A5\uC560 \uB300\uC751\uC5D0
+    \uAC15\uD569\uB2C8\uB2E4."

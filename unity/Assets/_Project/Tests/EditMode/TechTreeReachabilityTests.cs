@@ -200,10 +200,26 @@ namespace AICompanyTycoon.Tests.EditMode
                         ctx.Upgrades.Purchase(uid);
                     }
 
-                    // 연구가 소모하는 만큼 따라붙게 다중 채용 (월 최대 4명).
-                    for (int hires = 0; hires < 4 && ctx.Model.Get(Core.ResourceId.Cash) >= ctx.Recruit.GetCost() + Buffer(); hires++)
+                    // 후보 영입 (feat-014 #1) — 가장 싼 후보부터, 월 최대 4명. 정원이 차면 성급 승급까지 대기.
+                    for (int hires = 0; hires < 4; hires++)
                     {
-                        if (!ctx.Recruit.Recruit()) break;
+                        Data.AgentTypeDef best = null;
+                        double bestCash = double.MaxValue;
+                        foreach (var candidate in ctx.Recruit.GetCandidates())
+                        {
+                            if (!ctx.Recruit.CanHire(candidate)) continue;
+                            double cash = CashCostOf(candidate.hireCost);
+                            if (ctx.Model.Get(Core.ResourceId.Cash) - cash < Buffer()) continue;
+                            if (cash < bestCash) { bestCash = cash; best = candidate; }
+                        }
+
+                        if (best == null || !ctx.Recruit.Hire(best)) break;
+                    }
+
+                    // 로스터가 차거나 후보가 비싸면 프리랜서로 보충 (월 최대 4명).
+                    for (int hires = 0; hires < 4 && ctx.Model.Get(Core.ResourceId.Cash) - ctx.Recruit.GetFreelanceCost() >= Buffer(); hires++)
+                    {
+                        if (!ctx.Recruit.HireFreelance()) break;
                     }
                 }
 
@@ -242,14 +258,15 @@ namespace AICompanyTycoon.Tests.EditMode
                         double bestScore = double.MinValue;
                         foreach (var choice in triggered.choices)
                         {
-                            double cash = 0, trustDelta = 0;
+                            double cash = 0, trustDelta = 0, talentDelta = 0;
                             foreach (var e in choice.effects)
                             {
                                 if (e.resource == Core.ResourceId.Cash) cash = e.amount;
                                 if (e.resource == Core.ResourceId.Trust) trustDelta = e.amount;
+                                if (e.resource == Core.ResourceId.Talent) talentDelta = e.amount;
                             }
-                            // 신뢰가 30 아래로 떨어질 선택은 회피 (저신뢰 페널티·게임오버 가드).
-                            double score = ctx.Model.Trust + trustDelta < 30 ? -1e9 + cash : cash + trustDelta * 50;
+                            // 신뢰 30 미만 회피(게임오버 가드) + 인재는 공급이 유한하므로 현금 4천 가치로 환산.
+                            double score = ctx.Model.Trust + trustDelta < 30 ? -1e9 + cash : cash + trustDelta * 50 + talentDelta * 4000;
                             if (score > bestScore) { bestScore = score; bestId = choice.id; }
                         }
 
@@ -267,6 +284,8 @@ namespace AICompanyTycoon.Tests.EditMode
                         .Append(" 데이터 ").Append(ctx.Model.Get(Core.ResourceId.Data).ToString("F0"))
                         .Append(" 연산 ").Append(ctx.Model.Get(Core.ResourceId.Compute).ToString("F0"))
                         .Append(" 인재 ").Append(ctx.Model.Get(Core.ResourceId.Talent).ToString("F0"))
+                        .Append(" 로스터 ").Append(ctx.Model.HiredAgentIds.Count).Append("/").Append(ctx.Recruit.GetHireCapacity())
+                        .Append(" 성급 ").Append(ctx.Model.CompanyStageId)
                         .Append(" 출시 ").Append(ctx.Model.ActiveProducts.Count);
                 }
 

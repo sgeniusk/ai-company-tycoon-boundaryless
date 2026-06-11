@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: growth_hacker
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: growth_hacker
+  displayName: "\uADF8\uB85C\uC2A4 \uD574\uCEE4"
+  role: "\uC131\uC7A5\uD615 \uC5D0\uC774\uC804\uD2B8"
+  description: "\uC81C\uD488\uC744 \uBE60\uB974\uAC8C \uD37C\uB728\uB9AC\uACE0 \uD654\uC81C\uC131\uC744
+    \uB9E4\uCD9C \uAE30\uD68C\uB85C \uBC14\uAFC9\uB2C8\uB2E4."
+  kind: ai_agent
+  rarity: common
+  statResearch: 1
+  statEngineering: 3
+  statProduct: 4
+  statGrowth: 9
+  statSafety: 1
+  statOperations: 3
+  statCreativity: 7
+  statAutonomy: 6
+  hireCost:
+  - resource: 0
+    amount: 1400
+  unlockRequirements:
+  - key: min_products
+    value: 1
+  quirk: "\uCD9C\uC2DC \uC9C1\uD6C4 \uC774\uC6A9\uC790 \uC99D\uAC00\uC5D0 \uAC15\uD569\uB2C8\uB2E4."

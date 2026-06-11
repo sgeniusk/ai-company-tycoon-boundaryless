@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: warehouse_bot_cluster
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: warehouse_bot_cluster
+  displayName: "\uBB3C\uB958 \uB85C\uBD07 \uD074\uB7EC\uC2A4\uD130"
+  role: "\uB85C\uBD07\uD615 \uC6B4\uC601 \uC778\uB825"
+  description: "\uC791\uC740 \uBC14\uD034 \uB85C\uBD07 \uC5EC\uB7EC \uB300\uAC00
+    \uC7AC\uACE0, \uC2DC\uC81C\uD488, \uC11C\uBC84 \uBD80\uD488\uC744 \uC0AC\uBB34\uC2E4
+    \uC548\uD30E\uC73C\uB85C \uB098\uB985\uB2C8\uB2E4."
+  kind: robot
+  rarity: rare
+  statResearch: 2
+  statEngineering: 5
+  statProduct: 2
+  statGrowth: 1
+  statSafety: 4
+  statOperations: 8
+  statCreativity: 1
+  statAutonomy: 6
+  hireCost:
+  - resource: 0
+    amount: 4400
+  - resource: 2
+    amount: 10
+  unlockRequirements:
+  - key: min_capability_robotics
+    value: 1
+  - key: min_star
+    value: 2
+  quirk: "\uC0AC\uBB34\uC2E4\uC774 \uC5F0\uAD6C\uC2E4\uC5D0\uC11C \uC791\uC740 \uACF5\uC7A5\uC73C\uB85C
+    \uBCC0\uD558\uB294 \uB290\uB08C\uC744 \uC90D\uB2C8\uB2E4."

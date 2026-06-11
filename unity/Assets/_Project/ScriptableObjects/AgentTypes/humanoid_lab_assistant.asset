@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f4a1afdf16264e6498fd5e78c1c04ae, type: 3}
+  m_Name: humanoid_lab_assistant
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.AgentTypeDef
+  id: humanoid_lab_assistant
+  displayName: "\uD734\uBA38\uB178\uC774\uB4DC \uB7A9 \uC5B4\uC2DC\uC2A4\uD134\uD2B8"
+  role: "\uB85C\uBD07\uD615 \uC5F0\uAD6C \uC778\uB825"
+  description: "\uC0AC\uB78C \uC606\uC5D0\uC11C \uC2E4\uD5D8, \uC870\uB9BD, \uC548\uC804
+    \uC810\uAC80\uC744 \uB3D5\uB294 \uACE0\uAE09 \uD734\uBA38\uB178\uC774\uB4DC \uC5F0\uAD6C
+    \uBCF4\uC870\uC785\uB2C8\uB2E4."
+  kind: robot
+  rarity: epic
+  statResearch: 6
+  statEngineering: 7
+  statProduct: 4
+  statGrowth: 1
+  statSafety: 7
+  statOperations: 7
+  statCreativity: 3
+  statAutonomy: 7
+  hireCost:
+  - resource: 0
+    amount: 7600
+  - resource: 2
+    amount: 18
+  unlockRequirements:
+  - key: min_capability_robotics
+    value: 2
+  - key: min_star
+    value: 3
+  quirk: "\uD6C4\uBC18 \uD558\uB4DC\uC6E8\uC5B4\uC640 \uB85C\uBD07 \uC81C\uD488\uC758
+    \uC2E4\uD5D8\uC2E4 \uD310\uD0C0\uC9C0\uB97C \uAC15\uD654\uD569\uB2C8\uB2E4."
