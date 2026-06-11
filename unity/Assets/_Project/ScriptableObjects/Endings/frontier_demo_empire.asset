@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2560e904871324e56ba6590cdb15c2c5, type: 3}
+  m_Name: frontier_demo_empire
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.EndingDef
+  id: frontier_demo_empire
+  priority: 120
+  title: "\uD504\uB7F0\uD2F0\uC5B4 \uB370\uBAA8 \uC81C\uAD6D"
+  flavor: "\uC9E7\uC740 \uB370\uBAA8\uC640 \uACF5\uAC1C \uC2E4\uD5D8\uC774 \uBCF5\uB9AC\uCC98\uB7FC
+    \uC313\uC5EC, \uC791\uC740 \uD300\uC774 \uC138\uACC4\uC758 \uC81C\uD488 \uB9AC\uB4EC\uC744
+    \uB04C\uACE0 \uAC00\uB294 \uC5D4\uB529\uC785\uB2C8\uB2E4."
+  metaRewardBonus: 5
+  conditionStatus: success
+  minMonth: 120
+  minProducts: 6
+  minResources:
+  - resource: 0
+    amount: 250000
+  - resource: 2
+    amount: 250
+  - resource: 6
+    amount: 60
+  - resource: 1
+    amount: 240000
+  startCityIds: []
+  worldLoreIds:
+  - open_source_heaven
+  marketConditionIds: []
+  founderTraitIds:
+  - engineer_founder
+  challengeTierIds: []
+  growthPathIds:
+  - code_vision_lab
+  archetypeIds:
+  - frontier_garage
+  - oss_evangelist
+  fallback: 0

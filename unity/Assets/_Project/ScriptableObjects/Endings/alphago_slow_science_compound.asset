@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2560e904871324e56ba6590cdb15c2c5, type: 3}
+  m_Name: alphago_slow_science_compound
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.EndingDef
+  id: alphago_slow_science_compound
+  priority: 72
+  title: "\uC54C\uD30C\uACE0 \uC815\uCCB4\uAE30\uC758 \uB290\uB9B0 \uACFC\uD559 \uBCF5\uB9AC"
+  flavor: "\uC5F0\uAD6C \uC18D\uB3C4\uAC00 \uB2A6\uC5B4\uC9C4 \uC138\uACC4\uC5D0\uC11C\uB3C4
+    \uC791\uC740 \uC2E4\uD5D8\uACFC \uAC80\uC99D \uB370\uC774\uD130\uB97C \uCD95\uC801\uD574,
+    \uC870\uC6A9\uD55C \uACFC\uD559\uC801 \uBCF5\uB9AC\uB85C \uB2E4\uC74C \uB3CC\uD30C\uAD6C\uB97C
+    \uC900\uBE44\uD55C \uC5D4\uB529\uC785\uB2C8\uB2E4."
+  metaRewardBonus: 3
+  conditionStatus: success
+  minMonth: 120
+  minProducts: 4
+  minResources:
+  - resource: 7
+    amount: 54
+  - resource: 0
+    amount: 160000
+  - resource: 2
+    amount: 190
+  - resource: 3
+    amount: 240
+  - resource: 5
+    amount: 70
+  - resource: 1
+    amount: 100000
+  startCityIds: []
+  worldLoreIds:
+  - alphago_stall
+  marketConditionIds:
+  - funding_drought
+  founderTraitIds:
+  - researcher_founder
+  challengeTierIds: []
+  growthPathIds:
+  - code_vision_lab
+  archetypeIds:
+  - lab_in_winter
+  fallback: 0

@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2560e904871324e56ba6590cdb15c2c5, type: 3}
+  m_Name: chip_war_local_compute_pact
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.EndingDef
+  id: chip_war_local_compute_pact
+  priority: 88
+  title: "\uCE69 \uC804\uC7C1 \uB85C\uCEEC \uCEF4\uD4E8\uD2B8 \uB3D9\uB9F9"
+  flavor: "\uC218\uCD9C \uD1B5\uC81C\uC640 \uC9C0\uC5ED \uCEF4\uD4E8\uD2B8 \uC7A5\uBCBD\uC744
+    \uC791\uC740 \uD558\uB4DC\uC6E8\uC5B4 \uC120\uD0DD\uC9C0\uB85C \uCABC\uAC1C,
+    \uACF5\uAE09\uB9DD \uD30C\uD2B8\uB108\uC640 \uD568\uAED8 \uBC84\uD2F0\uB294 \uC5D4\uB529\uC785\uB2C8\uB2E4."
+  metaRewardBonus: 4
+  conditionStatus: success
+  minMonth: 120
+  minProducts: 5
+  minResources:
+  - resource: 7
+    amount: 68
+  - resource: 0
+    amount: 240000
+  - resource: 2
+    amount: 240
+  - resource: 1
+    amount: 150000
+  startCityIds:
+  - texas
+  worldLoreIds:
+  - chip_war
+  marketConditionIds:
+  - talent_war
+  founderTraitIds:
+  - engineer_founder
+  challengeTierIds: []
+  growthPathIds:
+  - code_vision_lab
+  archetypeIds:
+  - chip_war_localizer
+  fallback: 0

@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2560e904871324e56ba6590cdb15c2c5, type: 3}
+  m_Name: platform_escape_network
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.EndingDef
+  id: platform_escape_network
+  priority: 74
+  title: "\uD50C\uB7AB\uD3FC \uD0C8\uCD9C \uB124\uD2B8\uC6CC\uD06C"
+  flavor: "\uBE45\uD14C\uD06C \uC720\uD1B5\uC138\uB97C \uC6B0\uD68C\uD558\uAE30 \uC704\uD574
+    \uCEE4\uBBA4\uB2C8\uD2F0, \uC81C\uD734, \uC9C1\uC811 \uD310\uB9E4\uB97C \uC313\uC544
+    \uC62C\uB824 \uB3C5\uB9BD \uC720\uD1B5\uB9DD\uC744 \uB9CC\uB4E0 \uC5D4\uB529\uC785\uB2C8\uB2E4."
+  metaRewardBonus: 3
+  conditionStatus: success
+  minMonth: 120
+  minProducts: 5
+  minResources:
+  - resource: 7
+    amount: 50
+  - resource: 0
+    amount: 180000
+  - resource: 6
+    amount: 55
+  - resource: 1
+    amount: 170000
+  startCityIds: []
+  worldLoreIds:
+  - bigtech_monopoly
+  marketConditionIds:
+  - platform_gold_rush
+  founderTraitIds:
+  - marketer_founder
+  - serial_founder
+  challengeTierIds: []
+  growthPathIds: []
+  archetypeIds: []
+  fallback: 0

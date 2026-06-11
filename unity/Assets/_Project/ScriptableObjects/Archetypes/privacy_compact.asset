@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79f811a8fa7124896bde0685d7b6223a, type: 3}
+  m_Name: privacy_compact
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ArchetypeDef
+  id: privacy_compact
+  displayName: "\uD504\uB77C\uC774\uBC84\uC2DC \uD611\uC57D"
+  description: "\uC5C4\uACA9\uD55C \uD504\uB77C\uC774\uBC84\uC2DC\uC640 \uB3D9\uC758
+    \uACBD\uC81C, \uC2E0\uB8B0 \uD504\uB9AC\uBBF8\uC5C4\uC774 \uB9CC\uB098 \uB370\uC774\uD130
+    \uC811\uADFC \uC790\uCCB4\uAC00 \uBE0C\uB79C\uB4DC\uAC00 \uB429\uB2C8\uB2E4."
+  requires:
+  - privacy_strict
+  - consent_economy
+  - trust_premium
+  discoveryId: discovery_privacy_compact
+  yieldsKind: bonus
+  yieldsSummary: "\uB3D9\uC758 \uAE30\uBC18 \uC2E0\uB8B0 \uBCF4\uB108\uC2A4 \uBA54\uD0C0\uB370\uC774\uD130"
+  monthlyEffects:
+  - resource: 5
+    amount: 1

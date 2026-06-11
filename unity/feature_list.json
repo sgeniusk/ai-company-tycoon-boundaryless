@@ -96,9 +96,9 @@
       "dependencies": [
         "feat-007"
       ],
-      "status": "in-progress",
+      "status": "done",
       "owner": "Claude->Codex",
-      "evidence": "#1 난이도 티어 완료(2026-06-11) — DifficultyTierDef 4종 임포트(스토리/표준/하드/브루탈), RunModifierInput.ChallengeTierId 선택(무효→standard), MonthController 월간 헤드윈드(표준 무효과), 더보기 티어 선택 4버튼+리빌 난이도 표기. EditMode 57/57(+3) + 06 캡처. 남음 — #2 태그 파생 아키타입, #3 멀티 엔딩"
+      "evidence": "3블록 완료(2026-06-11) — #1 난이도 티어 4종(헤드윈드+선택 UI, EditMode 57/57) #2 ArchetypeDef 12종(보너스 8)+ArchetypeService(태그 파생, React 동일)+월간 보너스 훅+MetaSave 크로스런 도감+리빌 NEW! 행·발견 토스트 #3 EndingDef 24종+EndingService(조건·우선순위·폴백, Python 교차 픽스처 일치)+결과 모달 결말·도감 카운트. EditMode 66/66(+9). growth_path 요구 엔딩은 Unity VS 미지원(의도적 제약, 테스트로 고정)"
     },
     {
       "id": "feat-009",

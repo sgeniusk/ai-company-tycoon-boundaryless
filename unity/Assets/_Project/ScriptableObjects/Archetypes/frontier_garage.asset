@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79f811a8fa7124896bde0685d7b6223a, type: 3}
+  m_Name: frontier_garage
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ArchetypeDef
+  id: frontier_garage
+  displayName: "\uD504\uB7F0\uD2F0\uC5B4 \uCC28\uACE0"
+  description: "\uD504\uB7F0\uD2F0\uC5B4 \uD074\uB7EC\uC2A4\uD130\uC758 \uBC00\uB3C4\uC640
+    \uBE4C\uB354 \uC131\uD5A5\uC774 \uB9DE\uBB3C\uB824 \uC791\uC740 \uCC28\uACE0\uC5D0\uC11C\uB3C4
+    \uBAA8\uB378 \uC2E4\uD5D8 \uC18D\uB3C4\uAC00 \uBD99\uC2B5\uB2C8\uB2E4."
+  requires:
+  - frontier_cluster
+  - builder_bias
+  discoveryId: discovery_frontier_garage
+  yieldsKind: bonus
+  yieldsSummary: "\uCD08\uAE30 \uD504\uB7F0\uD2F0\uC5B4 \uC2E4\uD5D8 \uBCF4\uB108\uC2A4
+    \uBA54\uD0C0\uB370\uC774\uD130"
+  monthlyEffects:
+  - resource: 2
+    amount: 3

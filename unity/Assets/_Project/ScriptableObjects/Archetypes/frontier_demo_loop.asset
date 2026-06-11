@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79f811a8fa7124896bde0685d7b6223a, type: 3}
+  m_Name: frontier_demo_loop
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ArchetypeDef
+  id: frontier_demo_loop
+  displayName: "\uD504\uB7F0\uD2F0\uC5B4 \uB370\uBAA8 \uB8E8\uD504"
+  description: "\uD504\uB7F0\uD2F0\uC5B4 \uC778\uC7AC \uBC00\uB3C4\uC640 \uC218\uC694
+    \uAE09\uB4F1\uC774 \uB9CC\uB098, \uC9E7\uC740 \uB370\uBAA8\uB97C \uACC4\uC18D
+    \uBC00\uC5B4\uBD99\uC774\uB294 \uBC1C\uACAC \uB8E8\uD504\uAC00 \uC0DD\uAE41\uB2C8\uB2E4."
+  requires:
+  - frontier_cluster
+  - demand_surge
+  - builder_bias
+  discoveryId: discovery_frontier_demo_loop
+  yieldsKind: event
+  yieldsSummary: "\uB370\uBAA8 \uD655\uC0B0 \uC774\uBCA4\uD2B8 \uBA54\uD0C0\uB370\uC774\uD130"
+  monthlyEffects: []

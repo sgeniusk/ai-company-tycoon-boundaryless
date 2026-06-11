@@ -33,8 +33,10 @@ public static class DataImporter
         var runTagEffects = ImportRunTagEffects();
         var worldEvents = ImportWorldEvents();
         var difficultyTiers = ImportDifficultyTiers();
+        var archetypes = ImportArchetypes();
+        var endings = ImportEndings();
 
-        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, difficultyTiers, balance);
+        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, difficultyTiers, archetypes, endings, balance);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -477,6 +479,72 @@ public static class DataImporter
         return imported;
     }
 
+    // derivation_rules.json -> ArchetypeDef (feat-008 #2). 태그 조합 파생 + bonus 월간 효과.
+    private static List<ArchetypeDef> ImportArchetypes()
+    {
+        var items = GetRootList("derivation_rules.json", "derivation_rules");
+        var imported = new List<ArchetypeDef>();
+        EnsureFolder(ScriptableObjectRoot + "/Archetypes");
+
+        foreach (var item in items)
+        {
+            var source = AsObject(item, "derivation_rules item");
+            var id = GetString(source, "id");
+            var asset = LoadOrCreate<ArchetypeDef>(ScriptableObjectRoot + "/Archetypes/" + id + ".asset");
+            asset.id = id;
+            asset.displayName = GetString(source, "title");
+            asset.description = GetString(source, "description");
+            asset.requires = ToStringList(GetOptionalList(source, "requires"));
+            asset.discoveryId = GetString(source, "discovery_id");
+            var yields = GetOptionalObject(source, "yields");
+            asset.yieldsKind = yields != null ? GetString(yields, "kind") : "";
+            asset.yieldsSummary = yields != null ? GetString(yields, "summary") : "";
+            asset.monthlyEffects = ToResourceAmounts(
+                yields == null ? null : GetOptionalObject(yields, "monthly_effect"), id + ".monthly_effect");
+            EditorUtility.SetDirty(asset);
+            imported.Add(asset);
+        }
+
+        return imported;
+    }
+
+    // endings.json -> EndingDef (feat-008 #3). 조건은 평면 필드로.
+    private static List<EndingDef> ImportEndings()
+    {
+        var items = GetRootList("endings.json", "endings");
+        var imported = new List<EndingDef>();
+        EnsureFolder(ScriptableObjectRoot + "/Endings");
+
+        foreach (var item in items)
+        {
+            var source = AsObject(item, "endings item");
+            var id = GetString(source, "id");
+            var asset = LoadOrCreate<EndingDef>(ScriptableObjectRoot + "/Endings/" + id + ".asset");
+            asset.id = id;
+            asset.priority = GetInt(source, "priority");
+            asset.title = GetString(source, "title");
+            asset.flavor = GetString(source, "flavor");
+            asset.metaRewardBonus = GetInt(source, "meta_reward_bonus");
+            var cond = GetOptionalObject(source, "condition") ?? new Dictionary<string, object>();
+            asset.conditionStatus = GetString(cond, "status", "any");
+            asset.minMonth = GetInt(cond, "min_month");
+            asset.minProducts = GetInt(cond, "min_products");
+            asset.minResources = ToResourceAmounts(GetOptionalObject(cond, "min_resources"), id + ".min_resources");
+            asset.startCityIds = ToStringList(GetOptionalList(cond, "start_city_ids"));
+            asset.worldLoreIds = ToStringList(GetOptionalList(cond, "world_lore_ids"));
+            asset.marketConditionIds = ToStringList(GetOptionalList(cond, "market_condition_ids"));
+            asset.founderTraitIds = ToStringList(GetOptionalList(cond, "founder_trait_ids"));
+            asset.challengeTierIds = ToStringList(GetOptionalList(cond, "challenge_tier_ids"));
+            asset.growthPathIds = ToStringList(GetOptionalList(cond, "growth_path_ids"));
+            asset.archetypeIds = ToStringList(GetOptionalList(cond, "archetype_ids"));
+            asset.fallback = GetBool(cond, "fallback");
+            EditorUtility.SetDirty(asset);
+            imported.Add(asset);
+        }
+
+        return imported;
+    }
+
     private static void UpdateCatalog(
         List<ResourceDef> resources,
         List<ProductDef> products,
@@ -491,6 +559,8 @@ public static class DataImporter
         RunTagEffectsConfig runTagEffects,
         List<WorldEventDef> worldEvents,
         List<DifficultyTierDef> difficultyTiers,
+        List<ArchetypeDef> archetypes,
+        List<EndingDef> endings,
         BalanceConfig balance)
     {
         EnsureFolder("Assets/_Project/Resources");
@@ -508,6 +578,8 @@ public static class DataImporter
         catalog.runTagEffects = runTagEffects;
         catalog.worldEvents = worldEvents;
         catalog.difficultyTiers = difficultyTiers;
+        catalog.archetypes = archetypes;
+        catalog.endings = endings;
         catalog.balance = balance;
         EditorUtility.SetDirty(catalog);
     }

@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2560e904871324e56ba6590cdb15c2c5, type: 3}
+  m_Name: ai_winter_profitable_lab
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.EndingDef
+  id: ai_winter_profitable_lab
+  priority: 62
+  title: "AI \uACA8\uC6B8\uC758 \uD751\uC790 \uC5F0\uAD6C\uC18C"
+  flavor: "\uD22C\uC790\uC640 \uAD00\uC2EC\uC774 \uC5BC\uC5B4\uBD99\uC740 \uACC4\uC808\uC5D0\uB3C4
+    \uC791\uC740 \uD751\uC790\uC640 \uAE34 \uC5F0\uAD6C \uD638\uD761\uC744 \uC9C0\uCF1C\uB0B4,
+    \uB2E4\uC74C \uBD04\uC744 \uAE30\uB2E4\uB9B4 \uC218 \uC788\uB294 \uD68C\uC0AC\uB97C
+    \uB0A8\uAE34 \uC5D4\uB529\uC785\uB2C8\uB2E4."
+  metaRewardBonus: 3
+  conditionStatus: success
+  minMonth: 120
+  minProducts: 3
+  minResources:
+  - resource: 0
+    amount: 100000
+  - resource: 3
+    amount: 180
+  - resource: 5
+    amount: 60
+  - resource: 1
+    amount: 80000
+  startCityIds: []
+  worldLoreIds:
+  - ai_winter_redux
+  marketConditionIds:
+  - funding_drought
+  founderTraitIds:
+  - researcher_founder
+  - operator_founder
+  challengeTierIds: []
+  growthPathIds: []
+  archetypeIds:
+  - lab_in_winter
+  fallback: 0

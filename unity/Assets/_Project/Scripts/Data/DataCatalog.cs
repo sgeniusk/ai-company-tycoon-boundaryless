@@ -20,6 +20,8 @@ namespace AICompanyTycoon.Data
         public RunTagEffectsConfig runTagEffects;
         public List<WorldEventDef> worldEvents = new List<WorldEventDef>();
         public List<DifficultyTierDef> difficultyTiers = new List<DifficultyTierDef>();
+        public List<ArchetypeDef> archetypes = new List<ArchetypeDef>();
+        public List<EndingDef> endings = new List<EndingDef>();
         public BalanceConfig balance;
 
         public ResourceDef GetResource(string id)
@@ -80,6 +82,11 @@ namespace AICompanyTycoon.Data
         public DifficultyTierDef GetDifficultyTier(string id)
         {
             return difficultyTiers.Find(item => item != null && item.id == id);
+        }
+
+        public ArchetypeDef GetArchetype(string id)
+        {
+            return archetypes.Find(item => item != null && item.id == id);
         }
     }
 }

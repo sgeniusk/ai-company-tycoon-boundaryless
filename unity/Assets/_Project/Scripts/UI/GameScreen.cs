@@ -19,6 +19,7 @@ namespace AICompanyTycoon.UI
 
         SimulationContext _context;
         readonly SaveService _save;
+        readonly MetaSaveService _meta = new MetaSaveService(); // 크로스런 도감 (feat-008 #2/#3)
         readonly Dictionary<ResourceId, Text> _resourceValues = new Dictionary<ResourceId, Text>();
         readonly Dictionary<ResourceId, ResourceTicker> _resourceTickers = new Dictionary<ResourceId, ResourceTicker>();
         readonly Dictionary<ResourceId, Text> _deltaLabels = new Dictionary<ResourceId, Text>();
@@ -1140,8 +1141,58 @@ namespace AICompanyTycoon.UI
             AddWorldRevealRow("world_market", "시장 상황", _context.Catalog.GetRunOption("market_conditions", run.MarketConditionId));
             AddWorldRevealRow("world_founder", "창업자", _context.Catalog.GetRunOption("founder_traits", run.FounderTraitId));
 
+            // 파생 아키타입 (feat-008 #2) — 태그 조합이 만든 숨은 정체성. 신규 발견은 도감에 기록 + 토스트.
+            var derived = ArchetypeService.GetDerived(run, _context.Catalog);
+            var fresh = ArchetypeService.GetNewlyDiscovered(_meta.Data.discoveredArchetypeIds, derived);
+            foreach (var archetype in derived)
+            {
+                bool isNew = fresh.Contains(archetype.id);
+                AddArchetypeRevealRow(archetype, isNew);
+            }
+            if (fresh.Count > 0)
+            {
+                _meta.RecordArchetypes(fresh);
+                FxManager.Celebrate(0.4f, 26, 1.0f);
+                if (_toastRibbon != null)
+                {
+                    foreach (var id in fresh)
+                    {
+                        var rule = _context.Catalog.GetArchetype(id);
+                        _toastRibbon.Enqueue("새 아키타입 발견 — " + (rule != null ? rule.displayName : id), UiTheme.CrestGold);
+                    }
+                }
+            }
+
             _worldRevealModal.SetActive(true);
             PopInCard(_worldRevealModal, "WorldRevealCard");
+        }
+
+        // 아키타입 리빌 행 — 축하 엠블럼 + 제목(신규는 NEW! 골드) + 효과 요약 (feat-008 #2).
+        void AddArchetypeRevealRow(ArchetypeDef archetype, bool isNew)
+        {
+            var row = new GameObject("ArchetypeRow", typeof(RectTransform));
+            row.transform.SetParent(_worldRevealRows, false);
+            UiFactory.HBox(row.transform, 14);
+            var rowLayout = row.AddComponent<LayoutElement>();
+            rowLayout.minHeight = 96;
+            rowLayout.preferredHeight = 96;
+
+            UiFactory.Icon(row.transform, IconLibrary.Get("celebrate_synergy"), 64);
+
+            var texts = new GameObject("Texts", typeof(RectTransform));
+            texts.transform.SetParent(row.transform, false);
+            UiFactory.VBox(texts.transform, 2, new RectOffset(0, 0, 4, 4));
+            var textsLayout = texts.AddComponent<LayoutElement>();
+            textsLayout.flexibleWidth = 1;
+
+            var headline = UiFactory.Label(texts.transform, "아키타입 — " + archetype.displayName + (isNew ? "  NEW!" : ""), 30);
+            headline.fontStyle = FontStyle.Bold;
+            headline.color = isNew ? UiTheme.CrestGold : UiTheme.TextPrimary;
+            AddLayout(headline.gameObject, 38, 0);
+
+            var desc = UiFactory.Label(texts.transform, archetype.yieldsSummary, 24);
+            desc.color = UiTheme.TextSecondary;
+            AddLayout(desc.gameObject, 0, 1);
         }
 
         void AddWorldRevealRow(string stampName, string axisLabel, RunModifierOptionDef option)
@@ -1917,11 +1968,29 @@ namespace AICompanyTycoon.UI
         void ShowResultModal(bool won, string outcome)
         {
             if (_resultModal == null) return;
-            _resultTitle.text = won ? "🏆 축하합니다!" : "💸 게임 오버";
-            _resultTitle.color = won ? UiTheme.TabActive : new Color(0.84f, 0.28f, 0.22f);
-            _resultMessage.text = !string.IsNullOrEmpty(outcome)
-                ? outcome
-                : (won ? "AI 기업 성장에 성공했습니다." : "회사가 어려운 상황에 처했습니다.");
+
+            // 멀티 엔딩 (feat-008 #3) — 세계/창업자/성과 조합으로 결말이 갈린다. 신규 결말은 도감 기록.
+            var ending = EndingService.Determine(_context.Model, _context.Catalog, won);
+            if (ending != null)
+            {
+                bool isNew = !_meta.Data.discoveredEndingIds.Contains(ending.id);
+                _meta.RecordEnding(ending.id);
+                _resultTitle.text = ending.title;
+                _resultTitle.color = won ? UiTheme.TabActive : new Color(0.84f, 0.28f, 0.22f);
+                var body = ending.flavor;
+                if (!string.IsNullOrEmpty(outcome)) body += "\n\n" + outcome;
+                if (isNew) body += "\n\n새 결말이 도감에 기록되었습니다 (" + _meta.Data.discoveredEndingIds.Count + "/" + _context.Catalog.endings.Count + ")";
+                _resultMessage.text = body;
+            }
+            else
+            {
+                _resultTitle.text = won ? "🏆 축하합니다!" : "💸 게임 오버";
+                _resultTitle.color = won ? UiTheme.TabActive : new Color(0.84f, 0.28f, 0.22f);
+                _resultMessage.text = !string.IsNullOrEmpty(outcome)
+                    ? outcome
+                    : (won ? "AI 기업 성장에 성공했습니다." : "회사가 어려운 상황에 처했습니다.");
+            }
+
             _resultModal.SetActive(true);
             PopInCard(_resultModal, "ResultCard");
         }

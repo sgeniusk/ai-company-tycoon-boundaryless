@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2560e904871324e56ba6590cdb15c2c5, type: 3}
+  m_Name: garage_restart
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.EndingDef
+  id: garage_restart
+  priority: 0
+  title: "\uB2E4\uC2DC \uCC28\uACE0\uB85C"
+  flavor: "\uC774\uBC88 \uC138\uACC4\uC5D0\uC11C\uB294 \uD68C\uC0AC\uAC00 \uCDA9\uBD84\uD55C
+    \uADA4\uB3C4\uC5D0 \uC624\uB974\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB0A8\uC740
+    \uAE30\uB85D\uC740 \uB2E4\uC74C \uB7F0\uC758 \uB354 \uC88B\uC740 \uC120\uD0DD\uC9C0\uB85C
+    \uC774\uC5B4\uC9D1\uB2C8\uB2E4."
+  metaRewardBonus: 0
+  conditionStatus: any
+  minMonth: 0
+  minProducts: 0
+  minResources: []
+  startCityIds: []
+  worldLoreIds: []
+  marketConditionIds: []
+  founderTraitIds: []
+  challengeTierIds: []
+  growthPathIds: []
+  archetypeIds: []
+  fallback: 1

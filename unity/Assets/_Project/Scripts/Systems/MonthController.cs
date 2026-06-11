@@ -116,6 +116,10 @@ namespace AICompanyTycoon.Systems
             var tier = _c.GetDifficultyTier(_m.RunModifiers.ChallengeTier);
             if (tier != null)
                 foreach (var e in tier.monthlyHeadwind) _r.Add(e.resource, e.amount);
+
+            // 파생 아키타입 월간 보너스 (feat-008 #2) — 표준 런 태그로는 아무 아키타입도 파생되지 않아 효과 0.
+            foreach (var e in ArchetypeService.GetMonthlyEffects(_m.RunModifiers, _c))
+                _r.Add(e.resource, e.amount);
         }
 
         void CheckGameOver(MonthSummary s, BalanceConfig b)

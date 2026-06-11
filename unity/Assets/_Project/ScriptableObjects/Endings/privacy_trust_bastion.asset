@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2560e904871324e56ba6590cdb15c2c5, type: 3}
+  m_Name: privacy_trust_bastion
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.EndingDef
+  id: privacy_trust_bastion
+  priority: 100
+  title: "\uD504\uB77C\uC774\uBC84\uC2DC \uC2E0\uB8B0 \uC694\uC0C8"
+  flavor: "\uB370\uC774\uD130\uB97C \uB35C \uC4F0\uB294 \uB300\uC2E0 \uB3D9\uC758,
+    \uC548\uC804, \uC2E0\uB8B0\uB97C \uBE0C\uB79C\uB4DC\uB85C \uB9CC\uB4E0 \uD68C\uC0AC\uAC00
+    \uB290\uB9AC\uC9C0\uB9CC \uB2E8\uB2E8\uD55C AI \uD45C\uC900\uC744 \uC138\uC6B4
+    \uC5D4\uB529\uC785\uB2C8\uB2E4."
+  metaRewardBonus: 4
+  conditionStatus: success
+  minMonth: 120
+  minProducts: 5
+  minResources:
+  - resource: 7
+    amount: 60
+  - resource: 0
+    amount: 200000
+  - resource: 5
+    amount: 90
+  - resource: 1
+    amount: 150000
+  startCityIds: []
+  worldLoreIds:
+  - privacy_fortress
+  marketConditionIds:
+  - regulation_crackdown
+  founderTraitIds: []
+  challengeTierIds: []
+  growthPathIds:
+  - trust_enterprise
+  archetypeIds:
+  - privacy_compact
+  fallback: 0

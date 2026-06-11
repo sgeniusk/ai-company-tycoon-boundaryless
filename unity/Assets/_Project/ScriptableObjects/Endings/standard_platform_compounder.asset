@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2560e904871324e56ba6590cdb15c2c5, type: 3}
+  m_Name: standard_platform_compounder
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.EndingDef
+  id: standard_platform_compounder
+  priority: 20
+  title: "\uD45C\uC900 \uC138\uACC4\uC758 \uBCF5\uB9AC \uD50C\uB7AB\uD3FC"
+  flavor: "\uD2B9\uBCC4\uD55C \uC138\uACC4 \uBCF4\uC815 \uC5C6\uC774 \uC81C\uD488,
+    \uACE0\uAC1D, \uC790\uB3D9\uD654\uAC00 \uCC28\uBD84\uD788 \uB204\uC801\uB418\uC5B4
+    \uACBD\uACC4 \uC5C6\uB294 AI \uD68C\uC0AC\uC758 \uAE30\uC900\uC120\uC744 \uB9CC\uB4E0
+    \uC5D4\uB529\uC785\uB2C8\uB2E4."
+  metaRewardBonus: 2
+  conditionStatus: success
+  minMonth: 120
+  minProducts: 3
+  minResources:
+  - resource: 0
+    amount: 0
+  - resource: 5
+    amount: 45
+  startCityIds: []
+  worldLoreIds:
+  - standard
+  marketConditionIds: []
+  founderTraitIds:
+  - no_founder
+  challengeTierIds: []
+  growthPathIds: []
+  archetypeIds: []
+  fallback: 0

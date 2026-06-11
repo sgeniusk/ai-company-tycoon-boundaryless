@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79f811a8fa7124896bde0685d7b6223a, type: 3}
+  m_Name: chip_war_localizer
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.ArchetypeDef
+  id: chip_war_localizer
+  displayName: "\uCE69 \uC804\uC7C1 \uD604\uC9C0\uD654\uD300"
+  description: "\uC218\uCD9C \uD1B5\uC81C\uC640 \uC9C0\uC5ED \uCEF4\uD4E8\uD2B8 \uC7A5\uBCBD\uC744
+    \uC81C\uD488 \uC124\uACC4 \uC81C\uC57D\uC73C\uB85C \uBC1B\uC544\uB4E4\uC774\uACE0,
+    \uC791\uC740 \uD300\uC758 \uD558\uB4DC\uC6E8\uC5B4 \uC120\uD0DD\uC9C0\uB97C \uBE60\uB974\uAC8C
+    \uC881\uD799\uB2C8\uB2E4."
+  requires:
+  - export_controls
+  - compute_regional
+  - builder_bias
+  discoveryId: discovery_chip_war_localizer
+  yieldsKind: product
+  yieldsSummary: "\uC9C0\uC5ED \uCEF4\uD4E8\uD2B8 \uC81C\uC57D\uC5D0 \uB9DE\uCD98
+    \uC81C\uD488 \uD6C4\uBCF4 \uBA54\uD0C0\uB370\uC774\uD130"
+  monthlyEffects: []

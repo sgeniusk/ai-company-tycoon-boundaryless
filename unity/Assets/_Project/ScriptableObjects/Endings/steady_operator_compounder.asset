@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2560e904871324e56ba6590cdb15c2c5, type: 3}
+  m_Name: steady_operator_compounder
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.EndingDef
+  id: steady_operator_compounder
+  priority: 68
+  title: "\uAFB8\uC900\uD55C \uC6B4\uC601 \uBCF5\uB9AC \uD68C\uC0AC"
+  flavor: "\uD3ED\uBC1C\uC801\uC778 \uBD90 \uC5C6\uC774\uB3C4 \uC6B4\uC601\uC790
+    \uCC3D\uC5C5\uC790\uAC00 \uBC88\uC728, \uACE0\uAC1D \uB300\uC751, \uC790\uB3D9\uD654
+    \uB8E8\uD2F4\uC744 \uB2E4\uB4EC\uC5B4 \uC870\uC6A9\uD788 \uBCF5\uB9AC\uB97C \uC313\uC740
+    \uC5D4\uB529\uC785\uB2C8\uB2E4."
+  metaRewardBonus: 3
+  conditionStatus: success
+  minMonth: 120
+  minProducts: 4
+  minResources:
+  - resource: 7
+    amount: 68
+  - resource: 0
+    amount: 150000
+  - resource: 5
+    amount: 68
+  - resource: 1
+    amount: 120000
+  startCityIds:
+  - default_city
+  - bengaluru
+  worldLoreIds: []
+  marketConditionIds:
+  - steady_market
+  founderTraitIds:
+  - operator_founder
+  challengeTierIds: []
+  growthPathIds:
+  - productivity_line
+  archetypeIds: []
+  fallback: 0
