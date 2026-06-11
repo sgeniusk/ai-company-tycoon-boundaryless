@@ -18,6 +18,7 @@ namespace AICompanyTycoon.Systems
         public RandomEventService Events;
         public MarketService Market;
         public MonthController Month;
+        public ProductVisibilityService Visibility;
 
         // runInput — 런 모디파이어 선택 (feat-007). null이면 기본 런(델타 0, 기존 동작 불변).
         public static SimulationContext Create(DataCatalog catalog, int seed = 12345, RunModifierInput runInput = null)
@@ -34,6 +35,7 @@ namespace AICompanyTycoon.Systems
             ctx.Events = new RandomEventService(m, catalog, ctx.Resources, new SeededRng(seed));
             ctx.Market = new MarketService(m, catalog);
             ctx.Month = new MonthController(m, catalog, ctx.Resources, ctx.Products, ctx.Automation, ctx.Stages, ctx.Market);
+            ctx.Visibility = new ProductVisibilityService(m, catalog);
             m.RunModifiers = RunModifierService.Select(catalog, runInput);
             RunModifierService.ApplyStartingDeltas(m, catalog, ctx.Resources);
             ctx.Domains.InitDefaults();

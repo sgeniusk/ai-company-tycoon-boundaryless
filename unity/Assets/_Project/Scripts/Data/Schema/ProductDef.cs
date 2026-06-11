@@ -21,5 +21,11 @@ namespace AICompanyTycoon.Data
         public double hypeOnLaunch;
         public int level = 1;
         public List<string> tags = new List<string>();
+        // feat-012 테크트리 — ??? 상태에서 보여줄 떡밥 한 줄 (없으면 기본 문구).
+        [TextArea] public string teaser;
+        // feat-012 테크트리 — 출시 선행 제품 id 목록 (전부 출시돼야 해금).
+        public List<string> prerequisiteProducts = new List<string>();
+        // feat-012 테크트리 — 트리 깊이 (1 차고 ~ 4 미래). 정렬·검증용.
+        public int tier = 1;
     }
 }

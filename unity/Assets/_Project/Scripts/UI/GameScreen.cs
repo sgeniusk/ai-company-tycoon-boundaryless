@@ -76,6 +76,9 @@ namespace AICompanyTycoon.UI
         string _pendingTierId = "standard"; // 새 게임 난이도 선택 (feat-008 #1)
         readonly Dictionary<string, Button> _tierButtons = new Dictionary<string, Button>();
 
+        // feat-012 테크트리 — 접힌 도메인 섹션 (UI 전용 상태, 세이브 비대상)
+        readonly HashSet<string> _collapsedDomains = new HashSet<string>();
+
         MonthSummary _lastSummary;
         string _activeTab = ProductsTab;
         bool _terminal;
@@ -1591,60 +1594,212 @@ namespace AICompanyTycoon.UI
             SetActivePanel(_activeTab);
         }
 
+        // feat-012 테크트리 — 도메인 섹션 + 발견의 사다리(숨김→???→실명→해금→출시) 렌더.
         void BuildProductCards()
         {
             Clear(_productsContent);
 
-            var availableIds = new HashSet<string>();
-            foreach (var product in _context.Products.GetAvailable())
+            // 해금 도메인 먼저, ??? 티저 도메인은 뒤로 — 지금 할 수 있는 일이 위에 온다.
+            var knownDomains = new HashSet<string>();
+            var teaserDomains = new List<DomainDef>();
+            foreach (var domain in _context.Catalog.domains)
             {
-                if (product != null)
+                if (domain == null)
                 {
-                    availableIds.Add(product.id);
+                    continue;
                 }
+
+                knownDomains.Add(domain.id);
+                var domainState = _context.Visibility.GetDomainState(domain.id);
+                if (domainState == VisibilityState.Hidden)
+                {
+                    continue; // 숨김 도메인은 섹션 자체가 없다 — 푸터 카운터로만 존재를 암시.
+                }
+
+                if (domainState == VisibilityState.Teaser)
+                {
+                    teaserDomains.Add(domain);
+                    continue;
+                }
+
+                BuildDomainSection(domain, domainState);
+            }
+
+            foreach (var domain in teaserDomains)
+            {
+                BuildDomainSection(domain, VisibilityState.Teaser);
+            }
+
+            // 안전망 — 카탈로그 도메인에 속하지 않는 제품 (도메인 비우거나 미등록).
+            foreach (var product in _context.Catalog.products)
+            {
+                if (product == null || knownDomains.Contains(product.domain))
+                {
+                    continue;
+                }
+
+                var state = _context.Visibility.GetState(product);
+                if (state == VisibilityState.Hidden)
+                {
+                    continue;
+                }
+
+                if (state == VisibilityState.Teaser)
+                {
+                    AddTeaserCard(product);
+                }
+                else
+                {
+                    AddProductCard(product, state);
+                }
+            }
+
+            AddUndiscoveredFooter();
+        }
+
+        void BuildDomainSection(DomainDef domain, VisibilityState domainState)
+        {
+            bool teaserDomain = domainState == VisibilityState.Teaser;
+            bool collapsed = _collapsedDomains.Contains(domain.id);
+
+            string arrow = collapsed ? "▶ " : "▼ ";
+            string title = teaserDomain
+                ? arrow + "??? 미지의 분야"
+                : arrow + domain.displayName + " · 발견 " + _context.Visibility.CountDiscovered(domain.id) + "/" + _context.Visibility.CountTotal(domain.id);
+
+            var header = UiFactory.Button(_productsContent, title);
+            var headerBg = teaserDomain ? UiTheme.SectionTeaserBg : UiTheme.SectionBg;
+            header.button.GetComponent<Image>().color = headerBg;
+            var colors = header.button.colors;
+            colors.normalColor = headerBg;
+            colors.highlightedColor = headerBg;
+            colors.pressedColor = headerBg;
+            header.button.colors = colors;
+            header.label.alignment = TextAnchor.MiddleLeft;
+            header.label.fontSize = UiTheme.FontEmphasis;
+            header.button.onClick.AddListener(() =>
+            {
+                if (!_collapsedDomains.Add(domain.id))
+                {
+                    _collapsedDomains.Remove(domain.id);
+                }
+
+                BuildProductCards();
+            });
+            AddLayout(header.button.gameObject, 58, 0);
+
+            if (collapsed)
+            {
+                return;
             }
 
             foreach (var product in _context.Catalog.products)
             {
-                if (product == null)
+                if (product == null || product.domain != domain.id)
                 {
                     continue;
                 }
 
-                var active = _context.Products.IsActive(product.id);
-                var launchable = availableIds.Contains(product.id);
-                var card = AddCard(_productsContent, IconLibrary.Domain(product.domain), product.displayName, product.description);
-                AddSmallText(card, "도메인 " + GetDomainName(product.domain) + " | 매출 " + FormatNumber(product.baseRevenue) + " | 이용자 +" + FormatNumber(product.baseUsersPerMonth));
-                AddSmallText(card, "출시 비용 " + FormatCosts(product.launchCost));
-
-                if (active)
+                var state = _context.Visibility.GetState(product);
+                if (state == VisibilityState.Hidden)
                 {
-                    AddSmallText(card, "상태 - 활성 제품");
                     continue;
                 }
 
-                if (launchable)
+                if (state == VisibilityState.Teaser)
                 {
-                    var launch = UiFactory.Button(card, "출시");
-                    launch.button.onClick.AddListener(() =>
-                    {
-                        if (_context.Products.Launch(product.id))
-                        {
-                            RefreshAll();
-                        }
-                        else
-                        {
-                            SetStatus("출시 조건을 다시 확인하세요.");
-                            RefreshAll();
-                        }
-                    });
-                    AddLayout(launch.button.gameObject, 64, 0);
+                    AddTeaserCard(product);
                 }
                 else
                 {
-                    AddSmallText(card, "잠금 사유 - " + GetProductLockReason(product));
+                    AddProductCard(product, state);
                 }
             }
+        }
+
+        void AddProductCard(ProductDef product, VisibilityState state)
+        {
+            var card = AddCard(_productsContent, IconLibrary.Domain(product.domain), product.displayName, product.description);
+            AddSmallText(card, "도메인 " + GetDomainName(product.domain) + " | 매출 " + FormatNumber(product.baseRevenue) + " | 이용자 +" + FormatNumber(product.baseUsersPerMonth) + " | T" + product.tier);
+            AddSmallText(card, "출시 비용 " + FormatCosts(product.launchCost));
+
+            if (state == VisibilityState.Launched)
+            {
+                AddSmallText(card, "상태 - 활성 제품");
+                return;
+            }
+
+            if (state == VisibilityState.Unlocked)
+            {
+                // 해금(요건 충족) — 출시 버튼. 신뢰/비용 부족이면 비활성 + 사유 표기.
+                bool launchable = _context.Products.CanLaunch(product.id);
+                if (!launchable)
+                {
+                    AddSmallText(card, "잠금 사유 - " + GetProductLockReason(product));
+                }
+
+                var launch = UiFactory.Button(card, "출시");
+                launch.button.interactable = launchable;
+                launch.button.onClick.AddListener(() =>
+                {
+                    if (_context.Products.Launch(product.id))
+                    {
+                        RefreshAll();
+                    }
+                    else
+                    {
+                        SetStatus("출시 조건을 다시 확인하세요.");
+                        RefreshAll();
+                    }
+                });
+                AddLayout(launch.button.gameObject, 64, 0);
+                return;
+            }
+
+            // Revealed — 실명 공개 + 잠금 + 부족 요건.
+            AddSmallText(card, "잠금 사유 - " + GetProductLockReason(product));
+        }
+
+        // ??? 티저 카드 — 떡밥 한 줄 + 힌트. 상세/출시 없음 (feat-012 발견의 사다리).
+        void AddTeaserCard(ProductDef product)
+        {
+            var card = UiFactory.Panel(_productsContent, UiTheme.TeaserCardBg);
+            UiFactory.VBox(card.transform, 8, new RectOffset(18, 18, 16, 16));
+
+            var title = UiFactory.Label(card.transform, "??? — 잠김", UiTheme.FontEmphasis);
+            title.fontStyle = FontStyle.Bold;
+            title.color = UiTheme.TeaserText;
+            AddLayout(title.gameObject, 42, 0);
+
+            var teaser = AddSmallText(card.transform, _context.Visibility.GetTeaserText(product));
+            teaser.fontStyle = FontStyle.Italic;
+
+            var hintCapability = _context.Visibility.GetTeaserHintCapability(product.domain);
+            if (!string.IsNullOrEmpty(hintCapability))
+            {
+                AddSmallText(card.transform, "힌트 — " + GetCapabilityName(hintCapability) + " 연구를 진행해 보세요");
+            }
+        }
+
+        // 팝업 푸터 — 미발견 수치로 "아직 못 본 게 있다"를 보여준다.
+        void AddUndiscoveredFooter()
+        {
+            int hiddenProducts = _context.Visibility.CountHiddenProducts();
+            int hiddenDomains = _context.Visibility.CountHiddenDomains();
+            if (hiddenProducts <= 0 && hiddenDomains <= 0)
+            {
+                return;
+            }
+
+            var text = "미지의 영역 — 미발견 제품 " + hiddenProducts + "종";
+            if (hiddenDomains > 0)
+            {
+                text += " · 미지의 분야 " + hiddenDomains + "곳";
+            }
+
+            var footer = AddSmallText(_productsContent, text);
+            footer.alignment = TextAnchor.MiddleCenter;
+            AddLayout(footer.gameObject, 44, 0);
         }
 
         void BuildCapabilityCards()
@@ -2086,6 +2241,19 @@ namespace AICompanyTycoon.UI
                 if (have < requirement.level)
                 {
                     return "능력 부족 " + GetCapabilityName(requirement.capabilityId) + " Lv." + have + "/" + requirement.level;
+                }
+            }
+
+            // feat-012 테크트리 — 선행 제품 미출시.
+            if (product.prerequisiteProducts != null)
+            {
+                foreach (var prerequisite in product.prerequisiteProducts)
+                {
+                    if (!string.IsNullOrEmpty(prerequisite) && !_context.Products.IsActive(prerequisite))
+                    {
+                        var prerequisiteDef = _context.Catalog.GetProduct(prerequisite);
+                        return "선행 제품 필요 " + (prerequisiteDef != null ? prerequisiteDef.displayName : prerequisite);
+                    }
                 }
             }
 

@@ -39,6 +39,12 @@ namespace AICompanyTycoon.UI
         // 모달 뒤 어둡게 까는 막
         public static readonly Color ModalScrim = new Color(0.16f, 0.12f, 0.07f, 0.68f);
 
+        // feat-012 테크트리 — 제품 팝업 도메인 섹션 헤더와 ??? 티저 카드
+        public static readonly Color SectionBg = Hex("8a6f4d", 0.95f);
+        public static readonly Color SectionTeaserBg = Hex("4a4138", 0.95f);
+        public static readonly Color TeaserCardBg = Hex("d9cfba", 0.96f);
+        public static readonly Color TeaserText = Hex("6b5d45");
+
         // 전광판 (CD-1 LED) — 다크 그린 패널 + 네온 토큰
         public static readonly Color ScoreboardBg = Hex("101f1d", 0.95f);
         public static readonly Color ScoreboardTag = Hex("5fd2b4");

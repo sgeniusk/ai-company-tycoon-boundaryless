@@ -178,6 +178,9 @@ public static class DataImporter
             asset.hypeOnLaunch = GetDouble(source, "hype_on_launch");
             asset.level = GetInt(source, "level", 1);
             asset.tags = ToStringList(GetOptionalList(source, "tags"));
+            asset.teaser = GetString(source, "teaser");
+            asset.prerequisiteProducts = ToStringList(GetOptionalList(source, "prerequisite_products"));
+            asset.tier = GetInt(source, "tier", 1);
             EditorUtility.SetDirty(asset);
             imported.Add(asset);
         }
@@ -205,6 +208,7 @@ public static class DataImporter
             asset.unlocksDomains = ToDomainUnlocks(GetOptionalObject(source, "unlocks_domains"));
             asset.effectsPerLevel = ToResourceAmounts(GetOptionalObject(source, "effects_per_level"), id + ".effects_per_level");
             asset.icon = GetString(source, "icon");
+            asset.category = GetString(source, "category");
             EditorUtility.SetDirty(asset);
             imported.Add(asset);
         }

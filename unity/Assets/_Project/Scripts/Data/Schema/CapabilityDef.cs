@@ -16,5 +16,7 @@ namespace AICompanyTycoon.Data
         public List<DomainUnlock> unlocksDomains = new List<DomainUnlock>();
         public List<ResourceAmount> effectsPerLevel = new List<ResourceAmount>();
         public string icon;
+        // feat-012 테크트리 — 능력 그룹 헤더용 분류 (research/engineering/business 등).
+        public string category;
     }
 }
