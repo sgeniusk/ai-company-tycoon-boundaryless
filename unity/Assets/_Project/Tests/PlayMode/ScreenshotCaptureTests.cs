@@ -121,6 +121,25 @@ namespace AICompanyTycoon.Tests.PlayMode
                 yield return CaptureCanvas(canvasGo, "06-more-drawer.png");
             }
 
+            // 6.5) 도파민 연출 — 더보기를 닫고 플로팅 수익/토스트를 직접 띄워 캡처 (feat-010)
+            var drawerClose = FindButton(canvasGo, "닫기");
+            if (drawerClose != null)
+            {
+                drawerClose.onClick.Invoke();
+                yield return WaitRealtime(0.2f);
+            }
+
+            var reactionLayer = GameObject.Find("ReactionLayer");
+            var ribbonGo = GameObject.Find("ToastRibbon");
+            if (reactionLayer != null && ribbonGo != null)
+            {
+                FloatingText.Spawn(reactionLayer.transform, "+$2.4K", UiTheme.ChipGoldText, 46, new Vector2(-60f, 40f));
+                FloatingText.Spawn(reactionLayer.transform, "+이용자 180", UiTheme.ScoreboardTag, 36, new Vector2(80f, -10f), 0.1f);
+                ribbonGo.GetComponent<ToastRibbon>().Enqueue("세계 이벤트 — 공개 모델 깜짝 공개", UiTheme.ScoreboardLive);
+                yield return WaitRealtime(0.5f);
+                yield return CaptureCanvas(canvasGo, "10-dopamine.png");
+            }
+
             // 7) 세계 굴리기 리빌 — 새 게임 버튼으로 시드 런을 굴려 리빌 모달 캡처 (feat-007 블록 #4)
             var rollNew = FindButton(canvasGo, "새 게임 (세계 굴리기)");
             if (rollNew != null)

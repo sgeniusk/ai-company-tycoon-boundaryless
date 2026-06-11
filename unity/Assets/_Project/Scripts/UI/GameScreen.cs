@@ -70,6 +70,8 @@ namespace AICompanyTycoon.UI
         Transform _worldRevealRows;
         Text _worldRevealSeed;
 
+        ToastRibbon _toastRibbon;      // 사건 토스트 리본 (feat-010 #4)
+
         MonthSummary _lastSummary;
         string _activeTab = ProductsTab;
         bool _terminal;
@@ -179,11 +181,88 @@ namespace AICompanyTycoon.UI
             }
 
             RefreshAll();
+            ShowMonthlyDopamine(_lastSummary); // 수익 플로팅 + 환호 + 사건 토스트 (feat-010)
 
             if (_terminal)
             {
                 ShowResultModal(_lastSummary.GameWon, _lastSummary.Outcome);
             }
+        }
+
+        // 월 정산 페이오프 연출 — 수익이 보이고, 직원이 환호하고, 사건이 흐른다 (feat-010 #1/#3/#4).
+        void ShowMonthlyDopamine(MonthSummary s)
+        {
+            if (s == null || _reactionLayer == null) return;
+
+            // 수익 플로팅 — 금액이 클수록 크게, 여러 발로.
+            if (s.Revenue > 0)
+            {
+                int pops = s.Revenue >= 5000 ? 3 : s.Revenue >= 1500 ? 2 : 1;
+                int size = s.Revenue >= 5000 ? 52 : s.Revenue >= 1500 ? 46 : 40;
+                for (int i = 0; i < pops; i++)
+                {
+                    FloatingText.Spawn(_reactionLayer, "+$" + FormatNumber(s.Revenue), UiTheme.ChipGoldText, size,
+                        new Vector2(UnityEngine.Random.Range(-140f, 140f), 40f + i * 14f), i * 0.22f);
+                }
+
+                for (int i = 0; i < Mathf.Min(pops, 2); i++)
+                {
+                    SpawnReaction(i == 0 ? "react_cheer" : "react_coffee");
+                }
+            }
+
+            if (s.NewUsers > 0)
+            {
+                FloatingText.Spawn(_reactionLayer, "+이용자 " + FormatNumber(s.NewUsers), UiTheme.ScoreboardTag, 36,
+                    new Vector2(UnityEngine.Random.Range(-100f, 100f), -10f), 0.35f);
+            }
+
+            // 사건 토스트 — 세계 이벤트가 오피스를 가리지 않고 흐른다.
+            if (_toastRibbon != null && s.WorldEventTitles != null)
+            {
+                foreach (var title in s.WorldEventTitles)
+                {
+                    _toastRibbon.Enqueue("세계 이벤트 — " + title, UiTheme.ScoreboardLive);
+                }
+            }
+
+            // 니어미스 — 승리가 가까우면 긴장 한 줄.
+            var near = MilestoneService.GetNearMiss(_context.Model, _context.Catalog.balance);
+            if (near != null && _toastRibbon != null)
+            {
+                _toastRibbon.Enqueue(near.Text, UiTheme.GoalAccent);
+            }
+        }
+
+        // 중앙 빅 축하 — v077 엠블럼 + 라벨이 크게 떴다 사라지고 파티클이 터진다 (feat-010 #3).
+        void SpawnCelebration(string emblemName, string text)
+        {
+            FxManager.Celebrate(0.35f, 30, 1.1f);
+            if (_reactionLayer == null) return;
+
+            var go = new GameObject("Celebration", typeof(RectTransform), typeof(CanvasGroup));
+            go.transform.SetParent(_reactionLayer, false);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchoredPosition = new Vector2(0f, 90f);
+            UiFactory.VBox(go.transform, 4, new RectOffset());
+
+            var sprite = IconLibrary.Get(emblemName);
+            if (sprite != null)
+            {
+                var icon = UiFactory.Icon(go.transform, sprite, 132);
+                icon.raycastTarget = false;
+            }
+
+            var label = UiFactory.Label(go.transform, text, 44);
+            label.fontStyle = FontStyle.Bold;
+            label.color = UiTheme.CrestGold;
+            label.alignment = TextAnchor.MiddleCenter;
+            var outline = label.gameObject.AddComponent<Outline>();
+            outline.effectColor = new Color(0.12f, 0.09f, 0.05f, 0.9f);
+            outline.effectDistance = new Vector2(2f, -2f);
+
+            go.AddComponent<ReactionBubble>().Init(2.0f);
+            UiTween.PopIn(go.transform, go.GetComponent<CanvasGroup>());
         }
 
         public void HandleSave()
@@ -407,6 +486,9 @@ namespace AICompanyTycoon.UI
             overlayRect.offsetMin = Vector2.zero;
             overlayRect.offsetMax = Vector2.zero;
             _reactionLayer = overlay.transform;
+
+            // 사건 토스트 리본 — 오피스 상단에서 세계 이벤트/승급/니어미스가 흐른다 (feat-010 #4).
+            _toastRibbon = ToastRibbon.Create(panel.transform);
         }
 
         // v054 오브젝트 몇 개를 직원 뒤 밴드에 등각 배치한다(정적 앰비언스). 스프라이트 없으면 건너뛴다.
@@ -494,6 +576,7 @@ namespace AICompanyTycoon.UI
                 if (sprite != null)
                 {
                     iconGo.AddComponent<StaffBob>().Init(i * 0.9f);
+                    iconGo.AddComponent<WorkLoop>().Init(i); // 턴 사이에도 일하는 코믹 워크루프 (feat-010 #2)
                 }
 
                 cell.SetActive(sprite != null);
@@ -1306,8 +1389,11 @@ namespace AICompanyTycoon.UI
         void OnCompanyStageChanged(string stageId)
         {
             var stage = _context.Catalog.GetStage(stageId);
-            SetStatus("회사 단계 상승 - " + (stage != null ? stage.displayName : stageId));
+            var stageName = stage != null ? stage.displayName : stageId;
+            SetStatus("회사 단계 상승 - " + stageName);
+            SpawnCelebration("celebrate_achievement", "단계 승급!"); // 빅 모먼트 (feat-010 #3)
             SpawnReaction("react_cheer");
+            if (_toastRibbon != null) _toastRibbon.Enqueue("단계 승급 — " + stageName, UiTheme.CrestGold);
             UpdateTopBar();
         }
 
@@ -1315,6 +1401,10 @@ namespace AICompanyTycoon.UI
         {
             var product = _context.Catalog.GetProduct(productId);
             SetStatus("제품 출시 - " + (product != null ? product.displayName : productId));
+            if (_context.Model.ActiveProducts.Count == 1)
+            {
+                SpawnCelebration("celebrate_combo", "첫 제품 출시!"); // 첫 매출 직전의 빅 모먼트 (feat-010 #3)
+            }
             SpawnReaction("react_codespark");
             RefreshLists();
         }

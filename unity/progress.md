@@ -4,8 +4,8 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-11
-**활성 피처** — **feat-007 완료**(리플레이성 척추 4블록) + **feat-009 완료**(모바일 가독성 패스 + AI 비서 가이던스 FAB, 사용자 피드백 대응). EditMode 50/50 + PlayMode 캡처 10장.
-**현재 목표** — 다음은 feat-008(난이도 티어·태그 파생 아키타입·멀티 엔딩 — 정본 데이터 루트에 존재) 또는 트렌드 콘텐츠 웨이브. 아트 v090(액터)·v091(오브젝트) 고해상 드롭인 교체 완료.
+**활성 피처** — **feat-007**(리플레이성 척추)·**feat-009**(가독성+가이던스 FAB)·**feat-010**(살아있는 오피스+수익 도파민) 모두 완료. EditMode 54/54 + PlayMode 캡처 11장.
+**현재 목표** — 다음은 feat-008(난이도 티어·태그 파생 아키타입·멀티 엔딩 — 정본 데이터 루트에 존재) 또는 트렌드 콘텐츠 웨이브 또는 실기기 검증. 아트 v090/v091 고해상 교체 완료.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -25,6 +25,7 @@
 - [x] feat-007 #2~#4 — #2 월간 tag_effects 틱 훅(MonthController 3.5단계, 표준 런 무효과 동치 테스트) #3 WorldEventDef 30종+WorldEventService(시드 파생 연 1건 2~10년차, 세계관 태그 편향, 히스토리 중복 방지, **React 교차 픽스처 일치**, WorldEventTests 6) #4 세계 뽑기 리빌 모달(더보기 "새 게임 (세계 굴리기)" → 4축 v078 스탬프 카드+시드+PopIn, 07 캡처)
 - [x] 아트 v091 — 오피스 오브젝트 고해상(384x288) Codex 절차 향상 반입 + v090/v091 임포터 드롭인 교체(같은 셀 이름, IconLibrary 경로 스왑). 캡처 01/08/09 검증
 - [x] feat-009 — 사용자 피드백 대응. A 가독성 전면 패스(UiTheme 폰트 위계 상수 + 66개소 폰트·높이 상향, 패널 알파 0.80→0.93, 텍스트 대비 강화) B AI 비서 가이던스(GuidanceService 헤드리스 + FAB 라벨·톤·행동이 제안에 따라 변경 + 미나 리본, seen 집합으로 잠금 없음). GuidanceTests 4, EditMode 50/50
+- [x] feat-010 — 키우기 게임식 도파민(사용자 방향). FloatingText 수익 플로팅(금액 스케일)+직원 환호, WorkLoop 상시 작업 이모트, SpawnCelebration 승급·첫출시 빅팝+파티클, MilestoneService 니어미스(헤드리스, MilestoneTests 4), ToastRibbon 사건 큐(오피스 비가림). EditMode 54/54 + 캡처 10-dopamine 검증
 ### 진행 중 (What's In Progress)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 

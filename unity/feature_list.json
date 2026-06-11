@@ -91,6 +91,15 @@
       "status": "done",
       "owner": "Claude",
       "evidence": "EditMode 50/50(신규 GuidanceTests 4 — 우선순위/seen 소화/진행 폴백/신뢰 경고) + 캡처 — 01-main(폰트·대비 상향, FAB '제품 출시', 미나 리본), 07-world-reveal(리빌 가독성). seen 집합은 월 진행 시 리셋, 제안 메뉴 열람 시 소화 — FAB 잠금 없음"
+    },
+    {
+      "id": "feat-010",
+      "name": "살아있는 오피스 + 수익 도파민 (P11)",
+      "description": "사용자 방향(2026-06-11) — 키우기 게임식 사무실 운영 재미 + 수익 상승 도파민. #1 플로팅 수익 숫자+직원 환호 #2 코믹 워크루프(상시 작업 이모트) #3 마일스톤 축하(v077+FxManager)+니어미스(MilestoneService 헤드리스) #4 사건 토스트 리본(오피스 비가림). React v0.62 도파민 4-레버 + v0.81~95 폴리시 적응. 설계 docs/feat-010-context-notes.md",
+      "dependencies": ["feat-007", "feat-009"],
+      "status": "done",
+      "owner": "Claude",
+      "evidence": "4블록 완료(2026-06-11) — FloatingText(수익 스케일 플로팅+환호)/WorkLoop(상시 작업 이모트)/SpawnCelebration(승급·첫출시 빅팝+파티클)+MilestoneService 니어미스(MilestoneTests 4)/ToastRibbon(사건 큐, 오피스 비가림). 코어 무변경(Systems에 derive-only MilestoneService만). EditMode 54/54 + 캡처 10-dopamine"
     }
   ]
 }
