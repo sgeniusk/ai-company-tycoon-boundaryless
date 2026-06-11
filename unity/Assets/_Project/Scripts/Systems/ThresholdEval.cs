@@ -15,6 +15,33 @@ namespace AICompanyTycoon.Systems
             return true;
         }
 
+        // 카탈로그가 필요한 키(min_star = 성급 순번+1)까지 평가하는 오버로드 (feat-014 #2).
+        public static bool Meets(GameModel m, DataCatalog c, IEnumerable<Threshold> thresholds)
+        {
+            if (thresholds == null) return true;
+            foreach (var t in thresholds)
+            {
+                if (t.key == "min_star")
+                {
+                    if (GetStar(m, c) < t.value) return false;
+                    continue;
+                }
+
+                if (!MeetsOne(m, t.key, t.value)) return false;
+            }
+
+            return true;
+        }
+
+        // 성급 — 회사 단계 순번+1 (UI 크레스트와 동일 규칙).
+        public static int GetStar(GameModel m, DataCatalog c)
+        {
+            var stage = c != null ? c.GetStage(m.CompanyStageId) : null;
+            if (stage == null) return 1;
+            int star = stage.order + 1;
+            return star < 1 ? 1 : star > 6 ? 6 : star;
+        }
+
         static bool MeetsOne(GameModel m, string key, double v)
         {
             switch (key)

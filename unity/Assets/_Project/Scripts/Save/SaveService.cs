@@ -53,6 +53,8 @@ namespace AICompanyTycoon.Save
             foreach (var kv in m.ProductLevels)
                 d.productLevels.Add(new CapEntry { id = kv.Key, level = kv.Value });
             d.hiredAgents = new List<string>(m.HiredAgentIds);
+            d.officeLevel = m.OfficeLevel;
+            d.locationId = m.LocationId;
             foreach (var c in m.CompetitorStates)
                 d.competitorStates.Add(new CompetitorSave { id = c.id, score = c.score, marketShare = c.marketShare, momentum = c.momentum });
             foreach (var h in m.MarketShareHistory)
@@ -87,6 +89,9 @@ namespace AICompanyTycoon.Save
                 foreach (var p in d.productLevels) m.ProductLevels[p.id] = p.level;
             // 인재 로스터 (v5) — 구세이브는 빈 로스터.
             m.HiredAgentIds = new List<string>(d.hiredAgents ?? new List<string>());
+            // 시설 (v6) — 구세이브(officeLevel 0)는 0으로 두고 RecruitService/OfficeService가 성급 파생으로 흡수.
+            m.OfficeLevel = d.officeLevel;
+            m.LocationId = string.IsNullOrEmpty(d.locationId) ? "rural_garage" : d.locationId;
             m.CompetitorStates = new List<CompetitorState>();
             if (d.competitorStates != null)
                 foreach (var c in d.competitorStates)

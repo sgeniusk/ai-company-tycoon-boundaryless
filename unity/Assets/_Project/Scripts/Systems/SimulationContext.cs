@@ -20,6 +20,7 @@ namespace AICompanyTycoon.Systems
         public MonthController Month;
         public ProductVisibilityService Visibility;
         public RecruitService Recruit;
+        public OfficeService Office;
 
         // runInput — 런 모디파이어 선택 (feat-007). null이면 기본 런(델타 0, 기존 동작 불변).
         public static SimulationContext Create(DataCatalog catalog, int seed = 12345, RunModifierInput runInput = null)
@@ -38,6 +39,7 @@ namespace AICompanyTycoon.Systems
             ctx.Month = new MonthController(m, catalog, ctx.Resources, ctx.Products, ctx.Automation, ctx.Stages, ctx.Market);
             ctx.Visibility = new ProductVisibilityService(m, catalog);
             ctx.Recruit = new RecruitService(m, catalog, ctx.Resources);
+            ctx.Office = new OfficeService(m, catalog, ctx.Resources);
             m.RunModifiers = RunModifierService.Select(catalog, runInput);
             RunModifierService.ApplyStartingDeltas(m, catalog, ctx.Resources);
             ctx.Domains.InitDefaults();

@@ -54,7 +54,9 @@ namespace AICompanyTycoon.Systems
             // 기존(Godot 잔재)은 연산비를 할인 밖에 둬 자동화 투자가 이용자 증가를 못 따라가 장기 파산했다.
             double autoReduction = System.Math.Min(0.75, System.Math.Max(0.0, _m.Automation * b.automationCostReductionPerPoint));
             double discountMult = 1.0 - autoReduction;
-            double totalCash = (baseCost + salaryCost + computeCost) * discountMult;
+            // 본사 위치 고정비 모디파이어 (feat-014 #2, React locationCostModifier 동치 — 차고 0.82 ~ 글로벌 1.8).
+            double locationMult = OfficeService.GetLocationCostModifier(_m, _c);
+            double totalCash = (baseCost + salaryCost + computeCost) * locationMult * discountMult;
             _r.Add(ResourceId.Cash, -totalCash);
             s.BaseCost = baseCost;
             s.SalaryCost = salaryCost;
@@ -74,6 +76,9 @@ namespace AICompanyTycoon.Systems
 
             // 3.6) 산업 시너지/콤보 월간 효과 — 도메인 포트폴리오 보상 (feat-013 #1, React 동치). 미활성이면 효과 0.
             IndustrySynergyService.ApplyMonthly(_m, _c, _r);
+
+            // 3.7) 사무실 월간 효과 (feat-014 #2) — 1단계 차고는 효과 없음 = 기준선 보존.
+            OfficeService.ApplyOfficeMonthly(_m, _c, _r);
 
             // 4) 화제성 감쇠
             if (_m.Hype > 0) _r.Add(ResourceId.Hype, -b.monthlyHypeDecay);

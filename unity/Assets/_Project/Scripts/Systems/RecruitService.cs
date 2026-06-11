@@ -28,17 +28,24 @@ namespace AICompanyTycoon.Systems
 
         // ---- 사무실 정원 ----
 
-        // interim (#1) — 사무실 단계 = 회사 성급 순번. #2에서 구매형으로 바뀐다.
+        // 구매형 사무실 단계(OfficeLevel, feat-014 #2). 구세이브(0)는 성급 파생으로 흡수 — 기존 정원 보존.
         public OfficeExpansionDef GetOffice()
         {
             if (_c == null || _c.officeExpansions == null || _c.officeExpansions.Count == 0) return null;
-            int stageIndex = 0;
-            for (int i = 0; i < _c.stages.Count; i++)
-                if (_c.stages[i] != null && _c.stages[i].id == _m.CompanyStageId) { stageIndex = i; break; }
-            int level = System.Math.Min(stageIndex + 1, _c.officeExpansions.Count);
+            int level = _m.OfficeLevel;
+            if (level < 1)
+            {
+                int stageIndex = 0;
+                for (int i = 0; i < _c.stages.Count; i++)
+                    if (_c.stages[i] != null && _c.stages[i].id == _m.CompanyStageId) { stageIndex = i; break; }
+                level = System.Math.Min(stageIndex + 1, _c.officeExpansions.Count);
+                _m.OfficeLevel = level; // 1회 마이그레이션 고정
+            }
+
+            OfficeExpansionDef best = null;
             foreach (var o in _c.officeExpansions)
-                if (o != null && o.level == level) return o;
-            return _c.officeExpansions[0];
+                if (o != null && o.level <= level && (best == null || o.level > best.level)) best = o;
+            return best ?? _c.officeExpansions[0];
         }
 
         public int GetHireCapacity()
@@ -102,11 +109,35 @@ namespace AICompanyTycoon.Systems
             return pool[pool.Count - 1];
         }
 
+        // 영입 비용 — 본사 위치의 사람 인재 할인/할증 반영 (feat-014 #2, 시골=싸고 도심=비싸다).
+        public List<ResourceAmount> GetHireCost(AgentTypeDef agent)
+        {
+            if (agent == null) return null;
+            if (agent.kind != "human") return agent.hireCost;
+            double discount = 0;
+            if (_c != null && _c.companyLocations != null)
+            {
+                var locId = string.IsNullOrEmpty(_m.LocationId) ? OfficeService.DefaultLocationId : _m.LocationId;
+                foreach (var l in _c.companyLocations)
+                    if (l != null && l.id == locId) { discount = l.humanHireDiscount; break; }
+            }
+
+            if (discount == 0) return agent.hireCost;
+            var result = new List<ResourceAmount>(agent.hireCost.Count);
+            foreach (var c in agent.hireCost)
+                result.Add(new ResourceAmount
+                {
+                    resource = c.resource,
+                    amount = c.resource == ResourceId.Cash ? System.Math.Round(c.amount * (1.0 - discount)) : c.amount
+                });
+            return result;
+        }
+
         public string GetHireLockReason(AgentTypeDef agent)
         {
             if (agent == null) return "후보가 없습니다.";
             if (IsRosterFull()) return "사무실이 좁습니다 — 정원 " + GetHireCapacity() + "명";
-            if (!_r.CanAfford(agent.hireCost)) return "자금 부족";
+            if (!_r.CanAfford(GetHireCost(agent))) return "자금 부족";
             return null;
         }
 
@@ -115,7 +146,7 @@ namespace AICompanyTycoon.Systems
         public bool Hire(AgentTypeDef agent)
         {
             if (!CanHire(agent)) return false;
-            if (!_r.SpendMultiple(agent.hireCost)) return false;
+            if (!_r.SpendMultiple(GetHireCost(agent))) return false;
             _m.HiredAgentIds.Add(agent.id);
             _r.Add(ResourceId.Talent, 1);
             GameEvents.RaiseResourcesUpdated();

@@ -335,4 +335,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4b8b5b0e0c36143158b7073b64dca225, type: 2}
   - {fileID: 11400000, guid: 51929abad65f148ae9b71a23b5d12073, type: 2}
   - {fileID: 11400000, guid: 64f0205bb0d504fc8ab5919eec82a9a8, type: 2}
+  companyLocations:
+  - {fileID: 11400000, guid: 693c8178f36304fd7be5592b76c7ca61, type: 2}
+  - {fileID: 11400000, guid: 2bcb76112f4224baa8a0f83c385c4f1b, type: 2}
+  - {fileID: 11400000, guid: 2ec74e9f114af429983f66459ad4afc4, type: 2}
+  - {fileID: 11400000, guid: 8f0000ad3fe254463ae4d6487cf9aabc, type: 2}
+  - {fileID: 11400000, guid: 66d17679cf0a14aee99b31c780c6660d, type: 2}
   balance: {fileID: 11400000, guid: cbf623b5993d649a58c9da9140901751, type: 2}

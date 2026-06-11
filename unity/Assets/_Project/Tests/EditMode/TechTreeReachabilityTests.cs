@@ -95,6 +95,16 @@ namespace AICompanyTycoon.Tests.EditMode
                 bool CashOk(List<Data.ResourceAmount> cost)
                     => ctx.Model.Get(Core.ResourceId.Cash) - CashCostOf(cost) >= Buffer();
 
+                // 사무실 확장 (feat-014 #2) — 정원·월간 보너스. 여유 있으면 단계 올린다.
+                if (ctx.Office.CanExpand())
+                {
+                    var nextOffice = ctx.Office.GetNext();
+                    if (nextOffice != null && ctx.Model.Get(Core.ResourceId.Cash) - CashCostOf(nextOffice.cost) >= Buffer() * 2)
+                    {
+                        ctx.Office.Expand();
+                    }
+                }
+
                 // 2단계 페이즈 — 초반 30개월은 수익 엔진(레벨업) 우선, 이후 연구 집중.
                 // 비현금 자원(연산/데이터/인재)에 막히면 blocked에 기록해 4)에서 타깃 구매한다.
                 var blocked = new HashSet<Core.ResourceId>();
@@ -208,7 +218,7 @@ namespace AICompanyTycoon.Tests.EditMode
                         foreach (var candidate in ctx.Recruit.GetCandidates())
                         {
                             if (!ctx.Recruit.CanHire(candidate)) continue;
-                            double cash = CashCostOf(candidate.hireCost);
+                            double cash = CashCostOf(ctx.Recruit.GetHireCost(candidate));
                             if (ctx.Model.Get(Core.ResourceId.Cash) - cash < Buffer()) continue;
                             if (cash < bestCash) { bestCash = cash; best = candidate; }
                         }

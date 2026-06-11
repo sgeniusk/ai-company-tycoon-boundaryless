@@ -2104,7 +2104,7 @@ namespace AICompanyTycoon.UI
                     quirk.fontStyle = FontStyle.Italic;
                 }
 
-                AddSmallText(card, "영입 비용 " + FormatCosts(candidate.hireCost));
+                AddSmallText(card, "영입 비용 " + FormatCosts(_context.Recruit.GetHireCost(candidate)));
                 var reason = _context.Recruit.GetHireLockReason(candidate);
                 if (reason != null)
                 {
@@ -2161,11 +2161,104 @@ namespace AICompanyTycoon.UI
             AddLayout(freelance.button.gameObject, 64, 0);
         }
 
-        // 시설 섹션 — GPU 증설 (사무실 업그레이드·본사 이전은 #2).
+        // 시설 섹션 — 사무실 확장 + 본사 이전 + GPU 증설 (feat-014 #2).
         void BuildFacilitySection()
         {
             var title = UiFactory.Label(_upgradesContent, "시설", 36);
             AddLayout(title.gameObject, 44, 0);
+
+            // 사무실 확장 — 정원·월간 보너스가 한 단계씩 자란다.
+            var office = _context.Office.GetCurrent();
+            var nextOffice = _context.Office.GetNext();
+            var officeCard = AddCard(_upgradesContent, "사무실 — " + (office != null ? office.displayName : "차고"),
+                office != null ? office.description : "");
+            AddSmallText(officeCard, "정원 " + (office != null ? office.hireCapacity : 3) + "명");
+            if (nextOffice != null)
+            {
+                AddSmallText(officeCard, "다음 — " + nextOffice.displayName + " (정원 " + nextOffice.hireCapacity + "명) | 비용 " + FormatCosts(nextOffice.cost));
+                AddSmallText(officeCard, "요구 조건 " + FormatThresholds(nextOffice.unlockRequirements));
+                var expandReason = _context.Office.GetExpandLockReason();
+                if (expandReason != null)
+                {
+                    AddSmallText(officeCard, "잠금 사유 - " + expandReason);
+                }
+
+                var expand = UiFactory.Button(officeCard, "확장");
+                expand.button.interactable = expandReason == null;
+                expand.button.onClick.AddListener(() =>
+                {
+                    var synergiesBefore = SnapshotActiveSynergies();
+                    if (_context.Office.Expand())
+                    {
+                        var moved = _context.Office.GetCurrent();
+                        SetStatus("사무실 확장 - " + (moved != null ? moved.displayName : ""));
+                        if (_toastRibbon != null)
+                        {
+                            _toastRibbon.Enqueue("사무실 확장 — " + (moved != null ? moved.displayName : "") + "!", UiTheme.CrestGold);
+                        }
+
+                        SpawnCelebration("celebrate_combo", "사무실 확장!");
+                        RefreshAll();
+                        AnnounceSynergies(synergiesBefore);
+                    }
+                    else
+                    {
+                        SetStatus("확장 조건을 다시 확인하세요.");
+                    }
+                });
+                AddLayout(expand.button.gameObject, 64, 0);
+            }
+            else
+            {
+                AddSmallText(officeCard, "최대 단계 — 바운더리리스 캠퍼스");
+            }
+
+            // 본사 이전 — 유지비와 인재 풀이 갈린다.
+            var location = _context.Office.GetLocation();
+            var hqCard = AddCard(_upgradesContent, "본사 — " + (location != null ? location.displayName : "강원 산골 차고"),
+                location != null ? location.description : "");
+            if (location != null)
+            {
+                AddSmallText(hqCard, "유지비 x" + location.monthlyCostModifier.ToString("F2") + " | 인재 풀 — " + location.talentPool);
+            }
+
+            foreach (var target in _context.Catalog.companyLocations)
+            {
+                if (target == null || (location != null && target.id == location.id))
+                {
+                    continue;
+                }
+
+                var row = AddSmallText(hqCard, "→ " + target.displayName + " (" + target.region + ") | 유지비 x" + target.monthlyCostModifier.ToString("F2") + " | 이전 비용 " + FormatCosts(target.cost));
+                var reason = _context.Office.GetRelocateLockReason(target);
+                if (reason != null)
+                {
+                    row.text += " | " + reason;
+                    continue;
+                }
+
+                var move = UiFactory.Button(hqCard, target.displayName + "로 이전");
+                var captured = target;
+                move.button.onClick.AddListener(() =>
+                {
+                    if (_context.Office.Relocate(captured))
+                    {
+                        SetStatus("본사 이전 - " + captured.displayName);
+                        if (_toastRibbon != null)
+                        {
+                            _toastRibbon.Enqueue("본사 이전 — " + captured.displayName + "!", UiTheme.CrestGold);
+                        }
+
+                        SpawnCelebration("celebrate_combo", "본사 이전!");
+                        RefreshAll();
+                    }
+                    else
+                    {
+                        SetStatus("이전 조건을 다시 확인하세요.");
+                    }
+                });
+                AddLayout(move.button.gameObject, 60, 0);
+            }
 
             var computeCard = AddCard(_upgradesContent, "GPU 증설", "데이터센터에 연산력을 증설합니다. 연구와 제품 강화에 필요합니다.");
             AddSmallText(computeCard, "보유 연산력 " + FormatNumber(_context.Model.Get(ResourceId.Compute)) + " | 증설 +" + FormatNumber(_context.Recruit.GetComputePackAmount()) + " | 비용 " + FormatMoney(_context.Recruit.GetComputePackCost()));

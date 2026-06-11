@@ -39,8 +39,9 @@ public static class DataImporter
         var industryCombos = ImportIndustrySynergyList("industry_combos.json", "industry_combos", "IndustryCombos");
         var agentTypes = ImportAgentTypes();
         var officeExpansions = ImportOfficeExpansions();
+        var companyLocations = ImportCompanyLocations();
 
-        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, difficultyTiers, archetypes, endings, industrySynergies, industryCombos, agentTypes, officeExpansions, balance);
+        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, difficultyTiers, archetypes, endings, industrySynergies, industryCombos, agentTypes, officeExpansions, companyLocations, balance);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -625,6 +626,35 @@ public static class DataImporter
         return imported;
     }
 
+    // 본사 위치 5곳 임포트 (feat-014 #2) — 이전형 본사.
+    private static List<CompanyLocationDef> ImportCompanyLocations()
+    {
+        var items = GetRootList("company_locations.json", "company_locations");
+        var imported = new List<CompanyLocationDef>();
+        EnsureFolder(ScriptableObjectRoot + "/CompanyLocations");
+
+        foreach (var item in items)
+        {
+            var source = AsObject(item, "company_locations item");
+            var id = GetString(source, "id");
+            var asset = LoadOrCreate<CompanyLocationDef>(ScriptableObjectRoot + "/CompanyLocations/" + id + ".asset");
+            asset.id = id;
+            asset.displayName = GetString(source, "name");
+            asset.region = GetString(source, "region");
+            asset.description = GetString(source, "description");
+            asset.talentPool = GetString(source, "talent_pool");
+            asset.monthlyCostModifier = GetDouble(source, "monthly_cost_modifier", 1.0);
+            asset.humanHireDiscount = GetDouble(source, "human_hire_discount");
+            asset.aiOperationBonus = GetDouble(source, "ai_operation_bonus");
+            asset.cost = ToResourceAmounts(GetOptionalObject(source, "cost"), id + ".cost");
+            asset.unlockRequirements = ToThresholds(GetOptionalObject(source, "unlock_requirements"));
+            EditorUtility.SetDirty(asset);
+            imported.Add(asset);
+        }
+
+        return imported;
+    }
+
     // 산업 시너지/콤보 임포트 (feat-013 #1) — 같은 스키마, 파일·폴더만 다르다.
     private static List<IndustrySynergyDef> ImportIndustrySynergyList(string fileName, string rootKey, string folder)
     {
@@ -671,6 +701,7 @@ public static class DataImporter
         List<IndustrySynergyDef> industryCombos,
         List<AgentTypeDef> agentTypes,
         List<OfficeExpansionDef> officeExpansions,
+        List<CompanyLocationDef> companyLocations,
         BalanceConfig balance)
     {
         EnsureFolder("Assets/_Project/Resources");
@@ -694,6 +725,7 @@ public static class DataImporter
         catalog.industryCombos = industryCombos;
         catalog.agentTypes = agentTypes;
         catalog.officeExpansions = officeExpansions;
+        catalog.companyLocations = companyLocations;
         catalog.balance = balance;
         EditorUtility.SetDirty(catalog);
     }

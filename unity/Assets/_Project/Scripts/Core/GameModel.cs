@@ -29,6 +29,9 @@ namespace AICompanyTycoon.Core
         public Dictionary<string, int> ProductLevels = new Dictionary<string, int>();
         // 영입한 인재 로스터 (feat-014 #1, agent_types id). 익명 talent(시작 3 + 채용 업그레이드)는 포함 안 됨.
         public List<string> HiredAgentIds = new List<string>();
+        // 시설 (feat-014 #2) — 사무실 단계(구매형)와 본사 위치.
+        public int OfficeLevel = 1;
+        public string LocationId = "rural_garage";
         public List<string> PurchasedUpgrades = new List<string>();
         public List<string> PurchasedAutomation = new List<string>();
         public List<string> TriggeredEvents = new List<string>();

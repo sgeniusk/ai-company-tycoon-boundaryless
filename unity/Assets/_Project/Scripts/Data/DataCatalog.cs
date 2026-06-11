@@ -28,6 +28,8 @@ namespace AICompanyTycoon.Data
         // 인재·사무실 (feat-014 #1) — 채용 3택1 후보 풀 + 정원.
         public List<AgentTypeDef> agentTypes = new List<AgentTypeDef>();
         public List<OfficeExpansionDef> officeExpansions = new List<OfficeExpansionDef>();
+        // 본사 위치 (feat-014 #2) — 이전형, 고정비 모디파이어·인재 풀.
+        public List<CompanyLocationDef> companyLocations = new List<CompanyLocationDef>();
         public BalanceConfig balance;
 
         public ResourceDef GetResource(string id)

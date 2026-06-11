@@ -32,7 +32,8 @@ namespace AICompanyTycoon.Tests.EditMode
         {
             var ctx = SimulationContext.Create(Catalog());
             var b = ctx.Catalog.balance;
-            double expected = (b.baseMonthlyCashCost + 3 * b.salaryPerTalent) * 1.0; // users 0 -> compute cost 0, automation 0
+            // users 0 -> compute cost 0, automation 0. 위치 모디파이어 — 시작 본사(강원 산골 차고) 0.82 (feat-014 #2).
+            double expected = (b.baseMonthlyCashCost + 3 * b.salaryPerTalent) * OfficeService.GetLocationCostModifier(ctx.Model, ctx.Catalog);
             double before = ctx.Model.Cash;
             var s = ctx.Month.AdvanceMonth();
             Assert.AreEqual(expected, s.TotalCashCost, 0.001);

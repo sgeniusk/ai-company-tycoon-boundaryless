@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d2ba2cf3df8841f7bcd4269c529055f, type: 3}
+  m_Name: global_campus
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.CompanyLocationDef
+  id: global_campus
+  displayName: "\uAE00\uB85C\uBC8C AI \uCEA0\uD37C\uC2A4"
+  region: "\uAE00\uB85C\uBC8C"
+  description: "\uBAA8\uB378, \uBC18\uB3C4\uCCB4, \uB85C\uBD07, \uC18C\uBE44 \uC0B0\uC5C5\uC774
+    \uD55C \uBC88\uC5D0 \uB3CC\uC544\uAC00\uB294 \uCD5C\uC885\uAD8C \uAC70\uC810\uC785\uB2C8\uB2E4."
+  talentPool: "\uC138\uACC4\uAE09 \uD575\uC2EC \uC778\uC7AC"
+  monthlyCostModifier: 1.8
+  humanHireDiscount: -0.2
+  aiOperationBonus: 5
+  cost:
+  - resource: 0
+    amount: 80000
+  - resource: 2
+    amount: 80
+  - resource: 3
+    amount: 80
+  unlockRequirements:
+  - key: min_products
+    value: 5
+  - key: min_star
+    value: 4
+  - key: min_users
+    value: 50000
