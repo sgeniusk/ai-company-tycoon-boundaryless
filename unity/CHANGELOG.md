@@ -15,3 +15,11 @@
 - **경제 공식 React 정렬** — (a) `MonthController` 자동화 할인을 연산비 포함 전체 비용에 적용 + 상한 75% (기존은 연산비 할인 제외 — Godot 잔재). (b) `ProductService` 하이프 성장 *10 증폭 제거, React growthMultiplier 공식으로. (c) `RecruitService` 신설 — 반복 인재 채용 (talent 공급원, balance.json recruit_* 키). 게임플레이 영향 — 이용자 성장 속도 React 수준(~1/10), 자동화 투자 가치 상승.
 - **데이터 정본 확장 (additive)** — products.json 36→51종 (teaser/tier/prerequisite_products/미래 웨이브 15종), capabilities.json category. 그래프 무결성은 EditMode `TechTreeGraphTests`가 게이트. 루트 React 고정 기대값 2건이 이 확장으로 깨짐 (React 트랙 stale, 보류).
 - **경제 완주 가능성 게이트 보류** — `TechTreeReachabilityTests` (10년 tier4 목표 지향 봇) Inconclusive. 구조 진단 포함, feat-013에서 Fail 게이트로 복원 예정.
+
+## 2026-06-11 (밤) — feat-013 경제 완주 가능성 (구조 변경 4건 + 버그 수정 1건)
+- **산업 시너지/콤보 레이어** — `IndustrySynergyDef`(SO)·`IndustrySynergyService` 신설, `industry_synergies.json`+`industry_combos.json` 임포트(React v0.60 동치). 도메인 포트폴리오(해금 ∪ 출시 제품 도메인)가 월간 효과로 보상받는다. `MonthController` 3.6 additive 훅.
+- **이용자 수익화** — `balance.json`에 `revenue_per_1000_users`(additive, React 비파괴). 이용자가 순수 부채(연산비만)이던 구조를 자산으로 전환. 키 없으면 기존 동작.
+- **GPU 증설** — `RecruitService.BuyCompute`(`compute_pack_cost/amount`). 연산력의 유일한 반복 공급원 (기존은 일회성 +110이 전부라 장기 연구가 영구 차단).
+- **연산력 소모 공식 React 정렬** — `ProductService.ApplyMonthly`를 총 이용자 비례에서 React computePressure(신규 이용자 기반)로. 누적 이용자의 무한 잠식 제거.
+- **도메인 해금 순서 버그 수정** — `CapabilityService.Upgrade`가 능력별 unlocks_domains 매핑 레벨에서만 TryUnlock해, 다중 요건 도메인(반도체=최적화2+코드2 등)이 연구 순서에 따라 영구 미해금. `Domains.CheckAll()`로 교체.
+- 게이트 — `TechTreeReachabilityTests`를 Fail 게이트로 복원. 목표 지향 봇 기준 tier4 44개월 해금. EditMode 97/97.
