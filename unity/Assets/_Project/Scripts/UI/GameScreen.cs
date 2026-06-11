@@ -71,6 +71,13 @@ namespace AICompanyTycoon.UI
         Transform _worldRevealRows;
         Text _worldRevealSeed;
 
+        GameObject _interviewModal;    // 개업 인터뷰 (feat-015 #2)
+        Text _interviewSpeaker;
+        Text _interviewPrompt;
+        Transform _interviewChoices;
+        List<StartupInterview.Step> _interviewSteps;
+        int _interviewIndex;
+
         ToastRibbon _toastRibbon;      // 사건 토스트 리본 (feat-010 #4)
 
         string _pendingTierId = "standard"; // 새 게임 난이도 선택 (feat-008 #1)
@@ -122,6 +129,7 @@ namespace AICompanyTycoon.UI
             BuildMenuPopup(_canvas.transform);   // 탭 콘텐츠는 오피스 위 팝업으로
             BuildMoreDrawer(_canvas.transform);  // 저장/불러오기/새 게임 드로어
             BuildWorldRevealModal(_canvas.transform); // 세계 뽑기 리빌 (feat-007)
+            BuildInterviewModal(_canvas.transform);   // 개업 인터뷰 (feat-015 #2)
             BuildEventModal(_canvas.transform);
             BuildResultModal(_canvas.transform);
             SetActivePanel(_activeTab);
@@ -813,7 +821,10 @@ namespace AICompanyTycoon.UI
             }
 
             var stage = _context.Catalog.GetStage(_context.Model.CompanyStageId);
-            return stage != null ? Mathf.Clamp(stage.order + 1, 1, 6) : 1;
+            int star = stage != null ? Mathf.Clamp(stage.order + 1, 1, 6) : 1;
+            // 0성 — 차고 단계에서 첫 제품 출시 전 (feat-015 #2). 첫 출시와 함께 1★을 '획득'하는 도파민.
+            if (star == 1 && _context.Model.ActiveProducts.Count == 0) return 0;
+            return star;
         }
 
         static void AddOutline(GameObject go, Color color)
@@ -1087,11 +1098,111 @@ namespace AICompanyTycoon.UI
             });
             AddLayout(fresh.button.gameObject, 80, 0);
 
+            // 새 게임 (개업 스토리) — 차고 0성 + 개업 인터뷰 3장 (feat-015 #2). 선택이 지분·빚을 가른다.
+            var story = UiFactory.Button(card.transform, "새 게임 (개업 스토리)");
+            story.button.onClick.AddListener(() =>
+            {
+                var seed = "run-" + UnityEngine.Random.Range(100000, 999999);
+                ReplaceContext(SimulationContext.Create(_context.Catalog, 12345,
+                    new RunModifierInput { Seed = seed, ChallengeTierId = _pendingTierId }));
+                CloseMore();
+                StartInterview();
+            });
+            AddLayout(story.button.gameObject, 80, 0);
+
             var close = UiFactory.Button(card.transform, "닫기");
             close.button.onClick.AddListener(CloseMore);
             AddLayout(close.button.gameObject, 72, 0);
 
             _moreDrawer.SetActive(false);
+        }
+
+        // 개업 인터뷰 모달 — 기자 인터뷰 톤의 3장 선택 시퀀스 (feat-015 #2).
+        void BuildInterviewModal(Transform parent)
+        {
+            _interviewModal = UiFactory.Panel(parent, UiTheme.ModalScrim);
+            _interviewModal.name = "InterviewModal";
+            Stretch(_interviewModal.GetComponent<RectTransform>());
+
+            var card = UiFactory.Panel(_interviewModal.transform, UiTheme.PanelBg);
+            var rect = card.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.06f, 0.14f);
+            rect.anchorMax = new Vector2(0.94f, 0.86f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            UiFactory.VBox(card.transform, 14, new RectOffset(26, 26, 24, 24));
+
+            var title = UiFactory.Label(card.transform, "개업 인터뷰", UiTheme.FontTitle);
+            title.color = UiTheme.TextPrimary;
+            AddLayout(title.gameObject, 50, 0);
+
+            _interviewSpeaker = UiFactory.Label(card.transform, "", UiTheme.FontEmphasis);
+            _interviewSpeaker.color = UiTheme.GoalAccent;
+            AddLayout(_interviewSpeaker.gameObject, 42, 0);
+
+            _interviewPrompt = UiFactory.Label(card.transform, "", UiTheme.FontBody);
+            _interviewPrompt.color = UiTheme.TextSecondary;
+            AddLayout(_interviewPrompt.gameObject, 110, 1);
+
+            var choices = new GameObject("InterviewChoices", typeof(RectTransform));
+            choices.transform.SetParent(card.transform, false);
+            UiFactory.VBox(choices.transform, 10, new RectOffset());
+            AddLayout(choices, 380, 0);
+            _interviewChoices = choices.transform;
+
+            _interviewModal.SetActive(false);
+        }
+
+        // 개업 스토리 시작 — 인터뷰 3장 진행. 끝나면 개업 토스트와 함께 0성 차고에서 출발.
+        public void StartInterview()
+        {
+            if (_interviewModal == null || _context == null) return;
+            _interviewSteps = StartupInterview.GetSteps();
+            _interviewIndex = 0;
+            ShowInterviewStep();
+        }
+
+        void ShowInterviewStep()
+        {
+            if (_interviewSteps == null || _interviewIndex >= _interviewSteps.Count)
+            {
+                _interviewModal.SetActive(false);
+                if (_toastRibbon != null)
+                {
+                    _toastRibbon.Enqueue("개업! — 차고에서 시작하는 AI 회사", UiTheme.CrestGold);
+                }
+
+                SpawnCelebration("celebrate_combo", "개업!");
+                RefreshAll();
+                return;
+            }
+
+            var step = _interviewSteps[_interviewIndex];
+            _interviewSpeaker.text = step.Speaker;
+            _interviewPrompt.text = step.Prompt;
+            Clear(_interviewChoices);
+            foreach (var choice in step.Choices)
+            {
+                var b = UiFactory.Button(_interviewChoices, choice.Label);
+                b.label.fontSize = UiTheme.FontBody;
+                var captured = choice;
+                b.button.onClick.AddListener(() =>
+                {
+                    captured.Apply?.Invoke(_context);
+                    SetStatus(captured.Description);
+                    _interviewIndex++;
+                    ShowInterviewStep();
+                });
+                AddLayout(b.button.gameObject, 64, 0);
+
+                var desc = AddSmallText(_interviewChoices, choice.Description);
+                AddLayout(desc.gameObject, 34, 0);
+            }
+
+            _interviewModal.SetActive(true);
+            _interviewModal.transform.SetAsLastSibling();
+            var interviewCard = _interviewModal.transform.GetChild(0);
+            UiTween.PopIn(interviewCard, interviewCard.GetComponent<CanvasGroup>());
         }
 
         // 세계 뽑기 리빌 — 굴린 4축(도시/세계관/시장/창업자)을 v078 스탬프와 함께 보여준다 (feat-007 블록 #4).
@@ -2081,6 +2192,12 @@ namespace AICompanyTycoon.UI
                 {
                     AddSmallText(card, "· " + sh.name + " — " + sh.equity.ToString("F0") + "%");
                 }
+            }
+
+            // 융자 현황 (feat-015 #2) — 무차입이면 표시하지 않는다.
+            if (_context.Model.LoanPrincipal > 0)
+            {
+                AddSmallText(card, "대출 잔액 " + FormatMoney(_context.Model.LoanPrincipal) + " | 월 이자 " + FormatMoney(_context.Model.LoanPrincipal * 0.015));
             }
         }
 

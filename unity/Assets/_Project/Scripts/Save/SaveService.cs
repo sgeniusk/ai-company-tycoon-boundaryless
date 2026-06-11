@@ -56,6 +56,7 @@ namespace AICompanyTycoon.Save
             d.officeLevel = m.OfficeLevel;
             d.locationId = m.LocationId;
             d.founderEquity = m.FounderEquity;
+            d.loanPrincipal = m.LoanPrincipal;
             foreach (var sh in m.Shareholders)
                 d.shareholders.Add(new ShareholderSave { name = sh.name, kind = sh.kind, equity = sh.equity });
             foreach (var c in m.CompetitorStates)
@@ -97,6 +98,7 @@ namespace AICompanyTycoon.Save
             m.LocationId = string.IsNullOrEmpty(d.locationId) ? "rural_garage" : d.locationId;
             // 지분 (v7) — 구세이브(0)는 창업자 100%.
             m.FounderEquity = d.founderEquity <= 0 ? 100 : d.founderEquity;
+            m.LoanPrincipal = d.loanPrincipal;
             m.Shareholders = new List<ShareholderEntry>();
             if (d.shareholders != null)
                 foreach (var sh in d.shareholders)

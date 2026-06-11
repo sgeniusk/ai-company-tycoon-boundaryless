@@ -59,6 +59,58 @@ namespace AICompanyTycoon.Tests.EditMode
         }
 
         [Test]
+        public void Interview_AngelChoice_GrantsEquityAndCash()
+        {
+            var ctx = Fresh();
+            var steps = StartupInterview.GetSteps();
+            Assert.AreEqual(3, steps.Count, "개업 인터뷰는 3장이다 (엔젤/공동창업/은행).");
+
+            double cashBefore = ctx.Model.Cash;
+            steps[0].Choices.Find(c => c.Id == "big").Apply(ctx);
+            Assert.AreEqual(75, ctx.Model.FounderEquity, 0.001);
+            Assert.AreEqual(cashBefore + 20000, ctx.Model.Cash, 0.001);
+        }
+
+        [Test]
+        public void Interview_CofounderChoice_AddsTalentForEquity()
+        {
+            var ctx = Fresh();
+            double talentBefore = ctx.Model.Talent;
+            StartupInterview.GetSteps()[1].Choices.Find(c => c.Id == "accept").Apply(ctx);
+            Assert.AreEqual(95, ctx.Model.FounderEquity, 0.001);
+            Assert.AreEqual(talentBefore + 1, ctx.Model.Talent, 0.001);
+        }
+
+        [Test]
+        public void Interview_BankLoan_AddsCash_AndMonthlyInterest()
+        {
+            var baseline = Fresh();
+            var loaned = Fresh();
+            StartupInterview.GetSteps()[2].Choices.Find(c => c.Id == "take").Apply(loaned);
+            Assert.AreEqual(StartupInterview.LoanOfferAmount, loaned.Model.LoanPrincipal, 0.001);
+            Assert.AreEqual(baseline.Model.Cash + StartupInterview.LoanOfferAmount, loaned.Model.Cash, 0.001);
+
+            var sBase = baseline.Month.AdvanceMonth();
+            var sLoaned = loaned.Month.AdvanceMonth();
+            Assert.AreEqual(StartupInterview.LoanOfferAmount * 0.015, sLoaned.TotalCashCost - sBase.TotalCashCost, 0.001,
+                "대출 원금의 월 1.5%가 고정비에 붙어야 한다.");
+        }
+
+        [Test]
+        public void Loan_SaveRoundTrip()
+        {
+            var ctx = Fresh();
+            ctx.Model.LoanPrincipal = 6000;
+            var path = System.IO.Path.Combine(Application.temporaryCachePath, "test-loan-save.json");
+            var save = new Save.SaveService(path);
+            save.Save(ctx.Model);
+            var loaded = new GameModel();
+            Assert.IsTrue(save.Load(loaded));
+            Assert.AreEqual(6000, loaded.LoanPrincipal, 0.001);
+            System.IO.File.Delete(path);
+        }
+
+        [Test]
         public void Equity_SaveRoundTrip_AndLegacyDefaults100()
         {
             var ctx = Fresh();

@@ -45,6 +45,8 @@ namespace AICompanyTycoon.Core
         // 지분 (feat-015 #1) — 창업자 지분 % + 외부 주주 명부. 불변식: 창업자 + 주주 합 = 100.
         public double FounderEquity = 100;
         public List<ShareholderEntry> Shareholders = new List<ShareholderEntry>();
+        // 융자 (feat-015 #2) — 대출 원금. 월 이자가 고정비에 붙는다. 0이면 무차입(기존 동작 그대로).
+        public double LoanPrincipal;
         public List<string> PurchasedUpgrades = new List<string>();
         public List<string> PurchasedAutomation = new List<string>();
         public List<string> TriggeredEvents = new List<string>();

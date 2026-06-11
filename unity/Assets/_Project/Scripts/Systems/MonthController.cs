@@ -56,7 +56,9 @@ namespace AICompanyTycoon.Systems
             double discountMult = 1.0 - autoReduction;
             // 본사 위치 고정비 모디파이어 (feat-014 #2, React locationCostModifier 동치 — 차고 0.82 ~ 글로벌 1.8).
             double locationMult = OfficeService.GetLocationCostModifier(_m, _c);
-            double totalCash = (baseCost + salaryCost + computeCost) * locationMult * discountMult;
+            // 대출 이자 (feat-015 #2) — 원금의 월 1.5%. 할인 대상 아님(금융비). 무차입이면 0.
+            double interest = _m.LoanPrincipal > 0 ? _m.LoanPrincipal * 0.015 : 0;
+            double totalCash = (baseCost + salaryCost + computeCost) * locationMult * discountMult + interest;
             _r.Add(ResourceId.Cash, -totalCash);
             s.BaseCost = baseCost;
             s.SalaryCost = salaryCost;

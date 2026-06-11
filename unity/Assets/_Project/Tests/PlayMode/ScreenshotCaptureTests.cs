@@ -149,6 +149,28 @@ namespace AICompanyTycoon.Tests.PlayMode
                 yield return CaptureCanvas(canvasGo, "07-world-reveal.png");
             }
 
+            // 8) 개업 인터뷰 — 개업 스토리 새 게임으로 인터뷰 모달 캡처 (feat-015 #2)
+            var revealClose = FindButton(canvasGo, "이 세계로 시작!");
+            if (revealClose != null)
+            {
+                revealClose.onClick.Invoke();
+                yield return WaitRealtime(0.2f);
+            }
+
+            if (more != null)
+            {
+                more.onClick.Invoke();
+                yield return WaitRealtime(0.2f);
+            }
+
+            var storyNew = FindButton(canvasGo, "새 게임 (개업 스토리)");
+            if (storyNew != null)
+            {
+                storyNew.onClick.Invoke();
+                yield return WaitRealtime(0.4f);
+                yield return CaptureCanvas(canvasGo, "11-interview.png");
+            }
+
             Object.Destroy(go);
             yield return null;
         }

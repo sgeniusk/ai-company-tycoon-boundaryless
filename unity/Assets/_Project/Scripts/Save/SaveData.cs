@@ -53,7 +53,7 @@ namespace AICompanyTycoon.Save
     [Serializable]
     public class SaveData
     {
-        public int version = 7;
+        public int version = 8;
         public double cash;
         public double users;
         public double compute;
@@ -77,6 +77,8 @@ namespace AICompanyTycoon.Save
         // 지분 (v7, feat-015). 구세이브 founderEquity 0 → 100%로 마이그레이션.
         public double founderEquity;
         public List<ShareholderSave> shareholders = new List<ShareholderSave>();
+        // 융자 (v8, feat-015 #2). 구세이브 0 = 무차입.
+        public double loanPrincipal;
         public List<string> purchasedUpgrades = new List<string>();
         public List<string> purchasedAutomation = new List<string>();
         public List<string> triggeredEvents = new List<string>();
