@@ -61,3 +61,4 @@ MonoBehaviour:
   - resource: 7
     amount: 4
   icon: "\U0001F916"
+  category: industry

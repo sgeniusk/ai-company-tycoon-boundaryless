@@ -44,3 +44,7 @@ MonoBehaviour:
   - chip
   - vision
   - quality
+  teaser: "\uBC18\uC9DD\uC774\uB294 \uC6D0\uD310 \uC704 \uBBF8\uC138\uD55C \uBA3C\uC9C0\uAC00
+    \uBCF4\uACE0\uC11C\uB97C \uBD80\uB985\uB2C8\uB2E4."
+  prerequisiteProducts: []
+  tier: 3

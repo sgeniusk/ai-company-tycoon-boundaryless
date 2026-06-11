@@ -44,3 +44,4 @@ MonoBehaviour:
     domainId: enterprise_automation
   effectsPerLevel: []
   icon: "\U0001F3E2"
+  category: business

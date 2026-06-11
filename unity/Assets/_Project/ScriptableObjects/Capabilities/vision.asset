@@ -61,3 +61,4 @@ MonoBehaviour:
     domainId: mobility
   effectsPerLevel: []
   icon: "\U0001F441\uFE0F"
+  category: research

@@ -51,3 +51,4 @@ MonoBehaviour:
   - resource: 5
     amount: 3
   icon: "\U0001F6E1\uFE0F"
+  category: applied

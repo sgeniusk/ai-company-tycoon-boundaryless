@@ -51,3 +51,4 @@ MonoBehaviour:
     domainId: enterprise_automation
   effectsPerLevel: []
   icon: "\U0001F916"
+  category: applied

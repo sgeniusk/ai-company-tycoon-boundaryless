@@ -49,3 +49,4 @@ MonoBehaviour:
   unlocksDomains: []
   effectsPerLevel: []
   icon: "\U0001F3B5"
+  category: research

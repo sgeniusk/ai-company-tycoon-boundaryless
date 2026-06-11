@@ -59,3 +59,4 @@ MonoBehaviour:
     domainId: education
   effectsPerLevel: []
   icon: "\U0001F4DD"
+  category: research

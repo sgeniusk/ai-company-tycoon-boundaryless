@@ -44,3 +44,7 @@ MonoBehaviour:
   - market
   - agent
   - weird
+  teaser: "\uB3D9\uB124 \uC720\uB3D9 \uC778\uAD6C \uC9C0\uB3C4\uAC00 \uC0C9\uC885\uC774\uCC98\uB7FC
+    \uBC18\uC9DD\uC785\uB2C8\uB2E4."
+  prerequisiteProducts: []
+  tier: 3

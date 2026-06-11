@@ -58,3 +58,4 @@ MonoBehaviour:
     domainId: developer_tools
   effectsPerLevel: []
   icon: "\U0001F4BB"
+  category: research
