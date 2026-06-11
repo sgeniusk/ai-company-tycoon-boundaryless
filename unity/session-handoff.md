@@ -4,8 +4,8 @@
 
 ## 현재 목표 (Current Objective)
 - 목표 — Godot 프로토타입을 Unity 6 모바일 타이쿤으로 재설계.
-- 현재 상태 — **feat-012 테크트리 + feat-013 경제 완주 가능성 완료.** EditMode **97/97**, tier4 도달 게이트 그린(44개월차 해금, 승리 ~30개월대).
-- 브랜치 / 커밋 — `main`, 로컬 6커밋(447f43c~a8cc105+docs) — **origin 푸시 전** (사용자 확인 후).
+- 현재 상태 — **feat-012 테크트리 + feat-013 경제 + feat-014 #1 경영 탭 완료.** EditMode **102/102**, tier4 게이트 그린(37개월).
+- 브랜치 / 커밋 — `main`, 로컬 9커밋(447f43c~ed8013f+docs) — **origin 푸시 전** (사용자 확인 후).
 
 ## 이번 세션 한 일 (2026-06-11 저녁)
 - feat-012 전 블록 — #1 노출 상태 머신(ProductVisibilityService, derive-only 5상태)+제품 팝업 도메인 섹션/???티저/미발견 카운터, #2 teaser 36종+tier+category(Codex), #3 선행 체인+미래 제품 15종=51종(Codex)+그래프 무결성 게이트, #4 능력 다음레벨 미리보기+해금 모먼트 토스트/축하+밸런스 패스.
@@ -26,7 +26,7 @@
 ## 다음 세션 시작 (Next Session)
 1. `cd unity && git pull` + 다른 Unity 미실행 확인(`ps -axo command | grep "[U]nity.app..." | grep -i projectpath`)
 2. `./init.sh` 베이스라인(97/97) 확인
-3. 후보 — ① feat-012 #5 트리 그래프 화면 ② 실기기 검증(경제 체감 변화 큼) ③ 도감 열람 UI ④ 밸런스 체감 튜닝(승리 ~30개월대 — ARPU 55·GPU 팩 2.5K가 레버).
+3. **feat-014 #2 시설(사무실 구매·본사 이전·성급 게이트)** — 정본 docs/feat-014-context-notes.md. 이후 #3 환산·표기, #4 전략, #5 비주얼.
 
 ## 권장 다음 단계 (Recommended Next Step)
 실기기/에뮬레이터 검증 — feat-012/013으로 게임플레이가 크게 변해(트리 발견 사다리·이용자 수익·GPU 증설·시너지 토스트) 체감 확인이 가장 가치 큼. 푸시도 사용자 확인 대기 중.

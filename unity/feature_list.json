@@ -164,9 +164,9 @@
       "dependencies": [
         "feat-013"
       ],
-      "status": "planned",
-      "owner": "사용자 설계 확정 대기",
-      "evidence": "설계 초안 작성. 즉답 패치 — 채용/GPU 카드 잠금 사유 표기 + 첫 채용비 4.9K→2.5K(기준 인재 초과분부터 기하 증가)"
+      "status": "in-progress",
+      "owner": "Claude",
+      "evidence": "#1 완료(ed8013f) — 경영 탭 골격+채용 3택1+정원+로스터 보너스+프리랜서. EditMode 102/102, tier4 37개월. 남은 블록 — #2 시설(사무실 구매·본사 이전) #3 개발력 전체 환산+TOPS·기대수익 표기 #4 전략 활동 #5 성급 비주얼"
     }
   ]
 }
