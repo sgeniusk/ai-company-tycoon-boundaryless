@@ -134,6 +134,17 @@
       "status": "done",
       "owner": "Claude",
       "evidence": "EditMode 54/54 유지 + 캡처 01-main이 React 레퍼런스와 같은 구도(슬림 톱·칩·전광판 / 오피스 무대 / 요약·리본 / 도크)로 정렬. 캡처 하네스 이름 의존성 보존"
+    },
+    {
+      "id": "feat-012",
+      "name": "AI 테크트리 — 분류·떡밥·해금 (P13)",
+      "description": "사용자 방향(2026-06-11) — 제품·능력 분류(도메인 섹션+진행도), 잠금 3단계 노출(해금/??? 티저 떡밥/숨김 카운터), 문명식 선행 연계(prerequisite_products+tier+미래 제품 웨이브). derive-only 상태 머신, 정본 JSON additive 확장. 설계 docs/feat-012-context-notes.md (5블록, #2/#3 데이터는 Codex 위임)",
+      "dependencies": [
+        "feat-008"
+      ],
+      "status": "ready",
+      "owner": "Claude->Codex",
+      "evidence": "설계 확정(2026-06-11, 사용자 '설계 문서만' 선택). 구현 미착수 — 다음 세션 #1(노출 상태 머신+섹션 UI)부터"
     }
   ]
 }

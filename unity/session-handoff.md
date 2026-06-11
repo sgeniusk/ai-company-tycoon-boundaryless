@@ -29,7 +29,7 @@
 1. `cd unity && git pull`
 2. 다른 Unity 미실행 확인 — `ps -axo command | grep "[U]nity.app/Contents/MacOS/Unity " | grep -i projectpath`
 3. `./init.sh` 베이스라인(66/66) 확인
-4. progress.md "다음" 섹션에서 선택 — ① 실기기 검증 ② 도감 열람 UI ③ 트렌드 콘텐츠(Codex 위임)
+4. **feat-012 AI 테크트리(ready, 설계 확정)** — docs/feat-012-context-notes.md 정독 후 #1(노출 상태 머신+섹션 UI)부터. #2/#3 데이터 웨이브는 Codex 핸드오프 작성·발사.
 
 ## 권장 다음 단계 (Recommended Next Step)
-실기기/에뮬레이터 검증이 1순위 — 이번 세션의 가독성·도파민·구도 변경은 실폰 체감 확인이 가치의 절반이다. APK 재빌드는 AICT/Platform/Build Android. 캡처 하네스 사용법은 docs/feat-006-checklist.md, 단일 라이선스 트랩 주의.
+feat-012가 사용자 지정 1순위(분류·??? 떡밥·문명식 트리). 병렬로 실기기/에뮬레이터 검증(가독성·도파민 체감)도 가치 큼. 캡처 하네스 사용법은 docs/feat-006-checklist.md, 단일 라이선스 트랩 주의.
