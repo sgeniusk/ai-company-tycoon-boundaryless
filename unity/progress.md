@@ -26,6 +26,7 @@
 - [x] 아트 v091 — 오피스 오브젝트 고해상(384x288) Codex 절차 향상 반입 + v090/v091 임포터 드롭인 교체(같은 셀 이름, IconLibrary 경로 스왑). 캡처 01/08/09 검증
 - [x] feat-009 — 사용자 피드백 대응. A 가독성 전면 패스(UiTheme 폰트 위계 상수 + 66개소 폰트·높이 상향, 패널 알파 0.80→0.93, 텍스트 대비 강화) B AI 비서 가이던스(GuidanceService 헤드리스 + FAB 라벨·톤·행동이 제안에 따라 변경 + 미나 리본, seen 집합으로 잠금 없음). GuidanceTests 4, EditMode 50/50
 - [x] feat-010 — 키우기 게임식 도파민(사용자 방향). FloatingText 수익 플로팅(금액 스케일)+직원 환호, WorkLoop 상시 작업 이모트, SpawnCelebration 승급·첫출시 빅팝+파티클, MilestoneService 니어미스(헤드리스, MilestoneTests 4), ToastRibbon 사건 큐(오피스 비가림). EditMode 54/54 + 캡처 10-dopamine 검증
+- [x] feat-011 — 첫 화면 구도 정렬(사용자 피드백 "React판과 비주얼 달라 판단 어려움"). 오피스 풀스크린 스테이지(UI 뒤 절대 배치)+가운데 스페이서, 톱바 슬림(타이틀 제거), 리본 도크 위 재배치, 스크림 0.38, 액터·가구 확대. React 레퍼런스 스샷 docs/art-pipeline/ref/react-fresh-mobile-reference.png 보존
 ### 진행 중 (What's In Progress)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 

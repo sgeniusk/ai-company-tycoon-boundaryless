@@ -95,20 +95,21 @@ namespace AICompanyTycoon.UI
             Stretch(root.GetComponent<RectTransform>());
 
             BuildOfficeBackground(root.transform);
+            BuildOfficeScene(root.transform); // 풀스크린 스테이지 — 게임 씬 먼저, UI는 위에 뜬다 (feat-011, React v0.96 구도)
 
             // 노치/홈 인디케이터를 피해 콘텐츠를 safe area 안에 담는다. 배경(root)은 화면 전체를 덮는다.
             var safeArea = new GameObject("SafeArea", typeof(RectTransform), typeof(SafeAreaFitter));
             safeArea.transform.SetParent(root.transform, false);
             Stretch(safeArea.GetComponent<RectTransform>());
             var content = safeArea.transform;
-            UiFactory.VBox(content, 18, new RectOffset(28, 28, 28, 28));
+            UiFactory.VBox(content, 14, new RectOffset(28, 28, 24, 24));
 
             BuildTopBar(content);
             BuildResourceHud(content);
             BuildScoreboard(content);
-            BuildGoalRibbon(content);
-            BuildOfficeScene(content);   // office-first — 남는 공간을 차지하는 주인공
+            BuildStageSpacer(content);   // 가운데는 비워 스테이지(오피스)가 주인공이 되게
             BuildMonthSummary(content);
+            BuildGoalRibbon(content);    // AI 비서 리본 — 도크 바로 위 (React 구도)
             BuildStatusLine(content);
             BuildBottomDock(content);    // CD-3 하단 도크 — 탭 + 다음달 FAB + 더보기
             BuildMenuPopup(_canvas.transform);   // 탭 콘텐츠는 오피스 위 팝업으로
@@ -336,8 +337,8 @@ namespace AICompanyTycoon.UI
             bgImage.preserveAspect = false;
             bgImage.raycastTarget = false;
 
-            // 크림 톤 반투명 막 — office가 비치면서 텍스트는 읽히게 한다.
-            var scrim = UiFactory.Panel(parent, new Color(UiTheme.ScreenBg.r, UiTheme.ScreenBg.g, UiTheme.ScreenBg.b, 0.55f));
+            // 크림 톤 반투명 막 — office가 주인공으로 보이게 약하게만 (feat-011에서 0.55→0.38, 텍스트 대비는 패널 자체 bg가 담당).
+            var scrim = UiFactory.Panel(parent, new Color(UiTheme.ScreenBg.r, UiTheme.ScreenBg.g, UiTheme.ScreenBg.b, 0.38f));
             scrim.name = "BackgroundScrim";
             Stretch(scrim.GetComponent<RectTransform>());
             scrim.GetComponent<Image>().raycastTarget = false;
@@ -456,11 +457,24 @@ namespace AICompanyTycoon.UI
         }
 
         // office 배경 위에 직원 캐릭터(v076)를 세울 사무실 씬 영역. 가구(뒤) + 직원(앞) 2층.
+        // VBox 가운데를 비워 뒤의 풀스크린 스테이지가 보이게 하는 투명 스페이서 (feat-011).
+        void BuildStageSpacer(Transform parent)
+        {
+            var spacer = new GameObject("StageSpacer", typeof(RectTransform));
+            spacer.transform.SetParent(parent, false);
+            AddLayout(spacer, 200, 1);
+        }
+
         void BuildOfficeScene(Transform parent)
         {
+            // 풀스크린 스테이지 — UI 패널 뒤, 화면 중앙 밴드에 절대 배치 (feat-011, React 게임-씬-퍼스트 구도).
             var panel = new GameObject("OfficeScene", typeof(RectTransform));
             panel.transform.SetParent(parent, false);
-            AddLayout(panel, 260, 1); // office-first — flex 1로 남는 세로 공간을 차지
+            var stageRect = panel.GetComponent<RectTransform>();
+            stageRect.anchorMin = new Vector2(0f, 0.20f);
+            stageRect.anchorMax = new Vector2(1f, 0.74f);
+            stageRect.offsetMin = Vector2.zero;
+            stageRect.offsetMax = Vector2.zero;
 
             // 1층(뒤) — v054 오피스 가구를 상단~중단 밴드에 깔아 사무실감을 준다.
             BuildOfficeFurniture(panel.transform);
@@ -522,10 +536,10 @@ namespace AICompanyTycoon.UI
                 img.color = new Color(1f, 1f, 1f, 0.94f); // 살짝 가라앉혀 직원이 앞으로 읽히게
 
                 var le = go.AddComponent<LayoutElement>();
-                le.minWidth = 168;
-                le.preferredWidth = 168;
-                le.minHeight = 126;
-                le.preferredHeight = 126;
+                le.minWidth = 200;
+                le.preferredWidth = 200;
+                le.minHeight = 150;
+                le.preferredHeight = 150;
                 le.flexibleWidth = 0;
                 le.flexibleHeight = 0;
             }
@@ -551,10 +565,10 @@ namespace AICompanyTycoon.UI
                 var cell = new GameObject("ActorCell", typeof(RectTransform));
                 cell.transform.SetParent(_officeSceneContent, false);
                 var cellLayout = cell.AddComponent<LayoutElement>();
-                cellLayout.minWidth = 120;
-                cellLayout.preferredWidth = 120;
-                cellLayout.minHeight = 132;
-                cellLayout.preferredHeight = 132;
+                cellLayout.minWidth = 150;
+                cellLayout.preferredWidth = 150;
+                cellLayout.minHeight = 164;
+                cellLayout.preferredHeight = 164;
                 cellLayout.flexibleWidth = 0;
                 cellLayout.flexibleHeight = 0;
 
@@ -564,7 +578,7 @@ namespace AICompanyTycoon.UI
                 rect.anchorMin = new Vector2(0.5f, 0f);
                 rect.anchorMax = new Vector2(0.5f, 0f);
                 rect.pivot = new Vector2(0.5f, 0f);
-                rect.sizeDelta = new Vector2(120, 120);
+                rect.sizeDelta = new Vector2(150, 150);
                 rect.anchoredPosition = Vector2.zero;
 
                 var img = iconGo.GetComponent<Image>();
@@ -585,15 +599,11 @@ namespace AICompanyTycoon.UI
 
         void BuildTopBar(Transform parent)
         {
+            // 슬림 톱바 — 게임 타이틀은 빼고 월/단계만. 화면은 오피스 무대가 주인공 (feat-011, React 구도).
             var panel = UiFactory.Panel(parent, UiTheme.HeaderBg);
             panel.name = "TopBar";
-            AddLayout(panel, 164, 0);
-            UiFactory.VBox(panel.transform, 4, new RectOffset(24, 24, 14, 14));
-
-            var title = UiFactory.Label(panel.transform, "AI Company Tycoon", 46);
-            title.color = UiTheme.HeaderText;
-            title.alignment = TextAnchor.MiddleLeft;
-            AddLayout(title.gameObject, 58, 0);
+            AddLayout(panel, 78, 0);
+            UiFactory.VBox(panel.transform, 0, new RectOffset(24, 24, 10, 10));
 
             var row = new GameObject("StatusRow", typeof(RectTransform));
             row.transform.SetParent(panel.transform, false);
