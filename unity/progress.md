@@ -3,9 +3,9 @@
 재시작 상태용이다. 전체 이력 아님. 오래된 증거는 CHANGELOG로. (≤120줄)
 
 ## 현재 상태 (Current State)
-**마지막 갱신** — 2026-06-11
-**활성 피처** — **로그라이크 트랙 완결.** feat-007(척추)·feat-008(난이도·아키타입 도감·멀티 엔딩 24종)·feat-009(가독성+가이던스 FAB)·feat-010(도파민)·feat-011(풀스크린 스테이지 구도) 전부 완료. **EditMode 66/66** + PlayMode 캡처 11장.
-**현재 목표** — 다음 후보는 ① 실기기/에뮬레이터 검증(APK 준비됨, 도파민·가독성 체감 확인) ② 트렌드 콘텐츠 웨이브(Codex 위임) ③ 도감 열람 UI(아키타입 12·엔딩 24 컬렉션 화면 — 데이터·기록은 이미 동작).
+**마지막 갱신** — 2026-06-11 (저녁)
+**활성 피처** — **feat-012 AI 테크트리 완료** (4커밋 447f43c/d5a0e0b/cd91972/cf62d2b, origin 푸시 전). EditMode **90 통과/0 실패/1 보류**.
+**현재 목표** — **feat-013 경제 완주 가능성(ready, 사용자 방향 결정 대기)**가 1순위 후보. 대안 — feat-012 #5 트리 그래프 화면 / 실기기 검증 / 도감 열람 UI.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -28,18 +28,21 @@
 - [x] feat-010 — 키우기 게임식 도파민(사용자 방향). FloatingText 수익 플로팅(금액 스케일)+직원 환호, WorkLoop 상시 작업 이모트, SpawnCelebration 승급·첫출시 빅팝+파티클, MilestoneService 니어미스(헤드리스, MilestoneTests 4), ToastRibbon 사건 큐(오피스 비가림). EditMode 54/54 + 캡처 10-dopamine 검증
 - [x] feat-011 — 첫 화면 구도 정렬(사용자 피드백 "React판과 비주얼 달라 판단 어려움"). 오피스 풀스크린 스테이지(UI 뒤 절대 배치)+가운데 스페이서, 톱바 슬림(타이틀 제거), 리본 도크 위 재배치, 스크림 0.38, 액터·가구 확대. React 레퍼런스 스샷 docs/art-pipeline/ref/react-fresh-mobile-reference.png 보존
 - [x] feat-008 — 로그라이크 심화 3블록. #1 난이도 티어 4종(헤드윈드+더보기 선택 UI) #2 아키타입 12종 파생 엔진(React tag-derivation 동일)+월간 보너스 훅+MetaSave 크로스런 도감+리빌 NEW! 발견 연출 #3 멀티 엔딩 24종(EndingService 조건·우선순위·폴백, Python 교차 픽스처 일치)+결과 모달 결말·도감 카운트. EditMode 66/66
+- [x] feat-012 — AI 테크트리(분류·떡밥·해금). #1 ProductVisibilityService 5상태 발견의 사다리(derive-only)+제품 팝업 도메인 섹션/???티저/미발견 카운터 #2 teaser 36종+tier+category(Codex) #3 선행 체인+미래 제품 15종=51종(Codex)+TechTreeGraphTests 4종 게이트+CanLaunch 선행 조건 #4 능력 다음레벨 미리보기+해금 모먼트 연출+밸런스 패스. 밸런스 패스 부산물 — 제품 레벨업 포팅(SaveData v4)·RecruitService·React 비용 공식 정렬(자동화 할인 전체 적용+하이프 *10 제거). 정본 docs/feat-012-context-notes.md
 ### 진행 중 (What's In Progress)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)
-0. **feat-012 AI 테크트리 (설계 확정, ready)** — 분류·떡밥·해금. 정본 docs/feat-012-context-notes.md. #1 노출 상태 머신+섹션 UI(Claude)부터, #2/#3 데이터 웨이브는 Codex 핸드오프.
-1. **실기기/에뮬레이터 검증** — APK 재빌드(AICT/Platform/Build Android) 후 10분 핵심 루프 + 가독성·도파민 체감 + 노치 세이프에어리어.
-2. **도감 열람 UI** — MetaSave에 아키타입·엔딩 발견 기록은 동작 중. 더보기에 컬렉션 화면(12 아키타입/24 엔딩, 미발견 실루엣) 추가가 자연스러운 다음 단계.
-3. **트렌드 콘텐츠 웨이브** — 이벤트 15종에 2025~26 AI 트렌드 이벤트 추가(에이전트 열풍/추론 비용/오픈웨이트/전력 병목/규제). 데이터 전용, Codex 위임 후보.
-4. **리빌 모달 폴리시** — 행 레이아웃 다듬기 + 새 게임 확인 다이얼로그(진행 중 런 보호) 검토.
-5. 시각 회귀 — 이후 UI/아트 변경 시 `ScreenshotCaptureTests` 재실행해 캡처 대조(체크리스트에 명령). 재시작 전 다른 Unity 미실행 확인.
+0. **feat-013 경제 완주 가능성 (ready, 사용자 방향 결정 대기)** — feat-012 #4가 노출한 구조 결함: 이용자=순수 부채(연산 현금비용), React의 다층 월간 수익 스트림(사무실/성장경로/시너지) 부재로 10년 tier4 미도달. 방향 A React 시스템 추가 포팅 / B 데이터 튜닝 / C 혼합. 진단 하네스 TechTreeReachabilityTests(Inconclusive 보류 중 → 닫을 때 Fail 게이트 복원).
+1. **feat-012 #5 — 문명식 트리 그래프 화면** (설계 노트의 후속 블록).
+2. **실기기/에뮬레이터 검증** — APK 재빌드 후 10분 핵심 루프 + 가독성·도파민 체감 + 노치.
+3. **도감 열람 UI** — 아키타입 12/엔딩 24 컬렉션 화면(미발견 실루엣).
+4. **트렌드 콘텐츠 웨이브** — 2025~26 AI 트렌드 이벤트(데이터 전용, Codex 후보).
+5. 시각 회귀 — UI/아트 변경 시 `ScreenshotCaptureTests` 재실행. 재시작 전 다른 Unity 미실행 확인.
 
 ## 블로커 / 리스크
+- [ ] **루트 React harness:gate 깨짐** — feat-012 #3이 정본 products.json에 15종 추가하며 React 고정 기대값 2건 실패(물리 산업 제품 수 6→9 고정 테스트, 골든 시뮬 경쟁사 선점 분기). React 트랙은 stale이라 보류 — 재개 시 기대값 갱신 필요.
+- [ ] 경제 공식 정렬(cf62d2b)은 게임플레이 영향 있음 — 이용자 성장 React 수준(~1/10), 자동화 할인 가치 상승. 실기기 체감 재확인 권장.
 - [ ] agy 비대화형 발사 — `--dangerously-skip-permissions`가 권한 분류기에 거부됨. 이미지 외주는 Codex 절차 생성으로 대체 검증(v090/v091 모두 성공).
 - [ ] 검증 환경 — 다른 프로젝트 Codex가 Unity 점유 시 batchmode 막힘. 검증 전 ps 확인.
 - [ ] 임시 아트 — 아이콘/스플래시는 office 배경 임시. 최종 픽셀아트는 추후 세션(backlog).

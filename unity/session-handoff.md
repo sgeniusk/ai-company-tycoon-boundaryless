@@ -4,32 +4,30 @@
 
 ## 현재 목표 (Current Objective)
 - 목표 — Godot 프로토타입을 Unity 6 모바일 타이쿤으로 재설계.
-- 현재 상태 — **로그라이크 트랙 완결 + 도파민·구도 정렬 완료.** feat-007(런 모디파이어 척추)·feat-008(난이도 4티어·아키타입 12 도감·멀티 엔딩 24)·feat-009(가독성+AI 비서 가이던스 FAB)·feat-010(수익 도파민·워크루프·토스트)·feat-011(오피스 풀스크린 스테이지) 전부 done.
-- 브랜치 / 커밋 — `main`, origin 푸시 완료. EditMode **66/66**, PlayMode 캡처 11장.
+- 현재 상태 — **feat-012 AI 테크트리 완료** (발견의 사다리 + 51종 트리 + 제품 레벨업·채용·경제 정렬). EditMode **90 통과/0 실패/1 보류**.
+- 브랜치 / 커밋 — `main`, 로컬 4커밋(447f43c/d5a0e0b/cd91972/cf62d2b) — **origin 푸시 전** (사용자 확인 후).
 
-## 이번 세션 한 일 (2026-06-11, 3트랙 병렬)
-- 계획 — 사용자 승인으로 3트랙 병렬(리플레이성/콘텐츠/아트). feat-007~011 전부 이번 세션에 완성.
-- 한글화 — events.json 15종 완전 한글(Codex 위임→SO 재시드 검증).
-- 아트 — v090 액터·v091 오피스 오브젝트 고해상을 Codex 절차 생성으로 반입, 드롭인 교체(agy 비대화형은 권한 거부 — Codex 우회 확립).
-- 사용자 피드백 2건 즉시 대응 — 가독성(폰트 위계 최소 26)+가이던스 FAB 복원(feat-009), React판과 구도 차이(feat-011 풀스크린 스테이지, 레퍼런스 스샷 docs/art-pipeline/ref/).
+## 이번 세션 한 일 (2026-06-11 저녁)
+- feat-012 전 블록 — #1 노출 상태 머신(ProductVisibilityService, derive-only 5상태)+제품 팝업 도메인 섹션/???티저/미발견 카운터, #2 teaser 36종+tier+category(Codex), #3 선행 체인+미래 제품 15종=51종(Codex)+그래프 무결성 게이트, #4 능력 다음레벨 미리보기+해금 모먼트 토스트/축하+밸런스 패스.
+- 밸런스 패스가 경제 구조 결함 노출 → React 동치 방향으로 3건 선반영: **제품 레벨업**(SaveData v4, 매출+35%/Lv), **RecruitService**(반복 인재 채용 — talent 공급원 부재 해소), **비용 공식 정렬**(자동화 할인 연산비 포함·상한 75%, 하이프 성장 *10 증폭 제거).
+- 잔여 격차는 **feat-013 등록**(사용자 방향 결정 대기) — 10년 tier4 시뮬은 Inconclusive 보류.
 
 ## 검증 (통과)
-- EditMode 66/66 — RunModifier 14·WorldEvent 6·Guidance 4·Milestone 4·Archetype 5·Ending 4 등 신규 37.
-- React 동치 — FNV-1a 고정값, 세계 이벤트 스케줄·엔딩 판정은 Python 교차 픽스처와 일치.
-- 시각 — ScreenshotCaptureTests 캡처 11장(01-main 구도/07-world-reveal/10-dopamine/06 티어 선택 등) 육안 대조.
-- 남음 — 실기기/노치 미확인(헤드리스 한계).
+- EditMode 91종 — ProductVisibility 16·TechTreeGraph 4·도달성 1(보류) 등 신규 21. React 동치(FNV-1a·세계이벤트·엔딩 픽스처) 전부 유지.
+- 캡처 — 03 제품(섹션+???떡밥+T뱃지+상태순 정렬), 04 능력(채용 카드+카테고리 헤더+??? 도메인+미발견 카운터).
+- 주의 — 경제 공식 정렬은 게임플레이 영향 있음(이용자 성장 ~1/10로 React 수준, 자동화 가치 상승). 기존 테스트는 전부 통과.
 
 ## 내린 결정
-- 결정론 크로스 호환 — 같은 시드면 React와 같은 세계/이벤트/엔딩(테스트로 고정).
-- growth_path 요구 엔딩은 Unity VS 미지원 — 의도적 제약, EndingTests로 고정.
-- 크로스런 도감은 MetaSaveService(meta.json, 게임 세이브와 분리). 도감 열람 UI는 후속.
-- 새 게임 = 세계 굴리기(시드 런) + 난이도 티어 선택. 표준 런 회귀 없음은 동치 테스트로 보장.
+- 티저 근접 판정에 보유 가드(lv>=1) — 없으면 시작부터 전 도메인 ??? ("입구는 좁게" 보강, 임계 상수 TeaserProximityLevels=2).
+- 능력 팝업 도메인 리스트에도 동일 상태 머신(정보 누출 일관성).
+- 루트 React `npm run harness:gate`는 신규 제품 15종으로 고정 기대값 2건 깨짐(물리 제품 수 6→9, 골든 시뮬) — React 트랙은 stale이라 보류, 필요 시 별도 수정.
+- 세이브 v4(productLevels) — 구세이브는 출시 제품 레벨 1 파생으로 무손실.
 
 ## 다음 세션 시작 (Next Session)
-1. `cd unity && git pull`
-2. 다른 Unity 미실행 확인 — `ps -axo command | grep "[U]nity.app/Contents/MacOS/Unity " | grep -i projectpath`
-3. `./init.sh` 베이스라인(66/66) 확인
-4. **feat-012 AI 테크트리(ready, 설계 확정)** — docs/feat-012-context-notes.md 정독 후 #1(노출 상태 머신+섹션 UI)부터. #2/#3 데이터 웨이브는 Codex 핸드오프 작성·발사.
+1. `cd unity && git pull` + 다른 Unity 미실행 확인(`ps -axo command | grep "[U]nity.app..." | grep -i projectpath`)
+2. `./init.sh` 베이스라인(90 통과/1 보류) 확인
+3. **feat-013 경제 완주 가능성** — 사용자 방향 결정 필요: A React 시스템 추가 포팅(사무실 확장/산업 시너지 월간 효과) B Unity 데이터 튜닝 C 혼합. 진단 하네스는 TechTreeReachabilityTests(연도 트레이스 내장).
+4. 또는 feat-012 #5(문명식 트리 그래프 화면), 실기기 검증, 도감 열람 UI.
 
 ## 권장 다음 단계 (Recommended Next Step)
-feat-012가 사용자 지정 1순위(분류·??? 떡밥·문명식 트리). 병렬로 실기기/에뮬레이터 검증(가독성·도파민 체감)도 가치 큼. 캡처 하네스 사용법은 docs/feat-006-checklist.md, 단일 라이선스 트랩 주의.
+feat-013이 게임 코어 가치("연구가 차오르면 해금"의 실제 도달 가능성) 직결이라 1순위 후보. 단 게임 느낌을 바꾸는 밸런스라 사용자 체크포인트부터.

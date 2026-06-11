@@ -142,9 +142,20 @@
       "dependencies": [
         "feat-008"
       ],
+      "status": "done",
+      "owner": "Claude+Codex",
+      "evidence": "2026-06-11 4블록+α 완료. #1 노출 상태 머신(447f43c) #2 teaser/tier/category 데이터(d5a0e0b) #4코드 미리보기+해금모먼트(cd91972) #3+#4마감 트리 웨이브 51종+제품 레벨업+채용+React 경제 정렬(cf62d2b). EditMode 90통과/1보류(10년 tier4 시뮬→feat-013). 캡처 03/04 검증. #5(트리 그래프 화면)는 후속"
+    },
+    {
+      "id": "feat-013",
+      "name": "경제 완주 가능성 — 10년 tier4/승리 도달 밸런스 (P14)",
+      "description": "feat-012 #4 밸런스 패스가 노출한 구조 결함 — Unity 포트는 이용자 증가(연산 현금비용)를 상쇄할 월간 수익 스트림이 React(사무실/성장경로/시너지 다층) 대비 부족해 장기 잉여가 구조적으로 작다. 목표 지향 봇 기준 120개월 내 tier4 미도달(60개월 매출 4760 vs 비용 4627). 방향 후보 — A React 시스템 추가 포팅(사무실 확장/산업 시너지) B Unity 자체 데이터 튜닝(연산비 곡선/매출 스케일) C 혼합. TechTreeReachabilityTests를 Inconclusive→Fail 게이트로 복원하며 닫는다",
+      "dependencies": [
+        "feat-012"
+      ],
       "status": "ready",
-      "owner": "Claude->Codex",
-      "evidence": "설계 확정(2026-06-11, 사용자 '설계 문서만' 선택). 구현 미착수 — 다음 세션 #1(노출 상태 머신+섹션 UI)부터"
+      "owner": "사용자 방향 결정 대기",
+      "evidence": "진단 하네스 준비됨 — TechTreeReachabilityTests(목표 지향 봇+연도 트레이스). feat-012에서 제품 레벨업·채용·React 비용 공식 정렬까지 선반영"
     }
   ]
 }
