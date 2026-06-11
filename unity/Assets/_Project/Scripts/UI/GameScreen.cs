@@ -72,6 +72,9 @@ namespace AICompanyTycoon.UI
 
         ToastRibbon _toastRibbon;      // 사건 토스트 리본 (feat-010 #4)
 
+        string _pendingTierId = "standard"; // 새 게임 난이도 선택 (feat-008 #1)
+        readonly Dictionary<string, Button> _tierButtons = new Dictionary<string, Button>();
+
         MonthSummary _lastSummary;
         string _activeTab = ProductsTab;
         bool _terminal;
@@ -1041,12 +1044,34 @@ namespace AICompanyTycoon.UI
             load.button.onClick.AddListener(() => { HandleLoad(); CloseMore(); });
             AddLayout(load.button.gameObject, 80, 0);
 
+            // 난이도 티어 선택 (feat-008 #1) — 스토리/표준/하드/브루탈. 하드 이상은 월간 헤드윈드.
+            var tierRow = new GameObject("TierRow", typeof(RectTransform));
+            tierRow.transform.SetParent(card.transform, false);
+            UiFactory.HBox(tierRow.transform, 8);
+            AddLayout(tierRow, 64, 0);
+            _tierButtons.Clear();
+            if (_context != null && _context.Catalog != null)
+            {
+                foreach (var tier in _context.Catalog.difficultyTiers)
+                {
+                    if (tier == null) continue;
+                    var tierId = tier.id;
+                    var tb = UiFactory.Button(tierRow.transform, tier.displayName);
+                    tb.label.fontSize = 26;
+                    tb.button.onClick.AddListener(() => SelectTier(tierId));
+                    AddLayout(tb.button.gameObject, 60, 1);
+                    _tierButtons[tierId] = tb.button;
+                }
+                HighlightTierButtons();
+            }
+
             // 새 게임 = 세계 굴리기 — 시드 런으로 4축을 굴리고 리빌을 보여준다 (feat-007 블록 #4, 로그라이크 루프).
             var fresh = UiFactory.Button(card.transform, "새 게임 (세계 굴리기)");
             fresh.button.onClick.AddListener(() =>
             {
                 var seed = "run-" + UnityEngine.Random.Range(100000, 999999);
-                ReplaceContext(SimulationContext.Create(_context.Catalog, 12345, new RunModifierInput { Seed = seed }));
+                ReplaceContext(SimulationContext.Create(_context.Catalog, 12345,
+                    new RunModifierInput { Seed = seed, ChallengeTierId = _pendingTierId }));
                 CloseMore();
                 ShowWorldReveal();
             });
@@ -1107,7 +1132,9 @@ namespace AICompanyTycoon.UI
             if (run == null || run.IsDefaultRun()) return;
 
             Clear(_worldRevealRows);
-            _worldRevealSeed.text = "시드 " + run.Seed;
+            var tier = _context.Catalog.GetDifficultyTier(run.ChallengeTier);
+            _worldRevealSeed.text = "시드 " + run.Seed
+                + (tier != null && tier.id != RunModifiersState.DefaultChallengeTier ? " · 난이도 " + tier.displayName : "");
             AddWorldRevealRow("world_city", "시작 도시", _context.Catalog.GetRunOption("start_cities", run.StartCityId));
             AddWorldRevealRow("world_world", "세계관", _context.Catalog.GetRunOption("world_lore", run.WorldLoreId));
             AddWorldRevealRow("world_market", "시장 상황", _context.Catalog.GetRunOption("market_conditions", run.MarketConditionId));
@@ -1347,6 +1374,28 @@ namespace AICompanyTycoon.UI
             if (_moreDrawer != null)
             {
                 _moreDrawer.SetActive(false);
+            }
+        }
+
+        // 난이도 티어 선택 — 선택 버튼만 골드 강조 (feat-008 #1).
+        void SelectTier(string tierId)
+        {
+            _pendingTierId = tierId;
+            HighlightTierButtons();
+        }
+
+        void HighlightTierButtons()
+        {
+            foreach (var pair in _tierButtons)
+            {
+                if (pair.Value == null) continue;
+                var active = pair.Key == _pendingTierId;
+                var img = pair.Value.GetComponent<Image>();
+                if (img != null) img.color = active ? UiTheme.TabActive : UiTheme.Button;
+                var colors = pair.Value.colors;
+                colors.normalColor = active ? UiTheme.TabActive : UiTheme.Button;
+                colors.selectedColor = colors.normalColor;
+                pair.Value.colors = colors;
             }
         }
 

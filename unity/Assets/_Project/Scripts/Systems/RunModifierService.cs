@@ -13,6 +13,7 @@ namespace AICompanyTycoon.Systems
         public string WorldLoreId;
         public string MarketConditionId;
         public string FounderTraitId;
+        public string ChallengeTierId; // 난이도 티어 (feat-008 #1). 무효/미지정이면 standard.
     }
 
     public static class RunModifierService
@@ -47,9 +48,17 @@ namespace AICompanyTycoon.Systems
                 WorldLoreId = picked[1] != null ? picked[1].id : RunModifiersState.DefaultWorldLoreId,
                 MarketConditionId = picked[2] != null ? picked[2].id : RunModifiersState.DefaultMarketConditionId,
                 FounderTraitId = picked[3] != null ? picked[3].id : RunModifiersState.DefaultFounderTraitId,
+                ChallengeTier = SelectChallengeTier(catalog, input?.ChallengeTierId),
                 Tags = MergeTags(picked),
             };
             return state;
+        }
+
+        // React selectChallengeTier 대응 — 유효 id면 그대로, 아니면 standard.
+        static string SelectChallengeTier(DataCatalog catalog, string explicitId)
+        {
+            if (!string.IsNullOrEmpty(explicitId) && catalog.GetDifficultyTier(explicitId) != null) return explicitId;
+            return RunModifiersState.DefaultChallengeTier;
         }
 
         // 선택된 4축의 시작 델타를 모델에 적용 — 자원은 ResourceService 클램프, 능력은 0..maxLevel 클램프.
@@ -98,12 +107,9 @@ namespace AICompanyTycoon.Systems
                 WorldLoreId = ValidId(catalog, "world_lore", loaded.WorldLoreId),
                 MarketConditionId = ValidId(catalog, "market_conditions", loaded.MarketConditionId),
                 FounderTraitId = ValidId(catalog, "founder_traits", loaded.FounderTraitId),
+                ChallengeTierId = loaded.ChallengeTier,
             };
-            var state = Select(catalog, input);
-            state.ChallengeTier = string.IsNullOrEmpty(loaded.ChallengeTier)
-                ? RunModifiersState.DefaultChallengeTier
-                : loaded.ChallengeTier;
-            return state;
+            return Select(catalog, input);
         }
 
         static string ValidId(DataCatalog catalog, string axis, string id)

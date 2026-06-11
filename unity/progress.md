@@ -31,7 +31,7 @@
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)
-1. **feat-008** — 난이도 티어(difficulty_tiers.json)·태그 파생 아키타입(derivation_rules.json)·멀티 엔딩(endings.json). React v0.65~0.67 이식, 데이터 정본 루트에 존재.
+1. **feat-008 #2·#3** — 태그 파생 아키타입(derivation_rules.json, 발견 도감)·멀티 엔딩(endings.json). #1 난이도 티어는 완료(4티어+헤드윈드+선택 UI, EditMode 57/57). React v0.66~0.67 이식.
 2. **트렌드 콘텐츠 웨이브** — 이벤트 15종에 2025~26 AI 트렌드 이벤트 추가(에이전트 열풍/추론 비용/오픈웨이트/전력 병목/규제). 데이터 전용, Codex 위임 후보.
 3. **리빌 모달 폴리시** — 행 레이아웃 다듬기 + 새 게임 확인 다이얼로그(진행 중 런 보호) 검토.
 4. 시각 회귀 — 이후 UI/아트 변경 시 `ScreenshotCaptureTests` 재실행해 캡처 대조(체크리스트에 명령). 재시작 전 다른 Unity 미실행 확인.

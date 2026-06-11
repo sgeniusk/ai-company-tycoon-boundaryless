@@ -225,4 +225,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 78fec5a87625e455fa0cfca2612774d8, type: 2}
   - {fileID: 11400000, guid: 152ecbac2c41348f98825675420dbbd8, type: 2}
   - {fileID: 11400000, guid: da425847548b645b3bea0cc72855d2c0, type: 2}
+  difficultyTiers:
+  - {fileID: 11400000, guid: 8f8ed0303a17c4f2ab758bd14ad60d29, type: 2}
+  - {fileID: 11400000, guid: 0116c4084929c4d30a291e732254b44c, type: 2}
+  - {fileID: 11400000, guid: 45ee686d126ad40c28fda88f7dea1e40, type: 2}
+  - {fileID: 11400000, guid: 26deb9c8ca3dd435eafb9fdf12da1364, type: 2}
   balance: {fileID: 11400000, guid: cbf623b5993d649a58c9da9140901751, type: 2}

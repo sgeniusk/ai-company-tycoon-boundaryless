@@ -180,6 +180,43 @@ namespace AICompanyTycoon.Tests.EditMode
         }
 
         [Test]
+        public void Import_HasFourDifficultyTiers()
+        {
+            var c = Catalog();
+            Assert.AreEqual(4, c.difficultyTiers.Count);
+            var hard = c.GetDifficultyTier("hard");
+            Assert.IsNotNull(hard);
+            Assert.AreEqual(2, hard.monthlyHeadwind.Count);
+            Assert.AreEqual(1.5, hard.rewardMultiplier, 0.001);
+        }
+
+        [Test]
+        public void Select_ChallengeTier_ValidKeptInvalidFallsBack()
+        {
+            var c = Catalog();
+            var hard = RunModifierService.Select(c, new RunModifierInput { ChallengeTierId = "hard" });
+            Assert.AreEqual("hard", hard.ChallengeTier);
+            var bogus = RunModifierService.Select(c, new RunModifierInput { ChallengeTierId = "nightmare" });
+            Assert.AreEqual("standard", bogus.ChallengeTier);
+        }
+
+        [Test]
+        public void AdvanceMonth_HardTier_AppliesMonthlyHeadwind()
+        {
+            var c = Catalog();
+            var baseCtx = SimulationContext.Create(c);
+            var hardCtx = SimulationContext.Create(c, 12345, new RunModifierInput { ChallengeTierId = "hard" });
+            // 기본 4축 동일(티어만 하드) — 시작 상태 동일. 클램프 간섭 없는 위치로 정렬.
+            baseCtx.Model.Hype = 50;
+            hardCtx.Model.Hype = 50;
+            baseCtx.Month.AdvanceMonth();
+            hardCtx.Month.AdvanceMonth();
+            // hard 헤드윈드 — cash -60, hype -1 (정본 difficulty_tiers.json).
+            Assert.AreEqual(baseCtx.Model.Cash - 60, hardCtx.Model.Cash, 0.001);
+            Assert.AreEqual(baseCtx.Model.Hype - 1, hardCtx.Model.Hype, 0.001);
+        }
+
+        [Test]
         public void Sanitize_UnknownIds_FallBackToDefaults()
         {
             var c = Catalog();

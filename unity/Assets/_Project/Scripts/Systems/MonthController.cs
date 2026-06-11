@@ -100,15 +100,22 @@ namespace AICompanyTycoon.Systems
 
         void ApplyRunModifierMonthly()
         {
-            var tags = _m.RunModifiers != null ? _m.RunModifiers.Tags : null;
-            var cfg = _c != null ? _c.runTagEffects : null;
-            if (tags == null || cfg == null) return;
-            foreach (var tag in tags)
-            {
-                var fx = cfg.GetEffect(tag);
-                if (fx == null) continue;
-                foreach (var e in fx.monthlyEffects) _r.Add(e.resource, e.amount);
-            }
+            if (_m.RunModifiers == null || _c == null) return;
+
+            var tags = _m.RunModifiers.Tags;
+            var cfg = _c.runTagEffects;
+            if (tags != null && cfg != null)
+                foreach (var tag in tags)
+                {
+                    var fx = cfg.GetEffect(tag);
+                    if (fx == null) continue;
+                    foreach (var e in fx.monthlyEffects) _r.Add(e.resource, e.amount);
+                }
+
+            // 난이도 헤드윈드 (feat-008 #1) — story/standard는 빈 헤드윈드라 효과 0.
+            var tier = _c.GetDifficultyTier(_m.RunModifiers.ChallengeTier);
+            if (tier != null)
+                foreach (var e in tier.monthlyHeadwind) _r.Add(e.resource, e.amount);
         }
 
         void CheckGameOver(MonthSummary s, BalanceConfig b)

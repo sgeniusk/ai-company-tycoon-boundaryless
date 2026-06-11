@@ -32,8 +32,9 @@ public static class DataImporter
         var runModifiers = ImportRunModifiers();
         var runTagEffects = ImportRunTagEffects();
         var worldEvents = ImportWorldEvents();
+        var difficultyTiers = ImportDifficultyTiers();
 
-        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, balance);
+        UpdateCatalog(resources, products, capabilities, domains, upgrades, automation, events, stages, competitors, runModifiers, runTagEffects, worldEvents, difficultyTiers, balance);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -452,6 +453,30 @@ public static class DataImporter
         return imported;
     }
 
+    // difficulty_tiers.json -> DifficultyTierDef (feat-008 #1). 배열 순서 유지 (티어 선택 UI 표시 순).
+    private static List<DifficultyTierDef> ImportDifficultyTiers()
+    {
+        var items = GetRootList("difficulty_tiers.json", "difficulty_tiers");
+        var imported = new List<DifficultyTierDef>();
+        EnsureFolder(ScriptableObjectRoot + "/DifficultyTiers");
+
+        foreach (var item in items)
+        {
+            var source = AsObject(item, "difficulty_tiers item");
+            var id = GetString(source, "id");
+            var asset = LoadOrCreate<DifficultyTierDef>(ScriptableObjectRoot + "/DifficultyTiers/" + id + ".asset");
+            asset.id = id;
+            asset.displayName = GetString(source, "name");
+            asset.description = GetString(source, "description");
+            asset.monthlyHeadwind = ToResourceAmounts(GetOptionalObject(source, "monthly_headwind"), id + ".monthly_headwind");
+            asset.rewardMultiplier = GetDouble(source, "reward_multiplier", 1.0);
+            EditorUtility.SetDirty(asset);
+            imported.Add(asset);
+        }
+
+        return imported;
+    }
+
     private static void UpdateCatalog(
         List<ResourceDef> resources,
         List<ProductDef> products,
@@ -465,6 +490,7 @@ public static class DataImporter
         List<RunModifierOptionDef> runModifierOptions,
         RunTagEffectsConfig runTagEffects,
         List<WorldEventDef> worldEvents,
+        List<DifficultyTierDef> difficultyTiers,
         BalanceConfig balance)
     {
         EnsureFolder("Assets/_Project/Resources");
@@ -481,6 +507,7 @@ public static class DataImporter
         catalog.runModifierOptions = runModifierOptions;
         catalog.runTagEffects = runTagEffects;
         catalog.worldEvents = worldEvents;
+        catalog.difficultyTiers = difficultyTiers;
         catalog.balance = balance;
         EditorUtility.SetDirty(catalog);
     }

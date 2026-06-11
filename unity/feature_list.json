@@ -15,7 +15,9 @@
       "id": "feat-001",
       "name": "Data Pipeline (P1)",
       "description": "../data/*.json(resources/balance/products/capabilities/domains/events/upgrades/automation_upgrades/company_stages) -> ScriptableObject 스키마 + Editor 임포터 + DataCatalog. AutomationSystem 월별 보너스 하드코딩은 SO 필드로 데이터화",
-      "dependencies": ["feat-000"],
+      "dependencies": [
+        "feat-000"
+      ],
       "status": "done",
       "owner": "Codex (스펙: Claude)",
       "evidence": "스키마9종(Claude)+임포터/DataCatalog/MiniJson/테스트(Codex). 120 SO 자산(R8/P36/C12/D15/U21/A6/E15/S6)+DataCatalog, EditMode 5/5 통과. Claude 권위검증"
@@ -24,7 +26,9 @@
       "id": "feat-002",
       "name": "Core Simulation Headless (P2)",
       "description": "GameModel + 서비스(Resource/Month/Product/Capability/Domain/Upgrade/Automation/CompanyStage/RandomEvent/WinLoss) 월 진행 루프를 UI 없이 구현. ../scripts/systems/*.gd와 ../src/game/simulation.ts를 정답지로 balance.json 공식 재현. NUnit으로 한 게임 끝까지 시뮬레이션",
-      "dependencies": ["feat-001"],
+      "dependencies": [
+        "feat-001"
+      ],
       "status": "done",
       "owner": "Claude (영향도 높음)",
       "evidence": "GameModel + 10 서비스 + MonthController 헤드리스. balance 공식 재현 + 36개월 플레이스루. EditMode 15/15 통과. Claude 직접"
@@ -33,7 +37,9 @@
       "id": "feat-003",
       "name": "Vertical Slice Mobile UI (P3)",
       "description": "세로 uGUI — 자원 8종 HUD, 제품/능력/업그레이드 하단 탭, 다음 달 버튼, 월 요약, 이벤트 모달, 세이브/로드. 카드는 프리팹+풀링, 코어에 GameEvents로 연결",
-      "dependencies": ["feat-002"],
+      "dependencies": [
+        "feat-002"
+      ],
       "status": "done",
       "owner": "Claude->Codex",
       "evidence": "uGUI VS(UiFactory/GameScreen980/GameBootstrap/SceneBuilder=Codex, SaveService/ResourceFormat=Claude). 컴파일 + Game.unity + EditMode 19/19 + PlayMode 2/2. 라인단위 리뷰. 입력 Old 활성으로 클릭 동작"
@@ -42,7 +48,9 @@
       "id": "feat-004",
       "name": "Commercial Polish (P5)",
       "description": "사운드(AudioManager), DOTween 모션, 파티클(FXManager), 카메라(Cinemachine), 햅틱, Localization(ko/en). public/assets 아이콘을 SpriteAtlas로. URP 2D 파이프라인 에셋 생성·할당",
-      "dependencies": ["feat-003"],
+      "dependencies": [
+        "feat-003"
+      ],
       "status": "in-progress",
       "owner": "Claude->Codex",
       "evidence": "아이콘(897700d)+파티클(748d1a8)+테마(eb23a22) 완료. 한글폰트 — Noto Sans KR(Resources/Fonts/UiFont)로 레거시 Arial 한글 fallback 자글거림 해결. 검증 EditMode 21/21. 에디터 시각확인 + ④BGM(에셋) 남음. progress.md 참고"
@@ -51,7 +59,9 @@
       "id": "feat-005",
       "name": "Platform Build (P6)",
       "description": "Android/iOS 빌드 파이프라인, 세이프에어리어, 아이콘/스플래시, 내부 테스트 트랙",
-      "dependencies": ["feat-003"],
+      "dependencies": [
+        "feat-003"
+      ],
       "status": "in-progress",
       "owner": "Claude->Codex",
       "evidence": "세이프에어리어(021ac45)+빌드셋업(733e184)+빌드(APK 35MB)+아이콘/스플래시(office 임시, SetIcons+SplashScreen). EditMode 21/21. 남음 — 시각/실기기 확인, 최종 픽셀아트(docs/backlog.md)"
@@ -60,7 +70,9 @@
       "id": "feat-006",
       "name": "Claude Design 첫 화면 반영 (P7)",
       "description": "reports/ 클로드 디자인 핸드오프(v1.0)를 Unity 포트로 충실히 이식. 오피스-퍼스트 레이아웃, LED 전국 랭킹 전광판(CD-1), 코어3 자원 HUD+트레이+목표리본(CD-2), 캐릭터/씬 생동감, 메뉴 재구성(CD-3). 경쟁사·시장점유율·전국랭킹 시스템 헤드리스 포팅 포함. derive-only/additive.",
-      "dependencies": ["feat-003"],
+      "dependencies": [
+        "feat-003"
+      ],
       "status": "done",
       "owner": "Claude",
       "evidence": "A~E 코드 완료 + 시각 확인 완료. A 랭킹시스템(MarketService+ScoreboardRanking, MarketTests 8)·B LED전광판(LiveBlink+Marquee)·C 코어3칩HUD+트레이+목표리본·D 직원통통(StaffBob)+모달팝인+탭전환페이드·E 하단도크(2|FAB|2)+FAB펄스+탭팝업+더보기드로어+office-first. EditMode 29/29. 헤드리스 캡처 하네스(ScreenshotCaptureTests)로 7장 육안 대조 — 버그1 수정(꾸미기 이모지→한글). 남은 폴리시는 backlog 아트. docs/feat-006-checklist.md"
@@ -69,7 +81,10 @@
       "id": "feat-007",
       "name": "리플레이성 척추 포팅 — 런 모디파이어 (P8)",
       "description": "React판 v0.63 검증 설계를 Unity 헤드리스 코어로 이식. 블록 #1 런 모디파이어 4축 선택 엔진(시드 결정론)+세이브, #2 월간 tag_effects 틱 훅(additive), #3 연중 세계 이벤트(world_events.json 26종), #4 세계 뽑기 리빌 UI. 정답지 ../src/game/run-modifiers.ts, 정본 ../data/run_modifiers.json. 설계 docs/feat-007-context-notes.md",
-      "dependencies": ["feat-002", "feat-003"],
+      "dependencies": [
+        "feat-002",
+        "feat-003"
+      ],
       "status": "done",
       "owner": "Claude (영향도 높음)",
       "evidence": "4블록 완료(2026-06-11) — #1 4축 선택 엔진(FNV-1a 시드 결정론, SaveData v3 마이그레이션, RunModifierTests 9) #2 월간 tag_effects 틱 훅(표준 런 무효과 동치 테스트) #3 WorldEventDef 30종+WorldEventService(시드 파생 연 1건, React 교차 픽스처 일치, WorldEventTests 6) #4 세계 뽑기 리빌 모달(더보기 새 게임=세계 굴리기, v078 스탬프, 07-world-reveal 캡처 검증). EditMode 46/46 + PlayMode 캡처 10장. docs/feat-007-checklist.md"
@@ -78,16 +93,20 @@
       "id": "feat-008",
       "name": "리플레이성 심화 — 난이도·태그 파생·멀티 엔딩 (P9)",
       "description": "feat-007 척추 위에 React판 v0.65~0.67 이식 — 난이도 티어(difficulty_tiers.json, 보상 배수), 태그 파생 아키타입(derivation_rules.json, 발견 도감), 멀티 엔딩(endings.json). 데이터 정본 전부 루트에 존재",
-      "dependencies": ["feat-007"],
-      "status": "not-started",
+      "dependencies": [
+        "feat-007"
+      ],
+      "status": "in-progress",
       "owner": "Claude->Codex",
-      "evidence": ""
+      "evidence": "#1 난이도 티어 완료(2026-06-11) — DifficultyTierDef 4종 임포트(스토리/표준/하드/브루탈), RunModifierInput.ChallengeTierId 선택(무효→standard), MonthController 월간 헤드윈드(표준 무효과), 더보기 티어 선택 4버튼+리빌 난이도 표기. EditMode 57/57(+3) + 06 캡처. 남음 — #2 태그 파생 아키타입, #3 멀티 엔딩"
     },
     {
       "id": "feat-009",
       "name": "모바일 가독성 + AI 비서 가이던스 FAB (P10)",
       "description": "사용자 피드백(2026-06-11) — 전체 가독성 부족 + 가운데 버튼이 'AI가 다음 할 일을 제안하며 계속 바뀌는' React 가이던스 미이식. A 가독성 전면 패스(폰트 위계 최소 26, 패널 알파·텍스트 대비 상향, 66개소). B GuidanceService 헤드리스(React getGuidanceStep 적응) + FAB 라벨·톤·행동 바인딩 + 미나 AI 비서 리본.",
-      "dependencies": ["feat-006"],
+      "dependencies": [
+        "feat-006"
+      ],
       "status": "done",
       "owner": "Claude",
       "evidence": "EditMode 50/50(신규 GuidanceTests 4 — 우선순위/seen 소화/진행 폴백/신뢰 경고) + 캡처 — 01-main(폰트·대비 상향, FAB '제품 출시', 미나 리본), 07-world-reveal(리빌 가독성). seen 집합은 월 진행 시 리셋, 제안 메뉴 열람 시 소화 — FAB 잠금 없음"
@@ -96,7 +115,10 @@
       "id": "feat-010",
       "name": "살아있는 오피스 + 수익 도파민 (P11)",
       "description": "사용자 방향(2026-06-11) — 키우기 게임식 사무실 운영 재미 + 수익 상승 도파민. #1 플로팅 수익 숫자+직원 환호 #2 코믹 워크루프(상시 작업 이모트) #3 마일스톤 축하(v077+FxManager)+니어미스(MilestoneService 헤드리스) #4 사건 토스트 리본(오피스 비가림). React v0.62 도파민 4-레버 + v0.81~95 폴리시 적응. 설계 docs/feat-010-context-notes.md",
-      "dependencies": ["feat-007", "feat-009"],
+      "dependencies": [
+        "feat-007",
+        "feat-009"
+      ],
       "status": "done",
       "owner": "Claude",
       "evidence": "4블록 완료(2026-06-11) — FloatingText(수익 스케일 플로팅+환호)/WorkLoop(상시 작업 이모트)/SpawnCelebration(승급·첫출시 빅팝+파티클)+MilestoneService 니어미스(MilestoneTests 4)/ToastRibbon(사건 큐, 오피스 비가림). 코어 무변경(Systems에 derive-only MilestoneService만). EditMode 54/54 + 캡처 10-dopamine"
@@ -105,7 +127,10 @@
       "id": "feat-011",
       "name": "첫 화면 구도 정렬 — 오피스 풀스크린 스테이지 (P12)",
       "description": "사용자 피드백 '비주얼이 React판과 달라 판단 어려움' 대응. React v0.96 게임-씬-퍼스트 구도 이식 — 오피스 씬을 UI 뒤 풀스크린 무대로 추출(앵커 0.20~0.74), VBox 가운데는 스페이서, 톱바 슬림화(타이틀 제거), AI 비서 리본을 도크 바로 위로, 배경 스크림 0.55→0.38, 직원 150px·가구 200px 확대. 레퍼런스 docs/art-pipeline/ref/react-fresh-mobile-reference.png",
-      "dependencies": ["feat-009", "feat-010"],
+      "dependencies": [
+        "feat-009",
+        "feat-010"
+      ],
       "status": "done",
       "owner": "Claude",
       "evidence": "EditMode 54/54 유지 + 캡처 01-main이 React 레퍼런스와 같은 구도(슬림 톱·칩·전광판 / 오피스 무대 / 요약·리본 / 도크)로 정렬. 캡처 하네스 이름 의존성 보존"

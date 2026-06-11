@@ -19,6 +19,7 @@ namespace AICompanyTycoon.Data
         public List<RunModifierOptionDef> runModifierOptions = new List<RunModifierOptionDef>();
         public RunTagEffectsConfig runTagEffects;
         public List<WorldEventDef> worldEvents = new List<WorldEventDef>();
+        public List<DifficultyTierDef> difficultyTiers = new List<DifficultyTierDef>();
         public BalanceConfig balance;
 
         public ResourceDef GetResource(string id)
@@ -74,6 +75,11 @@ namespace AICompanyTycoon.Data
         public RunModifierOptionDef GetRunOption(string axis, string id)
         {
             return runModifierOptions.Find(item => item != null && item.axis == axis && item.id == id);
+        }
+
+        public DifficultyTierDef GetDifficultyTier(string id)
+        {
+            return difficultyTiers.Find(item => item != null && item.id == id);
         }
     }
 }
