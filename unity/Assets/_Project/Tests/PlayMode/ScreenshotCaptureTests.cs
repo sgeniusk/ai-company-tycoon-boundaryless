@@ -151,6 +151,13 @@ namespace AICompanyTycoon.Tests.PlayMode
                         yield return CaptureCanvas(canvasGo, "13-richest-marquee.png");
                     }
                 }
+
+                // 5.6) 성급 비주얼 사다리 — 정점(랜드마크) 단계로 승급 이벤트를 발생시켜 배경 스왑 확인 (feat-014 #5)
+                if (menuClose != null) { menuClose.onClick.Invoke(); yield return WaitRealtime(0.15f); }
+                m.CompanyStageId = "boundaryless_intelligence";
+                AICompanyTycoon.Core.GameEvents.RaiseCompanyStageChanged("boundaryless_intelligence");
+                yield return WaitRealtime(0.3f);
+                yield return CaptureCanvas(canvasGo, "14-stage-landmark.png");
             }
 
             // 팝업 닫기

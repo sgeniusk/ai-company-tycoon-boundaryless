@@ -3,8 +3,8 @@
 재시작 상태용이다. 전체 이력 아님. 오래된 증거는 CHANGELOG로. (≤120줄)
 
 ## 현재 상태 (Current State)
-**마지막 갱신** — 2026-06-11 (밤)
-**활성 피처** — **feat-014 경영 탭(#1·#2) + feat-015 자본 사다리(#1~#5 완결) 완료.** EditMode **133/133**. 다음 — feat-014 잔여(#3 표기/#4 전략/#5 비주얼) 또는 실기기 검증. ~20커밋 origin 푸시 전.
+**마지막 갱신** — 2026-06-13
+**활성 피처** — **feat-014 경영 탭(#1~#5) + feat-015 자본 사다리(#1~#5) 완료.** feat-014 #5 성급 배경 3종 PNG 생성 완료. EditMode 최신 증거는 **145/145**(feat-014)·**133/133**(feat-015). 다음 — 실기기 검증 또는 feat-012 #5 트리 그래프 화면. ~20커밋 origin 푸시 전.
 **현재 목표** — 다음 후보는 ① feat-012 #5 트리 그래프 화면 ② 실기기 검증(경제 체감 변화 큼 — ARPU·GPU 증설·시너지) ③ 도감 열람 UI(아키타입·엔딩·시너지/콤보).
 
 ## 상태 (Status)
@@ -30,6 +30,7 @@
 - [x] feat-008 — 로그라이크 심화 3블록. #1 난이도 티어 4종(헤드윈드+더보기 선택 UI) #2 아키타입 12종 파생 엔진(React tag-derivation 동일)+월간 보너스 훅+MetaSave 크로스런 도감+리빌 NEW! 발견 연출 #3 멀티 엔딩 24종(EndingService 조건·우선순위·폴백, Python 교차 픽스처 일치)+결과 모달 결말·도감 카운트. EditMode 66/66
 - [x] feat-012 — AI 테크트리(분류·떡밥·해금). #1 ProductVisibilityService 5상태 발견의 사다리(derive-only)+제품 팝업 도메인 섹션/???티저/미발견 카운터 #2 teaser 36종+tier+category(Codex) #3 선행 체인+미래 제품 15종=51종(Codex)+TechTreeGraphTests 4종 게이트+CanLaunch 선행 조건 #4 능력 다음레벨 미리보기+해금 모먼트 연출+밸런스 패스. 밸런스 패스 부산물 — 제품 레벨업 포팅(SaveData v4)·RecruitService·React 비용 공식 정렬(자동화 할인 전체 적용+하이프 *10 제거). 정본 docs/feat-012-context-notes.md
 - [x] feat-013 — 경제 완주 가능성(a8cc105). 산업 시너지 10+콤보 10 포팅(IndustrySynergyService, 도메인 포트폴리오 월간 보상+가동 토스트) + 이용자 수익화(revenue_per_1000_users=55, additive) + GPU 증설(BuyCompute, 연산력 반복 공급원) + 연산력 소모 React 정렬(신규 이용자 기반) + **도메인 해금 순서 버그 수정**(다중 요건 도메인 영구 미해금 — CheckAll로). TechTreeReachabilityTests Fail 게이트 그린 — tier4 44개월, 승리 ~30개월대
+- [x] feat-014 #5 배경 아트 — Codex 절차 생성 완료. `scripts/assets/generate-feat014-stage-backgrounds.mjs`가 node-canvas 없이 raw `Uint8Array` RGBA + zlib deflate PNG 직접 인코딩으로 `office_growth.png` / `office_datacenter.png` / `office_landmark.png` 3장(각 2560x1440 RGBA)을 `Resources/Art/Background/`에 생성. Unity는 사용자 지시대로 미실행.
 ### 진행 중 (What's In Progress)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
@@ -62,6 +63,8 @@
 - 아트 — `580baec` v090 생성 / `530b536` v090 임포트 / v091 생성+임포트(마감 커밋). 전부 Codex 절차 생성 외주→Claude 검증
 
 ## 검증 증거
+- [x] `node scripts/assets/generate-feat014-stage-backgrounds.mjs` 재실행 동일 SHA — growth `ded546ad8a2d285bb433781c640c54a952ade519e8780f962a472678e3ad5a0e`, datacenter `1d861b787f6583f1ce10907689fad545843d05bf6428e55e91fbd07af922ef4d`, landmark `97df3ac802e187d60fd00fe0a687c42c7510fd8a4eabc6a7a2882737a8134987`.
+- [x] `file unity/Assets/_Project/Resources/Art/Background/office_*.png` — 3장 모두 PNG image data, 2560 x 1440, 8-bit/color RGBA, non-interlaced.
 - [x] 베이스라인 29/29 → 블록 #1 후 38/38 → #2·#3 후 **46/46** (RunModifierTests 11 + WorldEventTests 6)
 - [x] React 동치 — FNV-1a 고정값 + 세계 이벤트 스케줄 교차 픽스처(we-test 시드, Python 산출=C# 결과) 일치
 - [x] 표준 런 회귀 없음 — 시작 자원 initialValue 일치 + 태그 무효과 동치 테스트

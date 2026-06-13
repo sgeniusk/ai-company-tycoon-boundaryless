@@ -166,7 +166,7 @@
       ],
       "status": "done",
       "owner": "Claude",
-      "evidence": "5블록 완결 — #1 채용 3택1(ed8013f) #2 시설(08f7064) #3 인재 8축 환산+TOPS·기대수익(419be0b) #4 전략 활동(d835135) #5 비주얼 사다리 배선+Codex 아트 핸드오프(fd54bce). 세이브 v5~v11. EditMode 145/145. 경영 탭 완성(경영정보·인재·시설·전략·투자). #5 배경 아트는 Codex 생성 중"
+      "evidence": "5블록 완결 — #1 채용 3택1(ed8013f) #2 시설(08f7064) #3 인재 8축 환산+TOPS·기대수익(419be0b) #4 전략 활동(d835135) #5 비주얼 사다리 배선+Codex 아트 핸드오프(fd54bce). 세이브 v5~v11. EditMode 145/145. 경영 탭 완성(경영정보·인재·시설·전략·투자). #5 배경 아트 생성 완료 — generate-feat014-stage-backgrounds.mjs raw RGBA/zlib PNG, office_growth/datacenter/landmark 2560x1440 RGBA, SHA는 progress.md"
     },
     {
       "id": "feat-015",
