@@ -81,6 +81,7 @@ namespace AICompanyTycoon.UI
         System.Action _interviewOnComplete;
         InvestmentRound _pendingInvestment;  // 성급 승급으로 대기 중인 투자 제안
         int _lastRichestRank = -1;           // 세계 부자 순위 등반 토스트용 (세션 한정, 비저장)
+        double _expectedRevenue;             // 정산 전 기대수익 스냅샷 (feat-014 #3)
 
         ToastRibbon _toastRibbon;      // 사건 토스트 리본 (feat-010 #4)
 
@@ -187,6 +188,7 @@ namespace AICompanyTycoon.UI
 
             var visibilityBefore = _context.Visibility.Snapshot(); // 해금 모먼트 감지 (feat-012 #4)
             var synergiesBefore = SnapshotActiveSynergies();       // 시너지 가동 감지 (feat-013 #1)
+            _expectedRevenue = _context.Products.EstimateMonthlyRevenue(); // 기대수익 (feat-014 #3, 정산 전 스냅샷)
 
             _lastSummary = _context.Month.AdvanceMonth();
             _terminal = _lastSummary.GameOver || _lastSummary.GameWon;
@@ -1956,6 +1958,8 @@ namespace AICompanyTycoon.UI
                 // 제품 레벨업 (feat-012 #4) — 매출 +35%/Lv. 매출 엔진이 강화로 자란다.
                 int productLevel = _context.Products.GetLevel(product.id);
                 AddSmallText(card, "상태 - 활성 제품 Lv." + productLevel + "/" + product.maxLevel);
+                // 예상 월매출 (feat-014 #3) — 레벨·신뢰·로스터 보너스 반영 derive.
+                AddSmallText(card, "예상 월매출 " + FormatMoney(_context.Products.EstimateProductRevenue(product.id)));
                 if (productLevel < product.maxLevel)
                 {
                     AddSmallText(card, "강화 비용 " + FormatCosts(_context.Products.GetLevelUpCost(product.id)));
@@ -2393,11 +2397,29 @@ namespace AICompanyTycoon.UI
                 AddSmallText(rosterCard, "· " + agent.displayName + " — " + agent.role + " (" + AgentKindLabel(agent.kind) + ")");
             }
 
-            double researchDiscount = RosterBonus.GetResearchDiscount(_context.Model, _context.Catalog);
-            double engineeringDiscount = RosterBonus.GetEngineeringDiscount(_context.Model, _context.Catalog);
-            if (researchDiscount > 0 || engineeringDiscount > 0)
+            // 로스터 8축 개발력 환산 요약 (feat-014 #3) — 0이 아닌 보너스만 표시.
+            var m = _context.Model;
+            var cat = _context.Catalog;
+            var parts = new List<string>();
+            double research = RosterBonus.GetResearchDiscount(m, cat);
+            double engineering = RosterBonus.GetEngineeringDiscount(m, cat);
+            double revBonus = RosterBonus.GetRevenueBonus(m, cat);
+            double userBonus = RosterBonus.GetUserBonus(m, cat);
+            double ops = RosterBonus.GetOpsCostReduction(m, cat);
+            double autonomy = RosterBonus.GetComputeReduction(m, cat);
+            double trustTrickle = RosterBonus.GetMonthlyTrust(m, cat);
+            double hypeTrickle = RosterBonus.GetMonthlyHype(m, cat);
+            if (research > 0) parts.Add("연구비 -" + (research * 100).ToString("F0") + "%");
+            if (engineering > 0) parts.Add("제품강화 -" + (engineering * 100).ToString("F0") + "%");
+            if (revBonus > 0) parts.Add("매출 +" + (revBonus * 100).ToString("F0") + "%");
+            if (userBonus > 0) parts.Add("이용자 +" + (userBonus * 100).ToString("F0") + "%");
+            if (ops > 0) parts.Add("고정비 -" + (ops * 100).ToString("F0") + "%");
+            if (autonomy > 0) parts.Add("연산 -" + (autonomy * 100).ToString("F0") + "%");
+            if (trustTrickle > 0) parts.Add("월 신뢰 +" + trustTrickle.ToString("F1"));
+            if (hypeTrickle > 0) parts.Add("월 화제성 +" + hypeTrickle.ToString("F1"));
+            if (parts.Count > 0)
             {
-                var bonus = AddSmallText(rosterCard, "팀 보너스 — 연구 비용 -" + (researchDiscount * 100).ToString("F0") + "% · 제품 강화 비용 -" + (engineeringDiscount * 100).ToString("F0") + "%");
+                var bonus = AddSmallText(rosterCard, "팀 개발력 — " + string.Join(" · ", parts));
                 bonus.color = UiTheme.GoalAccent;
             }
 
@@ -2572,7 +2594,7 @@ namespace AICompanyTycoon.UI
             }
 
             var computeCard = AddCard(_upgradesContent, "GPU 증설", "데이터센터에 연산력을 증설합니다. 연구와 제품 강화에 필요합니다.");
-            AddSmallText(computeCard, "보유 연산력 " + FormatNumber(_context.Model.Get(ResourceId.Compute)) + " | 증설 +" + FormatNumber(_context.Recruit.GetComputePackAmount()) + " | 비용 " + FormatMoney(_context.Recruit.GetComputePackCost()));
+            AddSmallText(computeCard, "보유 연산력 " + FormatNumber(_context.Model.Get(ResourceId.Compute)) + " TOPS | 증설 +" + FormatNumber(_context.Recruit.GetComputePackAmount()) + " TOPS | 비용 " + FormatMoney(_context.Recruit.GetComputePackCost()));
             if (!_context.Recruit.CanBuyCompute())
             {
                 AddSmallText(computeCard, "잠금 사유 - 자금 부족 (보유 " + FormatMoney(_context.Model.Get(ResourceId.Cash)) + ")");
@@ -2727,7 +2749,15 @@ namespace AICompanyTycoon.UI
             var sb = new StringBuilder();
             sb.Append(_lastSummary.Month).Append("월 정산  ");
             sb.Append("비용 ").Append(FormatMoney(_lastSummary.TotalCashCost)).Append("  ");
-            sb.Append("매출 ").Append(FormatMoney(_lastSummary.Revenue)).Append("  ");
+            // 기대 vs 실제 매출 (feat-014 #3) — 정산 전 예상과 실제가 다르면 둘 다 표기.
+            if (_expectedRevenue > 0 && System.Math.Abs(_expectedRevenue - _lastSummary.Revenue) > 1)
+            {
+                sb.Append("매출 ").Append(FormatMoney(_lastSummary.Revenue)).Append(" (예상 ").Append(FormatMoney(_expectedRevenue)).Append(")  ");
+            }
+            else
+            {
+                sb.Append("매출 ").Append(FormatMoney(_lastSummary.Revenue)).Append("  ");
+            }
             sb.Append("신규 이용자 +").Append(FormatNumber(_lastSummary.NewUsers));
             if (_lastSummary.Warnings != null && _lastSummary.Warnings.Count > 0)
             {

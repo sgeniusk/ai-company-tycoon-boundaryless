@@ -95,6 +95,58 @@ namespace AICompanyTycoon.Tests.EditMode
         }
 
         [Test]
+        public void RosterBonus_AllEightStats_DeriveCorrectly()
+        {
+            var ctx = Fresh();
+            // research 3+ 인재 등록 — 연구 할인이 양수가 된다.
+            AgentTypeDef researcher = null;
+            foreach (var a in ctx.Catalog.agentTypes)
+                if (a != null && a.statResearch >= 3) { researcher = a; break; }
+            Assert.IsNotNull(researcher);
+            ctx.Model.HiredAgentIds.Add(researcher.id);
+
+            double sumResearch = RosterBonus.SumStat(ctx.Model, ctx.Catalog, AgentStat.Research);
+            Assert.AreEqual(researcher.statResearch, sumResearch, 0.001);
+            Assert.AreEqual(System.Math.Min(0.25, researcher.statResearch * 0.01),
+                RosterBonus.GetResearchDiscount(ctx.Model, ctx.Catalog), 0.001);
+
+            // 전 보너스가 상한을 넘지 않는다.
+            Assert.LessOrEqual(RosterBonus.GetRevenueBonus(ctx.Model, ctx.Catalog), RosterBonus.MaxMultiplier);
+            Assert.LessOrEqual(RosterBonus.GetOpsCostReduction(ctx.Model, ctx.Catalog), RosterBonus.MaxOpsReduction);
+        }
+
+        [Test]
+        public void RosterRevenueBonus_RaisesMonthlyRevenue()
+        {
+            var withTeam = Fresh();
+            var baseline = Fresh();
+            withTeam.Products.Launch("foundation_model_v0");
+            baseline.Products.Launch("foundation_model_v0");
+
+            // product 스탯 있는 인재를 강제 등록.
+            AgentTypeDef productAgent = null;
+            foreach (var a in withTeam.Catalog.agentTypes)
+                if (a != null && a.statProduct >= 3) { productAgent = a; break; }
+            Assert.IsNotNull(productAgent);
+            withTeam.Model.HiredAgentIds.Add(productAgent.id);
+
+            double withRev = withTeam.Products.EstimateProductRevenue("foundation_model_v0");
+            double baseRev = baseline.Products.EstimateProductRevenue("foundation_model_v0");
+            Assert.Greater(withRev, baseRev, "로스터 product 스탯이 예상 매출을 올려야 한다.");
+            double expectedMult = 1.0 + RosterBonus.GetRevenueBonus(withTeam.Model, withTeam.Catalog);
+            Assert.AreEqual(baseRev * expectedMult, withRev, 0.5);
+        }
+
+        [Test]
+        public void EmptyRoster_NoBonus_PreservesBaseline()
+        {
+            var ctx = Fresh();
+            Assert.AreEqual(0, RosterBonus.GetRevenueBonus(ctx.Model, ctx.Catalog), 0.001);
+            Assert.AreEqual(0, RosterBonus.GetOpsCostReduction(ctx.Model, ctx.Catalog), 0.001);
+            Assert.AreEqual(0, RosterBonus.GetMonthlyTrust(ctx.Model, ctx.Catalog), 0.001);
+        }
+
+        [Test]
         public void RosterBonus_DiscountsResearchCashCost()
         {
             var ctx = Fresh();

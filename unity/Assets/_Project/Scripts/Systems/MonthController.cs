@@ -56,9 +56,11 @@ namespace AICompanyTycoon.Systems
             double discountMult = 1.0 - autoReduction;
             // 본사 위치 고정비 모디파이어 (feat-014 #2, React locationCostModifier 동치 — 차고 0.82 ~ 글로벌 1.8).
             double locationMult = OfficeService.GetLocationCostModifier(_m, _c);
+            // 로스터 operations → 월 고정비 절감 (feat-014 #3, 로스터 없으면 0).
+            double opsMult = 1.0 - RosterBonus.GetOpsCostReduction(_m, _c);
             // 대출 이자 (feat-015 #2) — 원금의 월 1.5%. 할인 대상 아님(금융비). 무차입이면 0.
             double interest = _m.LoanPrincipal > 0 ? _m.LoanPrincipal * 0.015 : 0;
-            double totalCash = (baseCost + salaryCost + computeCost) * locationMult * discountMult + interest;
+            double totalCash = (baseCost + salaryCost + computeCost) * locationMult * discountMult * opsMult + interest;
             _r.Add(ResourceId.Cash, -totalCash);
             s.BaseCost = baseCost;
             s.SalaryCost = salaryCost;
@@ -84,6 +86,12 @@ namespace AICompanyTycoon.Systems
 
             // 4) 화제성 감쇠
             if (_m.Hype > 0) _r.Add(ResourceId.Hype, -b.monthlyHypeDecay);
+
+            // 4.5) 로스터 트리클 (feat-014 #3) — safety→신뢰, creativity→하이프. 로스터 없으면 0.
+            double rosterTrust = RosterBonus.GetMonthlyTrust(_m, _c);
+            double rosterHype = RosterBonus.GetMonthlyHype(_m, _c);
+            if (rosterTrust > 0) _r.Add(ResourceId.Trust, rosterTrust);
+            if (rosterHype > 0) _r.Add(ResourceId.Hype, rosterHype);
 
             // 5) 신뢰 회복 (임계값 미만일 때)
             if (_m.Trust < b.trustRecoveryThreshold) _r.Add(ResourceId.Trust, b.trustRecoveryAmount);

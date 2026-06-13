@@ -99,16 +99,25 @@ namespace AICompanyTycoon.Systems
 
             double revenue = 0;
             foreach (var id in _m.ActiveProducts)
-            {
-                var p = _c.GetProduct(id);
-                if (p == null) continue;
-                bool isEnterprise = p.tags != null && p.tags.Contains("enterprise");
-                revenue += p.baseRevenue * RevenueMultiplier(id) * (isEnterprise ? trustMult : 1.0);
-            }
+                revenue += EstimateProductRevenue(id);
 
             if (_m.ActiveProducts.Count > 0 && b.revenuePerThousandUsers > 0)
                 revenue += (_m.Users / 1000.0) * b.revenuePerThousandUsers;
             return revenue;
+        }
+
+        // 제품 1종의 예상 월매출 (레벨·신뢰·로스터 product 보너스 반영) — 카드 표기·밸류에이션에 재사용.
+        public double EstimateProductRevenue(string id)
+        {
+            var p = _c.GetProduct(id);
+            if (p == null) return 0;
+            var b = _c.balance;
+            double trustMult = 1.0;
+            if (_m.Trust > b.trustMultiplierHighThreshold) trustMult = b.trustEnterpriseBonus;
+            else if (_m.Trust < b.trustMultiplierLowThreshold) trustMult = b.trustLowPenalty;
+            bool isEnterprise = p.tags != null && p.tags.Contains("enterprise");
+            double rosterRev = 1.0 + RosterBonus.GetRevenueBonus(_m, _c);
+            return p.baseRevenue * RevenueMultiplier(id) * (isEnterprise ? trustMult : 1.0) * rosterRev;
         }
 
         public List<ProductDef> GetAvailable()
@@ -130,6 +139,11 @@ namespace AICompanyTycoon.Systems
             if (_m.Trust > b.trustMultiplierHighThreshold) trustMult = b.trustEnterpriseBonus;
             else if (_m.Trust < b.trustMultiplierLowThreshold) trustMult = b.trustLowPenalty;
 
+            // 로스터 보너스 (feat-014 #3) — product 매출 +%, growth 이용자 +%, autonomy 연산 압력 -%. 로스터 없으면 전부 0.
+            double rosterRev = 1.0 + RosterBonus.GetRevenueBonus(_m, _c);
+            double rosterUser = 1.0 + RosterBonus.GetUserBonus(_m, _c);
+            double rosterCompute = 1.0 - RosterBonus.GetComputeReduction(_m, _c);
+
             double revenue = 0, newUsers = 0, data = 0, computePressure = 0;
             foreach (var id in _m.ActiveProducts)
             {
@@ -138,10 +152,10 @@ namespace AICompanyTycoon.Systems
                 bool isEnterprise = p.tags != null && p.tags.Contains("enterprise");
                 double pTrustMult = isEnterprise ? trustMult : 1.0;
                 // 레벨 멀티플라이어 (feat-012 #4) — 레벨 1이면 전부 1.0이라 기존 동작 그대로.
-                revenue += p.baseRevenue * RevenueMultiplier(id) * pTrustMult;
-                newUsers += p.baseUsersPerMonth * UserMultiplier(id) * hypeMult;
+                revenue += p.baseRevenue * RevenueMultiplier(id) * pTrustMult * rosterRev;
+                newUsers += p.baseUsersPerMonth * UserMultiplier(id) * hypeMult * rosterUser;
                 data += p.dataGeneratedPerMonth;
-                computePressure += p.computePer1000Users * ComputeMultiplier(id);
+                computePressure += p.computePer1000Users * ComputeMultiplier(id) * rosterCompute;
             }
 
             // 연산력 소모 — React computePressure 동치 (feat-013 #1 정렬). 기존(총 이용자 비례)은
