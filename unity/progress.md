@@ -4,7 +4,7 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-13
-**활성 피처** — **feat-017 픽셀 컷씬 시스템 골격 완료**(feat-016 오피스 비주얼 재작업 완결 위에). 출시 발표회 컷씬(CutsceneDirector — 모달 윈도우+커튼 무대+발표 직원+객석 로봇+색종이, 코드 모션). EditMode **145/145** + PlayMode 캡처 15-cutscene-launch. 곁다리로 "No cameras rendering" 해소(GameBootstrap.EnsureCamera). 정본 docs/feat-017-context-notes.md, agy 포즈 핸드오프 docs/agy-handoff/cutscene-poses.md. **로컬 미푸시(사용자 확인 후).**
+**활성 피처** — **feat-017 픽셀 컷씬 시스템 완료**(4종 + 미니). CutsceneDirector 일반화 — 모달 컷씬 3종(출시 발표회 / 승급 새오피스공개[성급 배경 재사용] / 상장 세리머니[종·$·폭죽]) + 능력업·해금 미니 코너 윈도우(슬라이드·입력 통과·큐). 트리거 ProductLaunched/CompanyStageChanged/신규 IpoCompleted/Capability·Domain. EditMode **145/145** + PlayMode 캡처 15~18. 곁다리 "No cameras rendering" 해소(GameBootstrap.EnsureCamera). 정본 docs/feat-017-context-notes.md, agy 포즈 핸드오프 docs/agy-handoff/cutscene-poses.md. **로컬 미푸시(사용자 확인 후).**
 **현재 목표** — 다음 후보는 ① feat-012 #5 트리 그래프 화면 ② 실기기 검증(경제 체감 변화 큼 — ARPU·GPU 증설·시너지) ③ 도감 열람 UI(아키타입·엔딩·시너지/콤보) ④ feat-016 후속 폴리시(중간 성급 growth/datacenter 실게임 캡처는 preview만 — 필요시 추가).
 
 ## 상태 (Status)

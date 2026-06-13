@@ -235,6 +235,36 @@ namespace AICompanyTycoon.Tests.PlayMode
             }
             yield return WaitRealtime(2.2f); // 자동 닫힘까지 대기(테스트 정리)
 
+            // 16) 승급 컷씬 (feat-017 #1) — 새 오피스 공개(랜드마크 배경 재사용).
+            AICompanyTycoon.Core.GameEvents.RaiseCompanyStageChanged("boundaryless_intelligence");
+            yield return WaitRealtime(0.6f);
+            var cs2 = GameObject.Find("CutsceneDirector");
+            if (cs2 != null && cs2.GetComponent<Canvas>() != null)
+            {
+                yield return CaptureCanvas(cs2, "16-cutscene-stageup.png");
+            }
+            yield return WaitRealtime(2.2f);
+
+            // 17) 상장 컷씬 (feat-017 #2) — 세리머니.
+            AICompanyTycoon.Core.GameEvents.RaiseIpoCompleted();
+            yield return WaitRealtime(0.7f);
+            var cs3 = GameObject.Find("CutsceneDirector");
+            if (cs3 != null && cs3.GetComponent<Canvas>() != null)
+            {
+                yield return CaptureCanvas(cs3, "17-cutscene-ipo.png");
+            }
+            yield return WaitRealtime(2.2f);
+
+            // 18) 미니 코너 컷씬 (feat-017 #3) — 능력업.
+            AICompanyTycoon.Core.GameEvents.RaiseCapabilityUpgraded("cap_demo", 2);
+            yield return WaitRealtime(0.4f);
+            var cs4 = GameObject.Find("CutsceneDirector");
+            if (cs4 != null && cs4.GetComponent<Canvas>() != null)
+            {
+                yield return CaptureCanvas(cs4, "18-cutscene-mini.png");
+            }
+            yield return WaitRealtime(1.4f);
+
             Object.Destroy(go);
             yield return null;
         }

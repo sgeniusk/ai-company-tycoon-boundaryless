@@ -197,9 +197,9 @@
       "dependencies": [
         "feat-016"
       ],
-      "status": "in_progress",
-      "owner": "Claude (CutsceneDirector 골격 + 코드 모션)",
-      "evidence": "브레인스토밍 합의(2026-06-13) — 모달 컷씬 + 이벤트별 맞춤 톤 + tier 차등화 + 탭 스킵 + 반복 출시 간략화. CutsceneDirector는 FxManager 패턴(RuntimeInitializeOnLoadMethod + 전용 Overlay Canvas + GameEvents 구독)."
+      "status": "done",
+      "owner": "Claude (CutsceneDirector + 4종 컷씬)",
+      "evidence": "CutsceneDirector(FxManager 패턴, Overlay Canvas 230) — 모달 컷씬 4종(출시 발표회/승급 새오피스공개/상장 세리머니) + 미니 코너 윈도우(능력업·해금). 공통 셸 + 종류별 Populate, 코드 모션(들기·점프·박수·종·$ 플로팅), 탭 스킵·반복 간략화·미니 큐. 트리거 — ProductLaunched/CompanyStageChanged/신규 IpoCompleted/Capability·Domain. 검증 EditMode 145/145 + PlayMode 캡처 15~18. 곁다리: No-cameras 해소(GameBootstrap.EnsureCamera). agy 포즈 핸드오프 docs/agy-handoff/cutscene-poses.md(후속)."
     }
   ]
 }

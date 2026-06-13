@@ -53,6 +53,16 @@
 - 2026-06-13 — **골격 구현 완료** — `Scripts/UI/CutsceneDirector.cs`(FxManager 패턴, sortingOrder 230 Overlay Canvas, ProductLaunched 구독). 출시 시 모달 윈도우(타이틀 "신제품 출시!" + 커튼 무대 + 중앙 발표 직원 머리 위 제품 별박스 + 좌우 객석 로봇 + 색종이). 코드 모션 — PresenterLift(발표자 들썩+제품 회전), FanCheer(객석 점프+스쿼시), ConfettiCo(자체 색종이). 탭 스킵(스크림 Button) + 자동 닫힘, 반복 출시 3회+ 간략화(_launchCount). tier enum(Mini/Medium/Big, 출시=Medium) 골격 — 승급·상장·미니는 후속.
 - 2026-06-13 — **검증** — EditMode 145/145(컴파일+로직 무변경) + PlayMode 캡처 `Logs/shots/15-cutscene-launch.png`. 제품-머리 겹침 버그 1회 수정(product y 150→210, presenter y -70→-90/size 260→240). 모션 코루틴 while 조건을 `actor != null`로(닫힘 시 파괴 객체 접근 방지). 정적 캡처라 모션·색종이는 한 프레임만 잡힘.
 - 2026-06-13 — **곁다리 수정** — feat-016 검증 중 발견한 "No cameras rendering"(Game.unity 씬 카메라 0개) 해소. `GameBootstrap.EnsureCamera()`가 더미 메인 카메라 런타임 보장(cullingMask 0, Overlay UI 독립). EnsureEventSystem 패턴 답습.
+- 2026-06-13 — **tier 확장 #1~#3 완료** — CutsceneDirector 일반화(공통 모달 셸 + 종류별 Populate*: Launch/StageUp/Ipo) + 미니 별도 큐 경로. #1 승급(CompanyStageChanged 구독, 새 성급 배경 StageVisual 재사용 + 직원 3종 점프, "새 오피스로 이사!"). #2 상장(신규 GameEvents.IpoCompleted + GameScreen ShowIpoModal 성공 블록 배선, 기존 FxManager.Celebrate+SpawnCelebration("상장") 제거 → 세리머니 컷씬: 종 흔들기+직원 환호+$ 플로팅(FloatingText)+폭죽). #3 미니(CapabilityUpgraded/DomainUnlocked 구독, 하단 코너 윈도우 슬라이드 인/아웃 + 캐릭터 1명 + ▲, 스크림 없음·raycastTarget false로 입력 통과, 자체 큐). 검증 — EditMode 145/145 + PlayMode 캡처 16-stageup·17-ipo·18-mini. 미니 캐릭터 14px 잘림 → 좌표 안쪽 조정(재캡처 생략, 좌표 상수라 회귀 0).
+
+## tier 확장 설계 (사용자 승인 2026-06-13)
+브레인스토밍 합의 — 출시(기존) 외 승급·상장·미니 3종 추가.
+- **트리거** — 승급=`CompanyStageChanged`(이미 발동), 상장=신규 `GameEvents.IpoCompleted`(GameScreen ShowIpoModal 성공 블록 line~1230에서 발동), 능력업=`CapabilityUpgraded`·해금=`DomainUnlocked`.
+- **승급(Big, 새 오피스 공개)** — 모달 윈도우 안에 새 성급 배경(StageVisual.BackgroundKey 4종 재사용)을 깔고 직원 점프 환호 + "○○으로 성장!" 타이틀 + 색종이.
+- **상장(Big, 세리머니)** — 무대 위 종(벨) + 직원 환호 + "$" 플로팅 + 금빛 폭죽 + "상장 성공!". 기존 IPO 모달(공모율 결정) 확정 직후 재생. GameScreen의 SpawnCelebration("상장") 빅팝은 컷씬으로 대체(중복 제거).
+- **미니(능력업·해금, 코너 윈도우)** — 하단 한쪽 작은 윈도우 슬라이드 인 → 캐릭터 1명 엄지척 + "LEVEL UP!"/"도메인 해금!" → ~1s 슬라이드 아웃. **스크림 없음·입력 통과**(GraphicRaycaster 미적용 레이어). 자체 큐로 연속.
+- **구조** — Director 일반화. 공통 모달 셸(BuildModalShell: 스크림+윈도우+타이틀+무대+탭스킵) 추출 → 출시/승급/상장이 무대 내용(Populate*)만 다르게. 모달은 `_playing` 1개씩(재생 중 무시). 미니는 별도 코너 레이어 + 큐(모달과 독립).
+- **블록** — #1 Director 일반화+승급 / #2 IpoCompleted+상장 / #3 미니 코너.
 
 ## 남은 폴리시 / 후속
 - 스포트라이트(발표자 뒤 노란 콘) 약함 — 강화 여지.

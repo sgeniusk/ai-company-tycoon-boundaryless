@@ -13,6 +13,7 @@ namespace AICompanyTycoon.Core
         public static event Action<string> ProductLaunched;
         public static event Action<string> DomainUnlocked;
         public static event Action<string, int> CapabilityUpgraded;
+        public static event Action IpoCompleted; // 상장 확정 — 세리머니 컷씬 트리거 (feat-017 #2)
         public static event Action<string> LogMessage;
 
         public static void RaiseResourceChanged(ResourceId id, double oldValue, double newValue) => ResourceChanged?.Invoke(id, oldValue, newValue);
@@ -22,6 +23,7 @@ namespace AICompanyTycoon.Core
         public static void RaiseProductLaunched(string productId) => ProductLaunched?.Invoke(productId);
         public static void RaiseDomainUnlocked(string domainId) => DomainUnlocked?.Invoke(domainId);
         public static void RaiseCapabilityUpgraded(string capabilityId, int level) => CapabilityUpgraded?.Invoke(capabilityId, level);
+        public static void RaiseIpoCompleted() => IpoCompleted?.Invoke();
         public static void RaiseLog(string message) => LogMessage?.Invoke(message);
     }
 }

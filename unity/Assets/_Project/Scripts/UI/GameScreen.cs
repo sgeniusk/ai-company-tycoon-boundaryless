@@ -1229,8 +1229,8 @@ namespace AICompanyTycoon.UI
                     {
                         if (ctx.Ipo.Ipo(captured, ctx.Resources))
                         {
-                            FxManager.Celebrate(0.6f, 60, 1.4f);
-                            SpawnCelebration("celebrate_achievement", "상장! 🔔");
+                            // 세리머니 컷씬이 종 치기·환호·$·폭죽을 담당 (feat-017 #2) — 기존 빅팝·파티클 대체.
+                            AICompanyTycoon.Core.GameEvents.RaiseIpoCompleted();
                             if (_toastRibbon != null) _toastRibbon.Enqueue("상장 성공 — 세계 시장 데뷔!", UiTheme.CrestGold);
                         }
                     }
