@@ -2494,6 +2494,58 @@ namespace AICompanyTycoon.UI
             AddLayout(freelance.button.gameObject, 64, 0);
         }
 
+        // 전략 섹션 — 자본으로 하는 경영 액션 (feat-014 #4). 마케팅 + 경쟁사 견제(리스크).
+        void BuildStrategySection()
+        {
+            var title = UiFactory.Label(_upgradesContent, "전략 활동", 36);
+            AddLayout(title.gameObject, 44, 0);
+
+            AddStrategyAction(StrategyService.Marketing, "마케팅 캠페인",
+                "현금을 들여 화제성과 신규 이용자를 끌어올립니다.",
+                "효과 — 화제성 +" + (int)StrategyService.MarketingHype + " · 이용자 +" + (int)StrategyService.MarketingUsers,
+                "캠페인 집행");
+
+            var rivalName = _context.Strategy.TopRivalName(_context.Catalog);
+            AddStrategyAction(StrategyService.Sabotage, "경쟁사 견제",
+                "1위 라이벌의 기세를 꺾습니다. 들키면 신뢰가 흔들립니다 (리스크).",
+                "대상 — " + (rivalName ?? "없음") + " | 신뢰 -" + (int)StrategyService.SabotageTrustHit + " (점수 -" + (int)(StrategyService.SabotageScoreCut * 100) + "%)",
+                "견제 실행");
+        }
+
+        void AddStrategyAction(string id, string name, string desc, string effect, string buttonLabel)
+        {
+            var card = AddCard(_upgradesContent, name, desc);
+            AddSmallText(card, effect);
+            AddSmallText(card, "비용 " + FormatMoney(_context.Strategy.GetCost(id)));
+            var reason = _context.Strategy.GetLockReason(id);
+            if (reason != null)
+            {
+                AddSmallText(card, "잠금 사유 - " + reason);
+            }
+
+            var button = UiFactory.Button(card, buttonLabel);
+            button.button.interactable = reason == null;
+            button.button.onClick.AddListener(() =>
+            {
+                if (_context.Strategy.Run(id))
+                {
+                    SetStatus(name + " 실행됨");
+                    SpawnReaction(id == StrategyService.Sabotage ? "react_idea" : "react_cheer");
+                    if (_toastRibbon != null)
+                    {
+                        _toastRibbon.Enqueue(name + " — 실행!", id == StrategyService.Sabotage ? UiTheme.ScoreboardLive : UiTheme.ScoreboardTag);
+                    }
+
+                    RefreshAll();
+                }
+                else
+                {
+                    SetStatus("실행 조건을 다시 확인하세요.");
+                }
+            });
+            AddLayout(button.button.gameObject, 64, 0);
+        }
+
         // 시설 섹션 — 사무실 확장 + 본사 이전 + GPU 증설 (feat-014 #2).
         void BuildFacilitySection()
         {
@@ -2626,6 +2678,7 @@ namespace AICompanyTycoon.UI
             BuildEquitySection();
             BuildTalentSection();
             BuildFacilitySection();
+            BuildStrategySection();
 
             var upgradeTitle = UiFactory.Label(_upgradesContent, "전략·투자", 36);
             AddLayout(upgradeTitle.gameObject, 44, 0);

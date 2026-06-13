@@ -53,7 +53,7 @@ namespace AICompanyTycoon.Save
     [Serializable]
     public class SaveData
     {
-        public int version = 10;
+        public int version = 11;
         public double cash;
         public double users;
         public double compute;
@@ -84,6 +84,8 @@ namespace AICompanyTycoon.Save
         // 상장 (v10, feat-015 #4). 구세이브 미상장.
         public bool isPublic;
         public double sharePrice;
+        // 전략 쿨다운 (v11, feat-014 #4). 구세이브 빈 목록 — 즉시 사용 가능.
+        public List<CapEntry> strategyCooldowns = new List<CapEntry>();
         public List<string> purchasedUpgrades = new List<string>();
         public List<string> purchasedAutomation = new List<string>();
         public List<string> triggeredEvents = new List<string>();

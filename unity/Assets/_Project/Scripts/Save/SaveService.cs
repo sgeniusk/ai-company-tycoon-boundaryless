@@ -60,6 +60,8 @@ namespace AICompanyTycoon.Save
             d.investmentRoundsOffered = new List<string>(m.InvestmentRoundsOffered);
             d.isPublic = m.IsPublic;
             d.sharePrice = m.SharePrice;
+            foreach (var e in m.StrategyCooldowns)
+                d.strategyCooldowns.Add(new CapEntry { id = e.id, level = e.level });
             foreach (var sh in m.Shareholders)
                 d.shareholders.Add(new ShareholderSave { name = sh.name, kind = sh.kind, equity = sh.equity });
             foreach (var c in m.CompetitorStates)
@@ -105,6 +107,10 @@ namespace AICompanyTycoon.Save
             m.InvestmentRoundsOffered = new List<string>(d.investmentRoundsOffered ?? new List<string>());
             m.IsPublic = d.isPublic;
             m.SharePrice = d.sharePrice;
+            m.StrategyCooldowns = new List<CooldownEntry>();
+            if (d.strategyCooldowns != null)
+                foreach (var e in d.strategyCooldowns)
+                    m.StrategyCooldowns.Add(new CooldownEntry { id = e.id, level = e.level });
             m.Shareholders = new List<ShareholderEntry>();
             if (d.shareholders != null)
                 foreach (var sh in d.shareholders)

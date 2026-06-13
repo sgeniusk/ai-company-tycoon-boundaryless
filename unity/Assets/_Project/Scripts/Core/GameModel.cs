@@ -13,6 +13,14 @@ namespace AICompanyTycoon.Core
         public double equity;
     }
 
+    // 전략 액션 쿨다운 — id가 level(=재사용 가능 월)까지 잠긴다 (feat-014 #4).
+    [Serializable]
+    public class CooldownEntry
+    {
+        public string id;
+        public int level;
+    }
+
     [Serializable]
     public class GameModel
     {
@@ -52,6 +60,8 @@ namespace AICompanyTycoon.Core
         // 상장 (feat-015 #4) — 상장 여부 + 주가 지수(상장 시 100 기준, 매월 변동). 미상장이면 0.
         public bool IsPublic;
         public double SharePrice;
+        // 전략 액션 쿨다운 (feat-014 #4) — 마케팅·경쟁사 견제 재사용 대기.
+        public List<CooldownEntry> StrategyCooldowns = new List<CooldownEntry>();
         public List<string> PurchasedUpgrades = new List<string>();
         public List<string> PurchasedAutomation = new List<string>();
         public List<string> TriggeredEvents = new List<string>();
