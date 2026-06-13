@@ -689,7 +689,7 @@ namespace AICompanyTycoon.UI
                 }
 
                 // 책상 전경 오클루더 — 액터 다음(앞)에 생성해 하반신을 가린다 = 앉아 일하는 연출.
-                CreateDeskOccluder(xnorm, footY, baseW * scale, baseH * scale);
+                CreateDeskOccluder(xnorm, footY, baseW * scale, baseH * scale, seed);
 
                 // 열일 불꽃은 책상보다 앞 — 일하는 직원을 감싸 보이게.
                 if (flameRoot != null) flameRoot.SetAsLastSibling();
@@ -697,8 +697,29 @@ namespace AICompanyTycoon.UI
         }
 
         // 절차적 책상 전면 — 전면 패널 + 상판 밝은 띠 + 바닥 그림자 + 좌우 잉크 + 작은 모니터. 새 스프라이트 없이 '앉은' 오클루전 (feat-019 T1).
-        void CreateDeskOccluder(float xnorm, float footY, float actorW, float actorH)
+        void CreateDeskOccluder(float xnorm, float footY, float actorW, float actorH, int variant)
         {
+            // AI 생성 책상 스프라이트 — 전면이 직원 하반신을 가리고 모니터가 가슴 앞에 (feat-020 #2). 변형 2종 교차.
+            var deskSprite = IconLibrary.Get(variant % 2 == 0 ? "furniture_desk_wood" : "furniture_desk_white");
+            if (deskSprite != null)
+            {
+                float dh = actorH * 0.66f; // 책상+모니터 높이 — 얼굴은 위로 노출
+                float dw = dh * (deskSprite.rect.width / deskSprite.rect.height);
+                var ds = new GameObject("Desk", typeof(RectTransform), typeof(Image));
+                ds.transform.SetParent(_officeSceneContent, false);
+                var dsr = ds.GetComponent<RectTransform>();
+                dsr.anchorMin = dsr.anchorMax = new Vector2(xnorm, 0f);
+                dsr.pivot = new Vector2(0.5f, 0f);
+                dsr.sizeDelta = new Vector2(dw, dh);
+                dsr.anchoredPosition = new Vector2(0f, footY);
+                var dsi = ds.GetComponent<Image>();
+                dsi.sprite = deskSprite;
+                dsi.preserveAspect = true;
+                dsi.raycastTarget = false;
+                return;
+            }
+
+            // 폴백 — 스프라이트 미임포트 시 절차 책상.
             float deskW = actorW * 1.34f;
             float deskH = actorH * 0.40f;
 
