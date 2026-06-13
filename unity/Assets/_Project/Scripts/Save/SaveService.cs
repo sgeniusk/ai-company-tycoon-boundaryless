@@ -58,6 +58,8 @@ namespace AICompanyTycoon.Save
             d.founderEquity = m.FounderEquity;
             d.loanPrincipal = m.LoanPrincipal;
             d.investmentRoundsOffered = new List<string>(m.InvestmentRoundsOffered);
+            d.isPublic = m.IsPublic;
+            d.sharePrice = m.SharePrice;
             foreach (var sh in m.Shareholders)
                 d.shareholders.Add(new ShareholderSave { name = sh.name, kind = sh.kind, equity = sh.equity });
             foreach (var c in m.CompetitorStates)
@@ -101,6 +103,8 @@ namespace AICompanyTycoon.Save
             m.FounderEquity = d.founderEquity <= 0 ? 100 : d.founderEquity;
             m.LoanPrincipal = d.loanPrincipal;
             m.InvestmentRoundsOffered = new List<string>(d.investmentRoundsOffered ?? new List<string>());
+            m.IsPublic = d.isPublic;
+            m.SharePrice = d.sharePrice;
             m.Shareholders = new List<ShareholderEntry>();
             if (d.shareholders != null)
                 foreach (var sh in d.shareholders)

@@ -1182,6 +1182,42 @@ namespace AICompanyTycoon.UI
             ShowInterviewStep();
         }
 
+        // 상장 모달 — 공모 지분 3택(종 치기 빅 모먼트). 인터뷰 모달 재사용 (feat-015 #4).
+        void ShowIpoModal()
+        {
+            if (_interviewModal == null || _context == null || !_context.Ipo.CanIpo()) return;
+            _interviewTitleLabel.text = "상장 (IPO)";
+            _interviewOnComplete = null;
+
+            var step = new StartupInterview.Step
+            {
+                Speaker = "증권거래소",
+                Prompt = "\"드디어 상장이군요! 공모 지분을 얼마나 내놓으시겠습니까? 시장이 프리미엄을 얹어 값을 매깁니다.\"",
+            };
+            foreach (double pct in new[] { 10.0, 20.0, 30.0 })
+            {
+                double captured = pct;
+                step.Choices.Add(new StartupInterview.Choice
+                {
+                    Label = "공모 " + pct.ToString("F0") + "% (+" + FormatMoney(_context.Ipo.GetOfferingCash(pct)) + ")",
+                    Description = "지분 " + pct.ToString("F0") + "%를 시장에 풀고 상장 자금을 확보한다.",
+                    Apply = ctx =>
+                    {
+                        if (ctx.Ipo.Ipo(captured, ctx.Resources))
+                        {
+                            FxManager.Celebrate(0.6f, 60, 1.4f);
+                            SpawnCelebration("celebrate_achievement", "상장! 🔔");
+                            if (_toastRibbon != null) _toastRibbon.Enqueue("상장 성공 — 세계 시장 데뷔!", UiTheme.CrestGold);
+                        }
+                    }
+                });
+            }
+
+            _interviewSteps = new List<StartupInterview.Step> { step };
+            _interviewIndex = 0;
+            ShowInterviewStep();
+        }
+
         // 시리즈 투자 제안 — 성급 승급으로 등장하는 일회성 라운드 (feat-015 #3). 같은 인터뷰 모달 재사용.
         void ShowInvestmentOffer(InvestmentRound round)
         {
@@ -2237,10 +2273,30 @@ namespace AICompanyTycoon.UI
             var title = UiFactory.Label(_upgradesContent, "경영정보", 36);
             AddLayout(title.gameObject, 44, 0);
 
-            var card = AddCard(_upgradesContent, "회사 가치 " + FormatMoney(_context.Equity.GetValuation()),
-                "월매출·이용자·현금으로 평가한 기업 가치입니다. 매달 자랍니다.");
+            // 상장 후엔 시가총액·주가로 진화 (feat-015 #4).
+            bool isPublic = _context.Model.IsPublic;
+            var card = AddCard(_upgradesContent,
+                (isPublic ? "시가총액 " : "회사 가치 ") + FormatMoney(_context.Equity.GetMarketCap()),
+                isPublic ? "상장 기업입니다. 주가가 매달 움직입니다." : "월매출·이용자·현금으로 평가한 기업 가치입니다. 매달 자랍니다.");
             var equityLine = AddSmallText(card, "내 지분 " + _context.Model.FounderEquity.ToString("F0") + "% | 내 자산 " + FormatMoney(_context.Equity.GetFounderNetWorth()));
             equityLine.color = UiTheme.GoalAccent;
+
+            if (isPublic)
+            {
+                AddSmallText(card, "주가 지수 " + _context.Model.SharePrice.ToString("F1") + " (상장가 100 기준)");
+            }
+            else
+            {
+                // 상장 — 4성 빅 모먼트 (feat-015 #4).
+                var ipoReason = _context.Ipo.GetLockReason();
+                AddSmallText(card, ipoReason == null ? "상장 준비 완료 — 종을 울릴 시간입니다." : "상장 조건 — " + ipoReason);
+                if (ipoReason == null)
+                {
+                    var ipo = UiFactory.Button(card, "상장(IPO) 추진");
+                    ipo.button.onClick.AddListener(ShowIpoModal);
+                    AddLayout(ipo.button.gameObject, 64, 0);
+                }
+            }
 
             if (_context.Model.Shareholders.Count == 0)
             {

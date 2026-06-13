@@ -94,6 +94,9 @@ namespace AICompanyTycoon.Systems
             // 6.2) 연중 세계 이벤트 — 시드 파생 스케줄 도래분 발동 (feat-007 블록 #3, React applyDueWorldEvents 대응)
             s.WorldEventTitles = WorldEventService.ApplyDue(_m, _c, _r);
 
+            // 6.3) 주가 변동 (feat-015 #4) — 상장 기업만. 신뢰 드리프트 + 시드 노이즈로 매월 결정론 변동.
+            IpoService.ApplyMonthlyStock(_m, _c);
+
             // 6.5) 경쟁사 시장 진행 — 진입/성장/점유율/히스토리 (additive, 자원·승패 계산에 영향 없음)
             if (_market != null) _market.AdvanceCompetitors();
 

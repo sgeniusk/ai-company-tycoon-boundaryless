@@ -24,8 +24,12 @@ namespace AICompanyTycoon.Systems
             return _p.EstimateMonthlyRevenue() * RevenueMultiple + _m.Users * ValuePerUser + cash;
         }
 
-        // 내 자산 — 회사 가치 * 창업자 지분. 부자 순위(#5)의 기준값.
-        public double GetFounderNetWorth() => GetValuation() * (_m.FounderEquity / 100.0);
+        // 시가총액 — 상장 후엔 밸류에이션에 주가 지수(100 기준)를 곱한다 (feat-015 #4).
+        public double GetMarketCap()
+            => _m.IsPublic ? GetValuation() * (_m.SharePrice / 100.0) : GetValuation();
+
+        // 내 자산 — 시가총액 * 창업자 지분. 부자 순위(#5)의 기준값.
+        public double GetFounderNetWorth() => GetMarketCap() * (_m.FounderEquity / 100.0);
 
         // 외부 주주 지분 합 — 불변식: 창업자 + 주주 합 = 100.
         public double GetOutsideEquity()

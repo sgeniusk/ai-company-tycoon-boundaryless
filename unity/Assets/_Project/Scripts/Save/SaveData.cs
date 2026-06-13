@@ -53,7 +53,7 @@ namespace AICompanyTycoon.Save
     [Serializable]
     public class SaveData
     {
-        public int version = 9;
+        public int version = 10;
         public double cash;
         public double users;
         public double compute;
@@ -81,6 +81,9 @@ namespace AICompanyTycoon.Save
         public double loanPrincipal;
         // 시리즈 투자 라운드 (v9, feat-015 #3). 구세이브 빈 목록.
         public List<string> investmentRoundsOffered = new List<string>();
+        // 상장 (v10, feat-015 #4). 구세이브 미상장.
+        public bool isPublic;
+        public double sharePrice;
         public List<string> purchasedUpgrades = new List<string>();
         public List<string> purchasedAutomation = new List<string>();
         public List<string> triggeredEvents = new List<string>();

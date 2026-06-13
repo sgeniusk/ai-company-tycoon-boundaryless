@@ -106,6 +106,38 @@ namespace AICompanyTycoon.Tests.PlayMode
                 yield return CaptureCanvas(canvasGo, "05-upgrades.png");
             }
 
+            // 5.5) 상장(IPO) 모달 — 4성 상태를 주입하고 경영 탭에서 상장 버튼을 눌러 빅 모먼트 캡처 (feat-015 #4).
+            // 반드시 컨텍스트를 갈아치우는 '새 게임' 버튼들보다 먼저 — boot.Context가 화면과 일치할 때.
+            if (boot.Context != null && boot.Screen != null)
+            {
+                var m = boot.Context.Model;
+                m.CompanyStageId = "enterprise_ai_vendor"; // 성급 4
+                m.Trust = 70;
+                m.Compute = 1_000_000;
+                m.Data = 1_000_000;
+                m.Cash = 1_000_000;
+                boot.Context.Products.Launch("foundation_model_v0");
+                boot.Screen.RefreshAll();
+                yield return WaitRealtime(0.2f);
+
+                if (tabUpgrades != null)
+                {
+                    tabUpgrades.onClick.Invoke();
+                    yield return WaitRealtime(0.3f);
+                }
+
+                var ipoButton = FindButton(canvasGo, "상장(IPO) 추진");
+                if (ipoButton != null)
+                {
+                    ipoButton.onClick.Invoke();
+                    yield return WaitRealtime(0.4f);
+                    yield return CaptureCanvas(canvasGo, "12-ipo.png");
+                    // IPO 모달은 인터뷰 모달 공유 — 공모 10% 선택으로 닫는다(이후 캡처는 새 게임으로 리셋됨).
+                    var ipoPick = FindButton(canvasGo, "공모 10% (+$15.0K)");
+                    if (ipoPick != null) { ipoPick.onClick.Invoke(); yield return WaitRealtime(0.2f); }
+                }
+            }
+
             // 팝업 닫기
             if (menuClose != null)
             {

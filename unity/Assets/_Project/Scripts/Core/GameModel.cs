@@ -49,6 +49,9 @@ namespace AICompanyTycoon.Core
         public double LoanPrincipal;
         // 시리즈 투자 라운드 (feat-015 #3) — 이미 제안된 성급 id(일회성 보장). 수락·거절 모두 기록.
         public List<string> InvestmentRoundsOffered = new List<string>();
+        // 상장 (feat-015 #4) — 상장 여부 + 주가 지수(상장 시 100 기준, 매월 변동). 미상장이면 0.
+        public bool IsPublic;
+        public double SharePrice;
         public List<string> PurchasedUpgrades = new List<string>();
         public List<string> PurchasedAutomation = new List<string>();
         public List<string> TriggeredEvents = new List<string>();
