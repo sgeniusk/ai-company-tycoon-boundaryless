@@ -35,3 +35,9 @@
   - #4 IpoService(4성 IPO, 공모 10/20/30% 프리미엄 1.5, 월별 주가=신뢰 드리프트+시드 노이즈, 세이브 v10)+시가총액 진화.
   - #5 RichestRanking(상장 후 세계 부자 순위 전광판+등반 토스트)+EquityEnding(지분 형태별 특별 결말 4종, endings.json 비변형).
 - 세이브 v4→v10 누적, 전부 구세이브 무손실 마이그레이션. EditMode 114→133. TechTreeReachability 게이트 그린 유지(자본 액션은 UI 옵트인, 봇 무영향).
+
+## 2026-06-13 (이어서) — feat-014 경영 탭 #3~#5 (잔여 완결)
+- **#3 인재 개발력 전체 환산** — RosterBonus 8축(research/engineering 비용 할인 + product 매출% + growth 이용자% + autonomy 연산-% + operations 고정비-% + safety 월신뢰 + creativity 월화제성). 전부 derive-only·상한·로스터 없으면 0. TOPS 단위 표기 + 제품 예상 월매출 + 정산 기대 vs 실제.
+- **#4 전략 활동** — StrategyService(마케팅 캠페인=화제성·이용자, 경쟁사 견제=신뢰 리스크로 1위 라이벌 점수 -15%·기세 0) + 6개월 쿨다운(세이브 v11).
+- **#5 성급 비주얼 사다리** — StageVisual 배경 키 매핑(차고/성장/데이터센터/랜드마크) + GameScreen 단계 승급 배경 스왑(아트 미반입 시 office 폴백, 드롭인 준비). 배경 3장 PNG는 Codex 절차 생성(office.png 떠있는 등각 플랫폼 앵커).
+- 세이브 v10→v11. EditMode 136→145. 봇 무영향(전략·시설은 UI 옵트인). 경영 탭 5섹션 완성 — 경영정보·인재·시설·전략 활동·전략·투자.
