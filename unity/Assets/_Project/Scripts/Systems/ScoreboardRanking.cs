@@ -50,12 +50,24 @@ namespace AICompanyTycoon.Systems
             };
         }
 
-        // 마퀴 — 라이벌 추월 격차 · 전국 점유율 · 현재 단계 · 순위 추세.
+        // 마퀴 — 라이벌 추월 격차 · 전국 점유율 · 현재 단계 · 순위 추세 · (상장 시) 세계 부자 순위.
         public static List<string> BuildScoreboardMarquee(MarketService market, GameModel m, DataCatalog catalog)
+        {
+            return BuildScoreboardMarquee(market, m, catalog, null);
+        }
+
+        public static List<string> BuildScoreboardMarquee(MarketService market, GameModel m, DataCatalog catalog, EquityService equity)
         {
             var nr = DeriveNationalRanking(market, m);
             var entries = new List<string>();
             var rankings = market.GetMarketRankings();
+
+            // 상장 기업 — 세계 부자 순위를 전광판에 띄운다 (feat-015 #5). 기업 랭킹과 교차 표시.
+            if (equity != null && m.IsPublic)
+            {
+                var rich = RichestRanking.Derive(m, equity);
+                entries.Add("🌐 세계 부자 #" + rich.rank + " / " + rich.total + " 위");
+            }
 
             int rivalIndex = rankings.FindIndex(e => !e.isPlayer);
             if (rivalIndex >= 0)

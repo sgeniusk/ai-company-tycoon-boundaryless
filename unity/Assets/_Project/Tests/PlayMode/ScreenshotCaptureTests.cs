@@ -133,8 +133,23 @@ namespace AICompanyTycoon.Tests.PlayMode
                     yield return WaitRealtime(0.4f);
                     yield return CaptureCanvas(canvasGo, "12-ipo.png");
                     // IPO 모달은 인터뷰 모달 공유 — 공모 10% 선택으로 닫는다(이후 캡처는 새 게임으로 리셋됨).
-                    var ipoPick = FindButton(canvasGo, "공모 10% (+$15.0K)");
-                    if (ipoPick != null) { ipoPick.onClick.Invoke(); yield return WaitRealtime(0.2f); }
+                    var ipoPick = FindButtonByPrefix(canvasGo, "공모 10%");
+                    if (ipoPick != null) { ipoPick.onClick.Invoke(); yield return WaitRealtime(0.3f); }
+
+                    // 상장 후 전광판 — 세계 부자 순위가 마퀴에 뜨는지 (feat-015 #5)
+                    boot.Screen.RefreshAll();
+                    yield return WaitRealtime(0.2f);
+                    var mq2Text = GameObject.Find("MarqueeText");
+                    var mq2View = GameObject.Find("MarqueeViewport");
+                    if (mq2Text != null && mq2View != null)
+                    {
+                        var mq = mq2View.GetComponent("Marquee") as Behaviour;
+                        if (mq != null) mq.enabled = false;
+                        var mrt = mq2Text.GetComponent<RectTransform>();
+                        mrt.anchoredPosition = new Vector2(16f, mrt.anchoredPosition.y);
+                        yield return null;
+                        yield return CaptureCanvas(canvasGo, "13-richest-marquee.png");
+                    }
                 }
             }
 
@@ -331,6 +346,19 @@ namespace AICompanyTycoon.Tests.PlayMode
             {
                 var t = b.GetComponentInChildren<Text>(true);
                 if (t != null && t.text == exactLabel)
+                {
+                    return b;
+                }
+            }
+            return null;
+        }
+
+        static Button FindButtonByPrefix(GameObject root, string prefix)
+        {
+            foreach (var b in root.GetComponentsInChildren<Button>(true))
+            {
+                var t = b.GetComponentInChildren<Text>(true);
+                if (t != null && t.text != null && t.text.StartsWith(prefix))
                 {
                     return b;
                 }

@@ -80,6 +80,7 @@ namespace AICompanyTycoon.UI
         int _interviewIndex;
         System.Action _interviewOnComplete;
         InvestmentRound _pendingInvestment;  // 성급 승급으로 대기 중인 투자 제안
+        int _lastRichestRank = -1;           // 세계 부자 순위 등반 토스트용 (세션 한정, 비저장)
 
         ToastRibbon _toastRibbon;      // 사건 토스트 리본 (feat-010 #4)
 
@@ -206,6 +207,7 @@ namespace AICompanyTycoon.UI
             ShowMonthlyDopamine(_lastSummary); // 수익 플로팅 + 환호 + 사건 토스트 (feat-010)
             AnnounceDiscoveries(visibilityBefore); // ???→실명 해금 모먼트 (feat-012 #4)
             AnnounceSynergies(synergiesBefore);    // 시너지/콤보 가동 모먼트 (feat-013 #1)
+            AnnounceRichestClimb();                // 세계 부자 순위 등반 모먼트 (feat-015 #5)
 
             if (_terminal)
             {
@@ -482,7 +484,7 @@ namespace AICompanyTycoon.UI
                 _scoreDelta.color = UiTheme.DeltaFlat;
             }
 
-            var lines = ScoreboardRanking.BuildScoreboardMarquee(_context.Market, _context.Model, _context.Catalog);
+            var lines = ScoreboardRanking.BuildScoreboardMarquee(_context.Market, _context.Model, _context.Catalog, _context.Equity);
             _scoreMarquee.text = string.Join("    ·    ", lines);
         }
 
@@ -2195,6 +2197,20 @@ namespace AICompanyTycoon.UI
             AddLayout(upgrade.button.gameObject, 64, 0);
         }
 
+        // 세계 부자 순위 등반 — 상장 후 순위가 오르면 토스트 (feat-015 #5).
+        void AnnounceRichestClimb()
+        {
+            if (_context == null || !_context.Model.IsPublic) return;
+            var rich = RichestRanking.Derive(_context.Model, _context.Equity);
+            if (_lastRichestRank > 0 && rich.rank < _lastRichestRank && _toastRibbon != null)
+            {
+                int climbed = _lastRichestRank - rich.rank;
+                _toastRibbon.Enqueue("세계 부자 #" + rich.rank + " — " + climbed + "계단 상승!", UiTheme.CrestGold);
+            }
+
+            _lastRichestRank = rich.rank;
+        }
+
         // 산업 시너지/콤보 가동 모먼트 — 포트폴리오 완성이 눈에 보이는 페이오프가 된다 (feat-013 #1).
         HashSet<string> SnapshotActiveSynergies()
         {
@@ -2868,19 +2884,31 @@ namespace AICompanyTycoon.UI
                 var body = ending.flavor;
                 if (!string.IsNullOrEmpty(outcome)) body += "\n\n" + outcome;
                 if (isNew) body += "\n\n새 결말이 도감에 기록되었습니다 (" + _meta.Data.discoveredEndingIds.Count + "/" + _context.Catalog.endings.Count + ")";
+                body = AppendEquityEnding(body);
                 _resultMessage.text = body;
             }
             else
             {
                 _resultTitle.text = won ? "🏆 축하합니다!" : "💸 게임 오버";
                 _resultTitle.color = won ? UiTheme.TabActive : new Color(0.84f, 0.28f, 0.22f);
-                _resultMessage.text = !string.IsNullOrEmpty(outcome)
+                var body = !string.IsNullOrEmpty(outcome)
                     ? outcome
                     : (won ? "AI 기업 성장에 성공했습니다." : "회사가 어려운 상황에 처했습니다.");
+                _resultMessage.text = AppendEquityEnding(body);
             }
 
             _resultModal.SetActive(true);
             PopInCard(_resultModal, "ResultCard");
+        }
+
+        // 지분 형태에 따른 Unity 전용 특별 결말 한 줄 (feat-015 #5). 멀티 엔딩과 별개로 덧붙는다.
+        string AppendEquityEnding(string body)
+        {
+            var special = EquityEnding.Get(_context.Model);
+            if (special == null) return body;
+            var s = special.Value;
+            string line = "💎 " + s.Title + " — " + s.Flavor;
+            return string.IsNullOrEmpty(body) ? line : body + "\n\n" + line;
         }
 
         // 모달 카드를 스케일+페이드로 등장시킨다. CanvasGroup이 없으면 추가.
