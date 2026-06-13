@@ -230,9 +230,9 @@
       "dependencies": [
         "feat-019"
       ],
-      "status": "in-progress",
+      "status": "done",
       "owner": "Claude(파이프라인·통합·검증) + Codex(imagegen)",
-      "evidence": "1차(캐릭터) 완료 — 직원 3종(인간/AI/로봇) × idle/작업 Codex imagegen 생성 → downsample 96px 투명 → Resources/Art/Actors 드롭인(IconLibrary 오버라이드) + ActorAnim idle↔작업 타이핑 애니. EditMode 145/145 + PlayMode 5/5 + 01d-office-rich 인게임 확인(v090 대비 도약). 다음 — 책상 가구 스프라이트(사용자 결정: 책상 먼저), 배경 절차 유지. raws는 Tools~/pixel_office/feat020(gitignore)."
+      "evidence": "완료 — Codex imagegen + pixel-art-pipeline로 절차 픽셀아트 전면 교체. ① 직원 3종(인간/AI/로봇)×idle/작업 96px 투명 → Resources/Art/Actors 드롭인(IconLibrary 오버라이드)+ActorAnim 타이핑 애니. ② 책상 가구 2종(나무/모던) 144x96 → CreateDeskOccluder 스프라이트 교체(변형 교차, 절차 폴백). ③ 배경 4종(차고/스타트업/데이터센터/랜드마크) AI 룸 → compose_room.py 합성(룸 하단 FLOOR_Y 2304 정합·천장/바닥 확장) → office*.png 드롭인. feat-019 런타임(2열·juice·앰비언트·스크림) 유지. 검증 EditMode 145/145 + PlayMode 5/5 + 01d(차고)·14-stage(랜드마크) 인게임 정합 + 스타트업/데이터센터 합성 단독. 사용자 '훨씬 나아졌다' 확인. raws gitignore, gen_office.py 절차 배경 superseded(보존)."
     }
   ]
 }
