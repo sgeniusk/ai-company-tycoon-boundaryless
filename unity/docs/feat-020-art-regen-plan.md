@@ -36,3 +36,16 @@
 2. 이 문서 + `pixel-art-pipeline` 스킬 로드. feat-020 feature_list 등록.
 3. **선행 검증(Codex 이미지 생성 가능?)** → 파일럿(직원 1종 애니) → 품질 게이트 → 확장.
 4. ultracode workflow로 자산별 파이프라인 + Unity 통합 + 캡처 검증 + 트랙별 커밋.
+
+## 진행 기록 — 1차 캐릭터 (완료, 2026-06-14)
+- **Codex imagegen 가능 확인** — Codex CLI는 imagegen 스킬로 실제 raster PNG 생성 가능(절차 아님). **단 `gpt-5.5-codex` 모델은 이 계정 미지원 → 기본 모델로 폴백**(imagegen은 별개라 정상). 앞으로 `--model` 플래그 생략.
+- **생성** — 병렬 codex-rescue 3개(인간/AI/로봇). 각 프롬프트 — pilot_worker.png를 스타일 레퍼런스로, 같은 캐릭터 2포즈(idle + 작업/타이핑) 별도 PNG, 정면 전신, 순백 #FFFFFF 배경, 12~16색. 결과 raws `Tools~/pixel_office/feat020/raw_<type>_<pose>.png`(512~1254px, gitignore).
+- **가공** — `pixel-art-pipeline/scripts/downsample.py raw.png proc.png --size 96 --colors 16 --transparent-color "#FFFFFF" --preview`. 96px가 디테일/픽셀 균형 최적(64 거침, 128 일러스트화). 사용자 96 확정.
+- **반입** — proc 6장을 `Resources/Art/Actors/{actor_human,actor_human_work,actor_ai,actor_ai_work,actor_robot,actor_robot_work}.png` + 단일 스프라이트 .meta(Point 필터·Sprite·투명, v090 미러). `IconLibrary` AtlasResourcePaths 맨 앞에 `"Art/Actors"` 추가 → v090 idle 드롭인 오버라이드 + work 포즈 신규.
+- **애니** — `ActorAnim.cs`(신규) idle↔작업 비대칭 스왑(가끔 앞으로 기울여 타이핑, 직원마다 위상). `GameScreen.PlaceActorRow`가 StaffBob/WorkLoop와 함께 부착. work 스프라이트 없으면 idle 고정(안전).
+- **검증** — EditMode 145/145 + PlayMode 5/5 + 01d-office-rich 인게임(2열 무대에 3종 합성, 타이핑·열일불꽃). v090 대비 도약.
+- **함정** — 안전 분류기 일시 장애로 codex Bash가 막힐 수 있음(수 분 내 복구, 재시도). 느린 생성(~8분)을 멈춤으로 오판해 중복 실행 주의.
+
+## 남은 작업
+- **책상 가구 스프라이트**(사용자 결정: 책상 먼저) — 평면 C# 책상 오클루더를 AI 생성 책상+모니터 스프라이트로 교체. `CreateDeskOccluder` 대체.
+- (보류) 배경 4종 AI 재생성 — 절차 룸 유지(그럭저럭, cover·FLOOR_Y 정합 까다로움).

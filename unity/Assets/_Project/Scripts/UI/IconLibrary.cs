@@ -10,6 +10,7 @@ namespace AICompanyTycoon.UI
         // Resources/Art/UI 하위에서 로드할 아틀라스 경로 (확장 시 여기 추가).
         static readonly string[] AtlasResourcePaths =
         {
+            "Art/Actors", // feat-020 — AI생성+픽셀화 캐릭터(actor_*/actor_*_work). v090보다 먼저 로드해 idle을 드롭인 오버라이드 + work 포즈 추가
             "Art/UI/v071-commercial-ui-atlas",
             "Art/UI/v079-product-domain-atlas",
             "Art/UI/v080-capability-research-atlas",

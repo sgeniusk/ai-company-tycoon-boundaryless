@@ -222,6 +222,17 @@
       "status": "done",
       "owner": "Claude(통합·GameScreen·검증) + Codex 5.5 xhigh(AmbientRoomFx) + workflow(컴포넌트·리뷰)",
       "evidence": "6트랙 완료 — T1 2열 원근 착석(GameScreen 수동배치 + 절차 책상 전경 오클루더, 새 스프라이트0)+gen_office.py BG 떠있는 책상 제거, T2 세로 그라데이션 스크림(무대 0.05 환하게·UI뒤 0.52 어둡게), T3 SpeechBubble 말풍선+직원별 리워드 플로팅+CrunchFlame 열일불꽃(WorkLoop 분기·불꽃 책상앞 frontmost), T4 AmbientRoomFx 룸 애니(Codex 5.5 xhigh)+CoverMatch cover정합, T5 컷씬 스포트라이트/빅플래시/팝, T6 하네스 기본 20:9. 검증 — EditMode 145/145 + PlayMode 5/5 + 캡처 01d-office-rich(2열·책상·불꽃·말풍선·리워드 한프레임)·15-cutscene-launch(스포트라이트). 곁다리 — UiTween PopIn/Punch/Fade 파괴대상 가드(세이브/로드 PlayMode 테스트 복구). dynamic workflow+Codex 3-way 분업. 정본 docs/feat-019-context-notes.md"
+    },
+    {
+      "id": "feat-020",
+      "name": "오피스 아트 재생성 — AI 이미지 시트 + pixel-art-pipeline + 애니 (P21)",
+      "description": "사용자 피드백(2026-06-14) — feat-016~019 절차 픽셀아트 퀄리티 부족. Codex CLI imagegen으로 pixel-art-look 이미지 생성 → pixel-art-pipeline 스킬로 진짜 고정크기 픽셀아트(96px·16색·투명) 가공 → Unity 반입. feat-019 런타임 시스템 유지·드롭인. 움직임(애니 프레임) 포함. 계획 docs/feat-020-art-regen-plan.md",
+      "dependencies": [
+        "feat-019"
+      ],
+      "status": "in-progress",
+      "owner": "Claude(파이프라인·통합·검증) + Codex(imagegen)",
+      "evidence": "1차(캐릭터) 완료 — 직원 3종(인간/AI/로봇) × idle/작업 Codex imagegen 생성 → downsample 96px 투명 → Resources/Art/Actors 드롭인(IconLibrary 오버라이드) + ActorAnim idle↔작업 타이핑 애니. EditMode 145/145 + PlayMode 5/5 + 01d-office-rich 인게임 확인(v090 대비 도약). 다음 — 책상 가구 스프라이트(사용자 결정: 책상 먼저), 배경 절차 유지. raws는 Tools~/pixel_office/feat020(gitignore)."
     }
   ]
 }

@@ -656,7 +656,8 @@ namespace AICompanyTycoon.UI
             for (int i = 0; i < count; i += 1)
             {
                 int seed = startSeed + i;
-                var sprite = IconLibrary.Get(kinds[seed % kinds.Length]);
+                string kind = kinds[seed % kinds.Length];
+                var sprite = IconLibrary.Get(kind);
                 float xnorm = count <= 1 ? 0.5f : marginNorm + (1f - 2f * marginNorm) * ((i + 0.5f) / count);
 
                 var actorGo = new GameObject("Actor", typeof(RectTransform), typeof(Image));
@@ -678,6 +679,7 @@ namespace AICompanyTycoon.UI
                 {
                     actorGo.AddComponent<StaffBob>().Init(seed * 0.9f);
                     actorGo.AddComponent<WorkLoop>().Init(seed, allowSpeech);
+                    actorGo.AddComponent<ActorAnim>().Init(sprite, IconLibrary.Get(kind + "_work"), seed); // idle↔작업 타이핑 애니 (feat-020)
                     if (i == busyLocal)
                     {
                         actorGo.AddComponent<CrunchFlameFx>().Init(aRect, 1.3f); // 열일 불꽃 — 이미지처럼 극적이게 (feat-019 T3)
