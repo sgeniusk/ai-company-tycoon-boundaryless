@@ -42,16 +42,18 @@ namespace AICompanyTycoon.UI
         {
             float e = 0f;
             if (cg != null) cg.alpha = 0f;
+            if (t == null) yield break;
             t.localScale = Vector3.one * 0.92f;
             while (e < dur)
             {
                 e += Time.unscaledDeltaTime;
+                if (t == null) yield break; // 대상이 파괴되면(세이브/로드 UI 재빌드 등) 안전 종료
                 float k = Mathf.Clamp01(e / dur);
                 t.localScale = Vector3.one * Mathf.Lerp(0.92f, 1f, k);
                 if (cg != null) cg.alpha = k;
                 yield return null;
             }
-            t.localScale = Vector3.one;
+            if (t != null) t.localScale = Vector3.one;
             if (cg != null) cg.alpha = 1f;
         }
 
@@ -59,19 +61,19 @@ namespace AICompanyTycoon.UI
         {
             float half = Mathf.Max(0.01f, dur * 0.5f);
             float e = 0f;
-            while (e < half) { e += Time.unscaledDeltaTime; t.localScale = Vector3.one * (1f + amount * (e / half)); yield return null; }
+            while (e < half) { e += Time.unscaledDeltaTime; if (t == null) yield break; t.localScale = Vector3.one * (1f + amount * (e / half)); yield return null; }
             e = 0f;
-            while (e < half) { e += Time.unscaledDeltaTime; t.localScale = Vector3.one * (1f + amount * (1f - e / half)); yield return null; }
-            t.localScale = Vector3.one;
+            while (e < half) { e += Time.unscaledDeltaTime; if (t == null) yield break; t.localScale = Vector3.one * (1f + amount * (1f - e / half)); yield return null; }
+            if (t != null) t.localScale = Vector3.one;
         }
 
         static IEnumerator FadeCo(CanvasGroup cg, float dur, float delay)
         {
-            cg.alpha = 0f;
+            if (cg != null) cg.alpha = 0f;
             if (delay > 0f) yield return new WaitForSeconds(delay);
             float e = 0f;
-            while (e < dur) { e += Time.unscaledDeltaTime; cg.alpha = Mathf.Clamp01(e / dur); yield return null; }
-            cg.alpha = 1f;
+            while (e < dur) { e += Time.unscaledDeltaTime; if (cg == null) yield break; cg.alpha = Mathf.Clamp01(e / dur); yield return null; }
+            if (cg != null) cg.alpha = 1f;
         }
     }
 }

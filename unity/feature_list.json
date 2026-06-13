@@ -219,9 +219,9 @@
       "dependencies": [
         "feat-018"
       ],
-      "status": "in-progress",
-      "owner": "Claude(통합·GameScreen·검증) + Codex 5.5 xhigh(AmbientRoomFx·grunt) + workflow(컴포넌트·리뷰)",
-      "evidence": "구현 중 — dynamic workflow + Codex 3-way 분업. 진행 progress.md / 설계 docs/feat-019-context-notes.md"
+      "status": "done",
+      "owner": "Claude(통합·GameScreen·검증) + Codex 5.5 xhigh(AmbientRoomFx) + workflow(컴포넌트·리뷰)",
+      "evidence": "6트랙 완료 — T1 2열 원근 착석(GameScreen 수동배치 + 절차 책상 전경 오클루더, 새 스프라이트0)+gen_office.py BG 떠있는 책상 제거, T2 세로 그라데이션 스크림(무대 0.05 환하게·UI뒤 0.52 어둡게), T3 SpeechBubble 말풍선+직원별 리워드 플로팅+CrunchFlame 열일불꽃(WorkLoop 분기·불꽃 책상앞 frontmost), T4 AmbientRoomFx 룸 애니(Codex 5.5 xhigh)+CoverMatch cover정합, T5 컷씬 스포트라이트/빅플래시/팝, T6 하네스 기본 20:9. 검증 — EditMode 145/145 + PlayMode 5/5 + 캡처 01d-office-rich(2열·책상·불꽃·말풍선·리워드 한프레임)·15-cutscene-launch(스포트라이트). 곁다리 — UiTween PopIn/Punch/Fade 파괴대상 가드(세이브/로드 PlayMode 테스트 복구). dynamic workflow+Codex 3-way 분업. 정본 docs/feat-019-context-notes.md"
     }
   ]
 }

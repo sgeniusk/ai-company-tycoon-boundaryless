@@ -355,6 +355,8 @@ namespace AICompanyTycoon.UI
         }
 
         Image _officeBgImage; // 성급 비주얼 사다리 — 단계 승급 시 배경 스왑 (feat-014 #5)
+        AmbientRoomFx _ambientFx;        // 앰비언트 룸 애니 (feat-019 T4) — 단계 승급 시 룸키 재구성
+        RectTransform _ambientCoverRoot; // 네이티브 캔버스(240x534) 좌표계 루트 — CoverMatch가 cover 스케일
 
         // 사무실 배경을 전체에 깔고 위에 반투명 막을 얹어 UI 가독성을 확보한다. 성급에 따라 배경이 진화한다.
         void BuildOfficeBackground(Transform parent)
@@ -381,11 +383,56 @@ namespace AICompanyTycoon.UI
             bgImage.raycastTarget = false;
             _officeBgImage = bgImage;
 
-            // 크림 톤 반투명 막 — office가 주인공으로 보이게 약하게만 (feat-011에서 0.55→0.38, 텍스트 대비는 패널 자체 bg가 담당).
-            var scrim = UiFactory.Panel(parent, new Color(UiTheme.ScreenBg.r, UiTheme.ScreenBg.g, UiTheme.ScreenBg.b, 0.38f));
-            scrim.name = "BackgroundScrim";
-            Stretch(scrim.GetComponent<RectTransform>());
-            scrim.GetComponent<Image>().raycastTarget = false;
+            // 그라데이션 스크림 — 오피스 무대(중앙)는 거의 환하게, 상단 HUD·하단 도크 뒤만 어둡게 (feat-019 T2).
+            // 균일 0.38은 픽셀 배경 채도를 죽였다. 세로 알파 그라데이션 텍스처로 무대 생기를 살리고 UI 텍스트 대비는 가장자리에서 확보한다.
+            var scrimTex = MakeVerticalScrimTexture();
+            var scrimGo = new GameObject("BackgroundScrim", typeof(RectTransform), typeof(Image));
+            scrimGo.transform.SetParent(parent, false);
+            Stretch(scrimGo.GetComponent<RectTransform>());
+            var scrimImg = scrimGo.GetComponent<Image>();
+            scrimImg.sprite = Sprite.Create(scrimTex, new Rect(0f, 0f, scrimTex.width, scrimTex.height), new Vector2(0.5f, 0.5f));
+            scrimImg.type = Image.Type.Simple;
+            scrimImg.preserveAspect = false;
+            scrimImg.raycastTarget = false;
+
+            // 앰비언트 룸 애니 오버레이 — 스크림 위·직원 아래. 배경 발광요소(모니터·LED·창·조명)에 절차 애니로 생명을 준다 (feat-019 T4).
+            var ambientGo = new GameObject("AmbientRoom", typeof(RectTransform));
+            ambientGo.transform.SetParent(parent, false);
+            _ambientCoverRoot = ambientGo.GetComponent<RectTransform>();
+            _ambientCoverRoot.anchorMin = _ambientCoverRoot.anchorMax = new Vector2(0.5f, 0.5f);
+            _ambientCoverRoot.pivot = new Vector2(0.5f, 0.5f);
+            _ambientCoverRoot.sizeDelta = new Vector2(240f, 534f); // 네이티브 캔버스 — CoverMatch가 배경 cover 높이에 맞춰 스케일
+            ambientGo.AddComponent<CoverMatch>().Init(bgRect, 534f);
+            _ambientFx = ambientGo.AddComponent<AmbientRoomFx>();
+            _ambientFx.Init(CurrentRoomKey(), _ambientCoverRoot);
+        }
+
+        // 세로 알파 그라데이션 스크림 텍스처 — 하단(도크·리본)·상단(HUD·스코어보드)은 진하게, 중앙(무대)은 거의 투명 (feat-019 T2).
+        Texture2D MakeVerticalScrimTexture()
+        {
+            const int h = 256;
+            var tex = new Texture2D(2, h, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear };
+            var c = UiTheme.ScreenBg;
+            for (int y = 0; y < h; y += 1)
+            {
+                float v = y / (float)(h - 1);                       // 0 = 화면 하단, 1 = 화면 상단 (텍스처 bottom-up)
+                float aBottom = 1f - Mathf.SmoothStep(0f, 0.22f, v); // v<0.22(하단 도크) 진함
+                float aTop = Mathf.SmoothStep(0.74f, 0.98f, v);      // v>0.74(상단 HUD) 진함
+                float alpha = Mathf.Lerp(0.05f, 0.52f, Mathf.Max(aBottom, aTop));
+                var col = new Color(c.r, c.g, c.b, alpha);
+                tex.SetPixel(0, y, col);
+                tex.SetPixel(1, y, col);
+            }
+            tex.Apply();
+            return tex;
+        }
+
+        // 현재 성급의 룸 키(basename) — AmbientRoomFx 룸 프리셋 선택용 (feat-019 T4).
+        string CurrentRoomKey()
+        {
+            var key = StageVisual.BackgroundKey(_context != null ? _context.Model.CompanyStageId : null);
+            int slash = key.LastIndexOf('/');
+            return slash >= 0 ? key.Substring(slash + 1) : key;
         }
 
         // 현재 성급에 맞는 배경 텍스처 — 단계 전용이 없으면 기본 office로 폴백 (feat-014 #5).
@@ -403,6 +450,10 @@ namespace AICompanyTycoon.UI
             var tex = LoadStageBackground();
             if (tex == null) return;
             _officeBgImage.sprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            if (_ambientFx != null && _ambientCoverRoot != null)
+            {
+                _ambientFx.Init(CurrentRoomKey(), _ambientCoverRoot); // 룸 변경 시 앰비언트 프리셋 재구성
+            }
         }
 
         // CD-1 전국 AI 기업 랭킹 LED 전광판 — 태그+LIVE 점멸 / #랭크 /총사 ▲델타 / 흐르는 마퀴.
@@ -537,20 +588,16 @@ namespace AICompanyTycoon.UI
             stageRect.offsetMin = Vector2.zero;
             stageRect.offsetMax = Vector2.zero;
 
-            // 1층(뒤) — v054 오피스 가구를 상단~중단 밴드에 깔아 사무실감을 준다.
-            BuildOfficeFurniture(panel.transform);
-
-            // 2층(앞) — 직원 row. 전체 스트레치 + 하단 중앙 정렬. RefreshOfficeScene이 채운다.
-            var actorRow = new GameObject("ActorRow", typeof(RectTransform));
-            actorRow.transform.SetParent(panel.transform, false);
-            var aRect = actorRow.GetComponent<RectTransform>();
-            aRect.anchorMin = Vector2.zero;
-            aRect.anchorMax = Vector2.one;
-            aRect.offsetMin = Vector2.zero;
-            aRect.offsetMax = Vector2.zero;
-            var row = UiFactory.HBox(actorRow.transform, 14);
-            row.childAlignment = TextAnchor.LowerCenter;
-            _officeSceneContent = actorRow.transform; // Clear는 직원만 비운다(가구·오버레이 보존)
+            // 직원 무대 — 2열 원근(뒷줄 작게·위, 앞줄 크게·아래) + 책상 전경 오클루더로 '앉아 일하는' 연출 (feat-019 T1).
+            // HBox 대신 전체 스트레치 컨테이너에 수동 배치(깊이·오클루전 제어). RefreshOfficeScene이 talent 수만큼 채운다.
+            var stage = new GameObject("OfficeStage", typeof(RectTransform));
+            stage.transform.SetParent(panel.transform, false);
+            var sRect = stage.GetComponent<RectTransform>();
+            sRect.anchorMin = Vector2.zero;
+            sRect.anchorMax = Vector2.one;
+            sRect.offsetMin = Vector2.zero;
+            sRect.offsetMax = Vector2.zero;
+            _officeSceneContent = stage.transform; // Clear는 직원·책상만 비운다(오버레이 보존)
 
             // 리액션 버블 전용 오버레이 — 최상단(직원 위)에 절대 위치로 띄운다.
             var overlay = new GameObject("ReactionLayer", typeof(RectTransform));
@@ -566,47 +613,13 @@ namespace AICompanyTycoon.UI
             _toastRibbon = ToastRibbon.Create(panel.transform);
         }
 
-        // v054 오브젝트 몇 개를 직원 뒤 밴드에 등각 배치한다(정적 앰비언스). 스프라이트 없으면 건너뛴다.
-        void BuildOfficeFurniture(Transform parent)
-        {
-            var band = new GameObject("Furniture", typeof(RectTransform));
-            band.transform.SetParent(parent, false);
-            var rect = band.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.05f, 0.12f);
-            rect.anchorMax = new Vector2(0.95f, 0.44f);
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
-            var box = UiFactory.HBox(band.transform, 18);
-            box.childAlignment = TextAnchor.LowerCenter; // 직원 바닥선 가까이 — 워크스페이스로 묶이게
+        // 직원 무대 팔레트 — gen_office.py draw_desk 톤 정합(책상 전경 오클루더용).
+        static readonly Color DeskTopCol = new Color(0xE0 / 255f, 0x9A / 255f, 0x6E / 255f);   // WOOD_L
+        static readonly Color DeskFrontCol = new Color(0xC6 / 255f, 0x76 / 255f, 0x54 / 255f); // WOOD
+        static readonly Color DeskShadeCol = new Color(0x8A / 255f, 0x4E / 255f, 0x36 / 255f); // WOOD_D
+        static readonly Color DeskInkCol = new Color(0x1F / 255f, 0x19 / 255f, 0x12 / 255f);   // INK
 
-            var items = new[] { "obj_desk_monitor", "obj_server_blue", "obj_whiteboard_a", "obj_desk_papers" };
-            foreach (var key in items)
-            {
-                var sprite = IconLibrary.Get(key);
-                if (sprite == null)
-                {
-                    continue;
-                }
-
-                var go = new GameObject(key, typeof(RectTransform), typeof(Image));
-                go.transform.SetParent(band.transform, false);
-                var img = go.GetComponent<Image>();
-                img.sprite = sprite;
-                img.preserveAspect = true;
-                img.raycastTarget = false;
-                img.color = new Color(1f, 1f, 1f, 0.94f); // 살짝 가라앉혀 직원이 앞으로 읽히게
-
-                var le = go.AddComponent<LayoutElement>();
-                le.minWidth = 200;
-                le.preferredWidth = 200;
-                le.minHeight = 150;
-                le.preferredHeight = 150;
-                le.flexibleWidth = 0;
-                le.flexibleHeight = 0;
-            }
-        }
-
-        // talent(인재) 수만큼 직원 캐릭터를 세운다. 스프라이트가 없으면(임포트 전) 빈 칸으로 안전.
+        // talent(인재) 수만큼 직원을 2열 원근으로 세운다 — 뒷줄(작게·위) 먼저, 앞줄(크게·아래) 뒤에 그려 깊이를 준다 (feat-019 T1).
         void RefreshOfficeScene()
         {
             if (_officeSceneContent == null || _context == null)
@@ -616,46 +629,131 @@ namespace AICompanyTycoon.UI
 
             Clear(_officeSceneContent);
             int talent = (int)_context.Model.Get(ResourceId.Talent);
-            int count = Mathf.Clamp(talent, 0, 6);
+            int count = Mathf.Clamp(talent, 0, 10);
+            if (count == 0)
+            {
+                return;
+            }
+
             var kinds = new[] { "actor_human", "actor_ai", "actor_robot" };
+            int front = Mathf.Min(count, 4);
+            int back = count - front;               // 0~6 — 뒷줄
+            int busy = front >= 2 ? front / 2 : -1; // 앞줄 한 명은 '열일 불꽃'
+
+            // 뒷줄 먼저(뒤에 렌더) — 작게·위.
+            if (back > 0)
+            {
+                PlaceActorRow(kinds, front, back, 0.62f, 156f, 0.12f, allowSpeech: false, busyLocal: -1);
+            }
+            // 앞줄 — 크게·아래(앞). 책상이 다리를 가려 앉은 연출.
+            PlaceActorRow(kinds, 0, front, 1.0f, 14f, 0.08f, allowSpeech: true, busyLocal: busy);
+        }
+
+        // 한 줄(원근 스케일·바닥선)을 수동 배치 — 각 직원 + 책상 전경 오클루더. busyLocal 인덱스엔 열일 불꽃.
+        void PlaceActorRow(string[] kinds, int startSeed, int count, float scale, float footY, float marginNorm, bool allowSpeech, int busyLocal)
+        {
+            const float baseW = 150f, baseH = 150f;
             for (int i = 0; i < count; i += 1)
             {
-                var sprite = IconLibrary.Get(kinds[i % kinds.Length]);
+                int seed = startSeed + i;
+                var sprite = IconLibrary.Get(kinds[seed % kinds.Length]);
+                float xnorm = count <= 1 ? 0.5f : marginNorm + (1f - 2f * marginNorm) * ((i + 0.5f) / count);
 
-                // 레이아웃 셀(HBox가 위치 제어) — 내부 아이콘은 비제어라 StaffBob이 자유롭게 흔든다.
-                var cell = new GameObject("ActorCell", typeof(RectTransform));
-                cell.transform.SetParent(_officeSceneContent, false);
-                var cellLayout = cell.AddComponent<LayoutElement>();
-                cellLayout.minWidth = 150;
-                cellLayout.preferredWidth = 150;
-                cellLayout.minHeight = 164;
-                cellLayout.preferredHeight = 164;
-                cellLayout.flexibleWidth = 0;
-                cellLayout.flexibleHeight = 0;
+                var actorGo = new GameObject("Actor", typeof(RectTransform), typeof(Image));
+                actorGo.transform.SetParent(_officeSceneContent, false);
+                var aRect = actorGo.GetComponent<RectTransform>();
+                aRect.anchorMin = aRect.anchorMax = new Vector2(xnorm, 0f);
+                aRect.pivot = new Vector2(0.5f, 0f);
+                aRect.sizeDelta = new Vector2(baseW * scale, baseH * scale);
+                aRect.anchoredPosition = new Vector2(0f, footY);
 
-                var iconGo = new GameObject("Actor", typeof(RectTransform), typeof(Image));
-                iconGo.transform.SetParent(cell.transform, false);
-                var rect = iconGo.GetComponent<RectTransform>();
-                rect.anchorMin = new Vector2(0.5f, 0f);
-                rect.anchorMax = new Vector2(0.5f, 0f);
-                rect.pivot = new Vector2(0.5f, 0f);
-                rect.sizeDelta = new Vector2(150, 150);
-                rect.anchoredPosition = Vector2.zero;
-
-                var img = iconGo.GetComponent<Image>();
+                var img = actorGo.GetComponent<Image>();
                 img.sprite = sprite;
                 img.preserveAspect = true;
                 img.raycastTarget = false;
                 img.color = sprite != null ? Color.white : new Color(1f, 1f, 1f, 0f);
 
+                Transform flameRoot = null;
                 if (sprite != null)
                 {
-                    iconGo.AddComponent<StaffBob>().Init(i * 0.9f);
-                    iconGo.AddComponent<WorkLoop>().Init(i); // 턴 사이에도 일하는 코믹 워크루프 (feat-010 #2)
+                    actorGo.AddComponent<StaffBob>().Init(seed * 0.9f);
+                    actorGo.AddComponent<WorkLoop>().Init(seed, allowSpeech);
+                    if (i == busyLocal)
+                    {
+                        actorGo.AddComponent<CrunchFlameFx>().Init(aRect, 1.3f); // 열일 불꽃 — 이미지처럼 극적이게 (feat-019 T3)
+                        // 불꽃 루트는 방금 생성된 마지막 자식 — 책상 생성 뒤 맨 앞으로 올려 책상에 안 가리게.
+                        flameRoot = _officeSceneContent.GetChild(_officeSceneContent.childCount - 1);
+                    }
                 }
 
-                cell.SetActive(sprite != null);
+                // 책상 전경 오클루더 — 액터 다음(앞)에 생성해 하반신을 가린다 = 앉아 일하는 연출.
+                CreateDeskOccluder(xnorm, footY, baseW * scale, baseH * scale);
+
+                // 열일 불꽃은 책상보다 앞 — 일하는 직원을 감싸 보이게.
+                if (flameRoot != null) flameRoot.SetAsLastSibling();
             }
+        }
+
+        // 절차적 책상 전면 — 전면 패널 + 상판 밝은 띠 + 바닥 그림자 + 좌우 잉크 + 작은 모니터. 새 스프라이트 없이 '앉은' 오클루전 (feat-019 T1).
+        void CreateDeskOccluder(float xnorm, float footY, float actorW, float actorH)
+        {
+            float deskW = actorW * 1.34f;
+            float deskH = actorH * 0.40f;
+
+            var desk = new GameObject("Desk", typeof(RectTransform), typeof(Image));
+            desk.transform.SetParent(_officeSceneContent, false);
+            var dRect = desk.GetComponent<RectTransform>();
+            dRect.anchorMin = dRect.anchorMax = new Vector2(xnorm, 0f);
+            dRect.pivot = new Vector2(0.5f, 0f);
+            dRect.sizeDelta = new Vector2(deskW, deskH);
+            dRect.anchoredPosition = new Vector2(0f, footY);
+            var dImg = desk.GetComponent<Image>();
+            dImg.color = DeskFrontCol;
+            dImg.raycastTarget = false;
+
+            AddDeskStrip(desk.transform, DeskTopCol, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), deskH * 0.16f, false);   // 상판 밝은 띠
+            AddDeskStrip(desk.transform, DeskShadeCol, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), deskH * 0.12f, false); // 바닥 그림자
+            AddDeskStrip(desk.transform, DeskInkCol, new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0.5f), 2f, true);              // 좌측 잉크
+            AddDeskStrip(desk.transform, DeskInkCol, new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(1f, 0.5f), 2f, true);              // 우측 잉크
+
+            // 작은 모니터(워크스테이션 느낌) — 상판 위 한쪽.
+            var mon = new GameObject("DeskMon", typeof(RectTransform), typeof(Image));
+            mon.transform.SetParent(desk.transform, false);
+            var mRect = mon.GetComponent<RectTransform>();
+            mRect.anchorMin = mRect.anchorMax = new Vector2(0.72f, 1f);
+            mRect.pivot = new Vector2(0.5f, 0f);
+            float mW = Mathf.Max(14f, deskW * 0.22f);
+            mRect.sizeDelta = new Vector2(mW, mW * 0.74f);
+            mRect.anchoredPosition = new Vector2(0f, -1f);
+            var monImg = mon.GetComponent<Image>();
+            monImg.color = new Color(0x24 / 255f, 0x2D / 255f, 0x35 / 255f); // NAVY_D 베젤
+            monImg.raycastTarget = false;
+            var scr = new GameObject("MonScreen", typeof(RectTransform), typeof(Image));
+            scr.transform.SetParent(mon.transform, false);
+            var scrR = scr.GetComponent<RectTransform>();
+            scrR.anchorMin = new Vector2(0.14f, 0.16f);
+            scrR.anchorMax = new Vector2(0.86f, 0.84f);
+            scrR.offsetMin = Vector2.zero;
+            scrR.offsetMax = Vector2.zero;
+            var scrImg = scr.GetComponent<Image>();
+            scrImg.color = new Color(0x5F / 255f, 0xC6 / 255f, 0xA6 / 255f); // MINT 화면
+            scrImg.raycastTarget = false;
+        }
+
+        // 책상 디테일 띠 헬퍼 — 수평(상판/그림자) 또는 수직(좌우 잉크).
+        void AddDeskStrip(Transform parent, Color col, Vector2 aMin, Vector2 aMax, Vector2 pivot, float thickness, bool vertical)
+        {
+            var go = new GameObject("Strip", typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(parent, false);
+            var r = go.GetComponent<RectTransform>();
+            r.anchorMin = aMin;
+            r.anchorMax = aMax;
+            r.pivot = pivot;
+            r.sizeDelta = vertical ? new Vector2(thickness, 0f) : new Vector2(0f, thickness);
+            r.anchoredPosition = Vector2.zero;
+            var img = go.GetComponent<Image>();
+            img.color = col;
+            img.raycastTarget = false;
         }
 
         void BuildTopBar(Transform parent)

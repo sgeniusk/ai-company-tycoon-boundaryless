@@ -108,6 +108,8 @@ namespace AICompanyTycoon.UI
             _playing = true;
             bool brief = kind == CutsceneKind.Launch && _launchCount >= 3;
             float hold = brief ? 0.8f : 1.6f;
+            // 빅 모먼트 판정 — 승급·상장, 또는 첫 출시(아직 간략화 안 된 풀 발표회). 가산 플래시·팝·색종이 밀도용.
+            bool bigMoment = kind == CutsceneKind.StageUp || kind == CutsceneKind.Ipo || !brief;
 
             // --- 스크림 (입력 차단 + 탭 스킵) ---
             var scrim = UiFactory.Panel(_root, new Color(0.06f, 0.05f, 0.09f, 0.62f));
@@ -160,13 +162,16 @@ namespace AICompanyTycoon.UI
             hintCg.alpha = 0f;
 
             // ===== 공통 시퀀스 =====
+            // 빅 모먼트 오픈 플래시 — 스크림·윈도우 생성 뒤에 띄워 최상단 형제로 번쩍인 뒤 자동 소멸.
+            if (bigMoment) StartCoroutine(BigMomentFlash());
             yield return Fade(scrimCg, 0f, 1f, 0.18f);
-            win.localScale = Vector3.one * 0.7f;
-            UiTween.PopIn(win, winCg, 0.22f);
-            yield return WaitRT(0.22f);
+            // 팝 강화 — 내부 전용 오버슈트(0→1.06→1.0). 공유 UiTween은 손대지 않는다.
+            winCg.alpha = 0f;
+            yield return PopInOvershoot(win, winCg, 0.26f);
+            if (!skip) UiTween.Punch(title.transform, 0.14f, 0.16f); // 타이틀 등장 펀치
             if (!skip)
             {
-                BurstConfetti(stage, brief ? 16 : 32);
+                BurstConfetti(stage, brief ? 16 : (bigMoment ? 44 : 32));
                 UiTween.FadeIn(hintCg, 0.2f, 0.2f);
             }
             float t = 0f;
@@ -193,6 +198,7 @@ namespace AICompanyTycoon.UI
         void PopulateLaunch(RectTransform stage, List<Coroutine> motions)
         {
             AddSpotlight(stage);
+            AddPresenterGlow(stage, motions); // 발표자 뒤 보이는 빛 원뿔 + 소프트 글로우 (T5 강화)
             AddCurtains(stage);
             AddStageFloor(stage);
             var presenter = MakeActor(stage, "actor_human", new Vector2(0f, -90f), 240f);
@@ -320,6 +326,41 @@ namespace AICompanyTycoon.UI
             AddImage(spot, new Color(Gold.r, Gold.g, Gold.b, 0.14f)).raycastTarget = false;
         }
 
+        // 발표자 뒤 보이는 빛 원뿔(상단 좁음→하단 넓음) + 소프트 글로우. 스프라이트 0장 — 반투명 사각형 레이어로 콘·소프트엣지 흉내.
+        void AddPresenterGlow(RectTransform stage, List<Coroutine> motions)
+        {
+            // 1) 발표자 뒤 소프트 글로우 — 동심 레이어로 부드러운 가장자리. 가장 안쪽이 밝다.
+            var glowHolder = NewRect("PresenterGlow", stage, new Vector2(0f, 40f), new Vector2(360f, 360f));
+            const int rings = 5;
+            for (int i = 0; i < rings; i++)
+            {
+                float k = i / (float)(rings - 1);            // 0 안쪽 → 1 바깥쪽
+                float side = Mathf.Lerp(150f, 360f, k);
+                float a = Mathf.Lerp(0.30f, 0.04f, k);       // 안쪽 진하고 바깥 옅게
+                var ring = NewRect("glowRing", glowHolder, Vector2.zero, new Vector2(side, side));
+                AddImage(ring, new Color(Gold.r, Gold.g, Gold.b, a)).raycastTarget = false;
+            }
+
+            // 2) 빛 원뿔 — 천장(상단 좁음)에서 무대 바닥(하단 넓음)으로 퍼지는 빔. 사다리꼴을 가로폭이 점증하는 층으로 근사.
+            var coneHolder = NewRect("PresenterCone", stage, new Vector2(0f, 30f), new Vector2(360f, 460f));
+            const int slabs = 7;
+            for (int i = 0; i < slabs; i++)
+            {
+                float k = i / (float)(slabs - 1);            // 0 상단 → 1 하단
+                float slabW = Mathf.Lerp(60f, 300f, k);      // 위 좁고 아래 넓게 (스포트라이트 빔)
+                float slabH = 460f / slabs;
+                float yTop = 230f - slabH * 0.5f;
+                float y = yTop - i * slabH;
+                float a = Mathf.Lerp(0.16f, 0.05f, k);       // 위(광원 근처) 진하고 아래로 옅게
+                var slab = NewRect("coneSlab", coneHolder, new Vector2(0f, y), new Vector2(slabW, slabH + 2f));
+                AddImage(slab, new Color(Cream.r, Cream.g, Cream.b, a)).raycastTarget = false;
+            }
+
+            var glowCg = glowHolder.gameObject.AddComponent<CanvasGroup>();
+            var coneCg = coneHolder.gameObject.AddComponent<CanvasGroup>();
+            motions.Add(StartCoroutine(PresenterGlowPulse(glowCg, coneCg)));
+        }
+
         void AddCurtains(RectTransform stage)
         {
             for (int s = -1; s <= 1; s += 2)
@@ -338,6 +379,67 @@ namespace AICompanyTycoon.UI
         {
             var floor = NewRect("StageFloor", stage, new Vector2(0f, -210f), new Vector2(900f, 100f));
             AddImage(floor, StageFloorC).raycastTarget = false;
+        }
+
+        // ======================= 연출 코루틴 (가산) =======================
+        // 빅 모먼트 오픈 플래시 — 풀스크린 화이트 1회, 알파 0.5→0, 약 0.12s. 입력 비차단.
+        IEnumerator BigMomentFlash()
+        {
+            if (_root == null) yield break;
+            var flash = UiFactory.Panel(_root, new Color(1f, 1f, 1f, 0.5f));
+            flash.name = "BigMomentFlash";
+            Stretch(flash.GetComponent<RectTransform>());
+            var img = flash.GetComponent<Image>();
+            if (img != null) img.raycastTarget = false;
+            flash.transform.SetAsLastSibling();
+            const float dur = 0.12f;
+            float t = 0f;
+            while (t < dur && flash != null)
+            {
+                t += Time.unscaledDeltaTime;
+                if (img != null) { var c = img.color; c.a = Mathf.Lerp(0.5f, 0f, t / dur); img.color = c; }
+                yield return null;
+            }
+            if (flash != null) Destroy(flash);
+        }
+
+        // 발표자 글로우·빛 원뿔 결정적 호흡 펄스 — 광량이 살짝 일렁여 무대 조명을 살린다.
+        IEnumerator PresenterGlowPulse(CanvasGroup glowCg, CanvasGroup coneCg)
+        {
+            while (glowCg != null || coneCg != null)
+            {
+                float s = Mathf.Sin(Time.unscaledTime * 2.2f);
+                if (glowCg != null) glowCg.alpha = 0.85f + s * 0.15f;
+                if (coneCg != null) coneCg.alpha = 0.80f + s * 0.20f;
+                yield return null;
+            }
+        }
+
+        // 윈도우 등장 오버슈트 — 0→1.06→1.0. 공유 UiTween을 건드리지 않는 내부 전용 팝.
+        IEnumerator PopInOvershoot(RectTransform win, CanvasGroup cg, float dur)
+        {
+            if (win == null) yield break;
+            float up = dur * 0.7f;   // 0→1.06 구간
+            float settle = dur - up; // 1.06→1.0 정착
+            float t = 0f;
+            while (t < up && win != null)
+            {
+                t += Time.unscaledDeltaTime;
+                float k = Mathf.Clamp01(t / up);
+                win.localScale = Vector3.one * Mathf.Lerp(0f, 1.06f, k);
+                if (cg != null) cg.alpha = k;
+                yield return null;
+            }
+            t = 0f;
+            while (t < settle && win != null)
+            {
+                t += Time.unscaledDeltaTime;
+                float k = Mathf.Clamp01(t / settle);
+                win.localScale = Vector3.one * Mathf.Lerp(1.06f, 1f, k);
+                yield return null;
+            }
+            if (win != null) win.localScale = Vector3.one;
+            if (cg != null) cg.alpha = 1f;
         }
 
         // ======================= 모션 코루틴 =======================

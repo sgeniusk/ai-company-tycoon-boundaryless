@@ -1,4 +1,4 @@
-// 헤드리스 PlayMode 캡처 — GameBootstrap UI를 1080x1920 RenderTexture로 렌더해 PNG로 저장한다(시각 확인용).
+// 헤드리스 PlayMode 캡처 — GameBootstrap UI를 1080x2400 RenderTexture로 렌더해 PNG로 저장한다(시각 확인용).
 // -nographics 환경에선 Assert.Ignore로 건너뛰므로 EditMode 게이트와 무관하다.
 using System.Collections;
 using System.IO;
@@ -12,8 +12,10 @@ namespace AICompanyTycoon.Tests.PlayMode
 {
     public class ScreenshotCaptureTests
     {
+        // 기본 캡처 해상도를 20:9(1080x2400)로 둔다 — 실폰(20:9) 프레이밍과 일치시켜 휑함/세이프영역 회귀를 실측한다(feat-019 T6).
+        // 명시적으로 다른 해상도를 넘기는 시나리오(예: 01c-phone-2400)는 그대로 동작한다.
         const int W = 1080;
-        const int H = 1920;
+        const int H = 2400;
         const string CanvasName = "AI Company Tycoon UI";
 
         static string ShotsDir
@@ -72,6 +74,23 @@ namespace AICompanyTycoon.Tests.PlayMode
                 mrt.anchoredPosition = new Vector2(16f, mrt.anchoredPosition.y);
                 yield return null;
                 yield return CaptureCanvas(canvasGo, "01b-marquee.png");
+            }
+
+            // 1d) 풍성한 오피스 — talent를 높여 2열 원근(앞줄 4 + 뒷줄)·책상 오클루전·열일 불꽃·앰비언트를 보고, 말풍선·리워드를 주입해 상시 juice를 한 프레임에 검증 (feat-019).
+            if (boot.Context != null && boot.Screen != null)
+            {
+                boot.Context.Model.Talent = 10;
+                boot.Screen.RefreshAll();
+                yield return WaitRealtime(1.0f); // 워크루프·불꽃 일렁임 안정
+                var anyActor = GameObject.Find("Actor");
+                if (anyActor != null)
+                {
+                    var ar = anyActor.GetComponent<RectTransform>();
+                    SpeechBubble.Spawn(ar, new Vector2(0f, 6f), "완벽해!");
+                    FloatingText.Spawn(ar, "+아이디어", UiTheme.ScoreboardTag, 26, new Vector2(0f, 28f), 0f);
+                }
+                yield return WaitRealtime(0.35f); // 말풍선·리워드가 살아있을 때 캡처
+                yield return CaptureCanvas(canvasGo, "01d-office-rich.png");
             }
 
             // 2) ＋트레이 펼침
@@ -420,7 +439,7 @@ namespace AICompanyTycoon.Tests.PlayMode
         {
             var canvas = canvasGo.GetComponent<Canvas>();
 
-            // CanvasScaler를 꺼 캔버스를 1:1 매핑한다(기준 해상도 1080x1920이라 scaleFactor=1과 동일).
+            // CanvasScaler를 꺼 캔버스를 1:1 매핑한다(비활성 시 scaleFactor=1 — 기준 해상도와 무관하게 RenderTexture wxh로 직접 캡처).
             var scaler = canvasGo.GetComponent("CanvasScaler") as Behaviour;
             bool prevScalerEnabled = scaler != null && scaler.enabled;
             if (scaler != null) scaler.enabled = false;

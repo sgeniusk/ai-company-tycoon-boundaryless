@@ -3,9 +3,9 @@
 재시작 상태용이다. 전체 이력 아님. 오래된 증거는 CHANGELOG로. (≤120줄)
 
 ## 현재 상태 (Current State)
-**마지막 갱신** — 2026-06-13
-**활성 피처** — **feat-018 폰 고품질 대응 + 후속 '벽 중하단 디테일' 완료.** 우려("폰에서 고품질 아닌 거 아냐?") — feat-016 배경이 9:16 풀스트레치라 20:9/QHD 폰서 도트 직사각 뭉개짐. **cover(AspectRatioFitter EnvelopeParent) + 고해상도 1440x3204(20:9) + meta 4096 + FLOOR_Y 384 정합**으로 해결. **후속(2026-06-13)** — 20:9로 길어진 직원 머리 위(y≈150~310) 빈 벽을 4종 모두 디테일(차고 포스터·포스트잇·스텐실 / 성장 갤러리·네온·선반 / 데이터센터 시계·타일·LED / 랜드마크 골드액자·벽아트·트로피·대형화분)로 채움. gen_office.py 헬퍼 9종, C# 무변경. EditMode **145/145** + PlayMode 01c-phone-2400 검증. 정본 docs/feat-018-context-notes.md(4절). **로컬 미푸시(사용자 확인 후).**
-**현재 목표** — 다음 후보는 ① 실기기 검증 ② 도감 열람 UI ③ agy 포즈 스프라이트 반입(컷씬 생동감) ④ 멀티 엔딩/베타 준비. 캡처 하네스 기본은 9:16 — 폰 20:9 전환 검토.
+**마지막 갱신** — 2026-06-14
+**활성 피처** — **feat-019 오피스 연출 격상 완료(카이로소프트 너머 "보는 맛").** 6트랙 — T1 2열 원근 착석(GameScreen 수동배치 + 절차 책상 전경 오클루더로 '앉아 일하는' 연출, 새 스프라이트0)+gen_office.py BG 떠있는 책상 제거, T2 세로 그라데이션 스크림(무대 0.05 환하게·UI뒤 0.52 어둡게 — 균일 0.38이 채도 죽이던 문제 해소), T3 SpeechBubble 말풍선("완벽해!")+직원별 리워드 플로팅("+아이디어")+CrunchFlame 열일불꽃(WorkLoop 분기·불꽃 책상앞 frontmost·intensity 1.3), T4 AmbientRoomFx 룸별 절차 애니(모니터글로우·LED·조명·먼지, Codex 5.5 xhigh)+CoverMatch cover정합, T5 컷씬 스포트라이트/빅플래시/팝, T6 하네스 기본 20:9. **3-way 분업** — Claude(GameScreen 통합·검증) + Codex(AmbientRoomFx) + dynamic workflow(SpeechBubble/CrunchFlame/컷씬/하네스 + 적대 리뷰가 불꽃 얼굴침범 결함 자동수정). 검증 EditMode **145/145** + PlayMode **5/5** + 캡처 01d-office-rich(2열·책상·불꽃·말풍선·리워드 한프레임)·15-cutscene-launch(스포트라이트). 곁다리 UiTween PopIn/Punch/Fade 파괴대상 가드(세이브/로드 PlayMode 테스트 복구). 정본 docs/feat-019-context-notes.md. **로컬 미푸시(사용자 확인 후).**
+**현재 목표** — feat-019 사용자 '점검' 대기 — 불꽃 강도·2열 footY 정합·스크림 강도 등 미세 튜닝 후보. 이후 ① 실기기 검증 ② 도감 열람 UI ③ agy 포즈 스프라이트 ④ 멀티 엔딩/베타 준비.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -35,6 +35,7 @@
 - [x] feat-017 픽셀 컷씬 시스템(골격) — 출시 시 전용 모달 컷씬 윈도우. `Scripts/UI/CutsceneDirector.cs`(FxManager 패턴 — RuntimeInitializeOnLoadMethod + Overlay Canvas sortingOrder 230 + GameEvents.ProductLaunched 구독). 발표회 무대(타이틀+커튼+스포트라이트+무대바닥) + 발표 직원(머리 위 제품 별박스, 들썩) + 객석 로봇 2종(점프+박수 스쿼시) + 자체 색종이. 탭 스킵 + 자동 닫힘, 반복 출시 3회+ 간략화, tier enum(Mini/Medium/Big, 출시=Medium) 골격. 아트는 v090 재사용+코드 모션(새 스프라이트 0장). 검증 — EditMode 145/145 + 캡처 15-cutscene-launch.png. 정본 docs/feat-017-context-notes.md, agy 포즈 핸드오프 docs/agy-handoff/cutscene-poses.md. **후속 — agy 포즈 스프라이트, 스포트라이트 강화, 승급·상장·미니 tier 확장.**
 - [x] 곁다리 — "No cameras rendering"(Game.unity 카메라 0개) 해소. GameBootstrap.EnsureCamera()가 더미 메인 카메라 런타임 보장(cullingMask 0, Overlay UI 독립). EnsureEventSystem 패턴.
 - [x] feat-018 픽셀 배경 폰 고품질 — cover(AspectRatioFitter EnvelopeParent, 도트 정사각) + 240x534→1440x3204(20:9) 고해상도 + meta 4096 + FLOOR_Y 384 정합. **후속 폴리시(같은 커밋군)** — 20:9로 길어진 직원 머리 위(y150~310) 빈 벽을 4종 디테일로 채움(차고 전구줄·선반·포스터·포스트잇·스텐실 / 성장 액자갤러리·네온포스터·선반·코르크 / 데이터센터 세계시계·상태타일·LED신호탑 / 랜드마크 골드어워드액자·픽처라이트·추상아트·트로피선반·대형화분). gen_office.py 데코 헬퍼 9종(draw_frame/shelf/trophy/potted/string_lights/poster/sticky_notes/status_tile/led_tower), C# 무변경. EditMode 145/145 + PlayMode 01c-phone-2400. 정본 docs/feat-018-context-notes.md
+- [x] feat-019 오피스 연출 격상 — 카이로소프트 너머 "보는 맛". T1 2열 원근 착석(절차 책상 전경 오클루더, 새 스프라이트0)+BG 책상 제거, T2 그라데이션 스크림(무대 환하게·UI뒤 어둡게), T3 말풍선+직원별 리워드+열일 불꽃, T4 AmbientRoomFx 룸 애니(Codex 5.5 xhigh)+CoverMatch, T5 컷씬 스포트라이트, T6 하네스 20:9. 3-way 분업(Claude 통합+Codex+dynamic workflow 적대리뷰). EditMode 145/145 + PlayMode 5/5. UiTween 가드 곁다리. 정본 docs/feat-019-context-notes.md
 ### 진행 중 (What's In Progress)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 

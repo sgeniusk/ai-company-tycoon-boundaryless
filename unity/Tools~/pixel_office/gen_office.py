@@ -498,9 +498,7 @@ def build_garage():
             if FLOOR_Y + 4 < yy < H:
                 c.put(xx, yy, shade(WOOD_D, -0.16))
 
-    # --- 책상 라인 (직원 뒤) ---
-    draw_desk(c, 34, FLOOR_Y - 30, 42, MINT)
-    draw_desk(c, 140, FLOOR_Y - 30, 42, BLUE)
+    # 책상은 런타임 C#이 직원 발치에 전경 오클루더로 그린다(2열 원근) — BG 떠있는 책상 제거 (feat-019 T1).
 
     # --- 직원 발밑 러그 ---
     draw_rug(c, W // 2, FLOOR_Y - 10, 176, 52, mix(NAVY, MINT_D, 0.3), shade(NAVY, -0.15))
@@ -652,10 +650,7 @@ def build_growth():
     c.rect(194, 200, 198, 206, MINT_D); c.outline(194, 200, 198, 206, INK)
     draw_trophy(c, 210, 206, YELLOW)
     draw_sticky_notes(c, 168, 256, 214, 300)                 # 우중앙 코르크 메모
-    # 책상 3
-    draw_desk(c, 22, FLOOR_Y - 30, 40, MINT)
-    draw_desk(c, 100, FLOOR_Y - 30, 40, YELLOW)
-    draw_desk(c, 182, FLOOR_Y - 30, 40, BLUE)
+    # 책상은 런타임 C#이 그린다 (feat-019 T1) — BG 떠있는 책상 제거.
     draw_plant(c, 86, FLOOR_Y - 1)
     draw_plant(c, 170, FLOOR_Y - 1)
     # 카펫 바닥
@@ -705,9 +700,7 @@ def build_datacenter():
     draw_status_tile(c, 120, 204, 152, 230, MINT, 0)
     draw_led_tower(c, 117, 244, 300)                  # 중앙 LED 신호탑
     c.rect(96, 250, 114, 254, shade(NAVY, 0.12)); c.rect(126, 250, 144, 254, shade(NAVY, 0.12))
-    # 콘솔 책상 2
-    draw_desk(c, 84, FLOOR_Y - 30, 30, MINT)
-    draw_desk(c, 130, FLOOR_Y - 30, 30, BLUE)
+    # 콘솔 책상은 런타임 C#이 그린다 (feat-019 T1).
     # 테크 타일 바닥
     c.vgrad(0, FLOOR_Y, W, H, shade(NAVY_D, 0.05), shade(NAVY_D, -0.15))
     c.rect(0, FLOOR_Y, W, FLOOR_Y + 5, shade(MINT, -0.2))
@@ -756,9 +749,7 @@ def build_landmark():
     draw_trophy(c, 156, 264, MINT); draw_trophy(c, 170, 264, YELLOW)
     draw_potted(c, 6, FLOOR_Y - 2, big=True, pot=PURPLE_D, leaf=MINT_D)    # 좌우 끝 대형 화분
     draw_potted(c, 220, FLOOR_Y - 2, big=True, pot=PURPLE_D, leaf=MINT_D)
-    # 라운지 콘솔 2
-    draw_desk(c, 26, FLOOR_Y - 30, 40, PURPLE)
-    draw_desk(c, 174, FLOOR_Y - 30, 40, MINT)
+    # 라운지 콘솔은 런타임 C#이 그린다 (feat-019 T1).
     draw_plant(c, 92, FLOOR_Y - 1)
     draw_plant(c, 140, FLOOR_Y - 1)
     # 광택 대리석 바닥 + 반사
