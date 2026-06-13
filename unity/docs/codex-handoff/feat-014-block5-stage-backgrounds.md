@@ -5,8 +5,14 @@
 ## 배경 — 코드는 드롭인 준비 완료
 `Systems.StageVisual.BackgroundKey(stageId)`가 성급별 배경 리소스 키를 반환하고, `GameScreen.LoadStageBackground()`가 단계 전용 텍스처를 로드하되 **없으면 기본 `Art/Background/office`로 폴백**한다. 단계 승급 시 `RefreshStageBackground()`가 자동 스왑. 따라서 아래 3장을 지정 경로에 넣기만 하면 즉시 동작한다(코드 수정 불필요).
 
-## 생성할 배경 3종 (RGB, 1080×1920 세로, office.png와 동일 구도·등각)
-기존 `unity/Assets/_Project/Resources/Art/Background/office.png`(차고 오피스)를 **구도·원근·팔레트 앵커**로 삼아 같은 가족 룩으로 3단계 진화시킨다. 직원·가구가 그 위에 얹히므로(전경 UI 레이어) **바닥 원근과 중앙 무대 공간은 office.png와 동일하게 유지**해야 액터가 안 뜬다.
+## 생성할 배경 3종 (RGBA, **2560×1440 가로**, office.png와 동일 구도·원근)
+기존 `unity/Assets/_Project/Resources/Art/Background/office.png`(2560×1440)를 **구도·원근·팔레트 앵커**로 삼아 같은 가족 룩으로 3단계 진화시킨다. 직원·가구가 그 위에 얹히므로(전경 UI 레이어) **중앙의 떠 있는 등각 바닥 플랫폼은 office.png와 같은 위치·각도로 유지**해야 액터가 안 뜬다.
+
+### office.png 시각 분해 (앵커)
+- 배경 — 평평한 회청색(#9aa5ad 계열) 그라데이션. 좌우에 창문 격자(연하늘 #bcd) 빌딩 실루엣, 회색 사선 라인.
+- 중앙 — **떠 있는 등각 나무 마루 플랫폼**(밝은 나무 #c89860 + 어두운 측면). 화면 중앙~하단을 차지, 살짝 위에서 내려본 각도.
+- 액센트 — 녹색 픽셀 블록(#5cb85c) 화분 점선이 플랫폼 가장자리를 두름.
+- 스타일 — **완전 평면 벡터**(그림자=단색 면, 그라데이션 최소). 카이로소프트식. 절차 생성(node-canvas) 친화적.
 
 | 파일 (Resources 경로) | 성급 | 컨셉 |
 |---|---|---|
