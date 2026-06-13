@@ -4,8 +4,8 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-13
-**활성 피처** — **feat-017 픽셀 컷씬 시스템 완료**(4종 + 미니). CutsceneDirector 일반화 — 모달 컷씬 3종(출시 발표회 / 승급 새오피스공개[성급 배경 재사용] / 상장 세리머니[종·$·폭죽]) + 능력업·해금 미니 코너 윈도우(슬라이드·입력 통과·큐). 트리거 ProductLaunched/CompanyStageChanged/신규 IpoCompleted/Capability·Domain. EditMode **145/145** + PlayMode 캡처 15~18. 곁다리 "No cameras rendering" 해소(GameBootstrap.EnsureCamera). 정본 docs/feat-017-context-notes.md, agy 포즈 핸드오프 docs/agy-handoff/cutscene-poses.md. **로컬 미푸시(사용자 확인 후).**
-**현재 목표** — 다음 후보는 ① feat-012 #5 트리 그래프 화면 ② 실기기 검증(경제 체감 변화 큼 — ARPU·GPU 증설·시너지) ③ 도감 열람 UI(아키타입·엔딩·시너지/콤보) ④ feat-016 후속 폴리시(중간 성급 growth/datacenter 실게임 캡처는 preview만 — 필요시 추가).
+**활성 피처** — **feat-018 픽셀 배경 폰 고품질 대응 완료.** 사용자 우려("폰에서 고품질 아닌 거 아냐?") — feat-016 배경이 9:16 풀스트레치라 20:9/QHD 폰서 도트 직사각 뭉개짐. **cover(AspectRatioFitter EnvelopeParent, 정사각 도트 보존) + 고해상도 1440x3204(20:9, 도트 작게) + meta 4096 + FLOOR_Y 384 정합**으로 해결. EditMode **145/145** + PlayMode 01c-phone-2400(20:9) 검증. (feat-016 픽셀룸·feat-017 컷씬 4종 위에.) 정본 docs/feat-018-context-notes.md. **로컬 미푸시(사용자 확인 후).**
+**현재 목표** — 다음 후보는 ① **feat-018 후속 폴리시 — 벽 중앙 휑함(20:9로 길어진 벽 중하단에 디테일 추가, 4종)** ② 실기기 검증 ③ 도감 열람 UI ④ agy 포즈 스프라이트 반입(컷씬 생동감). 캡처 하네스 기본은 9:16 — 폰 20:9 전환 검토.
 
 ## 상태 (Status)
 ### 완료 (What's Done)

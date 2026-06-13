@@ -33,6 +33,11 @@ sysinfo.txt
 # Unity 빌드 임시
 .utmp/
 
-# 픽셀 에셋 생성기 산출물 (생성기 *.py는 추적, 산출/백업은 제외)
+# PlayMode 테스트 러너 임시 씬
+Assets/InitTestScene*.unity
+Assets/InitTestScene*.unity.meta
+
+# 픽셀 에셋 생성기 산출물 (생성기 *.py는 추적, 산출/백업/검증은 제외)
 Tools~/pixel_office/out/
 Tools~/pixel_office/backup_orig/
+Tools~/pixel_office/phonecheck/

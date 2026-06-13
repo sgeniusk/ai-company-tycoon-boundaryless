@@ -58,6 +58,8 @@ namespace AICompanyTycoon.Tests.PlayMode
 
             // 1) 메인 — office-first 기본 상태
             yield return CaptureCanvas(canvasGo, "01-main.png");
+            // 1c) 폰 해상도(20:9) cover 검증 — 배경 도트 정사각 + 액터 정합 (feat-018)
+            yield return CaptureCanvas(canvasGo, "01c-phone-2400.png", 1080, 2400);
 
             // 1b) 전광판 마퀴 — 스크롤을 멈추고 뷰포트 안으로 당겨 내용 확인(평소엔 우측에서 진입 중이라 비어 보임)
             var marqueeText = GameObject.Find("MarqueeText");
@@ -414,7 +416,7 @@ namespace AICompanyTycoon.Tests.PlayMode
         }
 
         // 현재 활성 캔버스를 전용 카메라+RenderTexture로 렌더해 PNG로 저장한다.
-        static IEnumerator CaptureCanvas(GameObject canvasGo, string fileName)
+        static IEnumerator CaptureCanvas(GameObject canvasGo, string fileName, int w = W, int h = H)
         {
             var canvas = canvasGo.GetComponent<Canvas>();
 
@@ -432,7 +434,7 @@ namespace AICompanyTycoon.Tests.PlayMode
             cam.nearClipPlane = 0.1f;
             cam.farClipPlane = 100f;
 
-            var rt = new RenderTexture(W, H, 24, RenderTextureFormat.ARGB32);
+            var rt = new RenderTexture(w, h, 24, RenderTextureFormat.ARGB32);
             rt.Create();
             cam.targetTexture = rt;
 
@@ -450,8 +452,8 @@ namespace AICompanyTycoon.Tests.PlayMode
 
             var prevActive = RenderTexture.active;
             RenderTexture.active = rt;
-            var tex = new Texture2D(W, H, TextureFormat.RGB24, false);
-            tex.ReadPixels(new Rect(0, 0, W, H), 0, 0);
+            var tex = new Texture2D(w, h, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
             tex.Apply();
             RenderTexture.active = prevActive;
 

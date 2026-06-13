@@ -365,9 +365,16 @@ namespace AICompanyTycoon.UI
                 return;
             }
 
-            var bgGo = new GameObject("OfficeBackground", typeof(RectTransform), typeof(Image));
+            var bgGo = new GameObject("OfficeBackground", typeof(RectTransform), typeof(Image), typeof(AspectRatioFitter));
             bgGo.transform.SetParent(parent, false);
-            Stretch(bgGo.GetComponent<RectTransform>());
+            var bgRect = bgGo.GetComponent<RectTransform>();
+            bgRect.anchorMin = bgRect.anchorMax = new Vector2(0.5f, 0.5f);
+            bgRect.pivot = new Vector2(0.5f, 0.5f);
+            // cover — 화면비와 무관하게 종횡비 유지로 화면을 채운다(정사각 도트 보존, 넘침은 크롭).
+            // 풀스트레치(preserveAspect=false + Stretch)는 비정수 non-uniform 스케일이라 폰에서 도트가 직사각으로 뭉개졌다.
+            var fitter = bgGo.GetComponent<AspectRatioFitter>();
+            fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
+            fitter.aspectRatio = (float)tex.width / tex.height;
             var bgImage = bgGo.GetComponent<Image>();
             bgImage.sprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), new Vector2(0.5f, 0.5f));
             bgImage.preserveAspect = false;
