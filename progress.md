@@ -1,12 +1,11 @@
 # Progress - AI Company Tycoon: Boundaryless
 
-Last Updated: 2026-06-14
+Last Updated: 2026-06-05
 
 ## Current State
 
 - Current version: `v1.0` track — `v1.0-office-first-menu-redesign` (in progress; **code-side RC polish + mobile hard-reset feedback redo complete**).
 - Current feature: office-first menu popup redesign. First-screen shell #1-#5, mobile popup sheet/launcher, #6 shop/decor split, #7 log subtabs, #8 popup clarity/mobile/pixel polish, 2026-06-04 virtual beta P1 polish, 2026-06-05 standalone mobile restoration, top-scoreboard/click-speech-bubble pass, low-chrome redo, and follow-up mobile hard reset are implemented in the working tree.
-- Unity feat-020 follow-up (2026-06-14): office prop sprite generation/import is complete under `unity/` — 5 imagegen raw props, `proc_props.py`, 5 `Resources/Art/Actors/prop_*.png` sprites with `.meta`, new `OfficeProps` helper, and one `GameScreen.BuildOfficeScene` hook.
 - Latest commit: `a2836ac` (v1.0 completion plan + Codex handoffs). Branch `main`, synced with `origin/main`; current working tree also includes pre-existing QA screenshot diffs.
 - Stack: Vite + React + TypeScript.
 - Local dev: `npm run dev -- --port 5201`.
@@ -33,7 +32,6 @@ Last Updated: 2026-06-14
 - Office/mobile decision focus: office scene carries persistent product/reward/strategy/directive/rival/crisis markers; reward/growth/event choices get `decision-primary` mobile emphasis; `reward-picked` next-action opens the growth decision layer in viewport.
 - Mobile first screen: after two rounds of user feedback that the UI still looked button-heavy and messy, the mobile first screen was hard-reset to a sparse game view: a 250x42 in-world LED board, office floor, bottom dock (`운영/회사/성장/메뉴`), central 78px next-action FAB, and click-triggered actor speech bubbles. Top brand/resources, goal chip, decor chip, helper tutorial, office labels, workbeat labels, and task links are hidden on the default mobile first screen.
 - Numeric formatting: raw float tails are removed from effect text, monthly deltas, rival momentum alerts, and staff poaching stakes labels.
-- Unity office props: plant, vending machine, water cooler, couch, and bookshelf now load through `IconLibrary.Get("prop_*")` from `Resources/Art/Actors` and render on side floor zones via a static `OfficeProps.Populate(Transform stageParent)` helper.
 
 ## Verification Evidence
 
@@ -46,10 +44,6 @@ Last Updated: 2026-06-14
 - Screenshot evidence: `reports/qa/screenshots/v1_0_mobile_hard_reset_after_feedback_2.png`; previous low-chrome/game-scoreboard screenshots kept for comparison.
 - `npm test -- src/ui/layout-contract.test.ts -t "v1.0" --maxWorkers=1`: 15 passed / 125 skipped. `npm run build`: passed.
 - `npm run harness:gate`: passed after the hard-reset feedback redo — 54 files / 665 tests, data validation passed, beta readiness 15/15, route coverage 40/40, production build passed.
-- `python3 unity/Tools~/pixel_office/feat020/proc_props.py`: generated 5 RGBA prop sprites (plant 67x80, vending 59x120, cooler 35x80, couch 120x66, bookshelf 61x120) with transparent corners and <=16 opaque colors.
-- `python3 -m py_compile unity/Tools~/pixel_office/feat020/proc_props.py`: passed.
-- `git diff --check`: passed.
-- Unity batchmode/tests were not run per the single-license user constraint.
 
 ## Remaining
 
@@ -59,13 +53,12 @@ Last Updated: 2026-06-14
 ## Workflow / Blockers
 
 - No known P0/P1 code blockers after RC polish.
-- Unity prop editor/import smoke remains manual because Unity batchmode and tests were explicitly disallowed for this task.
 - All major RC polish work stayed UI/formatting focused; no new simulation system was added.
 - Dev server may be running on port 5201 for local smoke.
 
 ## Recommended Next Step
 
-Review the mobile game-screen first screen locally at `http://127.0.0.1:5201/`: sparse office view, 250x42 in-world scoreboard, bottom dock labels `운영/회사/성장/메뉴`, central next-action FAB, and actor click speech bubble. For the Unity feat-020 follow-up, open the Unity editor manually to confirm side props import and render; do not use batchmode on the single-license setup.
+Review the mobile game-screen first screen locally at `http://127.0.0.1:5201/`: sparse office view, 250x42 in-world scoreboard, bottom dock labels `운영/회사/성장/메뉴`, central next-action FAB, and actor click speech bubble. If accepted, proceed with the user-gated RC track: production deploy, final art handoff, real-human playtest, release report/tag.
 
 ## Next Session Start
 

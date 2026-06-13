@@ -4,8 +4,10 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-14
-**활성 피처** — **feat-019 오피스 연출 격상 완료(카이로소프트 너머 "보는 맛").** 6트랙 — T1 2열 원근 착석(GameScreen 수동배치 + 절차 책상 전경 오클루더로 '앉아 일하는' 연출, 새 스프라이트0)+gen_office.py BG 떠있는 책상 제거, T2 세로 그라데이션 스크림(무대 0.05 환하게·UI뒤 0.52 어둡게 — 균일 0.38이 채도 죽이던 문제 해소), T3 SpeechBubble 말풍선("완벽해!")+직원별 리워드 플로팅("+아이디어")+CrunchFlame 열일불꽃(WorkLoop 분기·불꽃 책상앞 frontmost·intensity 1.3), T4 AmbientRoomFx 룸별 절차 애니(모니터글로우·LED·조명·먼지, Codex 5.5 xhigh)+CoverMatch cover정합, T5 컷씬 스포트라이트/빅플래시/팝, T6 하네스 기본 20:9. **3-way 분업** — Claude(GameScreen 통합·검증) + Codex(AmbientRoomFx) + dynamic workflow(SpeechBubble/CrunchFlame/컷씬/하네스 + 적대 리뷰가 불꽃 얼굴침범 결함 자동수정). 검증 EditMode **145/145** + PlayMode **5/5** + 캡처 01d-office-rich(2열·책상·불꽃·말풍선·리워드 한프레임)·15-cutscene-launch(스포트라이트). 곁다리 UiTween PopIn/Punch/Fade 파괴대상 가드(세이브/로드 PlayMode 테스트 복구). 정본 docs/feat-019-context-notes.md. **로컬 미푸시(사용자 확인 후).**
-**현재 목표** — feat-019 사용자 '점검' 대기 — 불꽃 강도·2열 footY 정합·스크림 강도 등 미세 튜닝 후보. 이후 ① 실기기 검증 ② 도감 열람 UI ③ agy 포즈 스프라이트 ④ 멀티 엔딩/베타 준비.
+**활성 피처** — **feat-020 오피스 아트 전면 AI 재생성 완료** — feat-016~019 절차 픽셀아트(직원/책상/배경)를 Codex CLI imagegen + pixel-art-pipeline 가공으로 교체. 캐릭터 3종 idle/작업(Resources/Art/Actors, IconLibrary 오버라이드 + ActorAnim 타이핑), 책상 2종(CreateDeskOccluder 스프라이트), 배경 4종(compose_room.py로 FLOOR_Y 정합 합성 → office*.png 드롭인), 소품 5종(OfficeProps). feat-019 런타임(2열·juice·앰비언트·스크림) 그대로 유지·드롭인. 검증 EditMode 145/145 + PlayMode 5/5 + 01d(차고)·14-stage(랜드마크) 인게임 정합. 사용자 '훨씬 나아졌다' 확인. 정본 docs/feat-020-art-regen-plan.md, 커밋 24892dd/94cb765/44f8b08/3e750d7. 로컬 미푸시. **함정 — Codex가 스코프 밖 루트 progress.md를 건드릴 수 있음(되돌림). 다음 위임 시 "unity/ 밖 금지" 명시.**
+
+**직전 feat-019 오피스 연출 격상(카이로소프트 너머 "보는 맛").** 6트랙 — T1 2열 원근 착석(GameScreen 수동배치 + 절차 책상 전경 오클루더로 '앉아 일하는' 연출, 새 스프라이트0)+gen_office.py BG 떠있는 책상 제거, T2 세로 그라데이션 스크림(무대 0.05 환하게·UI뒤 0.52 어둡게 — 균일 0.38이 채도 죽이던 문제 해소), T3 SpeechBubble 말풍선("완벽해!")+직원별 리워드 플로팅("+아이디어")+CrunchFlame 열일불꽃(WorkLoop 분기·불꽃 책상앞 frontmost·intensity 1.3), T4 AmbientRoomFx 룸별 절차 애니(모니터글로우·LED·조명·먼지, Codex 5.5 xhigh)+CoverMatch cover정합, T5 컷씬 스포트라이트/빅플래시/팝, T6 하네스 기본 20:9. **3-way 분업** — Claude(GameScreen 통합·검증) + Codex(AmbientRoomFx) + dynamic workflow(SpeechBubble/CrunchFlame/컷씬/하네스 + 적대 리뷰가 불꽃 얼굴침범 결함 자동수정). 검증 EditMode **145/145** + PlayMode **5/5** + 캡처 01d-office-rich(2열·책상·불꽃·말풍선·리워드 한프레임)·15-cutscene-launch(스포트라이트). 곁다리 UiTween PopIn/Punch/Fade 파괴대상 가드(세이브/로드 PlayMode 테스트 복구). 정본 docs/feat-019-context-notes.md. **로컬 미푸시(사용자 확인 후).**
+**현재 목표** — feat-020 아트 전면 AI 재생성 완료(캐릭터·책상·배경·소품, 사용자 '훨씬 나아졌다'). 후속 미세(소품 우측 배치 밸런스·캐릭터 환호 포즈)는 선택. 이후 ① 실기기 검증 ② 도감 열람 UI ③ 멀티 엔딩/베타 준비.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -36,6 +38,7 @@
 - [x] 곁다리 — "No cameras rendering"(Game.unity 카메라 0개) 해소. GameBootstrap.EnsureCamera()가 더미 메인 카메라 런타임 보장(cullingMask 0, Overlay UI 독립). EnsureEventSystem 패턴.
 - [x] feat-018 픽셀 배경 폰 고품질 — cover(AspectRatioFitter EnvelopeParent, 도트 정사각) + 240x534→1440x3204(20:9) 고해상도 + meta 4096 + FLOOR_Y 384 정합. **후속 폴리시(같은 커밋군)** — 20:9로 길어진 직원 머리 위(y150~310) 빈 벽을 4종 디테일로 채움(차고 전구줄·선반·포스터·포스트잇·스텐실 / 성장 액자갤러리·네온포스터·선반·코르크 / 데이터센터 세계시계·상태타일·LED신호탑 / 랜드마크 골드어워드액자·픽처라이트·추상아트·트로피선반·대형화분). gen_office.py 데코 헬퍼 9종(draw_frame/shelf/trophy/potted/string_lights/poster/sticky_notes/status_tile/led_tower), C# 무변경. EditMode 145/145 + PlayMode 01c-phone-2400. 정본 docs/feat-018-context-notes.md
 - [x] feat-019 오피스 연출 격상 — 카이로소프트 너머 "보는 맛". T1 2열 원근 착석(절차 책상 전경 오클루더, 새 스프라이트0)+BG 책상 제거, T2 그라데이션 스크림(무대 환하게·UI뒤 어둡게), T3 말풍선+직원별 리워드+열일 불꽃, T4 AmbientRoomFx 룸 애니(Codex 5.5 xhigh)+CoverMatch, T5 컷씬 스포트라이트, T6 하네스 20:9. 3-way 분업(Claude 통합+Codex+dynamic workflow 적대리뷰). EditMode 145/145 + PlayMode 5/5. UiTween 가드 곁다리. 정본 docs/feat-019-context-notes.md
+- [x] feat-020 오피스 아트 전면 AI 재생성 — 절차 픽셀아트 졸업. Codex imagegen + pixel-art-pipeline. ① 캐릭터 3종 idle/작업(Resources/Art/Actors 드롭인+ActorAnim 타이핑) ② 책상 2종(CreateDeskOccluder 스프라이트) ③ 배경 4종(compose_room.py FLOOR_Y 합성→office*.png) ④ 소품 5종(OfficeProps 좌우 끝). feat-019 런타임 유지. EditMode 145/145 + PlayMode 5/5 + 01d/14-stage 인게임. 사용자 '훨씬 나아졌다'. 커밋 24892dd/94cb765/44f8b08/3e750d7. 정본 docs/feat-020-art-regen-plan.md
 ### 진행 중 (What's In Progress)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
