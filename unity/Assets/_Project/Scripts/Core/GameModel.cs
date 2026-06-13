@@ -47,6 +47,8 @@ namespace AICompanyTycoon.Core
         public List<ShareholderEntry> Shareholders = new List<ShareholderEntry>();
         // 융자 (feat-015 #2) — 대출 원금. 월 이자가 고정비에 붙는다. 0이면 무차입(기존 동작 그대로).
         public double LoanPrincipal;
+        // 시리즈 투자 라운드 (feat-015 #3) — 이미 제안된 성급 id(일회성 보장). 수락·거절 모두 기록.
+        public List<string> InvestmentRoundsOffered = new List<string>();
         public List<string> PurchasedUpgrades = new List<string>();
         public List<string> PurchasedAutomation = new List<string>();
         public List<string> TriggeredEvents = new List<string>();

@@ -71,12 +71,15 @@ namespace AICompanyTycoon.UI
         Transform _worldRevealRows;
         Text _worldRevealSeed;
 
-        GameObject _interviewModal;    // 개업 인터뷰 (feat-015 #2)
+        GameObject _interviewModal;    // 개업 인터뷰 (feat-015 #2) / 시리즈 투자 제안 (feat-015 #3)
+        Text _interviewTitleLabel;
         Text _interviewSpeaker;
         Text _interviewPrompt;
         Transform _interviewChoices;
         List<StartupInterview.Step> _interviewSteps;
         int _interviewIndex;
+        System.Action _interviewOnComplete;
+        InvestmentRound _pendingInvestment;  // 성급 승급으로 대기 중인 투자 제안
 
         ToastRibbon _toastRibbon;      // 사건 토스트 리본 (feat-010 #4)
 
@@ -207,6 +210,13 @@ namespace AICompanyTycoon.UI
             if (_terminal)
             {
                 ShowResultModal(_lastSummary.GameWon, _lastSummary.Outcome);
+            }
+            else if (_pendingInvestment != null && (_context.Events == null || _context.Events.Current == null))
+            {
+                // 이벤트 모달이 없을 때만 — 시리즈 투자 제안을 띄운다 (feat-015 #3).
+                var offer = _pendingInvestment;
+                _pendingInvestment = null;
+                ShowInvestmentOffer(offer);
             }
         }
 
@@ -1132,9 +1142,9 @@ namespace AICompanyTycoon.UI
             rect.offsetMax = Vector2.zero;
             UiFactory.VBox(card.transform, 14, new RectOffset(26, 26, 24, 24));
 
-            var title = UiFactory.Label(card.transform, "개업 인터뷰", UiTheme.FontTitle);
-            title.color = UiTheme.TextPrimary;
-            AddLayout(title.gameObject, 50, 0);
+            _interviewTitleLabel = UiFactory.Label(card.transform, "개업 인터뷰", UiTheme.FontTitle);
+            _interviewTitleLabel.color = UiTheme.TextPrimary;
+            AddLayout(_interviewTitleLabel.gameObject, 50, 0);
 
             _interviewSpeaker = UiFactory.Label(card.transform, "", UiTheme.FontEmphasis);
             _interviewSpeaker.color = UiTheme.GoalAccent;
@@ -1157,7 +1167,57 @@ namespace AICompanyTycoon.UI
         public void StartInterview()
         {
             if (_interviewModal == null || _context == null) return;
+            _interviewTitleLabel.text = "개업 인터뷰";
             _interviewSteps = StartupInterview.GetSteps();
+            _interviewIndex = 0;
+            _interviewOnComplete = () =>
+            {
+                if (_toastRibbon != null)
+                {
+                    _toastRibbon.Enqueue("개업! — 차고에서 시작하는 AI 회사", UiTheme.CrestGold);
+                }
+
+                SpawnCelebration("celebrate_combo", "개업!");
+            };
+            ShowInterviewStep();
+        }
+
+        // 시리즈 투자 제안 — 성급 승급으로 등장하는 일회성 라운드 (feat-015 #3). 같은 인터뷰 모달 재사용.
+        void ShowInvestmentOffer(InvestmentRound round)
+        {
+            if (_interviewModal == null || _context == null || round == null) return;
+            _interviewTitleLabel.text = round.Title + " 투자 제안";
+            _interviewOnComplete = null;
+            _interviewSteps = new List<StartupInterview.Step>
+            {
+                new StartupInterview.Step
+                {
+                    Speaker = round.Investor,
+                    Prompt = "\"회사 가치를 " + FormatMoney(_context.Equity.GetValuation()) + "로 봅니다. 지분 " + round.EquityPercent.ToString("F0") + "%에 " + FormatMoney(round.CashIn) + " 투자하죠.\"",
+                    Choices =
+                    {
+                        new StartupInterview.Choice
+                        {
+                            Label = "투자 수락 (지분 " + round.EquityPercent.ToString("F0") + "% / +" + FormatMoney(round.CashIn) + ")",
+                            Description = "현금이 들어오고 지분 " + round.EquityPercent.ToString("F0") + "%를 내준다.",
+                            Apply = ctx =>
+                            {
+                                if (ctx.Funding.Accept(round, ctx.Resources))
+                                {
+                                    if (_toastRibbon != null) _toastRibbon.Enqueue(round.Title + " 유치 — " + FormatMoney(round.CashIn) + "!", UiTheme.CrestGold);
+                                    SpawnCelebration("celebrate_combo", round.Title + " 유치!");
+                                }
+                            }
+                        },
+                        new StartupInterview.Choice
+                        {
+                            Label = "거절 (지분 사수)",
+                            Description = "지분을 지킨다. 다음 라운드는 없다.",
+                            Apply = ctx => ctx.Funding.Decline(round)
+                        }
+                    }
+                }
+            };
             _interviewIndex = 0;
             ShowInterviewStep();
         }
@@ -1167,12 +1227,8 @@ namespace AICompanyTycoon.UI
             if (_interviewSteps == null || _interviewIndex >= _interviewSteps.Count)
             {
                 _interviewModal.SetActive(false);
-                if (_toastRibbon != null)
-                {
-                    _toastRibbon.Enqueue("개업! — 차고에서 시작하는 AI 회사", UiTheme.CrestGold);
-                }
-
-                SpawnCelebration("celebrate_combo", "개업!");
+                _interviewOnComplete?.Invoke();
+                _interviewOnComplete = null;
                 RefreshAll();
                 return;
             }
@@ -1625,6 +1681,10 @@ namespace AICompanyTycoon.UI
             SpawnReaction("react_cheer");
             if (_toastRibbon != null) _toastRibbon.Enqueue("단계 승급 — " + stageName, UiTheme.CrestGold);
             UpdateTopBar();
+
+            // 시리즈 투자 권유 (feat-015 #3) — 승급한 성급의 라운드가 있으면 대기열에. 정산 끝에 모달로 뜬다.
+            var offer = _context.Funding.GetOffer(stageId);
+            if (offer != null) _pendingInvestment = offer;
         }
 
         void OnProductLaunched(string productId)
@@ -2194,10 +2254,48 @@ namespace AICompanyTycoon.UI
                 }
             }
 
-            // 융자 현황 (feat-015 #2) — 무차입이면 표시하지 않는다.
+            // 융자 카드 (feat-015 #3) — 한도 안에서 대출, 보유 현금으로 상환.
+            var loanCard = AddCard(_upgradesContent, "은행 융자",
+                "예상 월매출 기준 한도 안에서 빌리고, 여유가 생기면 갚습니다.");
             if (_context.Model.LoanPrincipal > 0)
             {
-                AddSmallText(card, "대출 잔액 " + FormatMoney(_context.Model.LoanPrincipal) + " | 월 이자 " + FormatMoney(_context.Model.LoanPrincipal * 0.015));
+                AddSmallText(loanCard, "대출 잔액 " + FormatMoney(_context.Model.LoanPrincipal) + " | 월 이자 " + FormatMoney(_context.Loan.GetMonthlyInterest()));
+            }
+            else
+            {
+                AddSmallText(loanCard, "대출 잔액 없음 (무차입 경영)");
+            }
+
+            AddSmallText(loanCard, "신용 한도 " + FormatMoney(_context.Loan.GetLimit()) + " | 추가 가능 " + FormatMoney(_context.Loan.GetAvailable()));
+
+            double borrowAmount = _context.Loan.SuggestedBorrow();
+            if (borrowAmount >= 1000)
+            {
+                var borrow = UiFactory.Button(loanCard, FormatMoney(borrowAmount) + " 대출");
+                borrow.button.onClick.AddListener(() =>
+                {
+                    if (_context.Loan.Borrow(borrowAmount))
+                    {
+                        SetStatus("대출 실행 - " + FormatMoney(borrowAmount));
+                        RefreshAll();
+                    }
+                });
+                AddLayout(borrow.button.gameObject, 60, 0);
+            }
+
+            double repayAmount = _context.Loan.MaxRepay();
+            if (repayAmount >= 1)
+            {
+                var repay = UiFactory.Button(loanCard, FormatMoney(repayAmount) + " 상환");
+                repay.button.onClick.AddListener(() =>
+                {
+                    if (_context.Loan.Repay(repayAmount))
+                    {
+                        SetStatus("대출 상환 - " + FormatMoney(repayAmount));
+                        RefreshAll();
+                    }
+                });
+                AddLayout(repay.button.gameObject, 60, 0);
             }
         }
 

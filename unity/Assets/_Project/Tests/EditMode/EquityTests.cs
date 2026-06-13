@@ -97,6 +97,81 @@ namespace AICompanyTycoon.Tests.EditMode
         }
 
         [Test]
+        public void Loan_BorrowWithinLimit_AndRepay()
+        {
+            var ctx = Fresh();
+            // 매출 0 — 한도는 최소 보장(4000).
+            Assert.AreEqual(LoanService.MinLimit, ctx.Loan.GetLimit(), 0.001);
+            Assert.IsFalse(ctx.Loan.CanBorrow(5000), "한도 초과 대출은 거부.");
+
+            double cashBefore = ctx.Model.Cash;
+            Assert.IsTrue(ctx.Loan.Borrow(3000));
+            Assert.AreEqual(3000, ctx.Model.LoanPrincipal, 0.001);
+            Assert.AreEqual(cashBefore + 3000, ctx.Model.Cash, 0.001);
+            Assert.AreEqual(1000, ctx.Loan.GetAvailable(), 0.001);
+
+            Assert.IsTrue(ctx.Loan.Repay(2000));
+            Assert.AreEqual(1000, ctx.Model.LoanPrincipal, 0.001);
+            Assert.AreEqual(cashBefore + 1000, ctx.Model.Cash, 0.001);
+        }
+
+        [Test]
+        public void Loan_LimitGrowsWithRevenue()
+        {
+            var ctx = Fresh();
+            ctx.Model.Set(ResourceId.Compute, 1e9);
+            ctx.Model.Set(ResourceId.Data, 1e9);
+            ctx.Model.Set(ResourceId.Cash, 1e9);
+            Assert.IsTrue(ctx.Products.Launch("foundation_model_v0"));
+            double expected = ctx.Products.EstimateMonthlyRevenue() * LoanService.RevenueLimitMultiple;
+            Assert.AreEqual(expected, ctx.Loan.GetLimit(), 0.001, "한도는 예상 월매출*6.");
+        }
+
+        [Test]
+        public void Funding_OfferOnStage_PricesByValuation_OneShot()
+        {
+            var ctx = Fresh();
+            // seed_startup 라운드 — 지분 8%, 현금 = 밸류에이션*8%.
+            var offer = ctx.Funding.GetOffer("seed_startup");
+            Assert.IsNotNull(offer);
+            Assert.AreEqual(8, offer.EquityPercent, 0.001);
+            Assert.AreEqual(System.Math.Round(ctx.Equity.GetValuation() * 0.08), offer.CashIn, 0.001);
+
+            double cashBefore = ctx.Model.Cash;
+            Assert.IsTrue(ctx.Funding.Accept(offer, ctx.Resources));
+            Assert.AreEqual(92, ctx.Model.FounderEquity, 0.001);
+            Assert.AreEqual(cashBefore + offer.CashIn, ctx.Model.Cash, 0.001);
+
+            // 일회성 — 같은 성급은 다시 제안 안 함.
+            Assert.IsNull(ctx.Funding.GetOffer("seed_startup"));
+        }
+
+        [Test]
+        public void Funding_Decline_StillMarksOffered()
+        {
+            var ctx = Fresh();
+            var offer = ctx.Funding.GetOffer("viral_app_company");
+            Assert.IsNotNull(offer);
+            ctx.Funding.Decline(offer);
+            Assert.AreEqual(100, ctx.Model.FounderEquity, 0.001, "거절은 지분 불변.");
+            Assert.IsNull(ctx.Funding.GetOffer("viral_app_company"), "거절해도 일회성.");
+        }
+
+        [Test]
+        public void Funding_SaveRoundTrip()
+        {
+            var ctx = Fresh();
+            ctx.Funding.MarkOffered("seed_startup");
+            var path = System.IO.Path.Combine(Application.temporaryCachePath, "test-funding-save.json");
+            var save = new Save.SaveService(path);
+            save.Save(ctx.Model);
+            var loaded = new GameModel();
+            Assert.IsTrue(save.Load(loaded));
+            Assert.Contains("seed_startup", loaded.InvestmentRoundsOffered);
+            System.IO.File.Delete(path);
+        }
+
+        [Test]
         public void Loan_SaveRoundTrip()
         {
             var ctx = Fresh();
