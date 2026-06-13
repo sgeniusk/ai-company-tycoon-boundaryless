@@ -23,3 +23,15 @@
 - **연산력 소모 공식 React 정렬** — `ProductService.ApplyMonthly`를 총 이용자 비례에서 React computePressure(신규 이용자 기반)로. 누적 이용자의 무한 잠식 제거.
 - **도메인 해금 순서 버그 수정** — `CapabilityService.Upgrade`가 능력별 unlocks_domains 매핑 레벨에서만 TryUnlock해, 다중 요건 도메인(반도체=최적화2+코드2 등)이 연구 순서에 따라 영구 미해금. `Domains.CheckAll()`로 교체.
 - 게이트 — `TechTreeReachabilityTests`를 Fail 게이트로 복원. 목표 지향 봇 기준 tier4 44개월 해금. EditMode 97/97.
+
+## 2026-06-13 — feat-014 경영 탭 + feat-015 자본 사다리 (Unity 오리지널 콘텐츠)
+- **경영 탭 개편** — 도크 [제품·연구·경영]. 채용·GPU·시설·전략·투자·경영정보를 경영 탭에 통합.
+- **feat-014 #1 채용 3택1** — agent_types 22종 임포트, 시드 결정론 후보(희귀도 가중)+로스터(세이브 v5)+research/engineering 비용 할인+프리랜서 계약(정원 무관 talent).
+- **feat-014 #2 시설** — office_expansions 6단계 구매형 확장(세이브 v6 officeLevel, 구세이브 성급 파생)+company_locations 5곳 본사 이전(위치 고정비 모디파이어 0.82~1.8, 사람 영입 할인). ThresholdEval min_star 오버로드.
+- **feat-015 지분·자본 사다리 (Unity 오리지널 1호, React에 없음)** — 5블록:
+  - #1 EquityService(밸류에이션=월매출*24+이용자*2+현금, 창업자 지분·주주 명부, 세이브 v7)+경영정보 카드.
+  - #2 StartupInterview(개업 스토리 3장: 엔젤/공동창업/은행)+0성 크레스트(첫 출시 전)+대출 코어(LoanPrincipal, 월 이자 1.5% 고정비, 세이브 v8).
+  - #3 LoanService(한도=월매출*6, 대출/상환)+FundingService(성급 일회성 시리즈 라운드, 밸류에이션 가격, 세이브 v9).
+  - #4 IpoService(4성 IPO, 공모 10/20/30% 프리미엄 1.5, 월별 주가=신뢰 드리프트+시드 노이즈, 세이브 v10)+시가총액 진화.
+  - #5 RichestRanking(상장 후 세계 부자 순위 전광판+등반 토스트)+EquityEnding(지분 형태별 특별 결말 4종, endings.json 비변형).
+- 세이브 v4→v10 누적, 전부 구세이브 무손실 마이그레이션. EditMode 114→133. TechTreeReachability 게이트 그린 유지(자본 액션은 UI 옵트인, 봇 무영향).
