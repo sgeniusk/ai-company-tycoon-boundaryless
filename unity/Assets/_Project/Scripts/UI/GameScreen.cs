@@ -680,7 +680,7 @@ namespace AICompanyTycoon.UI
                 {
                     actorGo.AddComponent<StaffBob>().Init(seed * 0.9f);
                     actorGo.AddComponent<WorkLoop>().Init(seed, allowSpeech);
-                    actorGo.AddComponent<ActorAnim>().Init(sprite, IconLibrary.Get(kind + "_work"), seed); // idle↔작업 타이핑 애니 (feat-020)
+                    actorGo.AddComponent<ActorAnim>().Init(sprite, IconLibrary.Get(kind + "_work"), IconLibrary.Get(kind + "_cheer"), seed); // idle↔작업 타이핑 + 가끔 환호 (feat-020)
                     if (i == busyLocal)
                     {
                         actorGo.AddComponent<CrunchFlameFx>().Init(aRect, 1.3f); // 열일 불꽃 — 이미지처럼 극적이게 (feat-019 T3)
