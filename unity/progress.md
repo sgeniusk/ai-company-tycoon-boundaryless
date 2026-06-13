@@ -4,8 +4,8 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-13
-**활성 피처** — **feat-018 픽셀 배경 폰 고품질 대응 완료.** 사용자 우려("폰에서 고품질 아닌 거 아냐?") — feat-016 배경이 9:16 풀스트레치라 20:9/QHD 폰서 도트 직사각 뭉개짐. **cover(AspectRatioFitter EnvelopeParent, 정사각 도트 보존) + 고해상도 1440x3204(20:9, 도트 작게) + meta 4096 + FLOOR_Y 384 정합**으로 해결. EditMode **145/145** + PlayMode 01c-phone-2400(20:9) 검증. (feat-016 픽셀룸·feat-017 컷씬 4종 위에.) 정본 docs/feat-018-context-notes.md. **로컬 미푸시(사용자 확인 후).**
-**현재 목표** — 다음 후보는 ① **feat-018 후속 폴리시 — 벽 중앙 휑함(20:9로 길어진 벽 중하단에 디테일 추가, 4종)** ② 실기기 검증 ③ 도감 열람 UI ④ agy 포즈 스프라이트 반입(컷씬 생동감). 캡처 하네스 기본은 9:16 — 폰 20:9 전환 검토.
+**활성 피처** — **feat-018 폰 고품질 대응 + 후속 '벽 중하단 디테일' 완료.** 우려("폰에서 고품질 아닌 거 아냐?") — feat-016 배경이 9:16 풀스트레치라 20:9/QHD 폰서 도트 직사각 뭉개짐. **cover(AspectRatioFitter EnvelopeParent) + 고해상도 1440x3204(20:9) + meta 4096 + FLOOR_Y 384 정합**으로 해결. **후속(2026-06-13)** — 20:9로 길어진 직원 머리 위(y≈150~310) 빈 벽을 4종 모두 디테일(차고 포스터·포스트잇·스텐실 / 성장 갤러리·네온·선반 / 데이터센터 시계·타일·LED / 랜드마크 골드액자·벽아트·트로피·대형화분)로 채움. gen_office.py 헬퍼 9종, C# 무변경. EditMode **145/145** + PlayMode 01c-phone-2400 검증. 정본 docs/feat-018-context-notes.md(4절). **로컬 미푸시(사용자 확인 후).**
+**현재 목표** — 다음 후보는 ① 실기기 검증 ② 도감 열람 UI ③ agy 포즈 스프라이트 반입(컷씬 생동감) ④ 멀티 엔딩/베타 준비. 캡처 하네스 기본은 9:16 — 폰 20:9 전환 검토.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -34,6 +34,7 @@
 - [x] feat-016 오피스 비주얼 전면 재작업 — 사용자 피드백("떠있는 등각 판때기가 전혀 사무실 같지 않다") 해소. **정면 단면 픽셀룸 4종** 절차 생성(`Tools~/pixel_office/gen_office.py` — 네이티브 180x320 세로 캔버스에 PIL 도트 → 6x nearest 업스케일 1080x1920, v090 직원 팔레트 정합). 차고(콘크리트·셔터·형광등) / 스타트업(통창 스카이라인·민트 카펫) / 데이터센터(서버랙 LED·대시보드·테크타일) / 랜드마크(일몰 파노라마·골드/보라 대리석·로고월). **드롭인 교체** — `Resources/Art/Background/office{,_growth,_datacenter,_landmark}.png` 4장 + meta Point필터·무압축(기존 2560>2048 다운스케일 흐림도 해소). StageVisual/BuildOfficeScene 코드 무변경. 검증 — EditMode 145/145 + PlayMode 캡처 01-main(차고)·14-stage-landmark(랜드마크) 실게임 UI 합성 확인(직원이 룸 안 러그 위에서 일하는 그림, 바닥 빈 영역은 안내·미나리본·버튼이 덮음). 원본 백업 `Tools~/pixel_office/backup_orig/`. 정본 docs/feat-016-context-notes.md.
 - [x] feat-017 픽셀 컷씬 시스템(골격) — 출시 시 전용 모달 컷씬 윈도우. `Scripts/UI/CutsceneDirector.cs`(FxManager 패턴 — RuntimeInitializeOnLoadMethod + Overlay Canvas sortingOrder 230 + GameEvents.ProductLaunched 구독). 발표회 무대(타이틀+커튼+스포트라이트+무대바닥) + 발표 직원(머리 위 제품 별박스, 들썩) + 객석 로봇 2종(점프+박수 스쿼시) + 자체 색종이. 탭 스킵 + 자동 닫힘, 반복 출시 3회+ 간략화, tier enum(Mini/Medium/Big, 출시=Medium) 골격. 아트는 v090 재사용+코드 모션(새 스프라이트 0장). 검증 — EditMode 145/145 + 캡처 15-cutscene-launch.png. 정본 docs/feat-017-context-notes.md, agy 포즈 핸드오프 docs/agy-handoff/cutscene-poses.md. **후속 — agy 포즈 스프라이트, 스포트라이트 강화, 승급·상장·미니 tier 확장.**
 - [x] 곁다리 — "No cameras rendering"(Game.unity 카메라 0개) 해소. GameBootstrap.EnsureCamera()가 더미 메인 카메라 런타임 보장(cullingMask 0, Overlay UI 독립). EnsureEventSystem 패턴.
+- [x] feat-018 픽셀 배경 폰 고품질 — cover(AspectRatioFitter EnvelopeParent, 도트 정사각) + 240x534→1440x3204(20:9) 고해상도 + meta 4096 + FLOOR_Y 384 정합. **후속 폴리시(같은 커밋군)** — 20:9로 길어진 직원 머리 위(y150~310) 빈 벽을 4종 디테일로 채움(차고 전구줄·선반·포스터·포스트잇·스텐실 / 성장 액자갤러리·네온포스터·선반·코르크 / 데이터센터 세계시계·상태타일·LED신호탑 / 랜드마크 골드어워드액자·픽처라이트·추상아트·트로피선반·대형화분). gen_office.py 데코 헬퍼 9종(draw_frame/shelf/trophy/potted/string_lights/poster/sticky_notes/status_tile/led_tower), C# 무변경. EditMode 145/145 + PlayMode 01c-phone-2400. 정본 docs/feat-018-context-notes.md
 ### 진행 중 (What's In Progress)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 

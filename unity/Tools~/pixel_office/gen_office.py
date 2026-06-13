@@ -190,6 +190,185 @@ def draw_pendant_light(c, x, y, glow):
 
 
 # ============================================================
+# 벽 중하단 데코 헬퍼 — 20:9로 길어진 벽의 빈 중하단(직원 머리 위)을 채운다.
+# 안전영역 : 중앙은 캔버스 y 150~310(직원 머리 ~323 위), 좌우 끝(x<32·x>208)은 y 350까지.
+# 공통 문법 — 벽에 '걸린' 느낌(상단 못 + 우·하단 그림자)으로 통일감 유지.
+# ============================================================
+def _hang_shadow(c, x0, y0, x1, y1):
+    # 액자·패널 우·하단 1px 그림자 — 벽에서 살짝 떠 보이게.
+    c.vline(x1, y0 + 1, y1 + 1, INK2)
+    c.hline(x0 + 1, x1 + 1, y1, INK2)
+
+
+def draw_frame(c, x0, y0, x1, y1, frame_col, kind="abstract", accent=MINT, nail=True):
+    # 벽걸이 액자 — 프레임 + 내용(abstract/chart/photo/award/text). 못·그림자로 '걸린' 느낌.
+    _hang_shadow(c, x0, y0, x1, y1)
+    c.rect(x0, y0, x1, y1, frame_col)
+    c.rect(x0, y0, x1, y0 + 1, shade(frame_col, 0.25))
+    c.rect(x0, y1 - 1, x1, y1, shade(frame_col, -0.25))
+    c.outline(x0, y0, x1, y1, INK)
+    ix0, iy0, ix1, iy1 = x0 + 2, y0 + 2, x1 - 2, y1 - 2
+    if ix1 - ix0 < 2 or iy1 - iy0 < 2:
+        return
+    if kind == "abstract":
+        c.vgrad(ix0, iy0, ix1, iy1, shade(accent, 0.35), shade(accent, -0.3))
+        for k in range(iy0 + 1, iy1, 3):
+            c.hline(ix0, ix1, k, shade(accent, 0.12))
+        c.rect(ix0, iy0, (ix0 + ix1) // 2, (iy0 + iy1) // 2, mix(accent, WHITE, 0.3))
+    elif kind == "chart":
+        c.rect(ix0, iy0, ix1, iy1, NAVY_D)
+        prev = iy1 - 1
+        span = max(2, iy1 - iy0 - 2)
+        for i, lx in enumerate(range(ix0 + 1, ix1 - 1)):
+            hh = iy1 - 2 - int((i * 1.7) % span)
+            for yy in range(min(hh, prev), max(hh, prev) + 1):
+                c.put(lx, yy, shade(accent, -0.15))
+            c.put(lx, hh, accent)
+            prev = hh
+    elif kind == "photo":
+        c.vgrad(ix0, iy0, ix1, iy1, mix(BLUE, WHITE, 0.45), mix(MINT, WHITE, 0.55))
+        for hx in range(ix0 + 1, ix1 - 1, 3):
+            c.rect(hx, iy1 - 3, hx + 2, iy1, INK2)
+            c.put(hx, iy1 - 4, SKIN)
+    elif kind == "award":
+        c.vgrad(ix0, iy0, ix1, iy1, shade(NAVY, -0.05), NAVY_D)
+        mx = (ix0 + ix1) // 2
+        c.rect(mx - 2, iy0 + 2, mx + 3, iy0 + 7, YELLOW)
+        c.put(mx - 1, iy0 + 1, YELLOW)
+        c.vline(mx - 1, iy0 + 7, iy1 - 1, RED)
+        c.vline(mx + 1, iy0 + 7, iy1 - 1, shade(YELLOW, -0.1))
+    elif kind == "text":
+        c.rect(ix0, iy0, ix1, iy1, CREAM)
+        for k in range(iy0 + 2, iy1 - 1, 3):
+            c.hline(ix0 + 2, ix1 - 2 - ((k * 5) % 4), k, shade(accent, -0.2))
+    if nail:
+        c.put((x0 + x1) // 2, y0 - 1, METAL_L)
+
+
+def draw_shelf(c, x0, x1, y, mat=WOOD):
+    # 벽 선반 — 판 + 양끝 브래킷. y는 판 윗면.
+    c.rect(x0, y, x1, y + 2, shade(mat, 0.2))
+    c.rect(x0, y + 2, x1, y + 3, shade(mat, -0.3))
+    c.outline(x0, y, x1, y + 3, INK)
+    c.vline(x0 + 1, y + 3, y + 7, shade(mat, -0.3))
+    c.vline(x1 - 2, y + 3, y + 7, shade(mat, -0.3))
+
+
+def draw_trophy(c, x, base_y, cup=YELLOW):
+    # 작은 트로피 — 컵 + 받침.
+    c.rect(x, base_y - 2, x + 6, base_y, shade(cup, -0.3))
+    c.rect(x + 1, base_y - 6, x + 5, base_y - 2, cup)
+    c.rect(x, base_y - 9, x + 6, base_y - 6, cup)
+    c.put(x - 1, base_y - 8, shade(cup, -0.2))
+    c.put(x + 6, base_y - 8, shade(cup, -0.2))
+    c.outline(x, base_y - 9, x + 6, base_y, INK)
+    c.put(x + 2, base_y - 8, shade(cup, 0.4))
+
+
+def draw_potted(c, x, base_y, big=False, pot=WOOD_D, leaf=MINT_D):
+    # 화분 — big=대형 야자(랜드마크 측벽용), 아니면 기존 draw_plant.
+    if not big:
+        draw_plant(c, x, base_y)
+        return
+    c.rect(x, base_y - 12, x + 14, base_y, pot)
+    c.rect(x, base_y - 12, x + 14, base_y - 9, shade(pot, 0.2))
+    c.outline(x, base_y - 12, x + 14, base_y, INK)
+    cx = x + 7
+    for ang, ln in ((-6, 18), (-2, 26), (2, 24), (6, 16)):
+        for t in range(ln):
+            lx = cx + int(ang * t / 8)
+            ly = base_y - 12 - t
+            c.put(lx, ly, leaf if t % 2 else shade(leaf, 0.25))
+            c.put(lx + 1, ly, shade(leaf, -0.2))
+
+
+def draw_string_lights(c, x0, x1, y, bulb=YELLOW):
+    # 늘어진 전구 줄 — 차고·스타트업 활기. 처짐 곡선 반복.
+    for i, x in enumerate(range(x0, x1)):
+        yy = y + int(3 * (1 - abs((i % 28) - 14) / 14.0))
+        c.put(x, yy, INK2)
+        if i % 14 == 7:
+            c.put(x, yy + 2, bulb)
+            c.put(x, yy + 3, shade(bulb, -0.2))
+            c.put(x - 1, yy + 2, shade(bulb, -0.1))
+            c.put(x + 1, yy + 2, shade(bulb, -0.1))
+
+
+def draw_poster(c, x0, y0, x1, y1, paper=CREAM, ink=NAVY, accent=RED):
+    # 핀업 포스터 — 큰 상승 화살표 + 텍스트 줄. 모서리 핀.
+    _hang_shadow(c, x0, y0, x1, y1)
+    c.rect(x0, y0, x1, y1, paper)
+    c.outline(x0, y0, x1, y1, INK)
+    ax0, ay0 = x0 + 4, y1 - 5
+    ax1, ay1 = x1 - 5, y0 + 6
+    steps = max(2, ax1 - ax0)
+    for i in range(steps + 1):
+        t = i / steps
+        px = ax0 + i
+        py = int(ay0 + (ay1 - ay0) * t)
+        c.put(px, py, accent)
+        c.put(px, py + 1, shade(accent, -0.2))
+    for d in range(4):
+        c.put(ax1 - d, ay1, accent)
+        c.put(ax1, ay1 + d, accent)
+    for k in range(y1 - 4, y1 - 1):
+        c.hline(x0 + 3, x1 - 4, k, shade(ink, 0.1))
+    c.put(x0 + 1, y0 + 1, RED)
+    c.put(x1 - 2, y0 + 1, MINT)
+
+
+def draw_sticky_notes(c, x0, y0, x1, y1):
+    # 포스트잇·메모 군집 — 스타트업 어수선한 활기.
+    cols = [YELLOW, MINT, mix(RED, WHITE, 0.4), mix(BLUE, WHITE, 0.5), ORANGE]
+    for ny in range(y0, y1 - 7, 9):
+        for nx in range(x0, x1 - 7, 9):
+            col = cols[(nx * 7 + ny * 3) % len(cols)]
+            js = (nx + ny) % 3 - 1
+            c.rect(nx, ny + js, nx + 7, ny + 7 + js, col)
+            c.rect(nx, ny + js, nx + 7, ny + 1 + js, shade(col, 0.2))
+            c.outline(nx, ny + js, nx + 7, ny + 7 + js, shade(col, -0.4))
+            c.hline(nx + 1, nx + 5, ny + 3 + js, shade(col, -0.3))
+            c.hline(nx + 1, nx + 6, ny + 5 + js, shade(col, -0.3))
+
+
+def draw_status_tile(c, x0, y0, x1, y1, accent=MINT, mode=0):
+    # 작은 상태 모니터 타일 — 데이터센터 중앙 그리드용.
+    c.rect(x0, y0, x1, y1, shade(NAVY_D, -0.2))
+    c.outline(x0, y0, x1, y1, INK)
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 2, shade(NAVY, 0.1))
+    if mode == 0:
+        prev = y1 - 2
+        span = max(2, y1 - y0 - 4)
+        for i, lx in enumerate(range(x0 + 2, x1 - 1)):
+            hh = y1 - 2 - ((i * 2) % span)
+            for yy in range(min(hh, prev), max(hh, prev) + 1):
+                c.put(lx, yy, shade(accent, -0.3))
+            c.put(lx, hh, accent)
+            prev = hh
+    elif mode == 1:
+        span = max(2, y1 - y0 - 4)
+        for j, bx in enumerate(range(x0 + 2, x1 - 1, 3)):
+            bh = 2 + (j * 3) % span
+            c.rect(bx, y1 - 1 - bh, bx + 2, y1 - 1, accent if j % 2 else BLUE)
+    elif mode == 2:
+        c.rect(x0 + 2, y0 + 3, x1 - 2, y1 - 2, NAVY_D)
+        c.hline(x0 + 2, x0 + 2 + (x1 - x0 - 4) * 2 // 3, (y0 + y1) // 2, accent)
+        c.hline((x0 + x1) // 2, x1 - 2, y0 + 4, YELLOW)
+
+
+def draw_led_tower(c, x, y0, y1):
+    # 세로 상태 LED 신호탑 — 데이터센터 경고·상태.
+    c.rect(x, y0, x + 6, y1, shade(NAVY_D, -0.3))
+    c.outline(x, y0, x + 6, y1, INK)
+    cols = [RED, YELLOW, MINT, BLUE]
+    step = max(3, (y1 - y0) // 4)
+    for i, yy in enumerate(range(y0 + 1, y1 - 1, step)):
+        col = cols[i % len(cols)]
+        c.rect(x + 1, yy, x + 5, yy + step - 1, shade(col, -0.1))
+        c.rect(x + 2, yy + 1, x + 4, yy + 2, shade(col, 0.35))
+
+
+# ============================================================
 # 성급 1 — 차고 (garage_prototype, seed_startup) : office.png
 # ============================================================
 def draw_rug(c, cx, top, w, h, c1, c2):
@@ -283,6 +462,21 @@ def build_garage():
     c.speckle(pb_x + 1, pb_y + 1, pb_x + 25, pb_y + 23, shade(WOOD, -0.15), density=0.08, seed=5)
     c.vline(pb_x + 7, pb_y + 4, pb_y + 17, INK2); c.rect(pb_x + 5, pb_y + 3, pb_x + 9, pb_y + 6, METAL)
     c.vline(pb_x + 16, pb_y + 4, pb_y + 16, INK2); c.rect(pb_x + 13, pb_y + 15, pb_x + 20, pb_y + 18, METAL_D)
+
+    # --- 벽 중하단 디테일 (직원 머리 위 빈 중앙 벽) ---
+    draw_string_lights(c, 16, 160, 150)            # 가로 전구 줄
+    draw_shelf(c, 20, 78, 174)                     # 좌중앙 선반
+    c.rect(26, 162, 34, 174, RED); c.outline(26, 162, 34, 174, INK)     # 페인트캔
+    c.rect(28, 159, 32, 162, METAL_L)
+    c.rect(42, 166, 50, 174, MINT); c.outline(42, 166, 50, 174, INK)    # 캔2
+    c.rect(58, 168, 65, 174, WOOD_L); c.outline(58, 168, 65, 174, INK)  # 머그
+    c.put(65, 170, WOOD_L); c.put(66, 171, WOOD_L)
+    draw_poster(c, 100, 158, 150, 210, CREAM, NAVY, RED)               # 중앙 상승 포스터
+    draw_sticky_notes(c, 96, 232, 156, 292)                            # 포스트잇 메모
+    sten = mix(MINT, METAL_L, 0.5)                                     # 좌측 스프레이 스텐실 화살표 ↑
+    for dy in range(11):
+        c.hline(28 - dy, 30 + dy, 256 + dy, sten)
+    c.rect(26, 267, 32, 305, sten)
 
     # --- 매달린 형광등 (빛) ---
     draw_pendant_light(c, 78, 32, glow=True)
@@ -444,6 +638,20 @@ def build_growth():
     # 벽시계
     c.rect(28, 152, 42, 166, WHITE); c.outline(28, 152, 42, 166, INK)
     c.vline(35, 155, 161, INK); c.hline(35, 40, 160, INK2)
+    # --- 벽 중하단 디테일 (가장 휑한 벽 — 갤러리·네온 포스터·선반) ---
+    draw_frame(c, 20, 196, 52, 230, WOOD, "photo")            # 좌 갤러리 3종
+    draw_frame(c, 20, 240, 52, 274, MINT, "abstract")
+    draw_frame(c, 58, 212, 86, 252, YELLOW, "chart", accent=MINT)
+    draw_frame(c, 100, 206, 158, 250, NAVY, "text", accent=MINT)  # 중앙 네온 모션 포스터
+    c.outline(98, 204, 160, 252, MINT)
+    c.outline(97, 203, 161, 253, shade(MINT, -0.3))
+    draw_shelf(c, 168, 222, 206)                              # 우 선반 + 식물·책·트로피
+    draw_plant(c, 170, 206)
+    c.rect(186, 196, 190, 206, BLUE); c.outline(186, 196, 190, 206, INK)
+    c.rect(190, 198, 194, 206, RED); c.outline(190, 198, 194, 206, INK)
+    c.rect(194, 200, 198, 206, MINT_D); c.outline(194, 200, 198, 206, INK)
+    draw_trophy(c, 210, 206, YELLOW)
+    draw_sticky_notes(c, 168, 256, 214, 300)                 # 우중앙 코르크 메모
     # 책상 3
     draw_desk(c, 22, FLOOR_Y - 30, 40, MINT)
     draw_desk(c, 100, FLOOR_Y - 30, 40, YELLOW)
@@ -483,6 +691,20 @@ def build_datacenter():
     for gy in range(44, FLOOR_Y - 6, 3):
         c.put(82, gy, mix(MINT, NAVY, 0.5))
         c.put(158, gy, mix(MINT, NAVY, 0.5))
+    # --- 벽 중하단 디테일 (서버랙 사이 빈 중앙 통로) ---
+    for cx0 in (88, 110, 132):                      # 세계 시계 행 (3개 디지털)
+        c.rect(cx0, 150, cx0 + 18, 166, shade(NAVY_D, -0.25)); c.outline(cx0, 150, cx0 + 18, 166, INK)
+        c.rect(cx0 + 2, 153, cx0 + 16, 163, NAVY_D)
+        c.hline(cx0 + 3, cx0 + 7, 158, MINT)
+        c.put(cx0 + 8, 157, YELLOW); c.put(cx0 + 8, 159, YELLOW)
+        c.hline(cx0 + 10, cx0 + 14, 158, MINT)
+        c.hline(cx0 + 4, cx0 + 13, 161, shade(MINT, -0.4))
+    draw_status_tile(c, 88, 174, 116, 200, MINT, 0)   # 상태 타일 2x2
+    draw_status_tile(c, 120, 174, 152, 200, YELLOW, 1)
+    draw_status_tile(c, 88, 204, 116, 230, BLUE, 2)
+    draw_status_tile(c, 120, 204, 152, 230, MINT, 0)
+    draw_led_tower(c, 117, 244, 300)                  # 중앙 LED 신호탑
+    c.rect(96, 250, 114, 254, shade(NAVY, 0.12)); c.rect(126, 250, 144, 254, shade(NAVY, 0.12))
     # 콘솔 책상 2
     draw_desk(c, 84, FLOOR_Y - 30, 30, MINT)
     draw_desk(c, 130, FLOOR_Y - 30, 30, BLUE)
@@ -521,6 +743,19 @@ def build_landmark():
     for px_ in range(52, W, 52):
         c.vline(px_, panel_top + 3, FLOOR_Y, mix(PURPLE, METAL_L, 0.4))
     draw_logo_wall(c, W // 2, panel_top + 14, MINT)
+    # --- 벽 중하단 디테일 (대리석 벽 — 어워드·골드 액자·대형 화분) ---
+    draw_frame(c, 22, 196, 60, 244, YELLOW, "award")          # 로고월 양옆 골드 어워드 액자
+    draw_frame(c, 180, 196, 218, 244, YELLOW, "award")
+    for fx in (38, 196):                                       # 골드 픽처 라이트
+        c.rect(fx, 192, fx + 4, 195, YELLOW)
+        c.put(fx + 1, 195, mix(YELLOW, CREAM, 0.5))
+    draw_frame(c, 96, 254, 144, 308, mix(PURPLE, YELLOW, 0.3), "abstract", accent=PURPLE)  # 중앙 추상 벽아트
+    draw_shelf(c, 52, 90, 264, mat=mix(WOOD, PURPLE, 0.2))     # 트로피 선반 좌우
+    draw_trophy(c, 58, 264, YELLOW); draw_trophy(c, 72, 264, MINT)
+    draw_shelf(c, 150, 188, 264, mat=mix(WOOD, PURPLE, 0.2))
+    draw_trophy(c, 156, 264, MINT); draw_trophy(c, 170, 264, YELLOW)
+    draw_potted(c, 6, FLOOR_Y - 2, big=True, pot=PURPLE_D, leaf=MINT_D)    # 좌우 끝 대형 화분
+    draw_potted(c, 220, FLOOR_Y - 2, big=True, pot=PURPLE_D, leaf=MINT_D)
     # 라운지 콘솔 2
     draw_desk(c, 26, FLOOR_Y - 30, 40, PURPLE)
     draw_desk(c, 174, FLOOR_Y - 30, 40, MINT)
