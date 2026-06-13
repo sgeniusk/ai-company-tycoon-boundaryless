@@ -34,3 +34,7 @@
 
 ## 진행 기록
 - 2026-06-13 — 사용자 피드백으로 등록. **아트 디렉션(#1) 사용자 확정 대기.** 현 배경 4장은 임시 — 폐기 예정.
+- 2026-06-13 — **#1 아트 디렉션 사용자 확정** — 뷰 앵글 = 정면 단면 픽셀룸, 생성 경로 = Claude 절차적 픽셀아트 직접 생성. 근거 — v090 직원이 진짜 정면 도트인데 배경만 등각 벡터라 불일치, 게다가 배경이 세로 모바일에서 풀스트레치(preserveAspect=false)돼 가로 2560x1440 판때기가 다이아몬드로 왜곡됨.
+- 2026-06-13 — **#2~#4 절차 생성 완료(4종)** — `Tools~/pixel_office/gen_office.py`. 네이티브 저해상도 캔버스 180x320(세로) → 6x nearest 업스케일 1080x1920. v090 팔레트 정합(INK/MINT/METAL/NAVY/PURPLE/YELLOW...). 정면 단면 룸: 차고(콘크리트·셔터·형광등) → 스타트업(밝은 통창·스카이라인·민트 카펫) → 데이터센터(서버랙 LED·모니터링 대시보드·테크타일) → 랜드마크(일몰 파노라마·골드/보라 대리석·로고월). FLOOR_Y=206이 직원 발바닥선. `preview_compose.py`로 v090 직원 합성 자체검증 통과(스타일 완전 통일).
+- 2026-06-13 — **배선 완료** — `Resources/Art/Background/office{,_growth,_datacenter,_landmark}.png` 4장 교체(원본 백업 `Tools~/pixel_office/backup_orig/`). meta는 픽셀아트용 filterMode 0(Point)+textureCompression 0(무압축)으로 수정. 기존 2560>maxTextureSize 2048 다운스케일 흐림도 해소(새 1080x1920). StageVisual 키 매핑·BuildOfficeScene 코드 무변경 — **드롭인 교체**.
+- 2026-06-13 — **검증 완료** — 사용자가 에디터를 닫아 헤드리스 검증 진행. EditMode 145/145 유지(코드 무변경 확인). PlayMode ScreenshotCaptureTests 재촬영 — `Logs/shots/01-main.png`(차고 시작)·`14-stage-landmark.png`(랜드마크) 실게임 UI 합성 확인. 직원 3종이 콘크리트 차고 룸 안 러그 위에서 일하는 그림, 바닥 빈 영역은 안내문구·미나리본·하단버튼이 정확히 덮음(예측 적중). 랜드마크는 일몰 파노라마 본사. **feat-016 done.** 남은 미세점 — 중간 성급(growth/datacenter)은 ScreenshotCaptureTests에 전용 캡처 없어 preview_compose로만 검증(코드 경로 동일이라 동작 보장). 필요시 캡처 테스트에 성급 케이스 추가.

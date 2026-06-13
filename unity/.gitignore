@@ -32,3 +32,7 @@ sysinfo.txt
 
 # Unity 빌드 임시
 .utmp/
+
+# 픽셀 에셋 생성기 산출물 (생성기 *.py는 추적, 산출/백업은 제외)
+Tools~/pixel_office/out/
+Tools~/pixel_office/backup_orig/
