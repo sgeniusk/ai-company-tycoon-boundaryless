@@ -598,6 +598,7 @@ namespace AICompanyTycoon.UI
             sRect.offsetMin = Vector2.zero;
             sRect.offsetMax = Vector2.zero;
             _officeSceneContent = stage.transform; // Clear는 직원·책상만 비운다(오버레이 보존)
+            OfficeProps.Populate(stage.transform);
 
             // 리액션 버블 전용 오버레이 — 최상단(직원 위)에 절대 위치로 띄운다.
             var overlay = new GameObject("ReactionLayer", typeof(RectTransform));
