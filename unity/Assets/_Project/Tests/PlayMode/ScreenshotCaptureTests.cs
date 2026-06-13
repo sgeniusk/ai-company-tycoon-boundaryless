@@ -225,6 +225,16 @@ namespace AICompanyTycoon.Tests.PlayMode
                 yield return CaptureCanvas(canvasGo, "11-interview.png");
             }
 
+            // 15) 출시 컷씬 (feat-017) — 전역 CutsceneDirector가 별도 Overlay Canvas에 모달 발표회를 띄운다.
+            AICompanyTycoon.Core.GameEvents.RaiseProductLaunched("foundation_model_v0");
+            yield return WaitRealtime(0.6f); // 윈도우 팝인 + 제품 들어올림 + 색종이 절정
+            var cutsceneGo = GameObject.Find("CutsceneDirector");
+            if (cutsceneGo != null && cutsceneGo.GetComponent<Canvas>() != null)
+            {
+                yield return CaptureCanvas(cutsceneGo, "15-cutscene-launch.png");
+            }
+            yield return WaitRealtime(2.2f); // 자동 닫힘까지 대기(테스트 정리)
+
             Object.Destroy(go);
             yield return null;
         }

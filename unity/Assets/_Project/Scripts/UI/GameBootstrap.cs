@@ -26,10 +26,30 @@ namespace AICompanyTycoon.UI
             Context = SimulationContext.Create(_catalog);
             Save = new SaveService();
             UiFactory.EnsureEventSystem();
+            EnsureCamera();
 
             Screen = new GameScreen(Context, Save);
             Screen.Build();
             Screen.RefreshAll();
+        }
+
+        // 씬에 카메라가 없으면 더미 메인 카메라를 만든다. Screen Space - Overlay UI는 카메라 없이도 그려지지만,
+        // 카메라가 하나도 없으면 Unity가 Game 뷰에 "Display 1 No cameras rendering" 안내를 띄운다. 그걸 없앤다.
+        void EnsureCamera()
+        {
+            if (Camera.main != null)
+            {
+                return;
+            }
+
+            var camGo = new GameObject("MainCamera");
+            camGo.tag = "MainCamera";
+            var cam = camGo.AddComponent<Camera>();
+            cam.orthographic = true;
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            cam.backgroundColor = UiTheme.ScreenBg;
+            cam.cullingMask = 0; // Overlay UI는 카메라 독립이라 아무것도 안 비춰도 된다(경고 제거용).
+            cam.depth = -10;
         }
 
         void OnDestroy()

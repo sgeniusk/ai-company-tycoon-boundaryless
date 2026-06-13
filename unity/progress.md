@@ -4,8 +4,8 @@
 
 ## 현재 상태 (Current State)
 **마지막 갱신** — 2026-06-13
-**활성 피처** — **feat-014 경영 탭(#1~#5) + feat-015 자본 사다리(#1~#5) 완결.** EditMode **145/145**, origin 동기화(28커밋). **다음 — feat-016 오피스 비주얼 전면 재작업(사용자 1순위 피드백 2026-06-13)** — 현 등각 플랫폼 배경이 "사무실 같지 않다", 카이로소프트식 진짜 사무실 픽셀아트로. 아트 디렉션 사용자 확정 대기. 정본 docs/feat-016-context-notes.md.
-**현재 목표** — 다음 후보는 ① feat-012 #5 트리 그래프 화면 ② 실기기 검증(경제 체감 변화 큼 — ARPU·GPU 증설·시너지) ③ 도감 열람 UI(아키타입·엔딩·시너지/콤보).
+**활성 피처** — **feat-017 픽셀 컷씬 시스템 골격 완료**(feat-016 오피스 비주얼 재작업 완결 위에). 출시 발표회 컷씬(CutsceneDirector — 모달 윈도우+커튼 무대+발표 직원+객석 로봇+색종이, 코드 모션). EditMode **145/145** + PlayMode 캡처 15-cutscene-launch. 곁다리로 "No cameras rendering" 해소(GameBootstrap.EnsureCamera). 정본 docs/feat-017-context-notes.md, agy 포즈 핸드오프 docs/agy-handoff/cutscene-poses.md. **로컬 미푸시(사용자 확인 후).**
+**현재 목표** — 다음 후보는 ① feat-012 #5 트리 그래프 화면 ② 실기기 검증(경제 체감 변화 큼 — ARPU·GPU 증설·시너지) ③ 도감 열람 UI(아키타입·엔딩·시너지/콤보) ④ feat-016 후속 폴리시(중간 성급 growth/datacenter 실게임 캡처는 preview만 — 필요시 추가).
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -30,7 +30,10 @@
 - [x] feat-008 — 로그라이크 심화 3블록. #1 난이도 티어 4종(헤드윈드+더보기 선택 UI) #2 아키타입 12종 파생 엔진(React tag-derivation 동일)+월간 보너스 훅+MetaSave 크로스런 도감+리빌 NEW! 발견 연출 #3 멀티 엔딩 24종(EndingService 조건·우선순위·폴백, Python 교차 픽스처 일치)+결과 모달 결말·도감 카운트. EditMode 66/66
 - [x] feat-012 — AI 테크트리(분류·떡밥·해금). #1 ProductVisibilityService 5상태 발견의 사다리(derive-only)+제품 팝업 도메인 섹션/???티저/미발견 카운터 #2 teaser 36종+tier+category(Codex) #3 선행 체인+미래 제품 15종=51종(Codex)+TechTreeGraphTests 4종 게이트+CanLaunch 선행 조건 #4 능력 다음레벨 미리보기+해금 모먼트 연출+밸런스 패스. 밸런스 패스 부산물 — 제품 레벨업 포팅(SaveData v4)·RecruitService·React 비용 공식 정렬(자동화 할인 전체 적용+하이프 *10 제거). 정본 docs/feat-012-context-notes.md
 - [x] feat-013 — 경제 완주 가능성(a8cc105). 산업 시너지 10+콤보 10 포팅(IndustrySynergyService, 도메인 포트폴리오 월간 보상+가동 토스트) + 이용자 수익화(revenue_per_1000_users=55, additive) + GPU 증설(BuyCompute, 연산력 반복 공급원) + 연산력 소모 React 정렬(신규 이용자 기반) + **도메인 해금 순서 버그 수정**(다중 요건 도메인 영구 미해금 — CheckAll로). TechTreeReachabilityTests Fail 게이트 그린 — tier4 44개월, 승리 ~30개월대
-- [x] feat-014 #5 배경 아트 — Codex 절차 생성 완료. `scripts/assets/generate-feat014-stage-backgrounds.mjs`가 node-canvas 없이 raw `Uint8Array` RGBA + zlib deflate PNG 직접 인코딩으로 `office_growth.png` / `office_datacenter.png` / `office_landmark.png` 3장(각 2560x1440 RGBA)을 `Resources/Art/Background/`에 생성. Unity는 사용자 지시대로 미실행.
+- [x] feat-014 #5 배경 아트 — Codex 절차 생성 완료. `scripts/assets/generate-feat014-stage-backgrounds.mjs`가 node-canvas 없이 raw `Uint8Array` RGBA + zlib deflate PNG 직접 인코딩으로 `office_growth.png` / `office_datacenter.png` / `office_landmark.png` 3장(각 2560x1440 RGBA)을 `Resources/Art/Background/`에 생성. **→ feat-016에서 전면 폐기·교체.**
+- [x] feat-016 오피스 비주얼 전면 재작업 — 사용자 피드백("떠있는 등각 판때기가 전혀 사무실 같지 않다") 해소. **정면 단면 픽셀룸 4종** 절차 생성(`Tools~/pixel_office/gen_office.py` — 네이티브 180x320 세로 캔버스에 PIL 도트 → 6x nearest 업스케일 1080x1920, v090 직원 팔레트 정합). 차고(콘크리트·셔터·형광등) / 스타트업(통창 스카이라인·민트 카펫) / 데이터센터(서버랙 LED·대시보드·테크타일) / 랜드마크(일몰 파노라마·골드/보라 대리석·로고월). **드롭인 교체** — `Resources/Art/Background/office{,_growth,_datacenter,_landmark}.png` 4장 + meta Point필터·무압축(기존 2560>2048 다운스케일 흐림도 해소). StageVisual/BuildOfficeScene 코드 무변경. 검증 — EditMode 145/145 + PlayMode 캡처 01-main(차고)·14-stage-landmark(랜드마크) 실게임 UI 합성 확인(직원이 룸 안 러그 위에서 일하는 그림, 바닥 빈 영역은 안내·미나리본·버튼이 덮음). 원본 백업 `Tools~/pixel_office/backup_orig/`. 정본 docs/feat-016-context-notes.md.
+- [x] feat-017 픽셀 컷씬 시스템(골격) — 출시 시 전용 모달 컷씬 윈도우. `Scripts/UI/CutsceneDirector.cs`(FxManager 패턴 — RuntimeInitializeOnLoadMethod + Overlay Canvas sortingOrder 230 + GameEvents.ProductLaunched 구독). 발표회 무대(타이틀+커튼+스포트라이트+무대바닥) + 발표 직원(머리 위 제품 별박스, 들썩) + 객석 로봇 2종(점프+박수 스쿼시) + 자체 색종이. 탭 스킵 + 자동 닫힘, 반복 출시 3회+ 간략화, tier enum(Mini/Medium/Big, 출시=Medium) 골격. 아트는 v090 재사용+코드 모션(새 스프라이트 0장). 검증 — EditMode 145/145 + 캡처 15-cutscene-launch.png. 정본 docs/feat-017-context-notes.md, agy 포즈 핸드오프 docs/agy-handoff/cutscene-poses.md. **후속 — agy 포즈 스프라이트, 스포트라이트 강화, 승급·상장·미니 tier 확장.**
+- [x] 곁다리 — "No cameras rendering"(Game.unity 카메라 0개) 해소. GameBootstrap.EnsureCamera()가 더미 메인 카메라 런타임 보장(cullingMask 0, Overlay UI 독립). EnsureEventSystem 패턴.
 ### 진행 중 (What's In Progress)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 

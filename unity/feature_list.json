@@ -186,9 +186,20 @@
       "dependencies": [
         "feat-014"
       ],
-      "status": "planned",
-      "owner": "아트 디렉션 사용자 확정 대기",
-      "evidence": "feat-014 #5 배경 3종은 임시(폐기 후보). #1 아트 디렉션(뷰 앵글·레퍼런스·생성 경로) 결정부터 — 정면 단면 룸 유력(v090 직원 정면 스프라이트 정합)"
+      "status": "done",
+      "owner": "Claude (절차적 픽셀아트 생성·배선·검증)",
+      "evidence": "정면 단면 픽셀룸 4종 절차 생성(Tools~/pixel_office/gen_office.py, 180x320 네이티브 → 6x 1080x1920, v090 팔레트 정합) — 차고/스타트업/데이터센터/랜드마크. Resources/Art/Background 4장 드롭인 교체(코드 무변경, meta Point필터+무압축). 검증 — EditMode 145/145 + PlayMode 캡처 01-main(차고)·14-stage-landmark(랜드마크) 실게임 UI 합성 확인. 이전 등각 판때기 → 진짜 사무실 룸. 원본 백업 Tools~/pixel_office/backup_orig/"
+    },
+    {
+      "id": "feat-017",
+      "name": "픽셀 컷씬 시스템 — 출시 발표회부터 (P18)",
+      "description": "사용자 피드백(2026-06-13) — 출시 등 주요 순간에 전용 컷씬 모달 윈도우가 떠서 픽셀 직원들이 연기하는 연출. '보는 맛, 아기자기하게'. 출시 발표회 1종 집중(골격 재사용으로 승급·상장·미니 후속). tier 차등화(빅/중/소). 아트는 코드 모션+v090 재사용 먼저, agy 포즈 핸드오프 후속. 설계 docs/feat-017-context-notes.md",
+      "dependencies": [
+        "feat-016"
+      ],
+      "status": "in_progress",
+      "owner": "Claude (CutsceneDirector 골격 + 코드 모션)",
+      "evidence": "브레인스토밍 합의(2026-06-13) — 모달 컷씬 + 이벤트별 맞춤 톤 + tier 차등화 + 탭 스킵 + 반복 출시 간략화. CutsceneDirector는 FxManager 패턴(RuntimeInitializeOnLoadMethod + 전용 Overlay Canvas + GameEvents 구독)."
     }
   ]
 }
