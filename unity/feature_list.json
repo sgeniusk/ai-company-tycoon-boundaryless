@@ -211,6 +211,17 @@
       "status": "done",
       "owner": "Claude (배경 재작업 + cover 배선)",
       "evidence": "네이티브 240x534(20:9) SCALE6 → 1440x3204 재생성(도트 240폭, 디테일↑). BuildOfficeBackground를 AspectRatioFitter(EnvelopeParent) cover로(풀스트레치 제거 — 정사각 도트 보존, 넘침 크롭). meta maxTextureSize 4096. FLOOR_Y 384(20:9 cover 액터 정합). 검증 — EditMode 145/145 + PlayMode 01c-phone-2400(20:9) 도트 정사각 + 직원 러그 정합. 후속 폴리시: 벽 중앙 휑함(벽 디테일 추가), 액터 정합 폰별 변동."
+    },
+    {
+      "id": "feat-019",
+      "name": "오피스 연출 격상 — 카이로소프트 너머 보는 맛 (P20)",
+      "description": "사용자 방향(2026-06-13) — 게임개발 스토리식 사무실 연출을 비주얼적으로 완성. 기존 레이아웃(정면 단면 룸·cover·도크·HUD) 유지, 연출력만 격상, 아기자기·보는 맛. 6트랙 — T1 무대 밀도·2열 원근 착석(앞줄 큰/뒷줄 작은 + 책상 전경 오클루전), T2 그라데이션 스크림(무대 환하게·UI 뒤만 어둡게), T3 상시 juice(말풍선·직원별 리워드 플로팅·열일 불꽃), T4 앰비언트 룸 애니(모니터 글로우·LED·조명·먼지), T5 컷씬 폴리시, T6 하네스 20:9 전환. 새 스프라이트 0장(v090/v091 재사용+절차 도형). 설계 docs/feat-019-context-notes.md",
+      "dependencies": [
+        "feat-018"
+      ],
+      "status": "in-progress",
+      "owner": "Claude(통합·GameScreen·검증) + Codex 5.5 xhigh(AmbientRoomFx·grunt) + workflow(컴포넌트·리뷰)",
+      "evidence": "구현 중 — dynamic workflow + Codex 3-way 분업. 진행 progress.md / 설계 docs/feat-019-context-notes.md"
     }
   ]
 }
