@@ -354,10 +354,12 @@ namespace AICompanyTycoon.UI
             }
         }
 
-        // 사무실 배경(v054)을 전체에 깔고 위에 반투명 막을 얹어 UI 가독성을 확보한다. 에셋이 없으면 단색 배경 유지.
+        Image _officeBgImage; // 성급 비주얼 사다리 — 단계 승급 시 배경 스왑 (feat-014 #5)
+
+        // 사무실 배경을 전체에 깔고 위에 반투명 막을 얹어 UI 가독성을 확보한다. 성급에 따라 배경이 진화한다.
         void BuildOfficeBackground(Transform parent)
         {
-            var tex = Resources.Load<Texture2D>("Art/Background/office");
+            var tex = LoadStageBackground();
             if (tex == null)
             {
                 return;
@@ -370,12 +372,30 @@ namespace AICompanyTycoon.UI
             bgImage.sprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), new Vector2(0.5f, 0.5f));
             bgImage.preserveAspect = false;
             bgImage.raycastTarget = false;
+            _officeBgImage = bgImage;
 
             // 크림 톤 반투명 막 — office가 주인공으로 보이게 약하게만 (feat-011에서 0.55→0.38, 텍스트 대비는 패널 자체 bg가 담당).
             var scrim = UiFactory.Panel(parent, new Color(UiTheme.ScreenBg.r, UiTheme.ScreenBg.g, UiTheme.ScreenBg.b, 0.38f));
             scrim.name = "BackgroundScrim";
             Stretch(scrim.GetComponent<RectTransform>());
             scrim.GetComponent<Image>().raycastTarget = false;
+        }
+
+        // 현재 성급에 맞는 배경 텍스처 — 단계 전용이 없으면 기본 office로 폴백 (feat-014 #5).
+        Texture2D LoadStageBackground()
+        {
+            var key = StageVisual.BackgroundKey(_context != null ? _context.Model.CompanyStageId : null);
+            var tex = Resources.Load<Texture2D>(key);
+            return tex != null ? tex : Resources.Load<Texture2D>(StageVisual.FallbackKey);
+        }
+
+        // 단계 승급 시 배경 스왑. 신규 단계 아트가 있으면 진화, 없으면 기존 유지(드롭인 준비).
+        void RefreshStageBackground()
+        {
+            if (_officeBgImage == null) return;
+            var tex = LoadStageBackground();
+            if (tex == null) return;
+            _officeBgImage.sprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), new Vector2(0.5f, 0.5f));
         }
 
         // CD-1 전국 AI 기업 랭킹 LED 전광판 — 태그+LIVE 점멸 / #랭크 /총사 ▲델타 / 흐르는 마퀴.
@@ -1725,6 +1745,9 @@ namespace AICompanyTycoon.UI
             // 시리즈 투자 권유 (feat-015 #3) — 승급한 성급의 라운드가 있으면 대기열에. 정산 끝에 모달로 뜬다.
             var offer = _context.Funding.GetOffer(stageId);
             if (offer != null) _pendingInvestment = offer;
+
+            // 성급 비주얼 사다리 (feat-014 #5) — 데이터센터·랜드마크 본사로 배경 진화.
+            RefreshStageBackground();
         }
 
         void OnProductLaunched(string productId)
