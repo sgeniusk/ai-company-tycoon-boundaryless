@@ -241,9 +241,9 @@
       "dependencies": [
         "feat-008"
       ],
-      "status": "in-progress",
+      "status": "done",
       "owner": "Claude(설계·배선·검증) + Codex(CollectionGallery.cs 구현)",
-      "evidence": "구현 중 — 신규 CollectionGallery.cs(자족 모달·탭·그리드·상세) + GameScreen 더보기 진입 배선. DataCatalog + MetaSaveService 읽기. 설계 docs/feat-021-context-notes.md"
+      "evidence": "완료 — 신규 CollectionGallery.cs(818줄, 자족 모달·3탭·그리드·상세·잠금) + GameScreen 더보기 '도감' 버튼 1개 배선. 아키타입12·엔딩24 잠금/해금(실루엣+???+조건 힌트, MetaSave 발견 추적), 시너지/콤보20 전부 공개(콤보 리스크 뱃지). DataCatalog+MetaSaveService 읽기, 코어 무변경. 검증 EditMode 145/145 + PlayMode 5/5 + 캡처 19-collection(아키타입 잠금/해금)·19b(시너지)·19c(엔딩 ???+힌트) 3탭 전부 확인. Codex 구현·스코프 준수(CollectionGallery+GameScreen만), Claude 배선·검증·튜닝. 정본 docs/feat-021-context-notes.md"
     }
   ]
 }

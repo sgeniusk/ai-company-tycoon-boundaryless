@@ -1228,6 +1228,10 @@ namespace AICompanyTycoon.UI
             load.button.onClick.AddListener(() => { HandleLoad(); CloseMore(); });
             AddLayout(load.button.gameObject, 80, 0);
 
+            var collection = UiFactory.Button(card.transform, "도감");
+            collection.button.onClick.AddListener(() => { CloseMore(); CollectionGallery.Show(_canvas.transform, _context.Catalog, _meta.Data); });
+            AddLayout(collection.button.gameObject, 80, 0);
+
             // 난이도 티어 선택 (feat-008 #1) — 스토리/표준/하드/브루탈. 하드 이상은 월간 헤드윈드.
             var tierRow = new GameObject("TierRow", typeof(RectTransform));
             tierRow.transform.SetParent(card.transform, false);

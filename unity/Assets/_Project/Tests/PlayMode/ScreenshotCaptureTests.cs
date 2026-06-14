@@ -194,6 +194,21 @@ namespace AICompanyTycoon.Tests.PlayMode
                 more.onClick.Invoke();
                 yield return WaitRealtime(0.4f);
                 yield return CaptureCanvas(canvasGo, "06-more-drawer.png");
+
+                // 6b) 도감 갤러리 — 더보기에서 도감 열기 (feat-021). 도감 버튼이 더보기를 닫고 갤러리를 띄운다.
+                var galleryBtn = FindButton(canvasGo, "도감");
+                if (galleryBtn != null)
+                {
+                    galleryBtn.onClick.Invoke();
+                    yield return WaitRealtime(0.45f);
+                    yield return CaptureCanvas(canvasGo, "19-collection.png");
+                    var synTab = FindButtonByPrefix(canvasGo, "시너지");
+                    if (synTab != null) { synTab.onClick.Invoke(); yield return WaitRealtime(0.3f); yield return CaptureCanvas(canvasGo, "19b-collection-synergy.png"); }
+                    var endTab = FindButtonByPrefix(canvasGo, "엔딩");
+                    if (endTab != null) { endTab.onClick.Invoke(); yield return WaitRealtime(0.3f); yield return CaptureCanvas(canvasGo, "19c-collection-ending.png"); }
+                    var galClose = FindButton(canvasGo, "✕");
+                    if (galClose != null) { galClose.onClick.Invoke(); yield return WaitRealtime(0.2f); }
+                }
             }
 
             // 6.5) 도파민 연출 — 더보기를 닫고 플로팅 수익/토스트를 직접 띄워 캡처 (feat-010)
