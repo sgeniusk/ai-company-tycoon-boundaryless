@@ -240,6 +240,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 78fec5a87625e455fa0cfca2612774d8, type: 2}
   - {fileID: 11400000, guid: 152ecbac2c41348f98825675420dbbd8, type: 2}
   - {fileID: 11400000, guid: da425847548b645b3bea0cc72855d2c0, type: 2}
+  - {fileID: 11400000, guid: 96b61f3f78fc043e49e8642561337ed4, type: 2}
+  - {fileID: 11400000, guid: 08fb9ec09bb044359b2ce049fe899c9c, type: 2}
+  - {fileID: 11400000, guid: 3567beee2e572459cbb4eca7a0b4a009, type: 2}
+  - {fileID: 11400000, guid: 886f2a317dba64c7c8df750c5c5e68d0, type: 2}
+  - {fileID: 11400000, guid: 4d32db4f52fea479b8d5191cfabc4b57, type: 2}
+  - {fileID: 11400000, guid: fbdebf7fdef924b02886256e39071f31, type: 2}
+  - {fileID: 11400000, guid: 20dd8f0b609e345be9327a0ead4c2232, type: 2}
+  - {fileID: 11400000, guid: 6eec4c823afaf4d5083baea13a494c41, type: 2}
+  - {fileID: 11400000, guid: aed4fdc4d89454816a44a28baa3a30cd, type: 2}
+  - {fileID: 11400000, guid: f92c7a66f69884f058c4b3863d714075, type: 2}
+  - {fileID: 11400000, guid: d91c2a6c9b0d14146a5959f012c764a6, type: 2}
+  - {fileID: 11400000, guid: bc24d86e2d12d4fb39e28b764d077abe, type: 2}
   difficultyTiers:
   - {fileID: 11400000, guid: 8f8ed0303a17c4f2ab758bd14ad60d29, type: 2}
   - {fileID: 11400000, guid: 0116c4084929c4d30a291e732254b44c, type: 2}

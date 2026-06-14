@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78372b23d7e334a04908fd3ebb8f4a2d, type: 3}
+  m_Name: inference_cost_collapse
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.WorldEventDef
+  id: inference_cost_collapse
+  title: "\uCD94\uB860\uBE44\uC6A9 \uBD95\uAD34"
+  description: "\uC11C\uBE59 \uCD5C\uC801\uD654\uC640 \uC624\uD508 \uC0DD\uD0DC\uACC4
+    \uB3C4\uAD6C\uAC00 \uD37C\uC9C0\uBA70 \uAC19\uC740 \uC608\uC0B0\uC73C\uB85C \uB354
+    \uB9CE\uC740 \uACE0\uAC1D \uC694\uCCAD\uC744 \uCC98\uB9AC\uD569\uB2C8\uB2E4."
+  trigger: "5-6\uB144\uCC28 \uCD94\uB860 \uD6A8\uC728 \uBCC0\uC218"
+  yearMin: 5
+  yearMax: 6
+  resourceEffects:
+  - resource: 0
+    amount: 1800
+  - resource: 2
+    amount: 42
+  - resource: 6
+    amount: -1
+  - resource: 1
+    amount: 540
+  worldLoreTags:
+  - open_source_heaven
+  - community_models
+  - research_fast

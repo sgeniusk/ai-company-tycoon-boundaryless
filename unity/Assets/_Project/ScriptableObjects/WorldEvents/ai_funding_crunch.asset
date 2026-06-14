@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78372b23d7e334a04908fd3ebb8f4a2d, type: 3}
+  m_Name: ai_funding_crunch
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.WorldEventDef
+  id: ai_funding_crunch
+  title: "AI \uC790\uAE08\uAE34\uCD95"
+  description: "\uD22C\uC790\uC790\uB4E4\uC774 \uC131\uC7A5\uBCF4\uB2E4 \uC2E4\uC801\uC744
+    \uC694\uAD6C\uD558\uBA70 \uB9C8\uCF00\uD305\uACFC \uCC44\uC6A9 \uACC4\uD68D\uC744
+    \uB354 \uC2E0\uC911\uD558\uAC8C \uC870\uC815\uD569\uB2C8\uB2E4."
+  trigger: "7-9\uB144\uCC28 AI \uD22C\uC790\uC2EC\uB9AC \uBCC0\uC218"
+  yearMin: 7
+  yearMax: 9
+  resourceEffects:
+  - resource: 0
+    amount: -3200
+  - resource: 6
+    amount: -4
+  - resource: 5
+    amount: -1
+  - resource: 1
+    amount: -180
+  worldLoreTags:
+  - funding_drought_world
+  - skeptic_market

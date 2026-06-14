@@ -378,6 +378,172 @@
         "automation": 2
       },
       "world_lore_tags": ["embodied_demand", "hardware_capital", "export_controls"]
+    },
+    {
+      "id": "agentic_boom",
+      "title": "AI 에이전틱 붐",
+      "description": "자율 에이전트 도입이 빠르게 퍼지며 이용자와 화제성은 뛰지만 운영 컴퓨트 부담도 커집니다.",
+      "trigger": "2-4년차 에이전트 채택 변수",
+      "year_range": [2, 4],
+      "resource_effects": {
+        "users": 680,
+        "hype": 5,
+        "compute": -18,
+        "automation": 2
+      },
+      "world_lore_tags": ["research_fast", "standard_world"]
+    },
+    {
+      "id": "agent_regulation_backlash",
+      "title": "에이전트 규제 백래시",
+      "description": "자율행동 사고 책임 논쟁이 커지며 안전 검증과 운영 통제를 다시 세워야 합니다.",
+      "trigger": "3-4년차 자율 에이전트 책임 변수",
+      "year_range": [3, 4],
+      "resource_effects": {
+        "cash": -1200,
+        "hype": -3,
+        "trust": -4,
+        "automation": -1
+      },
+      "world_lore_tags": ["regulation_heavy", "safety_first", "safety_scrutiny"]
+    },
+    {
+      "id": "power_grid_bottleneck",
+      "title": "전력망 병목",
+      "description": "데이터센터 전력 배정이 늦어지며 새 실험과 추론 용량 증설 계획이 밀립니다.",
+      "trigger": "4-5년차 전력 인프라 변수",
+      "year_range": [4, 5],
+      "resource_effects": {
+        "cash": -2600,
+        "compute": -36,
+        "trust": -1
+      },
+      "world_lore_tags": ["gpu_scarcity", "compute_expensive", "hardware_capital"]
+    },
+    {
+      "id": "inference_cost_collapse",
+      "title": "추론비용 붕괴",
+      "description": "서빙 최적화와 오픈 생태계 도구가 퍼지며 같은 예산으로 더 많은 고객 요청을 처리합니다.",
+      "trigger": "5-6년차 추론 효율 변수",
+      "year_range": [5, 6],
+      "resource_effects": {
+        "cash": 1800,
+        "users": 540,
+        "hype": -1,
+        "compute": 42
+      },
+      "world_lore_tags": ["open_source_heaven", "community_models", "research_fast"]
+    },
+    {
+      "id": "openweight_clampdown",
+      "title": "오픈웨이트 규제 클램프",
+      "description": "가중치 공개와 재배포 기준이 엄격해져 커뮤니티 실험 속도와 데이터 흐름이 흔들립니다.",
+      "trigger": "5-7년차 오픈웨이트 규제 변수",
+      "year_range": [5, 7],
+      "resource_effects": {
+        "cash": -1500,
+        "data": -24,
+        "hype": -3,
+        "trust": 3
+      },
+      "world_lore_tags": ["open_source_heaven", "community_models", "regulation_heavy", "safety_scrutiny"]
+    },
+    {
+      "id": "synthetic_data_liability",
+      "title": "합성데이터 책임 논쟁",
+      "description": "합성 데이터의 출처와 편향 책임이 쟁점이 되며 데이터 조달 계약을 더 보수적으로 운영합니다.",
+      "trigger": "6-7년차 합성 데이터 책임 변수",
+      "year_range": [6, 7],
+      "resource_effects": {
+        "cash": -1800,
+        "data": -30,
+        "trust": -3
+      },
+      "world_lore_tags": ["synthetic_premium", "data_scarce", "regulation_heavy"]
+    },
+    {
+      "id": "reasoning_model_race",
+      "title": "추론모델 경쟁",
+      "description": "복잡한 문제를 푸는 추론 모델 경쟁이 달아오르며 연구 관심과 실험 수요가 동시에 증가합니다.",
+      "trigger": "6-8년차 추론 모델 변수",
+      "year_range": [6, 8],
+      "resource_effects": {
+        "cash": -1200,
+        "data": 24,
+        "hype": 6,
+        "compute": -24,
+        "automation": 2
+      },
+      "world_lore_tags": ["research_fast", "compute_expensive", "safety_scrutiny"]
+    },
+    {
+      "id": "long_context_era",
+      "title": "롱컨텍스트 시대",
+      "description": "긴 문서와 대규모 작업 기억을 다루는 제품 기대치가 올라가며 데이터 운영 역량이 부각됩니다.",
+      "trigger": "7-8년차 컨텍스트 확장 변수",
+      "year_range": [7, 8],
+      "resource_effects": {
+        "data": 32,
+        "users": 420,
+        "hype": 3,
+        "compute": -12
+      },
+      "world_lore_tags": ["research_fast", "standard_world"]
+    },
+    {
+      "id": "ai_funding_crunch",
+      "title": "AI 자금긴축",
+      "description": "투자자들이 성장보다 실적을 요구하며 마케팅과 채용 계획을 더 신중하게 조정합니다.",
+      "trigger": "7-9년차 AI 투자심리 변수",
+      "year_range": [7, 9],
+      "resource_effects": {
+        "cash": -3200,
+        "users": -180,
+        "hype": -4,
+        "trust": -1
+      },
+      "world_lore_tags": ["funding_drought_world", "skeptic_market"]
+    },
+    {
+      "id": "chip_export_escalation",
+      "title": "칩 수출규제 격화",
+      "description": "고성능 가속기 수출 규정이 더 촘촘해져 지역별 컴퓨트 확보 전략이 흔들립니다.",
+      "trigger": "8-9년차 칩 수출규제 변수",
+      "year_range": [8, 9],
+      "resource_effects": {
+        "cash": -2200,
+        "compute": -34,
+        "automation": -1
+      },
+      "world_lore_tags": ["export_controls", "compute_regional", "gpu_scarcity"]
+    },
+    {
+      "id": "ondevice_shift",
+      "title": "온디바이스 전환",
+      "description": "기기 내 추론 수요가 커지며 개인정보 신뢰와 소비자 접점은 늘지만 포팅 비용이 발생합니다.",
+      "trigger": "8-10년차 엣지 추론 변수",
+      "year_range": [8, 10],
+      "resource_effects": {
+        "cash": -1600,
+        "users": 640,
+        "trust": 2,
+        "compute": 24
+      },
+      "world_lore_tags": ["embodied_demand", "privacy_strict", "standard_world"]
+    },
+    {
+      "id": "alignment_research_surge",
+      "title": "정렬연구 급부상",
+      "description": "정렬 연구 투자가 늘며 안전성 검증 요구와 협력 기회가 함께 커집니다.",
+      "trigger": "9-10년차 정렬 연구 변수",
+      "year_range": [9, 10],
+      "resource_effects": {
+        "cash": -1900,
+        "data": 20,
+        "hype": 1,
+        "trust": 6
+      },
+      "world_lore_tags": ["safety_first", "safety_scrutiny", "research_fast"]
     }
   ]
 }

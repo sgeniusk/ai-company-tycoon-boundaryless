@@ -23,9 +23,10 @@ namespace AICompanyTycoon.Tests.EditMode
         }
 
         [Test]
-        public void Import_Has30WorldEvents()
+        public void Import_Has42WorldEvents()
         {
-            Assert.AreEqual(30, Catalog().worldEvents.Count);
+            // feat-022 — 기존 30 + 2025-26 AI 트렌드 12종. 시드 픽스처는 불변(아래 교차 픽스처 유효).
+            Assert.AreEqual(42, Catalog().worldEvents.Count);
         }
 
         [Test]

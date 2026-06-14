@@ -252,9 +252,9 @@
       "dependencies": [
         "feat-007"
       ],
-      "status": "in-progress",
-      "owner": "Claude(import·픽스처 재생성·검증) + Codex(world_events.json 콘텐츠)",
-      "evidence": "구현 중 — Codex가 data/world_events.json에 트렌드 이벤트 ~12 추가(30→~42), Claude가 DataImporter import → WorldEventTests 카운트+시드 교차 픽스처 재생성 → 밸런스 회귀 점검. 설계 docs/feat-022-context-notes.md"
+      "status": "done",
+      "owner": "Claude(import·픽스처 검증) + Codex(world_events.json 콘텐츠)",
+      "evidence": "완료 — Codex가 data/world_events.json에 트렌드 이벤트 12종 추가(30→42, 에이전틱붐/에이전트규제/전력병목/추론비용붕괴/오픈웨이트규제/합성데이터책임/추론모델경쟁/롱컨텍스트/AI자금긴축/칩수출규제/온디바이스/정렬연구, 기존 태그풀만·연차 2-10 분산). Claude가 DataImporter.ImportAll로 신규 12 WorldEvent SO 재생성+DataCatalog 갱신. WorldEventTests — React 트윈 알고리즘(FNV-1a) Python 포팅 → 옛 30종으로 기존 픽스처(platform_fee_hike/privacy_crackdown/export_control_tightening) 재현 검증 → 신규 42종 산출. 깨지는 단언은 카운트(30→42) 하나뿐, 시드 교차 픽스처(OSH/CW)·ApplyDue 불변 확인(신규 이벤트가 2-3년차 picks 안 밀어냄). EditMode 145/145 + 임시 덤프로 Unity 실측 FIXTURE가 포팅 산출과 글자 일치 확인 후 삭제. 데이터+SO+테스트 카운트만, 코어 로직 무변경. 단일 라이선스 블록(sam defender Unity) 해소 후 import·검증. 정본 docs/feat-022-context-notes.md"
     }
   ]
 }

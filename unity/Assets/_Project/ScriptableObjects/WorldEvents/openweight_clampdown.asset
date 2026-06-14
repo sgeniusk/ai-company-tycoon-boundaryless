@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78372b23d7e334a04908fd3ebb8f4a2d, type: 3}
+  m_Name: openweight_clampdown
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.WorldEventDef
+  id: openweight_clampdown
+  title: "\uC624\uD508\uC6E8\uC774\uD2B8 \uADDC\uC81C \uD074\uB7A8\uD504"
+  description: "\uAC00\uC911\uCE58 \uACF5\uAC1C\uC640 \uC7AC\uBC30\uD3EC \uAE30\uC900\uC774
+    \uC5C4\uACA9\uD574\uC838 \uCEE4\uBBA4\uB2C8\uD2F0 \uC2E4\uD5D8 \uC18D\uB3C4\uC640
+    \uB370\uC774\uD130 \uD750\uB984\uC774 \uD754\uB4E4\uB9BD\uB2C8\uB2E4."
+  trigger: "5-7\uB144\uCC28 \uC624\uD508\uC6E8\uC774\uD2B8 \uADDC\uC81C \uBCC0\uC218"
+  yearMin: 5
+  yearMax: 7
+  resourceEffects:
+  - resource: 0
+    amount: -1500
+  - resource: 3
+    amount: -24
+  - resource: 6
+    amount: -3
+  - resource: 5
+    amount: 3
+  worldLoreTags:
+  - open_source_heaven
+  - community_models
+  - regulation_heavy
+  - safety_scrutiny

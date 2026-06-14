@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78372b23d7e334a04908fd3ebb8f4a2d, type: 3}
+  m_Name: chip_export_escalation
+  m_EditorClassIdentifier: AICompanyTycoon.Data::AICompanyTycoon.Data.WorldEventDef
+  id: chip_export_escalation
+  title: "\uCE69 \uC218\uCD9C\uADDC\uC81C \uACA9\uD654"
+  description: "\uACE0\uC131\uB2A5 \uAC00\uC18D\uAE30 \uC218\uCD9C \uADDC\uC815\uC774
+    \uB354 \uCD18\uCD18\uD574\uC838 \uC9C0\uC5ED\uBCC4 \uCEF4\uD4E8\uD2B8 \uD655\uBCF4
+    \uC804\uB7B5\uC774 \uD754\uB4E4\uB9BD\uB2C8\uB2E4."
+  trigger: "8-9\uB144\uCC28 \uCE69 \uC218\uCD9C\uADDC\uC81C \uBCC0\uC218"
+  yearMin: 8
+  yearMax: 9
+  resourceEffects:
+  - resource: 7
+    amount: -1
+  - resource: 0
+    amount: -2200
+  - resource: 2
+    amount: -34
+  worldLoreTags:
+  - export_controls
+  - compute_regional
+  - gpu_scarcity
