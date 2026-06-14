@@ -244,6 +244,17 @@
       "status": "done",
       "owner": "Claude(설계·배선·검증) + Codex(CollectionGallery.cs 구현)",
       "evidence": "완료 — 신규 CollectionGallery.cs(818줄, 자족 모달·3탭·그리드·상세·잠금) + GameScreen 더보기 '도감' 버튼 1개 배선. 아키타입12·엔딩24 잠금/해금(실루엣+???+조건 힌트, MetaSave 발견 추적), 시너지/콤보20 전부 공개(콤보 리스크 뱃지). DataCatalog+MetaSaveService 읽기, 코어 무변경. 검증 EditMode 145/145 + PlayMode 5/5 + 캡처 19-collection(아키타입 잠금/해금)·19b(시너지)·19c(엔딩 ???+힌트) 3탭 전부 확인. Codex 구현·스코프 준수(CollectionGallery+GameScreen만), Claude 배선·검증·튜닝. 정본 docs/feat-021-context-notes.md"
+    },
+    {
+      "id": "feat-022",
+      "name": "트렌드 콘텐츠 웨이브 — 2025-26 AI 트렌드 월드 이벤트 (P23)",
+      "description": "사용자 방향(2026-06-14) — 콘텐츠 확장. 기존 30 월드 이벤트(feat-007) 위에 2025-26 AI 트렌드 이벤트 ~12종 추가(에이전틱/추론비용/전력병목/오픈웨이트/칩규제/온디바이스 등). 도감·리플레이 다양성. 데이터 전용, 코어 로직 무변경. 시드 픽스처 재생성 동반. 설계 docs/feat-022-context-notes.md",
+      "dependencies": [
+        "feat-007"
+      ],
+      "status": "in-progress",
+      "owner": "Claude(import·픽스처 재생성·검증) + Codex(world_events.json 콘텐츠)",
+      "evidence": "구현 중 — Codex가 data/world_events.json에 트렌드 이벤트 ~12 추가(30→~42), Claude가 DataImporter import → WorldEventTests 카운트+시드 교차 픽스처 재생성 → 밸런스 회귀 점검. 설계 docs/feat-022-context-notes.md"
     }
   ]
 }
