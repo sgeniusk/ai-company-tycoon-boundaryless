@@ -233,6 +233,17 @@
       "status": "done",
       "owner": "Claude(파이프라인·통합·검증) + Codex(imagegen)",
       "evidence": "완료 — Codex imagegen + pixel-art-pipeline로 절차 픽셀아트 전면 교체. ① 직원 3종(인간/AI/로봇)×idle/작업 96px 투명 → Resources/Art/Actors 드롭인(IconLibrary 오버라이드)+ActorAnim 타이핑 애니. ② 책상 가구 2종(나무/모던) 144x96 → CreateDeskOccluder 스프라이트 교체(변형 교차, 절차 폴백). ③ 배경 4종(차고/스타트업/데이터센터/랜드마크) AI 룸 → compose_room.py 합성(룸 하단 FLOOR_Y 2304 정합·천장/바닥 확장) → office*.png 드롭인. ④ 소품 5종(화분/정수기/자판기/소파/책장, OfficeProps가 무대 좌우 끝 바닥에 배치) ⑤ 환호 포즈 3종(ActorAnim 3-상태 idle/작업/환호, 가끔 자축). feat-019 런타임(2열·juice·앰비언트·스크림) 유지. 검증 EditMode 145/145 + PlayMode 5/5 + 01d(차고)·14-stage(랜드마크) 인게임 정합 + 스타트업/데이터센터 합성 단독. 사용자 '훨씬 나아졌다' 확인. 커밋 24892dd/94cb765/44f8b08/3e750d7/8daff7a. raws gitignore, gen_office.py 절차 배경 superseded(보존). 함정 — Codex가 스코프 밖 루트 progress.md 건드림(되돌림), 다음 위임 시 unity/ 밖 금지 명시."
+    },
+    {
+      "id": "feat-021",
+      "name": "도감 열람 UI — 크로스런 수집 갤러리 (P22)",
+      "description": "사용자 방향(2026-06-14) — feat-008 아키타입12·엔딩24 + feat-013 시너지/콤보20 크로스런 수집을 보는 전용 그리드 갤러리. 더보기→도감 모달, 3탭(아키타입/엔딩 잠금·해금 + 시너지 전략참고 전체공개), 셀 탭→상세, 미발견 실루엣+???. 데이터 헤드리스 완비, 읽기 전용 UI. 코어 무변경. 설계 docs/feat-021-context-notes.md",
+      "dependencies": [
+        "feat-008"
+      ],
+      "status": "in-progress",
+      "owner": "Claude(설계·배선·검증) + Codex(CollectionGallery.cs 구현)",
+      "evidence": "구현 중 — 신규 CollectionGallery.cs(자족 모달·탭·그리드·상세) + GameScreen 더보기 진입 배선. DataCatalog + MetaSaveService 읽기. 설계 docs/feat-021-context-notes.md"
     }
   ]
 }
