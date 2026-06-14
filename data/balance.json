@@ -27,9 +27,9 @@
     "staff_aftermath_discontent_project_quality_penalty": 3,
     "game_over_cash_threshold": -15000,
     "game_over_trust_threshold": 10,
-    "success_users_threshold": 100000,
-    "success_cash_threshold": 150000,
-    "success_automation_threshold": 60,
+    "success_users_threshold": 280000,
+    "success_cash_threshold": 1000000,
+    "success_automation_threshold": 101,
     "success_min_products": 4,
     "event_trigger_chance": 0.6
   }

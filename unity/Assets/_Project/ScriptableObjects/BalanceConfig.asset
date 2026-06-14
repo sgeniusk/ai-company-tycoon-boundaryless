@@ -28,9 +28,9 @@ MonoBehaviour:
   automationCostReductionPerPoint: 0.005
   gameOverCashThreshold: -15000
   gameOverTrustThreshold: 10
-  successUsersThreshold: 100000
-  successCashThreshold: 150000
-  successAutomationThreshold: 60
+  successUsersThreshold: 280000
+  successCashThreshold: 1000000
+  successAutomationThreshold: 101
   successMinProducts: 4
   eventTriggerChance: 0.6
   extra:

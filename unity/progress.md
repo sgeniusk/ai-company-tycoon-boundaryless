@@ -9,7 +9,7 @@
 **직전 feat-021 도감 열람 UI 완료** — 크로스런 수집 그리드 갤러리(더보기→도감), 3탭(아키타입12·엔딩24 잠금/해금 + 시너지/콤보20 공개). CollectionGallery.cs(818줄) + GameScreen 버튼1개, 코어 무변경. EditMode 145/145 + PlayMode 5/5. 정본 docs/feat-021-context-notes.md. (직전 feat-020 오피스 아트 AI 재생성·feat-019 연출 격상은 완료 리스트 참조.) **함정 — Codex 위임 시 'unity/ 밖 금지' 명시(루트 progress 사고), 단일 Unity 라이선스(ps 확인).**
 
 **직전 feat-019 오피스 연출 격상(카이로소프트 너머 "보는 맛").** 6트랙 — T1 2열 원근 착석(GameScreen 수동배치 + 절차 책상 전경 오클루더로 '앉아 일하는' 연출, 새 스프라이트0)+gen_office.py BG 떠있는 책상 제거, T2 세로 그라데이션 스크림(무대 0.05 환하게·UI뒤 0.52 어둡게 — 균일 0.38이 채도 죽이던 문제 해소), T3 SpeechBubble 말풍선("완벽해!")+직원별 리워드 플로팅("+아이디어")+CrunchFlame 열일불꽃(WorkLoop 분기·불꽃 책상앞 frontmost·intensity 1.3), T4 AmbientRoomFx 룸별 절차 애니(모니터글로우·LED·조명·먼지, Codex 5.5 xhigh)+CoverMatch cover정합, T5 컷씬 스포트라이트/빅플래시/팝, T6 하네스 기본 20:9. **3-way 분업** — Claude(GameScreen 통합·검증) + Codex(AmbientRoomFx) + dynamic workflow(SpeechBubble/CrunchFlame/컷씬/하네스 + 적대 리뷰가 불꽃 얼굴침범 결함 자동수정). 검증 EditMode **145/145** + PlayMode **5/5** + 캡처 01d-office-rich(2열·책상·불꽃·말풍선·리워드 한프레임)·15-cutscene-launch(스포트라이트). 곁다리 UiTween PopIn/Punch/Fade 파괴대상 가드(세이브/로드 PlayMode 테스트 복구). 정본 docs/feat-019-context-notes.md. **로컬 미푸시(사용자 확인 후).**
-**현재 목표** — feat-021 도감 열람 UI 완료. 비주얼(feat-019/020) + 도감까지 마감. 다음 후보 ① 실기기 검증(경제 체감·APK) ② 밸런스 티어 정합 ③ 멀티 엔딩 콘텐츠/베타 준비.
+**현재 목표** — feat-022 콘텐츠 + 밸런스(봇 승리 27→51개월) 완료. **실기기 검증** — 이 머신엔 adb·세로 AVD 없어(sam landscape뿐) 자율 설치·플레이 불가 → APK 빌드 후 사용자가 기기 설치·10분 루프 체감. 이후 멀티 엔딩/베타 준비.
 
 ## 상태 (Status)
 ### 완료 (What's Done)
@@ -43,6 +43,7 @@
 - [x] feat-020 오피스 아트 전면 AI 재생성 — 절차 픽셀아트 졸업. Codex imagegen + pixel-art-pipeline. ① 캐릭터 3종 idle/작업(Resources/Art/Actors 드롭인+ActorAnim 타이핑) ② 책상 2종(CreateDeskOccluder 스프라이트) ③ 배경 4종(compose_room.py FLOOR_Y 합성→office*.png) ④ 소품 5종(OfficeProps 좌우 끝). feat-019 런타임 유지. EditMode 145/145 + PlayMode 5/5 + 01d/14-stage 인게임. 사용자 '훨씬 나아졌다'. 커밋 24892dd/94cb765/44f8b08/3e750d7. 정본 docs/feat-020-art-regen-plan.md
 - [x] feat-021 도감 열람 UI — 크로스런 수집 그리드 갤러리(더보기→도감). 아키타입12·엔딩24 잠금/해금(실루엣+???+조건힌트) + 시너지/콤보20 전부공개(콤보 리스크뱃지). 신규 CollectionGallery.cs(818줄)+GameScreen 버튼1개, DataCatalog/MetaSave 읽기·코어 무변경. EditMode 145/145+PlayMode 5/5+캡처 19/19b/19c. Codex 구현+Claude 검증. 정본 docs/feat-021-context-notes.md
 - [x] feat-022 트렌드 콘텐츠 웨이브 — 2025-26 AI 트렌드 월드 이벤트 12종 추가(30→42, 에이전틱/추론비용/전력병목/오픈웨이트/칩규제/온디바이스 등). Codex가 data/world_events.json(기존 태그풀·연차 2-10), Claude가 ImportAll로 신규 12 SO 재생성 + WorldEventTests 카운트(42)만 갱신(시드 픽스처·ApplyDue 불변 — React 트윈 FNV-1a 포팅 검증, Unity 실측 일치). EditMode 145/145, 코어 로직 무변경. 정본 docs/feat-022-context-notes.md
+- [x] 밸런스 — 봇 승리 27→51개월(목표 ~50, tier4 해금 32 이후 승리하도록). 자동화 단독승리 차단(success_automation_threshold 60→101>천장100, 봇이 현금→자동화 몰빵으로 27개월에 이기던 치즈 제거) + 이용자 10만→28만·현금 15만→100만. data/balance.json + BalanceConfig SO 재import. TechTreeReachabilityTests를 풀 120개월 런 + 승리월 텔레메트리 + 회귀가드(승리≥tier4해금·≤90개월)로. 봇 트레이스 — 자동화는 36개월에 100 천장이라 임계값만으론 ~36 한계였고, 단독승리 차단+규모 임계값으로 ~50 달성. EditMode 145/145.
 ### 진행 중 (What's In Progress)
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 

@@ -64,9 +64,10 @@ namespace AICompanyTycoon.Tests.EditMode
 
             bool reached = false;
             int reachedMonth = 0;
+            int wonMonth = -1; // 밸런스 후속 — 승리 월 실측(텔레메트리)
             var eventRng = new SeededRng(777); // 이벤트 발동 롤 — 결정론 (실플레이 동치)
             var yearTrace = new System.Text.StringBuilder();
-            for (int month = 0; month < 120 && !reached; month++)
+            for (int month = 0; month < 120; month++) // 밸런스 측정 — tier4 후 승리 월까지 풀 120개월
             {
                 // 1) 출시 가능한 제품 전부 출시 — 매출원 + 선행 체인 전진.
                 bool launchedAny = true;
@@ -257,6 +258,7 @@ namespace AICompanyTycoon.Tests.EditMode
                 }
 
                 var summary = ctx.Month.AdvanceMonth();
+                if (wonMonth < 0 && summary.GameWon) wonMonth = month + 1; // 첫 승리 월 기록(밸런스 가드)
 
                 // 6) 이벤트 — 실플레이 동치 (UI는 월 60% 확률로 발동). 결정론 롤 + 현금 우선/신뢰 보호 선택.
                 if (eventRng.NextDouble() < ctx.Catalog.balance.eventTriggerChance && ctx.Events.Current == null)
@@ -303,7 +305,7 @@ namespace AICompanyTycoon.Tests.EditMode
                     month + 1 + "개월차 게임오버 — 목표 지향 봇 기준 경제가 테크트리 등반을 버티지 못한다." + yearTrace);
                 // GameWon이어도 계속 — 이 게이트의 목적은 승리가 아니라 tier 4 트리 도달 측정이다.
 
-                if (ctx.Visibility.GetState(target) >= VisibilityState.Unlocked)
+                if (!reached && ctx.Visibility.GetState(target) >= VisibilityState.Unlocked)
                 {
                     reached = true;
                     reachedMonth = month + 1;
@@ -325,6 +327,13 @@ namespace AICompanyTycoon.Tests.EditMode
             }
 
             Debug.Log("[TechTreeReachability] " + target.id + " 해금 — " + reachedMonth + "개월차");
+            Debug.Log("[WinMonth] 승리 " + wonMonth + "개월차 / tier4 해금 " + reachedMonth + "개월차");
+
+            // 밸런스 가드 — 승리는 tier4 해금(최심 콘텐츠 도달) 이후여야 한다. 너무 이른 승리(임계값 과소)나 120개월 내 미승리를 회귀로 잡는다.
+            Assert.GreaterOrEqual(wonMonth, reachedMonth,
+                "봇 승리(" + wonMonth + "개월)가 tier4 해금(" + reachedMonth + "개월)보다 이르거나 미승리 — 승리 임계값 밸런스 회귀(승리는 deep 콘텐츠 도달 후 목표).");
+            Assert.LessOrEqual(wonMonth, 90,
+                "봇 승리(" + wonMonth + "개월)가 과도하게 늦음 — 승리 임계값이 과함(밸런스 회귀).");
         }
     }
 }
