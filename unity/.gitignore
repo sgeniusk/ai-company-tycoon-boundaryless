@@ -37,8 +37,9 @@ sysinfo.txt
 Assets/InitTestScene*.unity
 Assets/InitTestScene*.unity.meta
 
-# 픽셀 에셋 생성기 산출물 (생성기 *.py는 추적, 산출/백업/검증은 제외)
+# 픽셀 에셋 생성기 산출물 (생성기 *.py는 로컬 보존, raw/검증 산출은 git 제외)
 Tools~/pixel_office/out/
 Tools~/pixel_office/backup_orig/
 Tools~/pixel_office/phonecheck/
 Tools~/pixel_office/feat020/
+Tools~/pixel_office/feat023/
