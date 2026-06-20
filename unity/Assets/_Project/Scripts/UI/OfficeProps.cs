@@ -1,4 +1,4 @@
-// 오피스 소품을 무대 좌우 끝 바닥에 배치하는 정적 헬퍼.
+// 오피스 소품을 무대 좌우 끝 바닥에 배치하는 정적 헬퍼. 공통 소품(feat-020) + 성급(배경)별 특화 소품(feat-023).
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,7 +22,8 @@ namespace AICompanyTycoon.UI
             }
         }
 
-        static readonly PropSpec[] Props =
+        // 공통 — 모든 성급에 깔리는 좌우 끝 바닥 소품 (feat-020).
+        static readonly PropSpec[] BaseProps =
         {
             new PropSpec("prop_plant", 0.045f, 8f, 82f),
             new PropSpec("prop_cooler", 0.115f, 8f, 84f),
@@ -31,7 +32,40 @@ namespace AICompanyTycoon.UI
             new PropSpec("prop_bookshelf", 0.985f, 8f, 120f),
         };
 
-        public static void Populate(Transform stageParent)
+        // 성급(배경 키)별 특화 소품 — feat-023 신규 6종. 배경마다 1~2종으로 과밀 회피 + 성급 정체성.
+        // 작은 Height로 캐릭터(≈220px)보다 낮게 둬 거친 픽셀을 배경 장식 수준으로 완화한다.
+        static PropSpec[] StageProps(string backgroundKey)
+        {
+            switch (backgroundKey)
+            {
+                case "Art/Background/office_growth":     // 2~3성 — 기획·회의
+                    return new[]
+                    {
+                        new PropSpec("prop_whiteboard", 0.205f, 8f, 74f),
+                        new PropSpec("prop_table", 0.795f, 6f, 46f),
+                    };
+                case "Art/Background/office_datacenter": // 4성 — 서버·출력
+                    return new[]
+                    {
+                        new PropSpec("prop_serverRack", 0.205f, 8f, 92f),
+                        new PropSpec("prop_printer", 0.795f, 8f, 54f),
+                    };
+                case "Art/Background/office_landmark":    // 5성 — 성취 진열·임원 회의
+                    return new[]
+                    {
+                        new PropSpec("prop_trophy", 0.795f, 8f, 82f),
+                        new PropSpec("prop_table", 0.205f, 6f, 46f),
+                    };
+                default:                                  // 차고·기본 — 단출한 탕비 코너
+                    return new[]
+                    {
+                        new PropSpec("prop_coffee", 0.205f, 8f, 70f),
+                    };
+            }
+        }
+
+        // 성급 변경 시 재호출하면 기존 레이어를 갈아끼운다(backgroundKey null → 기본 office).
+        public static void Populate(Transform stageParent, string backgroundKey = null)
         {
             if (stageParent == null)
             {
@@ -39,9 +73,11 @@ namespace AICompanyTycoon.UI
             }
 
             var layerParent = stageParent.parent != null ? stageParent.parent : stageParent;
-            if (layerParent.Find("OfficePropsLayer") != null)
+
+            var existing = layerParent.Find("OfficePropsLayer");
+            if (existing != null)
             {
-                return;
+                Object.Destroy(existing.gameObject); // 성급 승급 시 특화 소품 갱신
             }
 
             var layer = new GameObject("OfficePropsLayer", typeof(RectTransform));
@@ -57,7 +93,12 @@ namespace AICompanyTycoon.UI
                 layer.transform.SetSiblingIndex(stageParent.GetSiblingIndex());
             }
 
-            foreach (var prop in Props)
+            foreach (var prop in BaseProps)
+            {
+                PlaceProp(layer.transform, prop);
+            }
+
+            foreach (var prop in StageProps(backgroundKey))
             {
                 PlaceProp(layer.transform, prop);
             }

@@ -91,6 +91,12 @@ namespace AICompanyTycoon.Tests.PlayMode
                 }
                 yield return WaitRealtime(0.35f); // 말풍선·리워드가 살아있을 때 캡처
                 yield return CaptureCanvas(canvasGo, "01d-office-rich.png");
+
+                // 1f) 적은 직원(평소·초반) — 큰 캐릭터가 휑하지 않은지, 코지 배경 정합 (feat-023)
+                boot.Context.Model.Talent = 3;
+                boot.Screen.RefreshAll();
+                yield return WaitRealtime(0.5f);
+                yield return CaptureCanvas(canvasGo, "01f-office-few.png");
             }
 
             // 2) ＋트레이 펼침
@@ -173,8 +179,22 @@ namespace AICompanyTycoon.Tests.PlayMode
                     }
                 }
 
-                // 5.6) 성급 비주얼 사다리 — 정점(랜드마크) 단계로 승급 이벤트를 발생시켜 배경 스왑 확인 (feat-014 #5)
+                // 5.6) 성급 비주얼 사다리 — 성급별 배경 + 특화 소품 스왑 확인 (feat-014 #5 + feat-023 소품)
                 if (menuClose != null) { menuClose.onClick.Invoke(); yield return WaitRealtime(0.15f); }
+
+                // 성장 성급 — whiteboard/table 특화 소품 (feat-023)
+                m.CompanyStageId = "viral_app_company";
+                AICompanyTycoon.Core.GameEvents.RaiseCompanyStageChanged("viral_app_company");
+                yield return WaitRealtime(0.3f);
+                yield return CaptureCanvas(canvasGo, "14c-stage-growth.png");
+
+                // 데이터센터 성급 — serverRack/printer 특화 소품 (feat-023)
+                m.CompanyStageId = "ai_platform_giant";
+                AICompanyTycoon.Core.GameEvents.RaiseCompanyStageChanged("ai_platform_giant");
+                yield return WaitRealtime(0.3f);
+                yield return CaptureCanvas(canvasGo, "14b-stage-datacenter.png");
+
+                // 랜드마크 성급 — trophy/table 특화 소품
                 m.CompanyStageId = "boundaryless_intelligence";
                 AICompanyTycoon.Core.GameEvents.RaiseCompanyStageChanged("boundaryless_intelligence");
                 yield return WaitRealtime(0.3f);
@@ -349,6 +369,111 @@ namespace AICompanyTycoon.Tests.PlayMode
             Canvas.ForceUpdateCanvases();
             yield return null;
             yield return CaptureCanvas(canvasGo, "08-actor-parade.png");
+
+            Object.Destroy(canvasGo);
+            yield return null;
+        }
+
+        // 포즈 시트 — 캐릭터 3종 × 포즈 5종(idle/work/cheer/card_use/alert)을 그리드로 렌더해 feat-023 15포즈 반입을 검증.
+        // IconLibrary 이름(actor_{char}[_suffix])으로 로드 — 누락 시 빨강. AI는 violet 정본인지 함께 확인.
+        [UnityTest]
+        public IEnumerator Capture_PoseSheet()
+        {
+            if (!HasGraphics)
+            {
+                Assert.Ignore("그래픽 디바이스 없음 — 캡처 스킵(-nographics).");
+            }
+
+            var canvasGo = new GameObject("PoseSheet", typeof(RectTransform), typeof(Canvas));
+            canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+
+            var bg = new GameObject("BG", typeof(RectTransform), typeof(Image));
+            bg.transform.SetParent(canvasGo.transform, false);
+            var bgRect = bg.GetComponent<RectTransform>();
+            bgRect.anchorMin = Vector2.zero;
+            bgRect.anchorMax = Vector2.one;
+            bgRect.offsetMin = Vector2.zero;
+            bgRect.offsetMax = Vector2.zero;
+            bg.GetComponent<Image>().color = new Color(0.98f, 0.969f, 0.875f, 1f); // cream
+
+            var chars = new[] { "actor_human", "actor_ai", "actor_robot" };
+            var suffixes = new[] { "", "_work", "_cheer", "_carduse", "_alert" }; // 행 = 포즈
+            float[] cx = { 0.2f, 0.5f, 0.8f };
+            for (int row = 0; row < suffixes.Length; row++)
+            {
+                for (int col = 0; col < chars.Length; col++)
+                {
+                    var key = chars[col] + suffixes[row];
+                    var sprite = IconLibrary.Get(key);
+                    var go2 = new GameObject(key, typeof(RectTransform), typeof(Image));
+                    go2.transform.SetParent(canvasGo.transform, false);
+                    var rect = go2.GetComponent<RectTransform>();
+                    float fy = 0.9f - row * 0.18f;
+                    rect.anchorMin = new Vector2(cx[col], fy);
+                    rect.anchorMax = new Vector2(cx[col], fy);
+                    rect.pivot = new Vector2(0.5f, 0.5f);
+                    rect.sizeDelta = new Vector2(220, 220);
+                    var img = go2.GetComponent<Image>();
+                    img.sprite = sprite;
+                    img.preserveAspect = true;
+                    img.color = sprite != null ? Color.white : new Color(1f, 0f, 0f, 0.35f); // 누락 시 빨강
+                }
+            }
+
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+            yield return CaptureCanvas(canvasGo, "20-pose-sheet.png");
+
+            Object.Destroy(canvasGo);
+            yield return null;
+        }
+
+        // 변형 시트 — 캐릭터 3종 × 색 변형 6종(ActorPalette)을 그리드로 렌더해 직원별 색 다양성을 검증 (feat-023).
+        [UnityTest]
+        public IEnumerator Capture_VarietySheet()
+        {
+            if (!HasGraphics)
+            {
+                Assert.Ignore("그래픽 디바이스 없음 — 캡처 스킵(-nographics).");
+            }
+
+            var canvasGo = new GameObject("VarietySheet", typeof(RectTransform), typeof(Canvas));
+            canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+
+            var bg = new GameObject("BG", typeof(RectTransform), typeof(Image));
+            bg.transform.SetParent(canvasGo.transform, false);
+            var bgRect = bg.GetComponent<RectTransform>();
+            bgRect.anchorMin = Vector2.zero;
+            bgRect.anchorMax = Vector2.one;
+            bgRect.offsetMin = Vector2.zero;
+            bgRect.offsetMax = Vector2.zero;
+            bg.GetComponent<Image>().color = new Color(0.98f, 0.969f, 0.875f, 1f);
+
+            var chars = new[] { "actor_human", "actor_ai", "actor_robot" };
+            for (int row = 0; row < chars.Length; row++)
+            {
+                for (int v = 0; v < ActorPalette.VariantCount; v++)
+                {
+                    var sprite = ActorPalette.Recolored(chars[row], "", v);
+                    var go2 = new GameObject(chars[row] + "_v" + v, typeof(RectTransform), typeof(Image));
+                    go2.transform.SetParent(canvasGo.transform, false);
+                    var rect = go2.GetComponent<RectTransform>();
+                    float fx = 0.12f + v * 0.152f;
+                    float fy = 0.8f - row * 0.3f;
+                    rect.anchorMin = new Vector2(fx, fy);
+                    rect.anchorMax = new Vector2(fx, fy);
+                    rect.pivot = new Vector2(0.5f, 0.5f);
+                    rect.sizeDelta = new Vector2(180, 180);
+                    var img = go2.GetComponent<Image>();
+                    img.sprite = sprite;
+                    img.preserveAspect = true;
+                    img.color = sprite != null ? Color.white : new Color(1f, 0f, 0f, 0.35f);
+                }
+            }
+
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+            yield return CaptureCanvas(canvasGo, "21-variety-sheet.png");
 
             Object.Destroy(canvasGo);
             yield return null;

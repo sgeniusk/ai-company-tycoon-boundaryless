@@ -82,6 +82,8 @@ namespace AICompanyTycoon.UI
         InvestmentRound _pendingInvestment;  // 성급 승급으로 대기 중인 투자 제안
         int _lastRichestRank = -1;           // 세계 부자 순위 등반 토스트용 (세션 한정, 비저장)
         double _expectedRevenue;             // 정산 전 기대수익 스냅샷 (feat-014 #3)
+        int _pendingCardUse;                 // 월 정산 중 쌓인 직원 card_use 반응 수 — 리프레시 뒤 적용 (feat-023)
+        int _pendingAlert;                   // 월 정산 중 쌓인 직원 alert 반응 수 (feat-023)
 
         ToastRibbon _toastRibbon;      // 사건 토스트 리본 (feat-010 #4)
 
@@ -202,6 +204,7 @@ namespace AICompanyTycoon.UI
                 if (triggered != null)
                 {
                     ShowEventModal(triggered);
+                    _pendingAlert += UnityEngine.Random.Range(1, 3); // 직원 1~2명 놀람 반응 (feat-023)
                 }
             }
 
@@ -598,7 +601,7 @@ namespace AICompanyTycoon.UI
             sRect.offsetMin = Vector2.zero;
             sRect.offsetMax = Vector2.zero;
             _officeSceneContent = stage.transform; // Clear는 직원·책상만 비운다(오버레이 보존)
-            OfficeProps.Populate(stage.transform);
+            OfficeProps.Populate(stage.transform, StageVisual.BackgroundKey(_context != null ? _context.Model.CompanyStageId : null)); // feat-023 — 성급별 특화 소품
 
             // 리액션 버블 전용 오버레이 — 최상단(직원 위)에 절대 위치로 띄운다.
             var overlay = new GameObject("ReactionLayer", typeof(RectTransform));
@@ -644,21 +647,24 @@ namespace AICompanyTycoon.UI
             // 뒷줄 먼저(뒤에 렌더) — 작게·위.
             if (back > 0)
             {
-                PlaceActorRow(kinds, front, back, 0.62f, 156f, 0.12f, allowSpeech: false, busyLocal: -1);
+                PlaceActorRow(kinds, front, back, 0.88f, 292f, 0.14f, allowSpeech: false, busyLocal: -1); // 거의 평평한 2열 — 원근 완화 + 네이티브 배경 바닥선 정합 (feat-023)
             }
             // 앞줄 — 크게·아래(앞). 책상이 다리를 가려 앉은 연출.
-            PlaceActorRow(kinds, 0, front, 1.0f, 14f, 0.08f, allowSpeech: true, busyLocal: busy);
+            PlaceActorRow(kinds, 0, front, 1.0f, 192f, 0.08f, allowSpeech: true, busyLocal: busy);
+
+            FlushActorMoods(); // 월 정산 중 쌓인 직원 반응(card_use/alert)을 재생성된 액터에 적용 (feat-023)
         }
 
         // 한 줄(원근 스케일·바닥선)을 수동 배치 — 각 직원 + 책상 전경 오클루더. busyLocal 인덱스엔 열일 불꽃.
         void PlaceActorRow(string[] kinds, int startSeed, int count, float scale, float footY, float marginNorm, bool allowSpeech, int busyLocal)
         {
-            const float baseW = 150f, baseH = 150f;
+            const float baseW = 200f, baseH = 200f; // feat-023 — 캐릭터 확대(작다는 피드백)
             for (int i = 0; i < count; i += 1)
             {
                 int seed = startSeed + i;
                 string kind = kinds[seed % kinds.Length];
-                var sprite = IconLibrary.Get(kind);
+                int variant = ActorPalette.VariantFor(seed);          // 직원별 색 변형 (feat-023)
+                var sprite = ActorPalette.Recolored(kind, "", variant);
                 float xnorm = count <= 1 ? 0.5f : marginNorm + (1f - 2f * marginNorm) * ((i + 0.5f) / count);
 
                 var actorGo = new GameObject("Actor", typeof(RectTransform), typeof(Image));
@@ -680,7 +686,7 @@ namespace AICompanyTycoon.UI
                 {
                     actorGo.AddComponent<StaffBob>().Init(seed * 0.9f);
                     actorGo.AddComponent<WorkLoop>().Init(seed, allowSpeech);
-                    actorGo.AddComponent<ActorAnim>().Init(sprite, IconLibrary.Get(kind + "_work"), IconLibrary.Get(kind + "_cheer"), seed); // idle↔작업 타이핑 + 가끔 환호 (feat-020)
+                    actorGo.AddComponent<ActorAnim>().Init(sprite, ActorPalette.Recolored(kind, "_work", variant), ActorPalette.Recolored(kind, "_cheer", variant), ActorPalette.Recolored(kind, "_carduse", variant), ActorPalette.Recolored(kind, "_alert", variant), seed); // idle↔작업 타이핑 + 가끔 환호 + card_use/alert 원샷 + 직원별 색 변형 (feat-020/023)
                     if (i == busyLocal)
                     {
                         actorGo.AddComponent<CrunchFlameFx>().Init(aRect, 1.3f); // 열일 불꽃 — 이미지처럼 극적이게 (feat-019 T3)
@@ -1881,6 +1887,11 @@ namespace AICompanyTycoon.UI
 
             // 성급 비주얼 사다리 (feat-014 #5) — 데이터센터·랜드마크 본사로 배경 진화.
             RefreshStageBackground();
+            // 성급별 특화 소품 갱신 (feat-023) — 서버랙/화이트보드/트로피 등이 배경 따라 바뀐다.
+            if (_officeSceneContent != null)
+            {
+                OfficeProps.Populate(_officeSceneContent, StageVisual.BackgroundKey(stageId));
+            }
         }
 
         void OnProductLaunched(string productId)
@@ -1906,6 +1917,7 @@ namespace AICompanyTycoon.UI
             }
 
             SpawnReaction("react_idea");
+            _pendingCardUse++; // 직원이 카드 치켜드는 자축 — 새 분야 개척 (feat-023)
             RefreshLists();
         }
 
@@ -1914,6 +1926,7 @@ namespace AICompanyTycoon.UI
             var capability = _context.Catalog.GetCapability(capabilityId);
             SetStatus("능력 강화 - " + (capability != null ? capability.displayName : capabilityId) + " Lv." + level);
             SpawnReaction("react_idea");
+            _pendingCardUse++; // 직원이 카드 치켜드는 자축 — 능력 강화 (feat-023)
             RefreshAll();
         }
 
@@ -3081,6 +3094,36 @@ namespace AICompanyTycoon.UI
             AddLayout(btn.button.gameObject, 84, 0);
 
             _resultModal.SetActive(false);
+        }
+
+        // 현재 오피스 액터 중 무작위 n명에게 원샷 포즈(card_use/alert)를 재생 — 이벤트 모먼트 반응 (feat-023).
+        void TriggerActorOneShot(int poseState, int n)
+        {
+            if (_officeSceneContent == null || n <= 0) return;
+            var anims = _officeSceneContent.GetComponentsInChildren<ActorAnim>();
+            if (anims == null || anims.Length == 0) return;
+            n = Mathf.Min(n, anims.Length);
+            for (int i = 0; i < n; i++)
+            {
+                int j = UnityEngine.Random.Range(i, anims.Length);
+                var tmp = anims[i]; anims[i] = anims[j]; anims[j] = tmp; // 부분 셔플 — 무작위 비복원 추출
+                anims[i].PlayOneShot(poseState);
+            }
+        }
+
+        // 월 정산 중 쌓인 직원 반응을 액터가 재생성된 뒤 적용 — RefreshOfficeScene 끝에서 호출 (feat-023).
+        void FlushActorMoods()
+        {
+            if (_pendingCardUse > 0)
+            {
+                TriggerActorOneShot(ActorAnim.CardUse, Mathf.Min(_pendingCardUse, 2));
+                _pendingCardUse = 0;
+            }
+            if (_pendingAlert > 0)
+            {
+                TriggerActorOneShot(ActorAnim.Alert, Mathf.Min(_pendingAlert, 2));
+                _pendingAlert = 0;
+            }
         }
 
         // 직원 위에 감정 이모트 버블을 랜덤 위치에 띄운다. 스프라이트 미임포트 시 조용히 무시.
