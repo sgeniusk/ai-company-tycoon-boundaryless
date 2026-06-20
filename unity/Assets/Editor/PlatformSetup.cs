@@ -102,4 +102,38 @@ public static class PlatformSetup
             throw new System.Exception("Android 빌드 실패 — " + summary.result);
         }
     }
+
+    // iOS Xcode 프로젝트 생성(시뮬레이터 SDK — 서명 없이 xcodebuild + simctl 검증용).
+    [MenuItem("AICT/Platform/Build iOS (Xcode, Simulator)")]
+    public static void BuildIOS()
+    {
+        ApplyMobileSettings();
+        PlayerSettings.iOS.sdkVersion = iOSSdkVersion.SimulatorSDK;
+        PlayerSettings.iOS.targetOSVersionString = "15.0";
+
+        if (!File.Exists(GameScene))
+        {
+            SceneBuilder.CreateGameScene();
+        }
+
+        var outDir = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Builds", "iOS"));
+        Directory.CreateDirectory(outDir);
+
+        var options = new BuildPlayerOptions
+        {
+            scenes = new[] { GameScene },
+            locationPathName = outDir, // iOS는 Xcode 프로젝트 폴더가 산출물
+            target = BuildTarget.iOS,
+            targetGroup = BuildTargetGroup.iOS,
+            options = BuildOptions.None,
+        };
+
+        var report = BuildPipeline.BuildPlayer(options);
+        var summary = report.summary;
+        Debug.Log("[PlatformSetup] iOS 빌드 — " + summary.result + " / " + summary.outputPath);
+        if (summary.result != BuildResult.Succeeded)
+        {
+            throw new System.Exception("iOS 빌드 실패 — " + summary.result);
+        }
+    }
 }
