@@ -14,8 +14,8 @@ namespace AICompanyTycoon.Presentation
         readonly Dictionary<string, AudioClip> _bank = new Dictionary<string, AudioClip>();
 
         [Range(0f, 1f)] public float sfxVolume = 1f;
-        [Range(0f, 1f)] public float bgmVolume = 0.6f;
-        public AudioClip bgmClip; // AI/CC0 루프를 나중에 할당한다(null이면 무음)
+        [Range(0f, 1f)] public float bgmVolume = 0.42f;
+        public AudioClip bgmClip; // 외부 CC0 루프를 할당하면 우선, 없으면 절차 BGM(BgmGen)으로 폴백
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Bootstrap()
@@ -39,6 +39,7 @@ namespace AICompanyTycoon.Presentation
 
             BuildBank();
             Subscribe();
+            if (bgmClip == null) bgmClip = BgmGen.LoopTrack(); // 절차 cozy 루프 — 외부 에셋 블로커 우회 (feat-004)
             if (bgmClip != null) PlayBgm(bgmClip);
         }
 
