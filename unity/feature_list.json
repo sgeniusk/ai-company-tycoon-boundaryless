@@ -62,9 +62,9 @@
       "dependencies": [
         "feat-003"
       ],
-      "status": "in-progress",
+      "status": "done",
       "owner": "Claude->Codex",
-      "evidence": "세이프에어리어(021ac45)+빌드셋업(733e184)+빌드(APK 35MB)+아이콘/스플래시(office 임시, SetIcons+SplashScreen). EditMode 21/21. 남음 — 시각/실기기 확인, 최종 픽셀아트(docs/backlog.md)"
+      "evidence": "세이프에어리어(021ac45)+빌드셋업(733e184)+아이콘/스플래시. **2026-06-20 빌드 완결** — 아이콘/스플래시 옛 등각 판때기 폐기 → cozy landmark + 캐릭터 3종 키비주얼. APK 빌드 성공(BuildAndroid, 51MB, Builds/Android/AICompanyTycoon.apk, IL2CPP/ARM64). 남음 — 사용자 실기기 10분 루프 체감, 최종 로고 픽셀아트(backlog)"
     },
     {
       "id": "feat-006",
