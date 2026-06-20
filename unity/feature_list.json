@@ -51,9 +51,9 @@
       "dependencies": [
         "feat-003"
       ],
-      "status": "in-progress",
+      "status": "done",
       "owner": "Claude->Codex",
-      "evidence": "아이콘(897700d)+파티클(748d1a8)+테마(eb23a22) 완료. 한글폰트 — Noto Sans KR(Resources/Fonts/UiFont)로 레거시 Arial 한글 fallback 자글거림 해결. 검증 EditMode 21/21. 에디터 시각확인 + ④BGM(에셋) 남음. progress.md 참고"
+      "evidence": "아이콘(897700d)+파티클(748d1a8)+테마(eb23a22)+한글폰트(Noto Sans KR) 완료. **④BGM 완결(2026-06-20)** — BgmGen 절차 칩튠 루프(Cmaj7-Am7-Fmaj7-G7, 베이스·아르페지오·패드 3레이어 가산 9.6초, 피크 정규화) + AudioManager bgmClip 폴백. 100% 소유·상업 안전, 외부 CC0 에셋 블로커 우회. EditMode 145/145, 무음 검증 peak0.48/rms0.14"
     },
     {
       "id": "feat-005",
@@ -255,6 +255,17 @@
       "status": "done",
       "owner": "Claude(import·픽스처 검증) + Codex(world_events.json 콘텐츠)",
       "evidence": "완료 — Codex가 data/world_events.json에 트렌드 이벤트 12종 추가(30→42, 에이전틱붐/에이전트규제/전력병목/추론비용붕괴/오픈웨이트규제/합성데이터책임/추론모델경쟁/롱컨텍스트/AI자금긴축/칩수출규제/온디바이스/정렬연구, 기존 태그풀만·연차 2-10 분산). Claude가 DataImporter.ImportAll로 신규 12 WorldEvent SO 재생성+DataCatalog 갱신. WorldEventTests — React 트윈 알고리즘(FNV-1a) Python 포팅 → 옛 30종으로 기존 픽스처(platform_fee_hike/privacy_crackdown/export_control_tightening) 재현 검증 → 신규 42종 산출. 깨지는 단언은 카운트(30→42) 하나뿐, 시드 교차 픽스처(OSH/CW)·ApplyDue 불변 확인(신규 이벤트가 2-3년차 picks 안 밀어냄). EditMode 145/145 + 임시 덤프로 Unity 실측 FIXTURE가 포팅 산출과 글자 일치 확인 후 삭제. 데이터+SO+테스트 카운트만, 코어 로직 무변경. 단일 라이선스 블록(sam defender Unity) 해소 후 import·검증. 정본 docs/feat-022-context-notes.md"
+    },
+    {
+      "id": "feat-023",
+      "name": "오피스 아트 확장 — 클로드 디자인 청사진 → feat-020 품질 양산 (P24)",
+      "description": "사용자 방향(2026-06-15) — '비주얼 극대화' 트랙. 클로드 디자인 §1 오피스 확장 초안(26×34 블록 마스코트 컨셉)을 구성 청사진으로 확정. 신규 포즈 2종(card_use/alert)·소품 6종(serverRack/whiteboard/coffee/trophy/table/printer)·배경 2종(차고야간·확장DC). feat-020 캐릭터(96px)보다 거친 블록이라 직접 교체가 아닌 청사진으로 활용. 양산 핸드오프 docs/codex-handoff/feat023-office-expansion-gen.md",
+      "dependencies": [
+        "feat-020"
+      ],
+      "status": "done",
+      "owner": "Claude(청사진 추출·핸드오프·검증·소품 양산·통합)",
+      "evidence": "Phase A 완료 — 초안 JS 캔버스 코드를 PIL 포팅(Tools~/pixel_office/feat023/extract_blocks.py)해 캐릭터 15컷·소품 8종·배경 2종 결정적 추출, _contact.png로 초안 스크린샷 대조 검증(식별 마커·20색 일치). Phase B 완료 — Codex imagegen + pixel-art-pipeline + MJ 키이미지 양산 핸드오프 작성. 2026-06-16 human 5포즈 원본 시트 raw_human_sheet.png 생성(1983×793, 1,010,544 bytes). 다음 — 양산(Codex) → Unity 통합(IconLibrary/OfficeProps/배경 슬롯) → ScreenshotCaptureTests. 블록 Unity 임시반영은 해상도 미스매치로 스킵. **2026-06-17 캐릭터 애니메이션 서브트랙 완료·검증** — 시트 슬라이스 정본 15포즈(human/ai/robot ×idle/work/cheer/card_use/alert)를 Resources/Art/Actors 반입(9컷 violet 교체+AI 흰색→violet 통일, card_use/alert 6컷 신규, 결정적 GUID 메타) + ActorAnim 6인자 Init·PlayOneShot 원샷·State/StateElapsed 노출 + StaffBob 상태-인지 이동 모션(idle통통/work기울임/cheer홉/card_use팝/alert리코일, 비균일 scale 무사용 픽셀보존) + GameScreen card_use(해금/강화)·alert(이벤트) 배선(_pending 플래그+FlushActorMoods로 액터 재생성 타이밍 회피). 방법 C(절차 즉시+imagegen 파일럿). 검증 — EditMode 145/145 + PlayMode 6/6(신규 Capture_PoseSheet) + 캡처 20-pose-sheet(15포즈 무누락·violet)/08-actor-parade/01d-office-rich. 정본 docs/feat-023-animation-context-notes.md. 미해결 — 절차 모션 체감(정적 캡처 불가)·Phase 3 imagegen 파일럿 필요 여부. **2026-06-20 양산 완결** — 소품 6종(serverRack/whiteboard/coffee/trophy/table/printer) 청사진 블록을 pixel-art-pipeline 가공(prop_*.png, 결정적 GUID 메타) + OfficeProps 스테이지 인지 재구성(배경 키별 1~2종, 과밀 회피·성급 정체성) + 배경 cozy 4종 확정. EditMode 145/145 + PlayMode 4성급 캡처(01-main coffee / 14c growth whiteboard+table / 14b datacenter serverRack+printer / 14 landmark trophy+table 정합). 블록 가공본으로 충분(작게 배치해 거칠기 완화), imagegen 불필요 판단"
     }
   ]
 }

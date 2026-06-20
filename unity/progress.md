@@ -3,8 +3,9 @@
 재시작 상태용이다. 전체 이력 아님. 오래된 증거는 CHANGELOG로. (≤120줄)
 
 ## 현재 상태 (Current State)
-**마지막 갱신** — 2026-06-14
-**활성 피처** — **feat-022 트렌드 콘텐츠 웨이브 완료** — 2025-26 AI 트렌드 월드 이벤트 12종 추가(30→42, 에이전틱붐/추론비용붕괴/전력병목/오픈웨이트규제/칩수출규제/온디바이스/정렬연구 등). Codex가 data/world_events.json 작성(기존 태그풀만·연차 2-10), Claude가 DataImporter.ImportAll로 신규 12 WorldEvent SO 재생성+DataCatalog 갱신, WorldEventTests 카운트(30→42)만 갱신 — 시드 교차 픽스처·ApplyDue는 React 트윈 FNV-1a Python 포팅으로 옛 30종 재현 검증 후 불변 확인(Unity 실측 FIXTURE 덤프가 포팅 산출과 글자 일치). EditMode 145/145, 데이터+SO+테스트카운트만·코어 로직 무변경. 정본 docs/feat-022-context-notes.md. **단일 라이선스 함정 — 다른 프로젝트(sam defender 등) Unity 점유 시 import/검증 batchmode 막힘. ps로 확인·종료 후 진행.**
+**마지막 갱신** — 2026-06-20
+**MVP(v0.1 Vertical Slice) 완성 트랙 — feat-023/004/005 클로즈아웃 (2026-06-20).** 핵심 루프 5요소(월 진행·제품 출시·능력 업·이벤트·세이브) + 세로 모바일 한 화면 완비, EditMode 145/145. feat-023 소품 6종 양산·통합(OfficeProps 스테이지 인지 배치)+배경 cozy 확정, feat-004 절차 BGM(BgmGen — 외부 에셋 블로커 우회), feat-005 아이콘/스플래시 cozy 졸업(옛 등각 판때기 폐기). **잔여 — APK 빌드만 단일 라이선스(sam defender logue Unity 점유)로 대기, 사용자 종료 승인 후 빌드 → 실기기 10분 루프 체감(사용자, adb 없음).**
+**직전 활성 피처** — **feat-023 오피스 아트 확장 (비주얼 극대화 트랙, 진행 중)** — 클로드 디자인 §1 초안(JS 캔버스 26×34 블록 마스코트)을 구성 청사진으로 확정. Phase A(초안 JS→PIL 포팅 extract_blocks.py로 캐릭터15·소품8·배경2 결정적 추출 + _contact 대조 검증) + Phase B(양산 핸드오프 docs/codex-handoff/feat023-office-expansion-gen.md) 완료. 2026-06-16 캐릭터 양산 — 시트 방식(캐릭터당 5포즈를 한 장 imagegen 시트로 → slice_sheet.py 슬라이스, 같은 시트라 포즈 간 100% 일관)으로 정본 15포즈(human/ai/robot ×5) 완성, proc 15개 `Tools~/feat023/`. AI는 violet 정본 통일. 포즈별 독립 생성은 일관성 깨져 폐기. **2026-06-17 캐릭터 애니메이션 서브트랙 완료·검증** — 15포즈 Resources 반입(9컷 violet 교체+AI 흰색→violet, card_use/alert 6컷 신규, 결정적 GUID 메타) + ActorAnim PlayOneShot 원샷·State 노출 + StaffBob 상태-인지 이동 모션(통통/타이핑기울임/홉/팝/리코일, scale 무사용) + GameScreen card_use(해금/강화)·alert(이벤트) 배선(_pending+FlushActorMoods). 방법 C(절차 즉시+파일럿). 검증 EditMode 145/145 + PlayMode 6/6(신규 Capture_PoseSheet) + 20-pose-sheet(15포즈 무누락·violet)/08/01d. 정본 docs/feat-023-animation-context-notes.md. **미해결 — 절차 모션 체감(정적 캡처 불가, 실기/Play 필요)·Phase 3 imagegen 파일럿 필요 여부 미정.** 단일 라이선스로 sam defender Unity 사용자 승인 종료 후 검증. 신규=포즈2(card_use/alert)·소품6·배경2(차고야간/확장DC). 블록은 feat-020 96px보다 거칠어 직접 교체 아닌 청사진. 다음 — Codex imagegen+pixel-art-pipeline 양산 → Unity 통합 → 캡처. 청사진 Tools~/pixel_office/feat023/. **feat-022 트렌드 콘텐츠 웨이브 완료** — 2025-26 AI 트렌드 월드 이벤트 12종 추가(30→42, 에이전틱붐/추론비용붕괴/전력병목/오픈웨이트규제/칩수출규제/온디바이스/정렬연구 등). Codex가 data/world_events.json 작성(기존 태그풀만·연차 2-10), Claude가 DataImporter.ImportAll로 신규 12 WorldEvent SO 재생성+DataCatalog 갱신, WorldEventTests 카운트(30→42)만 갱신 — 시드 교차 픽스처·ApplyDue는 React 트윈 FNV-1a Python 포팅으로 옛 30종 재현 검증 후 불변 확인(Unity 실측 FIXTURE 덤프가 포팅 산출과 글자 일치). EditMode 145/145, 데이터+SO+테스트카운트만·코어 로직 무변경. 정본 docs/feat-022-context-notes.md. **단일 라이선스 함정 — 다른 프로젝트(sam defender 등) Unity 점유 시 import/검증 batchmode 막힘. ps로 확인·종료 후 진행.**
 
 **직전 feat-021 도감 열람 UI 완료** — 크로스런 수집 그리드 갤러리(더보기→도감), 3탭(아키타입12·엔딩24 잠금/해금 + 시너지/콤보20 공개). CollectionGallery.cs(818줄) + GameScreen 버튼1개, 코어 무변경. EditMode 145/145 + PlayMode 5/5. 정본 docs/feat-021-context-notes.md. (직전 feat-020 오피스 아트 AI 재생성·feat-019 연출 격상은 완료 리스트 참조.) **함정 — Codex 위임 시 'unity/ 밖 금지' 명시(루트 progress 사고), 단일 Unity 라이선스(ps 확인).**
 
@@ -48,6 +49,7 @@
 - [ ] feat-004 ④ BGM — 외부 AI/CC0 루프 오디오 에셋 블로커(보류, backlog)
 
 ## 다음 (What's Next)
+0. **비주얼 극대화 트랙 (feat-023 후보, 2026-06-15 준비)** — '클로드 디자인'에 넣을 4대상 의뢰 브리프 완성(`docs/art-pipeline/claude-design-brief.md`). 워크플로우 — 클로드 디자인 컨셉 초안 → 사용자 전달 → Claude가 Midjourney(키 이미지 1컷만)·Codex 픽셀·agy nano-banana로 분배 양산 → Unity 드롭인·캡처 검증. 순서 §1 오피스확장 → §2 컷씬일러스트 → §3 브랜딩 → §4 도감/UI. 스타일 '픽셀아트 고급화'. 다음 세션은 클로드 디자인 초안 수령 후 시작.
 1. **feat-012 #5 — 문명식 트리 그래프 화면** (설계 노트의 후속 블록).
 2. **실기기/에뮬레이터 검증** — APK 재빌드 후 10분 핵심 루프. feat-013으로 경제 체감이 크게 변함(이용자 수익·GPU 증설·시너지 토스트) — 우선순위 상승.
 3. **도감 열람 UI** — 아키타입 12/엔딩 24 + 시너지/콤보 20종 컬렉션 화면(미발견 실루엣).
@@ -84,6 +86,7 @@
 - [x] 세이브 — v3 라운드트립 + 구세이브(v2) 기본값 마이그레이션 + worldEventHistory
 - [x] 시각 — PlayMode 캡처 10장. 07-world-reveal(4축 스탬프+시드+시작 델타 HUD 반영), 08 액터 퍼레이드(v090 식별 마커), 09 오브젝트 퍼레이드(v091 21종 슬라이스 정확), 01 메인(오피스 일관성)
 - [x] events 한글화 — 15종 전부 한글, 자원 용어 resources.json 일치, SO 재시드 확인
+- [x] feat-023 imagegen human sheet — `ls -la Tools~/pixel_office/feat023/raw_human_sheet.png` 1,010,544 bytes, `sips -g pixelWidth -g pixelHeight` 1983×793, 목적지 PNG 육안 확인(5포즈 수평 1행)
 
 ## 다음 세션 메모 (할일 정리 — 2026-06-11)
 1. **feat-008** — 난이도 티어·태그 파생 아키타입·멀티 엔딩(React v0.65~0.67 이식). 블록 분해는 feat-007 패턴 재사용, 데이터 정본 루트에 존재(difficulty_tiers/derivation_rules/endings.json).
