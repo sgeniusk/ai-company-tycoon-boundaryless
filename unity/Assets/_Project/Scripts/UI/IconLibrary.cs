@@ -16,11 +16,9 @@ namespace AICompanyTycoon.UI
             "Art/UI/v080-capability-research-atlas",
             "Art/UI/v072-competitor-logo-atlas",
             "Art/UI/v074-helper-portrait-atlas",
-            "Art/UI/v090-workforce-actor-hires", // v076 드롭인 교체 (고해상 256px, 같은 셀 이름)
             "Art/UI/v077-celebration-emblem-atlas",
             "Art/UI/v078-world-reveal-stamp-atlas",
             "Art/UI/v081-office-reaction-atlas",
-            "Art/UI/v091-office-objects-hires", // v054 드롭인 교체 (고해상 384x288, 같은 셀 이름)
         };
 
         static Dictionary<string, Sprite> _cache;

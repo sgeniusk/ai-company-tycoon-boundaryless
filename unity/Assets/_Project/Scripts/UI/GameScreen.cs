@@ -571,7 +571,7 @@ namespace AICompanyTycoon.UI
             _scoreMarquee.text = string.Join("    ·    ", lines);
         }
 
-        // office 배경 위에 직원 캐릭터(v076)를 세울 사무실 씬 영역. 가구(뒤) + 직원(앞) 2층.
+        // office 배경 위에 직원 캐릭터(actor_*)를 세울 사무실 씬 영역. 가구(뒤) + 직원(앞) 2층.
         // VBox 가운데를 비워 뒤의 풀스크린 스테이지가 보이게 하는 투명 스페이서 (feat-011).
         void BuildStageSpacer(Transform parent)
         {

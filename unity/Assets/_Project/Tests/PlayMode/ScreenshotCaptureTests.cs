@@ -479,7 +479,7 @@ namespace AICompanyTycoon.Tests.PlayMode
             yield return null;
         }
 
-        // 오브젝트 퍼레이드 — v054 오피스 오브젝트 21종을 그리드로 렌더해 슬라이스/임포트 검증.
+        // 오브젝트 퍼레이드 — feat-024 소품 13종(prop_*/furniture_*)을 그리드로 렌더해 크로마키 재생성/임포트 검증. (이전 v054/v091 obj_* atlas는 prop_* 개별 전환 후 제거됨.)
         [UnityTest]
         public IEnumerator Capture_ObjectParade()
         {
@@ -503,12 +503,10 @@ namespace AICompanyTycoon.Tests.PlayMode
 
             var keys = new[]
             {
-                "obj_desk_monitor", "obj_server_dark", "obj_cabinet_wood", "obj_server_blue",
-                "obj_crate_brown", "obj_desk_monitor_b", "obj_server_slate", "obj_cabinet_mint",
-                "obj_crate_low", "obj_crate_red", "obj_desk_green", "obj_whiteboard_a",
-                "obj_whiteboard_b", "obj_printer_blue", "obj_server_amber", "obj_glassboard_a",
-                "obj_printer_cyan", "obj_desk_papers", "obj_meeting_table", "obj_equipment_blue",
-                "obj_glassboard_b",
+                "furniture_desk_white", "furniture_desk_wood", "prop_bookshelf", "prop_couch",
+                "prop_vending", "prop_cooler", "prop_plant", "prop_coffee",
+                "prop_printer", "prop_serverRack", "prop_table", "prop_trophy",
+                "prop_whiteboard",
             };
             int cols = 4;
             for (int i = 0; i < keys.Length; i++)
