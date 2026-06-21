@@ -658,7 +658,7 @@ namespace AICompanyTycoon.UI
         // 한 줄(원근 스케일·바닥선)을 수동 배치 — 각 직원 + 책상 전경 오클루더. busyLocal 인덱스엔 열일 불꽃.
         void PlaceActorRow(string[] kinds, int startSeed, int count, float scale, float footY, float marginNorm, bool allowSpeech, int busyLocal)
         {
-            const float baseW = 200f, baseH = 200f; // feat-023 — 캐릭터 확대(작다는 피드백)
+            const float baseW = 248f, baseH = 248f; // feat-023 — 캐릭터 2차 확대(여전히 작다는 피드백, 200→248)
             for (int i = 0; i < count; i += 1)
             {
                 int seed = startSeed + i;
@@ -1114,12 +1114,12 @@ namespace AICompanyTycoon.UI
             _tabButtons[key] = pair.button;
         }
 
-        // 중앙 다음 달 FAB — 펄스 링(뒤) + 큰 버튼(앞).
+        // 중앙 가이던스 FAB — 다른 탭(96w)보다 확실히 크고 골드 펄스 링으로 주목 (사용자 피드백 — 가운데 버튼 차별화).
         void BuildFab(Transform parent)
         {
             var cell = new GameObject("FabCell", typeof(RectTransform));
             cell.transform.SetParent(parent, false);
-            AddLayoutFixed(cell, 200, 104);
+            AddLayoutFixed(cell, 216, 120);
 
             var ring = new GameObject("FabRing", typeof(RectTransform), typeof(Image));
             ring.transform.SetParent(cell.transform, false);
@@ -1127,9 +1127,9 @@ namespace AICompanyTycoon.UI
             ringRect.anchorMin = new Vector2(0.5f, 0.5f);
             ringRect.anchorMax = new Vector2(0.5f, 0.5f);
             ringRect.pivot = new Vector2(0.5f, 0.5f);
-            ringRect.sizeDelta = new Vector2(184, 96);
+            ringRect.sizeDelta = new Vector2(210, 114);
             var ringImg = ring.GetComponent<Image>();
-            ringImg.color = new Color(UiTheme.Button.r, UiTheme.Button.g, UiTheme.Button.b, 0.5f);
+            ringImg.color = new Color(UiTheme.CrestGold.r, UiTheme.CrestGold.g, UiTheme.CrestGold.b, 0.6f); // 골드 펄스 — 가운데 추천 버튼 강조
             ringImg.raycastTarget = false;
             ring.AddComponent<FabPulse>();
 
@@ -1138,8 +1138,8 @@ namespace AICompanyTycoon.UI
             btnRect.anchorMin = new Vector2(0.5f, 0.5f);
             btnRect.anchorMax = new Vector2(0.5f, 0.5f);
             btnRect.pivot = new Vector2(0.5f, 0.5f);
-            btnRect.sizeDelta = new Vector2(184, 96);
-            _nextMonthLabel.fontSize = 36;
+            btnRect.sizeDelta = new Vector2(198, 104);
+            _nextMonthLabel.fontSize = 40;
             _nextMonthButton.onClick.AddListener(HandleGuidanceAction); // 가이던스 FAB — 라벨·톤·행동이 제안에 따라 바뀐다 (feat-009)
         }
 

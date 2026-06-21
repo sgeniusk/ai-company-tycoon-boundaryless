@@ -113,12 +113,13 @@ namespace AICompanyTycoon.UI
             }
 
             var aspect = sprite.rect.width / sprite.rect.height;
+            float h = prop.Height * 1.25f; // feat-023 — 소품 확대(작다는 피드백)
             var item = new GameObject(prop.SpriteName, typeof(RectTransform), typeof(Image));
             item.transform.SetParent(parent, false);
             var rect = item.GetComponent<RectTransform>();
             rect.anchorMin = rect.anchorMax = new Vector2(prop.XNorm, 0f);
             rect.pivot = new Vector2(0.5f, 0f);
-            rect.sizeDelta = new Vector2(prop.Height * aspect, prop.Height);
+            rect.sizeDelta = new Vector2(h * aspect, h);
             rect.anchoredPosition = new Vector2(0f, prop.FootY);
 
             var image = item.GetComponent<Image>();
