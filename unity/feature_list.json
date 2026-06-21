@@ -266,6 +266,18 @@
       "status": "done",
       "owner": "Claude(청사진 추출·핸드오프·검증·소품 양산·통합)",
       "evidence": "Phase A 완료 — 초안 JS 캔버스 코드를 PIL 포팅(Tools~/pixel_office/feat023/extract_blocks.py)해 캐릭터 15컷·소품 8종·배경 2종 결정적 추출, _contact.png로 초안 스크린샷 대조 검증(식별 마커·20색 일치). Phase B 완료 — Codex imagegen + pixel-art-pipeline + MJ 키이미지 양산 핸드오프 작성. 2026-06-16 human 5포즈 원본 시트 raw_human_sheet.png 생성(1983×793, 1,010,544 bytes). 다음 — 양산(Codex) → Unity 통합(IconLibrary/OfficeProps/배경 슬롯) → ScreenshotCaptureTests. 블록 Unity 임시반영은 해상도 미스매치로 스킵. **2026-06-17 캐릭터 애니메이션 서브트랙 완료·검증** — 시트 슬라이스 정본 15포즈(human/ai/robot ×idle/work/cheer/card_use/alert)를 Resources/Art/Actors 반입(9컷 violet 교체+AI 흰색→violet 통일, card_use/alert 6컷 신규, 결정적 GUID 메타) + ActorAnim 6인자 Init·PlayOneShot 원샷·State/StateElapsed 노출 + StaffBob 상태-인지 이동 모션(idle통통/work기울임/cheer홉/card_use팝/alert리코일, 비균일 scale 무사용 픽셀보존) + GameScreen card_use(해금/강화)·alert(이벤트) 배선(_pending 플래그+FlushActorMoods로 액터 재생성 타이밍 회피). 방법 C(절차 즉시+imagegen 파일럿). 검증 — EditMode 145/145 + PlayMode 6/6(신규 Capture_PoseSheet) + 캡처 20-pose-sheet(15포즈 무누락·violet)/08-actor-parade/01d-office-rich. 정본 docs/feat-023-animation-context-notes.md. 미해결 — 절차 모션 체감(정적 캡처 불가)·Phase 3 imagegen 파일럿 필요 여부. **2026-06-20 양산 완결** — 소품 6종(serverRack/whiteboard/coffee/trophy/table/printer) 청사진 블록을 pixel-art-pipeline 가공(prop_*.png, 결정적 GUID 메타) + OfficeProps 스테이지 인지 재구성(배경 키별 1~2종, 과밀 회피·성급 정체성) + 배경 cozy 4종 확정. EditMode 145/145 + PlayMode 4성급 캡처(01-main coffee / 14c growth whiteboard+table / 14b datacenter serverRack+printer / 14 landmark trophy+table 정합). 블록 가공본으로 충분(작게 배치해 거칠기 완화), imagegen 불필요 판단"
+    },
+    {
+      "id": "feat-024",
+      "name": "크로마키 아트 재생성 — imagegen 흰배경 헤일로 근본 해결 (P25)",
+      "description": "사용자 방향(2026-06-21) — feat-020/023 imagegen 투명 스프라이트의 경계 헤일로(흰끼 잔상)를 근본 해결. 딥리서치(런 w4bn7b024, 23소스/21확정) 결론대로 흰배경 폐기 → 크로마키(마젠타/녹색) 배경 생성 + 키잉 + 16색 양자화 + 하드 알파. rembg neural matte는 픽셀아트 부적합 확인. 대상 — 캐릭터 15컷(최우선) → 소품(feat-020+feat-023) → UI atlas(사용 확인 후). 정본 docs/codex-handoff/chroma-key-art-regen.md + AGENTS.md 아트 생성 표준.",
+      "dependencies": [
+        "feat-020",
+        "feat-023"
+      ],
+      "status": "in-progress",
+      "owner": "Claude(파이프라인·게이트·반입·검증) + Codex(imagegen 시트)",
+      "evidence": "**캐릭터 15컷 완료(2026-06-21, 반입·게이트·Unity 검증 PASS).** 하네스 3종 신설 — key_chroma.py(GIMP color-to-alpha 키잉 → 키색잔여 차단(거리145) → hole-fill+connected-components 주피사체 → 경계 내부색 디컨탬 → premult 96px 리사이즈 → 16색 양자화 + 하드 알파), diagnose_halo.py(경계 헤일로+semi+키색잔여 게이트, 파일별 키색 인지 — green키 캐릭터엔 마젠타만/magenta키엔 녹색만 검사해 human 녹색조끼 false-positive 방지), _make_synth_sheets.py(합성 자체검증). codex exec imagegen으로 마젠타(human/robot)·녹색(ai) 5포즈 시트 3장(1440×288) 생성 → 키잉 → **15컷 GATE PASS(경계헤일로 0/semi 0/키색잔여 0)** → import_to_resources.py로 Resources/Art/Actors 반입(.meta GUID 보존, 15컷 REPL alpha[0..255]). 베이스라인 12컷 헤일로(198임계 3297px, robot_work 522)→0. 검증시트 육안 형태·식별·키색침범 없음(마젠타 줄·녹색 얼룩 제거). 원본 백업 Tools~/pixel_office/feat024/backup_actors. **Unity 검증 완료(2026-06-21) — EditMode 145/145 + PlayMode 7/7 + 캡처 육안(20-pose-sheet 15포즈 흰끼 없음·violet 일관 / 08-actor-parade 3종 / 01d-office-rich 인게임 차고 착석 배경 정합).** 다음 — 소품(feat-020 prop_/furniture_ + feat-023 prop_) → UI atlas(IconLibrary 사용 확인 후). 정본 docs/codex-handoff/feat024-character-sheets-gen.md"
     }
   ]
 }
