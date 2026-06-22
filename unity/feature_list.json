@@ -278,6 +278,18 @@
       "status": "done",
       "owner": "Claude(파이프라인·게이트·반입·검증) + Codex(imagegen 시트)",
       "evidence": "**캐릭터 15컷 완료(2026-06-21, 반입·게이트·Unity 검증 PASS).** 하네스 3종 신설 — key_chroma.py(GIMP color-to-alpha 키잉 → 키색잔여 차단(거리145) → hole-fill+connected-components 주피사체 → 경계 내부색 디컨탬 → premult 96px 리사이즈 → 16색 양자화 + 하드 알파), diagnose_halo.py(경계 헤일로+semi+키색잔여 게이트, 파일별 키색 인지 — green키 캐릭터엔 마젠타만/magenta키엔 녹색만 검사해 human 녹색조끼 false-positive 방지), _make_synth_sheets.py(합성 자체검증). codex exec imagegen으로 마젠타(human/robot)·녹색(ai) 5포즈 시트 3장(1440×288) 생성 → 키잉 → **15컷 GATE PASS(경계헤일로 0/semi 0/키색잔여 0)** → import_to_resources.py로 Resources/Art/Actors 반입(.meta GUID 보존, 15컷 REPL alpha[0..255]). 베이스라인 12컷 헤일로(198임계 3297px, robot_work 522)→0. 검증시트 육안 형태·식별·키색침범 없음(마젠타 줄·녹색 얼룩 제거). 원본 백업 Tools~/pixel_office/feat024/backup_actors. **Unity 검증 완료(2026-06-21) — EditMode 145/145 + PlayMode 7/7 + 캡처 육안(20-pose-sheet 15포즈 흰끼 없음·violet 일관 / 08-actor-parade 3종 / 01d-office-rich 인게임 차고 착석 배경 정합).** **소품 13종 완료(2026-06-21)** — key_props.py(종횡비 보존·높이128 정규화, OfficeProps가 sprite aspect만 쓰고 Height 고정 스케일이라 고급화 자유) + codex stdin 파이프 시트 2장(A 가구6 desk×2/bookshelf/couch/vending/cooler, B 소품7 plant/coffee/printer/serverRack/table/trophy/whiteboard). 13종 import_props.py 반입(.meta 보존), 키색잔여 0/semi 0(마젠타 배경 완벽 제거), edge halo는 흰 가전·정수기·흰책상 고유색(헤일로 아님). feat-023 거친 블록(coffee/serverRack/trophy/whiteboard) 크게 고급화. EditMode 145/145 + PlayMode 7/7 + 캡처(09-object-parade/14b/14c/01d 인게임 흰끼 없음). **UI atlas 정리 완료(2026-06-21)** — v054/v076/v090/v091 미사용 레거시 atlas 4종(8파일) 제거 + IconLibrary AtlasResourcePaths 정리(v090 셀 actor_*는 Art/Actors가 덮음, v091/v054 obj_* 25종은 실게임 사용 0=feat-020 prop_* 전환 후 버려진 셀, v076은 v090 원본 미로드). Capture_ObjectParade를 obj_*(레거시)→소품 13종(prop_*/furniture_*) 시각화로 전환(09-object-parade 빈자리 해소). GameScreen stale 주석 정리. 실사용 atlas(v072 헤일로8 등)는 경미라 재생성 불필요. EditMode 145/145 + PlayMode 7/7 + 09 소품 퍼레이드 정상. **feat-024 3대상(캐릭터15·소품13·UI atlas) 완결.** 정본 docs/codex-handoff/feat024-character-sheets-gen.md"
+    },
+    {
+      "id": "feat-025",
+      "name": "이벤트 결과 픽셀 컷씬 1단계 MVP — 환호/낙담 코너 컷인 (P26)",
+      "description": "사용자 방향(2026-06-22) — 카이로소프트 Game Dev Story식으로 이벤트·고용 순간에 픽셀 컷씬을 연출해 '보는 맛' 확장. 1단계 MVP = 이벤트 선택 결과(자원 +/- 합 부호)를 픽셀 직원이 환호/낙담으로 연기하는 코너 컷인. 규모 C혼합·이벤트 컷인 둘다(발생+결과)·새 픽셀 애니 프레임(feat-024 크로마키 재사용). 정본 docs/feat-025-event-cutscene-design.md, 구현계획 docs/feat-025-event-cutscene-plan.md(6 Task). 2·3단계(고용 등장/위기 모달)·멀티엔딩은 이 트랙 뒤.",
+      "dependencies": [
+        "feat-019",
+        "feat-024"
+      ],
+      "status": "done",
+      "owner": "Claude(판정·연출코드·검증) + Codex(환호/낙담 프레임 12장 에셋)",
+      "evidence": "**1단계 MVP 완료(2026-06-23, EditMode 148/148 + PlayMode 캡처 검증).** Task1 EventResultJudge(choice.effects 합 부호 → Positive/Negative/Neutral, 헤드리스 순수함수, 145→148). Task2 CutsceneDirector.PlayEventResult(환호/낙담 코너 미니, 직원 라운드로빈). Task3 GameScreen onClick에 Judge+트리거(Neutral 생략). **Task4 환호/낙담 픽셀 애니 프레임 12장(3캐릭터×2반응×2프레임 96px) — Codex가 핸드오프(docs/codex-handoff/feat025-event-result-frames.md)대로 크로마키 생성(human/robot 마젠타·ai 녹색), diagnose_halo halo=0 GATE PASS, .cs 무수정(분담경계 준수), 커밋 7a35372. Claude 교차검증 — 12장 96×96 RGBA·halo=0 재확인·몽타주 육안(정체성·환호↔낙담·A/B 프레임차).** Task5 CutsceneFrameAnim(Image sprite 프레임 루프 fps=4 unscaledDeltaTime) + PlayMiniCo를 animKey 파라미터로 통합(능력업/해금=정적포즈, 이벤트결과=프레임애니, 낙담은 점프생략·▼ 기호). IconLibrary Art/Actors LoadAll로 새 프레임 자동 조회. Task6 검증 — EditMode 148/148 + PlayMode 캡처 22-event-result.png(human 양팔 든 새 환호 프레임 인게임 렌더 확인). Task1 .meta 누락(5504e8c) 보정 커밋. 코어 시뮬 무변경. 분담 첫 적용(에셋=Codex/연출코드=Claude). 미해결 — 낙담(sad) 인게임 캡처는 코드 대칭으로 생략·미니바 한글 30pt 가독성 실기기 확인 권장. 정본 docs/feat-025-event-cutscene-plan.md"
     }
   ]
 }
