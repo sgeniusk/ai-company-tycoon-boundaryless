@@ -90,11 +90,24 @@ namespace AICompanyTycoon.UI
         void OnCapability(string id, int level) => EnqueueMini("LEVEL UP!", "actor_human", Mint);
         void OnDomain(string id) => EnqueueMini("도메인 해금!", "actor_ai", Gold);
 
+        // 이벤트 결과 컷인 — 톤(긍정/부정)에 따라 환호/낙담 코너 미니. Neutral은 호출부에서 생략. 직원 키는 라운드로빈.
+        static readonly string[] _eventStaffKeys = { "actor_human", "actor_ai", "actor_robot" };
+        int _eventActorCursor;
+
+        void OnEventResult(bool isPositive)
+        {
+            var key = _eventStaffKeys[_eventActorCursor++ % _eventStaffKeys.Length];
+            if (isPositive) EnqueueMini("대박!", key, Mint);
+            else EnqueueMini("이런...", key, Hex("8a7f72"));
+        }
+
         // 캡처/외부 진입점.
         public static void PlayLaunch() => _instance?.OnLaunch(null);
         public static void PlayStageUp(string stageId) => _instance?.OnStageUp(stageId);
         public static void PlayIpo() => _instance?.OnIpo();
         public static void PlayMini(string label, string actorKey) => _instance?.EnqueueMini(label, actorKey, Mint);
+        // 이벤트 결과 컷인 진입점 — GameScreen onClick에서 톤 판정 후 호출.
+        public static void PlayEventResult(bool isPositive) => _instance?.OnEventResult(isPositive);
 
         void TryModal(CutsceneKind kind, string payload)
         {
