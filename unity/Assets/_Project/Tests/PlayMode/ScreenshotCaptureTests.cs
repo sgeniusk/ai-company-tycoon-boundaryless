@@ -321,6 +321,16 @@ namespace AICompanyTycoon.Tests.PlayMode
             }
             yield return WaitRealtime(1.4f);
 
+            // 22) 이벤트 결과 컷인 (feat-025) — 선택 결과 톤(긍정)에 따라 환호 코너 미니. 골격은 기존 포즈, Task 5에서 새 프레임으로 교체.
+            CutsceneDirector.PlayEventResult(true);
+            yield return WaitRealtime(0.4f);
+            var cs5 = GameObject.Find("CutsceneDirector");
+            if (cs5 != null && cs5.GetComponent<Canvas>() != null)
+            {
+                yield return CaptureCanvas(cs5, "22-event-result.png");
+            }
+            yield return WaitRealtime(1.4f);
+
             Object.Destroy(go);
             yield return null;
         }

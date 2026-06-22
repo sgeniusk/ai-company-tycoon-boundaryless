@@ -3034,9 +3034,12 @@ namespace AICompanyTycoon.UI
                 {
                     if (_context.Events.Resolve(captured.id))
                     {
+                        var tone = AICompanyTycoon.Systems.EventResultJudge.Judge(captured);
                         HideEventModal();
                         SetStatus("이벤트 선택을 적용했습니다.");
                         RefreshAll();
+                        if (tone != AICompanyTycoon.Systems.EventResultTone.Neutral)
+                            CutsceneDirector.PlayEventResult(tone == AICompanyTycoon.Systems.EventResultTone.Positive);
                     }
                 });
                 AddLayout(button.button.gameObject, 76, 0);
