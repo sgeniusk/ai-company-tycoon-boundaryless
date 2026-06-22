@@ -20,7 +20,7 @@ namespace AICompanyTycoon.UI
         RectTransform _root;
         bool _playing;          // 모달 컷씬 1개씩
         int _launchCount;       // 세션 한정 — 반복 출시 간략화용
-        readonly Queue<(string label, string actorKey, Color accent)> _miniQueue = new Queue<(string, string, Color)>();
+        readonly Queue<(string label, string actorKey, Color accent, string animKey)> _miniQueue = new Queue<(string, string, Color, string)>();
         bool _miniPlaying;
 
         const float RefW = 1080f;
@@ -97,8 +97,8 @@ namespace AICompanyTycoon.UI
         void OnEventResult(bool isPositive)
         {
             var key = _eventStaffKeys[_eventActorCursor++ % _eventStaffKeys.Length];
-            if (isPositive) EnqueueMini("대박!", key, Mint);
-            else EnqueueMini("이런...", key, Hex("8a7f72"));
+            if (isPositive) EnqueueMini("대박!", key, Mint, key + "_cheer");
+            else EnqueueMini("이런...", key, Hex("8a7f72"), key + "_sad");
         }
 
         // 캡처/외부 진입점.
@@ -280,10 +280,11 @@ namespace AICompanyTycoon.UI
         }
 
         // ======================= 미니 코너 윈도우 (능력업·해금) =======================
-        void EnqueueMini(string label, string actorKey, Color accent)
+        // animKey 비면 기존 정적 포즈+점프(능력업·해금), 값 있으면 "{actor}_cheer"/"{actor}_sad" 프레임 애니(이벤트 결과).
+        void EnqueueMini(string label, string actorKey, Color accent, string animKey = null)
         {
             if (_root == null) return;
-            _miniQueue.Enqueue((label, actorKey, accent));
+            _miniQueue.Enqueue((label, actorKey, accent, animKey));
             if (!_miniPlaying) StartCoroutine(MiniLoop());
         }
 
@@ -293,12 +294,12 @@ namespace AICompanyTycoon.UI
             while (_miniQueue.Count > 0)
             {
                 var item = _miniQueue.Dequeue();
-                yield return PlayMiniCo(item.label, item.actorKey, item.accent);
+                yield return PlayMiniCo(item.label, item.actorKey, item.accent, item.animKey);
             }
             _miniPlaying = false;
         }
 
-        IEnumerator PlayMiniCo(string label, string actorKey, Color accent)
+        IEnumerator PlayMiniCo(string label, string actorKey, Color accent, string animKey = null)
         {
             // 하단 한쪽 작은 윈도우 — 스크림 없음, 입력 통과(raycastTarget false).
             float hidden = -120f, shown = 250f;
@@ -312,8 +313,19 @@ namespace AICompanyTycoon.UI
             lab.color = Ink; lab.alignment = TextAnchor.MiddleCenter; lab.raycastTarget = false;
             Stretch(lab.GetComponent<RectTransform>());
             var actor = MakeActor(board, actorKey, new Vector2(-104f, -64f), 116f);
-            // 엄지척 대용 — 상승 삼각형
-            var plus = UiFactory.Label(board, "▲", 40);
+
+            // 이벤트 결과 컷인 — 전용 프레임 애니(환호 cheer_a/b·낙담 sad_a/b)를 actor에 부착. 능력업·해금(animKey null)은 정적 포즈 유지.
+            bool isSad = animKey != null && animKey.EndsWith("_sad");
+            if (!string.IsNullOrEmpty(animKey))
+            {
+                var fa = IconLibrary.Get(animKey + "_a");
+                var fb = IconLibrary.Get(animKey + "_b");
+                if (fa != null && fb != null)
+                    actor.gameObject.AddComponent<CutsceneFrameAnim>().Init(actor.GetComponent<Image>(), new[] { fa, fb }, 4f);
+            }
+
+            // 반응 기호 — 환호·능력업은 상승 삼각형, 낙담은 하강 삼각형.
+            var plus = UiFactory.Label(board, isSad ? "▼" : "▲", 40);
             plus.color = accent; plus.raycastTarget = false;
             var plusR = plus.GetComponent<RectTransform>();
             plusR.anchorMin = plusR.anchorMax = new Vector2(0.5f, 0.5f);
@@ -321,7 +333,8 @@ namespace AICompanyTycoon.UI
             plusR.sizeDelta = new Vector2(80f, 60f);
             plus.alignment = TextAnchor.MiddleCenter;
 
-            var bob = StartCoroutine(FanCheer(actor, 0f));
+            // 낙담은 점프 없이 프레임 애니(고개 숙임)만. 환호·능력업은 기존 점프 모션 유지.
+            var bob = isSad ? null : StartCoroutine(FanCheer(actor, 0f));
 
             // 슬라이드 인 → hold → 슬라이드 아웃
             yield return Slide(win, hidden, shown, 0.22f);
