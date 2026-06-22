@@ -58,6 +58,7 @@ namespace AICompanyTycoon.UI
         Transform _reactionLayer;
 
         GameObject _eventModal;
+        string _lastTriggeredEventId;   // 이벤트 발생 당황 컷인 중복 방지(같은 이벤트 refresh 재표시 제외).
         Text _eventTitle;
         Text _eventDescription;
         Transform _eventChoices;
@@ -2627,6 +2628,7 @@ namespace AICompanyTycoon.UI
                         }
 
                         SpawnReaction("react_cheer");
+                        CutsceneDirector.PlayHireArrival();
                         RefreshAll();
                     }
                     else
@@ -3022,6 +3024,12 @@ namespace AICompanyTycoon.UI
 
             _eventModal.SetActive(true);
             PopInCard(_eventModal, "EventCard");
+            // 이벤트 발생 당황 컷인 — 새 이벤트가 처음 뜰 때만(refresh 재표시 중복 방지).
+            if (ev.id != _lastTriggeredEventId)
+            {
+                _lastTriggeredEventId = ev.id;
+                CutsceneDirector.PlayEventTrigger();
+            }
             _eventTitle.text = ev.displayName;
             _eventDescription.text = ev.description;
             Clear(_eventChoices);

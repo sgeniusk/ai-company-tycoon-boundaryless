@@ -331,6 +331,22 @@ namespace AICompanyTycoon.Tests.PlayMode
             }
             yield return WaitRealtime(1.4f);
 
+            // 23) 고용 등장 컷인 (feat-025 2단계) — cheer 재활용 환영.
+            CutsceneDirector.PlayHireArrival();
+            yield return WaitRealtime(0.4f);
+            var cs6 = GameObject.Find("CutsceneDirector");
+            if (cs6 != null && cs6.GetComponent<Canvas>() != null)
+                yield return CaptureCanvas(cs6, "23-hire-arrival.png");
+            yield return WaitRealtime(1.4f);
+
+            // 24) 이벤트 발생 당황 컷인 (feat-025 2단계) — surprise 프레임(에셋 반입 후, 미반입 시 정적 폴백).
+            CutsceneDirector.PlayEventTrigger();
+            yield return WaitRealtime(0.4f);
+            var cs7 = GameObject.Find("CutsceneDirector");
+            if (cs7 != null && cs7.GetComponent<Canvas>() != null)
+                yield return CaptureCanvas(cs7, "24-event-trigger.png");
+            yield return WaitRealtime(1.4f);
+
             Object.Destroy(go);
             yield return null;
         }
