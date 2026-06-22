@@ -101,6 +101,22 @@ namespace AICompanyTycoon.UI
             else EnqueueMini("이런...", key, Hex("8a7f72"), key + "_sad");
         }
 
+        int _hireActorCursor, _triggerActorCursor;
+
+        // 고용 등장 — 새 동료가 환영받으며 등장(1단계 cheer 프레임 재활용). 직원 키 라운드로빈.
+        void OnHireArrival()
+        {
+            var key = _eventStaffKeys[_hireActorCursor++ % _eventStaffKeys.Length];
+            EnqueueMini("환영!", key, Mint, key + "_cheer");
+        }
+
+        // 이벤트 발생 당황 — 신규 surprise 프레임. 에셋 미반입 시 IconLibrary.Get null → 정적 폴백.
+        void OnEventTrigger()
+        {
+            var key = _eventStaffKeys[_triggerActorCursor++ % _eventStaffKeys.Length];
+            EnqueueMini("...?!", key, Hex("d98c4a"), key + "_surprise");
+        }
+
         // 캡처/외부 진입점.
         public static void PlayLaunch() => _instance?.OnLaunch(null);
         public static void PlayStageUp(string stageId) => _instance?.OnStageUp(stageId);
@@ -108,6 +124,9 @@ namespace AICompanyTycoon.UI
         public static void PlayMini(string label, string actorKey) => _instance?.EnqueueMini(label, actorKey, Mint);
         // 이벤트 결과 컷인 진입점 — GameScreen onClick에서 톤 판정 후 호출.
         public static void PlayEventResult(bool isPositive) => _instance?.OnEventResult(isPositive);
+        // 고용 등장·이벤트 발생 컷인 진입점 (2단계).
+        public static void PlayHireArrival() => _instance?.OnHireArrival();
+        public static void PlayEventTrigger() => _instance?.OnEventTrigger();
 
         void TryModal(CutsceneKind kind, string payload)
         {
