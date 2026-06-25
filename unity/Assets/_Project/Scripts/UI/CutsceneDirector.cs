@@ -343,8 +343,9 @@ namespace AICompanyTycoon.UI
                     actor.gameObject.AddComponent<CutsceneFrameAnim>().Init(actor.GetComponent<Image>(), new[] { fa, fb }, 4f);
             }
 
-            // 반응 기호 — 환호·능력업은 상승 삼각형, 낙담은 하강 삼각형.
-            var plus = UiFactory.Label(board, isSad ? "▼" : "▲", 40);
+            // 반응 기호 — 환호·능력업·고용은 상승(▲), 낙담은 하강(▼), 당황은 느낌표(!).
+            bool isSurprise = animKey != null && animKey.EndsWith("_surprise");
+            var plus = UiFactory.Label(board, isSad ? "▼" : isSurprise ? "!" : "▲", 40);
             plus.color = accent; plus.raycastTarget = false;
             var plusR = plus.GetComponent<RectTransform>();
             plusR.anchorMin = plusR.anchorMax = new Vector2(0.5f, 0.5f);
