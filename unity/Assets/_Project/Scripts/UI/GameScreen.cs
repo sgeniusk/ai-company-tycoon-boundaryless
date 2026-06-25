@@ -2619,6 +2619,7 @@ namespace AICompanyTycoon.UI
                 var captured = candidate;
                 hire.button.onClick.AddListener(() =>
                 {
+                    int beforeCount = _context.Model.HiredAgentIds.Count;
                     if (_context.Recruit.Hire(captured))
                     {
                         SetStatus("새 인재 합류 — " + captured.displayName);
@@ -2628,7 +2629,11 @@ namespace AICompanyTycoon.UI
                         }
 
                         SpawnReaction("react_cheer");
-                        CutsceneDirector.PlayHireArrival();
+                        // 3단계 — 첫 직원(정원 0→1)·특별 인재(epic)는 전체 모달, 그 외는 코너 컷인(2단계). 캐릭터는 kind 매핑.
+                        string hireActorKey = captured.kind == "ai_agent" ? "actor_ai" : captured.kind == "robot" ? "actor_robot" : "actor_human";
+                        if (beforeCount == 0) CutsceneDirector.PlayFirstHire(hireActorKey);
+                        else if (captured.rarity == "epic") CutsceneDirector.PlaySpecialHire(hireActorKey);
+                        else CutsceneDirector.PlayHireArrival();
                         RefreshAll();
                     }
                     else

@@ -347,6 +347,22 @@ namespace AICompanyTycoon.Tests.PlayMode
                 yield return CaptureCanvas(cs7, "24-event-trigger.png");
             yield return WaitRealtime(1.4f);
 
+            // 25) 첫 직원 모달 (feat-025 3단계) — 전체 모달 cheer 환영.
+            CutsceneDirector.PlayFirstHire("actor_human");
+            yield return WaitRealtime(0.6f);
+            var cs8 = GameObject.Find("CutsceneDirector");
+            if (cs8 != null && cs8.GetComponent<Canvas>() != null)
+                yield return CaptureCanvas(cs8, "25-first-hire.png");
+            yield return WaitRealtime(2.2f);
+
+            // 26) 특별 인재 모달 (feat-025 3단계) — 발표자 글로우 강조.
+            CutsceneDirector.PlaySpecialHire("actor_ai");
+            yield return WaitRealtime(0.6f);
+            var cs9 = GameObject.Find("CutsceneDirector");
+            if (cs9 != null && cs9.GetComponent<Canvas>() != null)
+                yield return CaptureCanvas(cs9, "26-special-hire.png");
+            yield return WaitRealtime(2.2f);
+
             Object.Destroy(go);
             yield return null;
         }

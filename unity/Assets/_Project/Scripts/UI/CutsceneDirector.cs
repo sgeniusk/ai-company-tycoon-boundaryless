@@ -11,7 +11,7 @@ using UnityEngine.UI;
 namespace AICompanyTycoon.UI
 {
     public enum CutsceneTier { Mini, Medium, Big }
-    public enum CutsceneKind { Launch, StageUp, Ipo }
+    public enum CutsceneKind { Launch, StageUp, Ipo, FirstHire, SpecialHire }
 
     public class CutsceneDirector : MonoBehaviour
     {
@@ -127,6 +127,9 @@ namespace AICompanyTycoon.UI
         // 고용 등장·이벤트 발생 컷인 진입점 (2단계).
         public static void PlayHireArrival() => _instance?.OnHireArrival();
         public static void PlayEventTrigger() => _instance?.OnEventTrigger();
+        // 첫 직원·특별 인재 전체 모달 진입점 (3단계). payload = actorKey(고용 직원 kind 매핑).
+        public static void PlayFirstHire(string actorKey) => _instance?.TryModal(CutsceneKind.FirstHire, actorKey);
+        public static void PlaySpecialHire(string actorKey) => _instance?.TryModal(CutsceneKind.SpecialHire, actorKey);
 
         void TryModal(CutsceneKind kind, string payload)
         {
@@ -180,6 +183,8 @@ namespace AICompanyTycoon.UI
                 case CutsceneKind.Launch: PopulateLaunch(stage, motions); break;
                 case CutsceneKind.StageUp: PopulateStageUp(stage, payload, motions); break;
                 case CutsceneKind.Ipo: PopulateIpo(stage, motions); break;
+                case CutsceneKind.FirstHire: PopulateHireModal(stage, payload, false, motions); break;
+                case CutsceneKind.SpecialHire: PopulateHireModal(stage, payload, true, motions); break;
             }
 
             // 하단 안내
@@ -222,6 +227,8 @@ namespace AICompanyTycoon.UI
             {
                 case CutsceneKind.StageUp: return "🎉 새 오피스로 이사! 🎉";
                 case CutsceneKind.Ipo: return "🔔 상장 성공! 🔔";
+                case CutsceneKind.FirstHire: return "🎉 첫 동료 합류! 🎉";
+                case CutsceneKind.SpecialHire: return "⭐ 특별 인재 영입! ⭐";
                 default: return brief ? "신제품 출시" : "🎉 신제품 출시! 🎉";
             }
         }
@@ -296,6 +303,22 @@ namespace AICompanyTycoon.UI
             motions.Add(StartCoroutine(FanCheer(c, 0.6f)));
             motions.Add(StartCoroutine(BellRing(bell)));
             motions.Add(StartCoroutine(MoneyRain(stage)));
+        }
+
+        // ---- 고용 모달 (첫 직원·특별 인재) ---- 신입 1명을 cheer 프레임으로 환영. special이면 발표자 글로우 강조.
+        void PopulateHireModal(RectTransform stage, string payload, bool special, List<Coroutine> motions)
+        {
+            AddSpotlight(stage);
+            if (special) AddPresenterGlow(stage, motions);
+            AddStageFloor(stage);
+            var key = string.IsNullOrEmpty(payload) ? "actor_human" : payload;
+            var newcomer = MakeActor(stage, key, new Vector2(0f, -90f), 240f);
+            var fa = IconLibrary.Get(key + "_cheer_a");
+            var fb = IconLibrary.Get(key + "_cheer_b");
+            if (fa != null && fb != null)
+                newcomer.gameObject.AddComponent<CutsceneFrameAnim>().Init(newcomer.GetComponent<Image>(), new[] { fa, fb }, 4f);
+            motions.Add(StartCoroutine(FanCheer(newcomer, 0f)));
+            BurstConfetti(stage, special ? 40 : 28);
         }
 
         // ======================= 미니 코너 윈도우 (능력업·해금) =======================
