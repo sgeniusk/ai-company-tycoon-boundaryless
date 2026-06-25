@@ -37,5 +37,20 @@ namespace AICompanyTycoon.Tests.EditMode
             Assert.AreEqual(EventResultTone.Neutral, EventResultJudge.Judge(Choice()));
             Assert.AreEqual(EventResultTone.Neutral, EventResultJudge.Judge(null));
         }
+
+        [Test]
+        public void Crisis_WorstChoiceBelowThreshold_IsCrisis()
+        {
+            var choices = new List<EventChoice> { Choice((ResourceId.Cash, -3000)), Choice((ResourceId.Cash, 100)) };
+            Assert.IsTrue(EventResultJudge.IsCrisis(choices, -2000));
+        }
+
+        [Test]
+        public void Crisis_AllMild_NotCrisis()
+        {
+            var choices = new List<EventChoice> { Choice((ResourceId.Cash, -100)) };
+            Assert.IsFalse(EventResultJudge.IsCrisis(choices, -2000));
+            Assert.IsFalse(EventResultJudge.IsCrisis(null, -2000));
+        }
     }
 }

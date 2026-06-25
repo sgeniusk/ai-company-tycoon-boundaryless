@@ -3033,7 +3033,11 @@ namespace AICompanyTycoon.UI
             if (ev.id != _lastTriggeredEventId)
             {
                 _lastTriggeredEventId = ev.id;
-                CutsceneDirector.PlayEventTrigger();
+                // 3단계 — 위협적 이벤트(최악 선택 합 ≤ -2000)는 전체 위기 모달, 그 외는 당황 코너(2단계).
+                if (AICompanyTycoon.Systems.EventResultJudge.IsCrisis(ev.choices, -2000))
+                    CutsceneDirector.PlayCrisis("actor_human");
+                else
+                    CutsceneDirector.PlayEventTrigger();
             }
             _eventTitle.text = ev.displayName;
             _eventDescription.text = ev.description;

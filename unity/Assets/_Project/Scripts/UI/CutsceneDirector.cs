@@ -11,7 +11,7 @@ using UnityEngine.UI;
 namespace AICompanyTycoon.UI
 {
     public enum CutsceneTier { Mini, Medium, Big }
-    public enum CutsceneKind { Launch, StageUp, Ipo, FirstHire, SpecialHire }
+    public enum CutsceneKind { Launch, StageUp, Ipo, FirstHire, SpecialHire, Crisis }
 
     public class CutsceneDirector : MonoBehaviour
     {
@@ -130,6 +130,7 @@ namespace AICompanyTycoon.UI
         // 첫 직원·특별 인재 전체 모달 진입점 (3단계). payload = actorKey(고용 직원 kind 매핑).
         public static void PlayFirstHire(string actorKey) => _instance?.TryModal(CutsceneKind.FirstHire, actorKey);
         public static void PlaySpecialHire(string actorKey) => _instance?.TryModal(CutsceneKind.SpecialHire, actorKey);
+        public static void PlayCrisis(string actorKey) => _instance?.TryModal(CutsceneKind.Crisis, actorKey);
 
         void TryModal(CutsceneKind kind, string payload)
         {
@@ -166,7 +167,7 @@ namespace AICompanyTycoon.UI
 
             // 타이틀바
             var titleBar = NewRect("TitleBar", board, new Vector2(0f, 320f), new Vector2(956f, 96f));
-            AddImage(titleBar, TealBar);
+            AddImage(titleBar, kind == CutsceneKind.Crisis ? Hex("c0392b") : TealBar);
             var title = UiFactory.Label(titleBar, TitleFor(kind, brief), 46);
             title.color = Cream;
             title.alignment = TextAnchor.MiddleCenter;
@@ -185,6 +186,7 @@ namespace AICompanyTycoon.UI
                 case CutsceneKind.Ipo: PopulateIpo(stage, motions); break;
                 case CutsceneKind.FirstHire: PopulateHireModal(stage, payload, false, motions); break;
                 case CutsceneKind.SpecialHire: PopulateHireModal(stage, payload, true, motions); break;
+                case CutsceneKind.Crisis: PopulateCrisis(stage, payload, motions); break;
             }
 
             // 하단 안내
@@ -208,7 +210,7 @@ namespace AICompanyTycoon.UI
             if (!skip) UiTween.Punch(title.transform, 0.14f, 0.16f); // 타이틀 등장 펀치
             if (!skip)
             {
-                BurstConfetti(stage, brief ? 16 : (bigMoment ? 44 : 32));
+                if (kind != CutsceneKind.Crisis) BurstConfetti(stage, brief ? 16 : (bigMoment ? 44 : 32));
                 UiTween.FadeIn(hintCg, 0.2f, 0.2f);
             }
             float t = 0f;
@@ -229,6 +231,7 @@ namespace AICompanyTycoon.UI
                 case CutsceneKind.Ipo: return "🔔 상장 성공! 🔔";
                 case CutsceneKind.FirstHire: return "🎉 첫 동료 합류! 🎉";
                 case CutsceneKind.SpecialHire: return "⭐ 특별 인재 영입! ⭐";
+                case CutsceneKind.Crisis: return "⚠ 위기 발생! ⚠";
                 default: return brief ? "신제품 출시" : "🎉 신제품 출시! 🎉";
             }
         }
@@ -319,6 +322,25 @@ namespace AICompanyTycoon.UI
                 newcomer.gameObject.AddComponent<CutsceneFrameAnim>().Init(newcomer.GetComponent<Image>(), new[] { fa, fb }, 4f);
             motions.Add(StartCoroutine(FanCheer(newcomer, 0f)));
             BurstConfetti(stage, special ? 40 : 28);
+        }
+
+        // ---- 위기 모달 ---- 경고 무대 + 직원 놀람(surprise 프레임) + 붉은 경고. 색종이 없음(긴장 유지).
+        void PopulateCrisis(RectTransform stage, string payload, List<Coroutine> motions)
+        {
+            AddStageFloor(stage);
+            var key = string.IsNullOrEmpty(payload) ? "actor_human" : payload;
+            var actor = MakeActor(stage, key, new Vector2(0f, -90f), 240f);
+            var fa = IconLibrary.Get(key + "_surprise_a");
+            var fb = IconLibrary.Get(key + "_surprise_b");
+            if (fa != null && fb != null)
+                actor.gameObject.AddComponent<CutsceneFrameAnim>().Init(actor.GetComponent<Image>(), new[] { fa, fb }, 4f);
+            var warn = UiFactory.Label(stage, "!", 110);
+            warn.color = Hex("e24b3a");
+            var wr = warn.GetComponent<RectTransform>();
+            wr.anchorMin = wr.anchorMax = new Vector2(0.5f, 0.5f);
+            wr.anchoredPosition = new Vector2(150f, 90f);
+            wr.sizeDelta = new Vector2(120f, 150f);
+            warn.alignment = TextAnchor.MiddleCenter;
         }
 
         // ======================= 미니 코너 윈도우 (능력업·해금) =======================

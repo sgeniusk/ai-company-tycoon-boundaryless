@@ -363,6 +363,14 @@ namespace AICompanyTycoon.Tests.PlayMode
                 yield return CaptureCanvas(cs9, "26-special-hire.png");
             yield return WaitRealtime(2.2f);
 
+            // 27) 위기 모달 (feat-025 3단계) — 붉은 경고 타이틀·surprise 프레임·색종이 없음.
+            CutsceneDirector.PlayCrisis("actor_human");
+            yield return WaitRealtime(0.6f);
+            var cs10 = GameObject.Find("CutsceneDirector");
+            if (cs10 != null && cs10.GetComponent<Canvas>() != null)
+                yield return CaptureCanvas(cs10, "27-crisis.png");
+            yield return WaitRealtime(2.2f);
+
             Object.Destroy(go);
             yield return null;
         }
