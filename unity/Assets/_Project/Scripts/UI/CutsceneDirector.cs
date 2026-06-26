@@ -11,7 +11,7 @@ using UnityEngine.UI;
 namespace AICompanyTycoon.UI
 {
     public enum CutsceneTier { Mini, Medium, Big }
-    public enum CutsceneKind { Launch, StageUp, Ipo, FirstHire, SpecialHire, Crisis }
+    public enum CutsceneKind { Launch, StageUp, Ipo, FirstHire, SpecialHire, Crisis, Ending }
 
     public class CutsceneDirector : MonoBehaviour
     {
@@ -132,6 +132,19 @@ namespace AICompanyTycoon.UI
         public static void PlaySpecialHire(string actorKey) => _instance?.TryModal(CutsceneKind.SpecialHire, actorKey);
         public static void PlayCrisis(string actorKey) => _instance?.TryModal(CutsceneKind.Crisis, actorKey);
 
+        // 엔딩 컷씬 진입점 (feat-026). bucket=톤 버킷, title=결과 모달과 동일 결말 타이틀.
+        EndingBucket _endingBucket;
+        string _endingTitle;
+        public static void PlayEnding(EndingBucket bucket, string title) => _instance?.TryEnding(bucket, title);
+
+        void TryEnding(EndingBucket bucket, string title)
+        {
+            if (_playing || _root == null) return;
+            _endingBucket = bucket;
+            _endingTitle = title;
+            StartCoroutine(PlayModalCo(CutsceneKind.Ending, null));
+        }
+
         void TryModal(CutsceneKind kind, string payload)
         {
             if (_playing || _root == null) return;
@@ -146,6 +159,10 @@ namespace AICompanyTycoon.UI
             float hold = brief ? 0.8f : 1.6f;
             // 빅 모먼트 판정 — 승급·상장, 또는 첫 출시(아직 간략화 안 된 풀 발표회). 가산 플래시·팝·색종이 밀도용.
             bool bigMoment = kind == CutsceneKind.StageUp || kind == CutsceneKind.Ipo || !brief;
+            // feat-026: 엔딩 비축하 버킷(차고로/몰락)은 플래시·색종이 억제.
+            bool endingSomber = kind == CutsceneKind.Ending
+                && (_endingBucket == EndingBucket.Restart || _endingBucket == EndingBucket.Collapse);
+            if (endingSomber) bigMoment = false;
 
             // --- 스크림 (입력 차단 + 탭 스킵) ---
             var scrim = UiFactory.Panel(_root, new Color(0.06f, 0.05f, 0.09f, 0.62f));
@@ -167,7 +184,10 @@ namespace AICompanyTycoon.UI
 
             // 타이틀바
             var titleBar = NewRect("TitleBar", board, new Vector2(0f, 320f), new Vector2(956f, 96f));
-            AddImage(titleBar, kind == CutsceneKind.Crisis ? Hex("c0392b") : TealBar);
+            Color barColor = TealBar;
+            if (kind == CutsceneKind.Crisis) barColor = Hex("c0392b");
+            else if (kind == CutsceneKind.Ending) barColor = EndingBarColor(_endingBucket);
+            AddImage(titleBar, barColor);
             var title = UiFactory.Label(titleBar, TitleFor(kind, brief), 46);
             title.color = Cream;
             title.alignment = TextAnchor.MiddleCenter;
@@ -187,6 +207,7 @@ namespace AICompanyTycoon.UI
                 case CutsceneKind.FirstHire: PopulateHireModal(stage, payload, false, motions); break;
                 case CutsceneKind.SpecialHire: PopulateHireModal(stage, payload, true, motions); break;
                 case CutsceneKind.Crisis: PopulateCrisis(stage, payload, motions); break;
+                case CutsceneKind.Ending: PopulateEnding(stage, _endingBucket, motions); break;
             }
 
             // 하단 안내
@@ -210,7 +231,7 @@ namespace AICompanyTycoon.UI
             if (!skip) UiTween.Punch(title.transform, 0.14f, 0.16f); // 타이틀 등장 펀치
             if (!skip)
             {
-                if (kind != CutsceneKind.Crisis) BurstConfetti(stage, brief ? 16 : (bigMoment ? 44 : 32));
+                if (kind != CutsceneKind.Crisis && !endingSomber) BurstConfetti(stage, brief ? 16 : (bigMoment ? 44 : 32));
                 UiTween.FadeIn(hintCg, 0.2f, 0.2f);
             }
             float t = 0f;
@@ -232,6 +253,7 @@ namespace AICompanyTycoon.UI
                 case CutsceneKind.FirstHire: return "🎉 첫 동료 합류! 🎉";
                 case CutsceneKind.SpecialHire: return "⭐ 특별 인재 영입! ⭐";
                 case CutsceneKind.Crisis: return "⚠ 위기 발생! ⚠";
+                case CutsceneKind.Ending: return string.IsNullOrEmpty(_endingTitle) ? "결말" : _endingTitle;
                 default: return brief ? "신제품 출시" : "🎉 신제품 출시! 🎉";
             }
         }
@@ -341,6 +363,64 @@ namespace AICompanyTycoon.UI
             wr.anchoredPosition = new Vector2(150f, 90f);
             wr.sizeDelta = new Vector2(120f, 150f);
             warn.alignment = TextAnchor.MiddleCenter;
+        }
+
+        // ---- 엔딩 무대 (feat-026) ---- 버킷 톤에 맞춘 결말. 전설=3인 환호+글로우, 성공=2인 환호, 차고로=낙담, 몰락=놀람+경고.
+        void PopulateEnding(RectTransform stage, EndingBucket bucket, List<Coroutine> motions)
+        {
+            AddStageFloor(stage);
+            switch (bucket)
+            {
+                case EndingBucket.Legendary:
+                    AddSpotlight(stage);
+                    AddPresenterGlow(stage, motions);
+                    EndingActor(stage, "actor_human", new Vector2(-220f, -150f), 185f, "_cheer", motions, 0f);
+                    EndingActor(stage, "actor_ai",    new Vector2(0f, -160f),   195f, "_cheer", motions, 0.33f);
+                    EndingActor(stage, "actor_robot", new Vector2(220f, -150f), 185f, "_cheer", motions, 0.66f);
+                    break;
+                case EndingBucket.Triumph:
+                    AddSpotlight(stage);
+                    EndingActor(stage, "actor_human", new Vector2(-150f, -130f), 200f, "_cheer", motions, 0f);
+                    EndingActor(stage, "actor_ai",    new Vector2(150f, -130f),  200f, "_cheer", motions, 0.4f);
+                    break;
+                case EndingBucket.Restart:
+                    EndingActor(stage, "actor_human", new Vector2(0f, -90f), 240f, "_sad", motions, -1f);
+                    break;
+                case EndingBucket.Collapse:
+                    EndingActor(stage, "actor_human", new Vector2(0f, -90f), 240f, "_surprise", motions, -1f);
+                    var warn2 = UiFactory.Label(stage, "!", 110);
+                    warn2.color = Hex("e24b3a");
+                    var wr2 = warn2.GetComponent<RectTransform>();
+                    wr2.anchorMin = wr2.anchorMax = new Vector2(0.5f, 0.5f);
+                    wr2.anchoredPosition = new Vector2(150f, 90f);
+                    wr2.sizeDelta = new Vector2(120f, 150f);
+                    warn2.alignment = TextAnchor.MiddleCenter;
+                    break;
+            }
+        }
+
+        // 직원 1명을 지정 반응 프레임(_cheer/_sad/_surprise)으로 세운다. 프레임 미반입 시 정적 포즈. cheerDelay<0 이면 점프 모션 생략.
+        RectTransform EndingActor(RectTransform stage, string key, Vector2 pos, float size, string react, List<Coroutine> motions, float cheerDelay)
+        {
+            var actor = MakeActor(stage, key, pos, size);
+            var fa = IconLibrary.Get(key + react + "_a");
+            var fb = IconLibrary.Get(key + react + "_b");
+            if (fa != null && fb != null)
+                actor.gameObject.AddComponent<CutsceneFrameAnim>().Init(actor.GetComponent<Image>(), new[] { fa, fb }, 4f);
+            if (cheerDelay >= 0f) motions.Add(StartCoroutine(FanCheer(actor, cheerDelay)));
+            return actor;
+        }
+
+        // 엔딩 버킷별 타이틀바 색 — 전설 골드 / 몰락 붉음 / 차고로 무채색 / 성공 틸.
+        Color EndingBarColor(EndingBucket bucket)
+        {
+            switch (bucket)
+            {
+                case EndingBucket.Legendary: return Gold;
+                case EndingBucket.Collapse:  return Hex("c0392b");
+                case EndingBucket.Restart:   return Hex("6b6357");
+                default:                     return TealBar;
+            }
         }
 
         // ======================= 미니 코너 윈도우 (능력업·해금) =======================
