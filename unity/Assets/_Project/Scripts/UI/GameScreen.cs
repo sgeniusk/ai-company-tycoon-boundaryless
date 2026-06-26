@@ -641,17 +641,21 @@ namespace AICompanyTycoon.UI
             }
 
             var kinds = new[] { "actor_human", "actor_ai", "actor_robot" };
-            int front = Mathf.Min(count, 4);
-            int back = count - front;               // 0~6 — 뒷줄
-            int busy = front >= 2 ? front / 2 : -1; // 앞줄 한 명은 '열일 불꽃'
+            int[] plan = OfficeLayout.RowPlan(count); // plan[0]=앞 밴드
 
-            // 뒷줄 먼저(뒤에 렌더) — 작게·위.
-            if (back > 0)
+            // 밴드별 시작 시드(앞부터 누적) — 직원 종류·색 변형 안정.
+            int[] startSeed = new int[plan.Length];
+            for (int b = 1; b < plan.Length; b++) startSeed[b] = startSeed[b - 1] + plan[b - 1];
+
+            // 뒷 밴드부터 그려(뒤) 앞 밴드가 겹쳐 깊이를 준다.
+            for (int b = plan.Length - 1; b >= 0; b--)
             {
-                PlaceActorRow(kinds, front, back, 0.88f, 292f, 0.14f, allowSpeech: false, busyLocal: -1); // 거의 평평한 2열 — 원근 완화 + 네이티브 배경 바닥선 정합 (feat-023)
+                var band = OfficeLayout.Band(b);
+                bool isFront = b == 0;
+                int busyLocal = isFront && plan[b] >= 2 ? plan[b] / 2 : -1; // 앞줄 한 명만 열일 불꽃
+                float margin = isFront ? 0.08f : 0.16f;                    // 뒷줄은 더 안쪽으로 모음
+                PlaceActorRow(kinds, startSeed[b], plan[b], band.scale, band.footY, margin, allowSpeech: isFront, busyLocal: busyLocal);
             }
-            // 앞줄 — 크게·아래(앞). 책상이 다리를 가려 앉은 연출.
-            PlaceActorRow(kinds, 0, front, 1.0f, 192f, 0.08f, allowSpeech: true, busyLocal: busy);
 
             FlushActorMoods(); // 월 정산 중 쌓인 직원 반응(card_use/alert)을 재생성된 액터에 적용 (feat-023)
         }
@@ -667,6 +671,12 @@ namespace AICompanyTycoon.UI
                 int variant = ActorPalette.VariantFor(seed);          // 직원별 색 변형 (feat-023)
                 var sprite = ActorPalette.Recolored(kind, "", variant);
                 float xnorm = count <= 1 ? 0.5f : marginNorm + (1f - 2f * marginNorm) * ((i + 0.5f) / count);
+                // 일렬 느낌 제거 — 시드 결정적 지터로 가로 위치를 ±소량 흔든다.
+                if (count > 1)
+                {
+                    float jitter = (((seed * 73856093) & 0x3ff) / 1023f - 0.5f) * 0.05f; // ±0.025
+                    xnorm = Mathf.Clamp(xnorm + jitter, marginNorm * 0.5f, 1f - marginNorm * 0.5f);
+                }
 
                 var actorGo = new GameObject("Actor", typeof(RectTransform), typeof(Image));
                 actorGo.transform.SetParent(_officeSceneContent, false);
