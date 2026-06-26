@@ -3199,6 +3199,9 @@ namespace AICompanyTycoon.UI
                 _resultMessage.text = AppendEquityEnding(body);
             }
 
+            // feat-026: 결과 모달 직전 엔딩 버킷 컷씬(전체화면 클라이맥스). 닫히면 뒤의 결과 모달이 드러난다.
+            var endingBucket = EndingCutsceneJudge.Judge(ending, _context.Model, won);
+            CutsceneDirector.PlayEnding(endingBucket, _resultTitle.text);
             _resultModal.SetActive(true);
             PopInCard(_resultModal, "ResultCard");
         }
