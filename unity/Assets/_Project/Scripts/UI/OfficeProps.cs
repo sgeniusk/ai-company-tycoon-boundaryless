@@ -32,17 +32,20 @@ namespace AICompanyTycoon.UI
             new PropSpec("prop_bookshelf", 0.985f, 8f, 120f),
         };
 
-        // 중앙 바닥 러그 — 가장 뒤(backmost)에 깔아 바닥을 잡아준다. 신규 스프라이트(미반입 시 skip).
-        static readonly PropSpec Rug = new PropSpec("prop_rug", 0.5f, 116f, 60f);
-
-        // 중간 바닥 존 — 빈 띠를 메운다. 신규 가구(prop_*) + 기존 소품 추가 인스턴스(즉시 효과). 작은 Height로 원근(뒤·작게).
-        static readonly PropSpec[] MidProps =
+        // 바닥 소품 — 직원 위쪽 빈 바닥 띠를 메운다. footY 내림차순(뒤·작게부터)으로 그려 앞 소품이 겹친다.
+        // 뒤 바닥(벽 근처)은 높은 footY·작은 Height로 원근, 앞 바닥은 낮은 footY·큰 Height. 신규 가구 미반입 시 graceful skip.
+        static readonly PropSpec[] FloorProps =
         {
-            new PropSpec("prop_meeting_table", 0.50f, 205f, 86f), // 신규 — 중앙 회의 테이블
-            new PropSpec("prop_partition", 0.70f, 198f, 78f),     // 신규 — 우 파티션
-            new PropSpec("prop_plant_big", 0.30f, 188f, 104f),    // 신규 — 좌 키큰 화분
-            new PropSpec("prop_plant", 0.40f, 176f, 60f),         // 기존 — 중간 화분(추가 인스턴스, 즉시 효과)
-            new PropSpec("prop_bookshelf", 0.84f, 196f, 92f),     // 기존 — 우상 수납(추가 인스턴스)
+            // 뒤 바닥(벽 근처) — 원근 작게, 빈 띠 채움
+            new PropSpec("prop_partition", 0.63f, 430f, 72f),      // 신규 — 뒤 칸막이
+            new PropSpec("prop_plant_big", 0.19f, 414f, 86f),      // 신규 — 뒤 좌 키큰 화분
+            new PropSpec("prop_shelf_low", 0.81f, 406f, 66f),      // 신규 — 뒤 우 수납장
+            new PropSpec("prop_bookshelf", 0.89f, 248f, 86f),      // 기존 — 우 수납(중간 깊이)
+            // 중간 바닥 — 직원 근처
+            new PropSpec("prop_meeting_table", 0.40f, 196f, 82f),  // 신규 — 회의 테이블
+            new PropSpec("prop_plant", 0.30f, 172f, 60f),          // 기존 — 화분
+            // 중앙 러그(바닥 앵커) — 직원 앞 바닥, 가장 앞(floor 중 frontmost)
+            new PropSpec("prop_rug", 0.50f, 126f, 96f),            // 신규 — 중앙 러그
         };
 
         // 성급(배경 키)별 특화 소품 — feat-023 신규 6종. 배경마다 1~2종으로 과밀 회피 + 성급 정체성.
@@ -106,11 +109,9 @@ namespace AICompanyTycoon.UI
                 layer.transform.SetSiblingIndex(stageParent.GetSiblingIndex());
             }
 
-            PlaceProp(layer.transform, Rug); // 가장 뒤 — 바닥 러그
-
-            foreach (var prop in MidProps)
+            foreach (var prop in FloorProps)
             {
-                PlaceProp(layer.transform, prop); // 중간 바닥
+                PlaceProp(layer.transform, prop); // 바닥 소품 — 뒤(높은 footY)부터 앞으로
             }
 
             foreach (var prop in BaseProps)
