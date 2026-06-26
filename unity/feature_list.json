@@ -302,6 +302,15 @@
       "status": "done",
       "owner": "Claude(판정·연출코드·트리거·검증, 서브에이전트 주도)",
       "evidence": "**완료(2026-06-26, EditMode 157/157 + PlayMode 캡처 28~31 육안).** 서브에이전트 주도 5-task TDD(각 task 스펙+품질 2단 리뷰). #1 EndingCutsceneJudge(won/priority/파산 신호 → 4버킷 EndingBucket, 헤드리스 순수함수, EditMode 7 신규 150→157). #2 CutsceneDirector.Ending 종류 — PlayEnding 진입점 + PopulateEnding/EndingActor/EndingBarColor + somber 억제·타이틀바 색 분기, 기존 PlayModalCo 셸·MakeActor·BurstConfetti·AddSpotlight·FanCheer·CutsceneFrameAnim 재사용, 기존 컷씬 종류 동작 byte-identical 보존. #3 GameScreen.ShowResultModal — 결과 모달 SetActive 직전 Judge+PlayEnding 3줄 가산(기존 텍스트·도감 기록·지분 결말 무변경, 컷씬 Overlay sortingOrder 230이 위라 순서 정합). #4 ScreenshotCaptureTests Capture_AllStates에 엔딩 4종 캡처(28~31) 추가, PlayMode 실행. **Claude 육안 검증 — 28-전설(골드 타이틀바·3인 cheer 환호·색종이 폭풍·스포트라이트+발표자글로우) / 29-성공(틸 타이틀바·2인 cheer·색종이) / 30-차고로(무채색 6b6357 타이틀바·낙담 sad 단독·색종이 없음) / 31-몰락(붉은 c0392b 타이틀바·놀람 surprise 단독·경고! 기호·색종이 없음) — 네 버킷 톤 뚜렷이 차별화.** 핵심 — Restart/Collapse는 동일 garage_restart 텍스트('다시 차고로')를 쓰되 컷씬 톤만 파산 신호(cash≤0)로 갈린다(같은 타이틀에도 30 vs 31 시각 차별 확인). 코어·세이브·엔딩 데이터 무변경. 커밋 21eab39/b17b72a/81c28da/2538bd1. 미해결(후속) — 원하면 버킷별 전용 크로마키 프레임 Codex 양산으로 교체(현 골격은 기존 cheer/sad/surprise 재사용). 정본 docs/feat-026-multi-ending-cutscene-design.md"
+    },
+    {
+      "id": "feat-027",
+      "name": "오피스 구성 재작업 — 깊이 배치·자연 군집·중간 바닥 채우기 (P28)",
+      "description": "사용자 피드백(2026-06-26) — 게임플레이 오피스가 비어 보임(소품 바닥 구석·직원 일렬·중간 바닥 텅). OfficeLayout 깊이 배치 + 다열 군집 + 중간 바닥 소품/신규 가구로 채운다. 코어 무변경. feat-028(타임랩스·분위)은 이 위에. 정본 docs/feat-027-office-composition-design.md, 계획 docs/feat-027-office-composition-plan.md.",
+      "dependencies": ["feat-019", "feat-023"],
+      "status": "done",
+      "owner": "Claude(배치 로직·통합·검증, 서브에이전트 주도) + Codex(신규 가구 스프라이트, 핸드오프 대기)",
+      "evidence": "코드 골격 완료(2026-06-26, EditMode 161/161 + PlayMode 캡처 01-main/01d/01f). 서브에이전트 주도 TDD(각 task 스펙+품질 2단 리뷰). #1 OfficeLayout(Band 원근 footY 150/232/314·scale 1.0/0.84/0.70 + RowPlan 앞쪽가중 분배 3→[2,1] 10→[4,3,3], 헤드리스 EditMode 4 신규 157→161, 테스트 asmdef에 AICompanyTycoon.UI 참조 1줄 추가). #2 RefreshOfficeScene 다열 깊이 군집(뒷밴드부터 렌더·startSeed 누적·앞밴드만 speech/flame) + PlaceActorRow X jitter(시드 결정적 ±0.025, 일렬 탈피). #3 OfficeProps 깊이 존 — Rug(backmost) + MidProps 5종(신규 가구 4 graceful skip + 기존 prop_plant/bookshelf 즉시 효과), 그리기 순서 러그→중간→앞가장자리→성급. 코어·세이브 무변경. 캡처 — 01d 3밴드 원근 확연, 01-main [2,1] 스태거. 잔여 — 직원 위쪽 빈 바닥 띠는 신규 가구(Codex) + footY 미세조정 후 완성. #4 신규 가구 5종 Codex 핸드오프 docs/codex-handoff/feat027-office-furniture.md(prop_rug/meeting_table/partition/plant_big/shelf_low, feat-024 크로마키 파이프라인). 커밋 0d98947/5b55f21/b18e769/f2c6fa8. 정본 docs/feat-027-office-composition-design.md."
     }
   ]
 }
