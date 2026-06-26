@@ -6,6 +6,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.TestTools;
+using AICompanyTycoon.Systems;
 using AICompanyTycoon.UI;
 
 namespace AICompanyTycoon.Tests.PlayMode
@@ -369,6 +370,38 @@ namespace AICompanyTycoon.Tests.PlayMode
             var cs10 = GameObject.Find("CutsceneDirector");
             if (cs10 != null && cs10.GetComponent<Canvas>() != null)
                 yield return CaptureCanvas(cs10, "27-crisis.png");
+            yield return WaitRealtime(2.2f);
+
+            // 28) 엔딩 전설 (feat-026) — 골드 타이틀·3인 환호·색종이 폭풍.
+            CutsceneDirector.PlayEnding(EndingBucket.Legendary, "🏆 프런티어 데모 제국");
+            yield return WaitRealtime(0.6f);
+            var cs11 = GameObject.Find("CutsceneDirector");
+            if (cs11 != null && cs11.GetComponent<Canvas>() != null)
+                yield return CaptureCanvas(cs11, "28-ending-legendary.png");
+            yield return WaitRealtime(2.2f);
+
+            // 29) 엔딩 성공 (feat-026) — 틸 타이틀·2인 환호.
+            CutsceneDirector.PlayEnding(EndingBucket.Triumph, "표준 세계의 복리 플랫폼");
+            yield return WaitRealtime(0.6f);
+            var cs12 = GameObject.Find("CutsceneDirector");
+            if (cs12 != null && cs12.GetComponent<Canvas>() != null)
+                yield return CaptureCanvas(cs12, "29-ending-triumph.png");
+            yield return WaitRealtime(2.2f);
+
+            // 30) 엔딩 차고로 (feat-026) — 무채색 타이틀·낙담(sad)·색종이 없음.
+            CutsceneDirector.PlayEnding(EndingBucket.Restart, "다시 차고로");
+            yield return WaitRealtime(0.6f);
+            var cs13 = GameObject.Find("CutsceneDirector");
+            if (cs13 != null && cs13.GetComponent<Canvas>() != null)
+                yield return CaptureCanvas(cs13, "30-ending-restart.png");
+            yield return WaitRealtime(2.2f);
+
+            // 31) 엔딩 몰락 (feat-026) — 붉은 타이틀·놀람(surprise)·경고 기호·색종이 없음.
+            CutsceneDirector.PlayEnding(EndingBucket.Collapse, "다시 차고로");
+            yield return WaitRealtime(0.6f);
+            var cs14 = GameObject.Find("CutsceneDirector");
+            if (cs14 != null && cs14.GetComponent<Canvas>() != null)
+                yield return CaptureCanvas(cs14, "31-ending-collapse.png");
             yield return WaitRealtime(2.2f);
 
             Object.Destroy(go);
