@@ -32,6 +32,19 @@ namespace AICompanyTycoon.UI
             new PropSpec("prop_bookshelf", 0.985f, 8f, 120f),
         };
 
+        // 중앙 바닥 러그 — 가장 뒤(backmost)에 깔아 바닥을 잡아준다. 신규 스프라이트(미반입 시 skip).
+        static readonly PropSpec Rug = new PropSpec("prop_rug", 0.5f, 116f, 60f);
+
+        // 중간 바닥 존 — 빈 띠를 메운다. 신규 가구(prop_*) + 기존 소품 추가 인스턴스(즉시 효과). 작은 Height로 원근(뒤·작게).
+        static readonly PropSpec[] MidProps =
+        {
+            new PropSpec("prop_meeting_table", 0.50f, 205f, 86f), // 신규 — 중앙 회의 테이블
+            new PropSpec("prop_partition", 0.70f, 198f, 78f),     // 신규 — 우 파티션
+            new PropSpec("prop_plant_big", 0.30f, 188f, 104f),    // 신규 — 좌 키큰 화분
+            new PropSpec("prop_plant", 0.40f, 176f, 60f),         // 기존 — 중간 화분(추가 인스턴스, 즉시 효과)
+            new PropSpec("prop_bookshelf", 0.84f, 196f, 92f),     // 기존 — 우상 수납(추가 인스턴스)
+        };
+
         // 성급(배경 키)별 특화 소품 — feat-023 신규 6종. 배경마다 1~2종으로 과밀 회피 + 성급 정체성.
         // 작은 Height로 캐릭터(≈220px)보다 낮게 둬 거친 픽셀을 배경 장식 수준으로 완화한다.
         static PropSpec[] StageProps(string backgroundKey)
@@ -93,14 +106,21 @@ namespace AICompanyTycoon.UI
                 layer.transform.SetSiblingIndex(stageParent.GetSiblingIndex());
             }
 
+            PlaceProp(layer.transform, Rug); // 가장 뒤 — 바닥 러그
+
+            foreach (var prop in MidProps)
+            {
+                PlaceProp(layer.transform, prop); // 중간 바닥
+            }
+
             foreach (var prop in BaseProps)
             {
-                PlaceProp(layer.transform, prop);
+                PlaceProp(layer.transform, prop); // 앞 가장자리(위에 겹침)
             }
 
             foreach (var prop in StageProps(backgroundKey))
             {
-                PlaceProp(layer.transform, prop);
+                PlaceProp(layer.transform, prop); // 성급 특화
             }
         }
 
