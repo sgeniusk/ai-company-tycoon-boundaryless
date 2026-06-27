@@ -320,6 +320,15 @@
       "status": "done",
       "owner": "Claude(판정·연출코드·검증, 서브에이전트 주도)",
       "evidence": "완료(2026-06-27, EditMode 170/170 + PlayMode 9/9 + 캡처 32~36 육안). 서브에이전트 주도 TDD(각 task 스펙+품질 2단 리뷰). #1 MonthMoodJudge(순익 Revenue-TotalCashCost/승급/경고/성장 4분위 Flat/Good/Great/Bad, 헤드리스 8+1 신규 161→170, 손실>승급 우선순위 테스트 포함) #2 ActorAnim PlayOneShot에 Cheer 추가 + PlayMoodReaction(분위별 직원 다양 포즈 — Great=Cheer/CardUse·Good=일부 Cheer·Bad=Alert·Flat=ambient + 분위 이모트, 균일 react_cheer 대체) #3 PlayMonthTransitionCo 타임랩스(빛 틴트 낮→밤 alpha 0→0.5→0 + Day 1→30 카운터, ~0.9초 입력차단) + HandleAdvanceMonth 코루틴화(전환→기존 페이오프 byte-identical 보존, GameScreen이 IDisposable이라 _canvas GraphicRaycaster를 코루틴 호스트로). #3b 임계경로 방어 — _advancing 재진입 가드(이중 월 진행 차단)·코루틴 try/finally 정리·null-runner 진단. 캡처 — 32~35 분위 4종 직원 반응 차별·36 타임랩스(밤 틴트+Day 16). 코어·세이브 무변경. 커밋 57b8ac0/362a03d/16e19f5/0ec4588/e0744ca. 정본 docs/feat-028-month-presentation-design.md."
+    },
+    {
+      "id": "feat-029",
+      "name": "월말 브리핑 + 다박자 월 진행 시퀀스 (P30)",
+      "description": "사용자 요청(2026-06-27) — 월말에 회사 운영결과를 손익계산서 브리핑 카드로. 타임랩스→중간 이벤트 일시정지→브리핑 다박자 시퀀스. 코어 무변경, 새 에셋 0. 분기/연말 보고서는 상장(IPO) 후속. 정본 docs/feat-029-monthly-briefing-design.md, 계획 docs/feat-029-monthly-briefing-plan.md.",
+      "dependencies": ["feat-028"],
+      "status": "done",
+      "owner": "Claude(판정·UI·시퀀스·검증, 서브에이전트 주도)",
+      "evidence": "완료(2026-06-27, EditMode 177/177 + PlayMode + 캡처 38/39 브리핑 육안). 서브에이전트 주도 TDD(각 task 스펙+품질 2단 리뷰). #1 MonthBriefing(MonthSummary→표시 모델, 순익=Revenue-TotalCashCost·조건부 행·MonthMoodJudge 분위, 헤드리스 7+1 신규 170→177) #2 BuildBriefingModal/ShowBriefing 손익계산서 카드(매출−비용내역(기본·급여·연산)=순익(양수 녹색/음수 빨강)+신규 이용자·데이터+조건부 승급/세계이벤트/경고 행+분위 배지, BuildResultModal 패턴) #3 MonthPayoffCo 재구성(타임랩스 0.9→2.0초 + 이벤트 전환 중간 p>=0.5 일시정지(틴트 피크 동결·선택 대기) + 비터미널 월말 브리핑 닫기 대기, _advancing 가드·byte-identical 페이오프 보존, 터미널은 결과 모달만). #3b 브리핑 카드 ContentSizeFitter(내용 높이 자동·중앙 정렬, 빈 공간 제거). 캡처 — 38-대박(순익 +녹색)/39-부진(순익 −빨강+경고 행) 손익계산서 육안. 코어·세이브 무변경. 커밋 bdca1d8/f485cbf/58ed4c0/835b460/f506174. 정본 docs/feat-029-monthly-briefing-design.md."
     }
   ]
 }
