@@ -222,8 +222,9 @@ namespace AICompanyTycoon.UI
             }
         }
 
-        // 월 진행 타임랩스 — 오피스 위 빛 틴트(낮→밤→낮) 스윕 + "Day 1→30" 카운터. ~0.9초, 입력 차단. 새 에셋 0 (feat-028).
-        public System.Collections.IEnumerator PlayMonthTransitionCo()
+        // 월 진행 타임랩스 — 오피스 위 빛 틴트(낮→밤→낮) 스윕 + "Day 1→30" 카운터. 2초, 입력 차단. 새 에셋 0 (feat-028, feat-029).
+        // pendingEvent가 있으면 진행률 50%에서 이벤트 모달을 띄우고 해소될 때까지 일시정지한다.
+        public System.Collections.IEnumerator PlayMonthTransitionCo(GameEventDef pendingEvent = null)
         {
             if (_canvas == null) yield break;
 
@@ -248,14 +249,22 @@ namespace AICompanyTycoon.UI
                 dr.sizeDelta = new Vector2(360f, 70f);
                 dr.anchoredPosition = Vector2.zero;
 
-                float dur = 0.9f, t = 0f;
+                float dur = 2.0f, t = 0f;       // 다박자 — 길게 (feat-029)
+                bool eventDone = pendingEvent == null;
                 while (t < dur)
                 {
                     t += Time.unscaledDeltaTime;
                     float p = Mathf.Clamp01(t / dur);
-                    ti.color = new Color(0.05f, 0.07f, 0.16f, Mathf.Sin(p * Mathf.PI) * 0.5f); // 0→0.5→0
+                    ti.color = new Color(0.05f, 0.07f, 0.16f, Mathf.Sin(p * Mathf.PI) * 0.5f);
                     int day = Mathf.Clamp(1 + Mathf.FloorToInt(p * 30f), 1, 30);
                     dayLabel.text = "Day " + day;
+                    if (!eventDone && p >= 0.5f)
+                    {
+                        ShowEventModal(pendingEvent);
+                        _pendingAlert += UnityEngine.Random.Range(1, 3); // 직원 놀람 (feat-023)
+                        while (_context != null && _context.Events != null && _context.Events.Current != null) yield return null;
+                        eventDone = true;
+                    }
                     yield return null;
                 }
             }
@@ -267,28 +276,21 @@ namespace AICompanyTycoon.UI
             }
         }
 
-        // 정산 후 페이오프 — 타임랩스 전환을 앞에 끼우고 기존 순서(이벤트·도파민·해금·결과)를 보존 (feat-028).
+        // 정산 후 페이오프 — 이벤트 롤→타임랩스(중간 이벤트 일시정지)→월말 브리핑 순으로 진행 (feat-028, feat-029).
         System.Collections.IEnumerator MonthPayoffCo(
             Dictionary<string, VisibilityState> visibilityBefore,
             HashSet<string> synergiesBefore)
         {
             try
             {
-                yield return PlayMonthTransitionCo();
+                var balance = _context.Catalog.balance;
+                GameEventDef triggered =
+                    (!_terminal && balance != null && UnityEngine.Random.value < (float)balance.eventTriggerChance)
+                        ? _context.Events.TryTrigger() : null;
+
+                yield return PlayMonthTransitionCo(triggered);
 
                 SetStatus("월간 정산이 완료되었습니다.");
-
-                var balance = _context.Catalog.balance;
-                if (!_terminal && balance != null && UnityEngine.Random.value < (float)balance.eventTriggerChance)
-                {
-                    var triggered = _context.Events.TryTrigger();
-                    if (triggered != null)
-                    {
-                        ShowEventModal(triggered);
-                        _pendingAlert += UnityEngine.Random.Range(1, 3); // 직원 1~2명 놀람 반응 (feat-023)
-                    }
-                }
-
                 RefreshAll();
                 ShowMonthlyDopamine(_lastSummary); // 수익 플로팅 + 환호 + 사건 토스트 (feat-010)
                 AnnounceDiscoveries(visibilityBefore); // ???→실명 해금 모먼트 (feat-012 #4)
@@ -299,12 +301,20 @@ namespace AICompanyTycoon.UI
                 {
                     ShowResultModal(_lastSummary.GameWon, _lastSummary.Outcome);
                 }
-                else if (_pendingInvestment != null && (_context.Events == null || _context.Events.Current == null))
+                else
                 {
-                    // 이벤트 모달이 없을 때만 — 시리즈 투자 제안을 띄운다 (feat-015 #3).
-                    var offer = _pendingInvestment;
-                    _pendingInvestment = null;
-                    ShowInvestmentOffer(offer);
+                    // 비종료 달 — 브리핑 모달을 띄우고 닫힐 때까지 대기한 뒤 투자 제안을 이어서 띄운다 (feat-029).
+                    bool briefingClosed = false;
+                    ShowBriefing(_lastSummary, () => briefingClosed = true);
+                    while (!briefingClosed) yield return null;
+
+                    if (_pendingInvestment != null && (_context.Events == null || _context.Events.Current == null))
+                    {
+                        // 이벤트 모달이 없을 때만 — 시리즈 투자 제안을 띄운다 (feat-015 #3).
+                        var offer = _pendingInvestment;
+                        _pendingInvestment = null;
+                        ShowInvestmentOffer(offer);
+                    }
                 }
             }
             finally
