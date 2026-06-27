@@ -61,5 +61,12 @@ namespace AICompanyTycoon.Tests.EditMode
         {
             Assert.AreEqual(MonthMood.Flat, MonthMoodJudge.Judge(null));
         }
+
+        [Test]
+        public void Loss_BeatsPromotion_IsBad()
+        {
+            // 승급해도 적자면 Bad가 우선(손실/경고 우선순위).
+            Assert.AreEqual(MonthMood.Bad, MonthMoodJudge.Judge(S(1000, 5000, stage: "office_datacenter")));
+        }
     }
 }
