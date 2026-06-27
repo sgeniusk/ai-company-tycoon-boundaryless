@@ -98,6 +98,7 @@ namespace AICompanyTycoon.UI
         string _activeTab = ProductsTab;
         bool _terminal;
         bool _subscribed;
+        bool _advancing; // 타임랩스 비동기 창 동안 재진입(이중 월 진행) 차단 (feat-028 #3b)
 
         // AI 비서 가이던스 (feat-009) — FAB·목표 리본이 공유하는 현재 제안과 이번 달에 본 제안 집합.
         GuidanceStep _guidanceStep;
@@ -185,6 +186,8 @@ namespace AICompanyTycoon.UI
                 return;
             }
 
+            if (_advancing) return; // 타임랩스 진행 중 재탭 차단 — 이중 월 진행·오버레이 중복 방지 (feat-028 #3b)
+
             // 증감 계산용 스냅샷
             foreach (var id in ResourceIds.All)
                 _prevValues[id] = _context.Model.Get(id);
@@ -193,6 +196,7 @@ namespace AICompanyTycoon.UI
             var synergiesBefore = SnapshotActiveSynergies();       // 시너지 가동 감지 (feat-013 #1)
             _expectedRevenue = _context.Products.EstimateMonthlyRevenue(); // 기대수익 (feat-014 #3, 정산 전 스냅샷)
 
+            _advancing = true; // 비동기 페이오프 시작 — MonthPayoffCo finally에서 해제
             _lastSummary = _context.Month.AdvanceMonth();
             _terminal = _lastSummary.GameOver || _lastSummary.GameWon;
             _seenGuidance.Clear(); // 새 달 — AI 비서 제안을 처음부터 다시 (feat-009)
@@ -201,6 +205,16 @@ namespace AICompanyTycoon.UI
                 // Canvas는 MonoBehaviour가 아니므로 GraphicRaycaster(MonoBehaviour)를 경유해 코루틴을 실행한다.
                 var runner = _canvas.GetComponent<GraphicRaycaster>();
                 if (runner != null) runner.StartCoroutine(MonthPayoffCo(visibilityBefore, synergiesBefore));
+                else
+                {
+                    // 코루틴 실행자가 없으면 페이오프가 스킵되므로 _advancing이 영구 잠기지 않게 즉시 해제한다.
+                    _advancing = false;
+                    Debug.LogError("[GameScreen] GraphicRaycaster 없음 — 월 페이오프 스킵됨.");
+                }
+            }
+            else
+            {
+                _advancing = false; // 캔버스 없음 — 잠금 해제
             }
         }
 
@@ -209,34 +223,44 @@ namespace AICompanyTycoon.UI
         {
             if (_canvas == null) yield break;
 
-            var tintGo = new GameObject("MonthTint", typeof(RectTransform), typeof(Image));
-            tintGo.transform.SetParent(_canvas.transform, false);
-            var tr = tintGo.GetComponent<RectTransform>();
-            tr.anchorMin = Vector2.zero; tr.anchorMax = Vector2.one; tr.offsetMin = Vector2.zero; tr.offsetMax = Vector2.zero;
-            var ti = tintGo.GetComponent<Image>();
-            ti.color = new Color(0.05f, 0.07f, 0.16f, 0f);
-            ti.raycastTarget = true; // 입력 차단
-
-            var dayLabel = UiFactory.Label(_canvas.transform, "Day 1", 44);
-            dayLabel.color = new Color(1f, 1f, 1f, 0.92f);
-            dayLabel.alignment = TextAnchor.MiddleCenter;
-            var dr = dayLabel.GetComponent<RectTransform>();
-            dr.anchorMin = dr.anchorMax = new Vector2(0.5f, 0.62f);
-            dr.sizeDelta = new Vector2(360f, 70f);
-            dr.anchoredPosition = Vector2.zero;
-
-            float dur = 0.9f, t = 0f;
-            while (t < dur)
+            GameObject tintGo = null;
+            GameObject dayGo = null;
+            try
             {
-                t += Time.unscaledDeltaTime;
-                float p = Mathf.Clamp01(t / dur);
-                ti.color = new Color(0.05f, 0.07f, 0.16f, Mathf.Sin(p * Mathf.PI) * 0.5f); // 0→0.5→0
-                int day = Mathf.Clamp(1 + Mathf.FloorToInt(p * 30f), 1, 30);
-                dayLabel.text = "Day " + day;
-                yield return null;
+                tintGo = new GameObject("MonthTint", typeof(RectTransform), typeof(Image));
+                tintGo.transform.SetParent(_canvas.transform, false);
+                var tr = tintGo.GetComponent<RectTransform>();
+                tr.anchorMin = Vector2.zero; tr.anchorMax = Vector2.one; tr.offsetMin = Vector2.zero; tr.offsetMax = Vector2.zero;
+                var ti = tintGo.GetComponent<Image>();
+                ti.color = new Color(0.05f, 0.07f, 0.16f, 0f);
+                ti.raycastTarget = true; // 입력 차단
+
+                var dayLabel = UiFactory.Label(_canvas.transform, "Day 1", 44);
+                dayGo = dayLabel.gameObject;
+                dayLabel.color = new Color(1f, 1f, 1f, 0.92f);
+                dayLabel.alignment = TextAnchor.MiddleCenter;
+                var dr = dayLabel.GetComponent<RectTransform>();
+                dr.anchorMin = dr.anchorMax = new Vector2(0.5f, 0.62f);
+                dr.sizeDelta = new Vector2(360f, 70f);
+                dr.anchoredPosition = Vector2.zero;
+
+                float dur = 0.9f, t = 0f;
+                while (t < dur)
+                {
+                    t += Time.unscaledDeltaTime;
+                    float p = Mathf.Clamp01(t / dur);
+                    ti.color = new Color(0.05f, 0.07f, 0.16f, Mathf.Sin(p * Mathf.PI) * 0.5f); // 0→0.5→0
+                    int day = Mathf.Clamp(1 + Mathf.FloorToInt(p * 30f), 1, 30);
+                    dayLabel.text = "Day " + day;
+                    yield return null;
+                }
             }
-            UnityEngine.Object.Destroy(tintGo);
-            UnityEngine.Object.Destroy(dayLabel.gameObject);
+            finally
+            {
+                // 코루틴이 중간에 멈춰도(StopCoroutine/파괴) 틴트·라벨은 반드시 정리한다.
+                if (tintGo != null) UnityEngine.Object.Destroy(tintGo);
+                if (dayGo != null) UnityEngine.Object.Destroy(dayGo);
+            }
         }
 
         // 정산 후 페이오프 — 타임랩스 전환을 앞에 끼우고 기존 순서(이벤트·도파민·해금·결과)를 보존 (feat-028).
@@ -244,37 +268,44 @@ namespace AICompanyTycoon.UI
             Dictionary<string, VisibilityState> visibilityBefore,
             HashSet<string> synergiesBefore)
         {
-            yield return PlayMonthTransitionCo();
-
-            SetStatus("월간 정산이 완료되었습니다.");
-
-            var balance = _context.Catalog.balance;
-            if (!_terminal && balance != null && UnityEngine.Random.value < (float)balance.eventTriggerChance)
+            try
             {
-                var triggered = _context.Events.TryTrigger();
-                if (triggered != null)
+                yield return PlayMonthTransitionCo();
+
+                SetStatus("월간 정산이 완료되었습니다.");
+
+                var balance = _context.Catalog.balance;
+                if (!_terminal && balance != null && UnityEngine.Random.value < (float)balance.eventTriggerChance)
                 {
-                    ShowEventModal(triggered);
-                    _pendingAlert += UnityEngine.Random.Range(1, 3); // 직원 1~2명 놀람 반응 (feat-023)
+                    var triggered = _context.Events.TryTrigger();
+                    if (triggered != null)
+                    {
+                        ShowEventModal(triggered);
+                        _pendingAlert += UnityEngine.Random.Range(1, 3); // 직원 1~2명 놀람 반응 (feat-023)
+                    }
+                }
+
+                RefreshAll();
+                ShowMonthlyDopamine(_lastSummary); // 수익 플로팅 + 환호 + 사건 토스트 (feat-010)
+                AnnounceDiscoveries(visibilityBefore); // ???→실명 해금 모먼트 (feat-012 #4)
+                AnnounceSynergies(synergiesBefore);    // 시너지/콤보 가동 모먼트 (feat-013 #1)
+                AnnounceRichestClimb();                // 세계 부자 순위 등반 모먼트 (feat-015 #5)
+
+                if (_terminal)
+                {
+                    ShowResultModal(_lastSummary.GameWon, _lastSummary.Outcome);
+                }
+                else if (_pendingInvestment != null && (_context.Events == null || _context.Events.Current == null))
+                {
+                    // 이벤트 모달이 없을 때만 — 시리즈 투자 제안을 띄운다 (feat-015 #3).
+                    var offer = _pendingInvestment;
+                    _pendingInvestment = null;
+                    ShowInvestmentOffer(offer);
                 }
             }
-
-            RefreshAll();
-            ShowMonthlyDopamine(_lastSummary); // 수익 플로팅 + 환호 + 사건 토스트 (feat-010)
-            AnnounceDiscoveries(visibilityBefore); // ???→실명 해금 모먼트 (feat-012 #4)
-            AnnounceSynergies(synergiesBefore);    // 시너지/콤보 가동 모먼트 (feat-013 #1)
-            AnnounceRichestClimb();                // 세계 부자 순위 등반 모먼트 (feat-015 #5)
-
-            if (_terminal)
+            finally
             {
-                ShowResultModal(_lastSummary.GameWon, _lastSummary.Outcome);
-            }
-            else if (_pendingInvestment != null && (_context.Events == null || _context.Events.Current == null))
-            {
-                // 이벤트 모달이 없을 때만 — 시리즈 투자 제안을 띄운다 (feat-015 #3).
-                var offer = _pendingInvestment;
-                _pendingInvestment = null;
-                ShowInvestmentOffer(offer);
+                _advancing = false; // 페이오프 완료(또는 중단) — 다음 달 진행 허용
             }
         }
 
