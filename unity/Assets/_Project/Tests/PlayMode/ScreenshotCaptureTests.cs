@@ -618,6 +618,65 @@ namespace AICompanyTycoon.Tests.PlayMode
             yield return null;
         }
 
+        // 분위 반응 캡처 — feat-028 PlayMoodReaction 4종(Great/Good/Flat/Bad)을 각각 캡처한다.
+        // talent=8 주입 후 분위별로 PlayMoodReaction을 호출해 직원 포즈 다양성을 시각 확인한다.
+        [UnityTest]
+        public IEnumerator Capture_MoodReactions()
+        {
+            if (!HasGraphics)
+            {
+                Assert.Ignore("그래픽 디바이스 없음 — 캡처 스킵(-nographics).");
+            }
+
+            var go = new GameObject("CaptureBootstrap");
+            var boot = go.AddComponent<GameBootstrap>();
+            yield return null;
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+            Assert.IsNotNull(boot.Screen, "GameScreen이 빌드되어야 한다.");
+
+            var canvasGo = GameObject.Find(CanvasName);
+            Assert.IsNotNull(canvasGo, "캔버스를 찾지 못함.");
+
+            // talent=8 로 2열 직원 배치
+            boot.Context.Model.Talent = 8;
+            boot.Screen.RefreshAll();
+            yield return WaitRealtime(0.6f);
+
+            // Great
+            boot.Screen.PlayMoodReaction(AICompanyTycoon.Systems.MonthMood.Great);
+            yield return WaitRealtime(0.3f);
+            yield return CaptureCanvas(canvasGo, "32-mood-great.png");
+
+            boot.Screen.RefreshAll();
+            yield return WaitRealtime(0.4f);
+
+            // Good
+            boot.Screen.PlayMoodReaction(AICompanyTycoon.Systems.MonthMood.Good);
+            yield return WaitRealtime(0.3f);
+            yield return CaptureCanvas(canvasGo, "33-mood-good.png");
+
+            boot.Screen.RefreshAll();
+            yield return WaitRealtime(0.4f);
+
+            // Flat
+            boot.Screen.PlayMoodReaction(AICompanyTycoon.Systems.MonthMood.Flat);
+            yield return WaitRealtime(0.3f);
+            yield return CaptureCanvas(canvasGo, "34-mood-flat.png");
+
+            boot.Screen.RefreshAll();
+            yield return WaitRealtime(0.4f);
+
+            // Bad
+            boot.Screen.PlayMoodReaction(AICompanyTycoon.Systems.MonthMood.Bad);
+            yield return WaitRealtime(0.3f);
+            yield return CaptureCanvas(canvasGo, "35-mood-bad.png");
+
+            Object.Destroy(go);
+            yield return null;
+        }
+
         static IEnumerator WaitRealtime(float seconds)
         {
             float t = 0f;

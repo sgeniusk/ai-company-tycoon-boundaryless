@@ -48,7 +48,7 @@ namespace AICompanyTycoon.UI
         // card_use·alert 원샷 재생 — 이벤트 모먼트에 GameScreen이 호출. 스프라이트 없으면 무시(드롭인 안전).
         public void PlayOneShot(int poseState)
         {
-            Sprite s = poseState == CardUse ? _cardUse : (poseState == Alert ? _alert : null);
+            Sprite s = poseState == CardUse ? _cardUse : poseState == Alert ? _alert : poseState == Cheer ? _cheer : null;
             if (s == null || _img == null)
             {
                 return;

@@ -243,12 +243,10 @@ namespace AICompanyTycoon.UI
                     FloatingText.Spawn(_reactionLayer, "+$" + FormatNumber(s.Revenue), UiTheme.ChipGoldText, size,
                         new Vector2(UnityEngine.Random.Range(-140f, 140f), 40f + i * 14f), i * 0.22f);
                 }
-
-                for (int i = 0; i < Mathf.Min(pops, 2); i++)
-                {
-                    SpawnReaction(i == 0 ? "react_cheer" : "react_coffee");
-                }
             }
+
+            // 분위 기반 직원 반응 — 균일 환호 대체 (feat-028).
+            PlayMoodReaction(MonthMoodJudge.Judge(s));
 
             if (s.NewUsers > 0)
             {
@@ -270,6 +268,42 @@ namespace AICompanyTycoon.UI
             if (near != null && _toastRibbon != null)
             {
                 _toastRibbon.Enqueue(near.Text, UiTheme.GoalAccent);
+            }
+        }
+
+        // 월 성과 분위에 맞춰 오피스 직원마다 다른 포즈·이모트를 배정한다 — 단조로운 균일 환호 대체 (feat-028).
+        // 기존 포즈(Cheer 홉·CardUse 팝·Alert 리코일) 재사용 — 각자 StaffBob 모션이 달라 다양성이 난다.
+        public void PlayMoodReaction(MonthMood mood)
+        {
+            if (_officeSceneContent == null) return;
+            var anims = _officeSceneContent.GetComponentsInChildren<ActorAnim>();
+            if (anims == null || anims.Length == 0) return;
+
+            foreach (var a in anims)
+            {
+                switch (mood)
+                {
+                    case MonthMood.Great:
+                        a.PlayOneShot(UnityEngine.Random.value < 0.5f ? ActorAnim.Cheer : ActorAnim.CardUse);
+                        break;
+                    case MonthMood.Good:
+                        if (UnityEngine.Random.value < 0.6f) a.PlayOneShot(ActorAnim.Cheer);
+                        break;
+                    case MonthMood.Bad:
+                        a.PlayOneShot(ActorAnim.Alert);
+                        break;
+                    // Flat — 기본 ambient(idle/work) 유지
+                }
+            }
+
+            // 이모트 — 분위별, 일부 직원 위에만(Bad는 없음).
+            string primary = mood == MonthMood.Great ? "react_idea"
+                : mood == MonthMood.Good ? "react_cheer"
+                : mood == MonthMood.Flat ? "react_coffee" : null;
+            if (primary != null)
+            {
+                int n = mood == MonthMood.Great ? 3 : 1;
+                for (int i = 0; i < n; i++) SpawnReaction(i == 0 ? primary : "react_cheer");
             }
         }
 
