@@ -804,4 +804,172 @@ namespace AICompanyTycoon.Tests.PlayMode
             yield return null;
         }
     }
+
+    // 월말 브리핑 카드 캡처 — 대박(38) · 부진(39) 두 분위를 연달아 캡처해 손익계산서 레이아웃 시각 확인 (feat-029).
+    public class BriefingCaptureTests
+    {
+        const string CanvasName = "AI Company Tycoon UI";
+
+        static string ShotsDir
+        {
+            get
+            {
+                var dir = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Logs", "shots"));
+                Directory.CreateDirectory(dir);
+                return dir;
+            }
+        }
+
+        static bool HasGraphics =>
+            SystemInfo.graphicsDeviceType != UnityEngine.Rendering.GraphicsDeviceType.Null;
+
+        [UnityTest]
+        public IEnumerator Capture_Briefing()
+        {
+            if (!HasGraphics)
+            {
+                Assert.Ignore("그래픽 디바이스 없음 — 캡처 스킵(-nographics).");
+            }
+
+            var go = new GameObject("CaptureBootstrap");
+            var boot = go.AddComponent<GameBootstrap>();
+            yield return null;
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+            Assert.IsNotNull(boot.Screen, "GameScreen이 빌드되어야 한다.");
+
+            var canvasGo = GameObject.Find(CanvasName);
+            Assert.IsNotNull(canvasGo, "캔버스를 찾지 못함.");
+
+            // talent=6 주입해 오피스 배경에 직원이 있는 상태로 촬영
+            boot.Context.Model.Talent = 6;
+            boot.Screen.RefreshAll();
+            yield return WaitRealtime(0.4f);
+
+            // 38) 대박 브리핑 — 매출 $24.5K, 비용 $9K, 순익 +$15.5K
+            var greatSummary = new AICompanyTycoon.Systems.MonthSummary
+            {
+                Month = 8,
+                Revenue = 24500,
+                TotalCashCost = 9000,
+                BaseCost = 3000,
+                SalaryCost = 4200,
+                ComputeCost = 1800,
+                NewUsers = 92000,
+                DataGenerated = 1240,
+            };
+            bool greatDone = false;
+            boot.Screen.ShowBriefing(greatSummary, () => greatDone = true);
+            yield return WaitRealtime(0.3f);
+            yield return CaptureCanvas(canvasGo, "38-briefing-great.png");
+
+            // 닫기 버튼 클릭으로 모달 해제 후 다음 캡처 준비
+            var closeBtn = FindButton(canvasGo, "다음 달로");
+            if (closeBtn != null) closeBtn.onClick.Invoke();
+            yield return WaitRealtime(0.2f);
+
+            // 39) 부진 브리핑 — 매출 $1K, 비용 $9K, 순익 −$8K + 경고 추가
+            var badSummary = new AICompanyTycoon.Systems.MonthSummary
+            {
+                Month = 9,
+                Revenue = 1000,
+                TotalCashCost = 9000,
+                BaseCost = 3000,
+                SalaryCost = 4200,
+                ComputeCost = 1800,
+                NewUsers = 3000,
+                DataGenerated = 120,
+            };
+            badSummary.Warnings.Add("현금 부족");
+            bool badDone = false;
+            boot.Screen.ShowBriefing(badSummary, () => badDone = true);
+            yield return WaitRealtime(0.3f);
+            yield return CaptureCanvas(canvasGo, "39-briefing-bad.png");
+
+            var closeBtn2 = FindButton(canvasGo, "다음 달로");
+            if (closeBtn2 != null) closeBtn2.onClick.Invoke();
+            yield return WaitRealtime(0.2f);
+
+            Object.Destroy(go);
+            yield return null;
+        }
+
+        static IEnumerator WaitRealtime(float seconds)
+        {
+            float t = 0f;
+            while (t < seconds)
+            {
+                t += Time.unscaledDeltaTime;
+                yield return null;
+            }
+        }
+
+        static Button FindButton(GameObject root, string exactLabel)
+        {
+            foreach (var b in root.GetComponentsInChildren<Button>(true))
+            {
+                var t = b.GetComponentInChildren<Text>(true);
+                if (t != null && t.text == exactLabel)
+                    return b;
+            }
+            return null;
+        }
+
+        static IEnumerator CaptureCanvas(GameObject canvasGo, string fileName, int w = 1080, int h = 2400)
+        {
+            var canvas = canvasGo.GetComponent<Canvas>();
+            var scaler = canvasGo.GetComponent("CanvasScaler") as Behaviour;
+            bool prevScalerEnabled = scaler != null && scaler.enabled;
+            if (scaler != null) scaler.enabled = false;
+
+            var camGo = new GameObject("CaptureCamera");
+            var cam = camGo.AddComponent<Camera>();
+            cam.orthographic = true;
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            cam.backgroundColor = new Color(0.04f, 0.05f, 0.06f, 1f);
+            cam.cullingMask = ~0;
+            cam.nearClipPlane = 0.1f;
+            cam.farClipPlane = 100f;
+
+            var rt = new RenderTexture(w, h, 24, RenderTextureFormat.ARGB32);
+            rt.Create();
+            cam.targetTexture = rt;
+
+            var prevMode = canvas.renderMode;
+            var prevCam = canvas.worldCamera;
+            var prevPlane = canvas.planeDistance;
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = cam;
+            canvas.planeDistance = 10f;
+
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+            yield return null;
+            cam.Render();
+
+            var prevActive = RenderTexture.active;
+            RenderTexture.active = rt;
+            var tex = new Texture2D(w, h, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
+            tex.Apply();
+            RenderTexture.active = prevActive;
+
+            var path = Path.Combine(ShotsDir, fileName);
+            File.WriteAllBytes(path, tex.EncodeToPNG());
+            Debug.Log("[Capture] 저장: " + path);
+
+            canvas.renderMode = prevMode;
+            canvas.worldCamera = prevCam;
+            canvas.planeDistance = prevPlane;
+            if (scaler != null) scaler.enabled = prevScalerEnabled;
+
+            cam.targetTexture = null;
+            Object.Destroy(tex);
+            rt.Release();
+            Object.Destroy(rt);
+            Object.Destroy(camGo);
+            yield return null;
+        }
+    }
 }

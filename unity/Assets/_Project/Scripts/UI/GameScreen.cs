@@ -72,6 +72,9 @@ namespace AICompanyTycoon.UI
         Transform _worldRevealRows;
         Text _worldRevealSeed;
 
+        GameObject _briefingModal;     // 월말 브리핑 카드 스크림 (feat-029)
+        Transform _briefingCard;       // 브리핑 카드 VBox 컨테이너
+
         GameObject _interviewModal;    // 개업 인터뷰 (feat-015 #2) / 시리즈 투자 제안 (feat-015 #3)
         Text _interviewTitleLabel;
         Text _interviewSpeaker;
@@ -141,6 +144,7 @@ namespace AICompanyTycoon.UI
             BuildInterviewModal(_canvas.transform);   // 개업 인터뷰 (feat-015 #2)
             BuildEventModal(_canvas.transform);
             BuildResultModal(_canvas.transform);
+            BuildBriefingModal(_canvas.transform);
             SetActivePanel(_activeTab);
             Subscribe();
         }
@@ -3239,6 +3243,104 @@ namespace AICompanyTycoon.UI
             AddLayout(btn.button.gameObject, 84, 0);
 
             _resultModal.SetActive(false);
+        }
+
+        // 월말 브리핑 모달 — 스크림 + 빈 카드(VBox). 내용은 ShowBriefing이 MonthBriefingView로 채운다 (feat-029).
+        void BuildBriefingModal(Transform parent)
+        {
+            _briefingModal = UiFactory.Panel(parent, UiTheme.ModalScrim);
+            _briefingModal.name = "BriefingModal";
+            Stretch(_briefingModal.GetComponent<RectTransform>());
+
+            var card = UiFactory.Panel(_briefingModal.transform, UiTheme.PanelBg);
+            card.name = "BriefingCard";
+            var rect = card.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.07f, 0.22f);
+            rect.anchorMax = new Vector2(0.93f, 0.78f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            UiFactory.VBox(card.transform, 10, new RectOffset(26, 26, 24, 24));
+            _briefingCard = card.transform;
+
+            _briefingModal.SetActive(false);
+        }
+
+        // 손익계산서 브리핑을 채워 띄운다 — 닫으면 onClose 콜백 (feat-029).
+        public void ShowBriefing(MonthSummary summary, System.Action onClose)
+        {
+            if (_briefingCard == null) { onClose?.Invoke(); return; }
+            var v = AICompanyTycoon.Systems.MonthBriefing.Build(summary);
+            Clear(_briefingCard);
+
+            var header = UiFactory.Label(_briefingCard, v.Month + "월차 결산", 40);
+            header.alignment = TextAnchor.MiddleCenter;
+            AddLayout(header.gameObject, 56, 0);
+            var badge = UiFactory.Label(_briefingCard, MoodLabel(v.Mood), 28);
+            badge.alignment = TextAnchor.MiddleCenter;
+            badge.color = MoodColor(v.Mood);
+            AddLayout(badge.gameObject, 34, 0);
+
+            BriefingRow("매출", "+$" + FormatNumber(v.Revenue), UiTheme.ChipGoldText, 30);
+            BriefingRow("· 기본 운영비", "−$" + FormatNumber(v.BaseCost), UiTheme.TextSecondary, 24);
+            BriefingRow("· 급여", "−$" + FormatNumber(v.SalaryCost), UiTheme.TextSecondary, 24);
+            BriefingRow("· 연산비", "−$" + FormatNumber(v.ComputeCost), UiTheme.TextSecondary, 24);
+            BriefingRow("총비용", "−$" + FormatNumber(v.TotalCost), UiTheme.TextSecondary, 28);
+            var netColor = v.Net >= 0 ? new Color(0.20f, 0.62f, 0.36f) : new Color(0.84f, 0.28f, 0.22f);
+            BriefingRow("순익", (v.Net >= 0 ? "+$" : "−$") + FormatNumber(System.Math.Abs(v.Net)), netColor, 34);
+
+            BriefingRow("신규 이용자", "+" + FormatNumber(v.NewUsers), UiTheme.ScoreboardTag, 26);
+            BriefingRow("데이터 생성", "+" + FormatNumber(v.DataGenerated), UiTheme.TextSecondary, 26);
+
+            if (v.Promoted) BriefingRow("승급", "새 오피스로 이사!", new Color(0.20f, 0.62f, 0.36f), 24);
+            if (v.HasWorldEvent) BriefingRow("세계 이벤트", v.WorldEventText, UiTheme.ScoreboardLive, 24);
+            if (v.HasWarning) BriefingRow("경고", v.WarningText, new Color(0.84f, 0.28f, 0.22f), 24);
+
+            var (btn, _) = UiFactory.Button(_briefingCard, "다음 달로");
+            btn.onClick.AddListener(() => { _briefingModal.SetActive(false); onClose?.Invoke(); });
+            AddLayout(btn.gameObject, 76, 0);
+
+            _briefingModal.SetActive(true);
+            PopInCard(_briefingModal, "BriefingCard");
+        }
+
+        // 브리핑 한 행(라벨 좌·값 우)을 _briefingCard에 추가한다.
+        void BriefingRow(string label, string value, Color valueColor, int fontSize)
+        {
+            var row = new GameObject("Row", typeof(RectTransform));
+            row.transform.SetParent(_briefingCard, false);
+            var hb = UiFactory.HBox(row.transform, 8);
+            hb.childForceExpandWidth = true;
+            var l = UiFactory.Label(row.transform, label, fontSize);
+            l.alignment = TextAnchor.MiddleLeft;
+            l.color = UiTheme.TextSecondary;
+            AddLayout(l.gameObject, fontSize + 12, 1);
+            var val = UiFactory.Label(row.transform, value, fontSize);
+            val.alignment = TextAnchor.MiddleRight;
+            val.color = valueColor;
+            AddLayout(val.gameObject, fontSize + 12, 1);
+            AddLayout(row, fontSize + 12, 0);
+        }
+
+        string MoodLabel(AICompanyTycoon.Systems.MonthMood m)
+        {
+            switch (m)
+            {
+                case AICompanyTycoon.Systems.MonthMood.Great: return "대박";
+                case AICompanyTycoon.Systems.MonthMood.Good: return "호조";
+                case AICompanyTycoon.Systems.MonthMood.Bad: return "부진";
+                default: return "평범";
+            }
+        }
+
+        Color MoodColor(AICompanyTycoon.Systems.MonthMood m)
+        {
+            switch (m)
+            {
+                case AICompanyTycoon.Systems.MonthMood.Great: return new Color(0.20f, 0.62f, 0.36f);
+                case AICompanyTycoon.Systems.MonthMood.Good: return UiTheme.TabActive;
+                case AICompanyTycoon.Systems.MonthMood.Bad: return new Color(0.84f, 0.28f, 0.22f);
+                default: return UiTheme.TextSecondary;
+            }
         }
 
         // 현재 오피스 액터 중 무작위 n명에게 원샷 포즈(card_use/alert)를 재생 — 이벤트 모먼트 반응 (feat-023).
