@@ -22,28 +22,26 @@ namespace AICompanyTycoon.UI
             }
         }
 
-        // 공통 — 모든 성급에 깔리는 좌우 끝 바닥 소품 (feat-020).
+        // 공통 — 앞 가장자리 바닥 소품. xNorm은 [0.08,0.86] 안전 범위(pivot 0.5라 0.9 넘으면 스프라이트 절반이 화면 밖 잘림).
         static readonly PropSpec[] BaseProps =
         {
-            new PropSpec("prop_plant", 0.045f, 8f, 82f),
-            new PropSpec("prop_cooler", 0.115f, 8f, 84f),
-            new PropSpec("prop_vending", 0.895f, 8f, 120f),
-            new PropSpec("prop_couch", 0.940f, 6f, 68f),
-            new PropSpec("prop_bookshelf", 0.985f, 8f, 120f),
+            new PropSpec("prop_plant", 0.08f, 8f, 82f),    // 좌
+            new PropSpec("prop_cooler", 0.17f, 8f, 84f),   // 좌
+            new PropSpec("prop_couch", 0.72f, 6f, 68f),    // 우중 — 우측 더미 분산(기존 0.94 잘림 해소)
+            new PropSpec("prop_vending", 0.86f, 8f, 120f), // 우 — 끝이지만 안전 범위
         };
 
         // 바닥 소품 — 직원 위쪽 빈 바닥 띠를 메운다. footY 내림차순(뒤·작게부터)으로 그려 앞 소품이 겹친다.
-        // 뒤 바닥(벽 근처)은 높은 footY·작은 Height로 원근, 앞 바닥은 낮은 footY·큰 Height. 신규 가구 미반입 시 graceful skip.
+        // 뒤 가구는 일정 footY·균등 간격 한 줄로 '벽 근처 정돈'(부유감 제거), 전부 x [0.15,0.85] 안전 범위(잘림 없음).
         static readonly PropSpec[] FloorProps =
         {
-            // 뒤 바닥(벽 근처) — 원근 작게, 빈 띠 채움
-            new PropSpec("prop_partition", 0.63f, 430f, 72f),      // 신규 — 뒤 칸막이
-            new PropSpec("prop_plant_big", 0.19f, 414f, 86f),      // 신규 — 뒤 좌 키큰 화분
-            new PropSpec("prop_shelf_low", 0.81f, 406f, 66f),      // 신규 — 뒤 우 수납장
-            new PropSpec("prop_bookshelf", 0.89f, 248f, 86f),      // 기존 — 우 수납(중간 깊이)
+            // 뒤 바닥 한 줄(벽 근처) — footY 통일·x 균등, 원근 작게
+            new PropSpec("prop_plant_big", 0.15f, 410f, 86f),      // 신규 — 좌 키큰 화분
+            new PropSpec("prop_partition", 0.40f, 412f, 72f),      // 신규 — 중좌 칸막이
+            new PropSpec("prop_bookshelf", 0.63f, 410f, 84f),      // 기존 — 중우 책장(단일)
+            new PropSpec("prop_shelf_low", 0.85f, 408f, 66f),      // 신규 — 우 수납장
             // 중간 바닥 — 직원 근처
-            new PropSpec("prop_meeting_table", 0.40f, 196f, 82f),  // 신규 — 회의 테이블
-            new PropSpec("prop_plant", 0.30f, 172f, 60f),          // 기존 — 화분
+            new PropSpec("prop_meeting_table", 0.36f, 196f, 82f),  // 신규 — 회의 테이블
             // 중앙 러그(바닥 앵커) — 직원 앞 바닥, 가장 앞(floor 중 frontmost)
             new PropSpec("prop_rug", 0.50f, 126f, 96f),            // 신규 — 중앙 러그
         };
