@@ -24,9 +24,9 @@ namespace AICompanyTycoon.Systems
             v.NewUsers = s.NewUsers; v.DataGenerated = s.DataGenerated;
             v.Mood = MonthMoodJudge.Judge(s);
             v.HasWorldEvent = s.WorldEventTitles != null && s.WorldEventTitles.Count > 0;
-            v.WorldEventText = v.HasWorldEvent ? s.WorldEventTitles[0] : null;
+            v.WorldEventText = v.HasWorldEvent ? s.WorldEventTitles[0] : null; // 첫 항목만 — 카드는 한 행
             v.HasWarning = s.Warnings != null && s.Warnings.Count > 0;
-            v.WarningText = v.HasWarning ? s.Warnings[0] : null;
+            v.WarningText = v.HasWarning ? s.Warnings[0] : null; // 첫 항목만 — 카드는 한 행
             v.Promoted = !string.IsNullOrEmpty(s.StageChangedTo);
             return v;
         }

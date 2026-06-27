@@ -48,7 +48,9 @@ namespace AICompanyTycoon.Tests.EditMode
         public void WarningFlag_OnlyWhenPresent()
         {
             Assert.IsFalse(MonthBriefing.Build(S(5000, 3000)).HasWarning);
-            Assert.IsTrue(MonthBriefing.Build(S(1000, 9000, warning: "현금 부족")).HasWarning);
+            var v = MonthBriefing.Build(S(1000, 9000, warning: "현금 부족"));
+            Assert.IsTrue(v.HasWarning);
+            Assert.AreEqual("현금 부족", v.WarningText);
         }
 
         [Test]
