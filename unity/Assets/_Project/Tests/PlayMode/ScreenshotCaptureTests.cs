@@ -677,6 +677,36 @@ namespace AICompanyTycoon.Tests.PlayMode
             yield return null;
         }
 
+        // 월 진행 타임랩스 캡처 — feat-028 PlayMonthTransitionCo를 직접 구동해 중간 프레임(~0.45s, Day~15 + 틴트 최고조)을 캡처한다.
+        [UnityTest]
+        public IEnumerator Capture_MonthTimelapse()
+        {
+            if (!HasGraphics)
+            {
+                Assert.Ignore("그래픽 디바이스 없음 — 캡처 스킵(-nographics).");
+            }
+
+            var go = new GameObject("CaptureBootstrap");
+            var boot = go.AddComponent<GameBootstrap>();
+            yield return null;
+            yield return null;
+            Canvas.ForceUpdateCanvases();
+            yield return null;
+            Assert.IsNotNull(boot.Screen, "GameScreen이 빌드되어야 한다.");
+
+            var canvasGo = GameObject.Find(CanvasName);
+            Assert.IsNotNull(canvasGo, "캔버스를 찾지 못함.");
+
+            // GameBootstrap(MonoBehaviour)을 통해 코루틴 실행 — GameScreen은 MonoBehaviour가 아니므로 경유한다.
+            boot.StartCoroutine(boot.Screen.PlayMonthTransitionCo());
+            yield return WaitRealtime(0.45f); // ~0.45s — 틴트 최고조 + Day~15 카운터 중간점
+            yield return CaptureCanvas(canvasGo, "36-month-timelapse.png");
+            yield return WaitRealtime(0.55f); // 전환 완전히 끝난 뒤 정리
+
+            Object.Destroy(go);
+            yield return null;
+        }
+
         static IEnumerator WaitRealtime(float seconds)
         {
             float t = 0f;

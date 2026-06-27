@@ -196,6 +196,56 @@ namespace AICompanyTycoon.UI
             _lastSummary = _context.Month.AdvanceMonth();
             _terminal = _lastSummary.GameOver || _lastSummary.GameWon;
             _seenGuidance.Clear(); // 새 달 — AI 비서 제안을 처음부터 다시 (feat-009)
+            if (_canvas != null)
+            {
+                // Canvas는 MonoBehaviour가 아니므로 GraphicRaycaster(MonoBehaviour)를 경유해 코루틴을 실행한다.
+                var runner = _canvas.GetComponent<GraphicRaycaster>();
+                if (runner != null) runner.StartCoroutine(MonthPayoffCo(visibilityBefore, synergiesBefore));
+            }
+        }
+
+        // 월 진행 타임랩스 — 오피스 위 빛 틴트(낮→밤→낮) 스윕 + "Day 1→30" 카운터. ~0.9초, 입력 차단. 새 에셋 0 (feat-028).
+        public System.Collections.IEnumerator PlayMonthTransitionCo()
+        {
+            if (_canvas == null) yield break;
+
+            var tintGo = new GameObject("MonthTint", typeof(RectTransform), typeof(Image));
+            tintGo.transform.SetParent(_canvas.transform, false);
+            var tr = tintGo.GetComponent<RectTransform>();
+            tr.anchorMin = Vector2.zero; tr.anchorMax = Vector2.one; tr.offsetMin = Vector2.zero; tr.offsetMax = Vector2.zero;
+            var ti = tintGo.GetComponent<Image>();
+            ti.color = new Color(0.05f, 0.07f, 0.16f, 0f);
+            ti.raycastTarget = true; // 입력 차단
+
+            var dayLabel = UiFactory.Label(_canvas.transform, "Day 1", 44);
+            dayLabel.color = new Color(1f, 1f, 1f, 0.92f);
+            dayLabel.alignment = TextAnchor.MiddleCenter;
+            var dr = dayLabel.GetComponent<RectTransform>();
+            dr.anchorMin = dr.anchorMax = new Vector2(0.5f, 0.62f);
+            dr.sizeDelta = new Vector2(360f, 70f);
+            dr.anchoredPosition = Vector2.zero;
+
+            float dur = 0.9f, t = 0f;
+            while (t < dur)
+            {
+                t += Time.unscaledDeltaTime;
+                float p = Mathf.Clamp01(t / dur);
+                ti.color = new Color(0.05f, 0.07f, 0.16f, Mathf.Sin(p * Mathf.PI) * 0.5f); // 0→0.5→0
+                int day = Mathf.Clamp(1 + Mathf.FloorToInt(p * 30f), 1, 30);
+                dayLabel.text = "Day " + day;
+                yield return null;
+            }
+            UnityEngine.Object.Destroy(tintGo);
+            UnityEngine.Object.Destroy(dayLabel.gameObject);
+        }
+
+        // 정산 후 페이오프 — 타임랩스 전환을 앞에 끼우고 기존 순서(이벤트·도파민·해금·결과)를 보존 (feat-028).
+        System.Collections.IEnumerator MonthPayoffCo(
+            Dictionary<string, VisibilityState> visibilityBefore,
+            HashSet<string> synergiesBefore)
+        {
+            yield return PlayMonthTransitionCo();
+
             SetStatus("월간 정산이 완료되었습니다.");
 
             var balance = _context.Catalog.balance;
