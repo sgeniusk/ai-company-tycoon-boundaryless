@@ -3265,10 +3265,15 @@ namespace AICompanyTycoon.UI
             var card = UiFactory.Panel(_briefingModal.transform, UiTheme.PanelBg);
             card.name = "BriefingCard";
             var rect = card.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.07f, 0.22f);
-            rect.anchorMax = new Vector2(0.93f, 0.78f);
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
+            // 가로는 화면 0.07~0.93 스트레치, 세로는 중앙 포인트 앵커 + ContentSizeFitter로 내용 높이에 맞춰 자동(빈 공간 제거).
+            rect.anchorMin = new Vector2(0.07f, 0.5f);
+            rect.anchorMax = new Vector2(0.93f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.offsetMin = new Vector2(0f, rect.offsetMin.y);
+            rect.offsetMax = new Vector2(0f, rect.offsetMax.y);
+            rect.anchoredPosition = Vector2.zero;
+            var fitter = card.AddComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             UiFactory.VBox(card.transform, 10, new RectOffset(26, 26, 24, 24));
             _briefingCard = card.transform;
 
