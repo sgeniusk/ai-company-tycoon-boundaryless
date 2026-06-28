@@ -27,6 +27,21 @@ namespace AICompanyTycoon.UI
             }
         }
 
+        static Font _displayFont;
+        // feat-030 시안 — 큰 숫자·성급·결산용 임팩트 폰트(Black Han Sans). 없으면 본문 폰트로 폴백.
+        public static Font DisplayFont
+        {
+            get
+            {
+                if (_displayFont == null)
+                {
+                    _displayFont = Resources.Load<Font>("Fonts/BlackHanSans-Regular");
+                    if (_displayFont == null) _displayFont = LegacyFont;
+                }
+                return _displayFont;
+            }
+        }
+
         public static Canvas CreateCanvas(string name)
         {
             var go = new GameObject(name, typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));

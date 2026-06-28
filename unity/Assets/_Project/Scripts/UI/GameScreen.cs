@@ -632,6 +632,7 @@ namespace AICompanyTycoon.UI
 
             // #랭크 (큰 흰 숫자)
             _scoreRank = UiFactory.Label(panel.transform, "#—", 34);
+            _scoreRank.font = UiFactory.DisplayFont; // feat-030 — 랭크 임팩트 폰트
             _scoreRank.color = Color.white;
             _scoreRank.horizontalOverflow = HorizontalWrapMode.Overflow;
             AddLayout(_scoreRank.gameObject, 44, 0);
@@ -1046,6 +1047,7 @@ namespace AICompanyTycoon.UI
             AddLayout(valRow, 36, 0);
 
             var value = UiFactory.Label(valRow.transform, "", 32);
+            value.font = UiFactory.DisplayFont; // feat-030 — 큰 숫자 임팩트 폰트(Black Han Sans)
             value.color = ChipColor(id, false);
             value.alignment = TextAnchor.MiddleLeft;
             value.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -3426,7 +3428,7 @@ namespace AICompanyTycoon.UI
             BriefingRow("· 연산비", "−$" + FormatNumber(v.ComputeCost), UiTheme.TextSecondary, 24);
             BriefingRow("총비용", "−$" + FormatNumber(v.TotalCost), UiTheme.ResCashDeep, 28);        // feat-030 — 비용 코랄
             var netColor = v.Net >= 0 ? UiTheme.ResUser : UiTheme.ResCashDeep;
-            BriefingRow("순익", (v.Net >= 0 ? "+$" : "−$") + FormatNumber(System.Math.Abs(v.Net)), netColor, 46); // feat-030 — 순익 임팩트 크게
+            BriefingRow("순익", (v.Net >= 0 ? "+$" : "−$") + FormatNumber(System.Math.Abs(v.Net)), netColor, 46, display: true); // feat-030 — 순익 임팩트 크게+폰트
 
             BriefingRow("신규 이용자", "+" + FormatNumber(v.NewUsers), UiTheme.ScoreboardTag, 26);
             BriefingRow("데이터 생성", "+" + FormatNumber(v.DataGenerated), UiTheme.TextSecondary, 26);
@@ -3444,8 +3446,8 @@ namespace AICompanyTycoon.UI
             PopInCard(_briefingModal, "BriefingCard");
         }
 
-        // 브리핑 한 행(라벨 좌·값 우)을 _briefingCard에 추가한다.
-        void BriefingRow(string label, string value, Color valueColor, int fontSize)
+        // 브리핑 한 행(라벨 좌·값 우)을 _briefingCard에 추가한다. display=true면 값에 임팩트 폰트(큰 숫자).
+        void BriefingRow(string label, string value, Color valueColor, int fontSize, bool display = false)
         {
             var row = new GameObject("Row", typeof(RectTransform));
             row.transform.SetParent(_briefingCard, false);
@@ -3456,6 +3458,7 @@ namespace AICompanyTycoon.UI
             l.color = UiTheme.TextSecondary;
             AddLayout(l.gameObject, fontSize + 12, 1);
             var val = UiFactory.Label(row.transform, value, fontSize);
+            if (display) val.font = UiFactory.DisplayFont; // feat-030 — 큰 숫자(순익) 임팩트
             val.alignment = TextAnchor.MiddleRight;
             val.color = valueColor;
             AddLayout(val.gameObject, fontSize + 12, 1);
