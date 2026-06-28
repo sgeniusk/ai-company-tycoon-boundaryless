@@ -3367,13 +3367,13 @@ namespace AICompanyTycoon.UI
             badge.color = MoodColor(v.Mood);
             AddLayout(badge.gameObject, 34, 0);
 
-            BriefingRow("매출", "+$" + FormatNumber(v.Revenue), UiTheme.ChipGoldText, 30);
+            BriefingRow("제품 매출", "+$" + FormatNumber(v.Revenue), UiTheme.ResUser, 30);          // feat-030 — 수익 민트
             BriefingRow("· 기본 운영비", "−$" + FormatNumber(v.BaseCost), UiTheme.TextSecondary, 24);
             BriefingRow("· 급여", "−$" + FormatNumber(v.SalaryCost), UiTheme.TextSecondary, 24);
             BriefingRow("· 연산비", "−$" + FormatNumber(v.ComputeCost), UiTheme.TextSecondary, 24);
-            BriefingRow("총비용", "−$" + FormatNumber(v.TotalCost), UiTheme.TextSecondary, 28);
-            var netColor = v.Net >= 0 ? new Color(0.20f, 0.62f, 0.36f) : new Color(0.84f, 0.28f, 0.22f);
-            BriefingRow("순익", (v.Net >= 0 ? "+$" : "−$") + FormatNumber(System.Math.Abs(v.Net)), netColor, 34);
+            BriefingRow("총비용", "−$" + FormatNumber(v.TotalCost), UiTheme.ResCashDeep, 28);        // feat-030 — 비용 코랄
+            var netColor = v.Net >= 0 ? UiTheme.ResUser : UiTheme.ResCashDeep;
+            BriefingRow("순익", (v.Net >= 0 ? "+$" : "−$") + FormatNumber(System.Math.Abs(v.Net)), netColor, 46); // feat-030 — 순익 임팩트 크게
 
             BriefingRow("신규 이용자", "+" + FormatNumber(v.NewUsers), UiTheme.ScoreboardTag, 26);
             BriefingRow("데이터 생성", "+" + FormatNumber(v.DataGenerated), UiTheme.TextSecondary, 26);
@@ -3382,7 +3382,8 @@ namespace AICompanyTycoon.UI
             if (v.HasWorldEvent) BriefingRow("세계 이벤트", v.WorldEventText, UiTheme.ScoreboardLive, 24);
             if (v.HasWarning) BriefingRow("경고", v.WarningText, new Color(0.84f, 0.28f, 0.22f), 24);
 
-            var (btn, _) = UiFactory.Button(_briefingCard, "다음 달로");
+            var (btn, btnLabel) = UiFactory.Button(_briefingCard, "다음 달로");
+            StyleCtaButton(btn, btnLabel); // feat-030 — 결산 닫기는 primary CTA 코랄
             btn.onClick.AddListener(() => { _briefingModal.SetActive(false); onClose?.Invoke(); });
             AddLayout(btn.gameObject, 76, 0);
 
