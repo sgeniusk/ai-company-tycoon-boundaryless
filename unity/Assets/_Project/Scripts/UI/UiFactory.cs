@@ -82,7 +82,7 @@ namespace AICompanyTycoon.UI
             var go = new GameObject("Button", typeof(RectTransform), typeof(Image), typeof(Button));
             go.transform.SetParent(parent, false);
             var image = go.GetComponent<Image>();
-            image.color = UiTheme.CreamDeep; // feat-030 — 기본은 secondary 중립. primary CTA는 StyleCtaButton으로 코랄.
+            image.color = UiTheme.ButtonSurface; // feat-030 — secondary 중립 버튼 면(또렷한 탄). primary CTA는 StyleCtaButton 코랄.
 
             // feat-030 — 색은 Image에만 싣고 ColorBlock은 흰색 틴트(1.0). 둘 다 색이면 곱해져 코랄이 붉게 죽는다.
             var button = go.GetComponent<Button>();

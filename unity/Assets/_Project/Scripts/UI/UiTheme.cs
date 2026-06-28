@@ -87,6 +87,8 @@ namespace AICompanyTycoon.UI
         public static readonly Color ResUser     = Hex("2fa877"); // 이용자
         public static readonly Color ResCompute  = Hex("7a66d6"); // 연산력
         public static readonly Color RewardGold  = Hex("e2a02e"); // 보상·랭킹(골드)
+        public static readonly Color ButtonSurface = Hex("e7d4ad"); // secondary 버튼 면 — 크림 카드 위에서 또렷한 탄 톤(affordance)
+        public static readonly Color ButtonSurfaceLine = Hex("cdb888"); // secondary 버튼 보더(은은한 윤곽)
         // 추월 트렌드바(슬림) — 반투명 잉크 바 + 민트 추월 화살표.
         public static readonly Color TrendBarBg  = Hex("2c2620", 0.86f);
         public static readonly Color TrendArrow  = Hex("6ee2a8");
