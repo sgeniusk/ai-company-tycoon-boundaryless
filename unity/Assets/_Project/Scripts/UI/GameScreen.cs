@@ -27,6 +27,7 @@ namespace AICompanyTycoon.UI
         readonly Dictionary<string, Button> _tabButtons = new Dictionary<string, Button>();
 
         Canvas _canvas;
+        Transform _portraitFrame; // feat-030 — 20:9 세로 고정 프레임(레터박스). 모든 콘텐츠·모달의 부모.
         Text _monthLabel;
         Text _stageLabel;
         Text _summaryLabel;
@@ -118,7 +119,25 @@ namespace AICompanyTycoon.UI
         public void Build()
         {
             _canvas = UiFactory.CreateCanvas("AI Company Tycoon UI");
-            var root = UiFactory.Panel(_canvas.transform, UiTheme.ScreenBg);
+
+            // feat-030 — 세로 폰 프레임 고정. 게임은 20:9 세로 비율로 설계됐다. 더 넓은 화면(태블릿·에디터 게임뷰)에서
+            // 칩이 늘어나고 소품이 잘리던 문제를, 콘텐츠를 세로 프레임 안에 담고 밖을 레터박스로 처리해 해결한다.
+            var letterbox = UiFactory.Panel(_canvas.transform, UiTheme.Ink);
+            letterbox.name = "Letterbox";
+            Stretch(letterbox.GetComponent<RectTransform>());
+
+            var frameGo = new GameObject("PortraitFrame", typeof(RectTransform), typeof(AspectRatioFitter));
+            frameGo.transform.SetParent(_canvas.transform, false);
+            var frameRect = frameGo.GetComponent<RectTransform>();
+            frameRect.anchorMin = frameRect.anchorMax = new Vector2(0.5f, 0.5f);
+            frameRect.pivot = new Vector2(0.5f, 0.5f);
+            var arf = frameGo.GetComponent<AspectRatioFitter>();
+            arf.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            arf.aspectRatio = 1080f / 2400f; // 20:9 세로
+            var frame = frameGo.transform;
+            _portraitFrame = frame;
+
+            var root = UiFactory.Panel(frame, UiTheme.ScreenBg);
             root.name = "GameScreen";
             Stretch(root.GetComponent<RectTransform>());
 
@@ -136,17 +155,17 @@ namespace AICompanyTycoon.UI
             BuildResourceHud(content);
             BuildScoreboard(content);
             BuildStageSpacer(content);   // 가운데는 비워 스테이지(오피스)가 주인공이 되게
-            BuildMonthSummary(content);
+            // feat-030 — 인라인 월요약·상태줄 제거(시안엔 없는 군더더기). 결과는 브리핑 모달, 상태는 토스트가 담당. 오피스에 공간 양보.
             BuildGoalRibbon(content);    // AI 비서 리본 — 도크 바로 위 (React 구도)
-            BuildStatusLine(content);
             BuildBottomDock(content);    // CD-3 하단 도크 — 탭 + 다음달 FAB + 더보기
-            BuildMenuPopup(_canvas.transform);   // 탭 콘텐츠는 오피스 위 팝업으로
-            BuildMoreDrawer(_canvas.transform);  // 저장/불러오기/새 게임 드로어
-            BuildWorldRevealModal(_canvas.transform); // 세계 뽑기 리빌 (feat-007)
-            BuildInterviewModal(_canvas.transform);   // 개업 인터뷰 (feat-015 #2)
-            BuildEventModal(_canvas.transform);
-            BuildResultModal(_canvas.transform);
-            BuildBriefingModal(_canvas.transform);
+            // feat-030 — 모달도 세로 프레임 안에 (캔버스 직접 부모면 넓은 화면서 시트가 늘어남)
+            BuildMenuPopup(frame);   // 탭 콘텐츠는 오피스 위 팝업으로
+            BuildMoreDrawer(frame);  // 저장/불러오기/새 게임 드로어
+            BuildWorldRevealModal(frame); // 세계 뽑기 리빌 (feat-007)
+            BuildInterviewModal(frame);   // 개업 인터뷰 (feat-015 #2)
+            BuildEventModal(frame);
+            BuildResultModal(frame);
+            BuildBriefingModal(frame);
             SetActivePanel(_activeTab);
             Subscribe();
         }
@@ -3180,6 +3199,7 @@ namespace AICompanyTycoon.UI
 
         void UpdateSummary()
         {
+            if (_summaryLabel == null) return; // feat-030 — 인라인 요약줄 제거(결과는 월말 브리핑 모달이 담당)
             if (_lastSummary == null)
             {
                 _summaryLabel.text = "아직 월을 넘기지 않았습니다.";

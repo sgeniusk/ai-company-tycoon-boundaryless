@@ -63,6 +63,8 @@ namespace AICompanyTycoon.Tests.PlayMode
             yield return CaptureCanvas(canvasGo, "01-main.png");
             // 1c) 폰 해상도(20:9) cover 검증 — 배경 도트 정사각 + 액터 정합 (feat-018)
             yield return CaptureCanvas(canvasGo, "01c-phone-2400.png", 1080, 2400);
+            // 1w) 와이드 비율(≈사용자 정사각 뷰 886x1002) — 비폰 비율에서 휑함/늘어짐 회귀 검증 (feat-030)
+            yield return CaptureCanvas(canvasGo, "01w-main-wide.png", 1080, 1221);
 
             // 1b) 전광판 마퀴 — 스크롤을 멈추고 뷰포트 안으로 당겨 내용 확인(평소엔 우측에서 진입 중이라 비어 보임)
             var marqueeText = GameObject.Find("MarqueeText");
