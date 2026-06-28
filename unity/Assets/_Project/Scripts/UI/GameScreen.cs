@@ -141,15 +141,15 @@ namespace AICompanyTycoon.UI
             root.name = "GameScreen";
             Stretch(root.GetComponent<RectTransform>());
 
-            // feat-030 시안 밀도 — 오피스(배경+직원+앰비언트)를 한 컨테이너로 묶어 줌인. 빈 윗벽을 크롭하고 직원을 크게.
-            // 시안 오피스는 차고 전체의 '벽아트+바닥+직원' 부분만 타이트하게 보여줬다(원 캡처 y15~85% 크롭 ≈ 1.4x).
+            // feat-030 — 시안 framing 매칭. 시안은 약한 줌(윗벽 일부 크롭, 직원 약간 큼). 1.32는 과했고 0은 휑해 1.15로.
+            // 직원-가구 비례는 벽 가구를 키워(OfficeProps) 별도 보정.
             var officeZoom = new GameObject("OfficeZoom", typeof(RectTransform));
             officeZoom.transform.SetParent(root.transform, false);
             var ozr = officeZoom.GetComponent<RectTransform>();
             ozr.anchorMin = Vector2.zero; ozr.anchorMax = Vector2.one;
             ozr.offsetMin = Vector2.zero; ozr.offsetMax = Vector2.zero;
-            ozr.localScale = new Vector3(1.32f, 1.32f, 1f); // 줌 배율(밀도)
-            officeZoom.transform.localPosition += new Vector3(0f, 60f, 0f); // 살짝 위로 — 직원이 도크에 안 묻히게
+            ozr.localScale = new Vector3(1.15f, 1.15f, 1f);
+            officeZoom.transform.localPosition += new Vector3(0f, 36f, 0f); // 살짝 위로
             BuildOfficeBackground(officeZoom.transform);
             BuildOfficeScene(officeZoom.transform); // 풀스크린 스테이지 — 게임 씬 먼저, UI는 위에 뜬다 (feat-011, React v0.96 구도)
 
