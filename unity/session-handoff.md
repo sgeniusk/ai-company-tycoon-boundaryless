@@ -7,9 +7,11 @@
 - 현재 상태 — **feat-029까지 완결, origin 푸시 완료.** main = `f06a9d4`. EditMode **177/177**.
 - 브랜치 — `main` (origin 동기화됨). push는 사용자 확인 후.
 
-## ★ 다음 세션 1순위 — 최종안 Unity 구현 (디자인 임포트 완료)
-- **시안 3종 수령·검토 → 최종안 확정 완료(2026-06-28).** 선택 = **추천안(A 슬림HUD + D 추월트렌드 + B 풀블리드 오피스)**. 정본 — **`docs/design/FINAL.md`**(결정 기록·현 화면 대비 변경 매핑·4박자 스펙·컬러/타이포·오피스 3레이어 합류) + **`docs/design/ai-tycoon-final.html`**(단일 인터랙티브 최종, 4박자·보텀시트·스마트버튼 동작). 소스 3종·캡처 `docs/design/`·`docs/design/shots/`.
-- 흐름 — `FINAL.md`·`ai-tycoon-final.html` 읽기 → 현 Unity 화면(`Logs/shots/01-main.png`·`38-briefing`)과 매핑 → **brainstorming→writing-plans→subagent-driven으로 뷰·UX 레이어 재설계**(코어/세이브 무변경, 에셋 필요 시 Codex 크로마키).
+## ★ 다음 세션 1순위 — feat-030 잔여 블록 (메인 재설계 구현 중)
+- **확정 = 추천안(A 슬림HUD + D 추월트렌드 + B 풀블리드 오피스).** 정본 `docs/design/FINAL.md`·`ai-tycoon-final.html`, 계획 `docs/feat-030-main-redesign-plan.md`.
+- **완료·검증·커밋(EditMode 177 + 캡처)** — B1 토큰·B2 HUD 다이어트(크림 톱바·자원 색칩·슬림 트렌드바)·B4 도크/스마트 FAB 3상태·B5 보텀시트·버튼 2티어(핵심 CTA만 코랄)·B6 일부(결산 브리핑 재스킨). 커밋 `8719987`·`afa29e6`. 메인 화면 정적 뷰는 최종안과 일치.
+- **남은** — B3 풀블리드 오피스(**feat-027 정밀 튜닝 보존 위해 블라인드 앵커 변경 보류** — 정규화 배치라 스테이지 키우면 직원 전원 이동, 캡처 보며 신중히)·B6 잔여(타임랩스/이벤트/승급 컷씬 재스킨, 컷씬 CG는 사용자가 "전기줄 저렴" 지적 — 별도 개선)·폴리시(중립 버튼 affordance 흐림·시트 높이·FAB 코랄 강도).
+- 흐름 — 라이선스 확인 후 캡처 검증하며 블록 진행. 무관 변경 `ProjectSettings.asset`(activeInputHandler)은 커밋 제외 유지.
 
 ## 진행 중이던 직결 설계 — 오피스 3레이어 깊이 (스펙 미작성)
 - 현 오피스 = **2레이어**(소품=뒤 / 직원=앞). 합의 = **고정 3레이어**(뒤 가구·러그 / 직원·책상 / 앞 전경이 직원 가림) + `PropSpec.Layer` 일급 속성 + 미래 에셋 레이어 규칙. 상세 `docs/design/README.md` 하단.
