@@ -689,21 +689,27 @@ namespace AICompanyTycoon.UI
             var nr = ScoreboardRanking.DeriveNationalRanking(_context.Market, _context.Model);
             var ci = System.Globalization.CultureInfo.InvariantCulture;
             _scoreRank.text = "#" + nr.rank.ToString("N0", ci);
-            _scoreTotal.text = "/ " + nr.total.ToString("N0", ci) + "사";
+            // feat-030 시안 — "▲ 추월 중 · 이번 달 +N" / 하락·유지는 그에 맞게.
             if (nr.delta > 0)
             {
-                _scoreDelta.text = "▲" + nr.delta;
-                _scoreDelta.color = UiTheme.DeltaUp;
+                _scoreDelta.text = "▲ 추월 중";
+                _scoreDelta.color = UiTheme.TrendArrow;
+                _scoreTotal.text = "이번 달 +" + nr.delta;
+                _scoreTotal.color = UiTheme.ScoreboardTag;
             }
             else if (nr.delta < 0)
             {
-                _scoreDelta.text = "▼" + System.Math.Abs(nr.delta);
+                _scoreDelta.text = "▼ " + System.Math.Abs(nr.delta) + "계단";
                 _scoreDelta.color = UiTheme.DeltaDown;
+                _scoreTotal.text = "/ " + nr.total.ToString("N0", ci) + "사";
+                _scoreTotal.color = UiTheme.ScoreboardTag;
             }
             else
             {
-                _scoreDelta.text = "—";
+                _scoreDelta.text = "· 유지";
                 _scoreDelta.color = UiTheme.DeltaFlat;
+                _scoreTotal.text = "/ " + nr.total.ToString("N0", ci) + "사";
+                _scoreTotal.color = UiTheme.ScoreboardTag;
             }
 
             var lines = ScoreboardRanking.BuildScoreboardMarquee(_context.Market, _context.Model, _context.Catalog, _context.Equity);
@@ -3382,26 +3388,28 @@ namespace AICompanyTycoon.UI
             _resultModal.SetActive(false);
         }
 
-        // 월말 브리핑 모달 — 스크림 + 빈 카드(VBox). 내용은 ShowBriefing이 MonthBriefingView로 채운다 (feat-029).
+        // 월말 브리핑 — feat-030 시안: 바닥에서 올라오는 보텀시트(오피스 비침) + 내용 높이 자동. ShowBriefing이 채운다.
         void BuildBriefingModal(Transform parent)
         {
             _briefingModal = UiFactory.Panel(parent, UiTheme.ModalScrim);
             _briefingModal.name = "BriefingModal";
             Stretch(_briefingModal.GetComponent<RectTransform>());
+            var scrimImg = _briefingModal.GetComponent<Image>();
+            if (scrimImg != null) scrimImg.color = new Color(0.16f, 0.12f, 0.07f, 0.42f); // 옅게 — 결산 중 오피스 비침
 
-            var card = UiFactory.Panel(_briefingModal.transform, UiTheme.PanelBg);
+            var card = UiFactory.Panel(_briefingModal.transform, UiTheme.CreamPanel);
             card.name = "BriefingCard";
             var rect = card.GetComponent<RectTransform>();
-            // 가로는 화면 0.07~0.93 스트레치, 세로는 중앙 포인트 앵커 + ContentSizeFitter로 내용 높이에 맞춰 자동(빈 공간 제거).
-            rect.anchorMin = new Vector2(0.07f, 0.5f);
-            rect.anchorMax = new Vector2(0.93f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.offsetMin = new Vector2(0f, rect.offsetMin.y);
-            rect.offsetMax = new Vector2(0f, rect.offsetMax.y);
+            // 바닥 고정 전폭 시트 — 아래(pivot.y=0)에서 ContentSizeFitter 높이만큼 위로.
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(1f, 0f);
+            rect.pivot = new Vector2(0.5f, 0f);
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
             rect.anchoredPosition = Vector2.zero;
             var fitter = card.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            UiFactory.VBox(card.transform, 10, new RectOffset(26, 26, 24, 24));
+            UiFactory.VBox(card.transform, 10, new RectOffset(26, 26, 14, 26));
             _briefingCard = card.transform;
 
             _briefingModal.SetActive(false);
@@ -3413,6 +3421,11 @@ namespace AICompanyTycoon.UI
             if (_briefingCard == null) { onClose?.Invoke(); return; }
             var v = AICompanyTycoon.Systems.MonthBriefing.Build(summary);
             Clear(_briefingCard);
+
+            // 그랩 핸들 — 보텀시트 손잡이 (feat-030)
+            var grab = UiFactory.Panel(_briefingCard, UiTheme.HairLine);
+            grab.name = "GrabHandle";
+            AddLayoutFixed(grab, 64, 8);
 
             var header = UiFactory.Label(_briefingCard, v.Month + "월차 결산", 40);
             header.alignment = TextAnchor.MiddleCenter;
@@ -3428,7 +3441,11 @@ namespace AICompanyTycoon.UI
             BriefingRow("· 연산비", "−$" + FormatNumber(v.ComputeCost), UiTheme.TextSecondary, 24);
             BriefingRow("총비용", "−$" + FormatNumber(v.TotalCost), UiTheme.ResCashDeep, 28);        // feat-030 — 비용 코랄
             var netColor = v.Net >= 0 ? UiTheme.ResUser : UiTheme.ResCashDeep;
-            BriefingRow("순익", (v.Net >= 0 ? "+$" : "−$") + FormatNumber(System.Math.Abs(v.Net)), netColor, 46, display: true); // feat-030 — 순익 임팩트 크게+폰트
+            string netSign = v.Net >= 0 ? "+$" : "−$";
+            double netAbs = System.Math.Abs(v.Net);
+            var netLabel = BriefingRow("순익", netSign + FormatNumber(netAbs), netColor, 46, display: true); // feat-030 — 순익 임팩트 크게+폰트
+            // 순익 숫자 0→값 틱업 (도파민) — 시안 손익 시트 핵심.
+            netLabel.gameObject.AddComponent<NumberTickUp>().Init(netLabel, 0f, (float)netAbs, x => netSign + FormatNumber(x), 0.9f);
 
             BriefingRow("신규 이용자", "+" + FormatNumber(v.NewUsers), UiTheme.ScoreboardTag, 26);
             BriefingRow("데이터 생성", "+" + FormatNumber(v.DataGenerated), UiTheme.TextSecondary, 26);
@@ -3446,8 +3463,8 @@ namespace AICompanyTycoon.UI
             PopInCard(_briefingModal, "BriefingCard");
         }
 
-        // 브리핑 한 행(라벨 좌·값 우)을 _briefingCard에 추가한다. display=true면 값에 임팩트 폰트(큰 숫자).
-        void BriefingRow(string label, string value, Color valueColor, int fontSize, bool display = false)
+        // 브리핑 한 행(라벨 좌·값 우)을 _briefingCard에 추가한다. display=true면 값에 임팩트 폰트(큰 숫자). 값 라벨 반환(틱업용).
+        Text BriefingRow(string label, string value, Color valueColor, int fontSize, bool display = false)
         {
             var row = new GameObject("Row", typeof(RectTransform));
             row.transform.SetParent(_briefingCard, false);
@@ -3463,6 +3480,7 @@ namespace AICompanyTycoon.UI
             val.color = valueColor;
             AddLayout(val.gameObject, fontSize + 12, 1);
             AddLayout(row, fontSize + 12, 0);
+            return val;
         }
 
         string MoodLabel(AICompanyTycoon.Systems.MonthMood m)

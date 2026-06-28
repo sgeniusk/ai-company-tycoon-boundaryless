@@ -42,6 +42,36 @@ namespace AICompanyTycoon.UI
             }
         }
 
+        static Font _bodyFont;
+        // feat-030 시안 — 본문·라벨 폰트(Gowun Dodum). 없으면 UiFont 폴백.
+        public static Font BodyFont
+        {
+            get
+            {
+                if (_bodyFont == null)
+                {
+                    _bodyFont = Resources.Load<Font>("Fonts/GowunDodum-Regular");
+                    if (_bodyFont == null) _bodyFont = LegacyFont;
+                }
+                return _bodyFont;
+            }
+        }
+
+        static Font _buttonFont;
+        // feat-030 시안 — 버튼·게임 액션 폰트(Jua). 없으면 본문 폰트 폴백.
+        public static Font ButtonFont
+        {
+            get
+            {
+                if (_buttonFont == null)
+                {
+                    _buttonFont = Resources.Load<Font>("Fonts/Jua-Regular");
+                    if (_buttonFont == null) _buttonFont = BodyFont;
+                }
+                return _buttonFont;
+            }
+        }
+
         public static Canvas CreateCanvas(string name)
         {
             var go = new GameObject(name, typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -82,7 +112,7 @@ namespace AICompanyTycoon.UI
             var go = new GameObject("Label", typeof(RectTransform), typeof(Text));
             go.transform.SetParent(parent, false);
             var label = go.GetComponent<Text>();
-            label.font = LegacyFont;
+            label.font = BodyFont; // feat-030 — 본문·라벨 Gowun Dodum
             label.text = text;
             label.fontSize = fontSize;
             label.color = UiTheme.TextPrimary;
@@ -118,7 +148,7 @@ namespace AICompanyTycoon.UI
             textRect.offsetMax = new Vector2(-12, -6);
 
             var label = textGo.GetComponent<Text>();
-            label.font = LegacyFont;
+            label.font = ButtonFont; // feat-030 — 버튼·게임 액션 Jua
             label.text = labelText;
             label.fontSize = 34; // 모바일 가독 — 버튼 라벨 기본 크기 (feat-009)
             label.color = UiTheme.Ink; // feat-030 — 중립 버튼은 잉크 텍스트. 코랄 CTA는 StyleCtaButton이 라이트로.
