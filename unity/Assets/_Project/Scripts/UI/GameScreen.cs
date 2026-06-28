@@ -1870,8 +1870,10 @@ namespace AICompanyTycoon.UI
             _eventModal = UiFactory.Panel(parent, UiTheme.ModalScrim);
             _eventModal.name = "EventModal";
             Stretch(_eventModal.GetComponent<RectTransform>());
+            var evScrim = _eventModal.GetComponent<Image>();
+            if (evScrim != null) evScrim.color = new Color(0.16f, 0.12f, 0.07f, 0.46f); // feat-030 — 옅게, 오피스 비침(4박자 일관)
 
-            var card = UiFactory.Panel(_eventModal.transform, UiTheme.PanelBg);
+            var card = UiFactory.Panel(_eventModal.transform, UiTheme.CreamPanel);
             card.name = "EventCard";
             var rect = card.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(0.08f, 0.24f);
