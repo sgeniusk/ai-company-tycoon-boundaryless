@@ -21,11 +21,11 @@ namespace AICompanyTycoon.UI
         public const int FontTitle = 40;
         public const int FontDisplay = 52;
 
-        // 버튼 — 채도 있는 그린
-        public static readonly Color Button = Hex("57a468");
-        public static readonly Color ButtonHover = Hex("69b87a");
-        public static readonly Color ButtonPressed = Hex("478a56");
-        public static readonly Color ButtonDisabled = Hex("c4bca9");
+        // 버튼 — feat-030 기본 CTA 코랄(시트 안 출시·강화 등). 강조색 통일.
+        public static readonly Color Button = Hex("ee6c3d");
+        public static readonly Color ButtonHover = Hex("f5824f");
+        public static readonly Color ButtonPressed = Hex("d9531f");
+        public static readonly Color ButtonDisabled = Hex("cabfa9");
         public static readonly Color ButtonText = Hex("fdfaf0");
 
         // 텍스트 — 밝은 배경 위 진한 브라운. Secondary도 가독 대비를 위해 충분히 어둡게.
@@ -71,6 +71,25 @@ namespace AICompanyTycoon.UI
         // 가이던스 FAB 톤 (feat-009) — 제안 성격별 색. primary는 Button 그린 재사용.
         public static readonly Color FabWarning = Hex("d65745");
         public static readonly Color FabSteady = Hex("3e7ba6");
+
+        // ── feat-030 최종안 팔레트 (디자인 주도 재설계) ──
+        // 크림 베이스 + 자원 고정색. "한 화면 강조색은 하나(=센터버튼 코랄)" 규칙.
+        // 가산 토큰 — 기존 다크그린 상수는 각 영역 재구성 블록(B2 HUD·B4 도크·B5 시트)에서 단계적으로 이 토큰을 소비/대체.
+        public static readonly Color Cream       = Hex("f5ecdd"); // 베이스 면
+        public static readonly Color CreamDeep   = Hex("efe3ce"); // 한 톤 진한 면
+        public static readonly Color CreamPanel  = Hex("fbf5ea", 0.97f); // 시트·카드 면
+        public static readonly Color Ink         = Hex("2c2620"); // 본문 텍스트
+        public static readonly Color InkSoft     = Hex("6b6155"); // 보조 텍스트
+        public static readonly Color HairLine    = Hex("e2d4bc"); // 구분선·보더
+        // 자원 고정색 — 숫자를 색으로도 읽게 한다.
+        public static readonly Color ResCash     = Hex("ee6c3d"); // 현금·CTA(강조색)
+        public static readonly Color ResCashDeep = Hex("d9531f"); // 현금 값·눌림
+        public static readonly Color ResUser     = Hex("2fa877"); // 이용자
+        public static readonly Color ResCompute  = Hex("7a66d6"); // 연산력
+        public static readonly Color RewardGold  = Hex("e2a02e"); // 보상·랭킹(골드)
+        // 추월 트렌드바(슬림) — 반투명 잉크 바 + 민트 추월 화살표.
+        public static readonly Color TrendBarBg  = Hex("2c2620", 0.86f);
+        public static readonly Color TrendArrow  = Hex("6ee2a8");
 
         static Color Hex(string hex, float a = 1f)
         {

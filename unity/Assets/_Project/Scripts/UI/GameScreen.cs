@@ -47,6 +47,8 @@ namespace AICompanyTycoon.UI
         Text _goalRibbonText;
         Button _nextMonthButton;
         Text _nextMonthLabel;
+        Image _fabRing;       // feat-030 스마트 센터버튼 — 상태별 색 펄스 링
+        FabPulse _fabPulse;   // 유휴 상태에선 펄스 끔
 
         GameObject _productsPanel;
         GameObject _capabilitiesPanel;
@@ -590,61 +592,39 @@ namespace AICompanyTycoon.UI
         }
 
         // CD-1 전국 AI 기업 랭킹 LED 전광판 — 태그+LIVE 점멸 / #랭크 /총사 ▲델타 / 흐르는 마퀴.
+        // feat-030 — 큰 LED 전광판을 슬림 1줄 추월 트렌드바로. 잉크 바 + #랭크 + ▲추월 + 마퀴(우측 흐름).
         void BuildScoreboard(Transform parent)
         {
-            var panel = UiFactory.Panel(parent, UiTheme.ScoreboardBg);
+            var panel = UiFactory.Panel(parent, UiTheme.TrendBarBg);
             panel.name = "Scoreboard";
-            AddLayout(panel, 172, 0);
-            UiFactory.VBox(panel.transform, 6, new RectOffset(22, 22, 12, 12));
+            AddLayout(panel, 56, 0);
+            var row = UiFactory.HBox(panel.transform, 10);
+            row.padding = new RectOffset(18, 16, 6, 6);
+            row.childAlignment = TextAnchor.MiddleLeft;
 
-            // 1행 — 태그 + LIVE 뱃지(점멸)
-            var top = new GameObject("ScoreTop", typeof(RectTransform));
-            top.transform.SetParent(panel.transform, false);
-            UiFactory.HBox(top.transform, 10);
-            AddLayout(top, 40, 0);
-
-            var tag = UiFactory.Label(top.transform, "전국 AI 기업 랭킹", 30);
-            tag.color = UiTheme.ScoreboardTag;
-            tag.horizontalOverflow = HorizontalWrapMode.Overflow;
-            AddLayout(tag.gameObject, 38, 1);
-
-            var badge = UiFactory.Panel(top.transform, UiTheme.ScoreboardLive);
-            badge.name = "LiveBadge";
-            badge.AddComponent<CanvasGroup>();
-            badge.AddComponent<LiveBlink>();
-            AddLayoutFixed(badge, 88, 40);
-            var liveText = UiFactory.Label(badge.transform, "LIVE", 26);
-            liveText.color = UiTheme.ScoreboardLiveText;
-            liveText.alignment = TextAnchor.MiddleCenter;
-            liveText.horizontalOverflow = HorizontalWrapMode.Overflow;
-            liveText.raycastTarget = false;
-            Stretch(liveText.GetComponent<RectTransform>());
-
-            // 2행 — #랭크 / 총사 ▲델타
-            var rankRow = new GameObject("ScoreRank", typeof(RectTransform));
-            rankRow.transform.SetParent(panel.transform, false);
-            UiFactory.HBox(rankRow.transform, 10);
-            AddLayout(rankRow, 60, 0);
-
-            _scoreRank = UiFactory.Label(rankRow.transform, "#—", 52);
-            _scoreRank.color = UiTheme.ScoreboardRank;
+            // #랭크 (큰 흰 숫자)
+            _scoreRank = UiFactory.Label(panel.transform, "#—", 34);
+            _scoreRank.color = Color.white;
             _scoreRank.horizontalOverflow = HorizontalWrapMode.Overflow;
-            AddLayout(_scoreRank.gameObject, 58, 0);
+            AddLayout(_scoreRank.gameObject, 44, 0);
 
-            _scoreTotal = UiFactory.Label(rankRow.transform, "/ —사", 30);
+            // ▲추월 (민트 화살표)
+            _scoreDelta = UiFactory.Label(panel.transform, "—", 26);
+            _scoreDelta.color = UiTheme.TrendArrow;
+            _scoreDelta.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(_scoreDelta.gameObject, 44, 0);
+
+            // / 총사 (작게, 보조)
+            _scoreTotal = UiFactory.Label(panel.transform, "/ —사", 24);
             _scoreTotal.color = UiTheme.ScoreboardTag;
             _scoreTotal.horizontalOverflow = HorizontalWrapMode.Overflow;
-            AddLayout(_scoreTotal.gameObject, 58, 0);
+            AddLayout(_scoreTotal.gameObject, 44, 0);
 
-            _scoreDelta = UiFactory.Label(rankRow.transform, "—", 32);
-            _scoreDelta.color = UiTheme.DeltaFlat;
-            _scoreDelta.horizontalOverflow = HorizontalWrapMode.Overflow;
-            AddLayout(_scoreDelta.gameObject, 58, 1);
-
-            // 3행 — 마퀴 (RectMask2D 클리핑 + 우→좌 흐름)
+            // 마퀴 — 남은 폭을 채우는 경쟁사 흐름 (RectMask2D 클리핑)
             var viewport = new GameObject("MarqueeViewport", typeof(RectTransform), typeof(RectMask2D));
             viewport.transform.SetParent(panel.transform, false);
-            AddLayout(viewport, 36, 0);
+            var vle = viewport.AddComponent<LayoutElement>();
+            vle.minHeight = 40; vle.flexibleWidth = 1; vle.minWidth = 60;
             var viewportRect = viewport.GetComponent<RectTransform>();
 
             var contentGo = new GameObject("MarqueeText", typeof(RectTransform), typeof(Text));
@@ -653,11 +633,11 @@ namespace AICompanyTycoon.UI
             contentRect.anchorMin = new Vector2(0, 0.5f);
             contentRect.anchorMax = new Vector2(0, 0.5f);
             contentRect.pivot = new Vector2(0, 0.5f);
-            contentRect.sizeDelta = new Vector2(2400, 34);
+            contentRect.sizeDelta = new Vector2(2400, 32);
 
             _scoreMarquee = contentGo.GetComponent<Text>();
             _scoreMarquee.font = UiFactory.LegacyFont;
-            _scoreMarquee.fontSize = 28;
+            _scoreMarquee.fontSize = 24;
             _scoreMarquee.color = UiTheme.ScoreboardMarquee;
             _scoreMarquee.alignment = TextAnchor.MiddleLeft;
             _scoreMarquee.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -928,8 +908,8 @@ namespace AICompanyTycoon.UI
 
         void BuildTopBar(Transform parent)
         {
-            // 슬림 톱바 — 게임 타이틀은 빼고 월/단계만. 화면은 오피스 무대가 주인공 (feat-011, React 구도).
-            var panel = UiFactory.Panel(parent, UiTheme.HeaderBg);
+            // 슬림 톱바 — 월/단계만. feat-030 — 다크그린 HUD 폐기 → 크림 바 + 잉크 텍스트. 오피스가 주인공.
+            var panel = UiFactory.Panel(parent, UiTheme.Cream);
             panel.name = "TopBar";
             AddLayout(panel, 78, 0);
             UiFactory.VBox(panel.transform, 0, new RectOffset(24, 24, 10, 10));
@@ -940,11 +920,11 @@ namespace AICompanyTycoon.UI
             AddLayout(row, 58, 0);
 
             _monthLabel = UiFactory.Label(row.transform, "1월차", 36);
-            _monthLabel.color = UiTheme.HeaderText;
+            _monthLabel.color = UiTheme.Ink;
             AddLayout(_monthLabel.gameObject, 54, 1);
 
             _stageLabel = UiFactory.Label(row.transform, "차고 프로토타입", 34);
-            _stageLabel.color = UiTheme.HeaderText;
+            _stageLabel.color = UiTheme.InkSoft;
             _stageLabel.alignment = TextAnchor.MiddleRight;
             AddLayout(_stageLabel.gameObject, 54, 1);
         }
@@ -973,6 +953,7 @@ namespace AICompanyTycoon.UI
             (_trayToggle, _trayToggleLabel) = UiFactory.Button(strip.transform, "＋");
             _trayToggle.onClick.AddListener(ToggleTray);
             AddLayoutFixed(_trayToggle.gameObject, 72, 72);
+            FlattenDockButton(_trayToggle, _trayToggleLabel); // feat-030 — 메인서 초록 제거, 강조색은 FAB뿐
 
             // 꾸미기(준비 중) — 이모지 🎨는 Noto Sans KR에 글리프가 없어 한글 라벨로 둔다.
             var decor = UiFactory.Button(strip.transform, "꾸미기");
@@ -980,6 +961,7 @@ namespace AICompanyTycoon.UI
             decor.label.horizontalOverflow = HorizontalWrapMode.Overflow;
             decor.button.onClick.AddListener(() => SetStatus("꾸미기는 곧 추가됩니다."));
             AddLayoutFixed(decor.button.gameObject, 112, 72);
+            FlattenDockButton(decor.button, decor.label);
 
             // 보조 5종 트레이 — 기본 숨김, ＋ 토글로 노출
             _resourceTray = new GameObject("ResourceTray", typeof(RectTransform));
@@ -1015,9 +997,10 @@ namespace AICompanyTycoon.UI
         // 자원 칩 — 아이콘(없으면 이름) + 값(+ticker) + 월 델타. core면 크게, 트레이면 작게.
         void BuildResourceChip(Transform parent, ResourceId id, bool core)
         {
-            var chip = UiFactory.Panel(parent, UiTheme.HudChipBg);
+            // feat-030 — 크림 칩 + 자원 고정색 보더(왼쪽 색 코딩 효과). 다크 칩 폐기.
+            var chip = UiFactory.Panel(parent, UiTheme.CreamPanel);
             chip.name = ResourceIds.ToKey(id) + "Chip";
-            AddOutline(chip, UiTheme.HudChipBorder);
+            AddOutline(chip, ChipColor(id, false));
             var box = UiFactory.HBox(chip.transform, 6);
             box.padding = new RectOffset(10, 10, 4, 4);
             AddLayout(chip, core ? 72 : 66, 1);
@@ -1091,6 +1074,7 @@ namespace AICompanyTycoon.UI
             }
         }
 
+        // feat-030 — 자원 고정색(현금 코랄·이용자 민트·연산력 보라). 숫자를 색으로도 읽게 한다. 임계는 빨강 우선.
         Color ChipColor(ResourceId id, bool critical)
         {
             if (critical)
@@ -1098,7 +1082,13 @@ namespace AICompanyTycoon.UI
                 return UiTheme.ChipCritical;
             }
 
-            return id == ResourceId.Cash ? UiTheme.ChipCashText : UiTheme.ChipGoldText;
+            switch (id)
+            {
+                case ResourceId.Cash: return UiTheme.ResCashDeep;
+                case ResourceId.Users: return UiTheme.ResUser;
+                case ResourceId.Compute: return UiTheme.ResCompute;
+                default: return UiTheme.RewardGold;
+            }
         }
 
         bool IsCritical(ResourceId id)
@@ -1196,19 +1186,7 @@ namespace AICompanyTycoon.UI
                 _nextMonthLabel.text = _guidanceStep.ActionLabel;
             }
 
-            if (_nextMonthButton != null)
-            {
-                var tone = _guidanceStep.Tone == "warning" ? UiTheme.FabWarning
-                    : _guidanceStep.Tone == "steady" ? UiTheme.FabSteady
-                    : UiTheme.Button;
-                var img = _nextMonthButton.GetComponent<Image>();
-                if (img != null) img.color = tone;
-                var colors = _nextMonthButton.colors;
-                colors.normalColor = tone;
-                colors.highlightedColor = Color.Lerp(tone, Color.white, 0.15f);
-                colors.pressedColor = Color.Lerp(tone, Color.black, 0.15f);
-                _nextMonthButton.colors = colors;
-            }
+            RefreshFabVisual(); // feat-030 — 가이던스 톤을 최종안 3상태(코랄/골드/아웃라인)로 반영
         }
 
         // FAB 탭 — 제안이 있으면 그 메뉴를 열고(이번 달 본 것으로 표시), 없으면 다음 달 진행.
@@ -1228,7 +1206,8 @@ namespace AICompanyTycoon.UI
         // CD-3 하단 도크 — 대칭 2|FAB|2. [제품][능력] [다음달 FAB] [업그레이드][더보기].
         void BuildBottomDock(Transform parent)
         {
-            var dock = UiFactory.Panel(parent, UiTheme.DockBg);
+            // feat-030 — 도크 다크그린 폐기 → 크림. 탭은 초록 알약 대신 플랫(잉크 텍스트), 강조는 가운데 FAB만.
+            var dock = UiFactory.Panel(parent, UiTheme.Cream);
             dock.name = "BottomDock";
             AddLayout(dock, 132, 0);
             var box = UiFactory.HBox(dock.transform, 8);
@@ -1244,6 +1223,7 @@ namespace AICompanyTycoon.UI
             var more = UiFactory.Button(dock.transform, "더보기");
             more.button.onClick.AddListener(ToggleMore);
             AddLayout(more.button.gameObject, 96, 1);
+            FlattenDockButton(more.button, more.label);
         }
 
         void AddDockTab(Transform parent, string key, string label)
@@ -1251,7 +1231,31 @@ namespace AICompanyTycoon.UI
             var pair = UiFactory.Button(parent, label);
             pair.button.onClick.AddListener(() => ToggleMenu(key));
             AddLayout(pair.button.gameObject, 96, 1);
+            FlattenDockButton(pair.button, pair.label);
             _tabButtons[key] = pair.button;
+        }
+
+        // 도크 버튼을 초록 알약 → 크림 도크 위 플랫(잉크) 스타일로. 강조색은 가운데 FAB 하나뿐.
+        void FlattenDockButton(Button button, Text label)
+        {
+            var img = button.GetComponent<Image>();
+            if (img != null) img.color = new Color(0f, 0f, 0f, 0f); // 투명 — 크림 도크가 비침
+            var c = button.colors;
+            c.normalColor = new Color(1f, 1f, 1f, 0f);
+            c.highlightedColor = new Color(UiTheme.ResCash.r, UiTheme.ResCash.g, UiTheme.ResCash.b, 0.12f);
+            c.pressedColor = new Color(UiTheme.ResCash.r, UiTheme.ResCash.g, UiTheme.ResCash.b, 0.22f);
+            c.disabledColor = new Color(1f, 1f, 1f, 0f);
+            button.colors = c;
+            if (label != null) label.color = UiTheme.InkSoft;
+        }
+
+        // feat-030 primary CTA — 코랄 강조 + 라이트 텍스트. 핵심 액션(출시·강화·영입 등)에만. 나머지 버튼은 중립 기본.
+        void StyleCtaButton(Button button, Text label)
+        {
+            if (button == null) return;
+            var img = button.GetComponent<Image>();
+            if (img != null) img.color = UiTheme.ResCash;
+            if (label != null) label.color = UiTheme.ButtonText; // ColorBlock은 흰색 틴트라 코랄 그대로(disabled는 자동 뮤트)
         }
 
         // 중앙 가이던스 FAB — 다른 탭(96w)보다 확실히 크고 골드 펄스 링으로 주목 (사용자 피드백 — 가운데 버튼 차별화).
@@ -1268,10 +1272,10 @@ namespace AICompanyTycoon.UI
             ringRect.anchorMax = new Vector2(0.5f, 0.5f);
             ringRect.pivot = new Vector2(0.5f, 0.5f);
             ringRect.sizeDelta = new Vector2(210, 114);
-            var ringImg = ring.GetComponent<Image>();
-            ringImg.color = new Color(UiTheme.CrestGold.r, UiTheme.CrestGold.g, UiTheme.CrestGold.b, 0.6f); // 골드 펄스 — 가운데 추천 버튼 강조
-            ringImg.raycastTarget = false;
-            ring.AddComponent<FabPulse>();
+            _fabRing = ring.GetComponent<Image>();
+            _fabRing.color = new Color(UiTheme.ResCash.r, UiTheme.ResCash.g, UiTheme.ResCash.b, 0.55f); // feat-030 — 코랄 펄스 기본(추천 액션)
+            _fabRing.raycastTarget = false;
+            _fabPulse = ring.AddComponent<FabPulse>();
 
             (_nextMonthButton, _nextMonthLabel) = UiFactory.Button(cell.transform, "다음 달");
             var btnRect = _nextMonthButton.GetComponent<RectTransform>();
@@ -1281,6 +1285,61 @@ namespace AICompanyTycoon.UI
             btnRect.sizeDelta = new Vector2(198, 104);
             _nextMonthLabel.fontSize = 40;
             _nextMonthButton.onClick.AddListener(HandleGuidanceAction); // 가이던스 FAB — 라벨·톤·행동이 제안에 따라 바뀐다 (feat-009)
+            RefreshFabVisual();
+        }
+
+        // feat-030 스마트 센터버튼 3상태 — ①추천 액션(코랄+펄스) ②즉시 보상/주의(골드+펄스) ③할 일 없음(아웃라인·펄스 끔).
+        void RefreshFabVisual()
+        {
+            if (_nextMonthButton == null)
+            {
+                return;
+            }
+
+            bool pendingEvent = _context != null && _context.Events.Current != null;
+            bool hasAction = !_terminal && !pendingEvent && _guidanceStep != null && _guidanceStep.TargetTab != null;
+            bool attention = hasAction && _guidanceStep.Tone == "warning"; // 받을 것/주의 → 골드
+
+            Color tone;
+            bool pulse;
+            if (attention)
+            {
+                tone = UiTheme.RewardGold; pulse = true;   // ② 보상·주의
+            }
+            else if (hasAction)
+            {
+                tone = UiTheme.ResCash; pulse = true;      // ① 추천 액션
+            }
+            else
+            {
+                tone = UiTheme.CreamDeep; pulse = false;   // ③ 할 일 없음 (다음 달)
+            }
+
+            // 색은 Image에만 싣고 ColorBlock은 흰색(틴트 1.0)으로 — 둘 다 tone이면 곱해져 코랄이 붉게 죽는다.
+            var img = _nextMonthButton.GetComponent<Image>();
+            if (img != null) img.color = tone;
+            var colors = _nextMonthButton.colors;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1f, 1f, 1f, 1f);
+            colors.pressedColor = new Color(0.86f, 0.86f, 0.86f, 1f);
+            colors.disabledColor = new Color(0.7f, 0.7f, 0.7f, 1f);
+            colors.colorMultiplier = 1f;
+            _nextMonthButton.colors = colors;
+
+            if (_nextMonthLabel != null)
+            {
+                _nextMonthLabel.color = pulse ? Color.white : UiTheme.Ink; // 유휴는 잉크(아웃라인 느낌)
+            }
+
+            if (_fabRing != null)
+            {
+                _fabRing.color = new Color(tone.r, tone.g, tone.b, pulse ? 0.55f : 0f);
+            }
+
+            if (_fabPulse != null)
+            {
+                _fabPulse.enabled = pulse;
+            }
         }
 
         // 월 요약 — 오피스 아래 슬림 한 줄 (office-first라 높이 축소).
@@ -1306,21 +1365,29 @@ namespace AICompanyTycoon.UI
         // CD-3 탭 콘텐츠 팝업 — 오피스 위에 시트로 뜬다. 닫으면 오피스가 깨끗.
         void BuildMenuPopup(Transform parent)
         {
+            // feat-030 — 풀스크린 모달 → 보텀시트. 바닥에서 전폭으로 올라오고 위로 오피스가 비친다.
             _menuPopup = UiFactory.Panel(parent, UiTheme.ModalScrim);
             _menuPopup.name = "MenuPopup";
             Stretch(_menuPopup.GetComponent<RectTransform>());
+            var scrimImg = _menuPopup.GetComponent<Image>();
+            if (scrimImg != null) scrimImg.color = new Color(0.16f, 0.12f, 0.07f, 0.42f); // 옅게 — 오피스 맥락 유지
             var scrim = _menuPopup.AddComponent<Button>();
             scrim.transition = Selectable.Transition.None;
             scrim.onClick.AddListener(CloseMenu);
 
-            var card = UiFactory.Panel(_menuPopup.transform, UiTheme.PanelBg);
+            var card = UiFactory.Panel(_menuPopup.transform, UiTheme.CreamPanel);
             card.name = "MenuCard";
             var rect = card.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.04f, 0.12f);
-            rect.anchorMax = new Vector2(0.96f, 0.80f);
+            rect.anchorMin = new Vector2(0f, 0f);       // 바닥 고정
+            rect.anchorMax = new Vector2(1f, 0.82f);    // 전폭, 위로 82%까지
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
-            UiFactory.VBox(card.transform, 12, new RectOffset(20, 20, 18, 18));
+            UiFactory.VBox(card.transform, 12, new RectOffset(20, 20, 12, 18));
+
+            // 그랩 핸들 — 시트임을 알리는 상단 손잡이
+            var grab = UiFactory.Panel(card.transform, UiTheme.HairLine);
+            grab.name = "GrabHandle";
+            AddLayoutFixed(grab, 64, 8);
 
             var header = new GameObject("MenuHeader", typeof(RectTransform));
             header.transform.SetParent(card.transform, false);
@@ -1332,6 +1399,7 @@ namespace AICompanyTycoon.UI
             var close = UiFactory.Button(header.transform, "✕");
             close.button.onClick.AddListener(CloseMenu);
             AddLayoutFixed(close.button.gameObject, 64, 52);
+            FlattenDockButton(close.button, close.label); // feat-030 — 시트 닫기는 플랫
 
             var body = new GameObject("MenuBody", typeof(RectTransform));
             body.transform.SetParent(card.transform, false);
@@ -2273,6 +2341,7 @@ namespace AICompanyTycoon.UI
                 {
                     AddSmallText(card, "강화 비용 " + FormatCosts(_context.Products.GetLevelUpCost(product.id)));
                     var levelUp = UiFactory.Button(card, "제품 강화");
+                    StyleCtaButton(levelUp.button, levelUp.label);
                     levelUp.button.interactable = _context.Products.CanLevelUp(product.id);
                     levelUp.button.onClick.AddListener(() =>
                     {
@@ -2303,6 +2372,7 @@ namespace AICompanyTycoon.UI
                 }
 
                 var launch = UiFactory.Button(card, "출시");
+                StyleCtaButton(launch.button, launch.label);
                 launch.button.interactable = launchable;
                 launch.button.onClick.AddListener(() =>
                 {
@@ -2491,6 +2561,7 @@ namespace AICompanyTycoon.UI
             }
 
             var upgrade = UiFactory.Button(card, level >= capability.maxLevel ? "최대 레벨" : "강화");
+            StyleCtaButton(upgrade.button, upgrade.label);
             upgrade.button.interactable = _context.Capabilities.CanUpgrade(capability.id);
             upgrade.button.onClick.AddListener(() =>
             {
@@ -2754,6 +2825,7 @@ namespace AICompanyTycoon.UI
                 }
 
                 var hire = UiFactory.Button(card, "영입");
+                StyleCtaButton(hire.button, hire.label);
                 hire.button.interactable = reason == null;
                 var captured = candidate;
                 hire.button.onClick.AddListener(() =>
@@ -3534,6 +3606,8 @@ namespace AICompanyTycoon.UI
                 // 평상시 라벨은 가이던스 제안 (feat-009). 제안이 없으면 "다음 달".
                 _nextMonthLabel.text = _guidanceStep != null ? _guidanceStep.ActionLabel : "다음 달";
             }
+
+            RefreshFabVisual(); // feat-030 — 유휴/이벤트 대기 경로에서도 3상태 색 반영
         }
 
         string GetProductLockReason(ProductDef product)

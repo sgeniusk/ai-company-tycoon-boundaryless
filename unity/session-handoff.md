@@ -7,16 +7,20 @@
 - 현재 상태 — **feat-029까지 완결, origin 푸시 완료.** main = `f06a9d4`. EditMode **177/177**.
 - 브랜치 — `main` (origin 동기화됨). push는 사용자 확인 후.
 
-## ★ 다음 세션 1순위 — 클로드 디자인 시안 구현 (디자인 임포트)
-- 사용자가 **클로드 디자인**(claude.ai/design 프로젝트 `7b982813-...`)에서 UI/UX 시안 3개를 받았다. **DesignSync MCP는 데스크톱 앱에서 인증 불가**(/design-login 인터랙티브 터미널 필요 — 메모리 `claude-design-mcp-desktop-limit` 참조)라, **사용자가 새 세션에서 스탠드얼론 HTML을 직접 붙여넣는다.**
-- 대상 — UIUX 시안 / 메인 (추천안) / 프로토타입 3개 HTML. 수령 가이드·작업 흐름 `docs/design/README.md`.
-- 흐름 — HTML 읽기 → 제안 구성(HUD·도크·오피스·모달·인터랙션) 파악 → 현 Unity 화면(`Logs/shots/01-main.png` 등)과 매핑 → brainstorming→writing-plans→subagent-driven 구현.
+## ★ 다음 세션 1순위 — 최종안 Unity 구현 (디자인 임포트 완료)
+- **시안 3종 수령·검토 → 최종안 확정 완료(2026-06-28).** 선택 = **추천안(A 슬림HUD + D 추월트렌드 + B 풀블리드 오피스)**. 정본 — **`docs/design/FINAL.md`**(결정 기록·현 화면 대비 변경 매핑·4박자 스펙·컬러/타이포·오피스 3레이어 합류) + **`docs/design/ai-tycoon-final.html`**(단일 인터랙티브 최종, 4박자·보텀시트·스마트버튼 동작). 소스 3종·캡처 `docs/design/`·`docs/design/shots/`.
+- 흐름 — `FINAL.md`·`ai-tycoon-final.html` 읽기 → 현 Unity 화면(`Logs/shots/01-main.png`·`38-briefing`)과 매핑 → **brainstorming→writing-plans→subagent-driven으로 뷰·UX 레이어 재설계**(코어/세이브 무변경, 에셋 필요 시 Codex 크로마키).
 
 ## 진행 중이던 직결 설계 — 오피스 3레이어 깊이 (스펙 미작성)
 - 현 오피스 = **2레이어**(소품=뒤 / 직원=앞). 합의 = **고정 3레이어**(뒤 가구·러그 / 직원·책상 / 앞 전경이 직원 가림) + `PropSpec.Layer` 일급 속성 + 미래 에셋 레이어 규칙. 상세 `docs/design/README.md` 하단.
 - 메인 화면 시안과 합쳐서 진행 — 시안 먼저 보고 3레이어를 그 방향에 맞춘다.
 
-## 이번 세션 한 일 (2026-06-27~28)
+## 이번 세션 한 일 (2026-06-28) — 디자인 임포트
+- **클로드 시안 3종 검토** — 브라우저 렌더로 텍스트·구성 추출. UIUX 시안(진단+메인 4종 A/B/C/D+센터버튼+온보딩+4박자+컬러시스템) / 메인 추천안(A+D+B 합성) / 프로토타입(러프 인터랙션).
+- **최종안 빌드·검증** — `ai-tycoon-final.html` 단일 self-contained. 슬림 1줄 HUD·자원별 색칩·추월 트렌드바·풀블리드 오피스(게임 합성 오피스 크롭 임베드)·AI 리본·스마트 센터버튼 3상태·보텀시트(제품 테크트리)·도파민 4박자(타임랩스 2x/스킵→이벤트→결산 틱업→승급 컷인). frontend-design 스킬·Black Han Sans/Gowun Dodum/Jua. 메인·시트·4박자·버튼 전부 playwright 동작 확인, 캡처 `docs/design/shots/final-01~06`.
+- **정착** — 소스 3종 임포트 + 최종안 + `FINAL.md`(구현 스펙) `docs/design/`에. progress.md 갱신.
+
+## 이전 세션 한 일 (2026-06-27)
 - **feat-026 멀티엔딩 컷씬** — 결말 4버킷(전설/성공/차고로/몰락) 가산 연출. EditMode 157.
 - **feat-027 오피스 구성 재작업** — OfficeLayout 깊이 군집 + 신규 가구 5종(Codex imagegen 크로마키, 내가 오케스트레이션) + 중간 바닥 채움. EditMode 161.
 - **feat-028 월 진행 연출** — 타임랩스(낮→밤+Day 카운터) + 성과 분위 반응(MonthMoodJudge 4분위 → 직원 다양 포즈). EditMode 170.

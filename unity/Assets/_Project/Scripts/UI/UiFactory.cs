@@ -82,14 +82,16 @@ namespace AICompanyTycoon.UI
             var go = new GameObject("Button", typeof(RectTransform), typeof(Image), typeof(Button));
             go.transform.SetParent(parent, false);
             var image = go.GetComponent<Image>();
-            image.color = UiTheme.Button;
+            image.color = UiTheme.CreamDeep; // feat-030 — 기본은 secondary 중립. primary CTA는 StyleCtaButton으로 코랄.
 
+            // feat-030 — 색은 Image에만 싣고 ColorBlock은 흰색 틴트(1.0). 둘 다 색이면 곱해져 코랄이 붉게 죽는다.
             var button = go.GetComponent<Button>();
             var colors = button.colors;
-            colors.normalColor = UiTheme.Button;
-            colors.highlightedColor = UiTheme.ButtonHover;
-            colors.pressedColor = UiTheme.ButtonPressed;
-            colors.disabledColor = UiTheme.ButtonDisabled;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1f, 1f, 1f, 1f);
+            colors.pressedColor = new Color(0.86f, 0.86f, 0.86f, 1f);
+            colors.disabledColor = new Color(0.62f, 0.6f, 0.56f, 1f);
+            colors.colorMultiplier = 1f;
             button.colors = colors;
 
             var textGo = new GameObject("Text", typeof(RectTransform), typeof(Text));
@@ -104,7 +106,7 @@ namespace AICompanyTycoon.UI
             label.font = LegacyFont;
             label.text = labelText;
             label.fontSize = 34; // 모바일 가독 — 버튼 라벨 기본 크기 (feat-009)
-            label.color = UiTheme.ButtonText;
+            label.color = UiTheme.Ink; // feat-030 — 중립 버튼은 잉크 텍스트. 코랄 CTA는 StyleCtaButton이 라이트로.
             label.alignment = TextAnchor.MiddleCenter;
             label.horizontalOverflow = HorizontalWrapMode.Wrap;
             label.verticalOverflow = VerticalWrapMode.Overflow;
