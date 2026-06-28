@@ -141,8 +141,17 @@ namespace AICompanyTycoon.UI
             root.name = "GameScreen";
             Stretch(root.GetComponent<RectTransform>());
 
-            BuildOfficeBackground(root.transform);
-            BuildOfficeScene(root.transform); // 풀스크린 스테이지 — 게임 씬 먼저, UI는 위에 뜬다 (feat-011, React v0.96 구도)
+            // feat-030 시안 밀도 — 오피스(배경+직원+앰비언트)를 한 컨테이너로 묶어 줌인. 빈 윗벽을 크롭하고 직원을 크게.
+            // 시안 오피스는 차고 전체의 '벽아트+바닥+직원' 부분만 타이트하게 보여줬다(원 캡처 y15~85% 크롭 ≈ 1.4x).
+            var officeZoom = new GameObject("OfficeZoom", typeof(RectTransform));
+            officeZoom.transform.SetParent(root.transform, false);
+            var ozr = officeZoom.GetComponent<RectTransform>();
+            ozr.anchorMin = Vector2.zero; ozr.anchorMax = Vector2.one;
+            ozr.offsetMin = Vector2.zero; ozr.offsetMax = Vector2.zero;
+            ozr.localScale = new Vector3(1.32f, 1.32f, 1f); // 줌 배율(밀도)
+            officeZoom.transform.localPosition += new Vector3(0f, 60f, 0f); // 살짝 위로 — 직원이 도크에 안 묻히게
+            BuildOfficeBackground(officeZoom.transform);
+            BuildOfficeScene(officeZoom.transform); // 풀스크린 스테이지 — 게임 씬 먼저, UI는 위에 뜬다 (feat-011, React v0.96 구도)
 
             // 노치/홈 인디케이터를 피해 콘텐츠를 safe area 안에 담는다. 배경(root)은 화면 전체를 덮는다.
             var safeArea = new GameObject("SafeArea", typeof(RectTransform), typeof(SafeAreaFitter));
@@ -927,73 +936,52 @@ namespace AICompanyTycoon.UI
 
         void BuildTopBar(Transform parent)
         {
-            // 슬림 톱바 — 월/단계만. feat-030 — 다크그린 HUD 폐기 → 크림 바 + 잉크 텍스트. 오피스가 주인공.
+            // feat-030 시안 — 슬림 1줄: 좌 [월차 · 단계 · 성급★] / 우 [꾸미기]. 크림 바 + 잉크.
             var panel = UiFactory.Panel(parent, UiTheme.Cream);
             panel.name = "TopBar";
-            AddLayout(panel, 78, 0);
-            UiFactory.VBox(panel.transform, 0, new RectOffset(24, 24, 10, 10));
+            AddLayout(panel, 60, 0);
+            var row = UiFactory.HBox(panel.transform, 10);
+            row.padding = new RectOffset(22, 16, 6, 6);
+            row.childAlignment = TextAnchor.MiddleLeft;
 
-            var row = new GameObject("StatusRow", typeof(RectTransform));
-            row.transform.SetParent(panel.transform, false);
-            UiFactory.HBox(row.transform, 18);
-            AddLayout(row, 58, 0);
-
-            _monthLabel = UiFactory.Label(row.transform, "1월차", 36);
+            _monthLabel = UiFactory.Label(row.transform, "1월차", 32);
             _monthLabel.color = UiTheme.Ink;
-            AddLayout(_monthLabel.gameObject, 54, 1);
+            _monthLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(_monthLabel.gameObject, 48, 0);
 
-            _stageLabel = UiFactory.Label(row.transform, "차고 프로토타입", 34);
+            _stageLabel = UiFactory.Label(row.transform, "차고", 28);
             _stageLabel.color = UiTheme.InkSoft;
-            _stageLabel.alignment = TextAnchor.MiddleRight;
-            AddLayout(_stageLabel.gameObject, 54, 1);
+            _stageLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(_stageLabel.gameObject, 48, 0);
+
+            // 성급 — 상단행 골드 별(크레스트를 칩 행에서 이리로). flex로 꾸미기를 우측으로 민다.
+            _crestLabel = UiFactory.Label(row.transform, "★", 28);
+            _crestLabel.color = UiTheme.RewardGold;
+            _crestLabel.alignment = TextAnchor.MiddleLeft;
+            _crestLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(_crestLabel.gameObject, 48, 1);
+
+            var decor = UiFactory.Button(row.transform, "✦ 꾸미기");
+            decor.label.fontSize = 24;
+            decor.label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            decor.button.onClick.AddListener(() => SetStatus("꾸미기는 곧 추가됩니다."));
+            AddLayoutFixed(decor.button.gameObject, 124, 46);
+            FlattenDockButton(decor.button, decor.label);
         }
 
-        // CD-2 코어3 자원 HUD — 레벨 크레스트 + cash/users/compute 칩 + ＋트레이(보조 5종) + 꾸미기.
+        // feat-030 시안 — 콤팩트 3칩만(현금·이용자·연산력). 크레스트·＋트레이·꾸미기는 상단행으로 이동/제거.
         void BuildResourceHud(Transform parent)
         {
             var panel = new GameObject("ResourceHud", typeof(RectTransform));
             panel.transform.SetParent(parent, false);
-            UiFactory.VBox(panel.transform, 8, new RectOffset());
+            var box = UiFactory.HBox(panel.transform, 8);
+            box.childAlignment = TextAnchor.MiddleLeft;
+            AddLayout(panel, 78, 0);
 
             _resourceValues.Clear();
-
-            // 상단 스트립 — 크레스트 + 코어3 칩 + ＋ + 꾸미기
-            var strip = new GameObject("CoreStrip", typeof(RectTransform));
-            strip.transform.SetParent(panel.transform, false);
-            var stripBox = UiFactory.HBox(strip.transform, 8);
-            stripBox.childAlignment = TextAnchor.MiddleLeft;
-            AddLayout(strip, 88, 0);
-
-            _crestLabel = BuildCrest(strip.transform);
-            BuildResourceChip(strip.transform, ResourceId.Cash, true);
-            BuildResourceChip(strip.transform, ResourceId.Users, true);
-            BuildResourceChip(strip.transform, ResourceId.Compute, true);
-
-            (_trayToggle, _trayToggleLabel) = UiFactory.Button(strip.transform, "＋");
-            _trayToggle.onClick.AddListener(ToggleTray);
-            AddLayoutFixed(_trayToggle.gameObject, 72, 72);
-            FlattenDockButton(_trayToggle, _trayToggleLabel); // feat-030 — 메인서 초록 제거, 강조색은 FAB뿐
-
-            // 꾸미기(준비 중) — 이모지 🎨는 Noto Sans KR에 글리프가 없어 한글 라벨로 둔다.
-            var decor = UiFactory.Button(strip.transform, "꾸미기");
-            decor.label.fontSize = 26;
-            decor.label.horizontalOverflow = HorizontalWrapMode.Overflow;
-            decor.button.onClick.AddListener(() => SetStatus("꾸미기는 곧 추가됩니다."));
-            AddLayoutFixed(decor.button.gameObject, 112, 72);
-            FlattenDockButton(decor.button, decor.label);
-
-            // 보조 5종 트레이 — 기본 숨김, ＋ 토글로 노출
-            _resourceTray = new GameObject("ResourceTray", typeof(RectTransform));
-            _resourceTray.transform.SetParent(panel.transform, false);
-            var trayBox = UiFactory.HBox(_resourceTray.transform, 8);
-            trayBox.childAlignment = TextAnchor.MiddleLeft;
-            AddLayout(_resourceTray, 72, 0);
-            BuildResourceChip(_resourceTray.transform, ResourceId.Data, false);
-            BuildResourceChip(_resourceTray.transform, ResourceId.Talent, false);
-            BuildResourceChip(_resourceTray.transform, ResourceId.Trust, false);
-            BuildResourceChip(_resourceTray.transform, ResourceId.Hype, false);
-            BuildResourceChip(_resourceTray.transform, ResourceId.Automation, false);
-            _resourceTray.SetActive(false);
+            BuildResourceChip(panel.transform, ResourceId.Cash, true);
+            BuildResourceChip(panel.transform, ResourceId.Users, true);
+            BuildResourceChip(panel.transform, ResourceId.Compute, true);
         }
 
         // 레벨 크레스트 칩 (N★). 값은 UpdateResourceHud에서 회사 단계로 갱신.
@@ -1013,47 +1001,66 @@ namespace AICompanyTycoon.UI
             return label;
         }
 
-        // 자원 칩 — 아이콘(없으면 이름) + 값(+ticker) + 월 델타. core면 크게, 트레이면 작게.
+        // feat-030 시안 칩 — 크림 면 + 좌측 자원 고정색 바 + [라벨 작게 / 값 크게 + ▲델타]. 3칩 균등.
         void BuildResourceChip(Transform parent, ResourceId id, bool core)
         {
-            // feat-030 — 크림 칩 + 자원 고정색 보더(왼쪽 색 코딩 효과). 다크 칩 폐기.
             var chip = UiFactory.Panel(parent, UiTheme.CreamPanel);
             chip.name = ResourceIds.ToKey(id) + "Chip";
-            AddOutline(chip, ChipColor(id, false));
-            var box = UiFactory.HBox(chip.transform, 6);
-            box.padding = new RectOffset(10, 10, 4, 4);
-            AddLayout(chip, core ? 72 : 66, 1);
+            AddOutline(chip, UiTheme.HairLine);
+            AddLayout(chip, 74, 1);
 
-            var sprite = IconLibrary.Resource(id);
-            if (sprite != null)
-            {
-                UiFactory.Icon(chip.transform, sprite, core ? 36 : 30);
-            }
-            else
-            {
-                var nm = UiFactory.Label(chip.transform, GetResourcePlainName(id), 24);
-                nm.color = UiTheme.TextSecondary;
-                nm.horizontalOverflow = HorizontalWrapMode.Overflow;
-                AddLayout(nm.gameObject, 30, 0);
-            }
+            // 좌측 자원 고정색 바 (색 코딩)
+            var bar = new GameObject("AccentBar", typeof(RectTransform), typeof(Image));
+            bar.transform.SetParent(chip.transform, false);
+            var barRect = bar.GetComponent<RectTransform>();
+            barRect.anchorMin = new Vector2(0f, 0f);
+            barRect.anchorMax = new Vector2(0f, 1f);
+            barRect.pivot = new Vector2(0f, 0.5f);
+            barRect.sizeDelta = new Vector2(8f, 0f);
+            barRect.anchoredPosition = Vector2.zero;
+            var barImg = bar.GetComponent<Image>();
+            barImg.color = ChipColor(id, false);
+            barImg.raycastTarget = false;
 
-            var value = UiFactory.Label(chip.transform, "", core ? 32 : 28);
+            // 내용 — 라벨(작게) 위, 값(크게)+델타 아래
+            var content = new GameObject("Content", typeof(RectTransform));
+            content.transform.SetParent(chip.transform, false);
+            Stretch(content.GetComponent<RectTransform>());
+            var vb = content.AddComponent<VerticalLayoutGroup>();
+            vb.padding = new RectOffset(18, 8, 6, 6);
+            vb.spacing = 0;
+            vb.childAlignment = TextAnchor.MiddleLeft;
+            vb.childControlWidth = true; vb.childControlHeight = true;
+            vb.childForceExpandWidth = true; vb.childForceExpandHeight = false;
+
+            var lbl = UiFactory.Label(content.transform, GetResourcePlainName(id), 20);
+            lbl.color = UiTheme.InkSoft;
+            lbl.alignment = TextAnchor.MiddleLeft;
+            lbl.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(lbl.gameObject, 24, 0);
+
+            var valRow = new GameObject("ValRow", typeof(RectTransform));
+            valRow.transform.SetParent(content.transform, false);
+            var vrb = UiFactory.HBox(valRow.transform, 5);
+            vrb.childAlignment = TextAnchor.MiddleLeft;
+            AddLayout(valRow, 36, 0);
+
+            var value = UiFactory.Label(valRow.transform, "", 32);
             value.color = ChipColor(id, false);
             value.alignment = TextAnchor.MiddleLeft;
             value.horizontalOverflow = HorizontalWrapMode.Overflow;
-            AddLayout(value.gameObject, 40, 1);
+            AddLayout(value.gameObject, 36, 0);
             _resourceValues[id] = value;
 
             var ticker = value.gameObject.AddComponent<ResourceTicker>();
             ticker.Init(id, value, _context != null ? _context.Model.Get(id) : 0);
             _resourceTickers[id] = ticker;
 
-            var delta = UiFactory.Label(chip.transform, "", 24);
-            delta.alignment = TextAnchor.MiddleRight;
-            var dl = delta.gameObject.AddComponent<LayoutElement>();
-            dl.minHeight = 30;
-            dl.preferredWidth = 44;
-            dl.flexibleWidth = 0;
+            var delta = UiFactory.Label(valRow.transform, "", 22);
+            delta.color = UiTheme.ResUser;
+            delta.alignment = TextAnchor.MiddleLeft;
+            delta.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(delta.gameObject, 36, 1);
             _deltaLabels[id] = delta;
         }
 
@@ -1277,33 +1284,59 @@ namespace AICompanyTycoon.UI
             if (label != null) label.color = UiTheme.ButtonText; // ColorBlock은 흰색 틴트라 코랄 그대로(disabled는 자동 뮤트)
         }
 
-        // 중앙 가이던스 FAB — 다른 탭(96w)보다 확실히 크고 골드 펄스 링으로 주목 (사용자 피드백 — 가운데 버튼 차별화).
+        // 부드러운 원 스프라이트(캐시) — FAB 원형화용. 흰 원 + 1px 안티앨리어스 가장자리, 색은 Image.color로 틴트.
+        static Sprite _circleSprite;
+        static Sprite CircleSprite()
+        {
+            if (_circleSprite != null) return _circleSprite;
+            const int S = 160;
+            var tex = new Texture2D(S, S, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Bilinear };
+            float r = S / 2f;
+            for (int y = 0; y < S; y++)
+            {
+                for (int x = 0; x < S; x++)
+                {
+                    float dx = x + 0.5f - r, dy = y + 0.5f - r;
+                    float d = Mathf.Sqrt(dx * dx + dy * dy);
+                    float a = Mathf.Clamp01(r - d); // 가장자리 1px 페이드
+                    tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+                }
+            }
+            tex.Apply();
+            _circleSprite = Sprite.Create(tex, new Rect(0, 0, S, S), new Vector2(0.5f, 0.5f));
+            return _circleSprite;
+        }
+
+        // feat-030 시안 — 중앙 스마트 FAB. 원형 + 2줄 라벨(제품/출시▸) + 색 펄스 링.
         void BuildFab(Transform parent)
         {
             var cell = new GameObject("FabCell", typeof(RectTransform));
             cell.transform.SetParent(parent, false);
-            AddLayoutFixed(cell, 216, 120);
+            AddLayoutFixed(cell, 168, 132);
 
             var ring = new GameObject("FabRing", typeof(RectTransform), typeof(Image));
             ring.transform.SetParent(cell.transform, false);
             var ringRect = ring.GetComponent<RectTransform>();
-            ringRect.anchorMin = new Vector2(0.5f, 0.5f);
-            ringRect.anchorMax = new Vector2(0.5f, 0.5f);
+            ringRect.anchorMin = ringRect.anchorMax = new Vector2(0.5f, 0.5f);
             ringRect.pivot = new Vector2(0.5f, 0.5f);
-            ringRect.sizeDelta = new Vector2(210, 114);
+            ringRect.sizeDelta = new Vector2(158, 158); // 원형이라 정사각
             _fabRing = ring.GetComponent<Image>();
-            _fabRing.color = new Color(UiTheme.ResCash.r, UiTheme.ResCash.g, UiTheme.ResCash.b, 0.55f); // feat-030 — 코랄 펄스 기본(추천 액션)
+            _fabRing.sprite = CircleSprite();
+            _fabRing.color = new Color(UiTheme.ResCash.r, UiTheme.ResCash.g, UiTheme.ResCash.b, 0.55f);
             _fabRing.raycastTarget = false;
             _fabPulse = ring.AddComponent<FabPulse>();
 
-            (_nextMonthButton, _nextMonthLabel) = UiFactory.Button(cell.transform, "다음 달");
+            (_nextMonthButton, _nextMonthLabel) = UiFactory.Button(cell.transform, "다음\n달");
+            var btnImg = _nextMonthButton.GetComponent<Image>();
+            btnImg.sprite = CircleSprite(); // 원형 버튼
             var btnRect = _nextMonthButton.GetComponent<RectTransform>();
-            btnRect.anchorMin = new Vector2(0.5f, 0.5f);
-            btnRect.anchorMax = new Vector2(0.5f, 0.5f);
+            btnRect.anchorMin = btnRect.anchorMax = new Vector2(0.5f, 0.5f);
             btnRect.pivot = new Vector2(0.5f, 0.5f);
-            btnRect.sizeDelta = new Vector2(198, 104);
-            _nextMonthLabel.fontSize = 40;
-            _nextMonthButton.onClick.AddListener(HandleGuidanceAction); // 가이던스 FAB — 라벨·톤·행동이 제안에 따라 바뀐다 (feat-009)
+            btnRect.sizeDelta = new Vector2(132, 132);
+            _nextMonthLabel.fontSize = 26;
+            _nextMonthLabel.alignment = TextAnchor.MiddleCenter;
+            _nextMonthLabel.lineSpacing = 0.85f;
+            _nextMonthButton.onClick.AddListener(HandleGuidanceAction);
             RefreshFabVisual();
         }
 
@@ -3620,15 +3653,23 @@ namespace AICompanyTycoon.UI
             }
             else if (pendingEvent)
             {
-                _nextMonthLabel.text = "이벤트 대기";
+                _nextMonthLabel.text = FabTwoLine("이벤트 대기");
             }
             else
             {
-                // 평상시 라벨은 가이던스 제안 (feat-009). 제안이 없으면 "다음 달".
-                _nextMonthLabel.text = _guidanceStep != null ? _guidanceStep.ActionLabel : "다음 달";
+                // 평상시 라벨은 가이던스 제안 (feat-009). 제안이 없으면 "다음 달". 원형 FAB라 2줄로 쪼갠다.
+                _nextMonthLabel.text = FabTwoLine(_guidanceStep != null ? _guidanceStep.ActionLabel : "다음 달");
             }
 
             RefreshFabVisual(); // feat-030 — 유휴/이벤트 대기 경로에서도 3상태 색 반영
+        }
+
+        // 원형 FAB 2줄 라벨 — 첫 공백에서 줄바꿈("제품 출시 ▸" → "제품\n출시 ▸").
+        static string FabTwoLine(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return s;
+            int i = s.IndexOf(' ');
+            return i > 0 ? s.Substring(0, i) + "\n" + s.Substring(i + 1) : s;
         }
 
         string GetProductLockReason(ProductDef product)
