@@ -40,10 +40,8 @@ namespace AICompanyTycoon.UI
             new PropSpec("prop_partition", 0.40f, 412f, 72f),      // 신규 — 중좌 칸막이
             new PropSpec("prop_bookshelf", 0.63f, 410f, 84f),      // 기존 — 중우 책장(단일)
             new PropSpec("prop_shelf_low", 0.85f, 408f, 66f),      // 신규 — 우 수납장
-            // 중간 바닥 — 직원 근처
-            new PropSpec("prop_meeting_table", 0.36f, 196f, 82f),  // 신규 — 회의 테이블
-            // 중앙 러그(바닥 앵커) — 직원 앞 바닥, 가장 앞(floor 중 frontmost)
-            new PropSpec("prop_rug", 0.50f, 126f, 96f),            // 신규 — 중앙 러그
+            // 중앙 러그 — 크게·직원 발치(footY 140)에 깔아 앞 책상들이 러그 '위에' 앉도록(겹침 깊이). floor 중 frontmost.
+            new PropSpec("prop_rug", 0.50f, 140f, 158f),           // 신규 — 중앙 대형 러그
         };
 
         // 성급(배경 키)별 특화 소품 — feat-023 신규 6종. 배경마다 1~2종으로 과밀 회피 + 성급 정체성.
