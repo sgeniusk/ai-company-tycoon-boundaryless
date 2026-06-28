@@ -3,31 +3,33 @@
 ≤80줄. 큰 증거는 링크.
 
 ## 현재 목표 (Current Objective)
-- 목표 — Godot 프로토타입을 Unity 6 모바일 타이쿤으로 재설계.
-- 현재 상태 — **feat-014 경영 탭(#1~#5 완결) + feat-015 자본 사다리(#1~#5 완결) 완료.** EditMode **145/145**, tier4 게이트 그린. 성급 배경 3종 반입.
-- 브랜치 / 커밋 — `main`, 로컬 ~28커밋(447f43c~d4cf918) — **origin 푸시 전** (사용자 확인 후).
+- 목표 — Godot 프로토타입을 Unity 6 모바일 타이쿤으로 재설계. 핵심 루프·시스템·연출 완비, 지금은 **비주얼/UX 격상 + 디자인 주도 재설계** 국면.
+- 현재 상태 — **feat-029까지 완결, origin 푸시 완료.** main = `f06a9d4`. EditMode **177/177**.
+- 브랜치 — `main` (origin 동기화됨). push는 사용자 확인 후.
 
-## 이번 세션 한 일 (2026-06-11 저녁)
-- feat-012 전 블록 — #1 노출 상태 머신(ProductVisibilityService, derive-only 5상태)+제품 팝업 도메인 섹션/???티저/미발견 카운터, #2 teaser 36종+tier+category(Codex), #3 선행 체인+미래 제품 15종=51종(Codex)+그래프 무결성 게이트, #4 능력 다음레벨 미리보기+해금 모먼트 토스트/축하+밸런스 패스.
-- 밸런스 패스가 경제 구조 결함 노출 → React 동치 3건 선반영: **제품 레벨업**(SaveData v4, 매출+35%/Lv), **RecruitService**(반복 인재 채용), **비용 공식 정렬**(자동화 할인 연산비 포함·상한 75%, 하이프 *10 제거).
-- **feat-013 완결(사용자 "계속" 위임, 경로 C 혼합)** — 산업 시너지 10+콤보 10 포팅(도메인 포트폴리오 월간 보상+가동 토스트 3채널), 이용자 수익화(ARPU 55/1000, additive 키), GPU 증설(연산력 반복 공급원), 연산력 소모 React 정렬(신규 이용자 기반), **도메인 해금 순서 버그 수정**(다중 요건 도메인 영구 미해금 → CheckAll). tier4 게이트 Fail 복원·그린.
+## ★ 다음 세션 1순위 — 클로드 디자인 시안 구현 (디자인 임포트)
+- 사용자가 **클로드 디자인**(claude.ai/design 프로젝트 `7b982813-...`)에서 UI/UX 시안 3개를 받았다. **DesignSync MCP는 데스크톱 앱에서 인증 불가**(/design-login 인터랙티브 터미널 필요 — 메모리 `claude-design-mcp-desktop-limit` 참조)라, **사용자가 새 세션에서 스탠드얼론 HTML을 직접 붙여넣는다.**
+- 대상 — UIUX 시안 / 메인 (추천안) / 프로토타입 3개 HTML. 수령 가이드·작업 흐름 `docs/design/README.md`.
+- 흐름 — HTML 읽기 → 제안 구성(HUD·도크·오피스·모달·인터랙션) 파악 → 현 Unity 화면(`Logs/shots/01-main.png` 등)과 매핑 → brainstorming→writing-plans→subagent-driven 구현.
 
-## 검증 (통과)
-- EditMode **97/97** — ProductVisibility 17·TechTreeGraph 4·IndustrySynergy 5·도달성 1(Fail 게이트) 등 신규 27. React 동치(FNV-1a·세계이벤트·엔딩 픽스처) 전부 유지.
-- 캡처 — 03 제품(섹션+???떡밥+T뱃지+상태순 정렬), 04 능력(인재 채용+GPU 증설 카드+카테고리 헤더+??? 도메인+미발견 카운터).
-- 주의 — 경제 체감 큼(이용자 성장 ~1/10 + 이용자 수익 + 시너지). 봇 기준 승리 ~30개월대 — 난이도 정합·실기기 체감 재확인 필요.
+## 진행 중이던 직결 설계 — 오피스 3레이어 깊이 (스펙 미작성)
+- 현 오피스 = **2레이어**(소품=뒤 / 직원=앞). 합의 = **고정 3레이어**(뒤 가구·러그 / 직원·책상 / 앞 전경이 직원 가림) + `PropSpec.Layer` 일급 속성 + 미래 에셋 레이어 규칙. 상세 `docs/design/README.md` 하단.
+- 메인 화면 시안과 합쳐서 진행 — 시안 먼저 보고 3레이어를 그 방향에 맞춘다.
 
-## 내린 결정
-- 티저 근접 판정에 보유 가드(lv>=1) — 없으면 시작부터 전 도메인 ??? ("입구는 좁게" 보강, 임계 상수 TeaserProximityLevels=2).
-- 능력 팝업 도메인 리스트에도 동일 상태 머신(정보 누출 일관성).
-- 루트 React `npm run harness:gate`는 신규 제품 15종으로 고정 기대값 2건 깨짐(물리 제품 수 6→9, 골든 시뮬) — React 트랙은 stale이라 보류, 필요 시 별도 수정.
-- 세이브 v4(productLevels) — 구세이브는 출시 제품 레벨 1 파생으로 무손실.
+## 이번 세션 한 일 (2026-06-27~28)
+- **feat-026 멀티엔딩 컷씬** — 결말 4버킷(전설/성공/차고로/몰락) 가산 연출. EditMode 157.
+- **feat-027 오피스 구성 재작업** — OfficeLayout 깊이 군집 + 신규 가구 5종(Codex imagegen 크로마키, 내가 오케스트레이션) + 중간 바닥 채움. EditMode 161.
+- **feat-028 월 진행 연출** — 타임랩스(낮→밤+Day 카운터) + 성과 분위 반응(MonthMoodJudge 4분위 → 직원 다양 포즈). EditMode 170.
+- **feat-029 월말 브리핑 + 다박자 시퀀스** — 손익계산서 브리핑 카드(ContentSizeFitter) + 타임랩스→중간 이벤트 일시정지→브리핑. EditMode 177.
+- **오피스 배치 실기 수정 2건** — 가구 잘림(우측 x>0.9 절반 화면 밖)·산만 → 안전 x[0.08,0.86]·뒤 가구 한 줄·대형 중앙 러그(책상이 러그 위에). 커밋 `f869c8e`/`f06a9d4`.
+- 전부 설계→계획→**서브에이전트 주도 TDD(각 task 스펙+품질 2단 리뷰)**→검증→push. 코어·세이브 무변경.
+
+## 분업·검증 (불변)
+- **분업** — 에셋 양산 = Codex 핸드오프(`docs/codex-handoff/`, 크로마키 파이프라인 `Tools~/pixel_office/feat024/`), 재미·연출 코드 = Claude. Codex는 .cs/progress/feature_list 못 건드림.
+- **검증** — `./init.sh`(EditMode), PlayMode 캡처는 `-nographics` 빼고(`Capture_AllStates` 등 → `Logs/shots/`). **단일 Unity 라이선스** — 검증 전 `ps -axo command | grep "[U]nity.app" | grep -i projectpath`로 다른 프로젝트(sam/samgukji) 미실행 확인.
+- 픽셀 함정 — 런타임 비균일 scale 금지(도트 뭉갬), 소품 pivot 0.5라 xNorm>0.9면 절반 잘림.
 
 ## 다음 세션 시작 (Next Session)
-1. `cd unity && git pull` + 다른 Unity 미실행 확인(`ps -axo command | grep "[U]nity.app..." | grep -i projectpath`)
-2. `./init.sh` 베이스라인(145/145) 확인
-3. **feat-016 오피스 비주얼 전면 재작업 (사용자 1순위 피드백 2026-06-13)** — 현 배경(떠있는 등각 플랫폼)이 "전혀 사무실 같지 않다". 카이로소프트식 진짜 사무실 룸을 픽셀아트로. **#1 아트 디렉션(뷰 앵글·레퍼런스·생성 경로) 사용자 확정부터.** 정본 docs/feat-016-context-notes.md.
-4. 이후 — 실기기 검증 / 도감 열람 UI / feat-012 #5 트리 그래프 화면.
-
-## 권장 다음 단계 (Recommended Next Step)
-feat-016 오피스 비주얼 재작업이 사용자 1순위. 단 아트 디렉션 결정(정면 단면 룸 유력 — v090 직원 정면 스프라이트 정합)과 생성 경로(Codex 절차 생성 한계 vs 사용자 대화형 agy/이미지 툴 vs 외부 픽셀 에셋)가 선행 결정이라, 코드 손대기 전 사용자 체크포인트 필요. 현 배경 3종(office_growth/datacenter/landmark)은 임시 — 폐기 후보.
+1. `pwd`로 `unity/` 확인 → 이 파일·CLAUDE.md·progress.md·`docs/design/README.md` 읽기.
+2. `ps`로 다른 Unity 미실행 확인 → `./init.sh` 베이스라인 **177/177**.
+3. 사용자가 붙여넣는 **3개 시안 HTML 수령** → 디자인 주도 재설계 brainstorming 시작.
