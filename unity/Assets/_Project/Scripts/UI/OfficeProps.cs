@@ -6,28 +6,39 @@ namespace AICompanyTycoon.UI
 {
     public static class OfficeProps
     {
+        // feat-030 시안 — 오피스 고정 3레이어. Back=직원 뒤(벽 가구·러그), Front=직원 앞(전경 소품이 하반신 가림).
+        public enum PropLayer { Back, Front }
+
         struct PropSpec
         {
             public readonly string SpriteName;
             public readonly float XNorm;
             public readonly float FootY;
             public readonly float Height;
+            public readonly PropLayer Layer; // 일급 속성 — 새 소품은 반드시 지정 (Back/Front)
 
-            public PropSpec(string spriteName, float xNorm, float footY, float height)
+            public PropSpec(string spriteName, float xNorm, float footY, float height, PropLayer layer = PropLayer.Back)
             {
                 SpriteName = spriteName;
                 XNorm = xNorm;
                 FootY = footY;
                 Height = height;
+                Layer = layer;
             }
         }
+
+        // 앞 전경 소품(Front 레이어) — 직원·책상 앞에 렌더돼 하반신을 가려 깊이를 준다 (시안 "앞 전경 큰 화분·소파").
+        static readonly PropSpec[] FrontProps =
+        {
+            new PropSpec("prop_plant_big", 0.10f, 60f, 210f, PropLayer.Front), // 전경 좌 큰 화분
+            new PropSpec("prop_couch", 0.84f, 50f, 150f, PropLayer.Front),     // 전경 우 소파
+        };
 
         // 공통 — 앞 가장자리 바닥 소품. xNorm은 [0.08,0.86] 안전 범위(pivot 0.5라 0.9 넘으면 스프라이트 절반이 화면 밖 잘림).
         static readonly PropSpec[] BaseProps =
         {
-            new PropSpec("prop_plant", 0.08f, 8f, 82f),    // 좌
+            new PropSpec("prop_plant", 0.08f, 8f, 82f),    // 좌 (couch는 Front 레이어로 이동)
             new PropSpec("prop_cooler", 0.17f, 8f, 84f),   // 좌
-            new PropSpec("prop_couch", 0.72f, 6f, 68f),    // 우중 — 우측 더미 분산(기존 0.94 잘림 해소)
             new PropSpec("prop_vending", 0.86f, 8f, 120f), // 우 — 끝이지만 안전 범위
         };
 
@@ -86,39 +97,43 @@ namespace AICompanyTycoon.UI
 
             var layerParent = stageParent.parent != null ? stageParent.parent : stageParent;
 
-            var existing = layerParent.Find("OfficePropsLayer");
-            if (existing != null)
-            {
-                Object.Destroy(existing.gameObject); // 성급 승급 시 특화 소품 갱신
-            }
+            // 갱신 시 기존 두 레이어 제거 (성급 승급 등)
+            DestroyLayer(layerParent, "OfficePropsLayer");
+            DestroyLayer(layerParent, "OfficePropsFrontLayer");
 
-            var layer = new GameObject("OfficePropsLayer", typeof(RectTransform));
-            layer.transform.SetParent(layerParent, false);
-            var layerRect = layer.GetComponent<RectTransform>();
-            layerRect.anchorMin = Vector2.zero;
-            layerRect.anchorMax = Vector2.one;
-            layerRect.offsetMin = Vector2.zero;
-            layerRect.offsetMax = Vector2.zero;
-
+            // ── Back 레이어 — 직원 stage '앞 sibling'(낮은 인덱스 = 뒤 렌더). 벽 가구·러그·뒤 소품.
+            var back = MakeLayer(layerParent, "OfficePropsLayer");
             if (layerParent == stageParent.parent)
             {
-                layer.transform.SetSiblingIndex(stageParent.GetSiblingIndex());
+                back.SetSiblingIndex(stageParent.GetSiblingIndex()); // stage를 뒤로 밀어 Back이 먼저(뒤) 렌더
             }
+            foreach (var prop in FloorProps) PlaceProp(back, prop);
+            foreach (var prop in BaseProps) PlaceProp(back, prop);
+            foreach (var prop in StageProps(backgroundKey)) PlaceProp(back, prop);
 
-            foreach (var prop in FloorProps)
+            // ── Front 레이어 — 직원 stage '뒤 sibling'(높은 인덱스 = 앞 렌더). 전경 소품이 직원 하반신을 가린다 (시안 3레이어).
+            var front = MakeLayer(layerParent, "OfficePropsFrontLayer");
+            if (layerParent == stageParent.parent)
             {
-                PlaceProp(layer.transform, prop); // 바닥 소품 — 뒤(높은 footY)부터 앞으로
+                front.SetSiblingIndex(stageParent.GetSiblingIndex() + 1); // stage 바로 뒤(앞 렌더)
             }
+            foreach (var prop in FrontProps) PlaceProp(front, prop);
+        }
 
-            foreach (var prop in BaseProps)
-            {
-                PlaceProp(layer.transform, prop); // 앞 가장자리(위에 겹침)
-            }
+        static void DestroyLayer(Transform parent, string name)
+        {
+            var existing = parent.Find(name);
+            if (existing != null) Object.Destroy(existing.gameObject);
+        }
 
-            foreach (var prop in StageProps(backgroundKey))
-            {
-                PlaceProp(layer.transform, prop); // 성급 특화
-            }
+        static Transform MakeLayer(Transform parent, string name)
+        {
+            var layer = new GameObject(name, typeof(RectTransform));
+            layer.transform.SetParent(parent, false);
+            var r = layer.GetComponent<RectTransform>();
+            r.anchorMin = Vector2.zero; r.anchorMax = Vector2.one;
+            r.offsetMin = Vector2.zero; r.offsetMax = Vector2.zero;
+            return layer.transform;
         }
 
         static void PlaceProp(Transform parent, PropSpec prop)
