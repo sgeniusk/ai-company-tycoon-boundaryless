@@ -78,6 +78,9 @@ namespace AICompanyTycoon.UI
         GameObject _briefingModal;     // 월말 브리핑 카드 스크림 (feat-029)
         Transform _briefingCard;       // 브리핑 카드 VBox 컨테이너
 
+        GameObject _onboardCoach;      // feat-030 — 온보딩 첫 60초 코치마크(AI 비서 첫 출근 → FAB로 유도)
+        bool _onboardDismissed;        // 닫았으면 이 세션엔 다시 안 띄움
+
         GameObject _interviewModal;    // 개업 인터뷰 (feat-015 #2) / 시리즈 투자 제안 (feat-015 #3)
         Text _interviewTitleLabel;
         Text _interviewSpeaker;
@@ -167,6 +170,7 @@ namespace AICompanyTycoon.UI
             // feat-030 — 인라인 월요약·상태줄 제거(시안엔 없는 군더더기). 결과는 브리핑 모달, 상태는 토스트가 담당. 오피스에 공간 양보.
             BuildGoalRibbon(content);    // AI 비서 리본 — 도크 바로 위 (React 구도)
             BuildBottomDock(content);    // CD-3 하단 도크 — 탭 + 다음달 FAB + 더보기
+            BuildOnboardCoach(frame); // feat-030 — 온보딩 코치마크(HUD 위·모달 아래)
             // feat-030 — 모달도 세로 프레임 안에 (캔버스 직접 부모면 넓은 화면서 시트가 늘어남)
             BuildMenuPopup(frame);   // 탭 콘텐츠는 오피스 위 팝업으로
             BuildMoreDrawer(frame);  // 저장/불러오기/새 게임 드로어
@@ -186,6 +190,7 @@ namespace AICompanyTycoon.UI
             _terminal = false;
             _prevValues.Clear();
             _seenGuidance.Clear();
+            _onboardDismissed = false; // feat-030 — 새 게임이면 온보딩 다시
             HideEventModal();
             if (_resultModal != null) _resultModal.SetActive(false);
             SetStatus("새 회사를 시작했습니다.");
@@ -204,6 +209,7 @@ namespace AICompanyTycoon.UI
             UpdateSummary();
             UpdateEventModalFromContext();
             UpdateNextMonthButton();
+            RefreshOnboarding(); // feat-030 — 온보딩 코치마크 표시/숨김
         }
 
         public void HandleAdvanceMonth()
@@ -1223,9 +1229,67 @@ namespace AICompanyTycoon.UI
             RefreshFabVisual(); // feat-030 — 가이던스 톤을 최종안 3상태(코랄/골드/아웃라인)로 반영
         }
 
+        // feat-030 온보딩 첫 60초 — 새 게임 시작 시 AI 비서가 "제품 출시"로 유도하는 코치마크. FAB는 가리지 않는다.
+        void BuildOnboardCoach(Transform parent)
+        {
+            var card = UiFactory.Panel(parent, UiTheme.CreamPanel);
+            card.name = "OnboardCoach";
+            var rect = card.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.07f, 0.52f);
+            rect.anchorMax = new Vector2(0.93f, 0.52f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.offsetMin = new Vector2(0f, rect.offsetMin.y);
+            rect.offsetMax = new Vector2(0f, rect.offsetMax.y);
+            var fitter = card.AddComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            UiFactory.VBox(card.transform, 12, new RectOffset(22, 22, 18, 18));
+            AddOutline(card, UiTheme.GoalAccent);
+
+            var head = new GameObject("Head", typeof(RectTransform));
+            head.transform.SetParent(card.transform, false);
+            var hb = UiFactory.HBox(head.transform, 10);
+            hb.childAlignment = TextAnchor.MiddleLeft;
+            AddLayout(head, 52, 0);
+            UiFactory.Icon(head.transform, IconLibrary.Get("helper_mina"), 48);
+            var tag = UiFactory.Label(head.transform, "AI 비서 · 첫 출근", 26);
+            tag.color = UiTheme.GoalAccent;
+            tag.horizontalOverflow = HorizontalWrapMode.Overflow;
+            AddLayout(tag.gameObject, 48, 1);
+
+            var body = UiFactory.Label(card.transform, "차고에서 시작이에요! 첫 목표는 단 하나 —\n제품 1개를 출시해 첫 이용자를 모으는 거예요.\n아래 코랄 버튼을 눌러 출시! ▼", 28);
+            body.color = UiTheme.Ink;
+            body.alignment = TextAnchor.MiddleCenter;
+            AddLayout(body.gameObject, 132, 0);
+
+            var (btn, lbl) = UiFactory.Button(card.transform, "좋아요, 시작!");
+            StyleCtaButton(btn, lbl);
+            btn.onClick.AddListener(DismissOnboard);
+            AddLayout(btn.gameObject, 72, 0);
+
+            _onboardCoach = card;
+            card.SetActive(false);
+        }
+
+        // 온보딩 표시 조건 — 새 게임(1월차·제품 0)이고 아직 안 닫았을 때만.
+        void RefreshOnboarding()
+        {
+            if (_onboardCoach == null || _context == null) return;
+            bool fresh = !_onboardDismissed && !_terminal
+                && _context.Model.CurrentMonth == 1
+                && _context.Model.ActiveProducts.Count == 0;
+            _onboardCoach.SetActive(fresh);
+        }
+
+        void DismissOnboard()
+        {
+            _onboardDismissed = true;
+            if (_onboardCoach != null) _onboardCoach.SetActive(false);
+        }
+
         // FAB 탭 — 제안이 있으면 그 메뉴를 열고(이번 달 본 것으로 표시), 없으면 다음 달 진행.
         void HandleGuidanceAction()
         {
+            DismissOnboard(); // 온보딩 중 FAB(출시)를 누르면 코치마크 닫기
             var step = _guidanceStep;
             if (step == null || step.TargetTab == null)
             {
@@ -1955,6 +2019,7 @@ namespace AICompanyTycoon.UI
 
         void OpenMenu(string tab)
         {
+            DismissOnboard(); // feat-030 — 메뉴를 열면 온보딩 코치마크 닫기(시트 가림 방지)
             // 제안 메뉴를 (도크 탭으로라도) 열어 봤으면 이번 달 제안은 소화한 것으로 — FAB가 다음 우선순위로 넘어간다.
             if (_guidanceStep != null && _guidanceStep.TargetTab == tab)
             {
