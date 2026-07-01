@@ -814,13 +814,20 @@ namespace AICompanyTycoon.UI
         {
             const float baseW = 248f, baseH = 248f; // feat-023 — 캐릭터 확대 기준 크기(격자 스케일이 이 위에 곱해진다)
 
-            // feat-032 — 측면 슬롯은 책상·의자 포함 자립형 워크스테이션 스프라이트(다른 방향 보며 일하는 사무실). 없으면 정면으로 폴백.
+            // feat-032 — 정면 외 슬롯은 책상·의자 포함 자립형 워크스테이션 스프라이트(다른 방향 보며 일하는 사무실). 없으면 정면으로 폴백.
             if (orient != OfficeLayout.Orientation.Front)
             {
-                var sideSprite = IconLibrary.Get(kind + "_side");
-                if (sideSprite != null)
+                string suffix = orient == OfficeLayout.Orientation.Back ? "_back" : "_side";
+                var oriented = IconLibrary.Get(kind + suffix);
+                if (oriented != null)
                 {
-                    PlaceSideWorkstation(sideSprite, seed, xnorm, footY, baseH * scale * 1.08f, orient == OfficeLayout.Orientation.SideRight, allowSpeech);
+                    // 후면 워커 뒤에 큐비클 칸막이 — 벽을 향해 칸막이 안에서 일하는 그림 (feat-032). 먼저 그려(뒤) 워커가 위에 겹친다.
+                    if (orient == OfficeLayout.Orientation.Back)
+                    {
+                        var cubicle = IconLibrary.Get("prop_cubicle");
+                        if (cubicle != null) PlaceCubicle(cubicle, xnorm, footY + baseH * scale * 0.16f, baseH * scale * 0.95f);
+                    }
+                    PlaceSideWorkstation(oriented, seed, xnorm, footY, baseH * scale * 1.08f, flip: orient == OfficeLayout.Orientation.SideRight, allowSpeech);
                     return;
                 }
             }
@@ -882,6 +889,23 @@ namespace AICompanyTycoon.UI
             img.raycastTarget = false;
 
             go.AddComponent<StaffBob>().Init(seed * 0.9f); // 미세 통통 모션(앉아 일하는 숨결)
+        }
+
+        // 큐비클 칸막이 한 장을 배치 (feat-032) — 후면 워커 뒤 벽. 정적(모션 없음).
+        void PlaceCubicle(Sprite sprite, float xnorm, float footY, float height)
+        {
+            float aspect = sprite.rect.width / sprite.rect.height;
+            var go = new GameObject("Cubicle", typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(_officeSceneContent, false);
+            var r = go.GetComponent<RectTransform>();
+            r.anchorMin = r.anchorMax = new Vector2(xnorm, 0f);
+            r.pivot = new Vector2(0.5f, 0f);
+            r.sizeDelta = new Vector2(height * aspect, height);
+            r.anchoredPosition = new Vector2(0f, footY);
+            var img = go.GetComponent<Image>();
+            img.sprite = sprite;
+            img.preserveAspect = true;
+            img.raycastTarget = false;
         }
 
         // 절차적 책상 전면 — 전면 패널 + 상판 밝은 띠 + 바닥 그림자 + 좌우 잉크 + 작은 모니터. 새 스프라이트 없이 '앉은' 오클루전 (feat-019 T1).
