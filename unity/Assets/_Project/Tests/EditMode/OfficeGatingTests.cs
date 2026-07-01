@@ -27,5 +27,17 @@ namespace AICompanyTycoon.Tests.EditMode
             m.OfficeLevel = 0; // 손상/구세이브 방어
             Assert.IsFalse(OfficeService.IsDecorationUnlocked(m), "레벨 0은 차고로 클램프 — 잠김.");
         }
+
+        [Test]
+        public void FillTier_SoloGarageIsSparse_GrowsWithTeam()
+        {
+            var m = new GameModel();
+            m.OfficeLevel = 1; m.Talent = 1;
+            Assert.AreEqual(0, OfficeService.OfficeFillTier(m), "솔로 차고 = 휑한 티어 0.");
+            m.Talent = 4;
+            Assert.AreEqual(1, OfficeService.OfficeFillTier(m), "팀 형성 = 티어 1.");
+            m.OfficeLevel = 4; m.Talent = 9;
+            Assert.AreEqual(2, OfficeService.OfficeFillTier(m), "대형 = 가득 티어 2.");
+        }
     }
 }

@@ -752,7 +752,7 @@ namespace AICompanyTycoon.UI
             sRect.offsetMin = Vector2.zero;
             sRect.offsetMax = Vector2.zero;
             _officeSceneContent = stage.transform; // Clear는 직원·책상만 비운다(오버레이 보존)
-            OfficeProps.Populate(stage.transform, StageVisual.BackgroundKey(_context != null ? _context.Model.CompanyStageId : null)); // feat-023 — 성급별 특화 소품
+            OfficeProps.Populate(stage.transform, StageVisual.BackgroundKey(_context != null ? _context.Model.CompanyStageId : null), _context != null ? OfficeService.OfficeFillTier(_context.Model) : 2); // feat-023 성급 소품 + feat-031 성장 밀도 티어
 
             // 리액션 버블 전용 오버레이 — 최상단(직원 위)에 절대 위치로 띄운다.
             var overlay = new GameObject("ReactionLayer", typeof(RectTransform));
@@ -2235,7 +2235,7 @@ namespace AICompanyTycoon.UI
             // 성급별 특화 소품 갱신 (feat-023) — 서버랙/화이트보드/트로피 등이 배경 따라 바뀐다.
             if (_officeSceneContent != null)
             {
-                OfficeProps.Populate(_officeSceneContent, StageVisual.BackgroundKey(stageId));
+                OfficeProps.Populate(_officeSceneContent, StageVisual.BackgroundKey(stageId), _context != null ? OfficeService.OfficeFillTier(_context.Model) : 2);
             }
         }
 

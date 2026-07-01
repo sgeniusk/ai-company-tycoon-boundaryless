@@ -42,18 +42,18 @@ namespace AICompanyTycoon.UI
             new PropSpec("prop_vending", 0.86f, 8f, 120f), // 우 — 끝이지만 안전 범위
         };
 
-        // 바닥 소품 — 직원 위쪽 빈 바닥 띠를 메운다. footY 내림차순(뒤·작게부터)으로 그려 앞 소품이 겹친다.
-        // 뒤 가구는 일정 footY·균등 간격 한 줄로 '벽 근처 정돈'(부유감 제거), 전부 x [0.15,0.85] 안전 범위(잘림 없음).
-        static readonly PropSpec[] FloorProps =
+        // 뒤 벽 가구 한 줄 — '회사가 자리잡은' 인상. 솔로 차고(tier0)에선 생략해 휑하게, 성장할수록 채운다 (feat-031).
+        // footY 통일·x 균등 배치로 '벽 근처 정돈'(부유감 제거), 전부 x [0.13,0.86] 안전 범위(잘림 없음).
+        static readonly PropSpec[] BackFurnitureProps =
         {
-            // 뒤 바닥 한 줄(벽 근처) — footY 통일·x 균등. feat-030 — 캐릭터(248) 대비 '콩알' 비례 개선 위해 확대.
             new PropSpec("prop_plant_big", 0.13f, 410f, 132f),     // 좌 키큰 화분
             new PropSpec("prop_partition", 0.39f, 412f, 118f),     // 중좌 칸막이
             new PropSpec("prop_bookshelf", 0.64f, 410f, 134f),     // 중우 책장
             new PropSpec("prop_shelf_low", 0.86f, 408f, 104f),     // 우 수납장
-            // 중앙 러그 — 크게·직원 발치(footY 140)에 깔아 앞 책상들이 러그 '위에' 앉도록(겹침 깊이). floor 중 frontmost.
-            new PropSpec("prop_rug", 0.50f, 140f, 158f),           // 신규 — 중앙 대형 러그
         };
+
+        // 중앙 러그 — 항상 깔린다(코지). 직원 발치, floor 중 frontmost.
+        static readonly PropSpec RugProp = new PropSpec("prop_rug", 0.50f, 140f, 158f);
 
         // 성급(배경 키)별 특화 소품 — feat-023 신규 6종. 배경마다 1~2종으로 과밀 회피 + 성급 정체성.
         // 작은 Height로 캐릭터(≈220px)보다 낮게 둬 거친 픽셀을 배경 장식 수준으로 완화한다.
@@ -88,7 +88,8 @@ namespace AICompanyTycoon.UI
         }
 
         // 성급 변경 시 재호출하면 기존 레이어를 갈아끼운다(backgroundKey null → 기본 office).
-        public static void Populate(Transform stageParent, string backgroundKey = null)
+        // fillTier(0/1/2) — 성장 밀도. 솔로 차고(0)는 러그+최소 소품만, 성장할수록 가구·전경을 채운다 (feat-031).
+        public static void Populate(Transform stageParent, string backgroundKey = null, int fillTier = 2)
         {
             if (stageParent == null)
             {
@@ -107,8 +108,11 @@ namespace AICompanyTycoon.UI
             {
                 back.SetSiblingIndex(stageParent.GetSiblingIndex()); // stage를 뒤로 밀어 Back이 먼저(뒤) 렌더
             }
-            foreach (var prop in FloorProps) PlaceProp(back, prop);
-            foreach (var prop in BaseProps) PlaceProp(back, prop);
+            PlaceProp(back, RugProp);
+            int furnitureCount = fillTier <= 0 ? 0 : (fillTier == 1 ? 2 : BackFurnitureProps.Length);
+            for (int i = 0; i < furnitureCount; i++) PlaceProp(back, BackFurnitureProps[i]);
+            int baseCount = fillTier <= 0 ? 1 : (fillTier == 1 ? 2 : BaseProps.Length);
+            for (int i = 0; i < baseCount; i++) PlaceProp(back, BaseProps[i]);
             foreach (var prop in StageProps(backgroundKey)) PlaceProp(back, prop);
 
             // ── Front 레이어 — 직원 stage '뒤 sibling'(높은 인덱스 = 앞 렌더). 전경 소품이 직원 하반신을 가린다 (시안 3레이어).
@@ -117,7 +121,8 @@ namespace AICompanyTycoon.UI
             {
                 front.SetSiblingIndex(stageParent.GetSiblingIndex() + 1); // stage 바로 뒤(앞 렌더)
             }
-            foreach (var prop in FrontProps) PlaceProp(front, prop);
+            int frontCount = fillTier <= 0 ? 1 : FrontProps.Length;
+            for (int i = 0; i < frontCount; i++) PlaceProp(front, FrontProps[i]);
         }
 
         static void DestroyLayer(Transform parent, string name)

@@ -97,6 +97,16 @@ namespace AICompanyTycoon.Systems
             return level >= 2;
         }
 
+        // 오피스 구성 밀도 티어 — 0(솔로 차고·휑하게) / 1(팀 형성) / 2(가득). 성장이 화면에 보이게 (feat-031).
+        public static int OfficeFillTier(GameModel m)
+        {
+            int talent = (int)(m != null ? m.Get(ResourceId.Talent) : 0);
+            int level = m != null && m.OfficeLevel > 0 ? m.OfficeLevel : 1;
+            if (level >= 4 || talent >= 8) return 2;
+            if (level >= 2 || talent >= 3) return 1;
+            return 0;
+        }
+
         // ---- 월 정산 훅 ----
 
         // 위치 고정비 모디파이어 (React locationCostModifier 동치). 데이터 없으면 1.0.
