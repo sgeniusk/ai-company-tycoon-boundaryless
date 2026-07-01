@@ -34,6 +34,14 @@
 - 중립/secondary 알약에 눌림 단서 — 미세 그림자 또는 1px 잉크 테두리 + press 상태(살짝 눌림 + 어두워짐). `UiFactory`/`UiTheme`에 `StyleSecondaryButton` 패스 추가(CTA용 `StyleCtaButton`은 이미 있음).
 - 평면처럼 보이던 secondary 톤을 입체화해 "누를 수 있는 버튼"으로 읽히게 한다.
 
+### ⑤ 오피스 겹침 해소 — 원근 격자 자동 프레임 (2026-07-01 사용자 피드백 추가)
+- 문제 — 직원이 늘면 `RefreshOfficeScene`가 인원을 고정 화면 폭에 밴드로 욱여넣어 책상이 겹쳐 '뭉텅이'가 됐다(사무실 같지 않음). 블록 ③의 소품 밀도만으론 직원 배치 겹침이 안 풀렸다.
+- 방향(사용자 선택) — "자동 프레임(줄여서 맞춤)". 직원/책상을 겹치지 않는 원근 격자 셀에 놓고, 인원이 늘면 셀이 작아져 전부 한 화면에 담긴다.
+- 1차 시도(격자) — `GridPlan`으로 균등 원근 격자. 겹침은 해소했으나 사용자 평 "정중앙 대칭·균일이라 인위적". 폐기.
+- 2차(정착) — `OfficeLayout.PodPlan(count)` 손으로 짠 authored 평면(비대칭 클러스터·통로·브릭 스태거·깊이 변주). 같은 티어 겹침 0, 성장은 접두사 확장. `RefreshOfficeScene`를 PodPlan 소비로 재작성(jitter 제거), `PlaceActorRow`→`PlaceOfficeActor`.
+- 검증 — EditMode(같은 티어 겹침 없음·거울대칭 아님·접두사 안정 4종) + PlayMode 캡처(비대칭 pod 배치).
+- **남은 한계 → feat-032** — 캐릭터가 전부 정면이라 "다른 방향 보며 분주한 사무실 풍경"은 안 됨. 측면/후면 캐릭터·측면 책상·큐비클 칸막이 신규 아트가 필요(Codex 트랙, `docs/codex-handoff/feat-032-office-scene-orientations.md`).
+
 ## 검증
 - `./init.sh` EditMode 베이스라인 **177/177** 유지. 시작 인재 3을 기대하는 테스트가 있으면 1로 갱신.
 - `TechTreeReachabilityTests` 그린 — 봇 완주 창(승리 ≥ tier4 해금·≤ 90개월) 유지 확인. 1인 시작으로 창이 깨지면 시작 현금/첫 영입가로 미세 조정 후 재검증.
