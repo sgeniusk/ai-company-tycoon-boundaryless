@@ -1266,7 +1266,7 @@ namespace AICompanyTycoon.UI
             tag.horizontalOverflow = HorizontalWrapMode.Overflow;
             AddLayout(tag.gameObject, 48, 1);
 
-            var body = UiFactory.Label(card.transform, "차고에서 시작이에요! 첫 목표는 단 하나 —\n제품 1개를 출시해 첫 이용자를 모으는 거예요.\n아래 코랄 버튼을 눌러 출시! ▼", 28);
+            var body = UiFactory.Label(card.transform, "혼자 차고에서 시작이에요! 첫 목표는 단 하나 —\n첫 직원을 영입해 팀을 꾸리는 거예요.\n아래 코랄 버튼을 눌러 영입! ▼", 28);
             body.color = UiTheme.Ink;
             body.alignment = TextAnchor.MiddleCenter;
             AddLayout(body.gameObject, 132, 0);
