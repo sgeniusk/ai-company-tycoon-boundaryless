@@ -791,10 +791,10 @@ namespace AICompanyTycoon.UI
             }
 
             var kinds = new[] { "actor_human", "actor_ai", "actor_robot" };
-            // feat-031 ⑤ — 원근 격자 배치. 겹치지 않는 셀, 인원이 늘면 셀이 작아져(auto-frame) 전부 화면에 담긴다.
-            var slots = OfficeLayout.GridPlan(count);
+            // feat-031 ⑤ — 손으로 짠 pod 평면 배치(비대칭 클러스터·통로·깊이). authored 앞→뒤 순, 부분집합도 자연스럽게.
+            var slots = OfficeLayout.PodPlan(count);
 
-            // 맨 앞줄 한 명만 열일 불꽃 — 앞줄 슬롯은 GridPlan 앞부분에 모여 있다(0..frontCount-1).
+            // 맨 앞줄 한 명만 열일 불꽃 — 앞줄 슬롯은 authored 앞부분에 모여 있다(0..frontCount-1).
             int frontCount = 0;
             foreach (var s in slots) if (s.Front) frontCount++;
             int busySeed = frontCount >= 2 ? frontCount / 2 : -1;

@@ -39,44 +39,34 @@ namespace AICompanyTycoon.UI
             public bool Front;    // 맨 앞줄 여부
         }
 
-        // 원근 격자 배치 — count명을 겹치지 않는 셀로 나눠 놓고, 인원이 늘면 셀이 작아져(auto-frame) 전부 화면에 담긴다.
-        // 열 분배는 RowPlan(앞쪽가중), 셀 폭은 최다열 기준 균등 → 셀 폭 = U/최다열. 스케일은 셀에 맞춰 축소해 겹침 0.
-        // 각 줄은 가운데 정렬해 뒤로 갈수록 좁고 작게 물러난다. jitter 없음(겹침 유발 제거).
-        public static Slot[] GridPlan(int count)
+        // 손으로 짠 사무실 평면 배치 (feat-031 ⑤ 재작업) — 기계적 대칭 격자 대신 비대칭 클러스터(pod)·통로·깊이 변주.
+        // 성장 순서대로 앞→뒤로 authored. 같은 깊이 티어 안에서만 겹치지 않게 배치(깊이 겹침은 원근으로 자연스럽다).
+        // count명이면 앞에서 count개를 보여준다(부분집합도 자연스럽게 보이도록 순서 설계).
+        static readonly Slot[] AuthoredFloor =
+        {
+            // 앞 티어 — 큰 책상 2개, 좌측 무게(사장 먼저).
+            new Slot { XNorm = 0.34f, FootY = 150f, Scale = 0.98f, Front = true },
+            new Slot { XNorm = 0.62f, FootY = 162f, Scale = 0.94f, Front = true },
+            // 중간 티어 — 3개, 좌·중·우 통로 두고 비대칭.
+            new Slot { XNorm = 0.17f, FootY = 252f, Scale = 0.80f, Front = false },
+            new Slot { XNorm = 0.46f, FootY = 264f, Scale = 0.77f, Front = false },
+            new Slot { XNorm = 0.76f, FootY = 256f, Scale = 0.79f, Front = false },
+            // 뒤 티어 — 3개, 앞 티어와 x 어긋나게(브릭) 배치.
+            new Slot { XNorm = 0.29f, FootY = 356f, Scale = 0.64f, Front = false },
+            new Slot { XNorm = 0.58f, FootY = 366f, Scale = 0.62f, Front = false },
+            new Slot { XNorm = 0.83f, FootY = 352f, Scale = 0.63f, Front = false },
+            // 깊은 티어 — 2개, 맨 뒤 중앙 살짝 비대칭.
+            new Slot { XNorm = 0.42f, FootY = 432f, Scale = 0.55f, Front = false },
+            new Slot { XNorm = 0.68f, FootY = 426f, Scale = 0.55f, Front = false },
+        };
+
+        // 손으로 짠 pod 평면에서 앞 count명을 반환 (feat-031 ⑤). 인위적 격자 탈피 — 비대칭 클러스터·통로·깊이.
+        public static Slot[] PodPlan(int count)
         {
             if (count <= 0) return new Slot[0];
-
-            const float margin = 0.06f;
-            const float frontFootY = 130f, backFootY = 420f;
-            const float perspMin = 0.72f;   // 맨 뒷줄 원근 축소 배수
-            const float gap = 0.86f;        // 책상이 셀에서 차지하는 비율(나머지는 통로)
-
-            var plan = RowPlan(count);
-            int rows = plan.Length;
-            int maxCols = 1;
-            foreach (var c in plan) if (c > maxCols) maxCols = c;
-
-            float usable = 1f - 2f * margin;
-            float cellW = usable / maxCols;
-            // 셀에 맞춰 스케일 축소 — 열이 많아질수록 작아진다(auto-frame). 상한 1.0, 하한 0.4.
-            float baseScale = cellW / FootprintWidthNorm * gap;
-            if (baseScale > 1f) baseScale = 1f;
-            if (baseScale < 0.4f) baseScale = 0.4f;
-
+            if (count > AuthoredFloor.Length) count = AuthoredFloor.Length;
             var slots = new Slot[count];
-            int idx = 0;
-            for (int r = 0; r < rows; r++)
-            {
-                float t = rows > 1 ? (float)r / (rows - 1) : 0f;
-                float footY = frontFootY + (backFootY - frontFootY) * t;
-                float rowScale = baseScale * (1f - (1f - perspMin) * t);
-                int c = plan[r];
-                for (int i = 0; i < c; i++)
-                {
-                    float xnorm = 0.5f + (i - (c - 1) / 2f) * cellW; // 줄 가운데 정렬
-                    slots[idx++] = new Slot { XNorm = xnorm, FootY = footY, Scale = rowScale, Front = r == 0 };
-                }
-            }
+            for (int i = 0; i < count; i++) slots[i] = AuthoredFloor[i];
             return slots;
         }
     }
