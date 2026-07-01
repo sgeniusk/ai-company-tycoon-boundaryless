@@ -803,16 +803,28 @@ namespace AICompanyTycoon.UI
             for (int k = count - 1; k >= 0; k--)
             {
                 var slot = slots[k];
-                PlaceOfficeActor(kinds[k % kinds.Length], k, slot.XNorm, slot.FootY, slot.Scale, allowSpeech: slot.Front, isBusy: k == busySeed);
+                PlaceOfficeActor(kinds[k % kinds.Length], k, slot.XNorm, slot.FootY, slot.Scale, allowSpeech: slot.Front, isBusy: k == busySeed, orient: slot.Orient);
             }
 
             FlushActorMoods(); // 월 정산 중 쌓인 직원 반응(card_use/alert)을 재생성된 액터에 적용 (feat-023)
         }
 
-        // 직원 한 명 + 책상 전경 오클루더를 격자 슬롯에 배치 (feat-031 ⑤). isBusy면 열일 불꽃.
-        void PlaceOfficeActor(string kind, int seed, float xnorm, float footY, float scale, bool allowSpeech, bool isBusy)
+        // 직원 한 명을 격자 슬롯에 배치 (feat-031 ⑤). 정면=액터+책상 오클루더, 좌/우향=자립형 측면 워크스테이션 (feat-032). isBusy면 열일 불꽃.
+        void PlaceOfficeActor(string kind, int seed, float xnorm, float footY, float scale, bool allowSpeech, bool isBusy, OfficeLayout.Orientation orient)
         {
             const float baseW = 248f, baseH = 248f; // feat-023 — 캐릭터 확대 기준 크기(격자 스케일이 이 위에 곱해진다)
+
+            // feat-032 — 측면 슬롯은 책상·의자 포함 자립형 워크스테이션 스프라이트(다른 방향 보며 일하는 사무실). 없으면 정면으로 폴백.
+            if (orient != OfficeLayout.Orientation.Front)
+            {
+                var sideSprite = IconLibrary.Get(kind + "_side");
+                if (sideSprite != null)
+                {
+                    PlaceSideWorkstation(sideSprite, seed, xnorm, footY, baseH * scale * 1.08f, orient == OfficeLayout.Orientation.SideRight, allowSpeech);
+                    return;
+                }
+            }
+
             int variant = ActorPalette.VariantFor(seed);          // 직원별 색 변형 (feat-023)
             var sprite = ActorPalette.Recolored(kind, "", variant);
 
@@ -849,6 +861,27 @@ namespace AICompanyTycoon.UI
 
             // 열일 불꽃은 책상보다 앞 — 일하는 직원을 감싸 보이게.
             if (flameRoot != null) flameRoot.SetAsLastSibling();
+        }
+
+        // 자립형 측면 워크스테이션(캐릭터+책상+의자 한 스프라이트)을 배치 (feat-032). flip이면 좌향을 뒤집어 우향.
+        void PlaceSideWorkstation(Sprite sprite, int seed, float xnorm, float footY, float height, bool flip, bool allowSpeech)
+        {
+            float aspect = sprite.rect.width / sprite.rect.height;
+            var go = new GameObject("SideWorkstation", typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(_officeSceneContent, false);
+            var r = go.GetComponent<RectTransform>();
+            r.anchorMin = r.anchorMax = new Vector2(xnorm, 0f);
+            r.pivot = new Vector2(0.5f, 0f);
+            r.sizeDelta = new Vector2(height * aspect, height);
+            r.anchoredPosition = new Vector2(0f, footY);
+            if (flip) r.localScale = new Vector3(-1f, 1f, 1f); // 우향 = 좌향 hflip
+
+            var img = go.GetComponent<Image>();
+            img.sprite = sprite;
+            img.preserveAspect = true;
+            img.raycastTarget = false;
+
+            go.AddComponent<StaffBob>().Init(seed * 0.9f); // 미세 통통 모션(앉아 일하는 숨결)
         }
 
         // 절차적 책상 전면 — 전면 패널 + 상판 밝은 띠 + 바닥 그림자 + 좌우 잉크 + 작은 모니터. 새 스프라이트 없이 '앉은' 오클루전 (feat-019 T1).
