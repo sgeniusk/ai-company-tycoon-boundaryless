@@ -791,77 +791,64 @@ namespace AICompanyTycoon.UI
             }
 
             var kinds = new[] { "actor_human", "actor_ai", "actor_robot" };
-            int[] plan = OfficeLayout.RowPlan(count); // plan[0]=앞 밴드
+            // feat-031 ⑤ — 원근 격자 배치. 겹치지 않는 셀, 인원이 늘면 셀이 작아져(auto-frame) 전부 화면에 담긴다.
+            var slots = OfficeLayout.GridPlan(count);
 
-            // 밴드별 시작 시드(앞부터 누적) — 직원 종류·색 변형 안정.
-            int[] startSeed = new int[plan.Length];
-            for (int b = 1; b < plan.Length; b++) startSeed[b] = startSeed[b - 1] + plan[b - 1];
+            // 맨 앞줄 한 명만 열일 불꽃 — 앞줄 슬롯은 GridPlan 앞부분에 모여 있다(0..frontCount-1).
+            int frontCount = 0;
+            foreach (var s in slots) if (s.Front) frontCount++;
+            int busySeed = frontCount >= 2 ? frontCount / 2 : -1;
 
-            // 뒷 밴드부터 그려(뒤) 앞 밴드가 겹쳐 깊이를 준다.
-            for (int b = plan.Length - 1; b >= 0; b--)
+            // 뒤 슬롯부터 그려(높은 footY 먼저) 앞줄이 위에 겹쳐 깊이를 준다. 시드는 슬롯 인덱스(종류·색 안정).
+            for (int k = count - 1; k >= 0; k--)
             {
-                var band = OfficeLayout.Band(b);
-                bool isFront = b == 0;
-                int busyLocal = isFront && plan[b] >= 2 ? plan[b] / 2 : -1; // 앞줄 한 명만 열일 불꽃
-                float margin = isFront ? 0.08f : 0.16f;                    // 뒷줄은 더 안쪽으로 모음
-                PlaceActorRow(kinds, startSeed[b], plan[b], band.scale, band.footY, margin, allowSpeech: isFront, busyLocal: busyLocal);
+                var slot = slots[k];
+                PlaceOfficeActor(kinds[k % kinds.Length], k, slot.XNorm, slot.FootY, slot.Scale, allowSpeech: slot.Front, isBusy: k == busySeed);
             }
 
             FlushActorMoods(); // 월 정산 중 쌓인 직원 반응(card_use/alert)을 재생성된 액터에 적용 (feat-023)
         }
 
-        // 한 줄(원근 스케일·바닥선)을 수동 배치 — 각 직원 + 책상 전경 오클루더. busyLocal 인덱스엔 열일 불꽃.
-        void PlaceActorRow(string[] kinds, int startSeed, int count, float scale, float footY, float marginNorm, bool allowSpeech, int busyLocal)
+        // 직원 한 명 + 책상 전경 오클루더를 격자 슬롯에 배치 (feat-031 ⑤). isBusy면 열일 불꽃.
+        void PlaceOfficeActor(string kind, int seed, float xnorm, float footY, float scale, bool allowSpeech, bool isBusy)
         {
-            const float baseW = 248f, baseH = 248f; // feat-023 — 캐릭터 2차 확대(여전히 작다는 피드백, 200→248)
-            for (int i = 0; i < count; i += 1)
+            const float baseW = 248f, baseH = 248f; // feat-023 — 캐릭터 확대 기준 크기(격자 스케일이 이 위에 곱해진다)
+            int variant = ActorPalette.VariantFor(seed);          // 직원별 색 변형 (feat-023)
+            var sprite = ActorPalette.Recolored(kind, "", variant);
+
+            var actorGo = new GameObject("Actor", typeof(RectTransform), typeof(Image));
+            actorGo.transform.SetParent(_officeSceneContent, false);
+            var aRect = actorGo.GetComponent<RectTransform>();
+            aRect.anchorMin = aRect.anchorMax = new Vector2(xnorm, 0f);
+            aRect.pivot = new Vector2(0.5f, 0f);
+            aRect.sizeDelta = new Vector2(baseW * scale, baseH * scale);
+            aRect.anchoredPosition = new Vector2(0f, footY);
+
+            var img = actorGo.GetComponent<Image>();
+            img.sprite = sprite;
+            img.preserveAspect = true;
+            img.raycastTarget = false;
+            img.color = sprite != null ? Color.white : new Color(1f, 1f, 1f, 0f);
+
+            Transform flameRoot = null;
+            if (sprite != null)
             {
-                int seed = startSeed + i;
-                string kind = kinds[seed % kinds.Length];
-                int variant = ActorPalette.VariantFor(seed);          // 직원별 색 변형 (feat-023)
-                var sprite = ActorPalette.Recolored(kind, "", variant);
-                float xnorm = count <= 1 ? 0.5f : marginNorm + (1f - 2f * marginNorm) * ((i + 0.5f) / count);
-                // 일렬 느낌 제거 — 시드 결정적 지터로 가로 위치를 ±소량 흔든다.
-                if (count > 1)
+                actorGo.AddComponent<StaffBob>().Init(seed * 0.9f);
+                actorGo.AddComponent<WorkLoop>().Init(seed, allowSpeech);
+                actorGo.AddComponent<ActorAnim>().Init(sprite, ActorPalette.Recolored(kind, "_work", variant), ActorPalette.Recolored(kind, "_cheer", variant), ActorPalette.Recolored(kind, "_carduse", variant), ActorPalette.Recolored(kind, "_alert", variant), seed); // idle↔작업 타이핑 + 가끔 환호 + card_use/alert 원샷 + 직원별 색 변형 (feat-020/023)
+                if (isBusy)
                 {
-                    float jitter = (((seed * 73856093) & 0x3ff) / 1023f - 0.5f) * 0.05f; // ±0.025
-                    xnorm = Mathf.Clamp(xnorm + jitter, marginNorm * 0.5f, 1f - marginNorm * 0.5f);
+                    actorGo.AddComponent<CrunchFlameFx>().Init(aRect, 1.3f); // 열일 불꽃 — 이미지처럼 극적이게 (feat-019 T3)
+                    // 불꽃 루트는 방금 생성된 마지막 자식 — 책상 생성 뒤 맨 앞으로 올려 책상에 안 가리게.
+                    flameRoot = _officeSceneContent.GetChild(_officeSceneContent.childCount - 1);
                 }
-
-                var actorGo = new GameObject("Actor", typeof(RectTransform), typeof(Image));
-                actorGo.transform.SetParent(_officeSceneContent, false);
-                var aRect = actorGo.GetComponent<RectTransform>();
-                aRect.anchorMin = aRect.anchorMax = new Vector2(xnorm, 0f);
-                aRect.pivot = new Vector2(0.5f, 0f);
-                aRect.sizeDelta = new Vector2(baseW * scale, baseH * scale);
-                aRect.anchoredPosition = new Vector2(0f, footY);
-
-                var img = actorGo.GetComponent<Image>();
-                img.sprite = sprite;
-                img.preserveAspect = true;
-                img.raycastTarget = false;
-                img.color = sprite != null ? Color.white : new Color(1f, 1f, 1f, 0f);
-
-                Transform flameRoot = null;
-                if (sprite != null)
-                {
-                    actorGo.AddComponent<StaffBob>().Init(seed * 0.9f);
-                    actorGo.AddComponent<WorkLoop>().Init(seed, allowSpeech);
-                    actorGo.AddComponent<ActorAnim>().Init(sprite, ActorPalette.Recolored(kind, "_work", variant), ActorPalette.Recolored(kind, "_cheer", variant), ActorPalette.Recolored(kind, "_carduse", variant), ActorPalette.Recolored(kind, "_alert", variant), seed); // idle↔작업 타이핑 + 가끔 환호 + card_use/alert 원샷 + 직원별 색 변형 (feat-020/023)
-                    if (i == busyLocal)
-                    {
-                        actorGo.AddComponent<CrunchFlameFx>().Init(aRect, 1.3f); // 열일 불꽃 — 이미지처럼 극적이게 (feat-019 T3)
-                        // 불꽃 루트는 방금 생성된 마지막 자식 — 책상 생성 뒤 맨 앞으로 올려 책상에 안 가리게.
-                        flameRoot = _officeSceneContent.GetChild(_officeSceneContent.childCount - 1);
-                    }
-                }
-
-                // 책상 전경 오클루더 — 액터 다음(앞)에 생성해 하반신을 가린다 = 앉아 일하는 연출.
-                CreateDeskOccluder(xnorm, footY, baseW * scale, baseH * scale, seed);
-
-                // 열일 불꽃은 책상보다 앞 — 일하는 직원을 감싸 보이게.
-                if (flameRoot != null) flameRoot.SetAsLastSibling();
             }
+
+            // 책상 전경 오클루더 — 액터 다음(앞)에 생성해 하반신을 가린다 = 앉아 일하는 연출.
+            CreateDeskOccluder(xnorm, footY, baseW * scale, baseH * scale, seed);
+
+            // 열일 불꽃은 책상보다 앞 — 일하는 직원을 감싸 보이게.
+            if (flameRoot != null) flameRoot.SetAsLastSibling();
         }
 
         // 절차적 책상 전면 — 전면 패널 + 상판 밝은 띠 + 바닥 그림자 + 좌우 잉크 + 작은 모니터. 새 스프라이트 없이 '앉은' 오클루전 (feat-019 T1).
