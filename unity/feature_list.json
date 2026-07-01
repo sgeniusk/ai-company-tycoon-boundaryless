@@ -359,6 +359,17 @@
       "status": "planned",
       "owner": "Claude(스펙·아키텍처·구현·검증)",
       "evidence": "계획 단계(2026-07-01). 설계 정본 docs/feat-031-growth-arc-design.md 확정·사용자 승인. 구현 계획 작성 예정."
+    },
+    {
+      "id": "feat-032",
+      "name": "사무실 씬 아트 리워크 (P33)",
+      "description": "진짜 사무실 풍경 — 칸막이 큐비클·크기/방향 제각각 책상·다른 방향 보며 분주히 일하는 캐릭터. 사용자 피드백(현 정면 일렬은 사무실 같지 않다) 대응. 아트 트랙(Codex 양산): 측면(좌향, 우향은 코드 hflip)·후면 캐릭터 human/ai/robot + 측면 책상 + 큐비클 칸막이 변형. 크로마키 파이프라인(Tools~/pixel_office, halo=0 게이트) 재사용. 구성(Claude): 오피스 씬을 큐비클 클러스터로 재작곡 — 슬롯별 방향·책상종류·크기 변주·칸막이, 밀집 배치. 정본 docs/codex-handoff/feat-032-office-scene-orientations.md.",
+      "dependencies": [
+        "feat-031"
+      ],
+      "status": "planned",
+      "owner": "Claude(구성·정본) + Codex(에셋 양산)",
+      "evidence": "계획(2026-07-01). feat-031 ⑤ pod 배치가 여전히 '정면 일렬'이라 사무실 풍경이 안 됨 → 방향·큐비클 아트 필요. 설계·핸드오프 작성 중."
     }
   ]
 }
