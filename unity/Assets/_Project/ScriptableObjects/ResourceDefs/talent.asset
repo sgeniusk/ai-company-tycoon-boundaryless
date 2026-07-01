@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: "\uC778\uC7AC"
   description: "\uC5F0\uAD6C\uC6D0, \uC5D4\uC9C0\uB2C8\uC5B4, \uC6B4\uC601 \uC778\uB825\uC744
     \uD3EC\uD568\uD55C \uD300 \uADDC\uBAA8\uC785\uB2C8\uB2E4."
-  initialValue: 3
+  initialValue: 1
   minValue: 0
   maxValue: 999
   icon: "\U0001F9D1\u200D\U0001F4BB"

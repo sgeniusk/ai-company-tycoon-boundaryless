@@ -21,7 +21,7 @@ namespace AICompanyTycoon.Tests.EditMode
         {
             var ctx = SimulationContext.Create(Catalog());
             Assert.AreEqual(10000, ctx.Model.Cash, 0.001);
-            Assert.AreEqual(3, ctx.Model.Talent, 0.001);
+            Assert.AreEqual(1, ctx.Model.Talent, 0.001);
             Assert.AreEqual(1, ctx.Capabilities.GetLevel("language"));
             Assert.IsTrue(ctx.Domains.IsUnlocked("personal_productivity"));
             Assert.AreEqual(1, ctx.Model.CurrentMonth);
@@ -33,7 +33,7 @@ namespace AICompanyTycoon.Tests.EditMode
             var ctx = SimulationContext.Create(Catalog());
             var b = ctx.Catalog.balance;
             // users 0 -> compute cost 0, automation 0. 위치 모디파이어 — 시작 본사(강원 산골 차고) 0.82 (feat-014 #2).
-            double expected = (b.baseMonthlyCashCost + 3 * b.salaryPerTalent) * OfficeService.GetLocationCostModifier(ctx.Model, ctx.Catalog);
+            double expected = (b.baseMonthlyCashCost + 1 * b.salaryPerTalent) * OfficeService.GetLocationCostModifier(ctx.Model, ctx.Catalog);
             double before = ctx.Model.Cash;
             var s = ctx.Month.AdvanceMonth();
             Assert.AreEqual(expected, s.TotalCashCost, 0.001);

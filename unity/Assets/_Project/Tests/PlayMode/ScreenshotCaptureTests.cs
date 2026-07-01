@@ -95,11 +95,11 @@ namespace AICompanyTycoon.Tests.PlayMode
                 yield return WaitRealtime(0.35f); // 말풍선·리워드가 살아있을 때 캡처
                 yield return CaptureCanvas(canvasGo, "01d-office-rich.png");
 
-                // 1f) 적은 직원(평소·초반) — 큰 캐릭터가 휑하지 않은지, 코지 배경 정합 (feat-023)
-                boot.Context.Model.Talent = 3;
+                // 1f) 1인 창고 출발(feat-031) — 사장 혼자인 휑한 시작 화면 정합
+                boot.Context.Model.Talent = 1;
                 boot.Screen.RefreshAll();
                 yield return WaitRealtime(0.5f);
-                yield return CaptureCanvas(canvasGo, "01f-office-few.png");
+                yield return CaptureCanvas(canvasGo, "01f-office-solo.png");
             }
 
             // 2) ＋트레이 펼침

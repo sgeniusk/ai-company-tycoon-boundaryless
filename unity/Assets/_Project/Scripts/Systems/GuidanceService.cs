@@ -35,6 +35,17 @@ namespace AICompanyTycoon.Systems
             var m = ctx.Model;
             var b = ctx.Catalog != null ? ctx.Catalog.balance : null;
 
+            // 0) 첫 영입 — 1인 창고 출발. 팀을 꾸리는 게 첫 목표 (feat-031).
+            if (m.HiredAgentIds.Count == 0)
+                steps.Add(new GuidanceStep
+                {
+                    Id = "hire_first_employee",
+                    Title = "첫 직원을 영입해 팀을 꾸리세요",
+                    ActionLabel = "직원 영입",
+                    TargetTab = "upgrades",
+                    Tone = "primary"
+                });
+
             // 1) 첫 제품 — 매출 0이면 게임이 굴러가지 않는다.
             if (m.ActiveProducts.Count == 0 && ctx.Products != null && ctx.Products.GetAvailable().Count > 0)
                 steps.Add(new GuidanceStep

@@ -48,7 +48,7 @@
       "id": "talent",
       "name": "인재",
       "description": "연구원, 엔지니어, 운영 인력을 포함한 팀 규모입니다.",
-      "initial_value": 3,
+      "initial_value": 1,
       "min_value": 0,
       "max_value": 999,
       "icon": "🧑‍💻",
