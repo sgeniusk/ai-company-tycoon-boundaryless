@@ -977,7 +977,17 @@ namespace AICompanyTycoon.UI
             var decor = UiFactory.Button(row.transform, "✦ 꾸미기");
             decor.label.fontSize = 24;
             decor.label.horizontalOverflow = HorizontalWrapMode.Overflow;
-            decor.button.onClick.AddListener(() => SetStatus("꾸미기는 곧 추가됩니다."));
+            bool decorUnlocked = _context != null && OfficeService.IsDecorationUnlocked(_context.Model);
+            if (decorUnlocked)
+            {
+                decor.button.onClick.AddListener(() => SetStatus("꾸미기는 곧 추가됩니다."));
+            }
+            else
+            {
+                decor.label.text = "🔒 꾸미기"; // 색은 FlattenDockButton이 InkSoft로 통일
+                decor.button.interactable = false;
+                decor.button.onClick.AddListener(() => SetStatus("사무실을 확장하면 꾸미기가 열립니다."));
+            }
             AddLayoutFixed(decor.button.gameObject, 124, 46);
             FlattenDockButton(decor.button, decor.label);
         }
@@ -3074,9 +3084,10 @@ namespace AICompanyTycoon.UI
             AddSmallText(officeCard, "정원 " + (office != null ? office.hireCapacity : 3) + "명");
             if (nextOffice != null)
             {
-                AddSmallText(officeCard, "다음 — " + nextOffice.displayName + " (정원 " + nextOffice.hireCapacity + "명) | 비용 " + FormatCosts(nextOffice.cost));
-                AddSmallText(officeCard, "요구 조건 " + FormatThresholds(nextOffice.unlockRequirements));
                 var expandReason = _context.Office.GetExpandLockReason();
+                string nextMark = expandReason != null ? "🔒 " : "▸ "; // 확장 버튼과 같은 게이팅(요건·자금)에 연동
+                AddSmallText(officeCard, nextMark + "다음 — " + nextOffice.displayName + " (정원 " + nextOffice.hireCapacity + "명) | 비용 " + FormatCosts(nextOffice.cost));
+                AddSmallText(officeCard, "해금 조건 — " + FormatThresholds(nextOffice.unlockRequirements));
                 if (expandReason != null)
                 {
                     AddSmallText(officeCard, "잠금 사유 - " + expandReason);

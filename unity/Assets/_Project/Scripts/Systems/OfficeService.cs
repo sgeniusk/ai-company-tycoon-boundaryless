@@ -88,6 +88,15 @@ namespace AICompanyTycoon.Systems
             return true;
         }
 
+        // ---- 게이팅 질의 ----
+
+        // 꾸미기 해금 — 차고를 벗어나 첫 사무실 확장(레벨2+)을 한 뒤 열린다 (feat-031 — 시연용 노출과 조건 해금 분리).
+        public static bool IsDecorationUnlocked(GameModel m)
+        {
+            int level = m != null && m.OfficeLevel > 0 ? m.OfficeLevel : 1;
+            return level >= 2;
+        }
+
         // ---- 월 정산 훅 ----
 
         // 위치 고정비 모디파이어 (React locationCostModifier 동치). 데이터 없으면 1.0.
