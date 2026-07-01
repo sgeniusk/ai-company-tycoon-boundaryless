@@ -367,9 +367,9 @@
       "dependencies": [
         "feat-031"
       ],
-      "status": "in-progress",
+      "status": "done",
       "owner": "Claude(구성·정본) + Codex(에셋 양산)",
-      "evidence": "1차 완료(2026-07-01, 6c8663a). Codex imagegen(마젠타 크로마키)→key_one.py 키잉(halo=0)→반입한 측면 워크스테이션 3종(actor_{human,ai,robot}_side, 책상·의자 포함 자립형). OfficeLayout.Orientation(정면/좌/우)+authored 슬롯 방향, PlaceSideWorkstation(우향 hflip). 캡처 01d — 로봇·AI 좌/우향, 사람 정면으로 각자 책상서 일하는 분주한 사무실(다 같이 정면 응시 탈피). EditMode 185/PlayMode 10. 2차(후보) — 후면 캐릭터·큐비클 칸막이·겹침 미세조정."
+      "evidence": "완료(2026-07-01). 1차(6c8663a) 측면 워크스테이션 3종 + 방향 구성. 2차(0f7163d) 후면 캐릭터 3종 + 큐비클 칸막이(prop_cubicle). Codex imagegen(마젠타/녹색 크로마키)→key_one.py 단일스프라이트 키잉(halo=0)→반입(결정적 md5 GUID). OfficeLayout.Orientation(정면/좌/우/후면)+authored 슬롯 방향, PlaceSideWorkstation(우향 hflip)+PlaceCubicle(후면 뒤). 캡처 01d — 로봇/AI 좌·우향 측면, 사람 정면, 뒤 티어 후면+큐비클 칸막이로 빽빽·분주한 사무실 풍경(사용자 피드백 '다 같이 정면은 사무실 아니다' 해소). EditMode 185/PlayMode 10. 파이프라인 Tools~/pixel_office/feat032/(key_one.py). 새 에셋 14(측면3+후면3+큐비클1, png+meta)."
     }
   ]
 }
