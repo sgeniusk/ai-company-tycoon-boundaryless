@@ -158,6 +158,12 @@ namespace AICompanyTycoon.UI
 
             button.onClick.AddListener(() => UiTween.Punch(go.transform));
 
+            // feat-031 — secondary 알약 눌림 단서. 잉크 드롭 섀도로 입체감을 준다.
+            // Shadow는 정점 알파에 effectColor 알파를 곱하므로, FlattenDockButton(Image 알파 0)이 적용된 도크 버튼은 섀도도 자동 투명 = 평면 유지.
+            var shadow = go.AddComponent<Shadow>();
+            shadow.effectColor = new Color(UiTheme.Ink.r, UiTheme.Ink.g, UiTheme.Ink.b, 0.28f);
+            shadow.effectDistance = new Vector2(0f, -3f);
+
             return (button, label);
         }
 
