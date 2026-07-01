@@ -356,9 +356,9 @@
       "dependencies": [
         "feat-030"
       ],
-      "status": "planned",
+      "status": "done",
       "owner": "Claude(스펙·아키텍처·구현·검증)",
-      "evidence": "계획 단계(2026-07-01). 설계 정본 docs/feat-031-growth-arc-design.md 확정·사용자 승인. 구현 계획 작성 예정."
+      "evidence": "완료(2026-07-01). 5블록 커밋 — ① 1인창고+첫영입 가이던스(ffddb9e)+온보딩정합(2c7ad17) ② 게이팅 노출분리(b93994e) ③ 소품밀도(ab88e25) ④ 버튼섀도(19ba145) ⑤ 배치: 격자(인위적)→pod 재작업(25c8ad0). EditMode 185, PlayMode 10, 서브에이전트 2단 리뷰 통과. 봇 완주 창 유지(밸런스 레버 불필요). ⑤ 정면 한계는 feat-032로 이관."
     },
     {
       "id": "feat-032",
@@ -367,9 +367,9 @@
       "dependencies": [
         "feat-031"
       ],
-      "status": "planned",
+      "status": "in-progress",
       "owner": "Claude(구성·정본) + Codex(에셋 양산)",
-      "evidence": "계획(2026-07-01). feat-031 ⑤ pod 배치가 여전히 '정면 일렬'이라 사무실 풍경이 안 됨 → 방향·큐비클 아트 필요. 설계·핸드오프 작성 중."
+      "evidence": "1차 완료(2026-07-01, 6c8663a). Codex imagegen(마젠타 크로마키)→key_one.py 키잉(halo=0)→반입한 측면 워크스테이션 3종(actor_{human,ai,robot}_side, 책상·의자 포함 자립형). OfficeLayout.Orientation(정면/좌/우)+authored 슬롯 방향, PlaceSideWorkstation(우향 hflip). 캡처 01d — 로봇·AI 좌/우향, 사람 정면으로 각자 책상서 일하는 분주한 사무실(다 같이 정면 응시 탈피). EditMode 185/PlayMode 10. 2차(후보) — 후면 캐릭터·큐비클 칸막이·겹침 미세조정."
     }
   ]
 }
